@@ -12,8 +12,6 @@
     <div class="layer">
       <div class="content" flex="dir:top main:justify cross:center box:last">
         <div class="main" flex="dir:top main:center cross:center">
-          <!-- logo -->
-          <img class="logo" src="./image/logo@2x.png" alt="logo">
           <!-- 表单 -->
           <div class="form">
             <b-card shadow="never">
@@ -41,6 +39,8 @@
 
 <script>
   import dayJs from 'dayjs'
+  import { mapActions } from 'vuex'
+  import util from '../../common/utils/util'
 
   export default {
     name: 'Login',
@@ -73,6 +73,7 @@
       clearInterval(this.timeInterval)
     },
     methods: {
+      ...mapActions(['login']),
       refreshTime () {
         this.time = dayJs().format('HH:mm:ss')
       },
@@ -81,21 +82,27 @@
         this.$refs.loginForm.validate((valid) => {
           if (valid) {
             // 登录
-            this.$log.success('开始登陆')
-            // this.login({
-            //   vm: this,
-            //   username: this.formLogin.username,
-            //   password: this.formLogin.password
-            // })
-            //   .then(() => {
-            //     // 重定向对象不存在则返回顶层路径
-            //     this.$router.replace(this.$route.query.redirect || '/')
-            //   })
+            this.login(this.formLogin)
+              .then((res) => this.loginSuccess(res))
+              .catch(err => this.requestFailed(err))
           } else {
             // 登录表单校验失败
             this.$message({ type: 'danger', content: '表单校验失败' })
           }
         })
+      },
+      loginSuccess (res) {
+        this.$log.success('登录成功')
+        // 重定向对象不存在则返回顶层路径
+        this.$router.replace(this.$route.query.redirect || '/')
+        // 延迟 1 秒显示欢迎信息
+        setTimeout(() => {
+          this.$message({ content: `${util.timeFix()}，欢迎回来`, type: 'success' })
+        }, 1000)
+      },
+      // 登录失败
+      requestFailed (err) {
+        this.$message({ type: 'danger', content: ((err.response || {}).data || {}).message || '请求出现错误，请稍后再试' })
       }
     }
   }
@@ -132,12 +139,6 @@
       height: 100%;
       min-height: 500px;
       .main {
-        // main
-        .logo {
-          width: 240px;
-          margin-bottom: 2em;
-          margin-top: -2em;
-        }
         // 登录表单
         .form {
           width: 280px;

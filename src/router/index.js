@@ -2,9 +2,9 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 // 路由数据
 import routes from './routes'
-
 import BinUI from 'bin-ui'
 import util from '../common/utils/util'
+import { ACCESS_TOKEN } from '../store/mutation-types'
 
 Vue.use(BinUI)
 
@@ -23,7 +23,7 @@ router.beforeEach((to, from, next) => {
   BinUI.LoadingBar.start()
   // 这里暂时将cookie里是否存有token作为验证是否登录的条件
   // 请根据自身业务需要修改
-  const token = util.cookies.get('token')
+  const token = util.cookies.get(ACCESS_TOKEN)
   // 是否有token
   if (token && token !== 'undefined') {
     // token存在则判断一下是否是登录页面
