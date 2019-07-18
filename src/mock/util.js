@@ -5,6 +5,7 @@ const responseBody = {
   code: 0
 }
 
+// 返回装配器，data为结果result，message为返回消息
 export const builder = (data, message, code = 0, headers = {}) => {
   responseBody.result = data
   if (message !== undefined && message !== null) {

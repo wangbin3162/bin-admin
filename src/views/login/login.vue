@@ -110,7 +110,7 @@
         this.$router.replace(this.$route.query.redirect || '/')
         // 延迟 1 秒显示欢迎信息
         setTimeout(() => {
-          this.$message({ content: `${util.timeFix()}，欢迎回来`, type: 'success' })
+          this.$message({ content: `${util.timeFix()}，${res.name}，欢迎回来`, type: 'success' })
         }, 1000)
       },
       // 登录失败

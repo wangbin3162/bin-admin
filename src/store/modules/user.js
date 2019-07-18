@@ -5,6 +5,7 @@ import { ACCESS_TOKEN } from '../mutation-types'
 export default {
   state: {
     token: '', // token
+    username: '',
     roles: [],
     info: {} // user的登录信息
   },
@@ -45,12 +46,7 @@ export default {
         // 删除缓存的token
         commit('SET_TOKEN', '')
         commit('SET_ROLES', [])
-
-        logout().then(() => {
-          resolve()
-        }).catch(() => {
-          resolve()
-        })
+        resolve()
       })
     },
     // 获取用户信息

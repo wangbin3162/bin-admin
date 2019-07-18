@@ -36,17 +36,3 @@ export function getInfo () {
     }
   })
 }
-
-/**
- * 退出登录
- * @returns {*}
- */
-export function logout () {
-  return request({
-    url: `${baseUrl}/user/logout`,
-    method: 'post',
-    headers: {
-      'Content-Type': 'application/json;charset=UTF-8'
-    }
-  })
-}

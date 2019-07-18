@@ -63,7 +63,6 @@
             title: '注销',
             content: '确认退出登录吗？',
             onOk: () => {
-              console.log('退出登录')
               this.$store.dispatch('logout').then(() => {
                 this.$router.push({ name: 'login' })
               }).catch(err => {
