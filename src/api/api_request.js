@@ -1,7 +1,7 @@
 import store from '../store'
 import { ACCESS_TOKEN } from '../store/mutation-types'
 /**
- *创建axios服务实例
+ *创建服务实例
  */
 import request from 'axios'
 import router from '../router'

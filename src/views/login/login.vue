@@ -10,8 +10,15 @@
     <div class="layer time" flex="main:center cross:center">{{time}}</div>
     <!--登录框-->
     <div class="layer">
-      <div class="content" flex="dir:top main:justify cross:center box:last">
+      <div class="content" flex="dir:top main:justify cross:center box:justify">
+        <div class="header">
+          <p class="header-motto">
+            时间是一切财富中最宝贵的财富。 <span>—— 德奥弗拉斯多</span>
+          </p>
+        </div>
         <div class="main" flex="dir:top main:center cross:center">
+          <!-- logo -->
+          <img class="page-login--logo" src="../../assets/images/logo.png" alt="logo">
           <!-- 表单 -->
           <div class="form">
             <b-card shadow="never">
@@ -21,6 +28,11 @@
                 </b-form-item>
                 <b-form-item prop="password">
                   <b-input type="password" v-model="formLogin.password" placeholder="密码" prefix="ios-key"></b-input>
+                </b-form-item>
+                <b-form-item prop="code">
+                  <b-input type="text" v-model="formLogin.code" placeholder="- - - -" style="width: 60%;"
+                           prefix="ios-bulb"></b-input>
+                  <span class="login-code"><img src="./image/login-code.png" alt="code"></span>
                 </b-form-item>
                 <b-button @click="submit" type="primary" class="button-login" v-waves>登录</b-button>
               </b-form>
@@ -51,7 +63,8 @@
         // 表单
         formLogin: {
           username: 'admin',
-          password: 'admin'
+          password: 'admin',
+          code: 'v9am'
         },
         // 校验
         rules: {
@@ -138,14 +151,45 @@
     .content {
       height: 100%;
       min-height: 500px;
+      // header
+      .header {
+        padding: 1em 0;
+        .header-motto {
+          margin: 0;
+          padding: 0;
+          color: #606266;
+          text-align: center;
+          font-size: 12px;
+          span {
+            color: #909399;
+          }
+        }
+      }
       .main {
+        .page-login--logo {
+          width: 240px;
+          margin-bottom: 2em;
+          margin-top: -2em;
+        }
         // 登录表单
         .form {
-          width: 280px;
+          width: 340px;
           box-sizing: border-box;
           // 登录按钮
           .button-login {
             width: 100%;
+          }
+          .login-code {
+            display: inline-block;
+            vertical-align: middle;
+            width: 40%;
+            height: 36px;
+            border-radius: 2px;
+            overflow: hidden;
+            img {
+              width: 100%;
+              margin-top: -7px;
+            }
           }
         }
       }
