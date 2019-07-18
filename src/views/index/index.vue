@@ -1,10 +1,18 @@
 <template>
-  <div>我是首页</div>
+  <div>
+    <h2>首页</h2>
+    <p>{{userInfo}}</p>
+  </div>
 </template>
 
 <script>
+  import { mapGetters } from 'vuex'
+
   export default {
-    name: 'index'
+    name: 'index',
+    computed: {
+      ...mapGetters(['userInfo'])
+    }
   }
 </script>
 

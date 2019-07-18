@@ -1,0 +1,46 @@
+.app-wrapper {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  z-index: 0;
+  .sidebar-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    height: 100%;
+    z-index: 1001;
+    transition: width .3s ease-in-out;
+    overflow: hidden;
+    .logo {
+      position: relative;
+      box-sizing: border-box;
+      width: 100%;
+      height: 60px;
+      overflow: hidden;
+      padding-left: 18px;
+      .icon {
+        height: 40px;
+      }
+      h1 {
+        color: #fff;
+        font-size: 20px;
+        margin: 0 0 0 12px;
+        white-space: nowrap;
+      }
+    }
+  }
+  .main-container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    transition: padding-left .3s ease-in-out;
+    background-color: #ffffff;
+    color: #303133;
+    .app-main {
+      flex: 1;
+      background-color: #f0f2f5;
+      overflow: auto;
+    }
+  }
+}

@@ -1,8 +1,10 @@
 import { getSidebarStatus, setSidebarStatus } from '../../core/js/cache'
+import setting from '../../config/defaultSettings'
 
 const app = {
   state: {
-    sidebar: getSidebarStatus()
+    sidebar: getSidebarStatus(),
+    themeName: setting.theme
   },
   mutations: {
     TOGGLE_SIDEBAR: state => {
