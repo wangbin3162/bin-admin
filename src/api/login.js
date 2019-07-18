@@ -24,6 +24,20 @@ export function login (data) {
 }
 
 /**
+ * 获取用户信息
+ * @returns {*}
+ */
+export function getInfo () {
+  return request({
+    url: `${baseUrl}/user/info`,
+    method: 'get',
+    headers: {
+      'Content-Type': 'application/json;charset=UTF-8'
+    }
+  })
+}
+
+/**
  * 退出登录
  * @returns {*}
  */

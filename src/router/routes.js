@@ -1,18 +1,29 @@
 import layout from '../layout/layout'
+import demo from './modules/demo'
 
 /**
  * router自定义配置项
  * hidden: true                   如果设置true则左侧路由菜单隐藏
  * name:'router-name'             <keep-alive>使用必须设置 (must set!!!)
  * meta : {
+    roles: ['admin','editor']      控制页面权限，你可以设置多个
     title: 'title',                当前路由的中文名称
     icon: 'a-icon',                当前菜单的图标样式，使用阿里iconfont
-    keepAlive: true,               页面缓存
-    permission: true,              是否有权限
+    noCache: true                  如果设置为true则不被缓存，默认是false即为缓存
+    affix: true                    如果设置为true ，则会固定再tags-view
   }
  **/
 
 export const asyncRouterMap = [
+  demo,
+  { path: '*', redirect: '/404', hidden: true }
+]
+
+/**
+ * 基础路由
+ * @type { *[] }
+ */
+export const constantRouterMap = [
   {
     path: '/',
     component: layout,
@@ -50,14 +61,7 @@ export const asyncRouterMap = [
         }
       }
     ]
-  }
-]
-
-/**
- * 基础路由
- * @type { *[] }
- */
-export const constantRouterMap = [
+  },
   // 登录
   {
     path: '/login',

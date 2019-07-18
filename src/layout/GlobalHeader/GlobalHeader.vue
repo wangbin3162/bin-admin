@@ -8,7 +8,7 @@
     <div class="header-box">
       <div class="left-box">
         <slot>
-          <auto-breadcrumb></auto-breadcrumb>
+          header-menu
         </slot>
       </div>
       <div class="right-ctrl" flex>
@@ -42,7 +42,6 @@
 
 <script>
   import { mapGetters, mapActions } from 'vuex'
-  import AutoBreadcrumb from './components/Breadcrumb'
 
   export default {
     name: 'GlobalHeader',
@@ -74,9 +73,6 @@
           })
         }
       }
-    },
-    components: {
-      AutoBreadcrumb
     }
   }
 </script>
@@ -84,17 +80,17 @@
 <style scoped lang="stylus">
   .global-header {
     position: relative;
-    height: 64px;
+    height: 60px;
     background: #fff;
     box-shadow: 0 1px 4px rgba(0, 21, 41, .08);
     .toggle-btn {
       position: absolute;
       left: 0;
       top: 0;
-      width: 64px;
-      height: 64px;
+      width: 60px;
+      height: 60px;
       text-align: center;
-      line-height: 64px;
+      line-height: 60px;
       .iconfont {
         display: inline-block;
         cursor: pointer;
@@ -110,20 +106,20 @@
       }
     }
     .header-box {
-      padding: 0 20px 0 64px;
+      padding: 0 20px 0 60px;
       display: flex;
       justify-content: space-between;
       .left-box {
-        line-height: 64px;
+        line-height: 60px;
       }
       .right-ctrl {
-        height: 64px;
+        height: 60px;
         .btn {
           cursor: pointer;
           padding: 0 12px;
           color: #666;
           transition: all .3s;
-          line-height: 64px;
+          line-height: 60px;
           &:hover {
             background-color: #f6f6f6;
           }
@@ -132,7 +128,7 @@
           }
         }
         .avatar {
-          line-height: 64px;
+          line-height: 60px;
           padding: 12px;
           .el-dropdown {
             height: 30px;

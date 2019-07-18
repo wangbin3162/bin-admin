@@ -1,15 +1,15 @@
 <template>
   <div class="app-wrapper">
-    <div class="sidebar-container" :style="{width:isCollapseLeft}">
+    <div class="sidebar-container" :class="sideTheme" :style="{width:isCollapseLeft}">
       <div class="logo" flex="cross:center">
         <img class="icon" src="../assets/images/logo-icon-b.png" alt="logo-small"/>
         <transition name="zoom-in">
           <h1 v-show="sidebar">Bin Admin</h1>
         </transition>
       </div>
-      <!--<menu-bar :routes="routes" :isCollapse="isCollapse"></menu-bar>-->
+      <!--<menu-bar :theme="sideTheme"></menu-bar>-->
     </div>
-    <div class="main-container" :style="{marginLeft:isCollapseLeft}">
+    <div class="main-container" :style="{paddingLeft:isCollapseLeft}">
       <!--通用头部-->
       <global-header></global-header>
       <!--&lt;!&ndash;tags&ndash;&gt;-->
@@ -29,20 +29,21 @@
 
 <script>
   import { mapGetters } from 'vuex'
-  import GlobalHeader from './header/GlobalHeader'
+  import GlobalHeader from './GlobalHeader/GlobalHeader'
+  import settings from '../config/defaultSettings'
 
   export default {
     name: 'index',
     computed: {
       ...mapGetters(['sidebar']),
-      routes () {
-        return this.$router.options.routes
-      },
       isCollapseLeft () {
         if (this.sidebar) {
-          return '256px'
+          return '240px'
         }
-        return '80px'
+        return '64px'
+      },
+      sideTheme () {
+        return settings.sideTheme
       }
     },
     components: {
@@ -62,21 +63,17 @@
       top: 0;
       left: 0;
       bottom: 0;
-      width: 256px;
       height: 100%;
       z-index: 1001;
       transition: width .3s ease-in-out;
-      background-color: #001529;
-      box-shadow: 2px 0 6px rgba(0, 21, 41, .35);
       overflow: hidden;
       .logo {
         position: relative;
         box-sizing: border-box;
         width: 100%;
-        height: 64px;
+        height: 60px;
         overflow: hidden;
-        background: #002140;
-        padding-left: 24px;
+        padding-left: 18px;
         .icon {
           height: 40px;
         }
@@ -87,12 +84,33 @@
           white-space: nowrap;
         }
       }
+      &.light {
+        background-color: #ffffff;
+        box-shadow: 2px 0 8px 0 rgba(29, 35, 41, .05)
+        .logo {
+          background: #ffffff;
+          box-shadow: 1px 1px 0 0 #e8e8e8;
+          h1 {
+            color: #002140;
+          }
+        }
+      }
+      &.dark {
+        background-color: #001529;
+        box-shadow: 2px 0 6px rgba(0, 21, 41, .35);
+        .logo {
+          background: #002140;
+          h1 {
+            color: #ffffff;
+          }
+        }
+      }
     }
     .main-container {
       height: 100%;
       display: flex;
       flex-direction: column;
-      transition: margin-left .3s ease-in-out;
+      transition: padding-left .3s ease-in-out;
       background-color: #ffffff;
       color: #303133;
       .app-main {

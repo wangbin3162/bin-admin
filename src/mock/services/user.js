@@ -35,5 +35,18 @@ const logout = () => {
   return builder({}, '[测试接口] 注销成功')
 }
 
+const info = (options) => {
+  const userInfo = {
+    id: '4291d7da9005377ec9aec4a71ea837f',
+    name: '王彬',
+    username: 'admin',
+    password: '',
+    creatorId: 'admin',
+    roles: ['admin']
+  }
+  return builder(userInfo)
+}
+
 Mock.mock(/\/user\/login/, 'post', login)
 Mock.mock(/\/user\/logout/, 'post', logout)
+Mock.mock(/\/user\/info/, 'get', info)

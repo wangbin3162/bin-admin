@@ -1,4 +1,4 @@
-import { login, logout } from '../../api/login'
+import { login, getInfo, logout } from '../../api/login'
 import util from '../../core/utils/util'
 import { ACCESS_TOKEN } from '../mutation-types'
 
@@ -14,6 +14,9 @@ export default {
     },
     SET_ROLES: (state, roles) => {
       state.roles = roles
+    },
+    SET_INFO: (state, info) => {
+      state.info = info
     }
   },
   actions: {
@@ -47,6 +50,24 @@ export default {
           resolve()
         }).catch(() => {
           resolve()
+        })
+      })
+    },
+    // 获取用户信息
+    getUserInfo ({ commit }) {
+      return new Promise((resolve, reject) => {
+        getInfo().then(response => {
+          const result = response.data.result
+          // 判断角色权限是否存在
+          if (result.roles && result.roles.length > 0) {
+            commit('SET_ROLES', result.roles)
+            commit('SET_INFO', result)
+          } else {
+            reject(new Error('getInfo: roles must be a non-null array !'))
+          }
+          resolve(response)
+        }).catch(error => {
+          reject(error)
         })
       })
     }
