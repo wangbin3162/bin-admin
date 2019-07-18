@@ -3,7 +3,7 @@ import VueRouter from 'vue-router'
 // 路由数据
 import routes from './routes'
 import BinUI from 'bin-ui'
-import util from '../common/utils/util'
+import util from '../core/utils/util'
 import { ACCESS_TOKEN } from '../store/mutation-types'
 
 Vue.use(BinUI)

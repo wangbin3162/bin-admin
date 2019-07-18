@@ -1,5 +1,5 @@
 import { login, logout } from '../../api/login'
-import util from '../../common/utils/util'
+import util from '../../core/utils/util'
 import { ACCESS_TOKEN } from '../mutation-types'
 
 export default {

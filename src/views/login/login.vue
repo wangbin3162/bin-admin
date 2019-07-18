@@ -52,7 +52,7 @@
 <script>
   import dayJs from 'dayjs'
   import { mapActions } from 'vuex'
-  import util from '../../common/utils/util'
+  import util from '../../core/utils/util'
 
   export default {
     name: 'Login',

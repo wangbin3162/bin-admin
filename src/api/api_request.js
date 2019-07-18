@@ -7,7 +7,7 @@ import request from 'axios'
 import router from '../router'
 import Qs from 'qs'
 import { Notification } from 'element-ui'
-import util from '../common/utils/util'
+import util from '../core/utils/util'
 
 const service = request.create({
   headers: {

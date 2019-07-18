@@ -1,4 +1,4 @@
-import { getSidebarStatus, setSidebarStatus } from '../../common/js/cache'
+import { getSidebarStatus, setSidebarStatus } from '../../core/js/cache'
 
 const app = {
   state: {
