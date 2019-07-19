@@ -39,8 +39,9 @@ const app = {
     },
     setHeaderMenu: ({ commit }, routes) => {
       const menu = filterMenu(routes)
-      menu.unshift({ path: '/', title: '首页', icon: 'ios-home' })
+      menu.unshift({ path: '/index', title: '首页', icon: 'ios-home' })
       commit('SET_HEADER_MENU', menu)
+      console.log(menu)
     },
     // 载入时加载本地存储数据和主题配置信息
     loadApp: ({ commit }) => {
@@ -59,17 +60,17 @@ const app = {
   }
 }
 
-// 过滤菜单
-function filterMenu (routes) {
+// 过滤菜单 // 第二个参数为基础path
+function filterMenu (routes, basePath) {
   let arr = []
   routes.forEach(route => {
     const tmp = { ...route }
     if (tmp.path !== '*' || !tmp.hidden) { // 过滤顶级菜单，即，404和已经隐藏的
       if (tmp.children) {
-        tmp.children = filterMenu(tmp.children)
+        tmp.children = filterMenu(tmp.children, tmp.path)
       }
       let obj = {}
-      obj.path = tmp.path
+      obj.path = basePath ? `${basePath}/${tmp.path}` : tmp.path // 这里的路由path默认都为不带/
       obj.title = tmp.meta.title
       if (tmp.meta.icon) {
         obj.icon = tmp.meta.icon

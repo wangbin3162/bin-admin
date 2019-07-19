@@ -1,5 +1,5 @@
 <template>
-  <el-menu class="header-menu" mode="horizontal" @select="handleMenuSelect" :default-active="active">
+  <el-menu class="header-menu" mode="horizontal" @select="handleMenuSelect" :default-active="activeMenu">
     <template v-for="(menu, menuIndex) in headerMenu">
       <menu-item v-if="!menu.children" :menu="menu" :key="menuIndex"></menu-item>
       <menu-sub v-else :menu="menu" :key="menuIndex"></menu-sub>
@@ -14,27 +14,22 @@
 
   export default {
     name: 'HeaderMenu',
-    data () {
-      return {
-        active: ''
-      }
-    },
-    watch: {
-      '$route.matched': {
-        handler (val) {
-          let fullPath = val[val.length - 1].path
-          this.active = fullPath.slice(fullPath.lastIndexOf('/') + 1)
-        },
-        immediate: true
-      }
-    },
     computed: {
-      ...mapGetters(['headerMenu'])
+      ...mapGetters(['headerMenu']),
+      activeMenu () {
+        const route = this.$route
+        const { meta, path } = route
+        // if set path, the sidebar will highlight the path you set
+        if (meta.activeMenu) {
+          return meta.activeMenu
+        }
+        return path
+      }
     },
     methods: {
       handleMenuSelect (index, indexPath) {
-        let to = indexPath.join('/')
-        this.$router.push({ path: to })
+        // let to = indexPath.join('/')
+        this.$router.push({ path: index })
       }
     },
     components: {

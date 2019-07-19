@@ -11,7 +11,7 @@
           header-menu
         </slot>
       </div>
-      <div class="right-ctrl" flex>
+      <div class="right-ctrl" flex="cross:center">
         <!--外部链接-->
         <a href="#" target="_blank" class="btn">
         <span class="action">
@@ -21,21 +21,21 @@
         <div class="btn">
           <b-icon name="ios-notifications-outline"></b-icon>
         </div>
+        <div class="btn">
+          <b-icon name="ios-bug"></b-icon>
+        </div>
         <div class="btn" @click="themeModal=true">
           <b-tooltip content="主题" theme="dark">
             <b-icon name="ios-color-palette"></b-icon>
           </b-tooltip>
         </div>
-        <div class="btn">
-          <b-icon name="ios-bug"></b-icon>
-        </div>
         <div class="avatar">
-          <el-dropdown size="medium" @command="handleCommand">
-          <span class="el-dropdown-link">
-             <img src="../../assets/images/logo-icon-a.png" alt="avatar"/>
-          </span>
+          <el-dropdown size="small" @command="handleCommand">
+            <span class="user-link">
+              <i class="iconfont icon-ios-contact"></i>
+              <span>你好,{{userInfo.name}}</span>
+            </span>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item :command="{type:'user'}" icon="el-icon-s-custom">用户中心</el-dropdown-item>
               <el-dropdown-item :command="{type:'logout'}" icon="el-icon-switch-button">注销登录</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
@@ -84,7 +84,7 @@
       }
     },
     computed: {
-      ...mapGetters(['sidebar', 'theme'])
+      ...mapGetters(['sidebar', 'theme', 'userInfo'])
     },
     methods: {
       ...mapActions(['logout', 'setThemeMode']),
@@ -95,9 +95,6 @@
         this.setThemeMode(val)
       },
       handleCommand (command) {
-        if (command.type === 'user') {
-          this.$message('用户中心，暂时留空')
-        }
         // 登出
         if (command.type === 'logout') {
           this.$confirm({

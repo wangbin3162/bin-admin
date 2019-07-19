@@ -85,10 +85,10 @@
       height: 60px;
       .btn {
         cursor: pointer;
-        padding: 0 12px;
+        padding: 12px;
+        border-radius: 10px;
         color: #666;
         transition: all .3s;
-        line-height: 60px;
         &:hover {
           background-color: #f6f6f6;
         }
@@ -97,23 +97,17 @@
         }
       }
       .avatar {
-        line-height: 60px;
-        padding: 12px;
-        .el-dropdown {
-          height: 30px;
+        cursor: pointer;
+        color: #666;
+        padding: 0 12px;
+        .iconfont {
+          font-size: 20px;
         }
-        .el-dropdown-link {
-          display: inline-block;
-          width: 30px;
-          height: 30px;
-          border-radius: 50%;
-          background: #e8e8e8;
-          overflow: hidden;
-          text-align center;
-          img {
-            position: relative;
-            top: -4px;
-            width: 100%;
+        .user-link {
+          display: flex;
+          align-items: center;
+          .iconfont {
+            margin-right: 8px;
           }
         }
       }
