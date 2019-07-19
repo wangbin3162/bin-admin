@@ -1,10 +1,10 @@
-import { getSidebarStatus, setSidebarStatus } from '../../core/js/cache'
-import setting from '../../config/defaultSettings'
+import { getAdminSetting, setAdminSetting } from '../../core/js/cache'
 
 const app = {
   state: {
-    sidebar: getSidebarStatus(),
-    themeName: setting.theme,
+    sidebar: true,
+    theme: '',
+    menuType: '',
     headerMenu: [
       { path: '/index', title: '首页', icon: 'ios-home' }
     ],
@@ -13,7 +13,21 @@ const app = {
   mutations: {
     TOGGLE_SIDEBAR: state => {
       state.sidebar = !state.sidebar
-      setSidebarStatus(state.sidebar)
+      setAdminSetting({
+        theme: state.theme,
+        sidebar: state.sidebar,
+        menuType: state.menuType
+      })
+    },
+    SET_THEME: (state, theme) => {
+      state.theme = theme
+      // 设置全局样式前缀
+      document.body.className = `theme-${theme}`
+      setAdminSetting({
+        theme: state.theme,
+        sidebar: state.sidebar,
+        menuType: state.menuType
+      })
     },
     SET_HEADER_MENU: (state, menu) => {
       state.headerMenu = menu
@@ -27,7 +41,20 @@ const app = {
       const menu = filterMenu(routes)
       menu.unshift({ path: '/', title: '首页', icon: 'ios-home' })
       commit('SET_HEADER_MENU', menu)
-      console.log(menu)
+    },
+    // 载入时加载本地存储数据和主题配置信息
+    loadApp: ({ commit }) => {
+      const setting = getAdminSetting()
+      if (!setting.sidebar) {
+        commit('TOGGLE_SIDEBAR')
+      }
+      if (setting.theme) {
+        commit('SET_THEME', setting.theme)
+      }
+    },
+    setThemeMode: ({ commit }, theme) => {
+      console.log(theme)
+      commit('SET_THEME', theme)
     }
   }
 }

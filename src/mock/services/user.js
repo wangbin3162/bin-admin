@@ -8,7 +8,7 @@ const password = ['admin', 'user'] // admin,
 const login = (options) => {
   // 拼装请求体
   const body = getBody(options)
-  console.log('mock: body', body)
+  // console.log('mock: body', body)
   if (!username.includes(body.username) || !password.includes(body.password)) {
     return builder({ isLogin: true }, '账户或密码错误', 401)
   }

@@ -1,6 +1,7 @@
 import { login, getInfo } from '../../api/login'
 import util from '../../core/utils/util'
 import { ACCESS_TOKEN } from '../mutation-types'
+import { resetRouter } from '../../router'
 
 export default {
   state: {
@@ -40,11 +41,13 @@ export default {
     // 登出
     logout ({ commit }) {
       return new Promise((resolve) => {
-        // 删除cookie
-        util.cookies.remove(ACCESS_TOKEN)
         // 删除缓存的token
         commit('SET_TOKEN', '')
         commit('SET_ROLES', [])
+        // 删除cookie
+        util.cookies.remove(ACCESS_TOKEN)
+        // 清空路由
+        resetRouter()
         resolve()
       })
     },

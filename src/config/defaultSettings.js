@@ -6,5 +6,6 @@
 
 export default {
   theme: 'light', // theme for nav menu
+  sidebar: true, // 侧边栏开启状态
   menuType: 'header'
 }

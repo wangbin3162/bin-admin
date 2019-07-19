@@ -12,10 +12,17 @@ Vue.use(BinUI)
 Vue.use(VueRouter)
 
 // 导出路由 在 main.js 里使用
-const router = new VueRouter({
-  base: process.env.BASE_URL,
+const createRouter = () => new VueRouter({
+  // mode: 'history', // require service support
+  scrollBehavior: () => ({ y: 0 }),
   routes: constantRouterMap
 })
+const router = createRouter()
+
+export function resetRouter () {
+  const newRouter = createRouter()
+  router.matcher = newRouter.matcher // reset router
+}
 
 // 权限白名单 no redirect whitelist
 const whiteList = ['/login', '/404', '/401', '/403', '/500']
@@ -75,5 +82,4 @@ router.beforeEach((to, from, next) => {
 router.afterEach(() => {
   BinUI.LoadingBar.done()
 })
-
 export default router

@@ -1,5 +1,5 @@
 <template>
-  <div class="app-wrapper" :class="'theme-'+themeName">
+  <div class="app-wrapper">
     <div class="sidebar-container" :style="{width:isCollapseLeft}">
       <div class="logo" flex="cross:center">
         <img class="icon" src="../assets/images/logo-icon-b.png" alt="logo-small"/>
@@ -37,7 +37,7 @@
   export default {
     name: 'index',
     computed: {
-      ...mapGetters(['sidebar', 'themeName']),
+      ...mapGetters(['sidebar']),
       isCollapseLeft () {
         if (this.sidebar) {
           return '240px'

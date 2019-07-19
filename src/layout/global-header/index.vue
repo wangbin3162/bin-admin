@@ -21,6 +21,11 @@
         <div class="btn">
           <b-icon name="ios-notifications-outline"></b-icon>
         </div>
+        <div class="btn" @click="themeModal=true">
+          <b-tooltip content="主题" theme="dark">
+            <b-icon name="ios-color-palette"></b-icon>
+          </b-tooltip>
+        </div>
         <div class="btn">
           <b-icon name="ios-bug"></b-icon>
         </div>
@@ -37,6 +42,25 @@
         </div>
       </div>
     </div>
+    <b-modal v-model="themeModal" title="主题设置">
+      <div class="setting-panel" style="height:200px;">
+        <p style="font-size: 16px;margin: 0;line-height: 30px;">主题:</p>
+        <div class="theme-tab">
+          <b-tooltip content="亮色主题风格" theme="dark">
+            <span @click="themChange('light')">
+              <img src="../../assets/images/light.svg" alt="">
+              <i v-if="activeTheme === 'light'" class="iconfont icon-ios-checkmark"></i>
+            </span>
+          </b-tooltip>
+          <b-tooltip content="暗色主题风格" theme="dark">
+            <span @click="themChange('dark')">
+              <img src="../../assets/images/dark.svg" alt="">
+              <i v-if="activeTheme === 'dark'" class="iconfont icon-ios-checkmark"></i>
+            </span>
+          </b-tooltip>
+        </div>
+      </div>
+    </b-modal>
   </div>
 </template>
 
@@ -45,13 +69,30 @@
 
   export default {
     name: 'GlobalHeader',
+    data () {
+      return {
+        themeModal: false,
+        activeTheme: ''
+      }
+    },
+    watch: {
+      theme: {
+        handler (val) {
+          this.activeTheme = val
+        },
+        immediate: true
+      }
+    },
     computed: {
-      ...mapGetters(['sidebar']),
-      ...mapActions(['logout'])
+      ...mapGetters(['sidebar', 'theme'])
     },
     methods: {
+      ...mapActions(['logout', 'setThemeMode']),
       toggleSideBar () {
         this.$store.dispatch('toggleSideBar')
+      },
+      themChange (val) {
+        this.setThemeMode(val)
       },
       handleCommand (command) {
         if (command.type === 'user') {

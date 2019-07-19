@@ -1,22 +1,14 @@
 import storage from 'good-storage'
+import setting from '../../config/defaultSettings'
+// 本地缓存库
 
-// 左侧菜单栏打卡状态
-const SIDEBAR_KEY = '__sidebarStatus__'
-// 用户登录信息
-const USER_INFO_KEY = '__userInfo__'
+// app系统设置内容
+const KEY = '__bin_admin_setting__'
 
-export function getSidebarStatus () {
-  return storage.get(SIDEBAR_KEY, true)
+export function getAdminSetting () {
+  return storage.get(KEY, setting)
 }
 
-export function setSidebarStatus (status) {
-  return storage.set(SIDEBAR_KEY, status)
-}
-
-export function getUser () {
-  return storage.get(USER_INFO_KEY, true)
-}
-
-export function setUser (info) {
-  return storage.set(USER_INFO_KEY, info)
+export function setAdminSetting (setting) {
+  return storage.set(KEY, setting)
 }

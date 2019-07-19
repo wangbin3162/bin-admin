@@ -1,5 +1,5 @@
 <template>
-  <el-menu class="el-menu-demo" mode="horizontal" @select="handleMenuSelect" :default-active="active">
+  <el-menu class="header-menu" mode="horizontal" @select="handleMenuSelect" :default-active="active">
     <template v-for="(menu, menuIndex) in headerMenu">
       <menu-item v-if="!menu.children" :menu="menu" :key="menuIndex"></menu-item>
       <menu-sub v-else :menu="menu" :key="menuIndex"></menu-sub>
@@ -24,7 +24,6 @@
         handler (val) {
           let fullPath = val[val.length - 1].path
           this.active = fullPath.slice(fullPath.lastIndexOf('/') + 1)
-          console.log(this.active)
         },
         immediate: true
       }

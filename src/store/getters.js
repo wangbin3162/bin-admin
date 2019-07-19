@@ -1,6 +1,5 @@
 const getters = {
-  // 主题信息
-  themeName: state => state.app.themeName,
+  theme: state => state.app.theme,
   // 侧边栏开关
   sidebar: state => state.app.sidebar,
   // 顶部菜单
