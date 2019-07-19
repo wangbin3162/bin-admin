@@ -11,7 +11,7 @@ import {
   Menu, Submenu, MenuItem, MenuItemGroup,
   Form, FormItem, Button, ColorPicker, Select, Option, Input,
   Table, TableColumn, Pagination,
-  Row, Col, Tree, Loading, Notification
+  Row, Col, Tree, Loading, Notification, Alert
 } from 'element-ui'
 
 // element-ui 局部引用
@@ -40,5 +40,6 @@ Vue.use(Pagination)
 Vue.use(Row)
 Vue.use(Col)
 Vue.use(Tree)
+Vue.use(Alert)
 Vue.use(Loading.directive)
 Vue.prototype.$notify = Notification

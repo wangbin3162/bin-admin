@@ -7,11 +7,13 @@
           <h1 v-show="sidebar">Bin Admin</h1>
         </transition>
       </div>
-      <!--<menu-bar :theme="sideTheme"></menu-bar>-->
+      <!--<aside-menu></aside-menu>-->
     </div>
     <div class="main-container" :style="{paddingLeft:isCollapseLeft}">
       <!--通用头部-->
-      <global-header></global-header>
+      <global-header>
+        <header-menu></header-menu>
+      </global-header>
       <!--&lt;!&ndash;tags&ndash;&gt;-->
       <!--<tags-view></tags-view>-->
       <!--&lt;!&ndash;main&ndash;&gt;-->
@@ -29,7 +31,8 @@
 
 <script>
   import { mapGetters } from 'vuex'
-  import GlobalHeader from './GlobalHeader/GlobalHeader'
+  import GlobalHeader from './global-header'
+  import HeaderMenu from './header-menu'
 
   export default {
     name: 'index',
@@ -43,7 +46,8 @@
       }
     },
     components: {
-      GlobalHeader
+      GlobalHeader,
+      HeaderMenu
     }
   }
 </script>

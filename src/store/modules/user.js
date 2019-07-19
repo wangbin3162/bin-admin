@@ -5,7 +5,6 @@ import { ACCESS_TOKEN } from '../mutation-types'
 export default {
   state: {
     token: '', // token
-    username: '',
     roles: [],
     info: {} // user的登录信息
   },
@@ -26,8 +25,8 @@ export default {
       return new Promise((resolve, reject) => {
         login(userInfo).then(response => {
           const result = response.data.result
-          console.log('vuex:')
-          console.log(result)
+          // console.log('vuex:')
+          // console.log(result)
           // 设置token
           util.cookies.set(ACCESS_TOKEN, result.token)
           commit('SET_TOKEN', result.token)
@@ -54,7 +53,7 @@ export default {
       return new Promise((resolve, reject) => {
         getInfo().then(response => {
           const result = response.data.result
-          console.log(result)
+          // console.log(result)
           // 判断角色权限是否存在
           if (result.roles && result.roles.length > 0) {
             commit('SET_ROLES', result.roles)

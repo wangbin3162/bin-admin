@@ -1,9 +1,10 @@
 /**
  * 项目默认配置项
- * navTheme - sidebar theme ['dark', 'light'] 两种主题
- *
+ * theme - theme ['dark', 'light'] 两种主题
+ * menuType - 菜单位置类型，['header','aside']
  */
 
 export default {
-  theme: 'light' // theme for nav menu
+  theme: 'light', // theme for nav menu
+  menuType: 'header'
 }

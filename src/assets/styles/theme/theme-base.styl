@@ -1,3 +1,4 @@
+// 基础布局样式
 .app-wrapper {
   position: relative;
   height: 100%;
@@ -41,6 +42,81 @@
       flex: 1;
       background-color: #f0f2f5;
       overflow: auto;
+    }
+  }
+}
+
+// 全局头部样式
+.global-header {
+  position: relative;
+  height: 60px;
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(0, 21, 41, .08);
+  .toggle-btn {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 60px;
+    height: 60px;
+    text-align: center;
+    line-height: 60px;
+    .iconfont {
+      display: inline-block;
+      cursor: pointer;
+      font-size: 30px;
+      transition: .3s;
+      transform: rotateZ(90deg);
+      &:hover {
+        color: #409EFF;
+      }
+      &.open {
+        transform: rotateZ(0deg);
+      }
+    }
+  }
+  .header-box {
+    padding: 0 20px 0 60px;
+    display: flex;
+    justify-content: space-between;
+    .left-box {
+      line-height: 60px;
+    }
+    .right-ctrl {
+      height: 60px;
+      .btn {
+        cursor: pointer;
+        padding: 0 12px;
+        color: #666;
+        transition: all .3s;
+        line-height: 60px;
+        &:hover {
+          background-color: #f6f6f6;
+        }
+        .iconfont {
+          font-size: 20px;
+        }
+      }
+      .avatar {
+        line-height: 60px;
+        padding: 12px;
+        .el-dropdown {
+          height: 30px;
+        }
+        .el-dropdown-link {
+          display: inline-block;
+          width: 30px;
+          height: 30px;
+          border-radius: 50%;
+          background: #e8e8e8;
+          overflow: hidden;
+          text-align center;
+          img {
+            position: relative;
+            top: -4px;
+            width: 100%;
+          }
+        }
+      }
     }
   }
 }
