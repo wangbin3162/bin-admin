@@ -8,7 +8,6 @@
     <div class="header-box">
       <div class="left-box">
         <slot>
-          header-menu
         </slot>
       </div>
       <div class="right-ctrl" flex="cross:center">

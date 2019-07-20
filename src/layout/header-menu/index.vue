@@ -1,8 +1,8 @@
 <template>
   <el-menu class="header-menu" mode="horizontal" @select="handleMenuSelect" :default-active="activeMenu">
     <template v-for="(menu, menuIndex) in headerMenu">
-      <menu-item v-if="!menu.children" :menu="menu" :key="menuIndex"></menu-item>
-      <menu-sub v-else :menu="menu" :key="menuIndex"></menu-sub>
+      <menu-item v-if="!menu.children" :menu="menu" :key="menuIndex" :base-path="menu.path"></menu-item>
+      <menu-sub v-else :menu="menu" :key="menuIndex" :base-path="menu.path"></menu-sub>
     </template>
   </el-menu>
 </template>
@@ -19,7 +19,6 @@
       activeMenu () {
         const route = this.$route
         const { meta, path } = route
-        // if set path, the sidebar will highlight the path you set
         if (meta.activeMenu) {
           return meta.activeMenu
         }
@@ -28,7 +27,7 @@
     },
     methods: {
       handleMenuSelect (index, indexPath) {
-        // let to = indexPath.join('/')
+        // console.log(index)
         this.$router.push({ path: index })
       }
     },

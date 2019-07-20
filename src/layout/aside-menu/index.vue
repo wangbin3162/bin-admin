@@ -1,8 +1,10 @@
 <template>
-  <el-menu class="el-menu-demo" mode="vertical" @select="handleMenuSelect" :default-active="active">
-    <template v-for="(menu, menuIndex) in headerMenu">
-      <menu-item v-if="!menu.children" :menu="menu" :key="menuIndex"></menu-item>
-      <menu-sub v-else :menu="menu" :key="menuIndex"></menu-sub>
+  <el-menu class="el-menu-demo" mode="vertical" @select="handleMenuSelect"
+           :default-active="activeMenu" :collapse="!sidebar"
+           unique-opened :collapse-transition="false">
+    <template v-for="(menu, menuIndex) in asideMenu">
+      <menu-item v-if="!menu.children" :menu="menu" :key="menuIndex" :base-path="menu.path"></menu-item>
+      <menu-sub v-else :menu="menu" :key="menuIndex" :base-path="menu.path"></menu-sub>
     </template>
   </el-menu>
 </template>
@@ -14,27 +16,21 @@
 
   export default {
     name: 'AsideMenu',
-    data () {
-      return {
-        active: ''
-      }
-    },
-    watch: {
-      '$route.matched': {
-        handler (val) {
-          let fullPath = val[val.length - 1].path
-          this.active = fullPath.slice(fullPath.lastIndexOf('/') + 1)
-        },
-        immediate: true
-      }
-    },
     computed: {
-      ...mapGetters(['headerMenu'])
+      ...mapGetters(['asideMenu', 'sidebar']),
+      activeMenu () {
+        const route = this.$route
+        const { meta, path } = route
+        // 如果设置路径，侧栏将突出显示您设置的路径
+        if (meta.activeMenu) {
+          return meta.activeMenu
+        }
+        return path
+      }
     },
     methods: {
       handleMenuSelect (index, indexPath) {
-        let to = indexPath.join('/')
-        this.$router.push({ path: to })
+        this.$router.push({ path: index })
       }
     },
     components: {

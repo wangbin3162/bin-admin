@@ -49,6 +49,7 @@ export default {
     },
     {
       path: 'menu2',
+      name: 'menu2',
       component: () => import('../../views/nested/menu2/index'),
       meta: { title: 'menu2' }
     }

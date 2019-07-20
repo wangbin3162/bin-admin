@@ -7,20 +7,19 @@
           <h1 v-show="sidebar">Bin Admin</h1>
         </transition>
       </div>
-      <!--<aside-menu></aside-menu>-->
+      <aside-menu v-if="menuType==='aside'"></aside-menu>
     </div>
-    <div class="main-container" :style="{paddingLeft:isCollapseLeft}">
+    <div class="main-container" :style="{marginLeft:isCollapseLeft}">
       <!--通用头部-->
       <global-header>
-        <header-menu></header-menu>
+        <header-menu v-if="menuType==='header'"></header-menu>
       </global-header>
-      <!--&lt;!&ndash;tags&ndash;&gt;-->
-      <!--<tags-view></tags-view>-->
-      <!--&lt;!&ndash;main&ndash;&gt;-->
+      <!--标签栏-->
+      <tags-view></tags-view>
       <div class="app-main">
         <transition name="fade-transverse" mode="out-in">
-          <keep-alive>
-            <router-view></router-view>
+          <keep-alive :include="cachedViews">
+            <router-view :key="key"></router-view>
           </keep-alive>
         </transition>
       </div>
@@ -33,11 +32,16 @@
   import { mapGetters } from 'vuex'
   import GlobalHeader from './global-header'
   import HeaderMenu from './header-menu'
+  import AsideMenu from './aside-menu'
+  import TagsView from './tags-view'
 
   export default {
     name: 'index',
     computed: {
-      ...mapGetters(['sidebar']),
+      ...mapGetters(['sidebar', 'menuType', 'cachedViews']),
+      key () {
+        return this.$route.fullPath
+      },
       isCollapseLeft () {
         if (this.sidebar) {
           return '240px'
@@ -47,7 +51,9 @@
     },
     components: {
       GlobalHeader,
-      HeaderMenu
+      HeaderMenu,
+      TagsView,
+      AsideMenu
     }
   }
 </script>

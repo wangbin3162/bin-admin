@@ -11,6 +11,7 @@ import nested from './modules/nested'
     icon: 'a-icon',                当前菜单的图标样式，使用阿里iconfont
     noCache: true                  如果设置为true则不被缓存，默认是false即为缓存
     affix: true                    如果设置为true ，则会固定再tags-view
+    activeMenu: '/example/list'    如果设置路径，侧栏将突出显示您设置的路径,即默认选择的菜单
   }
  **/
 
@@ -47,7 +48,7 @@ export const constantRouterMap = [
       {
         path: 'index',
         name: 'index',
-        meta: { title: '首页', icon: 'icon-ios-home', noCache: true },
+        meta: { title: '首页', icon: 'icon-ios-home', noCache: true, affix: true },
         component: () => import('../views/index/index.vue')
       },
       // 刷新页面 必须保留
