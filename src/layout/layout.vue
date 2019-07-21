@@ -7,7 +7,11 @@
           <h1 v-show="sidebar">Bin Admin</h1>
         </transition>
       </div>
-      <aside-menu v-if="menuType==='aside'"></aside-menu>
+      <div class="aside">
+        <b-scrollbar style="height:100%;">
+          <aside-menu v-if="menuType==='aside'"></aside-menu>
+        </b-scrollbar>
+      </div>
     </div>
     <div class="main-container" :style="{marginLeft:isCollapseLeft}">
       <!--通用头部-->
