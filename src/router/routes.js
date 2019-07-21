@@ -1,4 +1,6 @@
 import layout from '../layout/layout'
+import components from './modules/components'
+import errorPage from './modules/errorPage'
 import nested from './modules/nested'
 
 /**
@@ -14,22 +16,9 @@ import nested from './modules/nested'
     activeMenu: '/example/list'    如果设置路径，侧栏将突出显示您设置的路径,即默认选择的菜单
   }
  **/
-
 export const asyncRouterMap = [
-  {
-    path: '/example',
-    component: layout,
-    redirect: { name: 'container' },
-    meta: { title: '公共组件', icon: 'ios-apps' },
-    children: [
-      {
-        path: 'container',
-        name: 'Container',
-        component: () => import('../views/example/container'),
-        meta: { title: '容器组件', icon: 'ios-filing' }
-      }
-    ]
-  },
+  components,
+  errorPage,
   nested,
   { path: '*', redirect: '/404', hidden: true }
 ]
@@ -84,8 +73,20 @@ export const constantRouterMap = [
     component: () => import('../views/login/login.vue')
   },
   {
+    path: '/401',
+    component: () => import(/* webpackChunkName: "error" */ '../views/error/401.vue')
+  },
+  {
+    path: '/403',
+    component: () => import(/* webpackChunkName: "error" */ '../views/error/403.vue')
+  },
+  {
     path: '/404',
-    component: () => import(/* webpackChunkName: "fail" */ '../views/error/404.vue')
+    component: () => import(/* webpackChunkName: "error" */ '../views/error/404.vue')
+  },
+  {
+    path: '/500',
+    component: () => import(/* webpackChunkName: "error" */ '../views/error/500.vue')
   }
 ]
 
