@@ -1,5 +1,5 @@
 import storage from 'good-storage'
-import setting from '../../config/defaultSettings'
+import setting from '../config/defaultSettings'
 // 本地缓存库
 
 // app系统设置内容

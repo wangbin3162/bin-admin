@@ -4,7 +4,7 @@ import store from '../store'
 // 路由数据
 import { constantRouterMap } from './routes'
 import BinUI from 'bin-ui'
-import util from '../core/utils/util'
+import util from '../utils/util'
 import { ACCESS_TOKEN } from '../store/mutation-types'
 
 Vue.use(BinUI)

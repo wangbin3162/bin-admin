@@ -1,5 +1,5 @@
-import { getAdminSetting, setAdminSetting } from '../../core/js/cache'
-import log from '../../core/utils/log'
+import { getAdminSetting, setAdminSetting } from '../../utils/datastore'
+import log from '../../utils/log'
 
 const app = {
   state: {

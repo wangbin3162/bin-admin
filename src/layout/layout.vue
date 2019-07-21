@@ -24,7 +24,6 @@
         </transition>
       </div>
     </div>
-    <!--<a href="#" @click.stop.prevent="logout">退出登录</a>-->
   </div>
 </template>
 

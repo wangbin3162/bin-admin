@@ -19,14 +19,14 @@ export const asyncRouterMap = [
   {
     path: '/example',
     component: layout,
-    redirect: { name: 'demo' },
-    meta: { title: 'Example', icon: 'ios-paper' },
+    redirect: { name: 'container' },
+    meta: { title: '公共组件', icon: 'ios-apps' },
     children: [
       {
-        path: 'demo',
-        name: 'Table',
-        component: () => import('../views/demo/demo'),
-        meta: { title: '演示案例', icon: 'ios-hourglass' }
+        path: 'container',
+        name: 'Container',
+        component: () => import('../views/example/container'),
+        meta: { title: '容器组件', icon: 'ios-filing' }
       }
     ]
   },
