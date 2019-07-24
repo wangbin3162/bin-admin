@@ -52,6 +52,8 @@ const app = {
       commit('SET_HEADER_MENU', menu)
       if (state.menuType === 'header') {
         commit('SET_ASIDE_MENU', [])// 如果是顶部菜单，则测菜单先设置为空
+      } else { // 如果开始是侧边栏模式则填充数据
+        commit('SET_ASIDE_MENU', menu)// 如果是顶部菜单，则测菜单先设置为空
       }
       // console.log(menu)
     },
