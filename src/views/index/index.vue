@@ -1,5 +1,5 @@
 <template>
-  <bin-container>
+  <b-container>
     <div class="index-wrap">
       <div class="logo">
         <img src="../../assets/images/logo.png" height="54" width="233" alt="logo"/>
@@ -61,7 +61,7 @@
         </p>
       </div>
     </div>
-  </bin-container>
+  </b-container>
 </template>
 
 <script>

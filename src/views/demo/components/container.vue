@@ -1,11 +1,11 @@
 <template>
-  <bin-container ref="container" header-fixed>
+  <b-container ref="container" header-fixed>
     <div slot="header">固定头部</div>
     <div class="container-wrap">
       <div class="info">
-        <h2>bin-container</h2>
+        <h2>b-container (现已收录至bin-ui，直接使用即可)</h2>
         <p>
-          bin-container 是封装的滚动容器组件，这里基于bin-ui的b-scrollbar 标签来实现超出滚动，并可配置是否有返回顶部，并且可以通过指定方法来
+          b-container 是封装的滚动容器组件，这里基于bin-ui的b-scrollbar 标签来实现超出滚动，并可配置是否有返回顶部，并且可以通过指定方法来
           滚动到固定位置
         </p>
         <div>
@@ -20,7 +20,7 @@
       </div>
     </div>
     <div slot="footer">底部快捷栏(不使用footer-fixed则默认为文档流底部)</div>
-  </bin-container>
+  </b-container>
 </template>
 
 <script>
