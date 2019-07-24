@@ -6,7 +6,7 @@ import { ACCESS_TOKEN } from '../store/mutation-types'
 import request from 'axios'
 import router from '../router'
 import Qs from 'qs'
-import { Notification } from 'element-ui'
+import BinUI from 'bin-ui/src/index'
 import util from '../utils/util'
 
 const service = request.create({
@@ -27,12 +27,7 @@ const err = (error) => {
     } else if (error.response.status === 403) {
       router.push({ path: '/403' })
     } else if (error.response.status === 401 && !(data.result && data.result.isLogin)) {
-      Notification({
-        title: 'Unauthorized',
-        message: 'Authorization verification failed',
-        type: 'error',
-        duration: 4000
-      })
+      BinUI.Message.message({ content: 'Authorization verification failed', type: 'danger' })
       if (token) {
         store.dispatch('logout').then(() => {
           setTimeout(() => {
@@ -41,12 +36,7 @@ const err = (error) => {
         })
       }
     } else {
-      Notification({
-        title: '失败',
-        message: data.message,
-        type: 'error',
-        duration: 4000
-      })
+      BinUI.Message.message({ content: data.message, type: 'danger' })
     }
   }
   return Promise.reject(error)
@@ -77,12 +67,7 @@ service.interceptors.response.use(
       } else if (error.response.status === 403) {
         router.push({ path: '/403' })
       } else {
-        Notification({
-          title: '失败',
-          message: error.response.data,
-          type: 'error',
-          duration: 4000
-        })
+        BinUI.Message.message({ content: error.response.data, type: 'danger' })
       }
     } else {
       // console.log('Error', error.message)

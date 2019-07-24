@@ -29,15 +29,18 @@
           </b-tooltip>
         </div>
         <div class="avatar">
-          <el-dropdown size="small" @command="handleCommand">
+          <b-dropdown>
             <span class="user-link">
               <i class="iconfont icon-ios-contact"></i>
               <span>你好,{{userInfo.name}}</span>
             </span>
-            <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item :command="{type:'logout'}" icon="el-icon-switch-button">注销登录</el-dropdown-item>
-            </el-dropdown-menu>
-          </el-dropdown>
+            <b-dropdown-menu slot="list">
+              <b-dropdown-item @click.native="handleLogout">
+                <b-icon name="ios-log-out" size="16"></b-icon>
+                <span style="vertical-align: middle;">注销登录</span>
+              </b-dropdown-item>
+            </b-dropdown-menu>
+          </b-dropdown>
         </div>
       </div>
     </div>
@@ -93,21 +96,18 @@
       themChange (val) {
         this.setThemeMode(val)
       },
-      handleCommand (command) {
-        // 登出
-        if (command.type === 'logout') {
-          this.$confirm({
-            title: '注销',
-            content: '确认退出登录吗？',
-            onOk: () => {
-              this.$store.dispatch('logout').then(() => {
-                this.$router.push({ name: 'login' })
-              }).catch(err => {
-                this.$message({ type: 'danger', content: err.message })
-              })
-            }
-          })
-        }
+      handleLogout () {
+        this.$confirm({
+          title: '注销',
+          content: '确认退出登录吗？',
+          onOk: () => {
+            this.$store.dispatch('logout').then(() => {
+              this.$router.push({ name: 'login' })
+            }).catch(err => {
+              this.$message({ type: 'danger', content: err.message })
+            })
+          }
+        })
       }
     }
   }
