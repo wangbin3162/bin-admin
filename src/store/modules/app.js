@@ -48,10 +48,10 @@ const app = {
     setHeaderMenu: ({ commit, state }, routes) => {
       const menu = filterMenu(routes)
       menu.unshift({ path: '/index', title: '首页', icon: 'ios-home' })
+      // 这里无论是顶部菜单还是侧边菜单都给填充至顶部菜单，区别的是如果是顶部菜单，则侧边菜单是动态添加的
+      commit('SET_HEADER_MENU', menu)
       if (state.menuType === 'header') {
-        commit('SET_HEADER_MENU', menu)
-      } else {
-        commit('SET_ASIDE_MENU', menu)
+        commit('SET_ASIDE_MENU', [])// 如果是顶部菜单，则测菜单先设置为空
       }
       // console.log(menu)
     },
@@ -70,6 +70,17 @@ const app = {
     setThemeMode: ({ commit }, theme) => {
       document.body.className = `theme-${theme}`
       commit('SET_THEME', theme)
+    },
+    setMenuType: ({ commit, state }, type) => {
+      if (type === 'header') { // 如果设置的是顶部菜单样式，则侧菜单置空
+        commit('SET_ASIDE_MENU', [])
+        // 如果是顶部导航，则默认收起侧边栏
+        commit('SET_SIDEBAR', false)
+      } else { // 如果是侧菜单，则侧菜单设置为顶部菜单数据
+        commit('SET_ASIDE_MENU', state.headerMenu)
+        commit('SET_SIDEBAR', true) // 侧边栏默认开启
+      }
+      commit('SET_MENU_TYPE', type)
     }
   }
 }

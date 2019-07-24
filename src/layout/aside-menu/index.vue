@@ -1,6 +1,7 @@
 <template>
   <el-menu class="el-menu-demo" mode="vertical" @select="handleMenuSelect"
            :default-active="activeMenu" :collapse="!sidebar"
+           :background-color="bgColor" :text-color="txColor"
            unique-opened :collapse-transition="false">
     <template v-for="(menu, menuIndex) in asideMenu">
       <menu-item v-if="!menu.children" :menu="menu" :key="menuIndex" :base-path="menu.path"></menu-item>
@@ -17,7 +18,7 @@
   export default {
     name: 'AsideMenu',
     computed: {
-      ...mapGetters(['asideMenu', 'sidebar']),
+      ...mapGetters(['asideMenu', 'sidebar', 'theme']),
       activeMenu () {
         const route = this.$route
         const { meta, path } = route
@@ -26,6 +27,12 @@
           return meta.activeMenu
         }
         return path
+      },
+      bgColor () {
+        return this.theme === 'dark' ? '#001529' : '#ffffff'
+      },
+      txColor () {
+        return this.theme === 'dark' ? '#bfcbd9' : '#303133'
       }
     },
     methods: {

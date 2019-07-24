@@ -1,3 +1,6 @@
+$color-primary = #1890ff;
+$font-base = #aeaeae;
+
 .theme-dark {
   .app-wrapper {
     .sidebar-container {
@@ -7,6 +10,40 @@
         background: #002140;
         h1 {
           color: #ffffff;
+        }
+      }
+      // el-menu 样式覆盖
+      // icon颜色
+      .el-submenu .iconfont, .el-menu-item .iconfont {
+        color: $font-base;
+      }
+      // 子菜单样式
+      .el-submenu {
+        .el-menu-item {
+          background-color: #000c17 !important;
+          color: $font-base !important;
+          &:hover {
+            color: #ffffff !important;
+          }
+        }
+      }
+      // 悬停样式
+      .el-submenu__title {
+        &:hover {
+          background-color: #ffffff;
+          color: $color-primary;
+          span, i {
+            color: $color-primary;
+          }
+        }
+      }
+      // 菜单项覆盖
+      .el-menu-item {
+        &.is-active {
+          background-color: $color-primary !important;
+          span, .iconfont {
+            color: #ffffff !important;
+          }
         }
       }
     }
