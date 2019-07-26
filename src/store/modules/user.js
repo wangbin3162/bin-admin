@@ -25,7 +25,7 @@ export default {
     login ({ commit }, userInfo) {
       return new Promise((resolve, reject) => {
         login(userInfo).then(response => {
-          const result = response.data.result
+          const result = response.data.data
           // console.log('vuex:')
           // console.log(result)
           // 设置token
@@ -55,7 +55,7 @@ export default {
     getUserInfo ({ commit }) {
       return new Promise((resolve, reject) => {
         getInfo().then(response => {
-          const result = response.data.result
+          const result = response.data.data
           // console.log(result)
           // 判断角色权限是否存在
           if (result.roles && result.roles.length > 0) {

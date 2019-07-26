@@ -2,6 +2,19 @@
 #app .bin-scrollbar__wrap {
   overflow-x: hidden;
 }
+// 2:menu行高设置
+.bin-menu {
+  line-height: 1.5em;
+  .bin-menu-item, .bin-menu-submenu-title span, .bin-menu-submenu-title {
+    > i:first-child {
+      position: relative;
+      top: -2px;
+      font-size: 18px;
+      vertical-align: middle;
+    }
+  }
+}
+
 .bin-drawer-wrapper .drawer-box {
   .header {
     padding: 19px 16px;

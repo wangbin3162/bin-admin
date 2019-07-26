@@ -35,8 +35,8 @@
 <script>
   import { mapGetters } from 'vuex'
   import GlobalHeader from './global-header'
-  import HeaderMenu from './header-menu'
-  import AsideMenu from './aside-menu'
+  import HeaderMenu from './nav-menu/head-menu'
+  import AsideMenu from './nav-menu/aside-menu'
   import TagsView from './tags-view'
   import BinBreadcrumb from '../components/b-breadcrumb/Breadcrumb'
 

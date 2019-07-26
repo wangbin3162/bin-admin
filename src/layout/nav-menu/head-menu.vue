@@ -1,16 +1,16 @@
 <template>
-  <el-menu class="header-menu" mode="horizontal" @select="handleMenuSelect" :default-active="activeMenu">
+  <b-menu class="header-menu" mode="horizontal" :active-name="activeMenu" @on-select="handleMenuSelect">
     <template v-for="(menu, menuIndex) in headerMenu">
       <menu-item v-if="!menu.children" :menu="menu" :key="menuIndex" :base-path="menu.path"></menu-item>
-      <menu-sub v-else :menu="menu" :key="menuIndex" :base-path="menu.path"></menu-sub>
+      <submenu v-else :menu="menu" :key="menuIndex" :base-path="menu.path"></submenu>
     </template>
-  </el-menu>
+  </b-menu>
 </template>
 
 <script>
   import { mapGetters } from 'vuex'
-  import MenuItem from '../menu/menu-item'
-  import MenuSub from '../menu/menu-sub'
+  import MenuItem from './menu-item'
+  import Submenu from './submenu'
 
   export default {
     name: 'HeaderMenu',
@@ -27,13 +27,9 @@
     },
     methods: {
       handleMenuSelect (index, indexPath) {
-        // console.log(index)
         this.$router.push({ path: index })
       }
     },
-    components: {
-      MenuSub,
-      MenuItem
-    }
+    components: { Submenu, MenuItem }
   }
 </script>

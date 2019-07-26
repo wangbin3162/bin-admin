@@ -7,16 +7,10 @@
 
 import Vue from 'vue'
 import {
-  Menu, Submenu, MenuItem, MenuItemGroup,
   Table, TableColumn, Loading
 } from 'element-ui'
 
 // element-ui 局部引用
-// 菜单
-Vue.use(Menu)
-Vue.use(Submenu)
-Vue.use(MenuItem)
-Vue.use(MenuItemGroup)
 // 表格分页
 Vue.use(Table)
 Vue.use(TableColumn)

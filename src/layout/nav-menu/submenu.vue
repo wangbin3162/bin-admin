@@ -1,16 +1,16 @@
 <template>
-  <el-submenu :index="resolvePath(menu.path)">
+  <b-submenu :name="resolvePath(menu.path)">
     <template slot="title">
       <i v-if="menu.icon" :class="`iconfont icon-${menu.icon}`"></i>
-      <span slot="title">{{menu.title}}</span>
+      {{ menu.title }}
     </template>
-    <template v-for="child in menu.children">
-      <menu-item v-if="!child.children" :menu="child" :key="child.path"
+    <template v-for="(child,childIndex) in menu.children">
+      <menu-item v-if="!child.children" :menu="child" :key="childIndex"
                  :base-path="resolvePath(menu.path)"></menu-item>
-      <menu-sub v-else :menu="child" :key="child.path"
-                :base-path="resolvePath(menu.path)"></menu-sub>
+      <submenu v-else :menu="child" :key="childIndex"
+               :base-path="resolvePath(menu.path)"></submenu>
     </template>
-  </el-submenu>
+  </b-submenu>
 </template>
 
 <script>
@@ -18,7 +18,7 @@
   import MenuItem from './menu-item'
 
   export default {
-    name: 'menu-sub',
+    name: 'Submenu',
     components: {
       MenuItem
     },

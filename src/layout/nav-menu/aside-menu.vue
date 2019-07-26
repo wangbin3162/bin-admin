@@ -1,19 +1,17 @@
 <template>
-  <el-menu class="el-menu-demo" mode="vertical" @select="handleMenuSelect"
-           :default-active="activeMenu" :collapse="!sidebar"
-           :background-color="bgColor" :text-color="txColor"
-           unique-opened :collapse-transition="false">
+  <b-menu @on-select="handleMenuSelect" :theme="theme" class="aside-menu"
+          :active-name="activeMenu" accordion>
     <template v-for="(menu, menuIndex) in asideMenu">
       <menu-item v-if="!menu.children" :menu="menu" :key="menuIndex" :base-path="menu.path"></menu-item>
-      <menu-sub v-else :menu="menu" :key="menuIndex" :base-path="menu.path"></menu-sub>
+      <submenu v-else :menu="menu" :key="menuIndex" :base-path="menu.path"></submenu>
     </template>
-  </el-menu>
+  </b-menu>
 </template>
 
 <script>
   import { mapGetters } from 'vuex'
-  import MenuItem from '../menu/menu-item'
-  import MenuSub from '../menu/menu-sub'
+  import MenuItem from './menu-item'
+  import Submenu from './submenu'
 
   export default {
     name: 'AsideMenu',
@@ -41,7 +39,7 @@
       }
     },
     components: {
-      MenuSub,
+      Submenu,
       MenuItem
     }
   }

@@ -1,17 +1,17 @@
 const responseBody = {
   message: '',
   timestamp: 0,
-  result: null,
+  data: null,
   code: 0
 }
 
-// 返回装配器，data为结果result，message为返回消息
+// 返回装配器，data为结果data，message为返回消息
 export const builder = (data, message, code = 0, headers = {}) => {
-  responseBody.result = data
+  responseBody.data = data
   if (message !== undefined && message !== null) {
     responseBody.message = message
   }
-  if (code !== undefined && code !== 0) {
+  if (code !== 0) {
     responseBody.code = code
     responseBody._status = code
   }

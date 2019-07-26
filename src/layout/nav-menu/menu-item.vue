@@ -1,15 +1,15 @@
 <template>
-  <el-menu-item :index="resolvePath(menu.path)">
+  <b-menu-item :name="resolvePath(menu.path)">
     <i v-if="menu.icon" :class="`iconfont icon-${menu.icon}`"></i>
-    <span slot="title">{{menu.title}}</span>
-  </el-menu-item>
+    {{menu.title}}
+  </b-menu-item>
 </template>
 
 <script>
   import path from 'path'
 
   export default {
-    name: 'menu-item',
+    name: 'MenuItem',
     props: {
       menu: {
         type: Object,
