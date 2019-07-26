@@ -9,7 +9,7 @@
       </div>
       <div class="aside">
         <b-scrollbar style="height:100%;">
-          <aside-menu v-if="menuType==='aside'"></aside-menu>
+          <aside-menu></aside-menu>
         </b-scrollbar>
       </div>
     </div>
@@ -52,6 +52,16 @@
           return '240px'
         }
         return '64px'
+      }
+    },
+    watch: {
+      $route: {
+        handler: function (val) {
+          if (this.menuType === 'header') {
+            this.$store.dispatch('setAsideMenu', val.path)
+          }
+        },
+        immediate: true
       }
     },
     components: {

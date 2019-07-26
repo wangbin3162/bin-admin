@@ -1,7 +1,7 @@
 <template>
   <div class="side-menu-wrapper">
     <b-menu @on-select="handleMenuSelect" :theme="theme" class="aside-menu" v-show="sidebar"
-            :active-name="activeMenu" accordion>
+            :active-name="activeMenu" accordion ref="sideMenu">
       <template v-for="(menu, menuIndex) in asideMenu">
         <menu-item v-if="!menu.children" :menu="menu" :key="menuIndex" :base-path="menu.path"></menu-item>
         <submenu v-else :menu="menu" :key="menuIndex" :base-path="menu.path"></submenu>
@@ -21,6 +21,11 @@
         </b-tooltip>
       </template>
     </div>
+
+    <div v-if="asideMenu.length===0" class="no-aside-menu" flex="dir:top main:center cross:center">
+      <b-icon name="ios-laptop"></b-icon>
+      <div>没有侧栏菜单</div>
+    </div>
   </div>
 </template>
 
@@ -32,16 +37,22 @@
 
   export default {
     name: 'AsideMenu',
+    data () {
+      return {
+        activeMenu: ''
+      }
+    },
     computed: {
-      ...mapGetters(['asideMenu', 'sidebar', 'theme']),
-      activeMenu () {
-        const route = this.$route
-        const { meta, path } = route
-        // 如果设置路径，侧栏将突出显示您设置的路径
-        if (meta.activeMenu) {
-          return meta.activeMenu
-        }
-        return path
+      ...mapGetters(['asideMenu', 'sidebar', 'theme'])
+    },
+    watch: {
+      $route: {
+        handler: function (val) {
+          this.$nextTick(() => {
+            this.activeMenu = val.path
+          })
+        },
+        immediate: true
       }
     },
     methods: {

@@ -26,7 +26,7 @@
       }
     },
     methods: {
-      handleMenuSelect (index, indexPath) {
+      handleMenuSelect (index) {
         this.$router.push({ path: index })
       }
     },

@@ -55,7 +55,17 @@ const app = {
       } else { // 如果开始是侧边栏模式则填充数据
         commit('SET_ASIDE_MENU', menu)// 如果是顶部菜单，则测菜单先设置为空
       }
-      // console.log(menu)
+    },
+    setAsideMenu: ({ commit, state }, target) => {
+      let arr = target.split('/')
+      let parent = arr.length > 1 ? arr[0].length === 0 ? arr[1] : arr[0] : ''
+      let menu = [...state.headerMenu]
+      // 过滤顶级菜单的路由并放置于侧边菜单中
+      let aside = menu.filter(menu => {
+        const tmp = { ...menu }
+        return tmp.path.indexOf(parent) > -1 && parent !== 'index'
+      })
+      commit('SET_ASIDE_MENU', aside)
     },
     // 载入时加载本地存储数据和主题配置信息
     loadApp: ({ commit }) => {
@@ -87,7 +97,7 @@ const app = {
   }
 }
 
-// 过滤菜单 // 第二个参数为基础path
+// 过滤菜单
 function filterMenu (routes) {
   let arr = []
   routes.forEach(route => {

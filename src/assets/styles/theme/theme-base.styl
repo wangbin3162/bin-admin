@@ -33,7 +33,18 @@
     }
     .aside {
       padding: 5px 0;
-      height: calc(100% - 60px)
+      height: calc(100% - 60px);
+      .no-aside-menu {
+        margin: 0 10px;
+        height: 160px;
+        background-color: rgba(0, 0, 0, .05);
+        border-radius: 4px;
+        color: #606266;
+        .iconfont {
+          font-size: 30px;
+          margin-bottom: 10px;
+        }
+      }
     }
     // 收起菜单样式
     .side-menu-wrapper .menu-collapsed .bin-dropdown, .side-menu-wrapper .menu-collapsed .bin-dropdown .bin-dropdown-rel a,
@@ -56,6 +67,11 @@
     transition: margin-left .2s ease-in-out;
     background-color: #ffffff;
     color: #303133;
+    .header-box {
+      .bin-menu-horizontal.bin-menu-light:after {
+        display: none;
+      }
+    }
     .app-main {
       flex: 1;
       overflow: hidden;
