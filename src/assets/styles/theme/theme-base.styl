@@ -12,7 +12,7 @@
     bottom: 0;
     height: 100%;
     z-index: 1001;
-    transition: width .3s ease-in-out;
+    transition: width .2s ease-in-out;
     overflow: hidden;
     .logo {
       position: relative;
@@ -33,7 +33,19 @@
     }
     .aside {
       padding: 5px 0;
-      height: calc(100% - 70px)
+      height: calc(100% - 60px)
+    }
+    // 收起菜单样式
+    .side-menu-wrapper .menu-collapsed .bin-dropdown, .side-menu-wrapper .menu-collapsed .bin-dropdown .bin-dropdown-rel a,
+    .side-menu-wrapper .menu-collapsed .bin-tooltip, .side-menu-wrapper .menu-collapsed .bin-tooltip .bin-tooltip-rel {
+      width: 100%;
+    }
+    .side-menu-wrapper a.drop-menu-a {
+      display: inline-block;
+      padding: 10px 15px;
+      width: 100%;
+      text-align: center;
+      color: #495060;
     }
   }
   .main-container {
@@ -41,7 +53,7 @@
     min-width: 800px;
     display: flex;
     flex-direction: column;
-    transition: margin-left .3s ease-in-out;
+    transition: margin-left .2s ease-in-out;
     background-color: #ffffff;
     color: #303133;
     .app-main {
@@ -217,6 +229,31 @@
         background: #ecf5ff;
         color: #66b1ff;
       }
+    }
+  }
+}
+// 全局收起菜单样式
+.collased-menu-dropdown {
+  width: 100%;
+  margin: 0;
+  line-height: normal;
+  padding: 7px 0 6px 17px;
+  clear: both;
+  font-size: 12px !important;
+  white-space: nowrap;
+  list-style: none;
+  cursor: pointer;
+  transition: background .2s ease-in-out;
+  .drop-menu-a {
+    display: inline-block;
+    width: 100%;
+    position: relative;
+    color: #515a6e;
+    .icon-ios-arrow-forward {
+      position: absolute;
+      top: 2px;
+      right: 4px;
+      transition: transform .2s;
     }
   }
 }

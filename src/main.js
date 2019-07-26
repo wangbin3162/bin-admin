@@ -3,6 +3,7 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import BinAdmin from './plugin'
+import './assets/styles/index.styl'
 // mock
 import './mock'
 

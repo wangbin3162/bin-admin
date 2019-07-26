@@ -77,10 +77,10 @@ const app = {
       if (type === 'header') { // 如果设置的是顶部菜单样式，则侧菜单置空
         commit('SET_ASIDE_MENU', [])
         // 如果是顶部导航，则默认收起侧边栏
-        commit('SET_SIDEBAR', false)
+        // commit('SET_SIDEBAR', false)
       } else { // 如果是侧菜单，则侧菜单设置为顶部菜单数据
         commit('SET_ASIDE_MENU', state.headerMenu)
-        commit('SET_SIDEBAR', true) // 侧边栏默认开启
+        // commit('SET_SIDEBAR', true)
       }
       commit('SET_MENU_TYPE', type)
     }
