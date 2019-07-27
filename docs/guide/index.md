@@ -1,8 +1,6 @@
-# bin-admin
+# 入门
 
-[文档](https://wangbin3162.github.io/docs/bin-admin/)
-
-[预览](https://wangbin3162.github.io/preview/bin-admin/)
+[![NPM version](https://img.shields.io/npm/v/bin-ui.svg)](https://www.npmjs.com/package/bin-ui)
 
 本项目是基于 Vue2.6，配合使用 [bin-ui](https://github.com/wangbin3162/bin-ui/) 作为组件库来进行搭建wcm后台管理系统，在基于[vue-admin1.0](https://github.com/wangbin3162/vue-admin/)
 版本基础上进行二次重构，增加了登录的token验证和简单主题配置功能，目前暂时为2.0.0版本初稿，后续会进行持续更新。
