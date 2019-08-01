@@ -17,7 +17,7 @@
       <!--通用头部-->
       <global-header>
         <header-menu v-if="menuType==='header'"></header-menu>
-        <bin-breadcrumb v-else></bin-breadcrumb>
+        <v-breadcrumb v-else></v-breadcrumb>
       </global-header>
       <!--标签栏-->
       <tags-view></tags-view>
@@ -38,7 +38,6 @@
   import HeaderMenu from './nav-menu/head-menu'
   import AsideMenu from './nav-menu/aside-menu'
   import TagsView from './tags-view'
-  import BinBreadcrumb from '../components/b-breadcrumb/Breadcrumb'
 
   export default {
     name: 'index',
@@ -65,7 +64,6 @@
       }
     },
     components: {
-      BinBreadcrumb,
       GlobalHeader,
       HeaderMenu,
       TagsView,
