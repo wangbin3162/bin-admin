@@ -1,28 +1,56 @@
 .table-layout-wrapper {
   width: 100%;
-  padding: 20px;
+  height: 100%;
+  padding: 15px;
+  overflow: hidden;
+  background: #f0f2f8;
   display: flex;
   justify-content: space-between;
   .tree-view {
-    width: 220px;
-    flex: 0 0 220px;
-    padding-right: 20px;
+    width: 200px;
+    flex: 0 0 200px;
+    background: #fff;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    border-right: 1px solid #eee;
     .tree-inner {
-      background: #fff;
-      border-radius: 4px;
       height: 100%;
-      padding: 20px 10px;
+      overflow: hidden;
+      padding: 20px 5px 20px 10px;
     }
   }
   .table-view {
+    position: relative;
     flex: 1;
-    height: 100%;
-    padding: 20px;
     background: #fff;
-    border-radius: 4px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    .view-inner {
+      padding: 20px 0 20px 20px;
+    }
     .table-inner {
       padding-top: 10px;
-      min-height: 600px;
+      .bin-tag {
+        margin: 0;
+      }
+      .bin-button--text {
+        color: #1890ff;
+      }
+      .bin-button.is-disabled, .bin-button.is-disabled:focus, .bin-button.is-disabled:hover {
+        color: #c0c4cc;
+        background-color: transparent;
+      }
+    }
+
+    // table-view 抽屉覆盖
+    .bin-drawer-wrapper, .bin-drawer-wrapper.is-right .drawer-box {
+      position: absolute;
+    }
+    .bin-drawer-wrapper .drawer-box .header {
+      padding: 10px 20px;
+    }
+    .bin-drawer-wrapper .drawer-box .footer {
+      text-align: center;
     }
   }
 }
@@ -49,7 +77,7 @@
         color: #606266;
         text-align: center;
       }
-      .bin-input, .bin-select {
+      .bin-input-wrapper, .bin-select-wrapper {
         flex: 1;
       }
       .search-btn {
@@ -70,6 +98,11 @@
 }
 
 .page-bar {
-  padding-top: 20px;
-  text-align: right;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  height: 48px;
+  .bin-page-options {
+    vertical-align: top;
+  }
 }

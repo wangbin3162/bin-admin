@@ -28,12 +28,18 @@
   margin-left: 10px;
 }
 
+.bin-button .iconfont {
+  margin-right: 4px;
+}
+// 树
 .bin-tree ul li {
   margin: 0;
   line-height: 26px;
 }
 .bin-tree-arrow {
-  line-height: 24px;
+  vertical-align: top;
+  line-height: 22px;
+  margin-right: 4px;
   .icon-ios-arrow-forward {
     position: relative;
     top: -1px;
@@ -41,7 +47,7 @@
 }
 .bin-tree-title {
   padding: 0 6px;
-  line-height: 24px;
+  line-height: 22px;
 }
 .bin-tree-title:hover {
   background-color: #e6f7ff;
@@ -49,4 +55,43 @@
 .bin-tree-title-selected, .bin-tree-title-selected:hover {
   background-color: #1890ff;
   color: #fff;
+}
+//  表格
+.bin-table-wrapper {
+  border: none;
+  .bin-loading {
+    border: none;
+  }
+}
+.bin-table-cell {
+  padding: 0 6px;
+}
+.bin-table {
+  .bin-table-header th, .bin-table-fixed-header th {
+    color: #333;
+    background-color: #f3faff;
+  }
+  th, td {
+    line-height: 38px;
+    border-bottom: none;
+  }
+  &:before, &:after {
+    display: none;
+  }
+}
+
+.bin-table-fixed-right::before, .bin-table-fixed::before {
+  display: none;
+}
+.bin-table-fixed-right {
+  box-shadow: 0 0 10px rgba(0, 0, 0, .12)
+}
+// 表单
+.bin-input[disabled], fieldset[disabled] .bin-input {
+  background-color: #f9f9f9;
+  color: #737d91;
+}
+//  container
+.bin-container .bin-container-footer {
+  line-height: 1.5em;
 }
