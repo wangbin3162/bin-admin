@@ -1,7 +1,7 @@
 <template>
   <!--filter-item组件，插入filter-container组件内部 默认宽度1/4可手动调节-->
   <!--如不需要第二行则只需将以下标签内容插入到最后一个条件处<filter-item @SearchClick="handleFilter"></filter-item>-->
-  <div class="filter-item" :style="{width:$slots.default?width:'230px'}">
+  <div class="filter-item" :style="{width:$slots.default?width:'250px'}">
     <span class="label" v-if="showLabel" :style="{width:labelWidth}">{{ title }}</span>
     <slot>
       <!--默认插槽，用于插入查询条件，如不插入则生成查询按钮，生成查询按钮需要传入是否需要显示展开按钮并传入状态-->

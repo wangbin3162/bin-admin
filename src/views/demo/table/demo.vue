@@ -16,7 +16,7 @@
         </b-switch>
       </v-filter-item>
       <!--添加查询按钮位置-->
-      <v-filter-item @on-search="handleFilter" @on-reset="resetQuery" width="250px"
+      <v-filter-item @on-search="handleFilter" @on-reset="resetQuery"
                      :show-toggle="true" :is-opened="filterOpened" @on-toggle="filterOpened=!filterOpened"
       ></v-filter-item>
       <template slot="more">
