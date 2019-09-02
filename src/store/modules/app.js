@@ -1,5 +1,5 @@
 import { getAdminSetting, setAdminSetting } from '../../utils/datastore'
-import log from '../../utils/log'
+import { deepCopy } from '../../utils/assist'
 
 const app = {
   state: {
@@ -53,13 +53,13 @@ const app = {
       if (state.menuType === 'header') {
         commit('SET_ASIDE_MENU', [])// 如果是顶部菜单，则测菜单先设置为空
       } else { // 如果开始是侧边栏模式则填充数据
-        commit('SET_ASIDE_MENU', menu)// 如果是顶部菜单，则测菜单先设置为空
+        commit('SET_ASIDE_MENU', menu)
       }
     },
     setAsideMenu: ({ commit, state }, target) => {
       let arr = target.split('/')
       let parent = arr.length > 1 ? arr[0].length === 0 ? arr[1] : arr[0] : ''
-      let menu = [...state.headerMenu]
+      let menu = deepCopy(state.headerMenu)// 深拷贝顶层菜单
       // 过滤顶级菜单的路由并放置于侧边菜单中
       let aside = menu.filter(menu => {
         const tmp = { ...menu }
@@ -77,7 +77,6 @@ const app = {
       commit('SET_THEME', theme)
       // 3. 设置菜单栏位置
       commit('SET_MENU_TYPE', menuType)
-      log.success('>>>>>>loadApp>>>>>>')
     },
     setThemeMode: ({ commit }, theme) => {
       document.body.className = `theme-${theme}`

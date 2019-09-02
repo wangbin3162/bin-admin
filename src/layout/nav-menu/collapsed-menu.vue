@@ -2,19 +2,19 @@
   <b-dropdown ref="dropdown" @on-click="handleClick" :placement="placement" :transfer="hideTitle"
               :class="hideTitle ? '' : 'collased-menu-dropdown'">
     <a class="drop-menu-a" type="text">
-      <b-icon :name="menu.icon" size="20" v-if="menu.icon"></b-icon>
+      <b-icon :name="menu.icon" size="20" style="position: relative;top:-1px;" v-if="menu.icon"></b-icon>
       <span class="menu-title" v-if="!hideTitle">{{ menu.title }}</span>
       <b-icon name="ios-arrow-forward" size="14" v-if="!hideTitle"></b-icon>
     </a>
-    <b-dropdown-menu ref="dropdown" slot="list">
+    <b-dropdown-menu ref="dropdown" slot="list" style="width: 150px;">
       <template v-for="child in menu.children">
         <b-dropdown-item v-if="!child.children" :key="`drop-menu-${child.path}`"
                          :name="resolvePath(child.path)">
-          <b-icon :name="child.icon" size="16" style="position: relative;top:-1px;" v-if="child.icon"></b-icon>
+          <b-icon :name="child.icon" size="14" style="position: relative;top:-1px;" v-if="child.icon"></b-icon>
           {{ child.title }}
         </b-dropdown-item>
         <collapsed-menu v-else :menu="child" :key="`drop-menu-${child.path}`"
-                        :base-path="resolvePath(menu.path)"></collapsed-menu>
+                        :base-path="resolvePath(child.path)"></collapsed-menu>
       </template>
     </b-dropdown-menu>
   </b-dropdown>

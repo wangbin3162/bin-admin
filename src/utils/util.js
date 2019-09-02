@@ -1,7 +1,9 @@
 import cookies from './util.cookies'
+import log from './log'
 
 const util = {
-  cookies
+  cookies,
+  log
 }
 
 util.timeFix = function () {

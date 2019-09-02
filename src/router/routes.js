@@ -9,7 +9,7 @@ import nested from './modules/nested'
  * hidden: true                   如果设置true则左侧路由菜单隐藏
  * name:'router-name'             <keep-alive>使用必须设置 (must set!!!)
  * meta : {
-    roles: ['admin','editor']      控制页面权限，你可以设置多个
+    roles: false,                  如果设置roles则不需要去验证过滤，直接全部显示为菜单栏
     title: 'title',                当前路由的中文名称
     icon: 'a-icon',                当前菜单的图标样式，使用阿里iconfont
     noCache: true                  如果设置为true则不被缓存，默认是false即为缓存

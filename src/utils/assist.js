@@ -16,7 +16,7 @@ function typeOf (obj) {
 }
 
 // deepCopy
-function deepCopy (data) {
+export function deepCopy (data) {
   const t = typeOf(data)
   let o
 
@@ -39,5 +39,3 @@ function deepCopy (data) {
   }
   return o
 }
-
-export { deepCopy }

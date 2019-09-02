@@ -1,7 +1,8 @@
 <template>
   <v-table-layout>
     <!--树结构-->
-    <b-tree :data="treeData" slot="tree" @on-select-change="handTreeCurrentChange"></b-tree>
+    <b-tree :data="treeData" slot="tree" @on-select-change="handTreeCurrentChange"
+            :lock-select="lockTreeSelect"></b-tree>
     <!--查询条件-->
     <v-filter-bar slot="filter" :is-opened="filterOpened">
       <v-filter-item title="用户名称">
@@ -31,7 +32,8 @@
     <template slot="ctrl">
       <b-button type="primary" v-waves size="small" icon="ios-add" @click="handleCreate">新增</b-button>
     </template>
-    <b-table slot="table" :columns="columns" :data="list" :loading="listLoading" stripe max-height="526">
+    <b-table slot="table" :columns="columns" :data="list" :loading="listLoading"
+             stripe max-height="526" ref="table" :width="treeTableWidth">
       <template v-slot:name="scope">
         <a href="" @click.stop.prevent="handleCheck(scope.row)">{{ scope.row.name }}</a>
       </template>
@@ -57,7 +59,7 @@
         <v-key-label label="出生日期" label-width="150px">{{ user.birthday }}</v-key-label>
         <v-key-label label="地址" label-width="150px" is-bottom>{{ user.address }}</v-key-label>
         <div style="padding: 10px;text-align: center;">
-          <b-button v-waves @click="dialogFormVisible=false">取 消</b-button>
+          <b-button v-waves @click="dialogFormVisible=false">返 回</b-button>
         </div>
       </div>
       <!--增加编辑区域-->

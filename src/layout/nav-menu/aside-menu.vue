@@ -4,7 +4,7 @@
             :active-name="activeMenu" accordion ref="sideMenu">
       <template v-for="(menu, menuIndex) in asideMenu">
         <menu-item v-if="!menu.children" :menu="menu" :key="menuIndex" :base-path="menu.path"></menu-item>
-        <submenu v-else :menu="menu" :key="menuIndex" :base-path="menu.path"></submenu>
+        <submenu v-else :menu="menu" :key="menuIndex"></submenu>
       </template>
     </b-menu>
     <div v-show="!sidebar" class="menu-collapsed">
@@ -22,9 +22,12 @@
       </template>
     </div>
 
-    <div v-if="asideMenu.length===0" class="no-aside-menu" flex="dir:top main:center cross:center">
+    <div v-if="asideMenu.length===0" class="no-aside-menu" flex="dir:top main:center cross:center"
+         :style="{height:sidebar?'160px':'50px'}">
       <b-icon name="ios-laptop"></b-icon>
-      <div>没有侧栏菜单</div>
+      <transition name="zoom-in-center">
+        <div v-show="sidebar" class="label">没有侧栏菜单</div>
+      </transition>
     </div>
   </div>
 </template>
