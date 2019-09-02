@@ -1,5 +1,5 @@
 // 按需加载element-ui
-import './lazy_lib/components_use'
+// import './lazy_lib/components_use'
 // bin-ui
 import BinUI from 'bin-ui'
 import 'bin-ui/lib/styles/index.css'
@@ -27,6 +27,8 @@ export default {
     Vue.component(TableLayout.name, TableLayout)
     // 查看显示组件
     Vue.component(KeyLabel.name, KeyLabel)
+    // 查看显示组件
+    Vue.component('CollapseTransition', BinUI.CollapseTransition)
     // 全局通信
     Vue.prototype.$EventBus = new Vue()
   }

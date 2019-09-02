@@ -16,11 +16,9 @@
 </template>
 
 <script>
-  import CollapseTransition from 'bin-ui/src/components/base/collapse-transition'
 
   export default {
     name: 'VFilterBar',
-    components: { CollapseTransition },
     props: {
       isOpened: {
         type: Boolean,

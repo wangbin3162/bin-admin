@@ -6,7 +6,7 @@ import { ACCESS_TOKEN } from '../store/mutation-types'
 import request from 'axios'
 import router from '../router'
 import Qs from 'qs'
-import BinUI from 'bin-ui/src/index'
+import BinUI from 'bin-ui'
 import util from '../utils/util'
 
 const service = request.create({

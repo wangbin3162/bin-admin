@@ -51,7 +51,7 @@
 
 <script>
   import dayJs from 'dayjs'
-  import { mapActions } from 'vuex'
+  import { login } from '../../api/login'
   import util from '../../utils/util'
 
   export default {
@@ -77,6 +77,9 @@
         }
       }
     },
+    created () {
+      document.addEventListener('keyup', this.enter)
+    },
     mounted () {
       this.timeInterval = setInterval(() => {
         this.refreshTime()
@@ -84,9 +87,15 @@
     },
     beforeDestroy () {
       clearInterval(this.timeInterval)
+      document.removeEventListener('keyup', this.enter)
     },
     methods: {
-      ...mapActions(['login']),
+      // enter键盘事件
+      enter (e) {
+        if (e.code === 'Enter') {
+          this.submit()
+        }
+      },
       refreshTime () {
         this.time = dayJs().format('HH:mm:ss')
       },
@@ -95,23 +104,25 @@
         this.$refs.loginForm.validate((valid) => {
           if (valid) {
             // 登录
-            this.login(this.formLogin)
+            login(this.formLogin)
               .then((res) => this.loginSuccess(res))
               .catch(err => this.requestFailed(err))
           } else {
             // 登录表单校验失败
-            this.$message({ type: 'danger', content: '表单校验失败' })
+            this.$message({ type: 'danger', content: '请输入登录信息后登录' })
           }
         })
       },
       loginSuccess (res) {
-        this.$log.success('登录成功')
-        // 重定向对象不存在则返回顶层路径
-        this.$router.replace(this.$route.query.redirect || '/')
-        // 延迟 1 秒显示欢迎信息
-        setTimeout(() => {
-          this.$message({ content: `${util.timeFix()}，${res.name}，欢迎回来`, type: 'success' })
-        }, 1000)
+        if (res.data.code === 0) {
+          const token = res.data.data
+          this.$store.dispatch('setToken', token).then(() => {
+            // 重定向对象不存在则返回顶层路径
+            this.$router.push('/')
+          })
+        } else {
+          this.$message({ content: res.data.message, type: 'danger' })
+        }
       },
       // 登录失败
       requestFailed (err) {

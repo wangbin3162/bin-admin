@@ -1,4 +1,4 @@
-import { login, getInfo } from '../../api/login'
+import { getInfo } from '../../api/login'
 import util from '../../utils/util'
 import { ACCESS_TOKEN } from '../mutation-types'
 import { resetRouter } from '../../router'
@@ -7,7 +7,7 @@ export default {
   state: {
     token: '', // token
     roles: [],
-    info: {} // user的登录信息
+    info: null // user的登录信息
   },
   mutations: {
     SET_TOKEN: (state, token) => {
@@ -22,20 +22,17 @@ export default {
   },
   actions: {
     // 登录
-    login ({ commit }, userInfo) {
+    setToken ({ commit }, token) {
       return new Promise((resolve, reject) => {
-        login(userInfo).then(response => {
-          const result = response.data.data
-          // console.log('vuex:')
-          // console.log(result)
-          // 设置token
-          util.cookies.set(ACCESS_TOKEN, result.token)
-          commit('SET_TOKEN', result.token)
-          resolve(result)
-        }).catch(error => {
-          console.log('error')
-          reject(error)
-        })
+        try {
+          util.cookies.set(ACCESS_TOKEN, token)
+          commit('SET_TOKEN', token)
+          commit('SET_ROLES', [])
+          commit('SET_INFO', null)
+          resolve(token)
+        } catch (e) {
+          reject(e)
+        }
       })
     },
     // 登出
