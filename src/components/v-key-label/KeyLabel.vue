@@ -41,11 +41,10 @@
         return style
       },
       labelStyle () {
-        let style = {
+        return {
           width: this.labelWidth,
           textAlign: this.labelPosition
         }
-        return style
       }
     }
   }
@@ -63,6 +62,7 @@
     }
     .val {
       padding: 0 10px;
+      word-wrap: break-word;
     }
   }
 </style>

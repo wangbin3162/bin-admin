@@ -45,7 +45,7 @@ const err = (error) => {
 service.interceptors.request.use(config => {
   const token = util.cookies.get(ACCESS_TOKEN)
   if (token && token !== 'undefined') {
-    config.headers['Access-Token'] = token // 让每个请求携带自定义 token 请根据实际情况自行修改
+    config.headers['Authorization'] = 'Bearer ' + token // 让每个请求携带自定义 token 请根据实际情况自行修改
   }
   return config
 }, err)
@@ -80,25 +80,6 @@ service.interceptors.response.use(
 export default service
 
 /**
- * get请求
- * @param url
- */
-export function requestGetNoData (url) {
-  return service({
-    url: url,
-    method: 'get'
-  })
-}
-
-export function requestGet (url, data) {
-  return service({
-    url: url,
-    method: 'get',
-    params: data
-  })
-}
-
-/**
  * post请求
  * @param url
  * @param data
@@ -112,19 +93,6 @@ export function requestPost (url, data) {
       return data
     }],
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    data: data
-  })
-}
-
-/**
- * post请求
- * @param url
- * @param data
- */
-export function requestPost2 (url, data) {
-  return service({
-    url: url,
-    method: 'post',
     data: data
   })
 }
@@ -155,13 +123,7 @@ export function appendFormData (formData, name, value) {
   }
 }
 
-let baseUrl = process.env.NODE_ENV !== 'production' ? '' : '/vue-admin-site'
-
-export function getBaseUrl () {
-  return baseUrl
-}
-
-export function requestGet2 (url, data, downloadProcess) {
+export function requestGetDownloadProcess (url, data, downloadProcess) {
   return service({
     timeout: 10000 * 60, // 请求超时时间
     url: url,

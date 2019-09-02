@@ -18,8 +18,8 @@
   "private": false,
   "license": "MIT",
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
+    "serve": "vue-cli-service serve --open",
+    "build": "vue-cli-service build --report",
     "lint": "vue-cli-service lint",
     "dev:doc": "vuepress dev docs",
     "build:doc": "vuepress build docs"
