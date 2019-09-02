@@ -18,7 +18,7 @@
             <slot name="table"></slot>
           </div>
         </div>
-        <div class="page-bar" slot="footer">
+        <div class="page-bar" slot="footer" v-if="$slots.pager">
           <slot name="pager"></slot>
         </div>
       </b-container>

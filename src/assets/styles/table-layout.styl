@@ -33,11 +33,10 @@
       .bin-tag {
         margin: 0;
       }
-      .bin-button--text {
-        color: #1890ff;
+      .bin-button {
+        font-weight: normal;
       }
       .bin-button.is-disabled, .bin-button.is-disabled:focus, .bin-button.is-disabled:hover {
-        color: #c0c4cc;
         background-color: transparent;
       }
     }
@@ -51,6 +50,9 @@
     }
     .bin-drawer-wrapper .drawer-box .footer {
       text-align: center;
+    }
+    .bin-drawer-wrapper {
+      z-index: 0;
     }
   }
 }
@@ -104,5 +106,53 @@
   height: 48px;
   .bin-page-options {
     vertical-align: top;
+  }
+}
+
+.bin-drawer.layout-inner {
+  .bin-drawer-wrapper {
+    .table-layout-wrapper {
+      height: 700px;
+      padding: 0;
+    }
+    .drawer-box .body {
+      padding: 0;
+    }
+  }
+}
+
+// 输入框后面按钮宽度
+.choose-btn.bin-input-wrapper {
+  .bin-input-suffix {
+    width: 70px;
+  }
+  .bin-input.bin-input-small.bin-input-with-suffix {
+    padding-right: 75px;
+  }
+}
+// 设置面板的样式
+.bin-modal.setting-panel {
+  .bin-modal-body {
+    padding: 10px 0;
+  }
+  .panel {
+    min-height: 300px;
+    .item {
+      display: flex;
+      line-height: 49px;
+      height: 50px;
+      border-bottom: 1px solid #eee;
+      padding: 0 30px;
+      > span:first-child {
+        width: 85px;
+        font-size: 14px;
+      }
+      > span:last-child {
+        flex: 1;
+      }
+      &:last-child {
+        border-bottom: none;
+      }
+    }
   }
 }

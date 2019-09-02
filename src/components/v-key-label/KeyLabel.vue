@@ -1,8 +1,8 @@
 <template>
   <div class="key-label" :style="rowStyle">
-    <div class="inner" flex>
+    <div class="inner" flex="box:first">
       <span class="label" :style="labelStyle">{{ label }}</span>
-      <span class="val" flex-box="1">
+      <span class="val">
         <slot>文字</slot>
       </span>
     </div>

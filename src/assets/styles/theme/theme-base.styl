@@ -37,13 +37,15 @@
       height: calc(100% - 60px);
       .no-aside-menu {
         margin: 0 10px;
-        height: 160px;
         background-color: rgba(0, 0, 0, .05);
         border-radius: 4px;
         color: #606266;
+        transition: .3s;
         .iconfont {
           font-size: 30px;
-          margin-bottom: 10px;
+        }
+        .label {
+          padding: 10px;
         }
       }
     }
@@ -62,7 +64,7 @@
   }
   .main-container {
     height: 100%;
-    min-width: 800px;
+    min-width: 1200px;
     display: flex;
     flex-direction: column;
     transition: margin-left .2s ease-in-out;
