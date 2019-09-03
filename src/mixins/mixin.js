@@ -25,6 +25,12 @@ export default {
       }
       return map[this.dialogStatus] || '标题'
     },
+    isCheck () {
+      return this.dialogStatus === 'check'
+    },
+    isEdit () {
+      return this.dialogStatus === 'create' || this.dialogStatus === 'modify'
+    },
     tableWidth () {
       // 没有树结构的表格宽度= wrap -15*2 - 20*2
       return this.tableWrapWidth - 70
