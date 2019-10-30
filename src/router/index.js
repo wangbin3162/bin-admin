@@ -41,28 +41,14 @@ router.beforeEach((to, from, next) => {
       BinUI.LoadingBar.done()
     } else {
       // 确定用户是否通过getInfo获得了他的权限角色// 这里暂时默认获取了角色
-      const hasRoles = store.getters.roles && store.getters.roles.length > 0
-      if (hasRoles) {
+      const userInfo = store.getters.userInfo
+      if (userInfo) {
         next()
       } else { // 否则就去拉取用户信息
         store.dispatch('getUserInfo')
           .then(res => {
-            const roles = res.data.result && res.data.result.roles
-            // 根据用户角色获取用户菜单路由,如线上项目则可以直接拉取用户的菜单，注意：菜单可以直接复制路由
-            store.dispatch('generateRoutes', roles).then((res) => {
-              // 根据roles权限生成可访问的路由表
-              // 动态添加可访问路由表
-              router.addRoutes(store.getters.addRouters)
-              store.dispatch('setHeaderMenu', res) // 过滤菜单项,这里的res即可以是后台返回的路由
-              const redirect = decodeURIComponent(from.query.redirect || to.path)
-              if (to.path === redirect) {
-                // hack方法 确保addRoutes已完成 ,set the replace: true so the navigation will not leave a history record
-                next({ ...to, replace: true })
-              } else {
-                // 跳转到目的路由
-                next({ path: redirect })
-              }
-            })
+            const redirect = decodeURIComponent(from.query.redirect || to.path)
+            next({ path: redirect })
           })
           .catch(err => {
             util.log.danger(err.message)

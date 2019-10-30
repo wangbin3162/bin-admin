@@ -1,13 +1,17 @@
-import request from './api_request'
-
-// 根据是否使用mock.js来设置基础url
-// let baseUrl = 'https://easy-mock.com/mock/5a93b9748be1e80aa1c9293e/vue-admin'
-let baseUrl = process.env.NODE_ENV === 'production'
-  ? '/preview/bin-admin'
-  : '/mock'
+// 登录相关接口文件
+import request, { requestPost } from './api_request'
 
 /**
- * login func
+ * 获取4位验证码
+ */
+export function getVerifyCode () {
+  return request.get('/auth/verifyCode', {
+    responseType: 'arraybuffer'
+  })
+}
+
+/**
+ * 登录方法
  * parameter: {
  *     username: '',
  *     password: '',
@@ -18,11 +22,7 @@ let baseUrl = process.env.NODE_ENV === 'production'
  * @returns {*}
  */
 export function login (data) {
-  return request({
-    url: `${baseUrl}/user/login`,
-    method: 'post',
-    data: data
-  })
+  return requestPost('/auth/login', data)
 }
 
 /**
@@ -30,11 +30,23 @@ export function login (data) {
  * @returns {*}
  */
 export function getInfo () {
+  return request.get('/user/info')
+}
+
+/**
+ * 修改登录密码
+ * @param oldPwd
+ * @param pwd
+ * @param confirmPwd
+ */
+export function modifyPwd (oldPwd, pwd, confirmPwd) {
   return request({
-    url: `${baseUrl}/user/info`,
-    method: 'get',
-    headers: {
-      'Content-Type': 'application/json;charset=UTF-8'
+    url: '/user/modifyPwd',
+    method: 'post',
+    data: {
+      oldPwd: oldPwd,
+      pwd: pwd,
+      confirmPwd: confirmPwd
     }
   })
 }

@@ -60,6 +60,7 @@
           <a class="link" href="https://cn.vuejs.org/v2/guide/" target="_blank">Vue</a>
         </p>
       </div>
+      <b-button @click="logout">退出登录</b-button>
     </div>
   </b-container>
 </template>
@@ -71,6 +72,13 @@
     name: 'index',
     computed: {
       ...mapGetters(['userInfo'])
+    },
+    methods: {
+      logout () {
+        this.$store.dispatch('logout').then(res => {
+          this.$router.push('/login')
+        })
+      }
     }
   }
 </script>

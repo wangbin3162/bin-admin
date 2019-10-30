@@ -43,8 +43,8 @@ export default {
         commit('SET_ROLES', [])
         // 删除cookie
         util.cookies.remove(ACCESS_TOKEN)
-        // 清空路由
-        resetRouter()
+        // 这里不需要清空路由
+        // resetRouter()
         resolve()
       })
     },
@@ -52,16 +52,15 @@ export default {
     getUserInfo ({ commit }) {
       return new Promise((resolve, reject) => {
         getInfo().then(response => {
-          const result = response.data.data
-          // console.log(result)
-          // 判断角色权限是否存在
-          if (result.roles && result.roles.length > 0) {
-            commit('SET_ROLES', result.roles)
-            commit('SET_INFO', result)
-          } else {
-            reject(new Error('getInfo: roles must be a non-null array !'))
+          const result = response.data
+          // 判断角色权限是否存在,这里约定为roleCodes
+          if (result.code === '0') {
+            commit('SET_ROLES', result.data.roleCodes)
+            commit('SET_INFO', result.data)
+            resolve(response)
+          } else { // 如果是403 即为无效的token则重定向到login页面
+            reject(result)
           }
-          resolve(response)
         }).catch(error => {
           reject(error)
         })
