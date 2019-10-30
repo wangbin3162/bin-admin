@@ -120,7 +120,7 @@
           const token = res.data.data
           this.$store.dispatch('setToken', token).then(() => {
             // 重定向对象不存在则返回顶层路径
-            this.$router.push({ path: '/' })
+            this.$router.push('/')
           })
         } else {
           this.$message({ content: res.data.message, type: 'danger' })
@@ -179,7 +179,7 @@
           top: 0;
           left: 60px;
           margin-top: -24px;
-          background: url("../../assets/images/logo.png") no-repeat 0 0;
+          background: url("../../assets/images/title-bg.png") no-repeat 0 0;
           width 280px;
           height: 48px;
           line-height: 48px;
