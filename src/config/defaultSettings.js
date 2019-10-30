@@ -1,7 +1,7 @@
 /**
  * 项目默认配置项
  * theme - theme ['dark', 'light'] 两种主题
- * menuType - 菜单位置类型，['header','aside']
+ * menuType - 菜单位置类型，['base-header','aside']
  */
 
 export default {

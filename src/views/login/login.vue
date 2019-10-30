@@ -209,7 +209,7 @@
           }
         }
       }
-      // footer
+      // base-footer
       .footer {
         padding: 2em 0 0;
         .footer-copyright {
