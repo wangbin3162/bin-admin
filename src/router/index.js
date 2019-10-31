@@ -48,7 +48,7 @@ router.beforeEach((to, from, next) => {
         store.dispatch('getUserInfo')
           .then(res => {
             const redirect = decodeURIComponent(from.query.redirect || to.path)
-            next({ path: redirect })
+            next({ path: redirect, query: to.query })
           })
           .catch(err => {
             util.log.danger(err.message)

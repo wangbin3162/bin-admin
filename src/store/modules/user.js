@@ -1,7 +1,6 @@
 import { getInfo } from '../../api/login'
 import util from '../../utils/util'
 import { ACCESS_TOKEN } from '../mutation-types'
-import { resetRouter } from '../../router'
 
 export default {
   state: {

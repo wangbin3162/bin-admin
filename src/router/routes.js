@@ -21,7 +21,13 @@ export const constantRouterMap = [
     path: '/index',
     name: 'index',
     component: index,
-    meta: { title: '首页', icon: 'icon-ios-home' }
+    meta: { title: '首页' }
+  },
+  {
+    path: '/list',
+    name: 'list',
+    component: () => import(/* webpackChunkName: "list" */ '../views/pages/list.vue'),
+    meta: { title: '列表页面' }
   },
   {
     path: '/401',

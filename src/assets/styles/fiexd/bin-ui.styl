@@ -1,46 +1,10 @@
-// 1: 横向滚动条隐藏
-#app .bin-scrollbar__wrap {
-  overflow-x: hidden;
+// 下拉框样式覆盖
+.base-search .bin-dropdown-item-selected,
+.base-search .bin-dropdown-item.bin-dropdown-item-selected:hover {
+  background: #53beff;
+  color: #fff;
 }
 
-.bin-drawer-wrapper .drawer-box {
-  .header {
-    padding: 19px 16px;
-  }
-  .body {
-    height: calc(100% - 125px);
-  }
-}
-// 2: 按钮图标右间距
-.bin-button .iconfont {
-  margin-right: 4px;
-}
-//  表格
-.bin-table-wrapper {
-  border: none;
-  .bin-loading {
-    border: none;
-  }
-}
-.bin-table-cell {
-  padding: 0 8px;
-}
-.bin-table {
-  .bin-table-header th, .bin-table-fixed-header th {
-    color: #333;
-    font-weight: 500;
-    background-color: #f3faff;
-  }
-  th, td {
-    line-height: 38px;
-    border-bottom: none;
-  }
-  &:before, &:after {
-    display: none;
-  }
-}
-
-//  container
-.bin-container .bin-container-footer {
-  line-height: 1.5em;
+.bin-loading-fix {
+  background-color: rgba(255, 255, 255, .5);
 }
