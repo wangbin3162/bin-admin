@@ -1,12 +1,13 @@
 <template>
   <div class="base-search">
-    <div class="type-wrap" v-if="isNormal">
+    <div class="type-wrap" v-if="isDefault">
       <span :class="{'active':type==='1'}" @click="changeType('1')">法人和其他组织</span>
       <span :class="{'active':type==='2'}" @click="changeType('2')">自然人</span>
     </div>
-    <div class="input-wrap" :class="{'small':!isNormal}" flex="main:justify">
+    <div class="input-wrap" :class="size" flex="main:justify">
       <div class="input">
-        <b-dropdown v-if="!isNormal" trigger="click">
+        <!--small版本前边下拉选择-->
+        <b-dropdown v-if="size==='small'" trigger="click">
           <div class="select type">
           <span>
             {{ typeLabel }}
@@ -14,11 +15,11 @@
           </span>
           </div>
           <b-dropdown-menu slot="list" style="width: 100px;">
-            <b-dropdown-item :selected="type==='1'">
-              <span class="options" @click="type='1'">法人</span>
+            <b-dropdown-item :selected="type==='1'" @click.native="type='1'">
+              <span class="options">法人</span>
             </b-dropdown-item>
-            <b-dropdown-item :selected="type==='2'">
-              <span class="options" @click="type='2'">自然人</span>
+            <b-dropdown-item :selected="type==='2'" @click.native="type='2'">
+              <span class="options">自然人</span>
             </b-dropdown-item>
           </b-dropdown-menu>
         </b-dropdown>
@@ -27,6 +28,7 @@
         </label>
         <span class="search-btn" @click="handleSearch" v-waves>查询</span>
       </div>
+      <!--选择查询原因-->
       <b-dropdown trigger="click">
         <div class="select">
           <span>
@@ -35,16 +37,16 @@
           </span>
         </div>
         <b-dropdown-menu slot="list" style="width: 140px;">
-          <b-dropdown-item :selected="reason==='report'">
-            <span class="options" @click="reason='report'">信用报告</span>
+          <b-dropdown-item :selected="reason==='report'" @click.native="reason='report'">
+            <span class="options">信用报告</span>
           </b-dropdown-item>
-          <b-dropdown-item :selected="reason==='check'">
-            <span class="options" @click="reason='check'">信用核查</span>
+          <b-dropdown-item :selected="reason==='check'" @click.native="reason='check'">
+            <span class="options">信用核查</span>
           </b-dropdown-item>
         </b-dropdown-menu>
       </b-dropdown>
     </div>
-    <div class="tip" v-if="isNormal">查看自然人、法人信用档案</div>
+    <div class="tip" v-if="isDefault">查看自然人、法人信用档案</div>
   </div>
 </template>
 
@@ -54,9 +56,9 @@
   export default {
     name: 'BaseSearch',
     props: {
-      isNormal: {
-        type: Boolean,
-        default: true
+      size: {
+        type: String,
+        default: 'default'
       }
     },
     data () {
@@ -77,6 +79,9 @@
     },
     computed: {
       ...mapGetters(['searchData']),
+      isDefault () {
+        return this.size === 'default'
+      },
       typeLabel () {
         const typeMap = {
           '1': '法人',
@@ -189,7 +194,7 @@
         font-size: 14px;
       }
       &.small {
-        padding: 0 98px;
+        padding: 0 96px;
         .input {
           width: 700px;
           input {

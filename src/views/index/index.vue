@@ -2,12 +2,13 @@
   <div class="app-wrap">
     <div class="scroll-box">
       <div class="index-wrap">
-        <div class="main-wrap">
+        <div class="main-wrap" :class="{'mini-wrap':showList}">
           <base-header></base-header>
           <div class="search-wrap" :style="searchWrapStyle">
-            <h2 v-show="searchNormal">综合信用查询</h2>
-            <base-search :is-normal="searchNormal" @on-search="handleSearch"></base-search>
+            <h2 v-show="!showList">综合信用查询</h2>
+            <base-search :size="searchSize" @on-search="handleSearch"></base-search>
           </div>
+          <base-list></base-list>
         </div>
         <base-footer></base-footer>
       </div>
@@ -19,9 +20,11 @@
 <script>
   import { mapGetters } from 'vuex'
   import { getSearchList } from '../../api/search'
+  import BaseList from '../../components/base-list/base-list'
 
   export default {
     name: 'index',
+    components: { BaseList },
     data () {
       return {
         searchList: [],
@@ -31,29 +34,33 @@
           type: '',
           page: 1,
           size: 10
-        }
+        },
+        showList: false
       }
     },
     computed: {
       ...mapGetters(['userInfo', 'searchData']),
       searchWrapStyle () {
-        return this.searchList.length > 0
-          ? { padding: '50px' } : { padding: '150px 50px 100px' }
+        return this.showList ? { padding: '50px' } : { padding: '150px 50px 100px' }
       },
-      searchNormal () {
-        return this.searchList.length === 0
+      searchSize () {
+        return this.showList ? 'small' : 'default'
       }
+    },
+    created () {
+      this.handleSearch({ q: '大米科技', type: '1', reason: '' })
     },
     methods: {
       handleSearch (filter) {
         this.$store.dispatch('setSearchData', filter).then(() => {
-          // this.$router.push({ path: '/list', query: { q: filter.q } })
           this.listQuery.q = filter.q
           this.listQuery.type = filter.type
           getSearchList(this.listQuery).then(res => {
             this.searchList = res.data.rows
             this.mapping = res.data.mapping
+            this.showList = true
           })
+          // this.$router.push({ path: '/list', query: { q: filter.q } })
         }).catch(err => {
           this.$message({ type: 'danger', content: err.message })
         })
@@ -76,6 +83,9 @@
         .main-wrap {
           flex: 1;
           background: url("../../assets/images/bg.png") no-repeat 0 80px;
+          &.mini-wrap {
+            background: url("../../assets/images/bannesmallr-bg.png") no-repeat 0 0;
+          }
           .search-wrap {
             width: 1300px;
             margin: 0 auto;
