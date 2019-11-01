@@ -6,48 +6,51 @@
         <li v-for="n in 10" :key="n"></li>
       </ul>
     </div>
-    <!-- logo -->
-    <img class="page-login--logo" src="../../assets/images/logo.png" alt="logo">
-    <!--登录框-->
-    <div class="layer">
-      <div class="content" flex="dir:top main:center cross:center">
+    <base-header></base-header>
+    <div class="main-wrap">
+      <!--登录框-->
+      <div class="content" flex="main:right cross:center">
         <div class="form">
-          <div class="title">登录系统</div>
-          <b-form ref="loginForm" label-position="top" :rules="rules" :model="formLogin" size="default">
+          <div class="title">
+            <h2>用户登录</h2>
+            <p>USER LOGIN</p>
+          </div>
+          <b-form class="login-form" ref="loginForm" label-position="top"
+                  :rules="rules" :model="formLogin">
             <b-form-item prop="username">
-              <b-input type="text" v-model="formLogin.username" placeholder="请输入用户名" prefix="ios-contact"></b-input>
+              <b-input type="text" v-model="formLogin.username" placeholder="请输入用户名">
+                <img src="./images/User.png" height="30" width="30" alt="user" slot="prefix"/>
+              </b-input>
             </b-form-item>
             <b-form-item prop="password">
-              <b-input type="password" v-model="formLogin.password" placeholder="请输入密码" prefix="ios-key"></b-input>
+              <b-input type="password" v-model="formLogin.password" placeholder="请输入密码">
+                <img src="./images/Key.png" height="30" width="30" alt="key" slot="prefix"/>
+              </b-input>
             </b-form-item>
             <b-form-item prop="captcha">
-              <b-input type="text" v-model="formLogin.captcha" placeholder="- - - -" style="width: 60%;"
-                       prefix="ios-bulb"></b-input>
-              <span class="login-code" @click="refreshCode" title="点击刷新">
-                    <img :src="verifyCodeUrl" alt="code">
-                  </span>
+              <div class="captcha">
+                <b-input type="text" v-model="formLogin.captcha" :maxlength="4" placeholder="验证码" flex-box="1">
+                  <img src="./images/keycode.png" height="30" width="30" alt="key" slot="prefix"/>
+                </b-input>
+                <img :src="verifyCodeUrl" class="login-code" @click="refreshCode" title="点击刷新" alt="code">
+              </div>
             </b-form-item>
-            <b-button @click="submit" type="primary" class="button-login" v-waves :loading="loginLoading">
-              {{ loginLoading? '登陆中...' :'登 录' }}
-            </b-button>
+            <div flex="main:center">
+              <b-button @click="submit" class="button-login" v-waves :loading="loginLoading" size="large"
+                        type="primary">
+                {{ loginLoading? '登陆中...' :'登 录' }}
+              </b-button>
+            </div>
           </b-form>
-        </div>
-        <div class="footer">
-          <p class="footer-copyright">
-            技术支持：徐州金蝶软件有限公司
-          </p>
-          <p class="footer-copyright">
-            copyright:2016-2020 Kingdee All Right Reserved
-          </p>
         </div>
       </div>
     </div>
+    <base-footer></base-footer>
   </div>
 </template>
 
 <script>
   import { getVerifyCode, login } from '../../api/login'
-  import util from '../../utils/util'
 
   export default {
     name: 'Login',
@@ -141,10 +144,11 @@
 
 <style lang="stylus" scoped>
   .page-login {
-    user-select: none;
-    background: url("../../assets/images/login-bg.jpg") no-repeat center center;
-    height: 100%;
     position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: auto;
     // 层
     .layer {
       position: absolute;
@@ -153,72 +157,62 @@
       top: 0;
       bottom: 0;
       overflow: auto;
+      z-index: 0;
     }
     .area {
       overflow: hidden;
     }
-    .page-login--logo {
-      position: absolute;
-      top: 50px;
-      left: 80px;
+    .main-wrap {
+      flex: 1;
+      /*min-height: 600px;*/
+      background: url("images/login-bg.png") no-repeat center center;
     }
     // 登陆页面控件的容器
     .content {
       height: 100%;
-      min-height: 500px;
+      padding: 40px 200px;
       // 登录表单
       .form {
         position: relative;
-        width: 400px;
-        padding: 60px 40px 40px;
+        width: 472px;
+        height: 500px;
+        padding: 50px 40px 70px;
         background: #fff;
-        border-radius: 5px;
         box-sizing: border-box;
         .title {
-          position: absolute;
-          top: 0;
-          left: 60px;
-          margin-top: -24px;
-          background: url("../../assets/images/title-bg.png") no-repeat 0 0;
-          width 280px;
-          height: 48px;
-          line-height: 48px;
           background-size: 100% 100%
           text-align: center;
-          color: #fff;
-          font-size: 20px;
-          font-family: '宋体';
+          h2 {
+            font-size: 24px;
+            color: #666666;
+            font-weight: normal;
+            margin: 0;
+          }
+          p {
+            font-size: 14px;
+            color: #999999;
+            margin: 0;
+            padding: 10px;
+          }
+        }
+        .login-form {
+          padding: 20px 0;
+        }
+        .captcha {
+          position: relative;
+          .login-code {
+            position: absolute;
+            right: 0;
+            top: 10px;
+            width: 108px;
+            height: 36px;
+            cursor: pointer;
+          }
         }
         // 登录按钮
         .button-login {
-          width: 100%;
-        }
-        .login-code {
-          display: inline-block;
-          vertical-align: middle;
-          width: 40%;
-          padding-left: 10px;
-          height: 36px;
-          overflow: hidden;
-          cursor: pointer;
-          img {
-            width: 100%;
-            height: 100%;
-            border-radius: 5px;
-            border: 1px solid #dcdee2;
-          }
-        }
-      }
-      // base-footer
-      .footer {
-        padding: 2em 0 0;
-        .footer-copyright {
-          text-align: center;
-          padding: 0;
-          margin: 0;
-          font-size: 12px;
-          line-height: 20px;
-          color: #000000;
+          width: 95%;
+          margin-top: 15px;
         }
       }
     }

@@ -15,7 +15,7 @@
           </div>
           <b-dropdown-menu slot="list" style="width: 100px;">
             <b-dropdown-item :selected="type==='1'">
-              <span class="options" @click="type='1'">查法人</span>
+              <span class="options" @click="type='1'">法人</span>
             </b-dropdown-item>
             <b-dropdown-item :selected="type==='2'">
               <span class="options" @click="type='2'">自然人</span>
@@ -23,7 +23,7 @@
           </b-dropdown-menu>
         </b-dropdown>
         <label>
-          <input v-model="q" :placeholder="placeholderLabel"/>
+          <input v-model="q" :placeholder="placeholderLabel" @keyup.enter="handleSearch"/>
         </label>
         <span class="search-btn" @click="handleSearch" v-waves>查询</span>
       </div>
@@ -34,7 +34,7 @@
             <b-icon name="md-arrow-dropdown" size="20"></b-icon>
           </span>
         </div>
-        <b-dropdown-menu slot="list" style="width: 150px;">
+        <b-dropdown-menu slot="list" style="width: 140px;">
           <b-dropdown-item :selected="reason==='report'">
             <span class="options" @click="reason='report'">信用报告</span>
           </b-dropdown-item>
@@ -79,7 +79,7 @@
       ...mapGetters(['searchData']),
       typeLabel () {
         const typeMap = {
-          '1': '查法人',
+          '1': '法人',
           '2': '自然人'
         }
         return typeMap[this.type]
@@ -121,7 +121,7 @@
 
 <style scoped lang="stylus">
   .base-search {
-    width: 1045px;
+    width: 1040px;
     margin: 0 auto;
     .type-wrap {
       margin-bottom: 10px;

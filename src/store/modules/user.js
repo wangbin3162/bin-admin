@@ -5,7 +5,7 @@ import { ACCESS_TOKEN } from '../mutation-types'
 export default {
   state: {
     token: '', // token
-    roles: [],
+    roles: null,
     info: null // user的登录信息
   },
   mutations: {
@@ -26,7 +26,7 @@ export default {
         try {
           util.cookies.set(ACCESS_TOKEN, token)
           commit('SET_TOKEN', token)
-          commit('SET_ROLES', [])
+          commit('SET_ROLES', null)
           commit('SET_INFO', null)
           resolve(token)
         } catch (e) {
@@ -39,7 +39,7 @@ export default {
       return new Promise((resolve) => {
         // 删除缓存的token
         commit('SET_TOKEN', '')
-        commit('SET_ROLES', [])
+        commit('SET_ROLES', null)
         // 删除cookie
         util.cookies.remove(ACCESS_TOKEN)
         // 这里不需要清空路由

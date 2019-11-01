@@ -2,9 +2,9 @@
   <div class="header-wrap">
     <div class="header-inner" flex="main:justify cross:center">
       <img src="../../assets/images/logo2.png" height="60" width="330" alt="logo"/>
-      <div class="info" flex="cross:center">
+      <div class="info" flex="cross:center" v-if="userRoles">
         <img src="../../assets/images/ixon-user.png" height="24" width="24" alt="icon"/>
-        <span style="padding:0 20px;">欢迎您，{{ userInfo.roleNames }}</span>
+        <span style="padding:0 20px;">欢迎您，{{ userName }}</span>
         <span class="logout" @click="logout">注销</span>
       </div>
     </div>
@@ -12,12 +12,15 @@
 </template>
 
 <script>
-  import { mapGetters } from 'vuex'
-
   export default {
     name: 'BaseHeader',
     computed: {
-      ...mapGetters(['userInfo'])
+      userRoles () {
+        return this.$store.state.user.roles
+      },
+      userName () {
+        return this.$store.state.user.info.roleNames
+      }
     },
     methods: {
       logout () {
@@ -38,6 +41,7 @@
       margin: 0 auto;
       .info {
         .logout {
+          cursor: pointer;
           background: #1badf8;
           color: #fff;
           border-radius: 15px;
