@@ -8,7 +8,13 @@
             <h2 v-show="!showList">综合信用查询</h2>
             <base-search :size="searchSize" @on-search="handleSearch"></base-search>
           </div>
-          <base-list></base-list>
+          <transition name="fade-scale-move">
+            <base-list v-show="showList" :total="total" :data="searchList" :mapping="mapping"></base-list>
+          </transition>
+          <div class="page-wrap">
+            <b-page v-if="total>listQuery.size" :total="total" :current.sync="listQuery.page"
+                    show-total @on-change="handlePageChange"></b-page>
+          </div>
         </div>
         <base-footer></base-footer>
       </div>
@@ -27,15 +33,16 @@
     components: { BaseList },
     data () {
       return {
-        searchList: [],
-        mapping: {}, // 映射对象
         listQuery: {
           q: '',
           type: '',
           page: 1,
           size: 10
         },
-        showList: false
+        showList: false,
+        searchList: [],
+        mapping: {}, // 映射对象
+        total: 0
       }
     },
     computed: {
@@ -58,12 +65,17 @@
           getSearchList(this.listQuery).then(res => {
             this.searchList = res.data.rows
             this.mapping = res.data.mapping
+            this.total = res.data.total
             this.showList = true
           })
           // this.$router.push({ path: '/list', query: { q: filter.q } })
         }).catch(err => {
           this.$message({ type: 'danger', content: err.message })
         })
+      },
+      // 页码改变
+      handlePageChange (page) {
+        console.log(page)
       }
     }
   }
@@ -100,5 +112,11 @@
         }
       }
     }
+  }
+  .page-wrap {
+    width: 1300px;
+    margin: 0 auto;
+    text-align: right;
+    padding: 20px 0;
   }
 </style>
