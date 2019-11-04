@@ -97,7 +97,7 @@
         return this.reason.length === 0 ? '选择查询原因' : reasonMap[this.reason]
       },
       placeholderLabel () {
-        return this.type === 'leg' ? '请输入企业名称、统一社会信用代码、工商注册号、组织机构代码等' : '请输入自然人名称'
+        return this.type === '1' ? '请输入企业名称、统一社会信用代码、工商注册号、组织机构代码等' : '请输入自然人名称'
       }
     },
     methods: {
@@ -113,12 +113,12 @@
         }
       },
       handleSearch () {
-        this.$emit('on-search', {
+        this.$store.dispatch('setSearchData', {
           type: this.type,
           reason: this.reason,
           q: this.q
         })
-        this.$log.primary(`查询[type:${this.type}][reason:${this.reason}][q:${this.q}]`)
+        this.$emit('on-search')
       }
     }
   }

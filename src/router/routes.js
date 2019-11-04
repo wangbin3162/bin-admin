@@ -24,10 +24,10 @@ export const constantRouterMap = [
     meta: { title: '首页' }
   },
   {
-    path: '/list',
-    name: 'list',
-    component: () => import(/* webpackChunkName: "list" */ '../views/pages/list.vue'),
-    meta: { title: '列表页面' }
+    path: '/detail',
+    name: 'detail',
+    component: () => import(/* webpackChunkName: "list" */ '../views/pages/detail.vue'),
+    meta: { title: '详情' }
   },
   {
     path: '/401',

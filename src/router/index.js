@@ -44,6 +44,10 @@ router.beforeEach((to, from, next) => {
       const userInfo = store.getters.userInfo
       if (userInfo) {
         next()
+        // 如果跳转页面存在title则修改窗口文字
+        if (to.meta && to.meta.title) {
+          util.title('公共信用信息管理平台 - ' + to.meta.title)
+        }
       } else { // 否则就去拉取用户信息
         store.dispatch('getUserInfo')
           .then(res => {

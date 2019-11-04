@@ -1,32 +1,28 @@
 <template>
-  <div class="app-wrap">
-    <div class="scroll-box">
-      <div class="index-wrap">
-        <div class="main-wrap" :class="{'mini-wrap':showList}">
-          <base-header></base-header>
-          <div class="search-wrap" :style="searchWrapStyle">
-            <h2 v-show="!showList">综合信用查询</h2>
-            <base-search :size="searchSize" @on-search="handleSearch"></base-search>
-          </div>
-          <transition name="fade-scale-move">
-            <base-list v-show="showList" :total="total" :data="searchList" :mapping="mapping"></base-list>
-          </transition>
-          <div class="page-wrap">
-            <b-page v-if="total>listQuery.size" :total="total" :current.sync="listQuery.page"
-                    show-total @on-change="handlePageChange"></b-page>
-          </div>
-        </div>
-        <base-footer></base-footer>
+  <base-layout>
+    <div class="main-wrap" :class="{'mini-wrap':showList}">
+      <base-header></base-header>
+      <div class="search-wrap" :style="searchWrapStyle">
+        <h2 v-show="!showList">综合信用查询</h2>
+        <base-search :size="searchSize" @on-search="handleSearch"></base-search>
+      </div>
+      <transition name="fade-scale-move">
+        <base-list v-show="showList" :total="total" :data="searchList" :mapping="mapping"
+                   :loading="loading"
+                   @on-check-detail="handleCheckDetail"></base-list>
+      </transition>
+      <div class="page-wrap">
+        <b-page v-if="total>listQuery.size" :total="total" :current.sync="listQuery.page"
+                show-total @on-change="handlePageChange"></b-page>
       </div>
     </div>
-    <b-back-top></b-back-top>
-  </div>
+  </base-layout>
 </template>
 
 <script>
+  import BaseList from '../../components/base-list/base-list'
   import { mapGetters } from 'vuex'
   import { getSearchList } from '../../api/search'
-  import BaseList from '../../components/base-list/base-list'
 
   export default {
     name: 'index',
@@ -40,13 +36,14 @@
           size: 10
         },
         showList: false,
+        loading: false,
         searchList: [],
         mapping: {}, // 映射对象
         total: 0
       }
     },
     computed: {
-      ...mapGetters(['userInfo', 'searchData']),
+      ...mapGetters(['searchData']),
       searchWrapStyle () {
         return this.showList ? { padding: '50px' } : { padding: '150px 50px 100px' }
       },
@@ -55,61 +52,70 @@
       }
     },
     created () {
-      this.handleSearch({ q: '大米科技', type: '1', reason: '' })
+      this.fetchData()
+    },
+    watch: {
+      // 如果路由有变化，会再次执行该方法
+      '$route': 'fetchData'
     },
     methods: {
-      handleSearch (filter) {
-        this.$store.dispatch('setSearchData', filter).then(() => {
-          this.listQuery.q = filter.q
-          this.listQuery.type = filter.type
-          getSearchList(this.listQuery).then(res => {
-            this.searchList = res.data.rows
-            this.mapping = res.data.mapping
-            this.total = res.data.total
-            this.showList = true
-          })
-          // this.$router.push({ path: '/list', query: { q: filter.q } })
-        }).catch(err => {
-          this.$message({ type: 'danger', content: err.message })
-        })
+      // 将vuex缓存映射至当前组件
+      fetchData () {
+        this.listQuery.q = this.searchData.q
+        this.listQuery.type = this.searchData.type
+        if (this.listQuery.q.length > 0) {
+          this.searchListData()
+        }
+      },
+      handleSearch () {
+        this.listQuery.q = this.searchData.q
+        this.listQuery.type = this.searchData.type
+        if (this.listQuery.q.length > 0) {
+          this.searchListData()
+        } else {
+          this.$message({ type: 'danger', content: '请输入查询条件后查询' })
+        }
       },
       // 页码改变
-      handlePageChange (page) {
-        console.log(page)
+      handlePageChange () {
+        this.searchListData()
+      },
+      // 查看详情
+      handleCheckDetail (id) {
+        this.$store.dispatch('setDetailId', id)
+        this.$router.push('/detail')
+      },
+      // 查询列表数据
+      searchListData () {
+        this.loading = true
+        // api查询返回列表
+        getSearchList(this.listQuery).then(res => {
+          this.searchList = res.data.rows
+          this.mapping = res.data.mapping
+          this.total = res.data.total
+          this.showList = true
+          this.loading = false
+        })
       }
     }
   }
 </script>
 
 <style scoped lang="stylus">
-  .app-wrap {
-    height: 100%;
-    .scroll-box {
-      height: 100%;
-      overflow: auto;
-      .index-wrap {
-        width: 100%;
-        min-height: 100%;
-        display: flex;
-        flex-direction: column;
-        .main-wrap {
-          flex: 1;
-          background: url("../../assets/images/bg.png") no-repeat 0 80px;
-          &.mini-wrap {
-            background: url("../../assets/images/bannesmallr-bg.png") no-repeat 0 0;
-          }
-          .search-wrap {
-            width: 1300px;
-            margin: 0 auto;
-            transition: .3s;
-            h2 {
-              color: #fff;
-              text-align: center;
-              font-weight: 400;
-              font-size: 24px;
-            }
-          }
-        }
+  .main-wrap {
+    background: url("../../assets/images/bg.png") no-repeat 0 80px;
+    &.mini-wrap {
+      background: url("../../assets/images/bannesmallr-bg.png") no-repeat 0 0;
+    }
+    .search-wrap {
+      width: 1300px;
+      margin: 0 auto;
+      transition: .3s;
+      h2 {
+        color: #fff;
+        text-align: center;
+        font-weight: 400;
+        font-size: 24px;
       }
     }
   }

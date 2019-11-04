@@ -14,5 +14,7 @@ util.timeFix = function () {
 util.cloneDeep = function (obj) {
   return JSON.parse(JSON.stringify(obj))
 }
-
+util.title = function (title) {
+  document.title = title
+}
 export default util

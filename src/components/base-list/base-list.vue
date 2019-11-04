@@ -15,12 +15,19 @@
               <span>{{ mapping.clrq }}：{{ item.clrq }}</span>
             </p>
           </template>
+          <template v-else>
+            <h2>{{ item.name }}</h2>
+            <p>
+              <span>身份证号码：{{ item.id_sfz }}</span>
+            </p>
+          </template>
         </div>
         <div class="ctrl">
-          <span v-waves>查看详情</span>
+          <span v-waves @click="handleCheck(item.id)">查看详情</span>
         </div>
       </div>
-      <no-data v-show="data.length===0"></no-data>
+      <b-loading fix v-show="loading" show-text="loading"></b-loading>
+      <no-data v-show="!loading&&data.length===0"></no-data>
     </div>
   </div>
 </template>
@@ -47,7 +54,8 @@
       total: {
         type: Number,
         default: 0
-      }
+      },
+      loading: Boolean
     },
     data () {
       return {
@@ -60,15 +68,18 @@
       currentType () {
         return this.$store.state.search.searchData.type
       }
+    },
+    methods: {
+      handleCheck (id) {
+        this.$emit('on-check-detail', id)
+      }
     }
   }
 </script>
 
 <style scoped lang="stylus">
-  .list-wrap {
-
-  }
   .list {
+    position: relative;
     width: 1300px;
     min-height: 497px;
     margin: 0 auto;
@@ -84,6 +95,7 @@
       justify-content: space-between;
       padding: 20px 30px;
       border-bottom: 1px solid #eee;
+      transition: all .3s;
       &:hover {
         box-shadow: 0 0 8px #eee;
         border-bottom-color: transparent;
@@ -123,6 +135,10 @@
           border-radius: 20px;
           border: 1px solid #eee;
           box-shadow: 0 0 5px #eeeeee;
+          transition: .3s;
+          &:hover {
+            box-shadow: 0 2px 5px #bee1f5;
+          }
         }
       }
     }
