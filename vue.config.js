@@ -12,7 +12,7 @@ module.exports = {
     : '/',
   // dev跨域问题
   devServer: {
-    port: 8085,
+    port: 8080,
     proxy: {
       '/auth': { target: 'http://localhost:8082/' },
       '/user': { target: 'http://localhost:8082/' },

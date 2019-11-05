@@ -3,7 +3,7 @@
     <div class="list">
       <div class="total">为您找到<em>{{ total }}</em>条记录</div>
       <div class="item" v-for="(item,index) in data" :key="item.id">
-        <div class="keywords" :style="{background:colors[index]}" v-if="item.keywords">{{ item.keywords[0] }}</div>
+        <keywords :back-color="colors[index]" :size="68">{{ item.keywords[0] }}</keywords>
         <div class="center" flex-box="1">
           <template v-if="currentType==='1'">
             <h2 v-html="item.highlight"></h2>
@@ -34,10 +34,11 @@
 
 <script>
   import NoData from '../no-data/no-data'
+  import Keywords from '../keywords/keywords'
 
   export default {
     name: 'base-list',
-    components: { NoData },
+    components: { Keywords, NoData },
     props: {
       data: {
         type: Array,
@@ -99,16 +100,6 @@
       &:hover {
         box-shadow: 0 0 8px #eee;
         border-bottom-color: transparent;
-      }
-      .keywords {
-        background: #1ba6ee;
-        color: #fff;
-        width: 68px;
-        height: 68px;
-        line-height: 68px;
-        border-radius: 5px;
-        text-align: center;
-        font-size: 22px;
       }
       .center {
         padding: 0 40px;

@@ -31,11 +31,27 @@ export function getDetail (id, type) {
 }
 
 /**
+ * 获取正负面信息统计次数
+ */
+export function getRedBlackNums (personId, type) {
+  return request({
+    url: '/api/docs/pn/aggs',
+    type: 'get',
+    params: {
+      personId, type
+    }
+  })
+}
+
+/**
  * 获取7大类别tab
  */
-export function getClassify () {
+export function getAggs (personId, type) {
   return request({
-    url: '/api/docs/classify',
-    type: 'get'
+    url: '/api/docs/aggs',
+    type: 'get',
+    params: {
+      personId, type
+    }
   })
 }
