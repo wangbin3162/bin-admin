@@ -7,7 +7,8 @@
         </base-header>
       </top-affix>
       <div class="detail-wrap">
-        <transition name="zoom-in-center">
+        <!--顶部详情-->
+        <transition name="fade-scale-move">
           <div class="top-box mb-20" v-if="current">
             <div class="tap report" flex="dir:top main:center cross:center">
               <em>信</em><em>用</em><em>报</em><em>告</em>
@@ -48,6 +49,29 @@
             </div>
           </div>
         </transition>
+        <!--分类信息详情-->
+        <transition name="move-up">
+          <div class="info-box" v-if="classifyTabs">
+            <div class="tabs">
+              <div v-for="tab in classifyTabs" :key="tab.id"
+                   class="tab t-center" :class="{'active':tab.code===activeCode}"
+                   @click="handleChangeAgg(tab.code)">
+                <span class="txt f-s-16">{{ tab.text }}</span>
+                <span class="amount f-s-12 ml-5">{{ tab.amount }}</span>
+              </div>
+            </div>
+            <transition name="zoom-in-top">
+              <div class="float-tab" v-show="childShow">
+                <div v-for="tab in currentTabs" :key="tab.id" @click="activeChildCode = tab.code"
+                     class="item" :class="[{'normal':tab.amount>0},{'active':tab.code===activeChildCode}]">
+                  <p>{{ tab.text }}</p>
+                  <p>{{ tab.amount }}</p>
+                </div>
+              </div>
+            </transition>
+            <div class="classify-box">分类详情盒子</div>
+          </div>
+        </transition>
       </div>
     </div>
   </base-layout>
@@ -70,7 +94,11 @@
           black: -1
         },
         type: '',
-        classifyTabs: null // 7大类别代码对象，动态获取并生成tabs
+        classifyTabs: null, // 7大类别代码对象，动态获取并生成tabs
+        classifyMap: {}, // 类别映射，根据code存储对应子类别
+        activeCode: '', // 默认选中的类别code
+        activeChildCode: '', // 子类别默认选中的code
+        childShow: false
       }
     },
     computed: {
@@ -82,6 +110,9 @@
         } else {
           return ['null']
         }
+      },
+      currentTabs () {
+        return this.classifyMap[this.activeCode] ? this.classifyMap[this.activeCode] : []
       }
     },
     filters: {
@@ -96,7 +127,13 @@
       this.fetchData()
     },
     watch: {
-      '$route': 'fetchData'
+      '$route': 'fetchData',
+      currentTabs (value) {
+        this.activeChildCode = value.length > 0 ? value[0].code : ''
+        setTimeout(() => {
+          this.childShow = true
+        }, 300)
+      }
     },
     methods: {
       // 获取内容数据并填充
@@ -120,11 +157,26 @@
         // 3.获取统计（聚集）查询接口（大小类）
         api.getAggs(this.currentDetailId, this.type).then(res => {
           this.classifyTabs = res.data.data
-          console.log(this.classifyTabs)
+          // 扁平化子类别对象
+          this.classifyTabs.forEach(tab => {
+            this.classifyMap[tab.code] = tab.children
+          })
+          // 默认选中一个
+          if (this.classifyTabs.length > 0) {
+            this.activeCode = this.classifyTabs[0].code
+          }
         })
       },
+      // 返回查询列表
       backToIndex () {
         this.$router.push('/index')
+      },
+      // 更改主体类别事件
+      handleChangeAgg (code) {
+        if (this.activeCode !== code) {
+          this.activeCode = code
+          this.childShow = false
+        }
       }
     }
   }
@@ -204,7 +256,7 @@
         }
         &.black {
           background-image url("../../assets/images/blackname.png");
-          color: #666666;
+          color: #333333;
         }
       }
       .download {
@@ -213,6 +265,67 @@
         border-radius: 20px;
         padding: 0 20px;
         color: #fff;
+      }
+    }
+    .info-box {
+      position: relative;
+      background: #fff;
+      border: 1px solid #eee;
+      .tabs {
+        display: flex;
+        border-bottom: 1px solid #eee;
+        line-height: 54px;
+        .tab {
+          flex: 1;
+          cursor: pointer;
+          background-color: #f7f7f7;
+          .txt {
+            color: #333333;
+          }
+          .amount {
+            color: #999999;
+          }
+          &.active {
+            background-color: #ffffff;
+            .txt, .amount {
+              color: #1badf8;
+            }
+          }
+        }
+      }
+      .float-tab {
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        top: 56px;
+        left: 0;
+        width: 120px;
+        margin-left: -121px;
+        .item {
+          background: #fff;
+          width: 100%;
+          padding: 10px 15px;
+          text-align: center;
+          border-bottom: 1px solid #eeeeee;
+          cursor: pointer;
+          color: #aaaaaa;
+          p {
+            margin: 0;
+            line-height: 25px;
+          }
+          &.normal {
+            color: #333333;
+          }
+          &.active {
+            color: #ffffff;
+            background: #1badf8;
+          }
+        }
+      }
+      .classify-box {
+        padding: 20px 46px;
+        min-height: 800px;
       }
     }
   }

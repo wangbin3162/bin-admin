@@ -41,6 +41,7 @@
   .header-wrap {
     padding: 10px 0;
     background: #fff;
+    box-shadow: 0 0 5px #eeeeee;
     .header-inner {
       width: 1300px;
       margin: 0 auto;
