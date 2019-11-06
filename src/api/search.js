@@ -44,6 +44,19 @@ export function getRedBlackNums (personId, type) {
 }
 
 /**
+ * 自然人、法人或其他组织正负面信息资源统计接口
+ */
+export function getPnStat (personId, type, pnType) {
+  return request({
+    url: '/api/docs/pn/stat',
+    type: 'get',
+    params: {
+      personId, type, pnType
+    }
+  })
+}
+
+/**
  * 获取7大类别tab
  */
 export function getAggs (personId, type) {
@@ -52,6 +65,19 @@ export function getAggs (personId, type) {
     type: 'get',
     params: {
       personId, type
+    }
+  })
+}
+
+/**
+ * 法人或其他组织法定代表人所属公司列表查询接口
+ */
+export function getCompList (fddbr) {
+  return request({
+    url: '/api/docs/compList',
+    type: 'get',
+    params: {
+      fddbr
     }
   })
 }

@@ -39,8 +39,8 @@
             <b-divider></b-divider>
             <div flex="main:justify">
               <div>
-                <span class="btn red mr-10">正面信息 ({{ redBlackNum.red }})</span>
-                <span class="btn black">负面信息 ({{ redBlackNum.black }})</span>
+                <span class="btn red mr-10" @click="handleClickAggs('1')">正面信息 ({{ redBlackNum.red }})</span>
+                <span class="btn black" @click="handleClickAggs('2')">负面信息 ({{ redBlackNum.black }})</span>
               </div>
               <a href="#" class="download">
                 <b-icon name="ios-cloud-download" size="16"></b-icon>
@@ -60,16 +60,60 @@
                 <span class="amount f-s-12 ml-5">{{ tab.amount }}</span>
               </div>
             </div>
-            <transition name="zoom-in-top">
-              <div class="float-tab" v-show="childShow">
-                <div v-for="tab in currentTabs" :key="tab.id" @click="activeChildCode = tab.code"
-                     class="item" :class="[{'normal':tab.amount>0},{'active':tab.code===activeChildCode}]">
-                  <p>{{ tab.text }}</p>
-                  <p>{{ tab.amount }}</p>
+            <div class="float-tab" ref="floatTable">
+              <div v-for="tab in currentTabs" :key="tab.id" @click="activeChildCode = tab.code"
+                   class="item" :class="[{'normal':tab.amount>0},{'active':tab.code===activeChildCode}]">
+                <p>{{ tab.text }}</p>
+                <p>{{ tab.amount }}</p>
+              </div>
+            </div>
+            <div class="classify-box">
+              <div class="comp-list mb-15" flex>
+                <div class="left">
+                  <h4 class="title">法定代表人</h4>
+                  <div class="p15">
+                    <div flex v-if="current.fddbr">
+                      <keywords :size="55" back-color="#A088D2">{{ current.fddbr.slice(0,1) }}</keywords>
+                      <div class="pl-10" flex-box="1">
+                        <div class="mb-10 f-s-20 f-color-blue">{{ current.fddbr }}</div>
+                        <p class="m0 f-s-12 f-color-666">
+                          他有<span class="f-color-red">{{ compTotal }}</span>家公司，分布如下
+                        </p>
+                      </div>
+                    </div>
+                    <div class="list pt-15">
+                      <template v-for="(comp,index) in compList">
+                        <p :key="comp.id" v-if="index < 3">{{ comp.comp_name }}</p>
+                      </template>
+                      <span class="link mt-5" v-if="compList.length > 3">更多<b-icon name="doubleright"></b-icon></span>
+                    </div>
+                  </div>
+                </div>
+                <div class="right" flex-box="1">
+                  <h4 class="title">股权穿透图</h4>
+                  <div flex="main:center cross:center">
+                    <img src="../../assets/images/gq-test.png" height="167" width="619" alt="gq" title="查看详情"/>
+                  </div>
                 </div>
               </div>
-            </transition>
-            <div class="classify-box">分类详情盒子</div>
+              <title-bar label="基本信息" class="mb-15"></title-bar>
+              <title-bar class="mb-15" tip-pos="left" :font-size="18">
+                工商机构登记信息(<span class="f-color-blue">1</span>)
+              </title-bar>
+              <key-label-wrap>
+                <key-label label="注册资本">{{ current.zczb }}万人民币</key-label>
+                <key-label label="成立日期">{{ current.clrq | valueFilter }}</key-label>
+                <key-label label="登记状态">{{ current.djzt | valueFilter }}</key-label>
+                <key-label label="工商注册号">{{ current.id_gszc | valueFilter }}</key-label>
+                <key-label label="统一社会信用代码">{{ current.id_shxym | valueFilter }}</key-label>
+                <key-label label="组织机构代码">{{ current.id_zzjg | valueFilter }}</key-label>
+                <key-label label="纳税人识别号">{{ current.id_swdj | valueFilter }}</key-label>
+                <key-label label="公司类型">{{ current.lx | valueFilter }}</key-label>
+                <key-label label="核准日期">{{ current.hzrq | valueFilter }}</key-label>
+                <key-label label="登记机关">{{ current.djjg | valueFilter }}</key-label>
+                <key-label label="注册地址" is-full>{{ current.zs | valueFilter }}</key-label>
+              </key-label-wrap>
+            </div>
           </div>
         </transition>
       </div>
@@ -81,14 +125,17 @@
   import { mapGetters } from 'vuex'
   import * as api from '../../api/search'
   import Keywords from '../../components/keywords/keywords'
+  import animations from 'bin-animation'
+  import KeyLabelWrap from '../../components/key-label/KeyLabelWrap'
 
   export default {
     name: 'detail',
-    components: { Keywords },
+    components: { KeyLabelWrap, Keywords },
     data () {
       return {
         mapping: {},
         current: null,
+        baseInfo: [], // 基本信息数组
         redBlackNum: { // 正负面信息数量
           red: -1,
           black: -1
@@ -98,7 +145,8 @@
         classifyMap: {}, // 类别映射，根据code存储对应子类别
         activeCode: '', // 默认选中的类别code
         activeChildCode: '', // 子类别默认选中的code
-        childShow: false
+        compList: [], // 当前法定代表人名下的公司
+        compTotal: 0
       }
     },
     computed: {
@@ -118,7 +166,7 @@
     filters: {
       valueFilter (value) {
         if (!value || value.toString().length === 0) {
-          return '--'
+          return '-'
         }
         return value
       }
@@ -130,9 +178,31 @@
       '$route': 'fetchData',
       currentTabs (value) {
         this.activeChildCode = value.length > 0 ? value[0].code : ''
-        setTimeout(() => {
-          this.childShow = true
-        }, 300)
+        let el = this.$refs['floatTable']
+        if (el) {
+          // 创建动画
+          animations.create({
+            name: 'move',
+            animation: {
+              '0%': {
+                transform: 'translate3d(-30%, 0, 0)',
+                opacity: 0
+              },
+              '100%': {
+                transform: 'translate3d(0, 0, 0)',
+                opacity: 1
+              }
+            },
+            presets: {
+              duration: 400,
+              easing: 'ease-in-out'
+            }
+          })
+          // 运行动画
+          animations.run(el, 'move', () => {
+            animations.remove('move')
+          })
+        }
       }
     },
     methods: {
@@ -147,6 +217,14 @@
         api.getDetail(this.currentDetailId, this.type).then(res => {
           this.current = res.data.data
           this.mapping = res.data.mapping
+          console.log(this.mapping)
+          console.log(this.current)
+          if (this.current.fddbr) {
+            api.getCompList(this.current.fddbr).then(response => {
+              this.compList = response.data.rows
+              this.compTotal = response.data.total
+            })
+          }
         })
         // 2.获取正负面信息条目数
         api.getRedBlackNums(this.currentDetailId, this.type).then(res => {
@@ -163,13 +241,20 @@
           })
           // 默认选中一个
           if (this.classifyTabs.length > 0) {
-            this.activeCode = this.classifyTabs[0].code
+            this.handleChangeAgg(this.classifyTabs[0].code)
           }
         })
       },
       // 返回查询列表
       backToIndex () {
         this.$router.push('/index')
+      },
+      // 正负面信息点击事件
+      handleClickAggs (pnType) {
+        api.getPnStat(this.currentDetailId, this.type, pnType).then(res => {
+          const result = res.data.data
+          console.log(result)
+        })
       },
       // 更改主体类别事件
       handleChangeAgg (code) {
@@ -326,6 +411,30 @@
       .classify-box {
         padding: 20px 46px;
         min-height: 800px;
+      }
+    }
+  }
+  .classify-box {
+    .comp-list {
+      border: 1px solid #eee;
+      min-height: 240px;
+      .title {
+        margin: 0;
+        text-align: center;
+        line-height: 40px;
+        background: #fafbfc;
+        font-weight: normal;
+        color: #333;
+      }
+      .left {
+        width: 382px;
+        border-right: 1px solid #eee;
+        .list {
+          p {
+            margin: 0;
+            line-height: 25px;
+          }
+        }
       }
     }
   }

@@ -11,7 +11,7 @@
 
 <script>
   export default {
-    name: 'VKeyLabel',
+    name: 'KeyLabel',
     props: {
       label: {
         type: String,
@@ -20,23 +20,19 @@
       },
       labelWidth: {
         type: String,
-        default: '130px'
+        default: '145px'
       },
       labelPosition: {
         type: String,
-        default: 'right'
+        default: 'left'
       },
-      isHalf: Boolean,
-      isFirst: Boolean,
-      isBottom: Boolean
+      isFull: Boolean
     },
     computed: {
       rowStyle () {
         let style = {}
         style = Object.assign({}, {
-          width: this.isHalf ? '50%' : '100%',
-          borderBottom: !this.isBottom ? 'none' : null,
-          borderRight: this.isFirst ? 'none' : null
+          width: this.isFull ? '100%' : '50%'
         })
         return style
       },
@@ -54,11 +50,10 @@
   .key-label {
     display: inline-block;
     line-height: 40px;
-    border: 1px solid #d5d9de;
+    border-bottom: 1px solid #f0f3f5;
     .label {
-      padding: 0 10px;
-      background: #fafafa;
-      border-right: 1px solid #d5d9de;
+      padding: 0 15px;
+      background: #fafbfc;
     }
     .val {
       padding: 0 10px;
