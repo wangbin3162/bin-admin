@@ -33,7 +33,7 @@ export function getDetail (id, type) {
 /**
  * 获取正负面信息统计次数
  */
-export function getRedBlackNums (personId, type) {
+export function getPnAggs (personId, type) {
   return request({
     url: '/api/docs/pn/aggs',
     type: 'get',
@@ -65,6 +65,49 @@ export function getAggs (personId, type) {
     type: 'get',
     params: {
       personId, type
+    }
+  })
+}
+
+/**
+ * 指定类别下的资源信息接口
+ */
+export function getClassifyStat (personId, type, classifyCode) {
+  return request({
+    url: '/api/docs/classify/stat',
+    type: 'get',
+    params: {
+      personId, type, classifyCode
+    }
+  })
+}
+
+/**
+ * 获取资源信息列表
+ */
+export function getQueryList (listQuery) {
+  return request({
+    url: '/api/docs/query/list',
+    type: 'get',
+    params: {
+      personId: listQuery.personId,
+      resourceKey: listQuery.resourceKey,
+      type: listQuery.type,
+      page: listQuery.page - 1,
+      size: listQuery.size
+    }
+  })
+}
+
+/**
+ * 获取资源信息列表详情
+ */
+export function getQueryDetail (id, resourceKey, type) {
+  return request({
+    url: '/api/docs/query/detail',
+    type: 'get',
+    params: {
+      id, resourceKey, type
     }
   })
 }

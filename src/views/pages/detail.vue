@@ -39,8 +39,8 @@
             <b-divider></b-divider>
             <div flex="main:justify">
               <div>
-                <span class="btn red mr-10" @click="handleClickAggs('1')">正面信息 ({{ redBlackNum.red }})</span>
-                <span class="btn black" @click="handleClickAggs('2')">负面信息 ({{ redBlackNum.black }})</span>
+                <span class="btn red mr-10" @click="handleClickAggs('1')">正面信息 ({{ pnInfo.p }})</span>
+                <span class="btn black" @click="handleClickAggs('2')">负面信息 ({{ pnInfo.n }})</span>
               </div>
               <a href="#" class="download">
                 <b-icon name="ios-cloud-download" size="16"></b-icon>
@@ -50,7 +50,7 @@
           </div>
         </transition>
         <!--分类信息详情-->
-        <transition name="move-up">
+        <transition name="fade-scale-move">
           <div class="info-box" v-if="classifyTabs">
             <div class="tabs">
               <div v-for="tab in classifyTabs" :key="tab.id"
@@ -61,7 +61,7 @@
               </div>
             </div>
             <div class="float-tab" ref="floatTable">
-              <div v-for="tab in currentTabs" :key="tab.id" @click="activeChildCode = tab.code"
+              <div v-for="tab in currentTabs" :key="tab.id" @click="handleChangeClassifyCode(tab.code)"
                    class="item" :class="[{'normal':tab.amount>0},{'active':tab.code===activeChildCode}]">
                 <p>{{ tab.text }}</p>
                 <p>{{ tab.amount }}</p>
@@ -72,7 +72,7 @@
                 <div class="left">
                   <h4 class="title">法定代表人</h4>
                   <div class="p15">
-                    <div flex v-if="current.fddbr">
+                    <div flex v-if="current && current.fddbr">
                       <keywords :size="55" back-color="#A088D2">{{ current.fddbr.slice(0,1) }}</keywords>
                       <div class="pl-10" flex-box="1">
                         <div class="mb-10 f-s-20 f-color-blue">{{ current.fddbr }}</div>
@@ -118,6 +118,7 @@
         </transition>
       </div>
     </div>
+    <detail-pn :title="currentPnTitle" :current="current" :mapping="mapping" ref="pnDetailModal"></detail-pn>
   </base-layout>
 </template>
 
@@ -127,18 +128,21 @@
   import Keywords from '../../components/keywords/keywords'
   import animations from 'bin-animation'
   import KeyLabelWrap from '../../components/key-label/KeyLabelWrap'
+  import DetailPn from './detail-pn'
 
   export default {
     name: 'detail',
-    components: { KeyLabelWrap, Keywords },
+    components: { DetailPn, KeyLabelWrap, Keywords },
     data () {
       return {
         mapping: {},
         current: null,
         baseInfo: [], // 基本信息数组
-        redBlackNum: { // 正负面信息数量
-          red: -1,
-          black: -1
+        pnInfo: { // 正负面信息数据
+          p: -1, // 正面信息positive
+          n: -1, // 负面信息数量negative
+          pTabs: [], // 正面信息tabs
+          nTabs: [] // 负面信息tabs
         },
         type: '',
         classifyTabs: null, // 7大类别代码对象，动态获取并生成tabs
@@ -161,14 +165,9 @@
       },
       currentTabs () {
         return this.classifyMap[this.activeCode] ? this.classifyMap[this.activeCode] : []
-      }
-    },
-    filters: {
-      valueFilter (value) {
-        if (!value || value.toString().length === 0) {
-          return '-'
-        }
-        return value
+      },
+      currentPnTitle () {
+        return this.current ? this.current.comp_name : '标题'
       }
     },
     created () {
@@ -177,7 +176,8 @@
     watch: {
       '$route': 'fetchData',
       currentTabs (value) {
-        this.activeChildCode = value.length > 0 ? value[0].code : ''
+        let code = value.length > 0 ? value[0].code : ''
+        this.handleChangeClassifyCode(code)
         let el = this.$refs['floatTable']
         if (el) {
           // 创建动画
@@ -217,8 +217,6 @@
         api.getDetail(this.currentDetailId, this.type).then(res => {
           this.current = res.data.data
           this.mapping = res.data.mapping
-          console.log(this.mapping)
-          console.log(this.current)
           if (this.current.fddbr) {
             api.getCompList(this.current.fddbr).then(response => {
               this.compList = response.data.rows
@@ -226,11 +224,9 @@
             })
           }
         })
-        // 2.获取正负面信息条目数
-        api.getRedBlackNums(this.currentDetailId, this.type).then(res => {
-          const result = res.data.data
-          this.redBlackNum.red = result.p
-          this.redBlackNum.black = result.n
+        // 2.获取正负面信息
+        this.getPnAggsInfo().then(res => {
+          this.pnInfo = { ...res }
         })
         // 3.获取统计（聚集）查询接口（大小类）
         api.getAggs(this.currentDetailId, this.type).then(res => {
@@ -245,22 +241,62 @@
           }
         })
       },
+      // 获取正负面信息条目数和正负面信息tabs列表
+      async getPnAggsInfo () {
+        let pnInfo = { // 正负面信息数据
+          p: -1, // 正面信息positive
+          n: -1, // 负面信息数量negative
+          pTabs: [], // 正面信息tabs
+          nTabs: [] // 负面信息tabs
+        }
+        try {
+          let result = await Promise.all([
+            api.getPnAggs(this.currentDetailId, this.type),
+            api.getPnStat(this.currentDetailId, this.type, '1'),
+            api.getPnStat(this.currentDetailId, this.type, '2')
+          ])
+          if (result[0].data.code === '0') { // 正负面信息条数设置
+            pnInfo.p = result[0].data.data.p
+            pnInfo.n = result[0].data.data.n
+          }
+          if (result[1].data.code === '0') { // 正面信息tabs
+            pnInfo.pTabs = result[1].data.data
+          }
+          if (result[2].data.code === '0') { // 负面信息tabs
+            pnInfo.nTabs = result[2].data.data
+          }
+        } catch (e) {
+        }
+        return pnInfo
+      },
       // 返回查询列表
       backToIndex () {
         this.$router.push('/index')
       },
       // 正负面信息点击事件
       handleClickAggs (pnType) {
-        api.getPnStat(this.currentDetailId, this.type, pnType).then(res => {
-          const result = res.data.data
-          console.log(result)
-        })
+        const pnDetail = this.$refs.pnDetailModal
+        const tabs = pnType === '1' ? this.pnInfo.pTabs : this.pnInfo.nTabs
+        if (pnDetail) {
+          pnDetail.open(pnType, tabs)
+        }
       },
       // 更改主体类别事件
       handleChangeAgg (code) {
         if (this.activeCode !== code) {
           this.activeCode = code
-          this.childShow = false
+        }
+      },
+      // 子类别改变事件
+      handleChangeClassifyCode (code) {
+        if (this.activeChildCode !== code) {
+          this.activeChildCode = code
+          // 获取不同类别下的资源信息
+          // api.getClassifyStat(this.currentDetailId, this.type, this.activeChildCode)
+          //   .then(res => {
+          //     console.log(code)
+          //     console.log(res.data)
+          //   })
         }
       }
     }

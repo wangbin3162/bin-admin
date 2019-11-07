@@ -35,6 +35,14 @@ export default {
     Vue.component(KeyLabel.name, KeyLabel)
     // 查看显示组件
     Vue.component('CollapseTransition', BinUI.CollapseTransition)
+    // 注册全局过滤器
+    Vue.filter('valueFilter', (value) => {
+        if (!value || value.toString().length === 0) {
+          return '-'
+        }
+        return value
+      }
+    )
     // 全局通信
     Vue.prototype.$EventBus = new Vue()
   }
