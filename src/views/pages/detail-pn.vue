@@ -12,21 +12,27 @@
               <div class="inner" flex>
                 <keywords :font-size="32" :radius="10" :size="100" :words="keyword"></keywords>
                 <div class="right" flex-box="1">
-                  <h2 class="title-name">{{ current.comp_name }}<span class="ml-15">{{ current.djzt }}</span></h2>
-                  <p flex="box:mean">
-                    <span>统一社会信用代码：{{ current.id_shxym | valueFilter }}</span>
-                    <span>地址：{{ current.zs | valueFilter }}</span>
-                  </p>
-                  <p flex="box:mean">
-                    <span>{{ mapping.fddbr }}：{{ current.fddbr | valueFilter }}</span>
-                    <span>{{ mapping.zczb }}：{{ current.zczb | valueFilter}}</span>
-                  </p>
-                  <p flex="box:mean">
-                    <span>{{ mapping.clrq }}：{{ current.clrq | valueFilter}}</span>
-                  </p>
-                  <p flex="box:mean">
-                    <span>{{ mapping.jyfw }}：{{ current.jyfw | valueFilter}}</span>
-                  </p>
+                  <template v-if="isLeg">
+                    <h2 class="title-name">{{ current.comp_name }}<span class="ml-15">{{ current.djzt }}</span></h2>
+                    <p flex="box:mean">
+                      <span>统一社会信用代码：{{ current.id_shxym | valueFilter }}</span>
+                      <span>地址：{{ current.zs | valueFilter }}</span>
+                    </p>
+                    <p flex="box:mean">
+                      <span>{{ mapping.fddbr }}：{{ current.fddbr | valueFilter }}</span>
+                      <span>{{ mapping.zczb }}：{{ current.zczb | valueFilter}}</span>
+                    </p>
+                    <p flex="box:mean">
+                      <span>{{ mapping.clrq }}：{{ current.clrq | valueFilter}}</span>
+                    </p>
+                    <p flex="box:mean">
+                      <span>{{ mapping.jyfw }}：{{ current.jyfw | valueFilter}}</span>
+                    </p>
+                  </template>
+                  <template v-else>
+                    <h2 class="title-name">{{ current.name }}</h2>
+                    <p>身份证号码：{{ current.id_sfz | valueFilter }}</p>
+                  </template>
                 </div>
               </div>
             </div>
@@ -50,6 +56,7 @@
 </template>
 
 <script>
+  import { mapGetters } from 'vuex'
   import TitleHeader from '../../components/title-header/title-header'
   import Keywords from '../../components/keywords/keywords'
   import { deepCopy } from '../../utils/assist'
@@ -79,13 +86,27 @@
       }
     },
     computed: {
+      ...mapGetters(['searchData']),
+      // 当前是查询的法人还是自然人
+      type () {
+        return this.searchData.type
+      },
+      // 当前是否是法人
+      isLeg () {
+        return this.searchData.type === this.ENUM.Leg
+      },
       keyword () {
-        if (this.current && this.current.comp_name) {
-          let size = this.current.comp_name.length >= 4 ? 4 : 1
-          return this.current.comp_name.slice(0, size).split('')
+        if (this.isLeg) {
+          if (this.current && this.current.comp_name) {
+            let size = this.current.comp_name.length >= 4 ? 4 : 1
+            return this.current.comp_name.slice(0, size).split('')
+          }
         } else {
-          return ['null']
+          if (this.current && this.current.name) {
+            return [this.current.name.slice(0, 1)]
+          }
         }
+        return ['null']
       }
     },
     methods: {
@@ -101,6 +122,14 @@
       },
       close () {
         this.visible = false
+      }
+    },
+    filters: {
+      valueFilter (value) {
+        if (!value || value.toString().length === 0) {
+          return '-'
+        }
+        return value
       }
     }
   }

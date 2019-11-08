@@ -11,6 +11,7 @@ import BaseSearch from '../components/base-search/search'
 import TopSearch from '../components/top-search/top-search'
 import TopAffix from '../components/top-affix/top-affix'
 import TitleBar from '../components/title-bar/index'
+import KeyLabelWrap from '../components/key-label/KeyLabelWrap'
 import KeyLabel from '../components/key-label/KeyLabel'
 
 export default {
@@ -31,19 +32,23 @@ export default {
     Vue.component(TopAffix.name, TopAffix)
     // 标题组件
     Vue.component(TitleBar.name, TitleBar)
+    // 查看显示组件容器
+    Vue.component(KeyLabelWrap.name, KeyLabelWrap)
     // 查看显示组件
     Vue.component(KeyLabel.name, KeyLabel)
     // 查看显示组件
     Vue.component('CollapseTransition', BinUI.CollapseTransition)
-    // 注册全局过滤器
-    Vue.filter('valueFilter', (value) => {
-        if (!value || value.toString().length === 0) {
-          return '-'
-        }
-        return value
-      }
-    )
     // 全局通信
     Vue.prototype.$EventBus = new Vue()
+
+    /**
+     * 全局枚举
+     */
+    Vue.prototype.ENUM = {
+      Leg: '1', // 法人
+      Nat: '2', // 自然人
+      Positive: '1', // 正面信息
+      Negative: '2' // 负面面信息
+    }
   }
 }

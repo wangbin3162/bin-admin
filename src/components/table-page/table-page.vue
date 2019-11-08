@@ -8,12 +8,18 @@
     <div class="page">
       <b-page :total="total" :current.sync="listQuery.page" show-total @on-change="handlePageChange"></b-page>
     </div>
-    <b-modal v-model="detailVisible" class-name="table-page-detail"
-             title="信息详情" footer-hide width="1300">
+    <b-modal v-model="detailVisible" class-name="table-page-detail-modal"
+             title="信息详情" footer-hide width="1300" :mask-closable="false">
       <title-bar tip-pos="left" :font-size="18" label="信息详情" slot="header"></title-bar>
-      <p>我是弹窗内容...</p>
-      <p>我是弹窗内容...</p>
-      <p>我是弹窗内容...</p>
+      <b-scrollbar style="height: 100%;">
+        <key-label-wrap style="margin:0 10px;">
+          <key-label
+              v-for="col in detailColumns" :key="col.key"
+              is-full :label="col.title" label-width="155px">
+            {{ detailObj[col.key] | valueFilter }}
+          </key-label>
+        </key-label-wrap>
+      </b-scrollbar>
     </b-modal>
   </div>
 </template>
@@ -43,7 +49,9 @@
         list: [],
         total: 0,
         loading: false,
-        detailVisible: false
+        detailVisible: false,
+        detailColumns: [],
+        detailObj: null
       }
     },
     computed: {
@@ -73,7 +81,6 @@
           this.list = res.data.rows
           this.total = res.data.total
           this.loading = false
-          console.log(res.data)
         })
       },
       // 表格列转换操作
@@ -97,15 +104,26 @@
         return ret
       },
       // 分页改变事件
-      handlePageChange (page) {
-        console.log(this.listQuery.page)
-        console.log(page)
+      handlePageChange () {
         this.fetchData()
       },
       // 查看详情
       handleCheck (row) {
-        this.detailVisible = true
-        console.log(row)
+        api.getQueryDetail(row.id, this.resourceKey, this.searchData.type).then(res => {
+          if (res.data.code === '0') {
+            this.detailColumns = res.data.columns
+            this.detailObj = res.data.data
+            this.detailVisible = true
+          }
+        })
+      }
+    },
+    filters: {
+      valueFilter (value) {
+        if (!value || value.toString().length === 0) {
+          return '-'
+        }
+        return value
       }
     }
   }
