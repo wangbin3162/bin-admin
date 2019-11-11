@@ -20,7 +20,7 @@
                     </p>
                     <p flex="box:mean">
                       <span>{{ mapping.fddbr }}：{{ current.fddbr | valueFilter }}</span>
-                      <span>{{ mapping.zczb }}：{{ current.zczb | valueFilter}}</span>
+                      <span>注册资本：{{  fieldShow('zczb') }}</span>
                     </p>
                     <p flex="box:mean">
                       <span>{{ mapping.clrq }}：{{ current.clrq | valueFilter}}</span>
@@ -122,6 +122,18 @@
       },
       close () {
         this.visible = false
+      },
+      // 字段显示函数
+      fieldShow (name) {
+        if (this.current && this.current[name] && this.current[name].toString().length !== 0) {
+          if (name === 'zczb') {
+            let total = this.current[name] / 10000
+            let bz = this.current['zczbbz'] // 注册资本币种
+            return bz ? `${total}万${bz}` : `${total}万元`
+          }
+          return this.current[name]
+        }
+        return '-'
       }
     },
     filters: {

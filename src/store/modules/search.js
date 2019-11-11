@@ -3,9 +3,9 @@ export default {
     searchData: {
       type: '1',
       reason: '', // TODO 查询原因暂时没实现功能
-      q: '大米科技'
+      q: ''
     },
-    detailId: 'b51788af29164d98a970db492c02ea7d' // 设置默认id:b51788af29164d98a970db492c02ea7d
+    detailId: '' // 设置默认id:b51788af29164d98a970db492c02ea7d
   },
   mutations: {
     SET_SEARCH_DATA: (state, data) => {

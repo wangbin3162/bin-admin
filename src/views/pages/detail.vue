@@ -28,7 +28,7 @@
                   </p>
                   <p flex="box:mean">
                     <span>{{ mapping.fddbr }}：{{ current.fddbr | valueFilter }}</span>
-                    <span>{{ mapping.zczb }}：{{ current.zczb | valueFilter}}</span>
+                    <span>注册资本：{{  fieldShow('zczb') }}</span>
                   </p>
                   <p flex="box:mean">
                     <span>{{ mapping.clrq }}：{{ current.clrq | valueFilter}}</span>
@@ -112,17 +112,17 @@
                   {{ isLeg?'工商机构登记信息':'户籍人口信息' }}(<span class="f-color-blue">1</span>)
                 </title-bar>
                 <key-label-wrap v-if="isLeg">
-                  <key-label label="注册资本">{{ current.zczb }}万人民币</key-label>
-                  <key-label label="成立日期">{{ current.clrq | valueFilter }}</key-label>
-                  <key-label label="登记状态">{{ current.djzt | valueFilter }}</key-label>
-                  <key-label label="工商注册号">{{ current.id_gszc | valueFilter }}</key-label>
-                  <key-label label="统一社会信用代码">{{ current.id_shxym | valueFilter }}</key-label>
-                  <key-label label="组织机构代码">{{ current.id_zzjg | valueFilter }}</key-label>
-                  <key-label label="纳税人识别号">{{ current.id_swdj | valueFilter }}</key-label>
-                  <key-label label="公司类型">{{ current.lx | valueFilter }}</key-label>
-                  <key-label label="核准日期">{{ current.hzrq | valueFilter }}</key-label>
-                  <key-label label="登记机关">{{ current.djjg | valueFilter }}</key-label>
-                  <key-label label="注册地址" is-full>{{ current.zs | valueFilter }}</key-label>
+                  <key-label label="注册资本">{{ fieldShow('zczb') }}</key-label>
+                  <key-label label="成立日期">{{  current.clrq | valueFilter }}</key-label>
+                  <key-label label="登记状态">{{  current.djzt | valueFilter }}</key-label>
+                  <key-label label="工商注册号">{{  current.id_gszc | valueFilter }}</key-label>
+                  <key-label label="统一社会信用代码">{{  current.id_shxym | valueFilter }}</key-label>
+                  <key-label label="组织机构代码">{{  current.id_zzjg | valueFilter }}</key-label>
+                  <key-label label="纳税人识别号">{{  current.id_swdj | valueFilter }}</key-label>
+                  <key-label label="公司类型">{{  current.lx | valueFilter }}</key-label>
+                  <key-label label="核准日期">{{  current.hzrq | valueFilter }}</key-label>
+                  <key-label label="登记机关">{{  current.djjg | valueFilter }}</key-label>
+                  <key-label label="注册地址" is-full>{{  current.zs | valueFilter }}</key-label>
                 </key-label-wrap>
                 <key-label-wrap v-else>
                   <key-label label="姓名">{{ current.name }}</key-label>
@@ -274,6 +274,18 @@
       }
     },
     methods: {
+      // 字段显示函数
+      fieldShow (name) {
+        if (this.current && this.current[name] && this.current[name].toString().length !== 0) {
+          if (name === 'zczb') {
+            let total = this.current[name] / 10000
+            let bz = this.current['zczbbz'] // 注册资本币种
+            return bz ? `${total}万${bz}` : `${total}万元`
+          }
+          return this.current[name]
+        }
+        return '-'
+      },
       // 获取内容数据并填充
       fetchData () {
         this.getDetailData()
