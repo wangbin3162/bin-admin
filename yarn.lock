@@ -1907,15 +1907,16 @@ bin-animation@^1.1.1:
   dependencies:
     babel-runtime "^6.26.0"
 
-bin-ui@^2.3.3:
-  version "2.3.3"
-  resolved "https://registry.npmjs.org/bin-ui/-/bin-ui-2.3.3.tgz#3ded1570afabeebfe5c740e9a23ab2082c440652"
-  integrity sha512-5LGx+mV3VXxoadhVN8kBotLa7Ejo+hY2t0ar4apo66yV2ZzRMbJDbp3nm7eAfkngc81nhFWdsFl/fDL/Pvz/yg==
+bin-ui@^2.3.5:
+  version "2.3.5"
+  resolved "https://registry.npmjs.org/bin-ui/-/bin-ui-2.3.5.tgz#542941fb4f6886c3e9f04b6ccb5ae4f9b004dfa5"
+  integrity sha512-q3u9Oi4nwo+7yn/3nPADTjvjuq3EjLXjLvh9WnnxcH6ourpQ1Rgq8FLWMfVXpnvqUjN3jSnZ/ix6ouOlcx+w9Q==
   dependencies:
     async-validator "^1.11.5"
     js-calendar "^1.2.3"
     popper.js "^1.15.0"
     resize-observer-polyfill "^1.5.1"
+    tinycolor2 "^1.4.1"
 
 binary-extensions@^1.0.0:
   version "1.13.1"
@@ -8998,6 +8999,11 @@ tiny-emitter@^2.0.0:
   version "2.1.0"
   resolved "https://registry.npmjs.org/tiny-emitter/-/tiny-emitter-2.1.0.tgz#1d1a56edfc51c43e863cbb5382a72330e3555423"
   integrity sha512-NB6Dk1A9xgQPMoGqC5CVXn123gWyte215ONT5Pp5a0yt4nlEoO1ZWeCwpncaekPHXO60i47ihFnZPiRPjRMq4Q==
+
+tinycolor2@^1.4.1:
+  version "1.4.1"
+  resolved "https://registry.npmjs.org/tinycolor2/-/tinycolor2-1.4.1.tgz#f4fad333447bc0b07d4dc8e9209d8f39a8ac77e8"
+  integrity sha1-9PrTM0R7wLB9TcjpIJ2POaisd+g=
 
 tmp@^0.0.33:
   version "0.0.33"
