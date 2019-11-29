@@ -102,8 +102,9 @@
                   </div>
                   <div class="right" flex-box="1">
                     <h4 class="title">股权穿透图</h4>
-                    <div flex="main:center cross:center">
-                      <img src="../../assets/images/gq-test.png" height="167" width="619" alt="gq" title="查看详情"/>
+                    <div class="pb-15" flex="dir:top main:center cross:center">
+                      <img src="../../assets/images/gq-test.png" alt="gq"/>
+                      <b-button class="gq-btn" size="small" @click="handleCheckStock">查看详情</b-button>
                     </div>
                   </div>
                 </div>
@@ -113,16 +114,16 @@
                 </title-bar>
                 <key-label-wrap v-if="isLeg">
                   <key-label label="注册资本">{{ fieldShow('zczb') }}</key-label>
-                  <key-label label="成立日期">{{  current.clrq | valueFilter }}</key-label>
-                  <key-label label="登记状态">{{  current.djzt | valueFilter }}</key-label>
-                  <key-label label="工商注册号">{{  current.id_gszc | valueFilter }}</key-label>
-                  <key-label label="统一社会信用代码">{{  current.id_shxym | valueFilter }}</key-label>
-                  <key-label label="组织机构代码">{{  current.id_zzjg | valueFilter }}</key-label>
-                  <key-label label="纳税人识别号">{{  current.id_swdj | valueFilter }}</key-label>
-                  <key-label label="公司类型">{{  current.lx | valueFilter }}</key-label>
-                  <key-label label="核准日期">{{  current.hzrq | valueFilter }}</key-label>
-                  <key-label label="登记机关">{{  current.djjg | valueFilter }}</key-label>
-                  <key-label label="注册地址" is-full>{{  current.zs | valueFilter }}</key-label>
+                  <key-label label="成立日期">{{ current.clrq | valueFilter }}</key-label>
+                  <key-label label="登记状态">{{ current.djzt | valueFilter }}</key-label>
+                  <key-label label="工商注册号">{{ current.id_gszc | valueFilter }}</key-label>
+                  <key-label label="统一社会信用代码">{{ current.id_shxym | valueFilter }}</key-label>
+                  <key-label label="组织机构代码">{{ current.id_zzjg | valueFilter }}</key-label>
+                  <key-label label="纳税人识别号">{{ current.id_swdj | valueFilter }}</key-label>
+                  <key-label label="公司类型">{{ current.lx | valueFilter }}</key-label>
+                  <key-label label="核准日期">{{ current.hzrq | valueFilter }}</key-label>
+                  <key-label label="登记机关">{{ current.djjg | valueFilter }}</key-label>
+                  <key-label label="注册地址" is-full>{{ current.zs | valueFilter }}</key-label>
                 </key-label-wrap>
                 <key-label-wrap v-else>
                   <key-label label="姓名">{{ current.name }}</key-label>
@@ -362,6 +363,10 @@
       // 返回查询列表
       backToIndex () {
         this.$router.push('/index')
+      },
+      // 查看股权结构图
+      handleCheckStock (id) {
+        this.$router.push('/stock')
       },
       // 正负面信息点击事件
       handleClickAggs (pnType) {

@@ -30,6 +30,12 @@ export const constantRouterMap = [
     meta: { title: '详情' }
   },
   {
+    path: '/stock',
+    name: 'stock',
+    component: () => import(/* webpackChunkName: "list" */ '../views/pages/stock.vue'),
+    meta: { title: '股权结构图' }
+  },
+  {
     path: '/401',
     component: () => import(/* webpackChunkName: "error" */ '../views/error/401.vue')
   },

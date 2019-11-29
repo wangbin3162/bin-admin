@@ -9,6 +9,7 @@ import './assets/styles/index.styl'
 
 Vue.use(BinAdmin)
 
+// 防止连续多次点击路由报错
 const originalPush = Router.prototype.push
 Router.prototype.push = function push (location, onResolve, onReject) {
   if (onResolve || onReject) return originalPush.call(this, location, onResolve, onReject)
