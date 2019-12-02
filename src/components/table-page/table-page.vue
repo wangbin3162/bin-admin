@@ -9,8 +9,8 @@
       <b-page :total="total" :current.sync="listQuery.page" show-total @on-change="handlePageChange"></b-page>
     </div>
     <b-modal v-model="detailVisible" class-name="table-page-detail-modal"
-             title="信息详情" footer-hide width="1300" :mask-closable="false">
-      <title-bar tip-pos="left" :font-size="18" label="信息详情" slot="header"></title-bar>
+             :title="modalTitle" footer-hide width="1300" :mask-closable="false">
+      <title-bar tip-pos="left" :font-size="18" :label="modalTitle" slot="header"></title-bar>
       <b-scrollbar style="height: 100%;">
         <key-label-wrap style="margin:0 10px;">
           <key-label
@@ -34,6 +34,9 @@
       resourceKey: {
         type: String,
         required: true
+      },
+      title: {
+        type: String
       }
     },
     data () {
@@ -55,7 +58,10 @@
       }
     },
     computed: {
-      ...mapGetters(['currentDetailId', 'searchData'])
+      ...mapGetters(['currentDetailId', 'searchData']),
+      modalTitle () {
+        return this.title ? this.title + ' - 详情' : '信息详情'
+      }
     },
     watch: {
       resourceKey: {

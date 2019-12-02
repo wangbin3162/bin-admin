@@ -148,7 +148,7 @@
                     <title-bar class="mb-15" tip-pos="left" :font-size="18">
                       {{ item.resourceName }}(<span class="f-color-blue">{{ item.amount }}</span>)
                     </title-bar>
-                    <table-page :resource-key="item.resourceKey"></table-page>
+                    <table-page :resource-key="item.resourceKey" :title="item.resourceName"></table-page>
                   </div>
                 </div>
               </transition>

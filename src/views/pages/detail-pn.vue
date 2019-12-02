@@ -42,11 +42,11 @@
               <div class="tabs">
                 <span v-for="tab in tabs" :key="tab.resourceKey"
                       :class="{'active':activeResourceKey===tab.resourceKey}"
-                      @click="activeResourceKey=tab.resourceKey">
+                      @click="handleTabChange(tab)">
                   {{ tab.resourceName }} ({{ tab.amount }})
                 </span>
               </div>
-              <table-page :resource-key="activeResourceKey"></table-page>
+              <table-page :resource-key="activeResourceKey" :title="activeTitle"></table-page>
             </div>
           </div>
         </div>
@@ -82,7 +82,8 @@
         visible: false,
         pnType: '1', // 正负面信息:1/2
         tabs: [],
-        activeResourceKey: ''
+        activeResourceKey: '',
+        activeTitle: ''
       }
     },
     computed: {
@@ -115,7 +116,7 @@
         this.tabs = deepCopy(tabs) // 缓存正面负面信息的tabs数组
         // 默认选中第一个tab展示列表
         if (tabs.length > 0) {
-          this.activeResourceKey = tabs[0].resourceKey
+          this.handleTabChange(tabs[0])
           // 根据resourceKey动态生成表格分页组件
         }
         this.visible = true
@@ -134,6 +135,13 @@
           return this.current[name]
         }
         return '-'
+      },
+      // tab切换事件
+      handleTabChange (tab) {
+        if (this.activeResourceKey !== tab.resourceKey) {
+          this.activeResourceKey = tab.resourceKey
+          this.activeTitle = tab.resourceName
+        }
       }
     },
     filters: {

@@ -61,7 +61,7 @@
         }
       },
       handleSearch () {
-        this.$store.dispatch('setSearchData', { type: this.type, reason: '', q: this.q })
+        this.$store.dispatch('setSearchData', { type: this.type, reason: this.searchData.reason, q: this.q })
         this.$emit('on-search')
       }
     }
