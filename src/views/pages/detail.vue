@@ -21,7 +21,8 @@
               <keywords :font-size="32" :radius="10" :size="isLeg ? 100:90" :words="keyword"></keywords>
               <div class="right" flex-box="1">
                 <template v-if="isLeg">
-                  <h2 class="title-name">{{ current.comp_name }}<span class="ml-15">{{ current.djzt }}</span></h2>
+                  <h2 class="title-name">{{ current.comp_name }}<span class="status ml-15">{{ current.djzt }}</span>
+                  </h2>
                   <p flex="box:mean">
                     <span>统一社会信用代码：{{ current.id_shxym | valueFilter }}</span>
                     <span>地址：{{ current.zs | valueFilter }}</span>
@@ -38,8 +39,15 @@
                   </p>
                 </template>
                 <template v-else>
-                  <h2 class="title-name">{{ current.name }}</h2>
-                  <p>身份证号码：{{ current.id_sfz | valueFilter }}</p>
+                  <h2 class="title-name" flex="cross:center">
+                    <span class="mr-20">{{ current.name }}</span>
+                    <img v-if="current.xb==='男'" src="../../assets/images/man.png" height="38" width="38" alt="xb"/>
+                    <img v-else src="../../assets/images/women.png" height="38" width="38" alt="xb"/>
+                  </h2>
+                  <p flex="box:mean">
+                    <span>身份证号码：{{ current.id_sfz | valueFilter }}</span>
+                    <span>国籍：{{ current.gjdq | valueFilter }}</span>
+                  </p>
                 </template>
               </div>
             </div>
@@ -77,7 +85,7 @@
             </div>
             <div class="classify-box">
               <div v-show="baseInfoActive">
-                <!--公司列表和股权穿透图-->
+                <!--公司列表和股权穿透图 v-if="compList.length>0"-->
                 <div class="comp-list mb-15" flex>
                   <div class="left">
                     <h4 class="title">{{ isLeg ? '法定代表人':'所有/投资公司' }}</h4>
@@ -462,7 +470,7 @@
             font-weight: 500;
             color: #333;
             font-size: 22px;
-            span {
+            .status {
               display: inline-block;
               vertical-align: top;
               font-size: 15px;
