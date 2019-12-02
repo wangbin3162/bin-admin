@@ -38,10 +38,10 @@
         </div>
         <b-dropdown-menu slot="list" style="width: 140px;">
           <b-dropdown-item :selected="reason==='report'" @click.native="reason='report'">
-            <span class="options">信用报告</span>
+            <span class="options">核查报告</span>
           </b-dropdown-item>
-          <b-dropdown-item :selected="reason==='check'" @click.native="reason='check'">
-            <span class="options">信用核查</span>
+          <b-dropdown-item :selected="reason==='file'" @click.native="reason='file'">
+            <span class="options">信用档案</span>
           </b-dropdown-item>
         </b-dropdown-menu>
       </b-dropdown>
@@ -91,8 +91,8 @@
       },
       reasonLabel () {
         const reasonMap = {
-          report: '信用报告',
-          check: '信用核查'
+          report: '核查报告',
+          file: '信用档案'
         }
         return this.reason.length === 0 ? '选择查询原因' : reasonMap[this.reason]
       },

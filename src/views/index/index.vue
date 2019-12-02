@@ -32,6 +32,7 @@
         listQuery: {
           q: '',
           type: '',
+          reason: '',
           page: 1,
           size: 10
         },
@@ -63,18 +64,24 @@
       fetchData () {
         this.listQuery.q = this.searchData.q
         this.listQuery.type = this.searchData.type
-        if (this.listQuery.q.length > 0) {
+        this.listQuery.reason = this.searchData.reason
+        if (this.listQuery.q.length > 0 && this.listQuery.reason.length > 0) {
           this.searchListData()
         }
       },
       handleSearch () {
         this.listQuery.q = this.searchData.q
         this.listQuery.type = this.searchData.type
-        if (this.listQuery.q.length > 0) {
-          this.searchListData()
-        } else {
-          this.$message({ type: 'danger', content: '请输入查询条件后查询' })
+        this.listQuery.reason = this.searchData.reason
+        if (this.listQuery.reason.length === 0) {
+          this.$message({ type: 'danger', content: '查询原因必须选择！' })
+          return
         }
+        if (this.listQuery.q.length === 0) {
+          this.$message({ type: 'danger', content: '请输入查询条件！' })
+          return
+        }
+        this.searchListData()
       },
       // 页码改变
       handlePageChange () {
