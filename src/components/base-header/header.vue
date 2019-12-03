@@ -1,7 +1,7 @@
 <template>
   <div class="header-wrap">
     <div class="header-inner" flex="main:justify cross:center">
-      <img src="../../assets/images/logo2.png" height="60" width="330" alt="logo"/>
+      <img src="../../assets/images/logo.png" height="60" width="330" alt="logo"/>
       <div class="info" flex="cross:center" v-if="userRoles">
         <template v-if="!this.$slots.default">
           <img src="../../assets/images/ixon-user.png" height="24" width="24" alt="icon"/>

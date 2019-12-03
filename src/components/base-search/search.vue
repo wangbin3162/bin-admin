@@ -26,6 +26,8 @@
         <label>
           <input v-model="q" :placeholder="placeholderLabel" @keyup.enter="handleSearch"/>
         </label>
+        <b-icon class="clear-btn" name="ios-close" v-if="this.q.length>0"
+                @click.native="handleClear"></b-icon>
         <span class="search-btn" @click="handleSearch" v-waves>查询</span>
       </div>
       <!--选择查询原因-->
@@ -37,11 +39,9 @@
           </span>
         </div>
         <b-dropdown-menu slot="list" style="width: 140px;">
-          <b-dropdown-item :selected="reason==='report'" @click.native="reason='report'">
-            <span class="options">核查报告</span>
-          </b-dropdown-item>
-          <b-dropdown-item :selected="reason==='file'" @click.native="reason='file'">
-            <span class="options">信用档案</span>
+          <b-dropdown-item v-for="(obj,key) in reasonMap" :key="key"
+                           :selected="reason===key" @click.native="reason=key">
+            <span class="options">{{ obj }}</span>
           </b-dropdown-item>
         </b-dropdown-menu>
       </b-dropdown>
@@ -65,7 +65,11 @@
       return {
         type: '1', // 1 法人，2自然人
         reason: '', // 查询原因
-        q: ''
+        q: '',
+        reasonMap: {
+          '1': '核查报告',
+          '2': '信用档案'
+        }
       }
     },
     created () {
@@ -90,11 +94,7 @@
         return typeMap[this.type]
       },
       reasonLabel () {
-        const reasonMap = {
-          report: '核查报告',
-          file: '信用档案'
-        }
-        return this.reason.length === 0 ? '选择查询原因' : reasonMap[this.reason]
+        return this.reason.length === 0 ? '选择查询原因' : this.reasonMap[this.reason]
       },
       placeholderLabel () {
         return this.type === '1' ? '请输入企业名称、统一社会信用代码、工商注册号、组织机构代码等' : '请输入自然人名称'
@@ -119,6 +119,15 @@
           q: this.q
         })
         this.$emit('on-search')
+      },
+      handleClear () {
+        this.q = ''
+        this.$store.dispatch('setSearchData', {
+          type: this.type,
+          reason: this.reason,
+          q: ''
+        })
+        this.$emit('on-clear')
       }
     }
   }
@@ -147,6 +156,7 @@
     }
     .input-wrap {
       .input {
+        position: relative;
         width: 885px;
         display: flex;
         label {
@@ -175,6 +185,18 @@
           background: #fff;
           text-align: center;
           border-left: 1px solid #e5effa;
+        }
+        .clear-btn {
+          position: absolute;
+          display: none;
+          right: 110px;
+          top: 50%;
+          margin-top: -12px;
+          font-size: 26px;
+          cursor: pointer;
+        }
+        &:hover .clear-btn {
+          display: block;
         }
       }
       .select {

@@ -1,14 +1,24 @@
 <template>
-  <g :transform="transform" :style="leafStyle" class="svg-leaf">
+  <g :transform="transform" class="svg-leaf">
     <g v-for="(item,index) in data" :key="index" class="svg-node pointer"
        :transform="getTrans(index)" @click="handleClick(item)">
+      <!--item边框线-->
       <rect class="node-rect" rx="2" ry="2" height="30"
-            :width="getWidth(item.title)" :x="rectX(item.title)" :style="{stroke:color}"></rect>
-      <text font-size="12px" y="20" :x="rectX(item.title)+15" class="node-text" style="opacity: 1;">
+            :width="getRectWidth(item)" :x="rectX(item)" :style="{stroke:color}"></rect>
+      <!--一级标题-->
+      <text font-size="12px" y="20" :x="titleX(item)" class="node-text" style="opacity: 1;">
         {{ item.title }}
       </text>
+      <!--二级标题-->
+      <text v-if="item.label" font-size="12px" y="20" :x="labelX(item)" class="node-text2"
+            style="opacity: 1;fill: rgb(102,102,102);">
+        {{ item.label }}
+      </text>
+      <!--item横向线条-->
       <line x1="0" y1="15" :x2="lineX2" y2="15" class="node-line" :style="{stroke:color}"></line>
-      <text v-if="item.ratio" font-size="12px" class="node-percent" x="8" y="8" :style="{fill:color,opacity: 0.8}">
+      <!--百分比数字-->
+      <text v-if="item.ratio" font-size="12px" class="node-percent" :x="ratioX" y="8"
+            :style="{fill:color,opacity: 0.8}">
         {{ item.ratio }}
       </text>
     </g>
@@ -27,10 +37,6 @@
         type: String,
         default: null
       },
-      expand: {
-        type: Boolean,
-        required: true
-      },
       data: {
         type: Array,
         required: true
@@ -48,8 +54,9 @@
       }
     },
     computed: {
-      leafStyle () {
-        return this.expand ? null : { opacity: 0 }
+      // 百分比位置
+      ratioX () {
+        return this.position.includes('left-') ? 8 : -32
       },
       // 节点线x2坐标
       lineX2 () {
@@ -71,11 +78,23 @@
         const offsetY = 30 + 10 // 38 为高度28+偏移量10
         return this.position.includes('-top') ? `translate(0,-${index * offsetY})` : `translate(0,${index * offsetY})`
       },
-      getWidth (txt) {
-        return txt.length * 12 + 30
+      getRectWidth (item) {
+        let t = item.title ? item.title.length * 12 : 0
+        let l = item.label ? (item.label.length * 12 + 8) : 0
+        return t + l + 30
       },
-      rectX (txt) {
-        return this.position.includes('left-') ? -this.getWidth(txt) : 0
+      // rect偏移量
+      rectX (item) {
+        return this.position.includes('left-') ? -this.getRectWidth(item) : 0
+      },
+      // 一级标题偏移量
+      titleX (item) {
+        return this.rectX(item) + 15
+      },
+      // 二级标题偏移量
+      labelX (item) {
+        // 等于一级标题的偏移量+一级标题的长度+8
+        return this.titleX(item) + item.title.length * 12 + 8
       },
       handleClick (item) {
         this.$emit('on-click', item)

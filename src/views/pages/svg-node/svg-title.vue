@@ -1,6 +1,6 @@
 <template>
   <g :transform="transform">
-    <rect :width="nodeWidth" :height="nodeHeight" x="0" y="0" rx="6" ry="6"
+    <rect :width="nodeWidth" :height="nodeHeight" x="0" y="0" rx="2" ry="2"
           style="fill: rgb(0, 132, 255); opacity: 0.8;"></rect>
     <text y="16" style="fill: rgb(255, 255, 255); font-size: 14px; font-weight: bold;">
       <tspan class="text" x="16" dy="1em">{{ label }}</tspan>

@@ -297,6 +297,14 @@
       },
       // 获取内容数据并填充
       fetchData () {
+        const { id, q, reason, type } = this.$route.query
+        // 判断是否携带参数，如携带则需要设置vux
+        if (id) {
+          this.$store.dispatch('setDetailId', id)
+        }
+        if (q && reason && type) {
+          this.$store.dispatch('setSearchData', { q, reason, type })
+        }
         this.getDetailData()
       },
       // 获取详情数据
@@ -373,8 +381,9 @@
         this.$router.push('/index')
       },
       // 查看股权结构图
-      handleCheckStock (id) {
-        this.$router.push('/stock')
+      handleCheckStock () {
+        const { id, q, reason, type } = this.$route.query
+        this.$router.push({ name: 'stock', query: { id, q, type, reason } })
       },
       // 正负面信息点击事件
       handleClickAggs (pnType) {

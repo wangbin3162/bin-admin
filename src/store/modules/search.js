@@ -2,10 +2,10 @@ export default {
   state: {
     searchData: {
       type: '1',
-      reason: '', // TODO 查询原因暂时没实现功能
+      reason: '', // TODO 查询原因暂时没实现功能 1核查报告，2信用档案
       q: ''
     },
-    detailId: '' // 设置默认id:b51788af29164d98a970db492c02ea7d
+    detailId: '' // 设置默认id:b51788af29164d98a970db492c02ea7d / 5b6a830c0071485f9d06d569e72e4905
   },
   mutations: {
     SET_SEARCH_DATA: (state, data) => {

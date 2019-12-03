@@ -4,7 +4,7 @@
       <base-header></base-header>
       <div class="search-wrap" :style="searchWrapStyle">
         <h2 v-show="!showList">综合信用查询</h2>
-        <base-search :size="searchSize" @on-search="handleSearch"></base-search>
+        <base-search :size="searchSize" @on-search="handleSearch" @on-clear="handleClear"></base-search>
       </div>
       <transition name="fade-scale-move">
         <base-list v-show="showList" :total="total" :data="searchList" :mapping="mapping"
@@ -83,6 +83,12 @@
         }
         this.searchListData()
       },
+      handleClear () {
+        this.listQuery.q = ''
+        this.searchList = []
+        this.showList = false
+        this.total = 0
+      },
       // 页码改变
       handlePageChange () {
         this.searchListData()
@@ -90,7 +96,8 @@
       // 查看详情
       handleCheckDetail (id) {
         this.$store.dispatch('setDetailId', id)
-        this.$router.push('/detail')
+        const { q, type, reason } = this.listQuery
+        this.$router.push({ name: 'detail', query: { id, q, type, reason } })
       },
       // 查询列表数据
       searchListData () {

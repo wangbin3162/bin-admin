@@ -124,3 +124,16 @@ export function getCompList (fddbr) {
     }
   })
 }
+
+/**
+ * 统计企业股权接口
+ */
+export function getStockRightStat (personId) {
+  return request({
+    url: '/api/docs/stockRightStat',
+    type: 'get',
+    params: {
+      personId
+    }
+  })
+}
