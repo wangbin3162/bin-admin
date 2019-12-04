@@ -1,8 +1,8 @@
 <template>
   <div class="base-search">
     <div class="type-wrap" v-if="isDefault">
-      <span :class="{'active':type==='1'}" @click="changeType('1')">法人和其他组织</span>
-      <span :class="{'active':type==='2'}" @click="changeType('2')">自然人</span>
+      <span :class="{'active':current.type==='1'}" @click="changeType('1')">法人和其他组织</span>
+      <span :class="{'active':current.type==='2'}" @click="changeType('2')">自然人</span>
     </div>
     <div class="input-wrap" :class="size" flex="main:justify">
       <div class="input">
@@ -15,19 +15,18 @@
           </span>
           </div>
           <b-dropdown-menu slot="list" style="width: 100px;">
-            <b-dropdown-item :selected="type==='1'" @click.native="type='1'">
+            <b-dropdown-item :selected="current.type==='1'" @click.native="changeType('1')">
               <span class="options">法人</span>
             </b-dropdown-item>
-            <b-dropdown-item :selected="type==='2'" @click.native="type='2'">
+            <b-dropdown-item :selected="current.type==='2'" @click.native="changeType('2')">
               <span class="options">自然人</span>
             </b-dropdown-item>
           </b-dropdown-menu>
         </b-dropdown>
         <label>
-          <input v-model="q" :placeholder="placeholderLabel" @keyup.enter="handleSearch"/>
+          <input v-model="current.q" @input="emitValue" :placeholder="placeholderLabel" @keyup.enter="handleSearch"/>
         </label>
-        <b-icon class="clear-btn" name="ios-close" v-if="this.q.length>0"
-                @click.native="handleClear"></b-icon>
+        <b-icon class="clear-btn" name="ios-close" v-if="this.current.q.length>0" @click.native="handleClear"></b-icon>
         <span class="search-btn" @click="handleSearch" v-waves>查询</span>
       </div>
       <!--选择查询原因-->
@@ -40,7 +39,7 @@
         </div>
         <b-dropdown-menu slot="list" style="width: 140px;">
           <b-dropdown-item v-for="(obj,key) in reasonMap" :key="key"
-                           :selected="reason===key" @click.native="reason=key">
+                           :selected="current.reason===key" @click.native="changeReason(key)">
             <span class="options">{{ obj }}</span>
           </b-dropdown-item>
         </b-dropdown-menu>
@@ -51,38 +50,42 @@
 </template>
 
 <script>
-  import { mapGetters } from 'vuex'
-
   export default {
     name: 'BaseSearch',
     props: {
       size: {
         type: String,
         default: 'default'
+      },
+      value: {
+        type: Object,
+        default () {
+          return {
+            type: '1', // 1法人，2自然人
+            reason: '', // 1核查报告，2信用档案
+            q: '' // 查询条件
+          }
+        }
       }
     },
     data () {
       return {
-        type: '1', // 1 法人，2自然人
-        reason: '', // 查询原因
-        q: '',
+        current: {},
         reasonMap: {
           '1': '核查报告',
           '2': '信用档案'
         }
       }
     },
-    created () {
-      // 组件创建完后获取数据，
-      // 此时 data 已经被 observed 了
-      this.fetchData()
-    },
     watch: {
-      // 如果路由有变化，会再次执行该方法
-      '$route': 'fetchData'
+      value: {
+        handler (val) {
+          this.current = { ...val }
+        },
+        immediate: true
+      }
     },
     computed: {
-      ...mapGetters(['searchData']),
       isDefault () {
         return this.size === 'default'
       },
@@ -91,43 +94,39 @@
           '1': '法人',
           '2': '自然人'
         }
-        return typeMap[this.type]
+        return typeMap[this.current.type]
       },
       reasonLabel () {
-        return this.reason.length === 0 ? '选择查询原因' : this.reasonMap[this.reason]
+        return this.current.reason.length === 0 ? '选择查询原因' : this.reasonMap[this.current.reason]
       },
       placeholderLabel () {
-        return this.type === '1' ? '请输入企业名称、统一社会信用代码、工商注册号、组织机构代码等' : '请输入自然人名称'
+        return this.current.type === '1' ? '请输入企业名称、统一社会信用代码、工商注册号、组织机构代码等' : '请输入自然人名称'
       }
     },
     methods: {
-      // 将vuex缓存数据映射至组件
-      fetchData () {
-        this.type = this.searchData.type
-        this.reason = this.searchData.reason
-        this.q = this.searchData.q
-      },
       changeType (type) {
-        if (this.type !== type) {
-          this.type = type
+        if (this.current.type !== type) {
+          this.current.type = type
         }
+        this.emitValue()
+      },
+      changeReason (key) {
+        if (this.current.reason !== key) {
+          this.current.reason = key
+        }
+        this.emitValue()
       },
       handleSearch () {
-        this.$store.dispatch('setSearchData', {
-          type: this.type,
-          reason: this.reason,
-          q: this.q
-        })
         this.$emit('on-search')
       },
       handleClear () {
-        this.q = ''
-        this.$store.dispatch('setSearchData', {
-          type: this.type,
-          reason: this.reason,
-          q: ''
-        })
+        this.current.q = ''
+        this.emitValue()
         this.$emit('on-clear')
+      },
+      emitValue () {
+        this.$emit('input', this.current)
+        this.$emit('on-change', this.current)
       }
     }
   }

@@ -20,12 +20,12 @@ export function getSearchList (listQuery) {
 /**
  * 根据id和类型查询档案详情
  */
-export function getDetail (id, type) {
+export function getDetail (id, type, reason) {
   return request({
     url: '/api/docs/detail',
     type: 'get',
     params: {
-      id, type
+      id, type, reason
     }
   })
 }
@@ -115,12 +115,12 @@ export function getQueryDetail (id, resourceKey, type) {
 /**
  * 法人或其他组织法定代表人所属公司列表查询接口
  */
-export function getCompList (fddbr) {
+export function getCompList (fddbr, type) {
   return request({
     url: '/api/docs/compList',
     type: 'get',
     params: {
-      fddbr
+      fddbr, type
     }
   })
 }

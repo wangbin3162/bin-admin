@@ -2,9 +2,19 @@
   <base-layout>
     <div class="main-wrap" :class="{'mini-wrap':showList}">
       <base-header></base-header>
+      <div class="links">
+        <div class="inner">
+          <span class="item"><router-link to="index" tag="a">首页</router-link></span>
+          <span class="item"><a href="">信用监管</a></span>
+          <span class="item"><a href="">信用评级</a></span>
+          <span class="item"><a href="">大数据分析</a></span>
+          <span class="item"><a href="">转向应用</a></span>
+          <span class="item"><a href="">数据治理</a></span>
+        </div>
+      </div>
       <div class="search-wrap" :style="searchWrapStyle">
         <h2 v-show="!showList">综合信用查询</h2>
-        <base-search :size="searchSize" @on-search="handleSearch" @on-clear="handleClear"></base-search>
+        <base-search v-model="query" :size="searchSize" @on-search="handleSearch" @on-clear="handleClear"></base-search>
       </div>
       <transition name="fade-scale-move">
         <base-list v-show="showList" :total="total" :data="searchList" :mapping="mapping"
@@ -30,11 +40,13 @@
     data () {
       return {
         listQuery: {
-          q: '',
-          type: '',
-          reason: '',
           page: 1,
           size: 10
+        },
+        query: {
+          q: '',
+          type: '',
+          reason: '1'
         },
         showList: false,
         loading: false,
@@ -44,7 +56,7 @@
       }
     },
     computed: {
-      ...mapGetters(['searchData']),
+      ...mapGetters(['queryData']),
       searchWrapStyle () {
         return this.showList ? { padding: '50px' } : { padding: '150px 50px 100px' }
       },
@@ -55,36 +67,28 @@
     created () {
       this.fetchData()
     },
-    watch: {
-      // 如果路由有变化，会再次执行该方法
-      '$route': 'fetchData'
-    },
     methods: {
       // 将vuex缓存映射至当前组件
       fetchData () {
-        this.listQuery.q = this.searchData.q
-        this.listQuery.type = this.searchData.type
-        this.listQuery.reason = this.searchData.reason
-        if (this.listQuery.q.length > 0 && this.listQuery.reason.length > 0) {
+        // 从vuex拉取缓存条件没有则默认
+        const { q, type, reason } = this.queryData
+        this.query = Object.assign({}, { q, type, reason })
+        if (this.query.q.length > 0 && this.query.reason.length > 0) {
           this.searchListData()
         }
       },
       handleSearch () {
-        this.listQuery.q = this.searchData.q
-        this.listQuery.type = this.searchData.type
-        this.listQuery.reason = this.searchData.reason
-        if (this.listQuery.reason.length === 0) {
+        if (this.query.reason.length === 0) {
           this.$message({ type: 'danger', content: '查询原因必须选择！' })
           return
         }
-        if (this.listQuery.q.length === 0) {
+        if (this.query.q.length === 0) {
           this.$message({ type: 'danger', content: '请输入查询条件！' })
           return
         }
         this.searchListData()
       },
       handleClear () {
-        this.listQuery.q = ''
         this.searchList = []
         this.showList = false
         this.total = 0
@@ -95,15 +99,15 @@
       },
       // 查看详情
       handleCheckDetail (id) {
-        this.$store.dispatch('setDetailId', id)
-        const { q, type, reason } = this.listQuery
-        this.$router.push({ name: 'detail', query: { id, q, type, reason } })
+        let query = { id, q: this.query.q, type: this.query.type, reason: this.query.reason }
+        this.$router.push({ name: 'detail', query })
       },
       // 查询列表数据
       searchListData () {
         this.loading = true
+        const queryData = { ...this.listQuery, ...this.query }
         // api查询返回列表
-        getSearchList(this.listQuery).then(res => {
+        getSearchList(queryData).then(res => {
           this.searchList = res.data.rows
           this.mapping = res.data.mapping
           this.total = res.data.total
@@ -130,6 +134,24 @@
         text-align: center;
         font-weight: 400;
         font-size: 24px;
+      }
+    }
+  }
+  .links {
+    background: #f8f8f8;
+    padding: 15px 0;
+    box-shadow: 0 0 15px #ebebeb inset;
+    .inner {
+      text-align: right;
+      width: 1300px;
+      margin: 0 auto;
+      .item {
+        display inline-block;
+        width: 150px;
+        text-align: center;
+        a {
+          color: #666;
+        }
       }
     }
   }

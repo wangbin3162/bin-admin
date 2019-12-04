@@ -10,7 +10,7 @@
           <div class="detail-wrap">
             <div class="top-box mb-20" v-if="current">
               <div class="inner" flex>
-                <keywords :font-size="32" :radius="10" :size="100" :words="keyword"></keywords>
+                <keywords :font-size="32" :radius="10" :size="100">{{keyword}}</keywords>
                 <div class="right" flex-box="1">
                   <template v-if="isLeg">
                     <h2 class="title-name">{{ current.comp_name }}<span class="ml-15">{{ current.djzt }}</span></h2>
@@ -87,27 +87,24 @@
       }
     },
     computed: {
-      ...mapGetters(['searchData']),
+      ...mapGetters(['queryData']),
       // 当前是查询的法人还是自然人
       type () {
-        return this.searchData.type
+        return this.queryData.type
       },
       // 当前是否是法人
       isLeg () {
-        return this.searchData.type === this.ENUM.Leg
+        return this.queryData.type === this.ENUM.Leg
       },
       keyword () {
         if (this.isLeg) {
-          if (this.current && this.current.comp_name) {
-            let size = this.current.comp_name.length >= 4 ? 4 : 1
-            return this.current.comp_name.slice(0, size).split('')
-          }
+          return this.current.keywords[0]
         } else {
           if (this.current && this.current.name) {
-            return [this.current.name.slice(0, 1)]
+            return this.current.name.slice(0, 1)
           }
         }
-        return ['null']
+        return 'null'
       }
     },
     methods: {

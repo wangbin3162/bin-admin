@@ -1,32 +1,20 @@
 export default {
   state: {
-    searchData: {
-      type: '1',
-      reason: '', // TODO 查询原因暂时没实现功能 1核查报告，2信用档案
-      q: ''
-    },
-    detailId: '' // 设置默认id:b51788af29164d98a970db492c02ea7d / 5b6a830c0071485f9d06d569e72e4905
+    query: {
+      type: '1', // 1法人，2自然人
+      reason: '', // 1核查报告，2信用档案
+      q: '', // 查询条件
+      id: '' // 信用主体id
+    }
   },
   mutations: {
-    SET_SEARCH_DATA: (state, data) => {
-      state.searchData = { ...data }
-    },
-    SET_DETAIL_ID: (state, id) => {
-      state.detailId = id
+    SET_QUERY: (state, query) => {
+      state.query = { ...state.query, ...query }
     }
   },
   actions: {
-    // 设置查询参数q
-    setQuery ({ commit, state }, query) {
-      state.searchData.q = query
-    },
-    // 缓存查询条件
-    setSearchData ({ commit }, query) {
-      commit('SET_SEARCH_DATA', query)
-    },
-    // 仅设置查询参数
-    setDetailId ({ commit }, id) {
-      commit('SET_DETAIL_ID', id || '')
+    setQuery ({ commit }, query) {
+      commit('SET_QUERY', query)
     }
   }
 }

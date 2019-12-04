@@ -4,9 +4,9 @@ const getters = {
   // 用户信息
   userInfo: state => state.user.info,
   // 查询条件
-  searchData: state => state.search.searchData,
+  queryData: state => state.search.query,
   // 当前查询详情id
-  currentDetailId: state => state.search.detailId
+  currentDetailId: state => state.search.query.id
 }
 
 export default getters

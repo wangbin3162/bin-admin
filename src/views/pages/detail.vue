@@ -3,7 +3,7 @@
     <div class="main-wrap">
       <top-affix>
         <base-header>
-          <top-search @on-search="backToIndex" @on-back="backToIndex"></top-search>
+          <top-search v-model="query" @on-search="handleSearch" @on-back="backToIndex"></top-search>
         </base-header>
       </top-affix>
       <div class="detail-wrap">
@@ -11,14 +11,14 @@
         <transition name="fade-scale-move">
           <div class="top-box mb-20" v-if="current">
             <div class="tap report" flex="dir:top main:center cross:center">
-              <em>信</em><em>用</em><em>报</em><em>告</em>
+              <em>标</em><em>准</em><em>分</em><em>类</em>
             </div>
             <div class="tap data" flex="dir:top main:center cross:center">
-              <em>大</em><em>数</em><em>据</em><em>报</em><em>告</em>
+              <em>大</em><em>数</em><em>据</em><em>分</em><em>类</em>
             </div>
             <!--顶部详情数据-->
             <div class="inner" flex>
-              <keywords :font-size="32" :radius="10" :size="isLeg ? 100:90" :words="keyword"></keywords>
+              <keywords :font-size="32" :radius="10" :size="isLeg ? 100:90">{{ keyword }}</keywords>
               <div class="right" flex-box="1">
                 <template v-if="isLeg">
                   <h2 class="title-name">{{ current.comp_name }}<span class="status ml-15">{{ current.djzt }}</span>
@@ -95,7 +95,7 @@
                         <div class="pl-10" flex-box="1">
                           <div class="mb-10 f-s-20 f-color-blue">{{ currentPerson }}</div>
                           <p class="m0 f-s-12 f-color-666">
-                            他(她)有<span class="f-color-red">{{ compTotal }}</span>家公司，分布如下
+                            他(她)有<span class="f-color-red">{{ compList.length }}</span>家公司，分布如下
                           </p>
                         </div>
                       </div>
@@ -109,10 +109,16 @@
                     </div>
                   </div>
                   <div class="right" flex-box="1">
-                    <h4 class="title">股权穿透图</h4>
-                    <div class="pb-15" flex="dir:top main:center cross:center">
-                      <img src="../../assets/images/gq-test.png" alt="gq"/>
-                      <b-button class="gq-btn" size="small" @click="handleCheckStock">查看详情</b-button>
+                    <h4 class="title">{{ isLeg ? '组织架构图':'任职结构图' }}</h4>
+                    <div class="pt-20 pb-15" flex="main:center">
+                      <b-tooltip content="查看详情" theme="dark" placement="bottom">
+                        <div class="mt-20 link" @click="handleCheckStock" flex="dir:top cross:center">
+                          <b-tag color="#1badf8" style="margin: 0;" @click.native="handleCheckStock">
+                            {{ current.comp_name }}
+                          </b-tag>
+                          <img src="../../assets/images/qiyejiagou.png" alt="gq"/>
+                        </div>
+                      </b-tooltip>
                     </div>
                   </div>
                 </div>
@@ -183,6 +189,11 @@
     components: { DetailPn, Keywords, TablePage },
     data () {
       return {
+        query: {
+          q: '',
+          type: '',
+          reason: '1'
+        },
         mapping: {}, // 当前查询数据映射
         current: null, // 当前查询数据的信息
         baseInfo: [], // 基本信息数组
@@ -196,7 +207,6 @@
         classifyMap: {}, // 类别映射，根据code存储对应子类别
         activeCode: '', // 默认选中的类别code
         compList: [], // 当前法定代表人名下的公司
-        compTotal: 0, // 名下公司数量
         activeFloatCode: '', // 子类别默认选中的code
         resourcesText: '', // 缓存点击的分类信息名称
         resourcesData: [], // 点击查询资源信息列表数据绑定值
@@ -204,27 +214,23 @@
       }
     },
     computed: {
-      ...mapGetters(['currentDetailId', 'searchData']),
-      // 当前是查询的法人还是自然人
+      ...mapGetters(['currentDetailId', 'queryData']),
       type () {
-        return this.searchData.type
+        return this.queryData.type
       },
       // 当前是否是法人
       isLeg () {
-        return this.searchData.type === this.ENUM.Leg
+        return this.queryData.type === this.ENUM.Leg
       },
       keyword () {
         if (this.isLeg) {
-          if (this.current && this.current.comp_name) {
-            let size = this.current.comp_name.length >= 4 ? 4 : 1
-            return this.current.comp_name.slice(0, size).split('')
-          }
+          return this.current.keywords[0]
         } else {
           if (this.current && this.current.name) {
-            return [this.current.name.slice(0, 1)]
+            return this.current.name.slice(0, 1)
           }
         }
-        return ['null']
+        return 'null'
       },
       // 当前左侧浮动的 标签列
       floatTabs () {
@@ -248,13 +254,18 @@
       }
     },
     created () {
-      this.fetchData()
+      const { id, q, reason, type } = this.$route.query
+      // 判断是否携带参数，如有参数则缓存vuex，如无参数则默认退回首页
+      if (id && q && reason && type) {
+        this.query = Object.assign({}, { q, reason, type })
+        this.$store.dispatch('setQuery', { id, q, reason, type })
+        this.getDetailData()
+      } else {
+        this.$router.push({ name: 'index' })
+      }
     },
     watch: {
-      '$route': 'fetchData',
-      floatTabs (value) {
-        // let code = value.length > 0 ? value[0].code : ''
-        // this.handleChangeClassifyCode(code)
+      floatTabs () {
         let el = this.$refs['floatTable']
         if (el) {
           // 创建动画
@@ -283,6 +294,22 @@
       }
     },
     methods: {
+      // 顶部查询事件
+      handleSearch () {
+        if (this.query.q.length === 0) {
+          this.$message({ type: 'danger', content: '请输入查询条件！' })
+          return
+        }
+        let query = { id: '', q: this.query.q, type: this.query.type, reason: this.query.reason }
+        this.$store.dispatch('setQuery', query)
+        this.$router.push('/index')
+      },
+      // 返回查询列表
+      backToIndex () {
+        let query = { id: '', q: '', type: '1', reason: '' }
+        this.$store.dispatch('setQuery', query)
+        this.$router.push('/index')
+      },
       // 字段显示函数
       fieldShow (name) {
         if (this.current && this.current[name] && this.current[name].toString().length !== 0) {
@@ -295,18 +322,6 @@
         }
         return '-'
       },
-      // 获取内容数据并填充
-      fetchData () {
-        const { id, q, reason, type } = this.$route.query
-        // 判断是否携带参数，如携带则需要设置vux
-        if (id) {
-          this.$store.dispatch('setDetailId', id)
-        }
-        if (q && reason && type) {
-          this.$store.dispatch('setSearchData', { q, reason, type })
-        }
-        this.getDetailData()
-      },
       // 获取详情数据
       getDetailData () {
         // 1.获取顶部详情数据填充
@@ -316,9 +331,10 @@
             this.mapping = res.data.mapping
             let name = this.isLeg ? this.current.fddbr : this.current.name
             if (name) {
-              api.getCompList(name).then(response => {
-                this.compList = response.data.rows
-                this.compTotal = response.data.total
+              api.getCompList(name, this.type).then(response => {
+                if (response.data.code === '0') {
+                  this.compList = response.data.data
+                }
               })
             }
           }
@@ -375,10 +391,6 @@
         } catch (e) {
         }
         return pnInfo
-      },
-      // 返回查询列表
-      backToIndex () {
-        this.$router.push('/index')
       },
       // 查看股权结构图
       handleCheckStock () {

@@ -67,7 +67,7 @@
     },
     computed: {
       currentType () {
-        return this.$store.state.search.searchData.type
+        return this.$store.state.search.query.type
       }
     },
     methods: {

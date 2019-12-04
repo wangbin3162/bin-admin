@@ -58,7 +58,7 @@
       }
     },
     computed: {
-      ...mapGetters(['currentDetailId', 'searchData']),
+      ...mapGetters(['queryData']),
       modalTitle () {
         return this.title ? this.title + ' - 详情' : '信息详情'
       }
@@ -67,8 +67,8 @@
       resourceKey: {
         handler (value) {
           if (value.length > 0) {
-            this.listQuery.personId = this.currentDetailId
-            this.listQuery.type = this.searchData.type
+            this.listQuery.personId = this.queryData.id
+            this.listQuery.type = this.queryData.type
             this.listQuery.resourceKey = this.resourceKey
             this.listQuery.page = 1
             this.fetchData()
@@ -115,7 +115,7 @@
       },
       // 查看详情
       handleCheck (row) {
-        api.getQueryDetail(row.id, this.resourceKey, this.searchData.type).then(res => {
+        api.getQueryDetail(row.id, this.resourceKey, this.queryData.type).then(res => {
           if (res.data.code === '0') {
             this.detailColumns = res.data.columns
             this.detailObj = res.data.data

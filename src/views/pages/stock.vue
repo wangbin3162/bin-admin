@@ -128,42 +128,20 @@
     },
     created () {
       const { id, q, reason, type } = this.$route.query
-      // 判断是否携带参数，如携带则需要设置vux
-      if (id) {
-        this.$store.dispatch('setDetailId', id)
+      // 判断是否携带参数，如有参数则缓存vuex，如无参数则默认退回首页
+      if (id && q && reason && type) {
+        this.query = Object.assign({}, { q, reason, type })
+        this.$store.dispatch('setQuery', { id, q, reason, type })
+        this.getStockData()
+      } else {
+        this.$router.push({ name: 'index' })
       }
-      if (q && reason && type) {
-        this.$store.dispatch('setSearchData', { q, reason, type })
-      }
-      // 获取标题
-      getDetail(this.currentDetailId, this.searchData.type).then(res => {
-        if (res.data.code === '0') {
-          this.title = res.data.data.comp_name
-        }
-      })
-      getStockRightStat(this.currentDetailId).then(res => {
-        if (res.data.code === '0') {
-          const { holder, executives, invest, branch } = res.data.data
-          // 股东数据
-          this.holder = holder.rows
-          this.holderTotal = holder.total
-          // 高管
-          this.executives = executives.rows
-          this.executivesTotal = executives.total
-          // 对外投资
-          this.invest = invest.rows
-          this.investTotal = invest.total
-          // 分支机构
-          this.branch = branch.rows
-          this.branchTotal = branch.total
-        }
-      })
     },
     mounted () {
       this.resizeSvgSize()
     },
     computed: {
-      ...mapGetters(['currentDetailId', 'searchData']),
+      ...mapGetters(['queryData']),
       wrapTrans () {
         return `translate(${this.transformData.x},${this.transformData.y}) scale(${this.scale})`
       },
@@ -175,7 +153,7 @@
     methods: {
       // 返回上一层路由
       backToDetail () {
-        this.$router.push('/detail')
+        this.$router.push({ name: 'detail', query: this.$route.query })
       },
       resizeSvgSize () {
         this.width = document.body.clientWidth
@@ -186,27 +164,43 @@
         this.mousewheelEl = this.$refs.wrap
         this.mousewheelEl.addEventListener('mousewheel', this.handleMousewheel, false)
       },
+      // 获取股权分析数据
+      getStockData () {
+        // 获取标题
+        getDetail(this.queryData.id, this.queryData.type).then(res => {
+          if (res.data.code === '0') {
+            this.title = res.data.data.comp_name
+          }
+        })
+        getStockRightStat(this.queryData.id).then(res => {
+          if (res.data.code === '0') {
+            const { holder, executives, invest, branch } = res.data.data
+            // 股东数据
+            this.holder = holder.rows
+            this.holderTotal = holder.total
+            // 高管
+            this.executives = executives.rows
+            this.executivesTotal = executives.total
+            // 对外投资
+            this.invest = invest.rows
+            this.investTotal = invest.total
+            // 分支机构
+            this.branch = branch.rows
+            this.branchTotal = branch.total
+          }
+        })
+      },
       // 点击了对应的人员或者公司，需要跳转查询
       handleNodeClick (item) {
         // 先根据id和类型请求详情，如成功则跳转对应详情页，否则跳出
         getDetail(item.id, item.type).then(res => {
           if (res.data.code === '0') {
             // 这里拼接查询参数，跳转详情后再去查询缓存vuex
-            this.$open(`/#/detail?id=${item.id}&type=${item.type}&reason=${this.searchData.reason}&q=${item.title}`, true)
+            this.$open(`/#/detail?id=${item.id}&type=${item.type}&reason=${this.queryData.reason}&q=${item.title}`, true)
           } else {
             this.$message({ type: 'warning', content: '暂无相关信息数据！' })
           }
         })
-      },
-      // 查询
-      handleSearch () {
-        this.listQuery.q = this.searchData.q
-        this.listQuery.type = this.searchData.type
-        if (this.listQuery.q.length > 0) {
-          this.searchListData()
-        } else {
-          this.$message({ type: 'danger', content: '请输入查询条件后查询' })
-        }
       },
       // 鼠标拖动事件函数
       handleMoveStart (event) {

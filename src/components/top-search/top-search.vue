@@ -1,17 +1,17 @@
 <template>
   <div class="top-search">
     <div class="type-wrap">
-      <span :class="{'active':type==='1'}" @click="changeType('1')">法人和其他组织</span>
-      <span :class="{'active':type==='2'}" @click="changeType('2')">自然人</span>
+      <span :class="{'active':current.type==='1'}" @click="changeType('1')">法人和其他组织</span>
+      <span :class="{'active':current.type==='2'}" @click="changeType('2')">自然人</span>
     </div>
     <div class="input-wrap" flex="main:justify">
       <div class="input">
         <label>
-          <input v-model="q" :placeholder="placeholderLabel" @keyup.enter="handleSearch"/>
+          <input v-model="current.q" @input="emitValue" :placeholder="placeholderLabel" @keyup.enter="handleSearch"/>
         </label>
         <span class="search-btn" @click="handleSearch" v-waves>查询</span>
-        <b-icon class="clear-btn" name="ios-close" v-if="this.q.length>0"
-                @click.native="q = ''"></b-icon>
+        <b-icon class="clear-btn" name="ios-close" v-if="this.current.q.length>0"
+                @click.native="handleClear"></b-icon>
       </div>
       <span class="back" @click="$emit('on-back')">返回</span>
     </div>
@@ -19,50 +19,65 @@
 </template>
 
 <script>
-  import { mapGetters } from 'vuex'
-
   export default {
     name: 'top-search',
+    props: {
+      value: {
+        type: Object,
+        default () {
+          return {
+            type: '1', // 1法人，2自然人
+            reason: '', // 1核查报告，2信用档案
+            q: '' // 查询条件
+          }
+        }
+      }
+    },
     data () {
       return {
+        current: {},
         type: '1', // 1 法人，2自然人
         q: ''
       }
     },
-    created () {
-      this.fetchData()
-    },
     watch: {
-      // 如果路由有变化，会再次执行该方法
-      '$route': 'fetchData'
+      value: {
+        handler (val) {
+          this.current = { ...val }
+        },
+        immediate: true
+      }
     },
     computed: {
-      ...mapGetters(['searchData']),
       typeLabel () {
         const typeMap = {
           '1': '法人',
           '2': '自然人'
         }
-        return typeMap[this.type]
+        return typeMap[this.current.type]
       },
       placeholderLabel () {
-        return this.type === '1' ? '请输入企业名称、统一社会信用代码、工商注册号、组织机构代码等' : '请输入自然人名称'
+        return this.current.type === '1' ? '请输入企业名称、统一社会信用代码、工商注册号、组织机构代码等' : '请输入自然人名称'
       }
     },
     methods: {
-      // 将vuex缓存数据映射至组件
-      fetchData () {
-        this.type = this.searchData.type
-        this.q = this.searchData.q
-      },
       changeType (type) {
-        if (this.type !== type) {
-          this.type = type
+        if (this.current.type !== type) {
+          this.current.type = type
         }
+        this.emitValue()
       },
       handleSearch () {
-        this.$store.dispatch('setSearchData', { type: this.type, reason: this.searchData.reason, q: this.q })
         this.$emit('on-search')
+      },
+      handleClear () {
+        this.current.q = ''
+        this.emitValue()
+        this.$emit('on-clear')
+      },
+      emitValue () {
+        this.$emit('input', this.current)
+        this.$emit('on-change', this.current)
       }
     }
   }
