@@ -72,7 +72,7 @@
       fetchData () {
         // 从vuex拉取缓存条件没有则默认
         const { q, type, reason } = this.queryData
-        this.query = Object.assign({}, { q, type, reason })
+        this.query = Object.assign({}, this.query, { q, type, reason })
         if (this.query.q.length > 0 && this.query.reason.length > 0) {
           this.searchListData()
         }
@@ -99,7 +99,7 @@
       },
       // 查看详情
       handleCheckDetail (id) {
-        let query = { id, q: this.query.q, type: this.query.type, reason: this.query.reason }
+        let query = { id, type: this.query.type, reason: this.query.reason }
         this.$router.push({ name: 'detail', query })
       },
       // 查询列表数据

@@ -137,3 +137,18 @@ export function getStockRightStat (personId) {
     }
   })
 }
+
+/**
+ * 资源信息查询日志接口
+ */
+export function getQueryLogs (personId, page) {
+  return request({
+    url: '/api/docs/query/log',
+    type: 'get',
+    params: {
+      personId,
+      page: page - 1,
+      size: 10
+    }
+  })
+}

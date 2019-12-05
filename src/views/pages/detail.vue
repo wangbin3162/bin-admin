@@ -83,14 +83,15 @@
                 <p>{{ tab.amount }}</p>
               </div>
             </div>
-            <div class="classify-box">
+            <div class="classify-box" v-if="current">
+              <!--基本信息图-->
               <div v-show="baseInfoActive">
                 <!--公司列表和股权穿透图 v-if="compList.length>0"-->
                 <div class="comp-list mb-15" flex>
                   <div class="left">
                     <h4 class="title">{{ isLeg ? '法定代表人':'所有/投资公司' }}</h4>
                     <div class="p15">
-                      <div flex v-if="current">
+                      <div flex>
                         <keywords :size="55" back-color="#A088D2">{{ currentPerson.slice(0,1) }}</keywords>
                         <div class="pl-10" flex-box="1">
                           <div class="mb-10 f-s-20 f-color-blue">{{ currentPerson }}</div>
@@ -103,20 +104,20 @@
                         <template v-for="(comp,index) in compList">
                           <p :key="comp.id" v-if="index < 3">{{ comp.comp_name }}</p>
                         </template>
-                        <span class="link mt-5" v-if="compList.length > 3">更多<b-icon
-                            name="doubleright"></b-icon></span>
+                        <!--<span class="link mt-5" v-if="compList.length > 3">更多<b-icon name="doubleright"></b-icon></span>-->
                       </div>
                     </div>
                   </div>
                   <div class="right" flex-box="1">
-                    <h4 class="title">{{ isLeg ? '组织架构图':'任职结构图' }}</h4>
+                    <h4 class="title">{{ isLeg ? '组织架构图':'任职投资图' }}</h4>
                     <div class="pt-20 pb-15" flex="main:center">
                       <b-tooltip content="查看详情" theme="dark" placement="bottom">
                         <div class="mt-20 link" @click="handleCheckStock" flex="dir:top cross:center">
                           <b-tag color="#1badf8" style="margin: 0;" @click.native="handleCheckStock">
-                            {{ current.comp_name }}
+                            {{ isLeg ? current.comp_name:current.name }}
                           </b-tag>
-                          <img src="../../assets/images/qiyejiagou.png" alt="gq"/>
+                          <img v-if="isLeg" src="../../assets/images/qiyejiagou.png" alt="gq"/>
+                          <img v-else src="../../assets/images/touzirenzhi.png" alt="gq"/>
                         </div>
                       </b-tooltip>
                     </div>
@@ -154,6 +155,15 @@
                   <key-label label="签发日期">{{ current.qfrq | valueFilter }}</key-label>
                   <key-label label="居住地址" is-full>{{ current.txdz | valueFilter }}</key-label>
                 </key-label-wrap>
+                <!--查询日志记录及分页-->
+                <title-bar class="mt-20 mb-15" tip-pos="left" :font-size="18">查询记录</title-bar>
+                <b-table :columns="logColumns"
+                         :data="logList" size="small">
+                </b-table>
+                <div class="page-wrap">
+                  <b-page v-if="logTotal>10" :total="logTotal" :current.sync="logPage"
+                          show-total @on-change="getQueryLogs"></b-page>
+                </div>
               </div>
               <transition name="fade-transverse" mode="out-in">
                 <div v-if="!baseInfoActive && showResources">
@@ -194,12 +204,30 @@
           type: '',
           reason: '1'
         },
+        logColumns: [
+          {
+            title: '序号',
+            type: 'index',
+            width: 50,
+            align: 'center',
+            indexMethod: (row) => {
+              return 10 * (this.logPage - 1) + row._index + 1
+            }
+          },
+          { title: '查询原因', key: 'queryReason', align: 'center' },
+          { title: '查询人名称', key: 'createBy', align: 'center' },
+          { title: '查询部门', key: 'createDept', align: 'center' },
+          { title: '查询日期', key: 'queryDate', align: 'center' }
+        ],
+        logList: [], // 查询日志列表
+        logPage: 1,
+        logTotal: 0,
         mapping: {}, // 当前查询数据映射
         current: null, // 当前查询数据的信息
         baseInfo: [], // 基本信息数组
         pnInfo: { // 正负面信息数据
-          p: -1, // 正面信息positive
-          n: -1, // 负面信息数量negative
+          p: 0, // 正面信息positive
+          n: 0, // 负面信息数量negative
           pTabs: [], // 正面信息tabs
           nTabs: [] // 负面信息tabs
         }, // 正负面信息数据
@@ -224,7 +252,7 @@
       },
       keyword () {
         if (this.isLeg) {
-          return this.current.keywords[0]
+          return this.current.keywords[0] || ''
         } else {
           if (this.current && this.current.name) {
             return this.current.name.slice(0, 1)
@@ -254,11 +282,11 @@
       }
     },
     created () {
-      const { id, q, reason, type } = this.$route.query
+      const { id, reason, type } = this.$route.query
       // 判断是否携带参数，如有参数则缓存vuex，如无参数则默认退回首页
-      if (id && q && reason && type) {
-        this.query = Object.assign({}, { q, reason, type })
-        this.$store.dispatch('setQuery', { id, q, reason, type })
+      if (id && reason && type) {
+        this.query = Object.assign(this.query, { reason, type })
+        this.$store.dispatch('setQuery', { id, reason, type })
         this.getDetailData()
       } else {
         this.$router.push({ name: 'index' })
@@ -325,7 +353,7 @@
       // 获取详情数据
       getDetailData () {
         // 1.获取顶部详情数据填充
-        api.getDetail(this.currentDetailId, this.type).then(res => {
+        api.getDetail(this.currentDetailId, this.type, this.queryData.reason).then(res => {
           if (res.data.code === '0') {
             this.current = res.data.data
             this.mapping = res.data.mapping
@@ -363,6 +391,8 @@
             }
           }
         })
+        // 4.获取资源信息查询日志
+        this.getQueryLogs()
       },
       // 获取正负面信息条目数和正负面信息tabs列表
       async getPnAggsInfo () {
@@ -392,10 +422,20 @@
         }
         return pnInfo
       },
+      // 资源信息查询日志
+      getQueryLogs () {
+        api.getQueryLogs(this.currentDetailId, this.logPage).then(res => {
+          if (res.status === 200) {
+            this.logList = res.data.rows
+            this.logTotal = res.data.total
+          }
+        })
+      },
       // 查看股权结构图
       handleCheckStock () {
-        const { id, q, reason, type } = this.$route.query
-        this.$router.push({ name: 'stock', query: { id, q, type, reason } })
+        const { id, reason, type } = this.$route.query
+        let title = this.isLeg ? this.current.comp_name : this.current.name
+        this.$router.push({ name: 'stock', query: { id, type, reason, title } })
       },
       // 正负面信息点击事件
       handleClickAggs (pnType) {
@@ -614,6 +654,10 @@
           }
         }
       }
+    }
+    .page-wrap {
+      padding: 15px 0;
+      text-align: right;
     }
   }
 </style>
