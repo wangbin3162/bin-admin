@@ -84,7 +84,7 @@
     width: 1300px;
     min-height: 497px;
     margin: 0 auto;
-    background: #fff;
+    background: #fff url("../../assets/images/list-bg.png") no-repeat center bottom;
     border: 1px solid #eee
     border-bottom: none;
     .total {
@@ -96,10 +96,10 @@
       justify-content: space-between;
       padding: 20px 30px;
       border-bottom: 1px solid #eee;
+      background: #fff;
       transition: all .3s;
       &:hover {
         box-shadow: 0 0 8px #eee;
-        border-bottom-color: transparent;
       }
       .center {
         padding: 0 40px;
