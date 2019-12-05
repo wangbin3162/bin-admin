@@ -109,7 +109,7 @@
                     </div>
                   </div>
                   <div class="right" flex-box="1">
-                    <h4 class="title">{{ isLeg ? '组织架构图':'任职投资图' }}</h4>
+                    <h4 class="title">{{ isLeg ? '组织架构图':'投资、任职结构' }}</h4>
                     <div class="pt-20 pb-15" flex="main:center">
                       <b-tooltip content="查看详情" theme="dark" placement="bottom">
                         <div class="mt-20 link" @click="handleCheckStock" flex="dir:top cross:center">
