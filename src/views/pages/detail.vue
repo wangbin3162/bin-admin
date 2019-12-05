@@ -360,8 +360,8 @@
             let name = this.isLeg ? this.current.fddbr : this.current.name
             if (name) {
               api.getCompList(name, this.type).then(response => {
-                if (response.data.code === '0') {
-                  this.compList = response.data.data
+                if (response.status === 200) {
+                  this.compList = response.data.rows
                 }
               })
             }
