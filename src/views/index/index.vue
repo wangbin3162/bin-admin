@@ -9,7 +9,7 @@
           <span class="item"><a href="">信用评级</a></span>
           <span class="item"><a href="">大数据分析</a></span>
           <span class="item"><a href="">专项应用</a></span>
-          <span class="item"><a href="">数据治理</a></span>
+          <span class="item"><a href="/">数据治理</a></span>
         </div>
       </div>
       <div class="search-wrap" :style="searchWrapStyle">

@@ -148,7 +148,7 @@ export function getQueryLogs (personId, page) {
     params: {
       personId,
       page: page - 1,
-      size: 10
+      size: 5
     }
   })
 }

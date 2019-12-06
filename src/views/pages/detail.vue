@@ -161,7 +161,7 @@
                          :data="logList" size="small">
                 </b-table>
                 <div class="page-wrap">
-                  <b-page v-if="logTotal>10" :total="logTotal" :current.sync="logPage"
+                  <b-page v-if="logTotal>5" :total="logTotal" :current.sync="logPage" :page-size="5"
                           show-total @on-change="getQueryLogs"></b-page>
                 </div>
               </div>
