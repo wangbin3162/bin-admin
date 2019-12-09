@@ -98,6 +98,7 @@
               new Uint8Array(response.data)
                 .reduce((data, byte) => data + String.fromCharCode(byte), '')
             )
+            this.formLogin.captcha = ''
           } else {
             this.$message({ type: 'danger', content: '验证码请求错误' })
           }
@@ -127,12 +128,14 @@
           })
         } else {
           this.$message({ content: res.data.message, type: 'danger' })
+          this.refreshCode()
         }
         this.loginLoading = false
       },
       // 登录失败
       requestFailed (err) {
         this.loginLoading = false
+        this.refreshCode()
         this.$message({ type: 'danger', content: ((err.response || {}).data || {}).message || '请求出现错误，请稍后再试' })
       }
     },
