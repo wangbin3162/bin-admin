@@ -86,6 +86,8 @@
           this.$message({ type: 'danger', content: '请输入查询条件！' })
           return
         }
+        let query = { id: '', q: this.query.q, type: this.query.type, reason: this.query.reason }
+        this.$store.dispatch('setQuery', query)
         this.searchListData()
       },
       handleClear () {
@@ -105,6 +107,7 @@
       // 查询列表数据
       searchListData () {
         this.loading = true
+        this.searchList = []
         const queryData = { ...this.listQuery, ...this.query }
         // api查询返回列表
         getSearchList(queryData).then(res => {
