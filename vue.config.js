@@ -8,7 +8,7 @@ function resolve (dir) {
 module.exports = {
   // 配置基础链接地址，根据发布环境添加
   publicPath: process.env.NODE_ENV === 'production'
-    ? '/preview/bin-admin'
+    ? ''
     : '/',
   // dev跨域问题
   // devServer: {
@@ -19,6 +19,7 @@ module.exports = {
   productionSourceMap: false,
   lintOnSave: process.env.NODE_ENV !== 'production',
   assetsDir: 'static',
+  outputDir: 'preview',
   filenameHashing: true, // 发布打包文件是否有哈希后缀
   chainWebpack: config => {
     config.resolve.alias
