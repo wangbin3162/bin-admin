@@ -19,7 +19,6 @@ module.exports = {
   productionSourceMap: false,
   lintOnSave: process.env.NODE_ENV !== 'production',
   assetsDir: 'static',
-  outputDir: 'preview',
   filenameHashing: true, // 发布打包文件是否有哈希后缀
   chainWebpack: config => {
     config.resolve.alias
