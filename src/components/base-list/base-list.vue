@@ -2,8 +2,8 @@
   <div class="list-wrap">
     <div class="list">
       <div class="total">为您找到<em>{{ total }}</em>条记录</div>
-      <div class="item" v-for="(item,index) in data" :key="item.id">
-        <keywords :back-color="colors[index]" :size="68">{{ item.keywords[0] }}</keywords>
+      <div class="item" v-for="item in data" :key="item.id">
+        <keywords :back-color="colorRandom()" :size="68">{{ item.keywords[0] }}</keywords>
         <div class="center" flex-box="1">
           <template v-if="currentType==='1'">
             <h2 v-html="item.highlight"></h2>
@@ -58,13 +58,6 @@
       },
       loading: Boolean
     },
-    data () {
-      return {
-        colors: ['#1ba6ee', '#36d8da', '#fce070', '#fbafb2',
-          '#fb925a', '#4cf4db', '#dda9fb', '#66fb76',
-          '#fb6471', '#7669fb']
-      }
-    },
     computed: {
       currentType () {
         return this.$store.state.search.query.type
@@ -73,6 +66,12 @@
     methods: {
       handleCheck (id) {
         this.$emit('on-check-detail', id)
+      },
+      colorRandom () {
+        const colors = ['#1ba6ee', '#36d8da', '#fce070', '#26ce81']
+        let index = this.$util.getRandomInt(0, colors.length)
+        console.log(index)
+        return colors[index]
       }
     }
   }

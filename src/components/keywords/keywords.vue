@@ -43,7 +43,8 @@
           borderRadius: `${this.radius}px`,
           fontSize: `${this.fontSize}px`,
           padding: `${this.padding}px`,
-          color: '#ffffff'
+          color: '#ffffff',
+          textAlign: 'center'
         }
       }
     }
