@@ -342,7 +342,7 @@
       fieldShow (name) {
         if (this.current && this.current[name] && this.current[name].toString().length !== 0) {
           if (name === 'zczb') {
-            let total = this.current[name] / 10000
+            let total = this.current[name]
             let bz = this.current['zczbbz'] // 注册资本币种
             return bz ? `${total}万${bz}` : `${total}万元`
           }

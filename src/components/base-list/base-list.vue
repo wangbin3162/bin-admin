@@ -1,7 +1,7 @@
 <template>
   <div class="list-wrap">
     <div class="list">
-      <div class="total">为您找到<em>{{ total }}</em>条记录</div>
+      <div class="total">为您找到 <em>{{ total }}</em> 条记录</div>
       <div class="item" v-for="item in data" :key="item.id">
         <keywords :back-color="colorRandom()" :size="68">{{ item.keywords[0] }}</keywords>
         <div class="center" flex-box="1">
