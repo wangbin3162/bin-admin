@@ -144,7 +144,6 @@
         margin: 0 5px;
         border-radius: 15px;
         font-size: 15px;
-        color: #fff;
         cursor: pointer;
         transition: .3s;
         &.active {
@@ -166,7 +165,8 @@
             line-height: 1.5;
             padding: 0 15px;
             font-size: 14px;
-            border: 1px solid transparent;
+            border: 1px solid #cccccc;
+            border-right: none;
             color: #515a6e;
             background-color: #fff;
             background-image: none;
@@ -180,10 +180,9 @@
           font-size: 18px;
           height: 50px;
           line-height: 52px;
-          color: #369fff;
-          background: #fff;
+          color: #ffffff;
+          background: #2f8bfd;
           text-align: center;
-          border-left: 1px solid #e5effa;
         }
         .clear-btn {
           position: absolute;
@@ -201,8 +200,9 @@
       .select {
         cursor: pointer;
         height: 50px;
-        width: 150px;
-        line-height: 50px;
+        width: 140px;
+        line-height: 49px;
+        border: 1px solid #cccccc;
         color: #999999;
         background: #fff;
         text-align: center;
@@ -221,6 +221,7 @@
           input {
             height: 36px;
             line-height: 1.5;
+            border-color: transparent;
           }
           .search-btn {
             height: 36px;
@@ -235,6 +236,7 @@
           cursor: pointer;
           height: 36px;
           line-height: 36px;
+          border-color: transparent;
           &.type {
             width: 100px;
             border-right: 1px solid #e5effa;
@@ -247,7 +249,6 @@
     }
     .tip {
       padding: 10px 25px;
-      color: #ffffff;
       font-size: 12px;
     }
   }

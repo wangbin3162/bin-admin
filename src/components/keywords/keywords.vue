@@ -20,7 +20,7 @@
       },
       radius: {
         type: Number,
-        default: 5
+        default: 15
       },
       fontSize: {
         type: Number,

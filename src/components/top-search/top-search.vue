@@ -93,11 +93,12 @@
         padding: 0 12px;
         margin: 0 5px;
         font-size: 12px;
-        color: #4f5968;
+        color: #8294b1;
         cursor: pointer;
         transition: .3s;
         &.active {
-          color: #1badf8;
+          color: #646c77;
+          font-weight: bold;
         }
       }
     }
@@ -110,13 +111,15 @@
           flex: 1;
           input {
             width: 100%;
-            height: 34px;
+            height: 36px;
             line-height: 1.5;
             padding: 0 15px;
-            font-size: 14px;
-            border: 1px solid transparent;
+            font-size: 12px;
+            border: 1px solid #f5f9ff;
+            border-bottom-left-radius: 4px;
+            border-top-left-radius: 4px;
             color: #515a6e;
-            background-color: #f5f5f5;
+            background-color: #f5f9ff;
             background-image: none;
             cursor: text;
             outline: 0;
@@ -129,8 +132,10 @@
           height: 34px;
           line-height: 34px;
           color: #fff;
-          background: #369fff;
+          background: #1f7af6;
           text-align: center;
+          border-bottom-right-radius: 4px;
+          border-top-right-radius: 4px;
         }
         .clear-btn {
           position: absolute;

@@ -2,16 +2,6 @@
   <base-layout>
     <div class="main-wrap" :class="{'mini-wrap':showList}">
       <base-header></base-header>
-      <div class="links">
-        <div class="inner">
-          <span class="item"><router-link to="index" tag="a">首页</router-link></span>
-          <span class="item"><a href="javascript:;">信用监管</a></span>
-          <span class="item"><a href="javascript:;">信用评级</a></span>
-          <span class="item"><a href="javascript:;">大数据分析</a></span>
-          <span class="item"><a href="javascript:;">专项应用</a></span>
-          <span class="item"><a href="/dir/" target="_blank">数据治理</a></span>
-        </div>
-      </div>
       <div class="search-wrap" :style="searchWrapStyle">
         <h2 v-show="!showList">综合信用查询</h2>
         <base-search v-model="query" :size="searchSize" @on-search="handleSearch" @on-clear="handleClear"></base-search>
@@ -58,7 +48,7 @@
     computed: {
       ...mapGetters(['queryData']),
       searchWrapStyle () {
-        return this.showList ? { padding: '50px' } : { padding: '150px 50px 100px' }
+        return this.showList ? { padding: '50px' } : { padding: '170px 50px 100px' }
       },
       searchSize () {
         return this.showList ? 'small' : 'default'
@@ -67,12 +57,19 @@
     created () {
       this.fetchData()
     },
+    watch: {
+      '$route': 'fetchData'
+    },
     methods: {
       // 将vuex缓存映射至当前组件
       fetchData () {
-        // 从vuex拉取缓存条件没有则默认
-        const { q, type, reason } = this.queryData
-        this.query = Object.assign({}, this.query, { q, type, reason })
+        // 先从地址栏拉取请求
+        let { q, reason, type } = this.$route.query
+        // 判断是否携带参数，如有参数则缓存vuex，如无参数则默认退回首页
+        if (q && reason && type) {
+          this.$store.dispatch('setQuery', { q, reason, type })
+        }
+        this.query = Object.assign({}, this.query, this.queryData)
         if (this.query.q.length > 0 && this.query.reason.length > 0) {
           this.searchListData()
         }
@@ -86,14 +83,25 @@
           this.$message({ type: 'danger', content: '请输入查询条件！' })
           return
         }
-        let query = { id: '', q: this.query.q, type: this.query.type, reason: this.query.reason }
-        this.$store.dispatch('setQuery', query)
-        this.searchListData()
+        let query = {
+          q: this.query.q,
+          type: this.query.type,
+          reason: this.query.reason
+        }
+        // 判断地址栏请求是否和现有输入的相同，如相同则重新查询，否则重定向地址栏后再拉取数据
+        let { q, reason, type } = this.$route.query
+        if (q === query.q && reason === query.reason && type === query.type) {
+          this.searchListData()
+        } else {
+          this.$router.replace({ name: 'index', query })
+        }
       },
       handleClear () {
         this.searchList = []
         this.showList = false
         this.total = 0
+        this.$store.dispatch('setQuery', { q: '', reason: '', type: '1' })
+        this.$router.replace({ name: 'index' })
       },
       // 页码改变
       handlePageChange () {
@@ -124,37 +132,21 @@
 
 <style scoped lang="stylus">
   .main-wrap {
-    background: url("../../assets/images/bg.png") no-repeat 0 80px;
+    background: url("../../assets/images/bg0.png") no-repeat 0 0;
     &.mini-wrap {
-      background: url("../../assets/images/bannesmallr-bg.png") no-repeat 0 0;
+      background: url("../../assets/images/banner-bg.png") no-repeat 0 -370px;
+      animation: bg .4s ease-in-out forwards;
     }
     .search-wrap {
       width: 1300px;
       margin: 0 auto;
       transition: .3s;
       h2 {
-        color: #fff;
+        color: #333333;
         text-align: center;
         font-weight: 400;
         font-size: 24px;
-      }
-    }
-  }
-  .links {
-    background: #f8f8f8;
-    padding: 15px 0;
-    box-shadow: 0 0 15px #ebebeb inset;
-    .inner {
-      text-align: right;
-      width: 1300px;
-      margin: 0 auto;
-      .item {
-        display inline-block;
-        width: 150px;
-        text-align: center;
-        a {
-          color: #666;
-        }
+        letter-spacing: 4px;
       }
     }
   }
@@ -163,5 +155,14 @@
     margin: 0 auto;
     text-align: right;
     padding: 20px 0;
+  }
+
+  @keyframes bg {
+    0% {
+      background-position: 0 -370px;
+    }
+    100% {
+      background-position: 0 -90px;
+    }
   }
 </style>

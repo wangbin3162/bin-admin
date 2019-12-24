@@ -492,7 +492,7 @@
 
 <style scoped lang="stylus">
   .main-wrap {
-    background: #f0f2f3;
+    background: #eaeff3;
   }
   .detail-wrap {
     width: 1300px;

@@ -68,9 +68,9 @@
         this.$emit('on-check-detail', id)
       },
       colorRandom () {
-        const colors = ['#1ba6ee', '#36d8da', '#fce070', '#26ce81']
+        const colors = ['#1f7af6', '#57a2ff', '#9e57ff', '#fb9737',
+          '#31e8e9', '#63c6fa']
         let index = this.$util.getRandomInt(0, colors.length)
-        console.log(index)
         return colors[index]
       }
     }
@@ -81,10 +81,10 @@
   .list {
     position: relative;
     width: 1300px;
-    min-height: 497px;
+    padding-bottom: 198px;
     margin: 0 auto;
     background: #fff url("../../assets/images/list-bg.png") no-repeat center bottom;
-    border: 1px solid #eee
+    border: 1px solid #eee;
     border-bottom: none;
     .total {
       padding: 10px 20px;
@@ -94,11 +94,12 @@
       display: flex;
       justify-content: space-between;
       padding: 20px 30px;
-      border-bottom: 1px solid #eee;
       background: #fff;
       transition: all .3s;
+      border-bottom: 1px solid #eee;
       &:hover {
         box-shadow: 0 0 8px #eee;
+        background: #fff url("../../assets/images/list-item-bg.png") no-repeat center center;
       }
       .center {
         padding: 0 40px;
