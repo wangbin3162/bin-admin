@@ -12,8 +12,8 @@
 
 <style scoped>
   .key-label-wrap {
-    border-top: 1px solid #f0f3f5;
-    border-left: 1px solid #f0f3f5;
-    border-right: 1px solid #f0f3f5;
+    border-top: 1px solid #eeeeee;
+    border-left: 1px solid #eeeeee;
+    border-right: 1px solid #eeeeee;
   }
 </style>

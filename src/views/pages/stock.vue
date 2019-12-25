@@ -198,7 +198,14 @@
     methods: {
       // 返回上一层路由
       backToDetail () {
-        this.$router.push({ name: 'detail', query: this.$route.query })
+        this.$router.push({
+          name: 'detail',
+          query: {
+            id: this.$route.query.id,
+            type: this.$route.query.type,
+            reason: this.$route.query.reason
+          }
+        })
       },
       resizeSvgSize () {
         this.width = document.body.clientWidth
@@ -236,10 +243,10 @@
               let data = res.data.rows
               data.forEach(item => {
                 if (item.type === 'holder') {
-                  this.holder.push({ title: item.comp_name, type: '1' })
+                  this.holder.push({ title: item.comp_name, type: '1', id: item.id, person_id: item.person_id })
                   this.holderTotal++
                 } else {
-                  this.executives.push({ title: item.comp_name, type: '1' })
+                  this.executives.push({ title: item.comp_name, type: '1', id: item.id, person_id: item.person_id })
                   this.executivesTotal++
                 }
               })

@@ -49,11 +49,12 @@
 <style scoped lang="stylus">
   .key-label {
     display: inline-block;
-    line-height: 40px;
-    border-bottom: 1px solid #f0f3f5;
+    line-height: 45px;
+    border-bottom: 1px solid #eeeeee;
+    color: #646c77;
     .label {
       padding: 0 15px;
-      background: #fafbfc;
+      background: #fbfbfa;
     }
     .val {
       padding: 0 10px;

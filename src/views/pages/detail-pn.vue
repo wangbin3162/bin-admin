@@ -8,26 +8,30 @@
             <title-header :title="title" @on-back="close"></title-header>
           </top-affix>
           <div class="detail-wrap">
-            <div class="top-box" v-if="current">
+            <div class="top-box" :class="isLeg?'faren':'ziranren'" v-if="current">
+              <!--顶部详情数据-->
               <div class="inner" flex>
-                <keywords :font-size="32" :radius="10" :size="isLeg ? 100:90">{{keyword}}</keywords>
+                <div class="left">
+                  <keywords cls="color-0" :font-size="32" :radius="20" :size="isLeg ? 100:90">{{ keyword }}</keywords>
+                  <div v-if="isLeg" class="search-count mt-15" :title="logTotal">查询量：{{logTotal}}</div>
+                </div>
                 <div class="right" flex-box="1">
                   <template v-if="isLeg">
                     <h2 class="title-name">{{ current.comp_name }}<span class="status ml-15">{{ current.djzt }}</span>
                     </h2>
                     <p flex="box:mean">
-                      <span>统一社会信用代码：{{ current.id_shxym | valueFilter }}</span>
-                      <span>地址：{{ current.zs | valueFilter }}</span>
+                      <span class="icon icon-1">统一社会信用代码：{{ current.id_shxym | valueFilter }}</span>
+                      <span class="icon icon-5">地址：{{ current.zs | valueFilter }}</span>
                     </p>
                     <p flex="box:mean">
-                      <span>{{ mapping.fddbr }}：{{ current.fddbr | valueFilter }}</span>
-                      <span>注册资本：{{  fieldShow('zczb') }}</span>
+                      <span class="icon icon-2">{{ mapping.fddbr }}：{{ current.fddbr | valueFilter }}</span>
+                      <span class="icon icon-6">注册资本：{{  fieldShow('zczb') }}</span>
                     </p>
                     <p flex="box:mean">
-                      <span>{{ mapping.clrq }}：{{ current.clrq | valueFilter}}</span>
+                      <span class="icon icon-3">{{ mapping.clrq }}：{{ current.clrq | valueFilter}}</span>
                     </p>
                     <p flex="box:mean">
-                      <span>{{ mapping.jyfw }}：{{ current.jyfw | valueFilter}}</span>
+                      <span class="icon icon-4">{{ mapping.jyfw }}：{{ current.jyfw | valueFilter}}</span>
                     </p>
                   </template>
                   <template v-else>
@@ -37,10 +41,13 @@
                       <img v-else src="../../assets/images/women.png" height="38" width="38" alt="xb"/>
                     </h2>
                     <p flex="box:mean">
-                      <span>身份证号码：{{ current.id_sfz | valueFilter }}</span>
-                      <span>国籍：{{ current.gjdq | valueFilter }}</span>
+                      <span class="icon icon-7">身份证号码：{{ current.id_sfz | valueFilter }}</span>
+                      <span class="icon icon-8">国籍：{{ current.gjdq | valueFilter }}</span>
                     </p>
                   </template>
+                </div>
+                <div v-if="!isLeg">
+                  <div class="search-count" style="width: 100px;" :title="logTotal">查询量：{{logTotal}}</div>
                 </div>
               </div>
             </div>
@@ -76,6 +83,10 @@
       title: {
         type: String,
         default: ''
+      },
+      logTotal: {
+        type: Number,
+        default: 0
       },
       current: {
         type: Object
@@ -180,39 +191,90 @@
         width: 1300px;
         margin: 20px auto;
         background: #fff;
+        border-radius: 10px;
+        overflow: hidden;
       }
     }
     .top-box {
       padding: 30px 42px;
       border-bottom: 1px solid #eeeeee;
-      .inner {
-        .right {
+      &.faren {
+        background: #fff url("../../assets/images/faren-bg.png") no-repeat 0 0;
+      }
+      &.ziranren {
+        background: #fff url("../../assets/images/ziranren-bg.png") no-repeat 0 0;
+      }
+      .right {
+        padding-left: 40px;
+        .icon {
           padding-left: 40px;
-          .title-name {
-            margin: 0 0 20px;
-            font-weight: 500;
-            color: #333;
-            font-size: 22px;
-            .status {
-              display: inline-block;
-              vertical-align: top;
-              font-size: 15px;
-              font-weight: normal;
-              color: #36d8da;
-              border: 1px solid #36d8da;
-              border-radius: 4px;
-              padding: 2px 5px;
-            }
+          background-repeat: no-repeat;
+          background-position: 0 0;
+          line-height: 24px;
+          background-image: url("../../assets/images/icon-1.png")
+          &.icon-1 {
+            background-image: url("../../assets/images/icon-1.png")
+          }
+          &.icon-2 {
+            background-image: url("../../assets/images/icon-2.png")
+          }
+          &.icon-3 {
+            background-image: url("../../assets/images/icon-3.png")
+          }
+          &.icon-4 {
+            background-image: url("../../assets/images/icon-4.png")
+          }
+          &.icon-5 {
+            background-image: url("../../assets/images/icon-5.png")
+          }
+          &.icon-6 {
+            background-image: url("../../assets/images/icon-6.png")
+          }
+          &.icon-7 {
+            background-image: url("../../assets/images/icon-7.png")
+          }
+          &.icon-8 {
+            background-image: url("../../assets/images/icon-8.png")
           }
         }
+      }
+      .title-name {
+        margin: 0 0 20px;
+        font-weight: 500;
+        color: #042f63;
+        font-size: 24px;
+        .status {
+          position: relative;
+          top: 2px;
+          display: inline-block;
+          vertical-align: top;
+          font-size: 15px;
+          font-weight: normal;
+          color: #36d8da;
+          border: 1px solid #36d8da;
+          border-radius: 4px;
+          padding: 2px 5px;
+        }
+      }
+      .search-count {
+        background: #f3f6fc url("../../assets/images/query-bg.png") no-repeat center 5px;
+        padding: 30px 10px 10px;
+        border-radius: 5px;
+        font-size: 12px;
+        text-align: center;
+        color: #445e83;
+        max-width: 100px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
     }
     .info-box {
       h2 {
-        font-weight: normal;
+        font-weight: bold;
         margin: 0;
         text-align: center;
-        color: #333;
+        color: #042f63;
         margin-bottom: 20px;
       }
       .tabs {
@@ -227,6 +289,7 @@
           color: #666666;
           &.active {
             background: #1ba6ee;
+            border-color: #1ba6ee;
             color: #fff;
           }
         }

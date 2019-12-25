@@ -9,10 +9,10 @@
       <b-page :total="total" :current.sync="listQuery.page" show-total @on-change="handlePageChange"></b-page>
     </div>
     <b-modal v-model="detailVisible" class-name="table-page-detail-modal"
-             :title="modalTitle" footer-hide width="1300" :mask-closable="false">
+             :title="modalTitle" footer-hide width="1200" :mask-closable="false">
       <title-bar tip-pos="left" :font-size="18" :label="modalTitle" slot="header"></title-bar>
-      <b-scrollbar style="height: 100%;">
-        <key-label-wrap style="margin:0 10px;">
+      <b-scrollbar style="height: 100%;" always>
+        <key-label-wrap style="margin-right:20px;">
           <key-label
               v-for="col in detailColumns" :key="col.key"
               is-full :label="col.title" label-width="155px">

@@ -3,7 +3,7 @@
     <div class="list">
       <div class="total">为您找到 <em>{{ total }}</em> 条记录</div>
       <div class="item" v-for="item in data" :key="item.id">
-        <keywords :back-color="colorRandom()" :size="68">{{ item.keywords[0] }}</keywords>
+        <keywords :size="68">{{ item.keywords[0] }}</keywords>
         <div class="center" flex-box="1">
           <template v-if="currentType==='1'">
             <h2 v-html="item.highlight"></h2>
@@ -66,12 +66,6 @@
     methods: {
       handleCheck (id) {
         this.$emit('on-check-detail', id)
-      },
-      colorRandom () {
-        const colors = ['#1f7af6', '#57a2ff', '#9e57ff', '#fb9737',
-          '#31e8e9', '#63c6fa']
-        let index = this.$util.getRandomInt(0, colors.length)
-        return colors[index]
       }
     }
   }
@@ -82,6 +76,7 @@
     position: relative;
     width: 1300px;
     padding-bottom: 198px;
+    min-height: 497px;
     margin: 0 auto;
     background: #fff url("../../assets/images/list-bg.png") no-repeat center bottom;
     border: 1px solid #eee;

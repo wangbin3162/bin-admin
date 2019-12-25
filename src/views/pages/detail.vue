@@ -9,33 +9,30 @@
       <div class="detail-wrap">
         <!--顶部详情-->
         <transition name="fade-scale-move">
-          <div class="top-box mb-20" v-if="current">
-            <div class="tap report" flex="dir:top main:center cross:center">
-              <em>标</em><em>准</em><em>分</em><em>类</em>
-            </div>
-            <div class="tap data" flex="dir:top main:center cross:center">
-              <em>大</em><em>数</em><em>据</em><em>分</em><em>类</em>
-            </div>
+          <div class="top-box" :class="isLeg?'faren':'ziranren'" v-if="current">
             <!--顶部详情数据-->
             <div class="inner" flex>
-              <keywords :font-size="32" :radius="10" :size="isLeg ? 100:90">{{ keyword }}</keywords>
+              <div class="left">
+                <keywords cls="color-0" :font-size="32" :radius="20" :size="isLeg ? 100:90">{{ keyword }}</keywords>
+                <div v-if="isLeg" class="search-count mt-15" :title="logTotal">查询量：{{logTotal}}</div>
+              </div>
               <div class="right" flex-box="1">
                 <template v-if="isLeg">
                   <h2 class="title-name">{{ current.comp_name }}<span class="status ml-15">{{ current.djzt }}</span>
                   </h2>
                   <p flex="box:mean">
-                    <span>统一社会信用代码：{{ current.id_shxym | valueFilter }}</span>
-                    <span>地址：{{ current.zs | valueFilter }}</span>
+                    <span class="icon icon-1">统一社会信用代码：{{ current.id_shxym | valueFilter }}</span>
+                    <span class="icon icon-5">地址：{{ current.zs | valueFilter }}</span>
                   </p>
                   <p flex="box:mean">
-                    <span>{{ mapping.fddbr }}：{{ current.fddbr | valueFilter }}</span>
-                    <span>注册资本：{{  fieldShow('zczb') }}</span>
+                    <span class="icon icon-2">{{ mapping.fddbr }}：{{ current.fddbr | valueFilter }}</span>
+                    <span class="icon icon-6">注册资本：{{  fieldShow('zczb') }}</span>
                   </p>
                   <p flex="box:mean">
-                    <span>{{ mapping.clrq }}：{{ current.clrq | valueFilter}}</span>
+                    <span class="icon icon-3">{{ mapping.clrq }}：{{ current.clrq | valueFilter}}</span>
                   </p>
                   <p flex="box:mean">
-                    <span>{{ mapping.jyfw }}：{{ current.jyfw | valueFilter}}</span>
+                    <span class="icon icon-4">{{ mapping.jyfw }}：{{ current.jyfw | valueFilter}}</span>
                   </p>
                 </template>
                 <template v-else>
@@ -45,21 +42,22 @@
                     <img v-else src="../../assets/images/women.png" height="38" width="38" alt="xb"/>
                   </h2>
                   <p flex="box:mean">
-                    <span>身份证号码：{{ current.id_sfz | valueFilter }}</span>
-                    <span>国籍：{{ current.gjdq | valueFilter }}</span>
+                    <span class="icon icon-7">身份证号码：{{ current.id_sfz | valueFilter }}</span>
+                    <span class="icon icon-8">国籍：{{ current.gjdq | valueFilter }}</span>
                   </p>
                 </template>
               </div>
+              <div v-if="!isLeg">
+                <div class="search-count" style="width: 100px;" :title="logTotal">查询量：{{logTotal}}</div>
+              </div>
             </div>
-            <b-divider></b-divider>
             <!--正负面信息和下载报告-->
-            <div flex="main:justify">
+            <div class="pn-box" flex="main:justify">
               <div>
                 <span class="btn red mr-10" @click="handleClickAggs(ENUM.Positive)">正面信息 ({{ pnInfo.p }})</span>
                 <span class="btn black" @click="handleClickAggs(ENUM.Negative)">负面信息 ({{ pnInfo.n }})</span>
               </div>
               <a href="#" class="download">
-                <b-icon name="ios-cloud-download" size="16"></b-icon>
                 下载信用报告
               </a>
             </div>
@@ -68,12 +66,13 @@
         <!--分类信息详情-->
         <transition name="fade-scale-move">
           <div class="info-box" v-if="classifyTabs">
+            <div class="classify"><span class="active">标准分类</span><span>大数据分类</span></div>
             <div class="tabs">
               <div v-for="tab in classifyTabs" :key="tab.id"
-                   class="tab t-center" :class="{'active':tab.code===activeCode}"
+                   class="tab" :class="{'active':tab.code===activeCode}"
                    @click="handleChangeAgg(tab.code)">
-                <span class="txt f-s-16">{{ tab.text }}</span>
-                <span class="amount f-s-12 ml-5">{{ tab.amount }}</span>
+                <span class="txt">{{ tab.text }}</span>
+                <span class="amount ml-5">{{ tab.amount }}</span>
               </div>
             </div>
             <div class="float-tab" ref="floatTable">
@@ -87,14 +86,14 @@
               <!--基本信息图-->
               <div v-show="baseInfoActive">
                 <!--公司列表和股权穿透图 v-if="compList.length>0"-->
-                <div class="comp-list mb-15" flex>
+                <div class="comp-list mb-15" flex="main:justify">
                   <div class="left">
                     <h4 class="title">{{ isLeg ? '法定代表人':'所有/投资公司' }}</h4>
                     <div class="p15">
                       <div flex>
                         <keywords :size="55" back-color="#A088D2">{{ currentPerson.slice(0,1) }}</keywords>
-                        <div class="pl-10" flex-box="1">
-                          <div class="mb-10 f-s-20 f-color-blue">{{ currentPerson }}</div>
+                        <div class="pl-20" flex-box="1">
+                          <div class="mb-10 f-s-20" style="color: #244470;">{{ currentPerson }}</div>
                           <p class="m0 f-s-12 f-color-666">
                             他(她)有<span class="f-color-red">{{ compList.length }}</span>家公司，分布如下
                           </p>
@@ -104,18 +103,21 @@
                         <template v-for="(comp,index) in compList">
                           <p :key="comp.id" v-if="index < 3">{{ comp.comp_name }}</p>
                         </template>
-                        <!--<span class="link mt-5" v-if="compList.length > 3">更多<b-icon name="doubleright"></b-icon></span>-->
+                        <p>
+                          <span class="link mt-5" v-if="compList.length > 3"
+                                @click="handleCheckStock">更多<b-icon name="doubleright"></b-icon></span>
+                        </p>
                       </div>
                     </div>
                   </div>
-                  <div class="right" flex-box="1">
+                  <div class="right">
                     <h4 class="title">{{ isLeg ? '组织架构图':'投资、任职结构' }}</h4>
                     <div class="pt-20 pb-15" flex="main:center">
                       <b-tooltip content="查看详情" theme="dark" placement="bottom">
                         <div class="mt-20 link" @click="handleCheckStock" flex="dir:top cross:center">
-                          <b-tag color="#1badf8" style="margin: 0;" @click.native="handleCheckStock">
+                          <span class="org-tag" @click="handleCheckStock">
                             {{ isLeg ? current.comp_name:current.name }}
-                          </b-tag>
+                          </span>
                           <img v-if="isLeg" src="../../assets/images/qiyejiagou.png" alt="gq"/>
                           <img v-else src="../../assets/images/touzirenzhi.png" alt="gq"/>
                         </div>
@@ -181,8 +183,9 @@
         </transition>
       </div>
     </div>
-    <detail-pn :title="currentPnTitle" :type="type" :current="current" :mapping="mapping"
-               ref="pnDetailModal"></detail-pn>
+    <detail-pn :title="currentPnTitle" :type="type" ref="pnDetailModal"
+               :current="current" :log-total="logTotal" :mapping="mapping"
+    ></detail-pn>
   </base-layout>
 </template>
 
@@ -497,166 +500,240 @@
   .detail-wrap {
     width: 1300px;
     margin: 20px auto;
-    .top-box {
-      position: relative;
-      background: #fff;
-      border: 1px solid #eee;
+  }
+  .top-box {
+    position: relative;
+    background: #fff;
+    border: 1px solid #f3f6fc;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    &.faren {
+      background: #fff url("../../assets/images/faren-bg.png") no-repeat 0 0;
+    }
+    &.ziranren {
+      background: #fff url("../../assets/images/ziranren-bg.png") no-repeat 0 0;
+    }
+    .inner {
       padding: 30px 42px;
-      .tap {
-        position: absolute;
-        cursor pointer
-        top: 0;
-        left: 0;
-        font-size: 15px;
-        text-align: center;
-        color: #4d85a2;
-        background-image: url("../../assets/images/menu1-bg2.png");
-        background-position: -3px 0;
+      border-bottom: 1px solid #f3f6fc;
+    }
+    .search-count {
+      background: #f3f6fc url("../../assets/images/query-bg.png") no-repeat center 5px;
+      padding: 30px 10px 10px;
+      border-radius: 5px;
+      font-size: 12px;
+      text-align: center;
+      color: #445e83;
+      max-width: 100px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .right {
+      padding-left: 40px;
+      .icon {
+        padding-left: 40px;
         background-repeat: no-repeat;
-        width: 40px;
-        height: 120px;
-        margin-left: -40px;
-        em {
-          font-style: normal;
+        background-position: 0 0;
+        line-height: 24px;
+        background-image: url("../../assets/images/icon-1.png")
+        &.icon-1 {
+          background-image: url("../../assets/images/icon-1.png")
         }
-        &.report {
-          background-image: url("../../assets/images/menu1-bg.png");
-          color: #fff;
+        &.icon-2 {
+          background-image: url("../../assets/images/icon-2.png")
         }
-        &.data {
-          top: 115px;
+        &.icon-3 {
+          background-image: url("../../assets/images/icon-3.png")
         }
-      }
-      .inner {
-        .right {
-          padding-left: 40px;
-          .title-name {
-            margin: 0 0 20px;
-            font-weight: 500;
-            color: #333;
-            font-size: 22px;
-            .status {
-              display: inline-block;
-              vertical-align: top;
-              font-size: 15px;
-              font-weight: normal;
-              color: #36d8da;
-              border: 1px solid #36d8da;
-              border-radius: 4px;
-              padding: 2px 5px;
-            }
-          }
+        &.icon-4 {
+          background-image: url("../../assets/images/icon-4.png")
         }
-      }
-      .btn {
-        display: inline-block;
-        cursor: pointer;
-        line-height: 38px;
-        border-radius: 20px;
-        border: 1px solid #eee;
-        padding: 0 20px 0 40px;
-        background-repeat: no-repeat;
-        background-position: 12px 7px;
-        &.red {
-          background-image url("../../assets/images/redname.png");
-          color: #ff7575;
+        &.icon-5 {
+          background-image: url("../../assets/images/icon-5.png")
         }
-        &.black {
-          background-image url("../../assets/images/blackname.png");
-          color: #333333;
+        &.icon-6 {
+          background-image: url("../../assets/images/icon-6.png")
         }
-      }
-      .download {
-        background: #1ee6b8;
-        line-height: 38px;
-        border-radius: 20px;
-        padding: 0 20px;
-        color: #fff;
+        &.icon-7 {
+          background-image: url("../../assets/images/icon-7.png")
+        }
+        &.icon-8 {
+          background-image: url("../../assets/images/icon-8.png")
+        }
       }
     }
-    .info-box {
-      position: relative;
-      background: #fff;
-      border: 1px solid #eee;
-      .tabs {
-        display: flex;
-        border-bottom: 1px solid #eee;
+    .title-name {
+      margin: 0 0 20px;
+      font-weight: 500;
+      color: #042f63;
+      font-size: 24px;
+      .status {
+        position: relative;
+        top: 2px;
+        display: inline-block;
+        vertical-align: top;
+        font-size: 15px;
+        font-weight: normal;
+        color: #36d8da;
+        border: 1px solid #36d8da;
+        border-radius: 4px;
+        padding: 2px 5px;
+      }
+    }
+    .pn-box {
+      padding: 15px 42px;
+    }
+    .btn {
+      display: inline-block;
+      cursor: pointer;
+      line-height: 45px;
+      border-radius: 20px;
+      padding: 0 20px 0 40px;
+      background-color: #f9f9f9;
+      background-repeat: no-repeat;
+      background-position: 12px 7px;
+      color: #445e83;
+      &.red {
+        background-image url("../../assets/images/redname.png");
+      }
+      &.black {
+        background-image url("../../assets/images/blackname.png");
+      }
+    }
+    .download {
+      background: #f8fbfd url("../../assets/images/icon-download.png") no-repeat 15px 2px;
+      line-height: 45px;
+      border-radius: 20px;
+      padding: 0 20px 0 60px;
+      color: #1f7af6;
+    }
+  }
+  .info-box {
+    position: relative;
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 10px;
+    .classify {
+      padding: 0 35px;
+      span {
+        position: relative;
+        display: inline-block;
         line-height: 54px;
-        .tab {
-          flex: 1;
+        padding: 0 15px;
+        color: #8294b1;
+        font-size: 16px;
+        cursor: pointer;
+        &:after {
+          position: absolute;
+          display: none;
+          content: '';
+          bottom: 0;
+          left: 50%;
+          width: 30px;
+          height: 2px;
+          margin-left: -15px;
+          background #2f8bfd;
+        }
+        &.active {
+          color: #042f63;
+          font-weight: bold;
+          &:after {
+            display: block;
+          }
+        }
+      }
+    }
+    .tabs {
+      padding: 10px 20px;
+      background #f3f6fc;
+      text-align: right;
+      .tab {
+        display: inline-block;
+        cursor: pointer;
+        padding: 10px 22px;
+        border-radius: 20px;
+        color: #445e83;
+        margin-left: 6px;
+        &.active {
+          background-color: #1f7af6;
+          color: #fff;
+        }
+      }
+    }
+    .float-tab {
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      top: 54px;
+      left: 0;
+      width: 120px;
+      margin-left: -121px;
+      border-bottom-left-radius: 10px;
+      border-top-left-radius: 10px;
+      overflow: hidden;
+      .item {
+        background: #fafcff;
+        width: 100%;
+        padding: 10px 12px;
+        text-align: center;
+        border-bottom: 1px solid #eeeeee;
+        font-size: 12px;
+        color: #aeb8c7;
+        p {
+          margin: 0;
+          line-height: 25px;
+        }
+        &.normal {
+          color: #445e83;
           cursor: pointer;
-          background-color: #fafbfc;
-          .txt {
-            color: #333333;
-          }
-          .amount {
-            color: #999999;
-          }
-          &.active {
-            background-color: #ffffff;
-            .txt, .amount {
-              color: #1badf8;
-            }
-          }
+        }
+        &.active {
+          color: #ffffff;
+          background: #1f7af6;
         }
       }
-      .float-tab {
-        position: absolute;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        top: 56px;
-        left: 0;
-        width: 120px;
-        margin-left: -121px;
-        .item {
-          background: #fff;
-          width: 100%;
-          padding: 10px 15px;
-          text-align: center;
-          border-bottom: 1px solid #eeeeee;
-          color: #aaaaaa;
-          p {
-            margin: 0;
-            line-height: 25px;
-          }
-          &.normal {
-            color: #333333;
-            cursor: pointer;
-          }
-          &.active {
-            color: #ffffff;
-            background: #1badf8;
-          }
-        }
-      }
-      .classify-box {
-        padding: 20px 46px;
-        min-height: 800px;
-      }
+    }
+    .classify-box {
+      padding: 20px 46px;
+      min-height: 800px;
     }
   }
   .classify-box {
     .comp-list {
-      border: 1px solid #eee;
       min-height: 240px;
       .title {
         margin: 0;
         text-align: center;
         line-height: 40px;
-        background: #fafbfc;
+        background: #fbfbfa;
         font-weight: normal;
-        color: #333;
+        color: #445e83;
+      }
+      .left, .right {
+        border: 1px solid #f5f7fd;
+        border-radius: 15px;
+        overflow: hidden;
       }
       .left {
         width: 382px;
-        border-right: 1px solid #eee;
         .list {
           p {
             margin: 0;
             line-height: 25px;
           }
         }
+      }
+      .right {
+        width: 800px;
+      }
+      .org-tag {
+        padding: 12px 22px;
+        border-radius: 20px;
+        color: #fff;
+        cursor: pointer;
+        background: #63c6fa;
       }
     }
     .page-wrap {
