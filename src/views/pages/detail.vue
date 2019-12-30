@@ -42,7 +42,11 @@
                   </h2>
                   <p flex="box:mean">
                     <span class="icon icon-7">身份证号码：{{ current.id_sfz | valueFilter }}</span>
-                    <span class="icon icon-8">国籍：{{ current.gjdq | valueFilter }}</span>
+                    <span class="icon icon-8">民族：{{ current.mz | valueFilter }}</span>
+                  </p>
+                  <p flex="box:mean">
+                    <span class="icon icon-9">签发机关：{{ current.qfjg | valueFilter }}</span>
+                    <span class="icon icon-3">签发日期：{{ current.qfrq | valueFilter }}</span>
                   </p>
                 </template>
               </div>
@@ -559,6 +563,9 @@
         }
         &.icon-8 {
           background-image: url("../../assets/images/icon-8.png")
+        }
+        &.icon-9 {
+          background-image: url("../../assets/images/icon-9.png")
         }
       }
     }
