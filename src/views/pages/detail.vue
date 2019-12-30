@@ -29,9 +29,10 @@
                   </p>
                   <p flex="box:mean">
                     <span class="icon icon-3">{{ mapping.clrq }}：{{ current.clrq | valueFilter}}</span>
+                    <span class="icon icon-3">{{ mapping.hzrq }}：{{ current.hzrq | valueFilter}}</span>
                   </p>
                   <p flex="box:mean">
-                    <span class="icon icon-4">{{ mapping.jyfw }}：{{ current.jyfw | valueFilter}}</span>
+                    <span class="icon icon-4">{{ mapping.jyfw }}：{{ current.jyfw | valueFilter }}</span>
                   </p>
                 </template>
                 <template v-else>
@@ -533,7 +534,7 @@
       white-space: nowrap;
     }
     .right {
-      padding-left: 40px;
+      padding: 0 40px;
       .icon {
         padding-left: 40px;
         background-repeat: no-repeat;
