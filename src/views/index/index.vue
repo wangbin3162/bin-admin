@@ -1,7 +1,7 @@
 <template>
   <base-layout>
     <div class="main-wrap" :class="{'mini-wrap':showList}">
-      <base-header></base-header>
+      <base-header @on-home="handleHome"></base-header>
       <div class="search-wrap" :style="searchWrapStyle">
         <h2 v-show="!showList">综合信用查询</h2>
         <base-search v-model="query" :size="searchSize" @on-search="handleSearch" @on-clear="handleClear"></base-search>
@@ -111,6 +111,11 @@
       handleCheckDetail (id) {
         let query = { id, type: this.query.type, reason: this.query.reason }
         this.$router.push({ name: 'detail', query })
+      },
+      // 在首页中返回首页
+      handleHome () {
+        this.searchList = []
+        this.showList = false
       },
       // 查询列表数据
       searchListData () {

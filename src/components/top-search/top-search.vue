@@ -13,7 +13,7 @@
         <b-icon class="clear-btn" name="ios-close" v-if="this.current.q.length>0"
                 @click.native="handleClear"></b-icon>
       </div>
-      <span class="back" @click="$emit('on-back')">返回</span>
+      <span class="back" @click="$emit('on-back')">取消</span>
     </div>
   </div>
 </template>
@@ -111,11 +111,11 @@
           flex: 1;
           input {
             width: 100%;
-            height: 36px;
+            height: 32px;
             line-height: 1.5;
             padding: 0 15px;
             font-size: 12px;
-            border: 1px solid #f5f9ff;
+            border: 1px solid #1f7af6;
             border-bottom-left-radius: 4px;
             border-top-left-radius: 4px;
             color: #515a6e;
@@ -129,7 +129,7 @@
           width: 72px;
           cursor: pointer;
           font-size: 14px;
-          height: 34px;
+          height: 32px;
           line-height: 34px;
           color: #fff;
           background: #1f7af6;
@@ -151,7 +151,7 @@
       }
       .back {
         cursor: pointer;
-        line-height: 34px;
+        line-height: 32px;
         padding: 0 20px;
         border-radius: 18px;
         background-color: #f5f5f5;

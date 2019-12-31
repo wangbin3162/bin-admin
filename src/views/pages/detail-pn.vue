@@ -13,7 +13,6 @@
               <div class="inner" flex>
                 <div class="left">
                   <keywords cls="color-0" :font-size="32" :radius="20" :size="isLeg ? 100:90">{{ keyword }}</keywords>
-                  <div v-if="isLeg" class="search-count mt-15" :title="logTotal">查询量：{{logTotal}}</div>
                 </div>
                 <div class="right" flex-box="1">
                   <template v-if="isLeg">
@@ -46,7 +45,7 @@
                     </p>
                   </template>
                 </div>
-                <div v-if="!isLeg">
+                <div>
                   <div class="search-count" style="width: 100px;" :title="logTotal">查询量：{{logTotal}}</div>
                 </div>
               </div>
@@ -205,7 +204,7 @@
         background: #fff url("../../assets/images/ziranren-bg.png") no-repeat 0 0;
       }
       .right {
-        padding-left: 40px;
+        padding: 0 40px;
         .icon {
           padding-left: 40px;
           background-repeat: no-repeat;

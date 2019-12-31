@@ -2,8 +2,8 @@
   <base-layout>
     <div class="main-wrap">
       <top-affix>
-        <base-header>
-          <top-search v-model="query" @on-search="handleSearch" @on-back="backToIndex"></top-search>
+        <base-header show-search v-model="topSearchToggle">
+          <top-search v-model="query" @on-search="handleSearch" @on-back="topSearchToggle=false"></top-search>
         </base-header>
       </top-affix>
       <div class="detail-wrap">
@@ -206,6 +206,7 @@
     components: { DetailPn, Keywords, TablePage },
     data () {
       return {
+        topSearchToggle: false,
         query: {
           q: '',
           type: '',

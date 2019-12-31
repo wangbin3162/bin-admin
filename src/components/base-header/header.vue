@@ -3,34 +3,37 @@
     <div class="header-inner" flex="main:justify cross:center">
       <img src="../../assets/images/logo.png" height="90" width="320" alt="logo" class="link" @click="home"/>
       <div class="info" flex="cross:center" v-if="userRoles">
-        <template v-if="!this.$slots.default">
-          <div class="links">
-            <div class="inner">
-              <span class="item"><router-link to="index" tag="a">首页</router-link></span>
-              <span class="item"><a href="javascript:;">信用监管</a></span>
-              <span class="item"><a href="javascript:;">信用评级</a></span>
-              <span class="item"><a href="javascript:;">大数据分析</a></span>
-              <span class="item"><a href="javascript:;">专项应用</a></span>
-              <span class="item"><a href="/dir/" target="_blank">数据治理</a></span>
-            </div>
+        <div class="links">
+          <div class="inner">
+            <span class="item"><a href="" @click.stop.prevent="home">首页</a></span>
+            <span class="item"><a href="">信用监管</a></span>
+            <span class="item"><a href="">信用评级</a></span>
+            <span class="item"><a href="">大数据分析</a></span>
+            <span class="item"><a href="">专项应用</a></span>
+            <span class="item"><a href="/dir/" target="_blank">数据治理</a></span>
           </div>
-          <b-dropdown>
-            <div class="user" flex="main:center cross:center">
-              <img src="../../assets/images/ixon-user.png" height="24" width="24" alt="icon"/>
-              <span class="pl-5">
+        </div>
+        <div class="search-btn" v-if="showSearch" @click="changeDisplay(true)">
+          <img src="../../assets/images/search.png" height="24" width="24" alt="icon" title="查询"/>
+        </div>
+        <b-dropdown>
+          <div class="user" flex="main:center cross:center">
+            <img src="../../assets/images/icon-user.png" height="24" width="24" alt="icon"/>
+            <span class="pl-5">
                 {{ userName }}
                 <b-icon name="md-arrow-dropdown" size="20"></b-icon>
               </span>
-            </div>
-            <b-dropdown-menu slot="list">
-              <b-dropdown-item @click.native="logout">注销</b-dropdown-item>
-            </b-dropdown-menu>
-          </b-dropdown>
-        </template>
-        <template v-else>
-          <slot></slot>
-        </template>
+          </div>
+          <b-dropdown-menu slot="list">
+            <b-dropdown-item @click.native="logout">注销</b-dropdown-item>
+          </b-dropdown-menu>
+        </b-dropdown>
       </div>
+      <transition name="move">
+        <div class="search-wrap" v-show="display">
+          <slot></slot>
+        </div>
+      </transition>
     </div>
   </div>
 </template>
@@ -38,6 +41,27 @@
 <script>
   export default {
     name: 'BaseHeader',
+    props: {
+      value: {
+        type: Boolean
+      },
+      showSearch: {
+        type: Boolean
+      }
+    },
+    data () {
+      return {
+        display: false
+      }
+    },
+    watch: {
+      value: {
+        handler (val) {
+          this.display = val
+        },
+        immediate: true
+      }
+    },
     computed: {
       userRoles () {
         return this.$store.state.user.roles
@@ -48,12 +72,18 @@
     },
     methods: {
       home () {
+        this.$store.dispatch('resetQuery')
+        this.$emit('on-home')
         this.$router.push('/index')
       },
       logout () {
         this.$store.dispatch('logout').then(res => {
           this.$router.push('/login')
         })
+      },
+      changeDisplay (val) {
+        this.display = val
+        this.$emit('input', val)
       }
     }
   }
@@ -64,6 +94,7 @@
     background: #fff;
     box-shadow: 0 0 8px #d1d1d1;
     .header-inner {
+      position: relative;
       width: 1300px;
       margin: 0 auto;
       .links {
@@ -71,8 +102,7 @@
           text-align: right;
           .item {
             display inline-block;
-            width: 120px;
-            border-right: 1px solid #e1e1e1;
+            width: 110px;
             text-align: center;
             a {
               color: #646c77;
@@ -81,7 +111,40 @@
         }
       }
       .user {
-        width 140px;
+        width: auto;
+        padding: 0 10px;
+      }
+      .search-btn {
+        position: relative;
+        cursor: pointer;
+        margin-left: 10px;
+        padding-right: 10px;
+        &:after {
+          content: '';
+          position: absolute;
+          top: 5px;
+          bottom: 5px;
+          right: 0;
+          border-right: 1px solid #e1e1e1;
+        }
+      }
+      .search-wrap {
+        position: absolute;
+        display: flex;
+        justify-content: right;
+        align-items: center;
+        top: 0;
+        right: 0;
+        width: 880px;
+        height: 100%;
+        background: #fff;
+        &.move-enter-active, &.move-leave-active {
+          transition: .35s;
+        }
+        &.move-enter, &.move-leave-to {
+          transform: translateY(-100%)
+          opacity: .5;
+        }
       }
     }
   }
