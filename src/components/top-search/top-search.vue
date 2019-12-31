@@ -141,7 +141,7 @@
           position: absolute;
           display: none;
           right: 75px;
-          top: 10px;
+          top: 8px;
           font-size: 16px;
           cursor: pointer;
         }
