@@ -100,7 +100,7 @@
         return this.current.reason.length === 0 ? '选择查询原因' : this.reasonMap[this.current.reason]
       },
       placeholderLabel () {
-        return this.current.type === '1' ? '请输入企业名称、统一社会信用代码、工商注册号、组织机构代码等' : '请输入自然人名称'
+        return this.current.type === '1' ? '请输入企业名称、统一社会信用代码、工商注册号、组织机构代码' : '请输入自然人名称'
       }
     },
     methods: {
@@ -146,6 +146,7 @@
         font-size: 15px;
         cursor: pointer;
         transition: .3s;
+        color: #fff;
         &.active {
           background: #fff;
           color: #0398ec;
@@ -165,7 +166,7 @@
             line-height: 1.5;
             padding: 0 15px;
             font-size: 14px;
-            border: 1px solid #cccccc;
+            border: 1px solid #fff;
             border-right: none;
             color: #515a6e;
             background-color: #fff;
@@ -202,7 +203,7 @@
         height: 50px;
         width: 140px;
         line-height: 49px;
-        border: 1px solid #cccccc;
+        border: 1px solid #fff;
         color: #999999;
         background: #fff;
         text-align: center;
@@ -250,6 +251,7 @@
     .tip {
       padding: 10px 25px;
       font-size: 12px;
+      color: #fff;
     }
   }
 </style>

@@ -93,11 +93,11 @@
         padding: 0 12px;
         margin: 0 5px;
         font-size: 12px;
-        color: #8294b1;
+        color: #b8d7ff;
         cursor: pointer;
         transition: .3s;
         &.active {
-          color: #646c77;
+          color: #fff;
           font-weight: bold;
         }
       }
@@ -115,7 +115,7 @@
             line-height: 1.5;
             padding: 0 15px;
             font-size: 12px;
-            border: 1px solid #1f7af6;
+            border: 1px solid #f5f9ff;
             border-bottom-left-radius: 4px;
             border-top-left-radius: 4px;
             color: #515a6e;

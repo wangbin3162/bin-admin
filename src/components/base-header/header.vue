@@ -1,7 +1,7 @@
 <template>
-  <div class="header-wrap">
+  <div class="header-wrap" :class="{'detail':showSearch}">
     <div class="header-inner" flex="main:justify cross:center">
-      <img src="../../assets/images/logo.png" height="90" width="320" alt="logo" class="link" @click="home"/>
+      <img src="../../assets/images/logo-white.png" height="90" width="320" alt="logo"/>
       <div class="info" flex="cross:center" v-if="userRoles">
         <div class="links">
           <div class="inner">
@@ -91,8 +91,11 @@
 
 <style scoped lang="stylus">
   .header-wrap {
-    background: #fff;
-    box-shadow: 0 0 8px #d1d1d1;
+    background: rgba(16, 103, 222, 0.5);
+    box-shadow: 0 0 8px rgba(143, 143, 143, 0.51);
+    &.detail {
+      background: rgba(16, 103, 222, 0.5) url("../../assets/images/header-bg.png") no-repeat center top;
+    }
     .header-inner {
       position: relative;
       width: 1300px;
@@ -105,7 +108,7 @@
             width: 110px;
             text-align: center;
             a {
-              color: #646c77;
+              color: #fff;
             }
           }
         }
@@ -113,6 +116,7 @@
       .user {
         width: auto;
         padding: 0 10px;
+        color: #fff;
       }
       .search-btn {
         position: relative;
@@ -137,7 +141,8 @@
         right: 0;
         width: 880px;
         height: 100%;
-        background: #fff;
+        background-color: #0f80e9; /* 不支持线性的时候显示 */
+        background-image: linear-gradient(to right, #0f80e9, #0e89ea);
         &.move-enter-active, &.move-leave-active {
           transition: .35s;
         }

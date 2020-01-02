@@ -137,7 +137,7 @@
 
 <style scoped lang="stylus">
   .main-wrap {
-    background: url("../../assets/images/bg0.png") no-repeat 0 0;
+    background: url("../../assets/images/banner-bg0.png") no-repeat 0 0;
     &.mini-wrap {
       background: url("../../assets/images/banner-bg.png") no-repeat 0 -370px;
       animation: bg .4s ease-in-out forwards;
@@ -147,10 +147,10 @@
       margin: 0 auto;
       transition: .3s;
       h2 {
-        color: #333333;
+        color: #fff;
         text-align: center;
         font-weight: 400;
-        font-size: 24px;
+        font-size: 34px;
         letter-spacing: 4px;
       }
     }

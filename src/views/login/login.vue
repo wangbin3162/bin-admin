@@ -6,8 +6,10 @@
         <li v-for="n in 10" :key="n"></li>
       </ul>
     </div>
-    <base-header></base-header>
     <div class="main-wrap">
+      <div class="header-inner">
+        <img src="../../assets/images/logo-white.png" height="90" width="320" alt="logo" class="link"/>
+      </div>
       <!--登录框-->
       <div class="content" flex="main:right cross:center">
         <div class="form">
@@ -167,12 +169,10 @@
     }
     .main-wrap {
       flex: 1;
-      /*min-height: 600px;*/
       background: url("images/login-bg.png") no-repeat center center;
     }
     // 登陆页面控件的容器
     .content {
-      height: 100%;
       padding: 40px 200px;
       // 登录表单
       .form {
@@ -315,5 +315,9 @@
         }
       }
     }
+  }
+  .header-inner {
+    width: 1300px;
+    margin: 0 auto;
   }
 </style>
