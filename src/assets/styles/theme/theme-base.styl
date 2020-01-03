@@ -76,7 +76,9 @@
       }
     }
     .app-main {
+      position: relative;
       flex: 1;
+      background: #eff1f7;
       overflow: hidden;
     }
   }
@@ -199,16 +201,14 @@
       &:first-of-type {
         margin-left: 15px;
       }
-      &.active {
-        &::before {
-          background: #2d8cf0;
-        }
-      }
-      .iconfont {
-        width: 16px;
+      .icon-ios-close {
+        position: relative;
+        width: 0;
         height: 16px;
         line-height: 16px;
+        overflow: hidden;
         vertical-align: -2px;
+        top: 2px;
         border-radius: 50%;
         margin-left: 5px;
         text-align: center;
@@ -222,6 +222,17 @@
           background-color: #e1e1e1;
           color: #ffffff;
         }
+      }
+      &.active {
+        &::before {
+          background: #2d8cf0;
+        }
+        .icon-ios-close {
+          width: 16px;
+        }
+      }
+      &:hover .icon-ios-close {
+        width: 16px;
       }
     }
   }

@@ -22,7 +22,7 @@
       <!--标签栏-->
       <tags-view></tags-view>
       <div class="app-main" ref="contentWrapper">
-        <transition name="fade-transverse" mode="out-in" @enter="calcTableWidth">
+        <transition name="fade-transverse" @enter="calcTableWidth">
           <keep-alive :include="cachedViews">
             <router-view :key="key"></router-view>
           </keep-alive>
