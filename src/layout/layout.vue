@@ -69,10 +69,7 @@
         this.$nextTick(() => {
           this.calcTableWidth()
         })
-        this.__resizeHandler = this.$util.throttle(() => {
-          this.calcTableWidth()
-        }, 50)
-        window.addEventListener('resize', this.__resizeHandler)
+        window.addEventListener('resize', this.calcTableWidth)
       }
     },
     methods: {
@@ -83,7 +80,7 @@
       }
     },
     beforeDestroy () {
-      window.removeEventListener('resize', this.__resizeHandler)
+      window.removeEventListener('resize', this.calcTableWidth)
     },
     components: {
       GlobalHeader,
