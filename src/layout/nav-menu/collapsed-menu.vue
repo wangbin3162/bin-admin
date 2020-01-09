@@ -1,6 +1,7 @@
 <template>
   <b-dropdown ref="dropdown" @on-click="handleClick" :placement="placement" :transfer="hideTitle"
-              :class="hideTitle ? '' : 'collased-menu-dropdown'">
+              :class="hideTitle ? '' : 'collased-menu-dropdown'"
+              transfer-class-name="menu-dropdown">
     <a class="drop-menu-a" type="text">
       <b-icon :name="menu.icon" size="20" style="position: relative;top:-1px;" v-if="menu.icon"></b-icon>
       <span class="menu-title" v-if="!hideTitle">{{ menu.title }}</span>
@@ -9,7 +10,7 @@
     <b-dropdown-menu ref="dropdown" slot="list" style="width: 150px;">
       <template v-for="child in menu.children">
         <b-dropdown-item v-if="!child.children" :key="`drop-menu-${child.path}`"
-                         :name="resolvePath(child.path)">
+                         :name="resolvePath(child.path)" :selected="$route.path===resolvePath(child.path)">
           <b-icon :name="child.icon" size="14" style="position: relative;top:-1px;" v-if="child.icon"></b-icon>
           {{ child.title }}
         </b-dropdown-item>

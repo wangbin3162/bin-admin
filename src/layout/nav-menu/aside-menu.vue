@@ -63,6 +63,9 @@
         this.handleMenuSelect(name)
       },
       handleMenuSelect (index) {
+        if (index === this.$route.path) {
+          return
+        }
         this.$router.push({ path: index })
       }
     },
