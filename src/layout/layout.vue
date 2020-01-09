@@ -70,6 +70,8 @@
           this.calcTableWidth()
         })
         window.addEventListener('resize', this.calcTableWidth)
+        this.sidebarElm = document.getElementsByClassName('sidebar-container')[0]
+        this.sidebarElm.addEventListener('transitionend', this.sidebarResizeHandler)
       }
     },
     methods: {
@@ -77,10 +79,18 @@
         let width = this.wrap ? this.wrap.clientWidth : 800
         // 全局通信，这里不缓存至vuex中，用于传递当前app-main宽度, mixin中监听此方法用于统一窗口宽度
         this.$EventBus.$emit('/layout/resize', width)
+      },
+      sidebarResizeHandler (e) {
+        if (e.propertyName === 'width') {
+          this.calcTableWidth()
+        }
       }
     },
     beforeDestroy () {
       window.removeEventListener('resize', this.calcTableWidth)
+      if (this.sidebarElm) {
+        this.sidebarElm.removeEventListener('transitionend', this.sidebarResizeHandler)
+      }
     },
     components: {
       GlobalHeader,
