@@ -1900,10 +1900,10 @@ big.js@^5.2.2:
   resolved "https://registry.npmjs.org/big.js/-/big.js-5.2.2.tgz#65f0af382f578bcdc742bd9c281e9cb2d7768328"
   integrity sha512-vyL2OymJxmarO8gxMr0mhChsO9QGwhynfuu4+MHTAW6czfq9humCB7rKpUjDd9YUiDPU4mzpyupFSvOClAwbmQ==
 
-bin-ui@^2.5.0:
-  version "2.5.0"
-  resolved "https://registry.npmjs.org/bin-ui/-/bin-ui-2.5.0.tgz#7c283d58284056ef6583b2c07ace8ff967055e0a"
-  integrity sha512-mTnp8e0WOM6TJLUwrpek5lzv6TD11WE/2fQgYojsUk+/AOwMu2WcaYqjbISUMVuTNNxqRf8+6yAFhvfvlDjYtA==
+bin-ui@^2.6.2:
+  version "2.6.2"
+  resolved "https://registry.npmjs.org/bin-ui/-/bin-ui-2.6.2.tgz#3cfcb70301c6850e1682aab490e7ca5a29c7e5e6"
+  integrity sha512-AaLaC9a9yVB3kC80gg3ivmdTEchGFveTzkOtCJ43nBkgD40knh6Bw3BwTYnxOXyObAGRJyKj+/s/Lob38HBLGQ==
   dependencies:
     async-validator "^1.11.5"
     js-calendar "^1.2.3"

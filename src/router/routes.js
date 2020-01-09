@@ -39,7 +39,7 @@ export const constantRouterMap = [
       {
         path: 'index',
         name: 'index',
-        meta: { title: '首页', icon: 'icon-ios-home', noCache: true, affix: true },
+        meta: { title: '首页', icon: 'icon-ios-home', noCache: false, affix: true },
         component: () => import('../views/index/index.vue')
       },
       // 刷新页面 必须保留

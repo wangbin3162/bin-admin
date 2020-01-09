@@ -21,21 +21,10 @@ const tagsView = {
       }
     },
     DEL_VISITED_VIEW: (state, view) => {
-      for (const [i, v] of state.visitedViews.entries()) {
-        if (v.path === view.path) {
-          state.visitedViews.splice(i, 1)
-          break
-        }
-      }
+      state.visitedViews.splice(state.visitedViews.findIndex(t => t.path === view.path), 1)
     },
     DEL_CACHED_VIEW: (state, view) => {
-      for (const i of state.cachedViews) {
-        if (i === view.name) {
-          const index = state.cachedViews.indexOf(i)
-          state.cachedViews.splice(index, 1)
-          break
-        }
-      }
+      state.cachedViews.splice(state.cachedViews.indexOf(view.name), 1)
     },
     DEL_OTHERS_VISITED_VIEWS: (state, view) => {
       state.visitedViews = state.visitedViews.filter(v => {
@@ -51,7 +40,6 @@ const tagsView = {
         }
       }
     },
-
     // 删除所有显示tag
     DEL_ALL_VISITED_VIEWS: state => {
       // keep affix tags
@@ -59,32 +47,20 @@ const tagsView = {
       state.visitedViews = state.visitedViews.filter(tag => tag.meta.affix)
     },
     DEL_ALL_CACHED_VIEWS: state => {
+      // keep affix tags
+      const affixTags = state.visitedViews.filter(tag => tag.meta.affix)
       state.cachedViews = []
-    },
-    UPDATE_VISITED_VIEW: (state, view) => {
-      for (let v of state.visitedViews) {
-        if (v.path === view.path) {
-          v = Object.assign(v, view)
-          break
-        }
-      }
+      affixTags.forEach(tag => {
+        state.cachedViews.push(tag.name)
+      })
     }
   },
   actions: {
     // 增加view 标签 Tag ，这里会增加到tag和缓存view
-    addView ({ dispatch }, view) {
-      dispatch('addVisitedView', view)
-      dispatch('addCachedView', view)
-    },
-    // 只增加视图view，比如首页，不需要缓存的固定的标签
-    addVisitedView ({ commit }, view) {
+    addView ({ commit }, view) {
       commit('ADD_VISITED_VIEW', view)
-    },
-    // 只增加缓存view
-    addCachedView ({ commit }, view) {
       commit('ADD_CACHED_VIEW', view)
     },
-
     delView ({ dispatch, state }, view) {
       return new Promise(resolve => {
         dispatch('delVisitedView', view)
@@ -107,7 +83,6 @@ const tagsView = {
         resolve([...state.cachedViews])
       })
     },
-
     delOthersViews ({ dispatch, state }, view) {
       return new Promise(resolve => {
         dispatch('delOthersVisitedViews', view)
@@ -130,7 +105,6 @@ const tagsView = {
         resolve([...state.cachedViews])
       })
     },
-
     delAllViews ({ dispatch, state }, view) {
       return new Promise(resolve => {
         dispatch('delAllVisitedViews', view)
@@ -152,10 +126,6 @@ const tagsView = {
         commit('DEL_ALL_CACHED_VIEWS')
         resolve([...state.cachedViews])
       })
-    },
-
-    updateVisitedView ({ commit }, view) {
-      commit('UPDATE_VISITED_VIEW', view)
     }
   }
 }

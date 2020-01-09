@@ -3,7 +3,7 @@
     <b-tooltip content="主题" theme="dark">
       <b-icon name="ios-color-palette"></b-icon>
     </b-tooltip>
-    <b-modal v-model="themeModal" title="整体风格设置">
+    <b-modal v-model="themeModal" title="整体风格设置" append-to-body footer-hide>
       <div class="setting-panel" style="height:200px;">
         <!--菜单位置-->
         <p style="font-size: 16px;margin: 0;line-height: 30px;">菜单位置:</p>
