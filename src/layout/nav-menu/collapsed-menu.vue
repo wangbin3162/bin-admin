@@ -1,5 +1,5 @@
 <template>
-  <b-dropdown ref="dropdown" @on-click="handleClick" :placement="placement" :transfer="hideTitle"
+  <b-dropdown ref="dropdown" @on-click="handleClick" :placement="placement" :append-to-body="hideTitle"
               :class="hideTitle ? '' : 'collased-menu-dropdown'"
               transfer-class-name="menu-dropdown">
     <a class="drop-menu-a" type="text">
