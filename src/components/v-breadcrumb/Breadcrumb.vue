@@ -2,10 +2,8 @@
   <b-breadcrumb class="app-breadcrumb" separator="/">
     <transition-group name="breadcrumb">
       <b-breadcrumb-item v-for="(item,index) in levelList" :key="item.path">
-        <span v-if='item.redirect==="noRedirect"||index===levelList.length-1' class="no-redirect">
-          {{item.meta.title}}
-        </span>
-        <router-link v-else :to="item.redirect||item.path" class="redirect">{{item.meta.title}}</router-link>
+        <router-link v-if="index===0" :to="item.redirect||item.path" class="redirect">{{ item.meta.title }}</router-link>
+        <span v-else class="no-redirect">{{ item.meta.title }}</span>
       </b-breadcrumb-item>
     </transition-group>
   </b-breadcrumb>
@@ -37,10 +35,21 @@
         if (first && first.name !== 'index') {
           this.levelList.push({ path: '/index', meta: { title: '首页' } })
         }
-        if (first.parent && first.parent.meta && first.parent.redirect.name !== 'index') {
-          this.levelList.push(first.parent)
+        let parent = this.getParent(first)
+        if (parent) {
+          this.levelList.push(parent)
+          let parentP = this.getParent(parent)
+          if (parentP) {
+            this.levelList.push(parentP)
+          }
         }
         this.levelList.push(first)
+      },
+      getParent(route) {
+        if (route.parent && route.parent.meta && route.parent.redirect.name !== 'index') {
+          return route.parent
+        }
+        return null
       }
     }
   }
