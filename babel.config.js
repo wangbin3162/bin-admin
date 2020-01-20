@@ -3,14 +3,5 @@ module.exports = {
     ['@vue/app', {
       useBuiltIns: 'entry'
     }]
-  ],
-  plugins: [
-    [
-      'component',
-      {
-        'libraryName': 'element-ui',
-        'styleLibraryName': 'theme-chalk'
-      }
-    ]
   ]
 }

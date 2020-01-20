@@ -40,7 +40,7 @@
             <div flex="main:center">
               <b-button @click="submit" class="button-login" v-waves :loading="loginLoading" size="large"
                         type="primary">
-                {{ loginLoading? '登陆中...' :'登 录' }}
+                {{ loginLoading? '登录中...' :'登 录' }}
               </b-button>
             </div>
           </b-form>
