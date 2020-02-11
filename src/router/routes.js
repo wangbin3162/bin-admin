@@ -1,7 +1,6 @@
 import layout from '../views/layout/index'
-import components from './modules/components'
-import tableDemo from './modules/tableDemo'
-import errorPage from './modules/errorPage'
+import tableDemo from './modules/table-demo'
+import errorPage from './modules/error-page'
 import nested from './modules/nested'
 
 /**
@@ -18,7 +17,6 @@ import nested from './modules/nested'
   }
  **/
 export const asyncRouterMap = [
-  components,
   tableDemo,
   errorPage,
   nested,

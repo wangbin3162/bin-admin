@@ -1,5 +1,5 @@
 <template>
-  <div class="tags-view-container">
+  <div class="tabs-view-container tabs-fix" :style="{left:isCollapseLeft}">
     <b-tabs v-model="activeTab" :data="tabs" type="tag"
             closable context-menu ref="tabs"
             @on-tab-close="handleCloseTab"
@@ -28,16 +28,16 @@
 
   export default {
     name: 'TagsView',
-    data () {
+    data() {
       return {
         selectedTag: {}, // 选中的tag
         activeTab: ''
       }
     },
     computed: {
-      ...mapGetters(['visitedViews', 'routers']),
+      ...mapGetters(['sidebar', 'visitedViews', 'routers']),
       // tabs标签，根据显示的views来做格式化，主要追加key，title以及noClose属性用于配合显示tab
-      tabs () {
+      tabs() {
         return this.visitedViews.map(t => {
           if (t.meta.affix) {
             return {
@@ -54,16 +54,22 @@
           }
         })
       },
-      isActive () {
+      isActive() {
         return this.selectedTag.path === this.$route.path || this.selectedTag.key === this.$route.name
+      },
+      isCollapseLeft() {
+        if (this.sidebar) {
+          return '240px'
+        }
+        return '64px'
       }
     },
     watch: {
-      $route () {
+      $route() {
         this.addTags()
         // this.moveToCurrentTag()
       },
-      activeTab (tab) {
+      activeTab(tab) {
         if (tab && tab.length > 0) {
           if (tab !== this.$route.name) {
             this.$router.push({ name: tab })
@@ -77,13 +83,13 @@
         }
       }
     },
-    mounted () {
+    mounted() {
       this.initTags()
       this.addTags()
     },
     methods: {
       // 初始化tags 先增加默认固定的tag
-      initTags () {
+      initTags() {
         const affixTags = this.affixTags = this.filterAffixTags(this.routers)
         for (const tag of affixTags) {
           // 循环遍历固定Tags
@@ -94,7 +100,7 @@
         }
       },
       // 过滤固定的tags（即过滤meta中设置affix固定的菜单路由）
-      filterAffixTags (routes, basePath = '/') {
+      filterAffixTags(routes, basePath = '/') {
         let tags = []
         routes.forEach(route => {
           if (route.meta && route.meta.affix) {
@@ -116,7 +122,7 @@
         return tags
       },
       // 增加tags，根据路由名称增加view
-      addTags () {
+      addTags() {
         const { name } = this.$route
         // 如果存在name切并不是刷新操作则添加一个view
         if (name && name !== 'refresh') {
@@ -126,7 +132,7 @@
         return false
       },
       // 移动到当前的tag
-      selectTag () {
+      selectTag() {
         for (const tab of this.tabs) {
           // 找到切换到的目标path和路由匹配的
           if (tab.key === this.$route.name) {
@@ -139,7 +145,7 @@
         }
       },
       // 删除当前tab标签
-      handleCloseTab (tab) {
+      handleCloseTab(tab) {
         if (this.tabs.length === 1 && this.tabs[0].key === tab.key) {
           return
         }
@@ -147,11 +153,11 @@
       },
       // ===============右键菜单事件=============
       // 缓存右键选中的tab
-      handleSelect (tab) {
+      handleSelect(tab) {
         this.selectedTag = { ...tab }
       },
       // 刷新当前view
-      refreshSelected () {
+      refreshSelected() {
         // 先删除缓存的view
         this.$store.dispatch('delCachedView', this.selectedTag).then(() => {
           this.$nextTick(() => {
@@ -160,7 +166,7 @@
         })
       },
       // 关闭其他tags
-      closeOthers () {
+      closeOthers() {
         // 利用key至触发跳转路由
         this.activeTab = this.selectedTag.key
         this.$store.dispatch('delOthersViews', this.selectedTag).then(() => {
@@ -168,7 +174,7 @@
         })
       },
       // 关闭所有
-      closeAll () {
+      closeAll() {
         this.$store.dispatch('delAllViews').then(({ visitedViews }) => {
           if (this.affixTags.length > 0) {
             this.activeTab = this.affixTags[this.affixTags.length - 1].name

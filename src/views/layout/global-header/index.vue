@@ -1,5 +1,5 @@
 <template>
-  <div class="global-header">
+  <div class="global-header header-fix" :style="{left:isCollapseLeft}">
     <!--toggle-btn-->
     <div class="toggle-btn">
       <b-icon :name="sidebar?'outdent':'indent'" @click.native="toggleSideBar"></b-icon>
@@ -41,10 +41,16 @@
     name: 'GlobalHeader',
     components: { UserAvatar, ThemeSetting },
     computed: {
-      ...mapGetters(['sidebar'])
+      ...mapGetters(['sidebar']),
+      isCollapseLeft() {
+        if (this.sidebar) {
+          return '240px'
+        }
+        return '64px'
+      }
     },
     methods: {
-      toggleSideBar () {
+      toggleSideBar() {
         this.$store.dispatch('toggleSideBar')
       }
     }

@@ -103,13 +103,7 @@ export default {
     },
     // 弹窗取消
     handleCancel () {
-      this.$confirm({
-        title: '警告',
-        content: '此操作会清空当前操作，是否继续？',
-        onOk: () => {
-          this.dialogFormVisible = false
-        }
-      })
+      this.dialogFormVisible = false
     },
     // 组件内部overwrite
     searchList () {

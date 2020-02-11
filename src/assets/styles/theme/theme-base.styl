@@ -1,7 +1,6 @@
 @import "../table-layout.styl"
 // 基础布局样式
 .app-wrapper {
-  height: 100%;
   width: 100%;
   .sidebar-container {
     position: fixed;
@@ -32,8 +31,11 @@
     .aside {
       padding: 5px 0;
       height: calc(100% - 60px);
-      overflow-y: auto;
-      overflow-x: hidden;
+      width: auto;
+      overflow: hidden;
+      &:hover {
+        overflow-y: auto;
+      }
       &::-webkit-scrollbar {
         display: none;
       }
@@ -65,12 +67,14 @@
     }
   }
   .main-container {
-    height: 100%;
     display: flex;
     flex-direction: column;
+    flex: auto;
+    min-height: 100vh;
     transition: padding-left .15s ease;
-    background-color: #ffffff;
+    background-color: #f5f7f9;
     color: #303133;
+    overflow-x: hidden;
     .header-box {
       .bin-menu-horizontal.bin-menu-light:after {
         display: none;
@@ -78,8 +82,8 @@
     }
     .app-main {
       position: relative;
-      flex: 1;
-      background: #eff1f7;
+      padding-top: 103px;
+      flex: auto;
       overflow: hidden;
     }
   }
@@ -90,7 +94,16 @@
   position: relative;
   height: 60px;
   background: #fff;
-  box-shadow: 0 1px 4px rgba(0, 21, 41, .08);
+  border-bottom: 1px solid #f8f8f9;
+  border-left: 1px solid #f8f8f9;
+  transition: left .15s ease;
+  &.header-fix {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 240px;
+    z-index: 11;
+  }
   .toggle-btn {
     position: absolute;
     left: 0;
@@ -102,7 +115,7 @@
     .iconfont {
       display: inline-block;
       cursor: pointer;
-      font-size: 24px;
+      font-size: 20px;
       transition: .3s;
       &:hover {
         color: #409EFF;
@@ -150,6 +163,14 @@
   }
 }
 
+// 全局footer样式
+.global-footer {
+  margin: 48px 0 24px 0;
+  padding: 0 16px;
+  text-align: center;
+  color: #808695;
+  font-size: 14px;
+}
 // 主题弹窗样式
 .setting-panel {
   .theme-tab {
@@ -168,13 +189,21 @@
     }
   }
 }
-//tags-view 样式
-.tags-view-container {
+//tabs-view 样式
+.tabs-view-container {
   background: #fff;
   padding: 4px 15px 2px;
-  border-top: 1px solid #f0f0f0;
-  border-bottom: 1px solid #e3e3e3;
+  border-bottom: 1px solid #eeeeee;
   box-shadow: inset 0 0 15px hsla(0, 0, 39.2%, .1);
+  transition: left .15s ease;
+  border-left: 1px solid #f8f8f9;
+  &.tabs-fix {
+    position: fixed;
+    top: 60px;
+    right: 0;
+    left: 240px;
+    z-index: 11;
+  }
   .bin-tabs-wrapper.tag .tab-item {
     background: #fff;
     margin-right: 5px;

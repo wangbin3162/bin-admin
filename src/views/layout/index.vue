@@ -20,12 +20,14 @@
       <!--标签栏-->
       <tags-view></tags-view>
       <div class="app-main" ref="contentWrapper">
-        <transition name="fade-transverse" @enter="calcTableWidth">
-          <keep-alive :include="cachedViews">
-            <router-view :key="key"></router-view>
-          </keep-alive>
-        </transition>
+        <keep-alive :include="cachedViews">
+          <router-view :key="key"></router-view>
+        </keep-alive>
       </div>
+      <footer class="global-footer i-copyright">
+        <div class="global-footer-copyright">Copyright © 2019 bin-admin 简版后台管理系统2.0
+          <a href="https://github.com/wangbin3162/bin-admin" target="_blank">github</a></div>
+      </footer>
     </div>
   </div>
 </template>

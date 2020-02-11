@@ -1,13 +1,11 @@
 .table-layout-wrapper {
-  position: absolute;
-  left: 0;
-  top: 0;
+  position: relative;
   width: 100%;
-  height: 100%;
   padding: 15px;
   overflow: hidden;
-  background: #f0f2f8;
+  background: #f5f7f9;
   display: flex;
+  flex: auto;
   justify-content: space-between;
   .tree-view {
     width: 200px;
@@ -18,7 +16,6 @@
     border-right: 1px solid #eee;
     .tree-inner {
       height: 100%;
-      overflow: hidden;
       padding: 20px 5px 20px 10px;
     }
   }
@@ -44,22 +41,6 @@
       }
     }
 
-    // table-view 抽屉覆盖
-    .bin-drawer-wrapper, .bin-drawer-wrapper.is-right .drawer-box {
-      position: absolute;
-    }
-    .bin-drawer.is-fixed .bin-drawer-wrapper {
-      position: fixed;
-    }
-    .bin-drawer-wrapper .drawer-box .header {
-      padding: 10px 20px;
-    }
-    .bin-drawer-wrapper .drawer-box .footer {
-      text-align: center;
-    }
-    .bin-drawer-wrapper {
-      z-index: 10;
-    }
   }
 }
 

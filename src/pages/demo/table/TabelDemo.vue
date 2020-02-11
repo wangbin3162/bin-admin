@@ -5,10 +5,10 @@
             :lock-select="lockTreeSelect"></b-tree>
     <!--查询条件-->
     <v-filter-bar slot="filter" :is-opened="filterOpened">
-      <v-filter-item title="用户名称">
+      <v-filter-item title="用户名称" width="30%">
         <b-input v-model.trim="listQuery.name" size="small" placeholder="请输入部门名称" clearable></b-input>
       </v-filter-item>
-      <v-filter-item title="显示禁用" width="160px">
+      <v-filter-item title="显示禁用" width="30%">
         <b-switch size="large" v-model="listQuery.delFlag" true-value="Y" false-value="N"
                   @on-change="handleFilter">
           <span slot="open">显示</span>
@@ -20,10 +20,10 @@
                      :show-toggle="true" :is-opened="filterOpened" @on-toggle="filterOpened=!filterOpened"
       ></v-filter-item>
       <template slot="more">
-        <v-filter-item title="地址">
+        <v-filter-item title="地址" width="30%">
           <b-input v-model.trim="listQuery.address" size="small" placeholder="请输入" clearable></b-input>
         </v-filter-item>
-        <v-filter-item title="年龄">
+        <v-filter-item title="年龄" width="30%">
           <b-input v-model.trim="listQuery.age" size="small" placeholder="请输入" clearable></b-input>
         </v-filter-item>
       </template>
@@ -33,7 +33,7 @@
       <b-button type="primary" v-waves size="small" icon="ios-add" @click="handleCreate">新增</b-button>
     </template>
     <b-table slot="table" :columns="columns" :data="list" :loading="listLoading"
-             stripe max-height="526" ref="table" :width="treeTableWidth">
+             stripe ref="table" :width="treeTableWidth">
       <template v-slot:name="scope">
         <a href="" @click.stop.prevent="handleCheck(scope.row)">{{ scope.row.name }}</a>
       </template>
@@ -51,9 +51,9 @@
     <b-page slot="pager" :total="total" show-sizer
             @on-change="handleCurrentChange" @on-page-size-change="handleSizeChange"></b-page>
     <!--编辑抽屉-->
-    <b-drawer v-model="dialogFormVisible" :append-to-body="false" fullscreen footer-hide :title="editTitle">
+    <b-drawer v-model="dialogFormVisible" append-to-body width="600px" footer-hide :title="editTitle">
       <!--查询内容区域-->
-      <div v-if="dialogStatus==='check'" style="width: 880px;padding: 20px 0 0 20px;">
+      <div v-if="dialogStatus==='check'" class="m20">
         <v-key-label label="姓名" label-width="150px" is-half is-first>{{ user.name }}</v-key-label>
         <v-key-label label="年龄" is-half>{{ user.age }}</v-key-label>
         <v-key-label label="出生日期" label-width="150px">{{ user.birthday }}</v-key-label>
@@ -63,9 +63,54 @@
         </div>
       </div>
       <!--增加编辑区域-->
-      <div v-else style="width: 880px;padding: 20px 0 0 60px;">
+      <div v-else class="m20">
         <!--调试用，显示id-->
         <b-form :model="user" ref="form" :rules="ruleValidate" :label-width="130">
+          <div flex="box:mean">
+            <b-form-item label="姓名" prop="name">
+              <b-input v-model="user.name" placeholder="请输入姓名" clearable></b-input>
+            </b-form-item>
+            <b-form-item label="年龄" prop="age">
+              <b-input-number :min="0" v-model="user.age" style="width: 100%;"></b-input-number>
+            </b-form-item>
+          </div>
+          <!--出生日期这里暂时为输入框-->
+          <b-form-item label="出生日期" prop="birthday">
+            <b-input v-model="user.birthday" placeholder="请输入出生日期" clearable></b-input>
+          </b-form-item>
+          <b-form-item label="地址" prop="address">
+            <b-input v-model="user.address" placeholder="请输入地址" clearable></b-input>
+          </b-form-item>
+          <div flex="box:mean">
+            <b-form-item label="姓名" prop="name">
+              <b-input v-model="user.name" placeholder="请输入姓名" clearable></b-input>
+            </b-form-item>
+            <b-form-item label="年龄" prop="age">
+              <b-input-number :min="0" v-model="user.age" style="width: 100%;"></b-input-number>
+            </b-form-item>
+          </div>
+          <!--出生日期这里暂时为输入框-->
+          <b-form-item label="出生日期" prop="birthday">
+            <b-input v-model="user.birthday" placeholder="请输入出生日期" clearable></b-input>
+          </b-form-item>
+          <b-form-item label="地址" prop="address">
+            <b-input v-model="user.address" placeholder="请输入地址" clearable></b-input>
+          </b-form-item>
+          <div flex="box:mean">
+            <b-form-item label="姓名" prop="name">
+              <b-input v-model="user.name" placeholder="请输入姓名" clearable></b-input>
+            </b-form-item>
+            <b-form-item label="年龄" prop="age">
+              <b-input-number :min="0" v-model="user.age" style="width: 100%;"></b-input-number>
+            </b-form-item>
+          </div>
+          <!--出生日期这里暂时为输入框-->
+          <b-form-item label="出生日期" prop="birthday">
+            <b-input v-model="user.birthday" placeholder="请输入出生日期" clearable></b-input>
+          </b-form-item>
+          <b-form-item label="地址" prop="address">
+            <b-input v-model="user.address" placeholder="请输入地址" clearable></b-input>
+          </b-form-item>
           <div flex="box:mean">
             <b-form-item label="姓名" prop="name">
               <b-input v-model="user.name" placeholder="请输入姓名" clearable></b-input>
@@ -100,7 +145,7 @@
   export default {
     name: 'TableDemo',
     mixins: [commonMixin],
-    data () {
+    data() {
       const validateDate = (rule, value, callback) => {
         if (value.length > 0) {
           // 这里需要编写对应的校验格式
@@ -137,8 +182,8 @@
           { title: '姓名', slot: 'name' },
           { title: '年龄', key: 'age' },
           { title: '出生日期', key: 'birthday' },
-          { title: '地址', key: 'address' },
-          { title: '操作', slot: 'action', width: 180 }
+          { title: '地址', key: 'address', width: 200, tooltip: true },
+          { title: '操作', slot: 'action', width: 140 }
         ],
         user: null,
         ruleValidate: {
@@ -151,13 +196,13 @@
         }
       }
     },
-    created () {
+    created() {
       this.initTree()
       this.resetUser()
     },
     methods: {
       /* [事件响应] */
-      handTreeCurrentChange (data, node) {
+      handTreeCurrentChange(data, node) {
         this.currentTreeNode = node
         console.log(this.currentTreeNode)
         // if (this.dialogFormVisible) { // 如果打开了右侧编辑区域则不需要查询，并且需要缓存当前树节点，需要修改父节点id
@@ -168,7 +213,7 @@
         // }
       },
       // filter-Bar:重置查询条件
-      resetQuery () {
+      resetQuery() {
         this.listQuery = {
           page: 1,
           size: 10,
@@ -179,22 +224,22 @@
         }
       },
       // 新增按钮事件
-      handleCreate () {
+      handleCreate() {
         this.resetUser()
         this.openEditPage('create')
       },
       // 编辑事件
-      handleModify (row) {
+      handleModify(row) {
         this.user = { ...row }
         this.openEditPage('modify')
       },
       // 查看按钮事件
-      handleCheck (row) {
+      handleCheck(row) {
         this.user = { ...row }
         this.openEditPage('check')
       },
       // 弹窗提示是否删除
-      handleRemove (row) {
+      handleRemove(row) {
         let user = { ...row }
         this.$confirm({
           title: '警告',
@@ -217,7 +262,7 @@
         })
       },
       // 表单提交
-      handleSubmit () {
+      handleSubmit() {
         this.$refs.form.validate((valid) => {
           if (valid) {
             // 校验成功后根据状态去创建或修改
@@ -241,7 +286,7 @@
       },
       /* [数据接口] */
       // 重置栏目对象
-      resetUser () {
+      resetUser() {
         this.user = {
           id: '',
           username: '',
@@ -251,7 +296,7 @@
         }
       },
       // tree:初始化树结构
-      initTree () {
+      initTree() {
         // 这里模拟获取
         this.treeData = [
           {
@@ -272,6 +317,14 @@
                 children: [
                   { title: '三级 1-2-1' },
                   { title: '三级 1-2-2' }
+                ]
+              },
+              {
+                title: '二级 1-3',
+                expand: true,
+                children: [
+                  { title: '三级 1-3-1' },
+                  { title: '三级 1-3-2' }
                 ]
               }
             ]
@@ -301,7 +354,7 @@
         // })
       },
       // 查询所有部门列表
-      searchList () {
+      searchList() {
         // 模拟获取列表数据
         this.setListData({
           list: [
@@ -352,18 +405,6 @@
               age: 26,
               birthday: '1992-09-02',
               address: '深圳市南山区深南大道'
-            },
-            {
-              name: '张小发',
-              age: 33,
-              birthday: '1989-12-22',
-              address: '南京市龙眠大道'
-            },
-            {
-              name: '张小发',
-              age: 33,
-              birthday: '1989-12-22',
-              address: '南京市龙眠大道'
             }
           ],
           total: 15
