@@ -4,8 +4,8 @@ import store from '../store'
 // 路由数据
 import { constantRouterMap } from './routes'
 import BinUI from 'bin-ui'
-import util from '../utils/util'
-import { ACCESS_TOKEN } from '../store/mutation-types'
+import util from '../common/utils/util'
+import { ACCESS_TOKEN } from '../common/token-const'
 
 Vue.use(BinUI)
 
@@ -65,7 +65,7 @@ router.beforeEach((to, from, next) => {
             })
           })
           .catch(err => {
-            util.log.danger(err.message)
+            console.error(err.message)
             // 无效token则登出并重定向到登录页面
             store.dispatch('logout').then(() => {
               next({ name: 'login', query: { redirect: to.fullPath } })

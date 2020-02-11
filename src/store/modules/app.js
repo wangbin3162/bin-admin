@@ -1,5 +1,5 @@
-import { getAdminSetting, setAdminSetting } from '../../utils/datastore'
-import { deepCopy } from '../../utils/assist'
+import { getAdminSetting, setAdminSetting } from '../../common/config/datastore'
+import { deepCopy } from '../../common/utils/assist'
 
 const app = {
   state: {

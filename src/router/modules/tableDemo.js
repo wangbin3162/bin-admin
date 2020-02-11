@@ -1,4 +1,4 @@
-import layout from '../../layout/layout'
+import layout from '../../views/layout/layout'
 
 export default {
   path: '/tableDemo',
@@ -9,7 +9,7 @@ export default {
     {
       path: 'tableDemo',
       name: 'TableDemo',
-      component: () => import('../../views/demo/table/demo'),
+      component: () => import('../../pages/demo/table/TabelDemo'),
       meta: { title: '表格示例1' }
     }
   ]

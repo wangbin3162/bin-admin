@@ -5,52 +5,6 @@
 本项目是基于 Vue2.6，配合使用 [bin-ui](https://github.com/wangbin3162/bin-ui/) 作为组件库来进行搭建wcm后台管理系统，在基于[vue-admin1.0](https://github.com/wangbin3162/vue-admin/)
 版本基础上进行二次重构，增加了登录的token验证和简单主题配置功能，目前暂时为2.0.0版本初稿，后续会进行持续更新。
 
-## 功能概述
-
-    - 全局功能
-      - 动态侧边栏（支持多级路由嵌套）
-      - 动态面包屑
-      - 快捷导航(标签页)
-      - 阿里iconfont图标嵌入
-      - Easy-Mock数据
-      - 自适应收缩侧边栏
-        
-    - 错误页面
-      - 401
-      - 403
-      - 404
-      - 500
-    
-    - 組件
-      - 按钮组
-      - ECharts 图表
-      - Divider 分割线
-      - Drawer 抽屉
-      - 标题栏、文本栏
-      - SplitPane 分隔区块
-      - Tinymce 富文本封装
-      
- 注：仅列举部分组件和功能
-      
-## 环境搭建
-
-需要在本地安装 node 和 vue-cli3。本项目技术栈基于
-[ES6](http://es6.ruanyifeng.com/)、
-[vue](https://cn.vuejs.org/index.html)、
-[vuex](https://vuex.vuejs.org/zh/guide/)、
-[vue-router](https://router.vuejs.org/zh/)、
-[axios](https://github.com/axios/axios)、
-[bin-ui](https://github.com/wangbin3162/bin-ui/)
-学习相关内容在开发项目时将会很有帮助。
-
-此外，为实现图表、加载进度，请求参数转换，数字累加等功能，本项目还安装依赖了一些辅助库， 如
-[echarts](https://echarts.baidu.com/index.html)、
-[qs](https://www.npmjs.com/package/qs)、
-[vue-count-to](https://www.npmjs.com/package/vue-count-to)
-[good-storage](https://www.npmjs.com/package/good-storage)、等。
-
-所有的请求数据都使用[Easy-Mock](https://easy-mock.com/)模拟
-
 ## 目录结构
 
 整个项目的目录结构如下，具体包含内容后续会进行详细介绍和解释
@@ -60,15 +14,13 @@
     ├── src                        // 源代码
     │   ├── api                    // 所有请求相关资源
     │   ├── assets                 // 静态资源，会打包的资源
+    │   ├── common                 // 通用配置，工具，mixins
     │   ├── components             // 全局公用组件
-    │   ├── config                 // 自定义配置参数
-    │   ├── layout                 // 全局布局和相关组件
     │   ├── mock                   // mock server 数据
     │   ├── plugin                 // 自定义插件，注入指令，全局mixin
     │   ├── router                 // 路由
     │   ├── store                  // 全局 store 
-    │   ├── utils                  // 全局工具包
-    │   ├── views                  // views 所有页面
+    │   ├── views                  // views 视图显示（错误页面，布局，登录）
     │   ├── App.vue                // 入口页面
     │   └── main.js                // 入口文件 加载组件 初始化等
     ├── .eslintrc.js               // eslint 配置项
@@ -76,6 +28,7 @@
     ├── babel.config.js            // babel 配置项
     ├── vue.config.js              // vue-cli3集成配置项
     └── package.json               // package.json
+    
     
 ## 安装
 
@@ -92,6 +45,94 @@ npm run serve
 vue ui
 ```
 
-实际工作中可直接克隆在此基础包中进行开发。
+## Vue项目中的文件/文件夹命名规范
 
-文档持续更新中...
+文件或文件夹的命名遵循以下原则：
+
+
+- index.js 或者 index.vue，统一使用小写字母开头的(kebab-case)命名规范
+- 属于组件或类的，统一使用大写字母开头的(PascalCase)命名规范
+- 其他非组件或类的，统一使用小写字母开头的(kebab-case)命名规范
+
+### 文件夹命名规范
+
+**属于components文件夹下的子文件夹，使用大写字母开头的PascalBase风格**
+1. 全局通用的组件放在 /src/components下
+2. 其他业务页面中的组件，放在各自页面下的 ./components文件夹下
+3. 每个components文件夹下最多只有一层文件夹，且文件夹名称为组件的名称，文件夹下必须有index.vue或index.js，其他.vue文件统一大写开头（Pascal case），components下的子文件夹名称统一大写开头（PascalCase）
+
+**其他文件夹统一使用kebab-case的风格**
+
+**全局公共组件：/src/components示例**
+```
+  - [components]
+    - [Breadcrumb]
+      - index.vue
+    - [Hamburger]
+      - index.vue
+    - [SvgIcon]
+      - index.vue
+```
+**业务页面内部封装的组件：以 /src/views/layout/components示例**
+```
+-[src]
+  - [views]
+    - [layout]
+      - [components]
+        - [Sidebar]
+          - index.vue
+          - Item.vue
+          - SidebarItem.vue
+        - AppMain.vue
+        - index.js
+        - Navbar.vue`
+```
+index.js 中导出组件方式如下：
+
+```javascript
+export { default as AppMain } from './AppMain'
+export { default as Navbar } from './Navbar'
+export { default as Sidebar } from './Sidebar'
+```
+
+```
+    看index.js中最后一行代码，不难发现，为什么components下的子文件夹要使用PascalCase命名：
+    
+    export { default as Sidebar } from './sidebar' // 使用kebab-case命名的文件夹
+    export { default as Sidebar } from './Sidebar' // 使用 PascalCase命名的文件夹
+    对于组件的导出/导入，我们一般都是使用大写字母开头的PascalCase风格，
+    以区别于.vue组件内部的其他camelCase声明的变量，
+    [Sidebar]作为【侧边栏组件】的一个整体被导出，文件夹的命名也采用PascalCase，
+    有利于index.js中export时的前后统一，避免很多情况下不注意区分大小写
+```
+
+### 文件命名规范
+
+#### *.js文件命名规范
+
+1. 属于类的.js文件，除index.js外，使用PascalBase风格
+2. 其他类型的.js文件，使用kebab-case风格
+3. 属于Api的，统一加上Api后缀
+
+#### *.vue文件命名规范
+
+1. 除index.vue之外，其他.vue文件统一用PascalBase风格
+
+
+总结一下：
+
+**文件夹：**
+1. 属于components文件夹下的子文件夹，使用大写字母开头的PascalBase风格，且最多一层
+2. 其他文件夹统一使用kebab-case的风格
+3. 如组件包含私有的组件、指令、mixin等则需要设置一个和组件名相同的文件夹，并将组件设置为index.vue，私有组件放置于当前文件夹
+
+**文件：**
+
+1. 除index.vue之外，其他.vue文件统一用PascalBase风格
+2. 属于类/组件的.js文件，除index.js外，使用PascalBase风格
+2. 其他类型的.js文件，使用kebab-case风格
+3. 属于Api的，统一加上Api后缀
+
+**style样式文件：**
+1. 统一使用kebab-case风格命名
+2. 内部类也统一用-连字符

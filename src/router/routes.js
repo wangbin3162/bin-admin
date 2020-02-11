@@ -1,4 +1,4 @@
-import layout from '../layout/layout'
+import layout from '../views/layout/layout'
 import components from './modules/components'
 import tableDemo from './modules/tableDemo'
 import errorPage from './modules/errorPage'
@@ -38,9 +38,9 @@ export const constantRouterMap = [
       // 首页 必须 name:index
       {
         path: 'index',
-        name: 'index',
+        name: 'Home',
         meta: { title: '首页', icon: 'icon-ios-home', noCache: false, affix: true },
-        component: () => import('../views/index/index.vue')
+        component: () => import('../pages/Home.vue')
       },
       // 刷新页面 必须保留
       {
@@ -72,7 +72,7 @@ export const constantRouterMap = [
   {
     path: '/login',
     name: 'login',
-    component: () => import('../views/login/login.vue')
+    component: () => import('../views/Login.vue')
   },
   {
     path: '/401',

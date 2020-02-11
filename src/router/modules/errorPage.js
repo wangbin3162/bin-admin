@@ -1,4 +1,4 @@
-import layout from '../../layout/layout'
+import layout from '../../views/layout/layout'
 
 export default {
   path: '/errorPage',

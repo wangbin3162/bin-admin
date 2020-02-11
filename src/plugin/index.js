@@ -4,12 +4,12 @@
 import BinUI from 'bin-ui'
 import 'bin-ui/lib/styles/index.css'
 // 本项目的全局自定义组件
-import Breadcrumb from '../components/v-breadcrumb/Breadcrumb'
-import TitleBar from '../components/v-title-bar/index'
-import FilterBar from '../components/v-filter-bar/FilterBar'
-import FilterItem from '../components/v-filter-bar/FilterItem'
-import TableLayout from '../components/v-table-layout/TableLayout'
-import KeyLabel from '../components/v-key-label/KeyLabel'
+import Breadcrumb from '../components/VBreadcrumb/index'
+import TitleBar from '../components/VTitleBar/index'
+import FilterBar from '../components/VFilterBar/FilterBar'
+import FilterItem from '../components/VFilterBar/FilterItem'
+import TableLayout from '../components/VTableLayout/index'
+import KeyLabel from '../components/VKeyLabel/index'
 
 export default {
   async install (Vue, options) {

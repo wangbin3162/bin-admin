@@ -1,4 +1,4 @@
-import layout from '../../layout/layout'
+import layout from '../../views/layout/layout'
 
 export default {
   path: '/components',
@@ -9,7 +9,7 @@ export default {
     {
       path: 'container',
       name: 'container',
-      component: () => import('../../views/demo/components/container'),
+      component: () => import('../../pages/demo/components/Container'),
       meta: { title: '容器组件', icon: 'ios-filing' }
     }
   ]
