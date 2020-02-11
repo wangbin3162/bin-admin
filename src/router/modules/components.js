@@ -1,4 +1,4 @@
-import layout from '../../views/layout/layout'
+import layout from '../../views/layout/index'
 
 export default {
   path: '/components',

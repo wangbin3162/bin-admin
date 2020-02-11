@@ -71,7 +71,7 @@
   import { mapGetters } from 'vuex'
 
   export default {
-    name: 'Home',
+    name: 'index',
     computed: {
       ...mapGetters(['userInfo'])
     }

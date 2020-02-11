@@ -1,19 +1,16 @@
 @import "../table-layout.styl"
 // 基础布局样式
 .app-wrapper {
-  position: relative;
   height: 100%;
   width: 100%;
-  z-index: 0;
-  overflow-x: hidden;
   .sidebar-container {
     position: fixed;
     top: 0;
     left: 0;
     bottom: 0;
     height: 100%;
-    z-index: 1001;
-    transition: width .2s ease-in-out;
+    z-index: 10;
+    transition: width .15s ease;
     overflow: hidden;
     .logo {
       position: relative;
@@ -35,6 +32,11 @@
     .aside {
       padding: 5px 0;
       height: calc(100% - 60px);
+      overflow-y: auto;
+      overflow-x: hidden;
+      &::-webkit-scrollbar {
+        display: none;
+      }
       .no-aside-menu {
         margin: 0 10px;
         background-color: rgba(0, 0, 0, .05);
@@ -64,10 +66,9 @@
   }
   .main-container {
     height: 100%;
-    min-width: 1200px;
     display: flex;
     flex-direction: column;
-    transition: margin-left .2s ease-in-out;
+    transition: padding-left .15s ease;
     background-color: #ffffff;
     color: #303133;
     .header-box {

@@ -8,12 +8,10 @@
         </transition>
       </div>
       <div class="aside">
-        <b-scrollbar style="height:100%;">
-          <aside-menu></aside-menu>
-        </b-scrollbar>
+        <aside-menu></aside-menu>
       </div>
     </div>
-    <div class="main-container" :style="{marginLeft:isCollapseLeft}">
+    <div class="main-container" :style="{paddingLeft:isCollapseLeft}">
       <!--通用头部-->
       <global-header>
         <header-menu v-if="menuType==='header'"></header-menu>

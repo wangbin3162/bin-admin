@@ -1,4 +1,4 @@
-import layout from '../views/layout/layout'
+import layout from '../views/layout/index'
 import components from './modules/components'
 import tableDemo from './modules/tableDemo'
 import errorPage from './modules/errorPage'
@@ -38,7 +38,7 @@ export const constantRouterMap = [
       // 首页 必须 name:index
       {
         path: 'index',
-        name: 'Home',
+        name: 'index',
         meta: { title: '首页', icon: 'icon-ios-home', noCache: false, affix: true },
         component: () => import('../pages/Home.vue')
       },
@@ -71,7 +71,7 @@ export const constantRouterMap = [
   // 登录
   {
     path: '/login',
-    name: 'login',
+    name: 'Login',
     component: () => import('../views/Login.vue')
   },
   {
