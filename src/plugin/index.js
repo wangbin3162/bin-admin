@@ -1,21 +1,19 @@
-// 按需加载element-ui
-// import './lazy_lib/components_use'
 // bin-ui
 import BinUI from 'bin-ui'
 import 'bin-ui/lib/styles/index.css'
 // 本项目的全局自定义组件
-import BaseLayout from '../components/base-layout/base-layout'
-import BaseHeader from '../components/base-header/header'
-import BaseFooter from '../components/base-footer/footer'
-import BaseSearch from '../components/base-search/search'
-import TopSearch from '../components/top-search/top-search'
-import TopAffix from '../components/top-affix/top-affix'
-import TitleBar from '../components/title-bar/index'
-import KeyLabelWrap from '../components/key-label/KeyLabelWrap'
-import KeyLabel from '../components/key-label/KeyLabel'
+import BaseLayout from '../components/BaseLayout/index'
+import BaseHeader from '../components/BaseHeader/index'
+import BaseFooter from '../components/BaseFooter/index'
+import BaseSearch from '../components/BaseSearch/index'
+import TopSearch from '../components/TopSearch/index'
+import TopAffix from '../components/TopAffix/index'
+import TitleBar from '../components/TitleBar/index'
+import KeyLabelWrap from '../components/KeyLabel/KeyLabelWrap'
+import KeyLabel from '../components/KeyLabel/KeyLabel'
 
 export default {
-  async install (Vue, options) {
+  async install(Vue, options) {
     // bin-ui引用
     Vue.use(BinUI)
     // 通用基本布局

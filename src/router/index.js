@@ -4,7 +4,7 @@ import store from '../store'
 // 路由数据
 import { constantRouterMap } from './routes'
 import BinUI from 'bin-ui'
-import util from '../utils/util'
+import util from '../common/utils/util'
 import { ACCESS_TOKEN } from '../store/mutation-types'
 
 Vue.use(BinUI)
@@ -19,7 +19,7 @@ const createRouter = () => new VueRouter({
 })
 const router = createRouter()
 
-export function resetRouter () {
+export function resetRouter() {
   const newRouter = createRouter()
   router.matcher = newRouter.matcher // reset router
 }

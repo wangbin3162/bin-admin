@@ -1,5 +1,5 @@
-import { getInfo } from '../../api/login'
-import util from '../../utils/util'
+import { getInfo } from '../../api/login.api'
+import util from '../../common/utils/util'
 import { ACCESS_TOKEN } from '../mutation-types'
 
 export default {

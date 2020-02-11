@@ -13,8 +13,8 @@ export const constantRouterMap = [
   // 登录
   {
     path: '/login',
-    name: 'login',
-    component: () => import('../views/login/login.vue')
+    name: 'Login',
+    component: () => import('../views/Login.vue')
   },
   // 首页 必须 name:index
   {
@@ -25,14 +25,14 @@ export const constantRouterMap = [
   },
   {
     path: '/detail',
-    name: 'detail',
-    component: () => import(/* webpackChunkName: "list" */ '../views/pages/detail.vue'),
+    name: 'Detail',
+    component: () => import(/* webpackChunkName: "list" */ '../views/pages/Detail.vue'),
     meta: { title: '详情' }
   },
   {
     path: '/stock',
-    name: 'stock',
-    component: () => import(/* webpackChunkName: "list" */ '../views/pages/stock.vue'),
+    name: 'Stock',
+    component: () => import(/* webpackChunkName: "list" */ '../views/pages/Stock.vue'),
     meta: { title: '股权结构图' }
   },
   {
