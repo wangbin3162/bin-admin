@@ -29,6 +29,7 @@
           <a href="https://github.com/wangbin3162/bin-admin" target="_blank">github</a></div>
       </footer>
     </div>
+    <b-back-top></b-back-top>
   </div>
 </template>
 

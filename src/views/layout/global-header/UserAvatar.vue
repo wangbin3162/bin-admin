@@ -30,7 +30,7 @@
           content: '确认退出登录吗？',
           onOk: () => {
             this.$store.dispatch('logout').then(() => {
-              this.$router.push({ name: 'Login' })
+              this.$router.push('/login')
             }).catch(err => {
               this.$message({ type: 'danger', content: err.message })
             })

@@ -1,8 +1,6 @@
 <template>
-  <span @click="themeModal=true">
-    <b-tooltip content="主题" theme="dark">
-      <b-icon name="ios-color-palette"></b-icon>
-    </b-tooltip>
+  <div class="btn" @click="themeModal=true">
+    <b-icon name="ios-color-palette"></b-icon>
     <b-modal v-model="themeModal" title="整体风格设置" append-to-body footer-hide>
       <div class="setting-panel" style="height:200px;">
         <!--菜单位置-->
@@ -39,7 +37,7 @@
         </div>
       </div>
     </b-modal>
-  </span>
+  </div>
 </template>
 
 <script>
@@ -47,7 +45,7 @@
 
   export default {
     name: 'theme-setting',
-    data () {
+    data() {
       return {
         themeModal: false
       }
@@ -56,10 +54,10 @@
       ...mapGetters(['theme', 'menuType'])
     },
     methods: {
-      themChange (val) {
+      themChange(val) {
         this.$store.dispatch('setThemeMode', val)
       },
-      menuTypeChange (type) {
+      menuTypeChange(type) {
         this.$store.dispatch('setMenuType', type)
       }
     }

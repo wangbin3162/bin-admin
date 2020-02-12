@@ -51,86 +51,47 @@
     <b-page slot="pager" :total="total" show-sizer
             @on-change="handleCurrentChange" @on-page-size-change="handleSizeChange"></b-page>
     <!--编辑抽屉-->
-    <b-drawer v-model="dialogFormVisible" append-to-body width="600px" footer-hide :title="editTitle">
+    <b-drawer v-model="dialogFormVisible" width="600px" :title="editTitle" :styles="drawerStyles">
       <!--查询内容区域-->
       <div v-if="dialogStatus==='check'" class="m20">
         <v-key-label label="姓名" label-width="150px" is-half is-first>{{ user.name }}</v-key-label>
         <v-key-label label="年龄" is-half>{{ user.age }}</v-key-label>
         <v-key-label label="出生日期" label-width="150px">{{ user.birthday }}</v-key-label>
         <v-key-label label="地址" label-width="150px" is-bottom>{{ user.address }}</v-key-label>
-        <div style="padding: 10px;text-align: center;">
-          <b-button v-waves @click="dialogFormVisible=false">返 回</b-button>
-        </div>
       </div>
       <!--增加编辑区域-->
       <div v-else class="m20">
         <!--调试用，显示id-->
-        <b-form :model="user" ref="form" :rules="ruleValidate" :label-width="130">
+        <b-form :model="user" ref="form" :rules="ruleValidate" placement="top">
           <div flex="box:mean">
-            <b-form-item label="姓名" prop="name">
+            <b-form-item label="姓名" prop="name" class="mr-15">
               <b-input v-model="user.name" placeholder="请输入姓名" clearable></b-input>
             </b-form-item>
             <b-form-item label="年龄" prop="age">
               <b-input-number :min="0" v-model="user.age" style="width: 100%;"></b-input-number>
             </b-form-item>
           </div>
-          <!--出生日期这里暂时为输入框-->
-          <b-form-item label="出生日期" prop="birthday">
-            <b-input v-model="user.birthday" placeholder="请输入出生日期" clearable></b-input>
-          </b-form-item>
-          <b-form-item label="地址" prop="address">
-            <b-input v-model="user.address" placeholder="请输入地址" clearable></b-input>
-          </b-form-item>
           <div flex="box:mean">
-            <b-form-item label="姓名" prop="name">
+            <b-form-item label="出生日期" prop="birthday" class="mr-15">
+              <b-input v-model="user.birthday" placeholder="请输入出生日期" clearable></b-input>
+            </b-form-item>
+            <b-form-item label="地址" prop="address">
+              <b-input v-model="user.address" placeholder="请输入地址" clearable></b-input>
+            </b-form-item>
+          </div>
+          <div flex="box:mean">
+            <b-form-item label="姓名" prop="name" class="mr-15">
               <b-input v-model="user.name" placeholder="请输入姓名" clearable></b-input>
             </b-form-item>
             <b-form-item label="年龄" prop="age">
               <b-input-number :min="0" v-model="user.age" style="width: 100%;"></b-input-number>
             </b-form-item>
           </div>
-          <!--出生日期这里暂时为输入框-->
-          <b-form-item label="出生日期" prop="birthday">
-            <b-input v-model="user.birthday" placeholder="请输入出生日期" clearable></b-input>
-          </b-form-item>
-          <b-form-item label="地址" prop="address">
-            <b-input v-model="user.address" placeholder="请输入地址" clearable></b-input>
-          </b-form-item>
-          <div flex="box:mean">
-            <b-form-item label="姓名" prop="name">
-              <b-input v-model="user.name" placeholder="请输入姓名" clearable></b-input>
-            </b-form-item>
-            <b-form-item label="年龄" prop="age">
-              <b-input-number :min="0" v-model="user.age" style="width: 100%;"></b-input-number>
-            </b-form-item>
-          </div>
-          <!--出生日期这里暂时为输入框-->
-          <b-form-item label="出生日期" prop="birthday">
-            <b-input v-model="user.birthday" placeholder="请输入出生日期" clearable></b-input>
-          </b-form-item>
-          <b-form-item label="地址" prop="address">
-            <b-input v-model="user.address" placeholder="请输入地址" clearable></b-input>
-          </b-form-item>
-          <div flex="box:mean">
-            <b-form-item label="姓名" prop="name">
-              <b-input v-model="user.name" placeholder="请输入姓名" clearable></b-input>
-            </b-form-item>
-            <b-form-item label="年龄" prop="age">
-              <b-input-number :min="0" v-model="user.age" style="width: 100%;"></b-input-number>
-            </b-form-item>
-          </div>
-          <!--出生日期这里暂时为输入框-->
-          <b-form-item label="出生日期" prop="birthday">
-            <b-input v-model="user.birthday" placeholder="请输入出生日期" clearable></b-input>
-          </b-form-item>
-          <b-form-item label="地址" prop="address">
-            <b-input v-model="user.address" placeholder="请输入地址" clearable></b-input>
-          </b-form-item>
-          <b-form-item>
-            <b-button type="primary" v-waves @click="handleSubmit" :loading="btnLoading">确 定</b-button>
-            <b-button v-waves @click="handleCancel">取 消</b-button>
-          </b-form-item>
         </b-form>
+      </div>
+      <div v-if="isEdit" :style="footerStyles">
+        <b-button type="primary" v-waves @click="handleSubmit" :loading="btnLoading">确 定</b-button>
+        <b-button v-waves @click="handleCancel">取 消</b-button>
       </div>
     </b-drawer>
   </v-table-layout>
@@ -169,6 +130,22 @@
           age: ''
         },
         treeData: [],
+        drawerStyles: {
+          height: 'calc(100% - 55px)',
+          overflow: 'auto',
+          paddingBottom: '53px',
+          position: 'static'
+        },
+        footerStyles: {
+          width: '100%',
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          borderTop: '1px solid #e8e8e8',
+          padding: '10px 16px',
+          textAlign: 'right',
+          background: '#fff'
+        },
         columns: [
           {
             title: '序号',

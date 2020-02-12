@@ -69,7 +69,7 @@ export const constantRouterMap = [
   // 登录
   {
     path: '/login',
-    name: 'Login',
+    name: 'login',
     component: () => import('../views/Login.vue')
   },
   {

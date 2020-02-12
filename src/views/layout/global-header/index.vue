@@ -22,9 +22,7 @@
         <div class="btn">
           <b-icon name="ios-bug"></b-icon>
         </div>
-        <div class="btn">
-          <theme-setting></theme-setting>
-        </div>
+        <theme-setting></theme-setting>
         <!--用户信息-->
         <user-avatar></user-avatar>
       </div>

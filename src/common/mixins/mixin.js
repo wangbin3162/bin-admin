@@ -1,5 +1,5 @@
 export default {
-  data () {
+  data() {
     return {
       tableWrapWidth: 0,
       currentTreeNode: null,
@@ -17,7 +17,7 @@ export default {
     }
   },
   computed: {
-    editTitle () {
+    editTitle() {
       const map = {
         check: '查看',
         modify: '修改',
@@ -25,29 +25,34 @@ export default {
       }
       return map[this.dialogStatus] || '标题'
     },
-    isCheck () {
+    isCheck() {
       return this.dialogStatus === 'check'
     },
-    isEdit () {
+    isEdit() {
       return this.dialogStatus === 'create' || this.dialogStatus === 'modify'
     },
-    tableWidth () {
+    tableWidth() {
       // 没有树结构的表格宽度= wrap -15*2 - 20*2
       return this.tableWrapWidth - 70
     },
-    treeTableWidth () {
+    treeTableWidth() {
       // 包含树结构的表格宽度= wrap -15*2 - 20*2 -200
       return this.tableWrapWidth - 270
     },
-    lockTreeSelect () {
+    lockTreeSelect() {
       return this.dialogStatus === 'check' || this.dialogStatus === 'modify'
     }
   },
-  mounted () {
+  mounted() {
     this.$EventBus.$on('/layout/resize', this._resizeTable)
   },
   watch: {
-    dialogFormVisible (val) {
+    '$route'() {
+      this.$nextTick(() => {
+        this.$refs.table && this.$refs.table.handleResize()
+      })
+    },
+    dialogFormVisible(val) {
       if (!val) {
         this.dialogStatus = ''
       }
@@ -55,12 +60,14 @@ export default {
   },
   methods: {
     // 1.监听窗口变化重置表格最大高度
-    _resizeTable (width) {
+    _resizeTable(width) {
       this.tableWrapWidth = width
-      this.$refs.table && this.$refs.table.handleResize()
+      this.$nextTick(() => {
+        this.$refs.table && this.$refs.table.handleResize()
+      })
     },
     // 树节点格式化mapper
-    treeMapper (node, parentId) {
+    treeMapper(node, parentId) {
       // 当前id
       const currentId = node.id
       let parents = parentId ? parentId.split(',') : []
@@ -85,7 +92,7 @@ export default {
       }
     },
     // 设置列表数据
-    setListData (obj) {
+    setListData(obj) {
       if (obj) {
         this.list = obj.list
         this.total = obj.total
@@ -96,32 +103,32 @@ export default {
       }
     },
     // 打开编辑页面
-    openEditPage (status) {
+    openEditPage(status) {
       this.dialogStatus = status
       this.dialogFormVisible = true
       this.$refs.form && this.$refs.form.resetFields()
     },
     // 弹窗取消
-    handleCancel () {
+    handleCancel() {
       this.dialogFormVisible = false
     },
     // 组件内部overwrite
-    searchList () {
+    searchList() {
       console.error('searchList need overwrite (from mixin)')
     },
     // 查询条件查询
-    handleFilter () {
+    handleFilter() {
       this.listQuery.page = 1
       this.searchList()
     },
     // 分页大小事件 */
-    handleSizeChange (size) {
+    handleSizeChange(size) {
       this.listQuery.page = 1
       this.listQuery.size = size
       this.searchList()
     },
     // 分页跳转事件 */
-    handleCurrentChange (page) {
+    handleCurrentChange(page) {
       this.listQuery.page = page
       this.searchList()
     }
