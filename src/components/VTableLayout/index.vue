@@ -6,7 +6,7 @@
       </div>
     </div>
     <div class="table-view">
-      <div class="view-inner" style="margin-right: 20px;">
+      <div class="view-inner">
         <slot name="filter" v-if="$slots.filter">查询条件插槽</slot>
         <div class="button-bar" v-if="$slots.ctrl">
           <slot name="ctrl"></slot>
@@ -57,7 +57,7 @@
       border-top-right-radius: 5px;
       border-bottom-right-radius: 5px;
       .view-inner {
-        padding: 20px 0 20px 20px;
+        padding: 20px;
       }
       .table-inner {
         padding-top: 10px;

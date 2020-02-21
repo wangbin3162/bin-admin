@@ -36,8 +36,8 @@ export default {
       return this.tableWrapWidth - 70
     },
     treeTableWidth() {
-      // 包含树结构的表格宽度= wrap -15*2 - 20*2 -200
-      return this.tableWrapWidth - 270
+      // 包含树结构的表格宽度= wrap - 20*2 -200
+      return this.tableWrapWidth - 240
     },
     lockTreeSelect() {
       return this.dialogStatus === 'check' || this.dialogStatus === 'modify'

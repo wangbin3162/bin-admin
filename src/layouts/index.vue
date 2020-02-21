@@ -37,7 +37,7 @@
         return this.menuType === 'aside'
       },
       asideStyle() {
-        const width = this.sidebar ? 240 : 64
+        const width = this.sidebar ? 256 : 64
         return {
           flex: `0 0 ${width}px`,
           maxWidth: `${width}px`,
@@ -48,7 +48,7 @@
       rightStyle() {
         return {
           position: 'relative',
-          paddingLeft: (this.hasAside && this.fixedAside) ? (this.sidebar ? '240px' : '64px') : null
+          paddingLeft: (this.hasAside && this.fixedAside) ? (this.sidebar ? '256px' : '64px') : null
         }
       }
     },
@@ -60,7 +60,7 @@
         })
         window.addEventListener('resize', this.calcTableWidth)
         this.sidebarElm = document.getElementsByClassName('layout-aside')[0]
-        this.sidebarElm.addEventListener('transitionend', this.sidebarResizeHandler)
+        this.sidebarElm && this.sidebarElm.addEventListener('transitionend', this.sidebarResizeHandler)
       }
     },
     methods: {

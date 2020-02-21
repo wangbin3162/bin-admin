@@ -122,6 +122,8 @@
       },
       menuTypeChange(type) {
         this.$store.dispatch('setMenuType', type)
+        // 重定向当前页面
+        this.$router.replace('/refresh')
       },
       changeFixedHeader(val) {
         this.$store.dispatch('toggleFixedHeader', val)

@@ -50,7 +50,7 @@
     computed: {
       ...mapGetters(['theme', 'sidebar', 'fixedAside', 'navMenu']),
       asideStyle() {
-        const width = this.sidebar ? 240 : 64
+        const width = this.sidebar ? 256 : 64
         return {
           flex: `0 0 ${width}px`,
           maxWidth: `${width}px`,
