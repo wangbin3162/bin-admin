@@ -1,10 +1,8 @@
 <template>
-  <div class="key-label" :style="rowStyle">
+  <div class="key-label">
     <div class="inner" flex="box:first">
-      <span class="label" :style="labelStyle">{{ label }}</span>
-      <span class="val">
-        <slot>文字</slot>
-      </span>
+      <span class="key">{{ label }}</span>
+      <span class="label"><slot>文字</slot></span>
     </div>
   </div>
 </template>
@@ -17,34 +15,6 @@
         type: String,
         default: 'label',
         required: true
-      },
-      labelWidth: {
-        type: String,
-        default: '130px'
-      },
-      labelPosition: {
-        type: String,
-        default: 'right'
-      },
-      isHalf: Boolean,
-      isFirst: Boolean,
-      isBottom: Boolean
-    },
-    computed: {
-      rowStyle() {
-        let style = {}
-        style = Object.assign({}, {
-          width: this.isHalf ? '50%' : '100%',
-          borderBottom: !this.isBottom ? 'none' : null,
-          borderRight: this.isFirst ? 'none' : null
-        })
-        return style
-      },
-      labelStyle() {
-        return {
-          width: this.labelWidth,
-          textAlign: this.labelPosition
-        }
       }
     }
   }
@@ -52,17 +22,28 @@
 
 <style scoped lang="stylus">
   .key-label {
-    display: inline-block;
-    line-height: 40px;
-    border: 1px solid #d5d9de;
-    .label {
-      padding: 0 10px;
-      background: #fafafa;
-      border-right: 1px solid #d5d9de;
+    line-height: 1.5;
+    padding-bottom: 16px;
+    > span {
+      display: inline-block;
     }
-    .val {
-      padding: 0 10px;
-      word-wrap: break-word;
+    .key {
+      color: rgba(0, 0, 0, .85);
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 1.5;
+      white-space: nowrap;
+      &:after {
+        position: relative;
+        top: -.5px;
+        margin: 0 8px 0 2px;
+        content: ": ";
+      }
+    }
+    .label {
+      color: rgba(0, 0, 0, .65);
+      font-size: 14px;
+      line-height: 1.5;
     }
   }
 </style>

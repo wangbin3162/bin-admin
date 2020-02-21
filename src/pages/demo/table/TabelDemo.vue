@@ -1,100 +1,102 @@
 <template>
-  <v-table-layout>
-    <!--树结构-->
-    <b-tree :data="treeData" slot="tree" @on-select-change="handTreeCurrentChange"
-            :lock-select="lockTreeSelect"></b-tree>
-    <!--查询条件-->
-    <v-filter-bar slot="filter" :is-opened="filterOpened">
-      <v-filter-item title="用户名称" width="30%">
-        <b-input v-model.trim="listQuery.name" size="small" placeholder="请输入部门名称" clearable></b-input>
-      </v-filter-item>
-      <v-filter-item title="显示禁用" width="30%">
-        <b-switch size="large" v-model="listQuery.delFlag" true-value="Y" false-value="N"
-                  @on-change="handleFilter">
-          <span slot="open">显示</span>
-          <span slot="close">隐藏</span>
-        </b-switch>
-      </v-filter-item>
-      <!--添加查询按钮位置-->
-      <v-filter-item @on-search="handleFilter" @on-reset="resetQuery"
-                     :show-toggle="true" :is-opened="filterOpened" @on-toggle="filterOpened=!filterOpened"
-      ></v-filter-item>
-      <template slot="more">
-        <v-filter-item title="地址" width="30%">
-          <b-input v-model.trim="listQuery.address" size="small" placeholder="请输入" clearable></b-input>
+  <page-header-wrap>
+    <v-table-layout>
+      <!--树结构-->
+      <b-tree :data="treeData" slot="tree" @on-select-change="handTreeCurrentChange"
+              :lock-select="lockTreeSelect"></b-tree>
+      <!--查询条件-->
+      <v-filter-bar slot="filter" :is-opened="filterOpened">
+        <v-filter-item title="用户名称" width="30%">
+          <b-input v-model.trim="listQuery.name" size="small" placeholder="请输入部门名称" clearable></b-input>
         </v-filter-item>
-        <v-filter-item title="年龄" width="30%">
-          <b-input v-model.trim="listQuery.age" size="small" placeholder="请输入" clearable></b-input>
+        <v-filter-item title="显示禁用" width="30%">
+          <b-switch size="large" v-model="listQuery.delFlag" true-value="Y" false-value="N"
+                    @on-change="handleFilter">
+            <span slot="open">显示</span>
+            <span slot="close">隐藏</span>
+          </b-switch>
         </v-filter-item>
-      </template>
-    </v-filter-bar>
-    <!--控制栏-->
-    <template slot="ctrl">
-      <b-button type="primary" v-waves size="small" icon="ios-add" @click="handleCreate">新增</b-button>
-    </template>
-    <b-table slot="table" :columns="columns" :data="list" :loading="listLoading"
-             stripe ref="table" :width="treeTableWidth">
-      <template v-slot:name="scope">
-        <a href="" @click.stop.prevent="handleCheck(scope.row)">{{ scope.row.name }}</a>
-      </template>
-      <!--操作栏-->
-      <template v-slot:action="scope">
-        <b-button type="text" @click="handleModify(scope.row)" v-waves>编辑</b-button>
-        <!--是否有删除键-->
-        <template>
-          <b-divider type="vertical"></b-divider>
-          <b-button type="text" v-waves style="color:red;" @click="handleRemove(scope.row)">删除</b-button>
+        <!--添加查询按钮位置-->
+        <v-filter-item @on-search="handleFilter" @on-reset="resetQuery"
+                       :show-toggle="true" :is-opened="filterOpened" @on-toggle="filterOpened=!filterOpened"
+        ></v-filter-item>
+        <template slot="more">
+          <v-filter-item title="地址" width="30%">
+            <b-input v-model.trim="listQuery.address" size="small" placeholder="请输入" clearable></b-input>
+          </v-filter-item>
+          <v-filter-item title="年龄" width="30%">
+            <b-input v-model.trim="listQuery.age" size="small" placeholder="请输入" clearable></b-input>
+          </v-filter-item>
         </template>
+      </v-filter-bar>
+      <!--控制栏-->
+      <template slot="ctrl">
+        <b-button type="primary" v-waves size="small" icon="ios-add" @click="handleCreate">新增</b-button>
       </template>
-    </b-table>
-    <!--下方分页器-->
-    <b-page slot="pager" :total="total" show-sizer
-            @on-change="handleCurrentChange" @on-page-size-change="handleSizeChange"></b-page>
-    <!--编辑抽屉-->
-    <b-drawer v-model="dialogFormVisible" width="600px" :title="editTitle" :styles="drawerStyles">
-      <!--查询内容区域-->
-      <div v-if="dialogStatus==='check'" class="m20">
-        <v-key-label label="姓名" label-width="150px" is-half is-first>{{ user.name }}</v-key-label>
-        <v-key-label label="年龄" is-half>{{ user.age }}</v-key-label>
-        <v-key-label label="出生日期" label-width="150px">{{ user.birthday }}</v-key-label>
-        <v-key-label label="地址" label-width="150px" is-bottom>{{ user.address }}</v-key-label>
-      </div>
-      <!--增加编辑区域-->
-      <div v-else class="m20">
-        <!--调试用，显示id-->
-        <b-form :model="user" ref="form" :rules="ruleValidate" placement="top">
-          <div flex="box:mean">
-            <b-form-item label="姓名" prop="name" class="mr-15">
-              <b-input v-model="user.name" placeholder="请输入姓名" clearable></b-input>
-            </b-form-item>
-            <b-form-item label="年龄" prop="age">
-              <b-input-number :min="0" v-model="user.age" style="width: 100%;"></b-input-number>
-            </b-form-item>
-          </div>
-          <div flex="box:mean">
-            <b-form-item label="出生日期" prop="birthday" class="mr-15">
-              <b-input v-model="user.birthday" placeholder="请输入出生日期" clearable></b-input>
-            </b-form-item>
-            <b-form-item label="地址" prop="address">
-              <b-input v-model="user.address" placeholder="请输入地址" clearable></b-input>
-            </b-form-item>
-          </div>
-          <div flex="box:mean">
-            <b-form-item label="姓名" prop="name" class="mr-15">
-              <b-input v-model="user.name" placeholder="请输入姓名" clearable></b-input>
-            </b-form-item>
-            <b-form-item label="年龄" prop="age">
-              <b-input-number :min="0" v-model="user.age" style="width: 100%;"></b-input-number>
-            </b-form-item>
-          </div>
-        </b-form>
-      </div>
-      <div v-if="isEdit" :style="footerStyles">
-        <b-button type="primary" v-waves @click="handleSubmit" :loading="btnLoading">确 定</b-button>
-        <b-button v-waves @click="handleCancel">取 消</b-button>
-      </div>
-    </b-drawer>
-  </v-table-layout>
+      <b-table slot="table" :columns="columns" :data="list" :loading="listLoading"
+               stripe ref="table" :width="treeTableWidth">
+        <template v-slot:name="scope">
+          <a href="" @click.stop.prevent="handleCheck(scope.row)">{{ scope.row.name }}</a>
+        </template>
+        <!--操作栏-->
+        <template v-slot:action="scope">
+          <b-button type="text" @click="handleModify(scope.row)" v-waves>编辑</b-button>
+          <!--是否有删除键-->
+          <template>
+            <b-divider type="vertical"></b-divider>
+            <b-button type="text" v-waves style="color:red;" @click="handleRemove(scope.row)">删除</b-button>
+          </template>
+        </template>
+      </b-table>
+      <!--下方分页器-->
+      <b-page slot="pager" :total="total" show-sizer
+              @on-change="handleCurrentChange" @on-page-size-change="handleSizeChange"></b-page>
+      <!--编辑抽屉-->
+      <b-drawer v-model="dialogFormVisible" width="600px" :title="editTitle" :styles="drawerStyles">
+        <!--查询内容区域-->
+        <div v-if="dialogStatus==='check'" class="m20">
+          <v-key-label label="姓名" label-width="150px" is-half is-first>{{ user.name }}</v-key-label>
+          <v-key-label label="年龄" is-half>{{ user.age }}</v-key-label>
+          <v-key-label label="出生日期" label-width="150px">{{ user.birthday }}</v-key-label>
+          <v-key-label label="地址" label-width="150px" is-bottom>{{ user.address }}</v-key-label>
+        </div>
+        <!--增加编辑区域-->
+        <div v-else class="m20">
+          <!--调试用，显示id-->
+          <b-form :model="user" ref="form" :rules="ruleValidate" placement="top">
+            <div flex="box:mean">
+              <b-form-item label="姓名" prop="name" class="mr-15">
+                <b-input v-model="user.name" placeholder="请输入姓名" clearable></b-input>
+              </b-form-item>
+              <b-form-item label="年龄" prop="age">
+                <b-input-number :min="0" v-model="user.age" style="width: 100%;"></b-input-number>
+              </b-form-item>
+            </div>
+            <div flex="box:mean">
+              <b-form-item label="出生日期" prop="birthday" class="mr-15">
+                <b-input v-model="user.birthday" placeholder="请输入出生日期" clearable></b-input>
+              </b-form-item>
+              <b-form-item label="地址" prop="address">
+                <b-input v-model="user.address" placeholder="请输入地址" clearable></b-input>
+              </b-form-item>
+            </div>
+            <div flex="box:mean">
+              <b-form-item label="姓名" prop="name" class="mr-15">
+                <b-input v-model="user.name" placeholder="请输入姓名" clearable></b-input>
+              </b-form-item>
+              <b-form-item label="年龄" prop="age">
+                <b-input-number :min="0" v-model="user.age" style="width: 100%;"></b-input-number>
+              </b-form-item>
+            </div>
+          </b-form>
+        </div>
+        <div v-if="isEdit" :style="footerStyles">
+          <b-button type="primary" v-waves @click="handleSubmit" :loading="btnLoading">确 定</b-button>
+          <b-button v-waves @click="handleCancel">取 消</b-button>
+        </div>
+      </b-drawer>
+    </v-table-layout>
+  </page-header-wrap>
 </template>
 
 <script>

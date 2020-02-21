@@ -1,0 +1,39 @@
+$color-primary = #1890ff;
+$font-base = #aeaeae;
+
+.theme-dark {
+  .menu-dropdown {
+    background: #001529;
+    .drop-menu-a, .bin-dropdown-item {
+      color: #bfbfbf;
+    }
+    .bin-dropdown-item:hover {
+      background: #001529;
+      color: #fff;
+    }
+    .bin-dropdown-item-selected {
+      background: $color-primary;
+      color: #fff;
+    }
+  }
+  .bin-menu-dark.bin-menu-horizontal .bin-menu-submenu {
+    .bin-select-dropdown {
+      background: #001529;
+      .bin-menu-item, .bin-menu-submenu {
+        color: #bfbfbf;
+        &:hover {
+          background: #001529;
+          color: #fff;
+        }
+      }
+      .bin-menu-item-selected {
+        background: $color-primary;
+        color: #fff;
+        &:hover {
+          background: $color-primary;
+          color: #fff;
+        }
+      }
+    }
+  }
+}

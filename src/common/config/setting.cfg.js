@@ -5,7 +5,9 @@
  */
 
 export default {
-  theme: 'light', // theme for nav menu
+  theme: 'dark',
   sidebar: true, // 侧边栏开启状态
-  menuType: 'aside'
+  menuType: 'aside',
+  fixedHeader: true,
+  fixedAside: true
 }

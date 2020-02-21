@@ -41,7 +41,7 @@
         </div>
         <div class="footer">
           <p class="footer-copyright">
-            bin-admin 简版后台管理系统2.0 <a href="https://github.com/wangbin3162/bin-admin" target="_blank">github</a>
+            bin admin pro 简版后台管理系统3.0 <a href="https://github.com/wangbin3162/bin-admin" target="_blank">github</a>
           </p>
         </div>
       </div>
@@ -135,7 +135,7 @@
   .page-login {
     user-select: none;
     background-color: #F0F2F5;
-    height: 100%;
+    height: 100vh;
     position: relative;
     // 层
 

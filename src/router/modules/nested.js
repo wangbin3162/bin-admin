@@ -1,4 +1,4 @@
-import layout from '../../views/layout/index'
+import layout from '../../layouts'
 
 export default {
   path: '/nested',

@@ -1,4 +1,4 @@
-import layout from '../views/layout/index'
+import layout from '../layouts'
 import tableDemo from './modules/table-demo'
 import errorPage from './modules/error-page'
 import nested from './modules/nested'
@@ -11,8 +11,6 @@ import nested from './modules/nested'
     roles: false,                  如果设置roles则不需要去验证过滤，直接全部显示为菜单栏
     title: 'title',                当前路由的中文名称
     icon: 'a-icon',                当前菜单的图标样式，使用阿里iconfont
-    noCache: true                  如果设置为true则不被缓存，默认是false即为缓存
-    affix: true                    如果设置为true ，则会固定再tags-view
     activeMenu: '/example/list'    如果设置路径，侧栏将突出显示您设置的路径,即默认选择的菜单
   }
  **/
@@ -70,23 +68,23 @@ export const constantRouterMap = [
   {
     path: '/login',
     name: 'login',
-    component: () => import('../views/Login.vue')
+    component: () => import('../pages/Login.vue')
   },
   {
     path: '/401',
-    component: () => import(/* webpackChunkName: "error" */ '../views/error/401.vue')
+    component: () => import(/* webpackChunkName: "error" */ '../pages/error/401.vue')
   },
   {
     path: '/403',
-    component: () => import(/* webpackChunkName: "error" */ '../views/error/403.vue')
+    component: () => import(/* webpackChunkName: "error" */ '../pages/error/403.vue')
   },
   {
     path: '/404',
-    component: () => import(/* webpackChunkName: "error" */ '../views/error/404.vue')
+    component: () => import(/* webpackChunkName: "error" */ '../pages/error/404.vue')
   },
   {
     path: '/500',
-    component: () => import(/* webpackChunkName: "error" */ '../views/error/500.vue')
+    component: () => import(/* webpackChunkName: "error" */ '../pages/error/500.vue')
   }
 ]
 

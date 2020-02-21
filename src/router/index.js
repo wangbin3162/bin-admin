@@ -53,7 +53,7 @@ router.beforeEach((to, from, next) => {
               // 根据roles权限生成可访问的路由表
               // 动态添加可访问路由表
               router.addRoutes(store.getters.addRouters)
-              store.dispatch('setHeaderMenu', res) // 过滤菜单项,这里的res即可以是后台返回的路由
+              store.dispatch('setRouterMenu', res) // 过滤菜单项,这里的res即可以是后台返回的路由
               const redirect = decodeURIComponent(from.query.redirect || to.path)
               if (to.path === redirect) {
                 // hack方法 确保addRoutes已完成 ,set the replace: true so the navigation will not leave a history record

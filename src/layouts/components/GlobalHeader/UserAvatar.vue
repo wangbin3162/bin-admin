@@ -1,13 +1,13 @@
 <template>
-  <div class="avatar">
+  <div class="dropdown-trigger">
     <b-dropdown>
       <span class="user-link">
-        <i class="iconfont icon-ios-contact"></i>
+        <b-icon name="ios-contact" size="20"></b-icon>&nbsp;
         <span>你好,{{userInfo.name}}</span>
       </span>
       <b-dropdown-menu slot="list">
         <b-dropdown-item @click.native="handleLogout">
-          <b-icon name="ios-log-out" size="16"></b-icon>
+          <b-icon name="ios-log-out" size="16"></b-icon>&nbsp;
           <span style="vertical-align: middle;">注销登录</span>
         </b-dropdown-item>
       </b-dropdown-menu>
@@ -24,7 +24,7 @@
       ...mapGetters(['userInfo'])
     },
     methods: {
-      handleLogout () {
+      handleLogout() {
         this.$confirm({
           title: '注销',
           content: '确认退出登录吗？',
