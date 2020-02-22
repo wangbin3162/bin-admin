@@ -7,7 +7,7 @@ import store from './store'
 import BinAdmin from './plugin'
 import './assets/styles/index.styl'
 // mock
-import './mock'
+// import './mock'
 
 Vue.use(BinAdmin)
 

@@ -9,7 +9,7 @@
         <div class="dropdown-trigger" @click="themeModal=true">
           <b-icon name="ios-color-palette" size="20"></b-icon>
         </div>
-        <user-avatar/>
+        <user-avatar @on-change-password="handleChangePwd"/>
       </div>
     </div>
     <!--顶部导航栏时的内容-->
@@ -27,10 +27,11 @@
           <div class="dropdown-trigger" @click="themeModal=true">
             <b-icon name="ios-color-palette" size="20"></b-icon>
           </div>
-          <user-avatar/>
+          <user-avatar @on-change-password="handleChangePwd"/>
         </div>
       </div>
     </div>
+    <!--设置抽屉-->
     <b-drawer v-model="themeModal" append-to-body :closable="false">
       <div class="setting-panel">
         <h3 class="setting-theme-title">整体风格设置:</h3>
@@ -83,6 +84,24 @@
         </div>
       </div>
     </b-drawer>
+    <!--修改密码弹窗-->
+    <b-modal v-model="pwdModal" title="修改密码" append-to-body loading width="400">
+      <b-form :model="user" ref="form" :rules="ruleValidate" :label-width="80" class="pt-10">
+        <b-form-item label="原密码" prop="oldPwd">
+          <b-input v-model="user.oldPwd" type="password" clearable></b-input>
+        </b-form-item>
+        <b-form-item label="新密码" prop="pwd" class="bin-form-item-required">
+          <b-input v-model="user.pwd" type="password" clearable></b-input>
+        </b-form-item>
+        <b-form-item label="确认密码" prop="confirmPwd" class="bin-form-item-required">
+          <b-input v-model="user.confirmPwd" type="password" clearable></b-input>
+        </b-form-item>
+      </b-form>
+      <div slot="footer">
+        <b-button type="primary" @click="handleSubmit">保存</b-button>
+        <b-button plain @click="pwdModal = false">取消</b-button>
+      </div>
+    </b-modal>
   </header>
 </template>
 
@@ -90,13 +109,47 @@
   import { mapGetters } from 'vuex'
   import HeaderMenu from './HeaderMenu'
   import UserAvatar from './UserAvatar'
+  import { modifyPwd } from '../../../api/login.api'
+  import { verifyPassword } from '../../../common/utils/validate'
 
   export default {
     name: 'GlobalHeader',
     components: { HeaderMenu, UserAvatar },
     data() {
+      const checkPwd = (rule, value, callback) => {
+        if (!value) {
+          return callback(new Error('请输入密码'))
+        }
+        if (!verifyPassword(value)) {
+          return callback(new Error('密码必须包含字母和数字，长度为8-16之间'))
+        }
+        if (this.user.confirmPwd.length > 0) {
+          this.$refs.form.validateField('confirmPwd')
+        }
+        callback()
+      }
+      const checkConfirmPwd = (rule, value, callback) => {
+        if (!value) {
+          return callback(new Error('请输入确认密码'))
+        }
+        if (value !== this.user.pwd) {
+          return callback(new Error('两次密码不一致'))
+        }
+        callback()
+      }
       return {
-        themeModal: false
+        themeModal: false,
+        pwdModal: false,
+        user: {
+          oldPwd: '',
+          pwd: '',
+          confirmPwd: ''
+        },
+        ruleValidate: {
+          oldPwd: [{ required: true, message: '原密码不能为空', trigger: 'blur' }],
+          pwd: [{ validator: checkPwd, trigger: 'blur' }],
+          confirmPwd: [{ validator: checkConfirmPwd, trigger: 'blur' }]
+        }
       }
     },
     computed: {
@@ -131,6 +184,36 @@
       },
       changeFixedAside(val) {
         this.$store.dispatch('toggleFixedAside', val)
+      },
+      handleChangePwd() {
+        this.pwdModal = true
+        this.user = {
+          oldPwd: '',
+          pwd: '',
+          confirmPwd: ''
+        }
+        this.$refs.form && this.$refs.form.resetFields()
+      },
+      handleSubmit() {
+        this.$refs.form.validate((valid) => {
+          if (valid) {
+            let { oldPwd, pwd, confirmPwd } = this.user
+            modifyPwd(oldPwd, pwd, confirmPwd).then(response => {
+              if (response.status === 200 && response.data.code === '0') {
+                this.pwdModal = false
+                this.$message({ type: 'success', content: '修改密码成功，稍后请重新登录' })
+                setTimeout(() => {
+                  this.$store.dispatch('logout').then(() => {
+                    this.$router.push({ name: 'login' })
+                  })
+                }, 3000)
+              } else {
+                this.pwdModal = false
+                this.$message({ type: 'danger', content: '操作失败' + response.data.message })
+              }
+            })
+          }
+        })
       }
     }
   }

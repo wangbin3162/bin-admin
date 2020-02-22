@@ -6,40 +6,38 @@
         <li v-for="n in 10" :key="n"></li>
       </ul>
     </div>
+    <!-- logo -->
+    <img class="page-login--logo" src="../assets/images/logo.png" alt="logo">
     <!--登录框-->
     <div class="layer">
-      <div class="content" flex="dir:top main:justify cross:center box:justify">
-        <div class="header">
-          <p class="header-motto">
-            时间是一切财富中最宝贵的财富。 <span>—— 德奥弗拉斯多</span>
-          </p>
-        </div>
-        <div class="main" flex="dir:top main:center cross:center">
-          <!-- logo -->
-          <img class="page-login--logo" src="../assets/images/logo.png" alt="logo">
-          <!-- 表单 -->
-          <div class="form">
-            <b-form ref="loginForm" label-position="top" :rules="rules" :model="formLogin" size="default">
-              <b-form-item prop="username">
-                <b-input type="text" v-model="formLogin.username" placeholder="用户名" size="large"
-                         prefix="ios-contact"></b-input>
-              </b-form-item>
-              <b-form-item prop="password">
-                <b-input type="password" v-model="formLogin.password" size="large" placeholder="密码"
-                         prefix="ios-key"></b-input>
-              </b-form-item>
-              <b-form-item prop="code">
-                <b-input type="text" v-model="formLogin.code" placeholder="- - - -" style="width: 68%;"
-                         prefix="ios-bulb" size="large"></b-input>
-                <span class="login-code"><img src="../assets/images/login-code.png" alt="code"></span>
-              </b-form-item>
-              <b-button @click="submit" type="primary" size="large" class="button-login" v-waves>登录</b-button>
-            </b-form>
-          </div>
+      <div class="content" flex="dir:top main:center cross:center">
+        <div class="form">
+          <div class="title">登录系统</div>
+          <b-form ref="loginForm" label-position="top" :rules="rules" :model="formLogin" size="default">
+            <b-form-item prop="username">
+              <b-input type="text" v-model="formLogin.username" placeholder="请输入用户名" prefix="ios-contact"></b-input>
+            </b-form-item>
+            <b-form-item prop="password">
+              <b-input type="password" v-model="formLogin.password" placeholder="请输入密码" prefix="ios-key"></b-input>
+            </b-form-item>
+            <b-form-item prop="captcha">
+              <b-input type="text" v-model="formLogin.captcha" placeholder="- - - -" style="width: 60%;"
+                       prefix="ios-bulb"></b-input>
+              <span class="login-code" @click="refreshCode" title="点击刷新">
+                    <img :src="verifyCodeUrl" alt="code">
+                  </span>
+            </b-form-item>
+            <b-button @click="submit" type="primary" class="button-login" v-waves :loading="loginLoading">
+              {{ loginLoading? '登录中...' :'登 录' }}
+            </b-button>
+          </b-form>
         </div>
         <div class="footer">
           <p class="footer-copyright">
-            bin admin pro 简版后台管理系统3.0 <a href="https://github.com/wangbin3162/bin-admin" target="_blank">github</a>
+            技术支持：徐州金蝶软件有限公司
+          </p>
+          <p class="footer-copyright">
+            copyright:2016-2020 Kingdee All Right Reserved
           </p>
         </div>
       </div>
@@ -48,17 +46,19 @@
 </template>
 
 <script>
-  import { login } from '../api/login.api'
+  import { getVerifyCode, login } from '../api/login.api'
 
   export default {
     name: 'Login',
     data() {
       return {
+        verifyCodeUrl: '',
+        timeInterval: null,
         // 表单
         formLogin: {
           username: 'admin',
-          password: 'admin',
-          code: 'v9am'
+          password: '123456',
+          captcha: ''
         },
         // 校验
         rules: {
@@ -67,15 +67,37 @@
           ],
           password: [
             { required: true, message: '请输入密码', trigger: 'blur' }
+          ],
+          captcha: [
+            { required: true, message: '请输入验证码', trigger: 'blur' }
           ]
-        }
+        },
+        loginLoading: false
       }
     },
+    created() {
+      this.refreshCode()
+    },
     methods: {
+      // 刷新验证码
+      refreshCode() {
+        getVerifyCode().then(response => {
+          if (response.status === 200) {
+            this.verifyCodeUrl = 'data:image/png;base64,' + btoa(
+              new Uint8Array(response.data)
+                .reduce((data, byte) => data + String.fromCharCode(byte), '')
+            )
+            this.formLogin.captcha = ''
+          } else {
+            this.$message({ type: 'danger', content: '验证码请求错误' })
+          }
+        })
+      },
       // 提交登录信息
       submit() {
         this.$refs.loginForm.validate((valid) => {
           if (valid) {
+            this.loginLoading = true
             // 登录
             login(this.formLogin)
               .then((res) => this.loginSuccess(res))
@@ -87,7 +109,7 @@
         })
       },
       loginSuccess(res) {
-        if (res.data.code === 0) {
+        if (res.data.code === '0') {
           const token = res.data.data
           this.$store.dispatch('setToken', token).then(() => {
             // 重定向对象不存在则返回顶层路径
@@ -95,10 +117,14 @@
           })
         } else {
           this.$message({ content: res.data.message, type: 'danger' })
+          this.refreshCode()
         }
+        this.loginLoading = false
       },
       // 登录失败
       requestFailed(err) {
+        this.loginLoading = false
+        this.refreshCode()
         this.$message({ type: 'danger', content: ((err.response || {}).data || {}).message || '请求出现错误，请稍后再试' })
       }
     }
@@ -108,13 +134,9 @@
 <style lang="stylus" scoped>
   .page-login {
     user-select: none;
-    background-color: #F0F2F5;
+    background: url("../assets/images/login-bg.jpg") no-repeat center center;
     height: 100vh;
     position: relative;
-    background-image: url('../assets/images/login-background.svg');
-    background-repeat: no-repeat;
-    background-position: center 110px;
-    background-size: 100%;
     .layer {
       position: absolute;
       left: 0;
@@ -123,62 +145,67 @@
       bottom: 0;
       overflow: auto;
     }
-
     .area {
       overflow: hidden;
     }
-
+    .page-login--logo {
+      position: absolute;
+      top: 50px;
+      left: 80px;
+    }
     .content {
       height: 100%;
       min-height: 500px;
-      .header {
-        padding: 1em 0;
-        .header-motto {
-          margin: 0;
-          padding: 0;
-          color: #606266;
+      .form {
+        position: relative;
+        width: 400px;
+        padding: 60px 40px 40px;
+        background: #fff;
+        border-radius: 5px;
+        box-sizing: border-box;
+        .title {
+          position: absolute;
+          top: 0;
+          left: 60px;
+          margin-top: -24px;
+          background: url("../assets/images/title-bg.png") no-repeat 0 0;
+          width 280px;
+          height: 48px;
+          line-height: 48px;
+          background-size: 100% 100%
           text-align: center;
-          font-size: 12px;
-          span {
-            color: #909399;
-          }
+          color: #fff;
+          font-size: 20px;
+          font-family: '宋体';
         }
-      }
-
-      .main {
-        .page-login--logo {
-          width: 200px;
-          margin-bottom: 2em;
-          margin-top: -2em;
+        .button-login {
+          width: 100%;
         }
-        .form {
-          width: 340px;
-          box-sizing: border-box;
-          .button-login {
+        .login-code {
+          display: inline-block;
+          vertical-align: middle;
+          width: 40%;
+          padding-left: 10px;
+          height: 36px;
+          overflow: hidden;
+          cursor: pointer;
+          img {
             width: 100%;
-          }
-          .login-code {
-            display: inline-block;
-            vertical-align: middle;
-            width: 30%;
-            height: 36px;
-            text-align: right;
-            img {
-              height: 100%;
-            }
+            height: 100%;
+            border-radius: 5px;
+            border: 1px solid #dcdee2;
           }
         }
       }
       .footer {
-        padding: 1em 0;
+        padding: 2em 0 0;
         .footer-copyright {
+          text-align: center;
           padding: 0;
           margin: 0;
           font-size: 12px;
-          color: #606266;
-          a {
-            color: #6898f0;
-          }
+          line-height: 20px;
+          color: #000000;
         }
       }
     }
@@ -189,7 +216,6 @@
       width: 100%;
       height: 100%;
       overflow: hidden;
-
       li {
         position: absolute;
         display: block;
@@ -202,7 +228,7 @@
         @keyframes animate {
           0% {
             transform: translateY(0) rotate(0deg);
-            opacity: 1;
+            opacity: .3;
             border-radius: 0;
           }
           100% {
@@ -211,14 +237,12 @@
             border-radius: 50%;
           }
         }
-
         &:nth-child(1) {
           left: 15%;
-          width: 80px;
-          height: 80px;
+          width: 30px;
+          height: 30px;
           animation-delay: 0s;
         }
-
         &:nth-child(2) {
           left: 5%;
           width: 20px;
@@ -226,14 +250,12 @@
           animation-delay: 2s;
           animation-duration: 12s;
         }
-
         &:nth-child(3) {
           left: 70%;
           width: 20px;
           height: 20px;
           animation-delay: 4s;
         }
-
         &:nth-child(4) {
           left: 40%;
           width: 60px;
@@ -241,28 +263,24 @@
           animation-delay: 0s;
           animation-duration: 18s;
         }
-
         &:nth-child(5) {
           left: 65%;
           width: 20px;
           height: 20px;
           animation-delay: 0s;
         }
-
         &:nth-child(6) {
           left: 75%;
-          width: 90px;
-          height: 90px;
+          width: 50px;
+          height: 50px;
           animation-delay: 3s;
         }
-
         &:nth-child(7) {
           left: 35%;
-          width: 65px;
-          height: 65px;
+          width: 20px;
+          height: 20px;
           animation-delay: 7s;
         }
-
         &:nth-child(8) {
           left: 50%;
           width: 25px;
@@ -270,19 +288,17 @@
           animation-delay: 15s;
           animation-duration: 45s;
         }
-
         &:nth-child(9) {
           left: 20%;
-          width: 35px;
-          height: 35px;
+          width: 15px;
+          height: 15px;
           animation-delay: 2s;
           animation-duration: 35s;
         }
-
         &:nth-child(10) {
           left: 85%;
-          width: 70px;
-          height: 70px;
+          width: 50px;
+          height: 50px;
           animation-delay: 0s;
           animation-duration: 11s;
         }

@@ -1,7 +1,7 @@
 // 配置路径别名
 var path = require('path')
 
-function resolve (dir) {
+function resolve(dir) {
   return path.join(__dirname, dir)
 }
 
@@ -11,11 +11,15 @@ module.exports = {
     ? ''
     : '/',
   // dev跨域问题
-  // devServer: {
-  //   proxy: {
-  //     '/admin': { target: 'http://localhost:8088/cms' }
-  //   }
-  // },
+  devServer: {
+    proxy: {
+      '/auth': { target: 'http://localhost:8082/' },
+      '/user': { target: 'http://localhost:8082/' },
+      '/management': { target: 'http://localhost:8082/' },
+      '/api': { target: 'http://localhost:8082/' },
+      '/da': { target: 'http://localhost:8082/' }
+    }
+  },
   productionSourceMap: false,
   lintOnSave: process.env.NODE_ENV !== 'production',
   assetsDir: 'static',

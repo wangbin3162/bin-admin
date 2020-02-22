@@ -3,7 +3,7 @@
     <div class="logo" flex="cross:center">
       <img class="icon" src="../../../assets/images/logo-icon-b.png" alt="logo-small"/>
       <transition name="zoom-in">
-        <h1 v-show="sidebar">Bin Admin Pro</h1>
+        <h1 v-show="sidebar">公共信用信息共享平台</h1>
       </transition>
     </div>
     <div class="layout-aside-children">

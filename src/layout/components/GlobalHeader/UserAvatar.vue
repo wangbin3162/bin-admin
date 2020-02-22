@@ -3,9 +3,13 @@
     <b-dropdown>
       <span class="user-link">
         <b-icon name="ios-contact" size="20"></b-icon>&nbsp;
-        <span>你好,{{userInfo.name}}</span>
+        <span>{{userInfo.realName}}</span>
       </span>
       <b-dropdown-menu slot="list">
+        <b-dropdown-item @click.native="handleChangePwd">
+          <b-icon name="ios-lock" size="16"></b-icon>&nbsp;
+          <span style="vertical-align: middle;">修改密码</span>
+        </b-dropdown-item>
         <b-dropdown-item @click.native="handleLogout">
           <b-icon name="ios-log-out" size="16"></b-icon>&nbsp;
           <span style="vertical-align: middle;">注销登录</span>
@@ -36,6 +40,9 @@
             })
           }
         })
+      },
+      handleChangePwd() {
+        this.$emit('on-change-password')
       }
     }
   }
