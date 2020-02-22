@@ -21,17 +21,19 @@
           <div class="form">
             <b-form ref="loginForm" label-position="top" :rules="rules" :model="formLogin" size="default">
               <b-form-item prop="username">
-                <b-input type="text" v-model="formLogin.username" placeholder="用户名" prefix="ios-contact"></b-input>
+                <b-input type="text" v-model="formLogin.username" placeholder="用户名" size="large"
+                         prefix="ios-contact"></b-input>
               </b-form-item>
               <b-form-item prop="password">
-                <b-input type="password" v-model="formLogin.password" placeholder="密码" prefix="ios-key"></b-input>
+                <b-input type="password" v-model="formLogin.password" size="large" placeholder="密码"
+                         prefix="ios-key"></b-input>
               </b-form-item>
               <b-form-item prop="code">
-                <b-input type="text" v-model="formLogin.code" placeholder="- - - -" style="width: 60%;"
-                         prefix="ios-bulb"></b-input>
+                <b-input type="text" v-model="formLogin.code" placeholder="- - - -" style="width: 68%;"
+                         prefix="ios-bulb" size="large"></b-input>
                 <span class="login-code"><img src="../assets/images/login-code.png" alt="code"></span>
               </b-form-item>
-              <b-button @click="submit" type="primary" class="button-login" v-waves>登录</b-button>
+              <b-button @click="submit" type="primary" size="large" class="button-login" v-waves>登录</b-button>
             </b-form>
           </div>
         </div>
@@ -158,13 +160,11 @@
           .login-code {
             display: inline-block;
             vertical-align: middle;
-            width: 40%;
+            width: 30%;
             height: 36px;
-            border-radius: 2px;
-            overflow: hidden;
+            text-align: right;
             img {
-              width: 100%;
-              margin-top: -7px;
+              height: 100%;
             }
           }
         }
