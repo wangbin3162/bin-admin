@@ -6,8 +6,6 @@
         <li v-for="n in 10" :key="n"></li>
       </ul>
     </div>
-    <!--时间-->
-    <div class="layer time" flex="main:center cross:center">{{time}}</div>
     <!--登录框-->
     <div class="layer">
       <div class="content" flex="dir:top main:justify cross:center box:justify">
@@ -21,22 +19,20 @@
           <img class="page-login--logo" src="../assets/images/logo.png" alt="logo">
           <!-- 表单 -->
           <div class="form">
-            <b-card shadow="never">
-              <b-form ref="loginForm" label-position="top" :rules="rules" :model="formLogin" size="default">
-                <b-form-item prop="username">
-                  <b-input type="text" v-model="formLogin.username" placeholder="用户名" prefix="ios-contact"></b-input>
-                </b-form-item>
-                <b-form-item prop="password">
-                  <b-input type="password" v-model="formLogin.password" placeholder="密码" prefix="ios-key"></b-input>
-                </b-form-item>
-                <b-form-item prop="code">
-                  <b-input type="text" v-model="formLogin.code" placeholder="- - - -" style="width: 60%;"
-                           prefix="ios-bulb"></b-input>
-                  <span class="login-code"><img src="../assets/images/login-code.png" alt="code"></span>
-                </b-form-item>
-                <b-button @click="submit" type="primary" class="button-login" v-waves>登录</b-button>
-              </b-form>
-            </b-card>
+            <b-form ref="loginForm" label-position="top" :rules="rules" :model="formLogin" size="default">
+              <b-form-item prop="username">
+                <b-input type="text" v-model="formLogin.username" placeholder="用户名" prefix="ios-contact"></b-input>
+              </b-form-item>
+              <b-form-item prop="password">
+                <b-input type="password" v-model="formLogin.password" placeholder="密码" prefix="ios-key"></b-input>
+              </b-form-item>
+              <b-form-item prop="code">
+                <b-input type="text" v-model="formLogin.code" placeholder="- - - -" style="width: 60%;"
+                         prefix="ios-bulb"></b-input>
+                <span class="login-code"><img src="../assets/images/login-code.png" alt="code"></span>
+              </b-form-item>
+              <b-button @click="submit" type="primary" class="button-login" v-waves>登录</b-button>
+            </b-form>
           </div>
         </div>
         <div class="footer">
@@ -50,15 +46,12 @@
 </template>
 
 <script>
-  import dayJs from 'dayjs'
   import { login } from '../api/login.api'
 
   export default {
     name: 'Login',
     data() {
       return {
-        timeInterval: null,
-        time: dayJs().format('HH:mm:ss'),
         // 表单
         formLogin: {
           username: 'admin',
@@ -76,28 +69,7 @@
         }
       }
     },
-    created() {
-      document.addEventListener('keyup', this.enter)
-    },
-    mounted() {
-      this.timeInterval = setInterval(() => {
-        this.refreshTime()
-      }, 1000)
-    },
-    beforeDestroy() {
-      clearInterval(this.timeInterval)
-      document.removeEventListener('keyup', this.enter)
-    },
     methods: {
-      // enter键盘事件
-      enter(e) {
-        if (e.code === 'Enter') {
-          this.submit()
-        }
-      },
-      refreshTime() {
-        this.time = dayJs().format('HH:mm:ss')
-      },
       // 提交登录信息
       submit() {
         this.$refs.loginForm.validate((valid) => {
@@ -137,8 +109,10 @@
     background-color: #F0F2F5;
     height: 100vh;
     position: relative;
-    // 层
-
+    background-image: url('../assets/images/login-background.svg');
+    background-repeat: no-repeat;
+    background-position: center 110px;
+    background-size: 100%;
     .layer {
       position: absolute;
       left: 0;
@@ -152,32 +126,17 @@
       overflow: hidden;
     }
 
-    // 时间
-
-    .time {
-      font-size: 24em;
-      font-weight: bold;
-      color: rgba(0, 0, 0, 0.03);
-      overflow: hidden;
-    }
-
-    // 登陆页面控件的容器
-
     .content {
       height: 100%;
       min-height: 500px;
-      // header
-
       .header {
         padding: 1em 0;
-
         .header-motto {
           margin: 0;
           padding: 0;
           color: #606266;
           text-align: center;
           font-size: 12px;
-
           span {
             color: #909399;
           }
@@ -186,22 +145,16 @@
 
       .main {
         .page-login--logo {
-          width: 240px;
+          width: 200px;
           margin-bottom: 2em;
           margin-top: -2em;
         }
-
-        // 登录表单
-
         .form {
           width: 340px;
           box-sizing: border-box;
-          // 登录按钮
-
           .button-login {
             width: 100%;
           }
-
           .login-code {
             display: inline-block;
             vertical-align: middle;
@@ -209,7 +162,6 @@
             height: 36px;
             border-radius: 2px;
             overflow: hidden;
-
             img {
               width: 100%;
               margin-top: -7px;
@@ -217,27 +169,19 @@
           }
         }
       }
-
-      // footer
-
       .footer {
         padding: 1em 0;
-
         .footer-copyright {
           padding: 0;
           margin: 0;
           font-size: 12px;
           color: #606266;
-
           a {
             color: #6898f0;
           }
         }
       }
     }
-
-    // 背景
-
     .circles {
       position: absolute;
       top: 0;
@@ -307,15 +251,15 @@
 
         &:nth-child(6) {
           left: 75%;
-          width: 150px;
-          height: 150px;
+          width: 90px;
+          height: 90px;
           animation-delay: 3s;
         }
 
         &:nth-child(7) {
           left: 35%;
-          width: 200px;
-          height: 200px;
+          width: 65px;
+          height: 65px;
           animation-delay: 7s;
         }
 
@@ -329,16 +273,16 @@
 
         &:nth-child(9) {
           left: 20%;
-          width: 15px;
-          height: 15px;
+          width: 35px;
+          height: 35px;
           animation-delay: 2s;
           animation-duration: 35s;
         }
 
         &:nth-child(10) {
           left: 85%;
-          width: 150px;
-          height: 150px;
+          width: 70px;
+          height: 70px;
           animation-delay: 0s;
           animation-duration: 11s;
         }

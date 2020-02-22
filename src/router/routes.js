@@ -1,4 +1,4 @@
-import layout from '../layouts'
+import layout from '../layout'
 import tableDemo from './modules/table-demo'
 import errorPage from './modules/error-page'
 import nested from './modules/nested'

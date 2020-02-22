@@ -107,7 +107,7 @@
       fixedHeaderStyle() {
         return {
           padding: 0,
-          width: this.hasAside ? (this.fixedHeader ? `calc(100% - ${this.sidebar ? 240 : 64}px)` : '100%') : '100%',
+          width: this.hasAside ? (this.fixedHeader ? `calc(100% - ${this.sidebar ? 256 : 64}px)` : '100%') : '100%',
           zIndex: 9,
           right: this.fixedHeader ? 0 : null
         }
