@@ -18,7 +18,7 @@
         </footer>
       </section>
     </section>
-    <b-back-top :height="200"></b-back-top>
+    <b-back-top></b-back-top>
   </div>
 </template>
 
