@@ -24,8 +24,11 @@
 </template>
 
 <script>
+  import VBreadcrumb from '../VBreadcrumb'
+
   export default {
     name: 'PageHeaderWrap',
+    components: { VBreadcrumb },
     props: {
       title: {
         type: String

@@ -1,4 +1,8 @@
+import PageHeaderWrap from '../../components/PageHeaderWrap'
+import { VTableWrap, VTableToolBar, VFilterBar, VFilterItem } from '../../components/VTableLayout'
+
 export default {
+  components: { PageHeaderWrap, VTableWrap, VTableToolBar, VFilterBar, VFilterItem },
   data() {
     return {
       tableWrapWidth: 0,
@@ -32,12 +36,12 @@ export default {
       return this.dialogStatus === 'create' || this.dialogStatus === 'modify'
     },
     tableWidth() {
-      // 没有树结构的表格宽度= wrap -15*2 - 20*2
-      return this.tableWrapWidth - 70
+      // 没有树结构的表格宽度= wrap -16*2
+      return this.tableWrapWidth - 32
     },
     treeTableWidth() {
-      // 包含树结构的表格宽度= wrap - 20*2 -200
-      return this.tableWrapWidth - 240
+      // 包含树结构的表格宽度= wrap - 16*2 -224 (256)
+      return this.tableWrapWidth - 256
     },
     lockTreeSelect() {
       return this.dialogStatus === 'check' || this.dialogStatus === 'modify'

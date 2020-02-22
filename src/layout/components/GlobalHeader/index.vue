@@ -75,11 +75,11 @@
         </div>
         <div class="setting-list-item">
           <span>固定Header</span>
-          <b-switch size="small" :value="fixedHeader" @on-change="changeFixedHeader"></b-switch>
+          <b-switch :value="fixedHeader" @on-change="changeFixedHeader"></b-switch>
         </div>
         <div class="setting-list-item">
           <span>固定侧边栏</span>
-          <b-switch size="small" :disabled="menuType==='header'" :value="fixedAside"
+          <b-switch :disabled="menuType==='header'" :value="fixedAside"
                     @on-change="changeFixedAside"></b-switch>
         </div>
       </div>

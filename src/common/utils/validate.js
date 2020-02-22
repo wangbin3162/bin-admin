@@ -2,96 +2,98 @@
  * Created by wangbin on 2018/2.27.
  */
 
+export const requireRule = { required: true, message: '必填项', trigger: 'blur' }
+
 /**
  * 校验合法日期
  * 满足yyyy-MM-dd HH:mm:ss、yyyyMMdd HH:mm:ss、yyyy-MM-dd HH:mm、yyyyMMdd HH:mm、yyyy-MM-dd和yyyyMMdd
  */
-export function validateDate (str) {
+export function validateDate(str) {
   const reg = /^(([1-3][0-9]{3})[-]{0,1}(((0[13578]|1[02])[-]{0,1}(0[1-9]|[12][0-9]|3[01]))|((0[469]|11)[-]{0,1}(0[1-9]|[12][0-9]|30))|(02-(0[1-9]|[1][0-9]|2[0-8])))\s\d{1,2}:\d{1,2}:\d{1,2})|(([1-3][0-9]{3})[-]{0,1}(((0[13578]|1[02])[-]{0,1}(0[1-9]|[12][0-9]|3[01]))|((0[469]|11)-(0[1-9]|[12][0-9]|30))|(02-(0[1-9]|[1][0-9]|2[0-8])))\s\d{1,2}:\d{1,2})|(([1-3][0-9]{3})[-]{0,1}(((0[13578]|1[02])[-]{0,1}(0[1-9]|[12][0-9]|3[01]))|((0[469]|11)[-]{0,1}(0[1-9]|[12][0-9]|30))|(02-(0[1-9]|[1][0-9]|2[0-8]))))$/
 
   return reg.test(str)
 }
 
 /* 校验路由路径path */
-export function validateRoutePath (path) {
+export function validateRoutePath(path) {
   const reg = /^(\/\w+)|(\/\w+\/\w+)$/
   return !reg.test(path)
 }
 
 /* 匹配合法文件相对路径 */
-export function validateFilePath (str) {
+export function validateFilePath(str) {
   const reg = /^((\w+\/)*\w+\.html)$/
   return reg.test(str)
 }
 
 /* 匹配合法文件相对路径 */
-export function validateFilePath2 (str) {
+export function validateFilePath2(str) {
   const reg = /^((\w+\/)*[a-zA-Z0-9+&%$#=~_-]+(\.\w+)*)$/
   return reg.test(str)
 }
 
 /* 合法uri */
-export function validateURL (textval) {
+export function validateURL(textval) {
   const urlregex = /^(https?:\/\/)?([a-zA-Z0-9.-]+(:[a-zA-Z0-9.&%$-]+)*@)*((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9][0-9]?)(\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])){3}|([a-zA-Z0-9-]+\.)*[a-zA-Z0-9-]+\.(com|edu|gov|int|mil|net|org|biz|arpa|info|name|pro|aero|coop|museum|[a-zA-Z]{2}))(:[0-9]+)*(\/($|[a-zA-Z0-9.,?'\\+&%$#=~_-]+))*$/
   return urlregex.test(textval)
 }
 
 /* 小写字母 */
-export function validateLowerCase (str) {
+export function validateLowerCase(str) {
   const reg = /^[a-z]+$/
   return reg.test(str)
 }
 
 /* 大写字母 */
-export function validateUpperCase (str) {
+export function validateUpperCase(str) {
   const reg = /^[A-Z]+$/
   return reg.test(str)
 }
 
 /* 大小写字母 */
-export function validateAlphabets (str) {
+export function validateAlphabets(str) {
   const reg = /^[A-Za-z]+$/
   return reg.test(str)
 }
 
 /* 是否带有小数 */
-export function isDecimal (strValue) {
+export function isDecimal(strValue) {
   var objRegExp = /^\d+\.\d+$/
   return objRegExp.test(strValue)
 }
 
 /* 校验是否中文名称组成 */
-export function ischina (str) {
+export function ischina(str) {
   var reg = /^[\u4E00-\u9FA5]{2,64}$/
   return reg.test(str)
 }
 
 /* 匹配非中文编码 */
-export function isNonChinese (str) {
+export function isNonChinese(str) {
   const reg = /^\w+$/
   return reg.test(str)
 }
 
 /* 校验正整数 */
-export function isInteger (str) {
+export function isInteger(str) {
   var reg = /^\d+$/
   return reg.test(str)
 }
 
 /* 校验电话码格式 */
-export function isTelCode (str) {
+export function isTelCode(str) {
   var reg = /^((0\d{2,3}-\d{7,8})|(1[35874]\d{9}))$/
   return reg.test(str)
 }
 
 /* 校验邮件地址是否合法 */
-export function isEmail (str) {
+export function isEmail(str) {
   var reg = /^([a-zA-Z0-9_\\.-])+@([a-zA-Z0-9_-])+(\.[a-zA-Z0-9_-])+/
   return reg.test(str)
 }
 
 /* 校验身份证号 */
-export function checkIdCard (str) {
+export function checkIdCard(str) {
   let aCity = {
     11: '北京',
     12: '天津',
@@ -149,13 +151,13 @@ export function checkIdCard (str) {
 }
 
 /* 校验一般密码格式：8-16位，同时包含字母和数字 */
-export function verifyPassword (password) {
+export function verifyPassword(password) {
   let reg = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z_*~!@#$%,.^`+=]{8,16}$/
   return reg.test(password)
 }
 
 /* 校验统一社会信用代码 */
-export function verifyUnifiedCode (unifiedCode) {
+export function verifyUnifiedCode(unifiedCode) {
   if (!/^[0-9ABCDEFGHJKLMNPQRTUWXY]{18}$/.test(unifiedCode)) {
     return false
   }
@@ -173,7 +175,7 @@ export function verifyUnifiedCode (unifiedCode) {
 }
 
 // 校验编码（GB/T 17710，MOD 11,10）
-function checkCode (code) {
+function checkCode(code) {
   code = String(code)
   let p = 10
   let s
@@ -186,20 +188,20 @@ function checkCode (code) {
 }
 
 /* 校验工商注册号 */
-export function verifyRegNo (regNo) {
+export function verifyRegNo(regNo) {
   var regex = /^[0-9]{15}$/
   return (regex.test(regNo) && checkCode(regNo))
 }
 
 /* 校验组织机构代码 */
-export function verifyOrgNo (orgNo) {
+export function verifyOrgNo(orgNo) {
   const CVAL = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
   const regex = /^[0-9A-Z]{8}[0-9X]$/
   const MD = [3, 7, 9, 10, 5, 8, 4, 2]
   const CC = '0123456789X0'
 
   // 编码校验
-  function checkCode (code) {
+  function checkCode(code) {
     code = String(code)
     let sum = 0
     let a

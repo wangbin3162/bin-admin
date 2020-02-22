@@ -1,29 +1,40 @@
 import { asyncRouterMap, constantRouterMap } from '../../router/routes'
+import path from 'path'
 
 /**
  * 过滤账户是否拥有某一个权限，并将菜单从加载列表移除,这里暂时通过这种方式获取
  *
- * @param roles
- * @param route
+ * @param functions 所有用户路由权限列表
+ * @param  route 路由
+ * @param basePath
  * @returns {boolean}
  */
-function hasPermission (roles, route) {
+function hasPermission(functions, route, basePath = '') {
   if (route.meta && route.meta.roles) {
-    return roles.some(role => route.meta.roles.includes(role))
-  } else {
     return true
+  } else {
+    const tempPath = path.resolve(basePath, route.path)
+    // 开锁调试查看匹配路由是否正确
+    // const flag = tempPath === '/*' || functions.includes(tempPath)
+    // let title = route.meta ? route.meta.title : basePath.length === 0 ? '父路由' : '子路由'
+    // console.log(title, `${tempPath} 匹配${flag ? '成功' : '失败'}`, flag ? 'primary' : 'danger')
+    // return flag
+    return tempPath === '/*' || functions.includes(tempPath)
   }
 }
 
-function filterAsyncRoutes (routes, roles) {
+function filterAsyncRoutes(routes, functions, basePath = '') {
   const res = []
   routes.forEach(route => {
     const tmp = { ...route }
-    if (hasPermission(roles, tmp)) {
+    if (hasPermission(functions, tmp, basePath)) {
+      const tempPath = path.resolve(basePath, tmp.path)
       if (tmp.children) {
-        tmp.children = filterAsyncRoutes(tmp.children, roles)
+        tmp.children = filterAsyncRoutes(tmp.children, functions, tempPath)
       }
-      res.push(tmp)
+      if (!tmp.children || tmp.children.length > 0) {
+        res.push(tmp)
+      }
     }
   })
 
@@ -42,9 +53,10 @@ const permission = {
     }
   },
   actions: {
-    generateRoutes ({ commit }, roles) {
+    generateRoutes({ commit }, functions) {
       return new Promise(resolve => {
-        const accessedRouters = filterAsyncRoutes(asyncRouterMap, roles)
+        // console.log(functions)
+        const accessedRouters = filterAsyncRoutes(asyncRouterMap, functions)
         commit('SET_ROUTERS', accessedRouters)
         resolve(accessedRouters)
       })

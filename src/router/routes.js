@@ -1,7 +1,5 @@
 import layout from '../layout'
-import tableDemo from './modules/table-demo'
-import errorPage from './modules/error-page'
-import nested from './modules/nested'
+import sys from './modules/sys'
 
 /**
  * router自定义配置项
@@ -15,9 +13,7 @@ import nested from './modules/nested'
   }
  **/
 export const asyncRouterMap = [
-  tableDemo,
-  errorPage,
-  nested,
+  sys,
   { path: '*', redirect: '/404', hidden: true }
 ]
 
@@ -44,7 +40,7 @@ export const constantRouterMap = [
         name: 'refresh',
         hidden: true,
         component: {
-          beforeRouteEnter (to, from, next) {
+          beforeRouteEnter(to, from, next) {
             next(vm => vm.$router.replace(from.fullPath))
           },
           render: h => h()
@@ -56,7 +52,7 @@ export const constantRouterMap = [
         name: 'redirect',
         hidden: true,
         component: {
-          beforeRouteEnter (to, from, next) {
+          beforeRouteEnter(to, from, next) {
             next(vm => vm.$router.replace(JSON.parse(from.params.route)))
           },
           render: h => h()
