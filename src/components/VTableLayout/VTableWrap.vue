@@ -5,12 +5,6 @@
     </div>
     <div class="table-wrap">
       <slot></slot>
-      <div class="table-inner">
-        <slot name="table"></slot>
-      </div>
-      <div class="pager-wrap">
-        <slot name="pager"></slot>
-      </div>
     </div>
   </div>
 </template>
@@ -21,7 +15,7 @@
   }
 </script>
 
-<style lang="stylus" scoped>
+<style lang="stylus">
   .table-layout-wrapper {
     position: relative;
     width: 100%;
@@ -41,12 +35,14 @@
     .table-wrap {
       position: relative;
       flex: auto;
+      overflow-x: hidden;
+      padding: 16px;
       .table-inner {
-        padding: 0 16px;
+        width: 100%;
       }
-      .pager-wrap {
+      .bin-page {
         text-align: right;
-        padding: 16px 24px;
+        margin: 16px 0;
       }
     }
   }

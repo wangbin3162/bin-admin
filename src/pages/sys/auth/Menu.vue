@@ -1,71 +1,182 @@
 <template>
-  <page-header-wrap>
-    <v-table-wrap>
-      <!--树结构-->
-      <b-tree :data="treeData" slot="tree" :lock-select="lockTreeSelect"
-              @on-select-change="handTreeCurrentChange"></b-tree>
-      <!--查询条件-->
-      <v-filter-bar>
-        <v-filter-item title="菜单名称">
-          <b-input v-model.trim="listQuery.menuName" size="small" placeholder="请输入菜单名称" clearable></b-input>
-        </v-filter-item>
-        <v-filter-item title="禁用状态">
-          <b-switch size="large" v-model="listQuery.delFlag" :true-value="ENUM.Y" :false-value="ENUM.N"
-                    @on-change="handleFilter">
-            <span slot="open">显示</span>
-            <span slot="close">隐藏</span>
-          </b-switch>
-        </v-filter-item>
-        <!--添加查询按钮位置-->
-        <v-filter-item @on-search="handleFilter" @on-reset="resetQuery"></v-filter-item>
-      </v-filter-bar>
-      <!--操作栏-->
-      <v-table-tool-bar>
-        <b-button v-if="canCreate" type="primary"
-                  v-waves size="small" icon="ios-add"
-                  @click="handleCreate">新增
-        </b-button>
-      </v-table-tool-bar>
-      <!--中央表格-->
-      <b-table slot="table" :columns="columns" :data="list" :loading="listLoading" ref="table" :width="treeTableWidth">
-        <template v-slot:name="scope">
-          <a href="" @click.stop.prevent="handleCheck(scope.row)">{{ scope.row.name }}</a>
-        </template>
-        <!--菜单类型-->
-        <template v-slot:type="scope">
-          <b-tag>
-            {{ menuTypeMap[scope.row.type] }}
-          </b-tag>
-        </template>
-        <!--状态-->
-        <template v-slot:delFlag="scope">
-          <b-switch v-model="scope.row.delFlag" :true-value="ENUM.N" :false-value="ENUM.Y"
-                    inactive-color="#ff4949" size="large"
-                    @on-change="handleChangeDelFlag(scope.row)">
-            <span slot="open">启用</span>
-            <span slot="close">禁用</span>
-          </b-switch>
-        </template>
+  <div>
+    <page-header-wrap v-show="isNormal">
+      <v-table-wrap>
+        <!--树结构-->
+        <b-tree :data="treeData" slot="tree" :lock-select="lockTreeSelect"
+                @on-select-change="handTreeCurrentChange"></b-tree>
+        <!--查询条件-->
+        <v-filter-bar>
+          <v-filter-item title="菜单名称">
+            <b-input v-model.trim="listQuery.menuName" size="small" placeholder="请输入菜单名称" clearable></b-input>
+          </v-filter-item>
+          <v-filter-item title="禁用状态">
+            <b-switch size="large" v-model="listQuery.delFlag" :true-value="ENUM.Y" :false-value="ENUM.N"
+                      @on-change="handleFilter">
+              <span slot="open">显示</span>
+              <span slot="close">隐藏</span>
+            </b-switch>
+          </v-filter-item>
+          <!--添加查询按钮位置-->
+          <v-filter-item @on-search="handleFilter" @on-reset="resetQuery"></v-filter-item>
+        </v-filter-bar>
         <!--操作栏-->
-        <template v-slot:action="scope">
-          <!--如果可编辑且是禁用（可删除即为禁用）状态下不可编辑-->
-          <b-button :disabled="canModify && scope.row.delFlag===ENUM.Y"
-                    type="text" @click="handleModify(scope.row)">
-            修改
+        <v-table-tool-bar>
+          <b-button v-if="canCreate" type="primary"
+                    v-waves size="small" icon="ios-add"
+                    @click="handleCreate">新 增
           </b-button>
-          <!--是否有删除键-->
-          <template v-if="canRemove && scope.row.delFlag===ENUM.Y">
-            <b-divider type="vertical"></b-divider>
-            <b-button type="text" style="color:red;" @click="handleRemove(scope.row)">删除</b-button>
+        </v-table-tool-bar>
+        <!--中央表格-->
+        <b-table :columns="columns" :data="list" :loading="listLoading" ref="table">
+          <template v-slot:name="scope">
+            <a href="" @click.stop.prevent="handleCheck(scope.row)">{{ scope.row.name }}</a>
           </template>
+          <!--菜单类型-->
+          <template v-slot:type="scope">
+            <b-tag>
+              {{ menuTypeMap[scope.row.type] }}
+            </b-tag>
+          </template>
+          <!--状态-->
+          <template v-slot:delFlag="scope">
+            <b-switch v-model="scope.row.delFlag" :true-value="ENUM.N" :false-value="ENUM.Y"
+                      inactive-color="#ff4949" size="small"
+                      @on-change="handleChangeDelFlag(scope.row)">
+            </b-switch>
+          </template>
+          <!--操作栏-->
+          <template v-slot:action="scope">
+            <!--如果可编辑且是禁用（可删除即为禁用）状态下不可编辑-->
+            <b-button :disabled="canModify && scope.row.delFlag===ENUM.Y"
+                      type="text" @click="handleModify(scope.row)">
+              修改
+            </b-button>
+            <!--是否有删除键-->
+            <template v-if="canRemove && scope.row.delFlag===ENUM.Y">
+              <b-divider type="vertical"></b-divider>
+              <b-button type="text" style="color:red;" @click="handleRemove(scope.row)">删除</b-button>
+            </template>
+          </template>
+        </b-table>
+        <!--下方分页器-->
+        <b-page :total="total" show-sizer
+                @on-change="handleCurrentChange"
+                @on-page-size-change="handleSizeChange"></b-page>
+      </v-table-wrap>
+    </page-header-wrap>
+    <page-header-wrap v-show="isEdit" :title="editTitle" show-close @on-close="handleCancel">
+      <v-edit-wrap>
+        <b-form :model="menu" ref="form" :rules="ruleValidate" :label-width="100">
+          <b-row>
+            <b-col span="12">
+              <b-form-item label="上级菜单" class="bin-form-item-required">
+                <b-input v-if="currentTreeNode" :value="currentTreeNode.title" disabled></b-input>
+              </b-form-item>
+            </b-col>
+            <b-col span="12">
+              <b-form-item label="菜单类型" class="bin-form-item-required">
+                <b-select :value="menu.type">
+                  <b-option :value="menu.type">{{ menuTypeMap[menu.type] }}</b-option>
+                </b-select>
+              </b-form-item>
+            </b-col>
+          </b-row>
+          <b-row>
+            <b-col span="12">
+              <b-form-item label="菜单名称" prop="name">
+                <b-input v-model="menu.name" placeholder="请输入菜单名称" clearable></b-input>
+              </b-form-item>
+            </b-col>
+            <b-col span="12">
+              <b-form-item label="前端路由" prop="path">
+                <b-input v-model="menu.path" placeholder="请输入前端路由" clearable></b-input>
+              </b-form-item>
+            </b-col>
+          </b-row>
+          <b-row>
+            <b-col span="12">
+              <b-form-item label="菜单路径" prop="url">
+                <b-input v-model="menu.url" placeholder="请输入菜单路径" clearable></b-input>
+              </b-form-item>
+            </b-col>
+            <b-col span="12">
+              <b-form-item label="排序编号" prop="sortNum">
+                <b-input-number :min="0" v-model="menu.sortNum" style="width: 100%;"></b-input-number>
+              </b-form-item>
+            </b-col>
+          </b-row>
+          <template v-if="menu.permissions.length===0">
+            <b-form-item label="动作菜单">
+              <b-button type="primary" plain round @click="initPermissions">初始化</b-button>
+            </b-form-item>
+          </template>
+        </b-form>
+        <template v-if="menu.permissions.length!==0" slot="full">
+          <!--动作列表编辑框-->
+          <b-divider align="left">动作列表</b-divider>
+          <b-table disabled-hover :data="menu.permissions"
+                   :columns="[
+                     { title: '动作名称', slot: 'name', width:120 },
+                     { title: '前端路径', slot: 'path'},
+                     { title: '菜单路径', slot: 'url' },
+                     { title: '操作', slot: 'action', width: 70, align: 'center'}]">
+            <template v-slot:name="scope">
+              <b-input v-model="menu.permissions[scope.index].name" size="small"
+                       :readonly="permissionReadOnly(scope.row.path)"></b-input>
+            </template>
+            <template v-slot:path="scope">
+              <b-input v-model="menu.permissions[scope.index].path" size="small"
+                       :readonly="permissionReadOnly(scope.row.path)"></b-input>
+            </template>
+            <template v-slot:url="scope">
+              <b-input v-model="menu.permissions[scope.index].url" size="small"></b-input>
+            </template>
+            <template v-slot:action="scope">
+              <b-button type="danger" transparent size="mini"
+                        @click="removeBufferRow(scope.row,scope.index)">删除
+              </b-button>
+            </template>
+          </b-table>
+          <b-button type="dashed" size="small" icon="ios-add-circle-outline"
+                    style="width: 100%;margin-top: 16px;margin-bottom: 8px;"
+                    @click="addBufferRow">添加动作
+          </b-button>
         </template>
-      </b-table>
-      <!--下方分页器-->
-      <b-page slot="pager" :total="total" show-sizer
-              @on-change="handleCurrentChange"
-              @on-page-size-change="handleSizeChange"></b-page>
-    </v-table-wrap>
-  </page-header-wrap>
+        <!--保存提交-->
+        <template slot="footer">
+          <b-button type="primary" @click="handleSubmit" :loading="btnLoading">提 交</b-button>
+          <b-button @click="handleCancel">取 消</b-button>
+        </template>
+      </v-edit-wrap>
+    </page-header-wrap>
+    <page-header-wrap v-show="isCheck" :title="editTitle" show-close @on-close="handleCancel">
+      <v-edit-wrap v-if="menu&&currentTreeNode">
+        <div>
+          <v-key-label label="上级菜单" is-half is-first>{{ currentTreeNode.title }}</v-key-label>
+          <v-key-label label="菜单名称" is-half>{{ menu.name }}</v-key-label>
+          <v-key-label label="菜单类型" is-half is-first>
+            <b-tag>{{ menuTypeMap[menu.type] }}</b-tag>
+          </v-key-label>
+          <v-key-label label="排序编号" is-half>{{ menu.sortNum }}</v-key-label>
+          <v-key-label label="前端路由" is-bottom>{{ menu.path }}</v-key-label>
+        </div>
+        <template v-if="menu.permissions.length>0" slot="full">
+          <b-divider align="left">动作列表</b-divider>
+          <b-table disabled-hover :data="menu.permissions"
+                   :columns="[
+                     { title: '动作名称', key: 'name', width:120, align: 'center', },
+                     { title: '前端路由', key: 'path'},
+                     { title: '菜单路径', key: 'url' }]">
+          </b-table>
+        </template>
+        <!--保存提交-->
+        <template slot="footer">
+          <b-button @click="handleCancel">返 回</b-button>
+        </template>
+      </v-edit-wrap>
+    </page-header-wrap>
+  </div>
 </template>
 
 <script>
@@ -87,6 +198,7 @@
         callback()
       }
       return {
+        moduleName: '菜单',
         listQuery: {
           menuName: '',
           parentId: '', // 父菜单id
@@ -94,6 +206,14 @@
         },
         treeData: [],
         columns: [
+          {
+            type: 'index',
+            width: 50,
+            align: 'center',
+            indexMethod: (row) => {
+              return this.listQuery.size * (this.listQuery.page - 1) + row._index + 1
+            }
+          },
           { title: '菜单名称', slot: 'name' },
           { title: '前端路由', key: 'path' },
           { title: '菜单类型', slot: 'type', width: 95, align: 'center' },
@@ -141,7 +261,6 @@
           delFlag: this.ENUM.N,
           parentId: this.currentTreeNode ? this.currentTreeNode.id : ''
         }
-        this.handleFilter()
       },
       // 新增按钮事件
       handleCreate() {
@@ -156,7 +275,8 @@
       },
       // 查看按钮事件
       handleCheck(row) {
-        this.menu = { ...row }
+        this.resetMenu()
+        this.menu = deepCopy({ ...this.menu, ...row })
         this.openEditPage('check')
       },
       // 弹窗提示是否删除
@@ -216,7 +336,6 @@
       /* [动作菜单操作相关] */
       // 初始化4个基本动作菜单
       initPermissions() {
-        debugger
         // 创建时动作缓存初始化4个动作
         this.menu.permissions = [
           { id: '', name: '新增', path: 'create', url: '', type: this.TYPE.ACT },

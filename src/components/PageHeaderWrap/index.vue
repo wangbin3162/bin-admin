@@ -10,6 +10,7 @@
             <span class="page-header-heading-title">
               {{ normalTitle }}
             </span>
+            <b-icon v-if="showClose" name="ios-close" @click.native="$emit('on-close')"></b-icon>
           </div>
         </div>
       </div>
@@ -32,6 +33,9 @@
     props: {
       title: {
         type: String
+      },
+      showClose: {
+        type: Boolean
       }
     },
     computed: {
@@ -72,6 +76,9 @@
         }
       }
       &-heading {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
         width: 100%;
         overflow: hidden;
         &-title {
@@ -83,6 +90,10 @@
           font-weight: 600;
           font-size: 20px;
           line-height: 32px;
+        }
+        .icon-ios-close {
+          cursor: pointer;
+          font-size: 24px;
         }
       }
     }

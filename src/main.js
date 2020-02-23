@@ -4,16 +4,12 @@ import App from './App.vue'
 import Router from 'vue-router'
 import router from './router'
 import store from './store'
-import BinUI from 'bin-ui'
-import 'bin-ui/lib/styles/index.css'
+import BinAdmin from './plugin'
 import './assets/styles/index.styl'
 // mock
 // import './mock'
 
-Vue.use(BinUI)
-
-// 全局通信
-Vue.prototype.$EventBus = new Vue()
+Vue.use(BinAdmin)
 
 const originalPush = Router.prototype.push
 Router.prototype.push = function push(location, onResolve, onReject) {

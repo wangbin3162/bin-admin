@@ -18,8 +18,6 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    height: 64px;
-    padding: 0 24px;
-    line-height: 64px;
+    margin-bottom: 17px;
   }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <b-col :xs="20" :sm="12" :md="12" :lg="8" :xl="8" :xxl="6">
+  <b-col :xs="20" :sm="20" :md="20" :lg="12" :xl="8" :xxl="6">
     <div class="filter-item">
       <span class="label" v-if="showLabel" :style="{width:labelWidth}">{{ title }}</span>
       <slot>
@@ -69,7 +69,7 @@
     display: flex;
     box-sizing: border-box;
     align-items: center;
-    padding: 0;
+    padding: 0 4px;
     color: rgba(0, 0, 0, .65);
     font-size: 14px;
     font-variant: tabular-nums;
@@ -94,6 +94,8 @@
     }
 
     .search-btn {
+      width: 100%;
+      text-align: center;
       .open {
         display: inline-block;
         margin-left: 10px;

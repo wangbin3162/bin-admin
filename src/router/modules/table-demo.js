@@ -4,13 +4,13 @@ export default {
   path: '/tableDemo',
   component: layout,
   redirect: { name: 'container' },
-  meta: { title: '表格示例', icon: 'md-grid' },
+  meta: { title: '表格示例', icon: 'md-grid', roles: true },
   children: [
     {
       path: 'tableDemo',
       name: 'TableDemo',
       component: () => import('../../pages/demo/table/TabelDemo'),
-      meta: { title: '表格示例1' }
+      meta: { title: '表格示例1', roles: true }
     }
   ]
 }
