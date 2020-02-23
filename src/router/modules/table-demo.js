@@ -10,7 +10,7 @@ export default {
       path: 'tableDemo',
       name: 'TableDemo',
       component: () => import('../../pages/demo/table/TableDemo'),
-      meta: { title: '用户管理', roles: true }
+      meta: { title: '表格示例1', roles: true }
     }
   ]
 }
