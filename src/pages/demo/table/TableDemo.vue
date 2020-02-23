@@ -167,6 +167,7 @@
         }
       }
       return {
+        moduleName: '用户',
         listQuery: {
           name: '',
           delFlag: 'N',

@@ -9,8 +9,8 @@ export default {
     {
       path: 'tableDemo',
       name: 'TableDemo',
-      component: () => import('../../pages/demo/table/TabelDemo'),
-      meta: { title: '表格示例1' }
+      component: () => import('../../pages/demo/table/TableDemo'),
+      meta: { title: '用户管理' }
     }
   ]
 }
