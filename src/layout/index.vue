@@ -9,7 +9,7 @@
         <!--通用顶部-->
         <global-header></global-header>
         <main class="layout-main">
-          <div class="layout-content-wrap" ref="contentWrapper">
+          <div class="layout-content-wrap">
             <router-view/>
           </div>
         </main>
@@ -18,7 +18,7 @@
         </footer>
       </section>
     </section>
-    <b-back-top :height="200"></b-back-top>
+    <b-back-top :height="200" :right="10"></b-back-top>
   </div>
 </template>
 
@@ -50,35 +50,6 @@
           position: 'relative',
           paddingLeft: (this.hasAside && this.fixedAside) ? (this.sidebar ? '256px' : '64px') : null
         }
-      }
-    },
-    mounted() {
-      this.wrap = this.$refs.contentWrapper
-      if (this.wrap) {
-        this.$nextTick(() => {
-          this.calcTableWidth()
-        })
-        window.addEventListener('resize', this.calcTableWidth)
-        this.sidebarElm = document.getElementsByClassName('layout-aside')[0]
-        this.sidebarElm && this.sidebarElm.addEventListener('transitionend', this.sidebarResizeHandler)
-      }
-    },
-    methods: {
-      calcTableWidth() {
-        let width = this.wrap ? this.wrap.clientWidth : 800
-        // 全局通信，这里不缓存至vuex中，用于传递当前app-main宽度, mixin中监听此方法用于统一窗口宽度
-        this.$EventBus.$emit('/layout/resize', width)
-      },
-      sidebarResizeHandler(e) {
-        if (e.propertyName === 'width') {
-          this.calcTableWidth()
-        }
-      }
-    },
-    beforeDestroy() {
-      window.removeEventListener('resize', this.calcTableWidth)
-      if (this.sidebarElm) {
-        this.sidebarElm.removeEventListener('transitionend', this.sidebarResizeHandler)
       }
     }
   }

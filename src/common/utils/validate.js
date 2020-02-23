@@ -2,6 +2,8 @@
  * Created by wangbin on 2018/2.27.
  */
 
+export const requireRule = { required: true, message: '必填项', trigger: 'blur' }
+
 /**
  * 校验合法日期
  * 满足yyyy-MM-dd HH:mm:ss、yyyyMMdd HH:mm:ss、yyyy-MM-dd HH:mm、yyyyMMdd HH:mm、yyyy-MM-dd和yyyyMMdd
