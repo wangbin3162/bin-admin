@@ -18,6 +18,6 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 17px;
+    padding: 12px 0;
   }
 </style>

@@ -76,7 +76,7 @@
     line-height: 39.9999px;
     list-style: none;
     font-feature-settings: "tnum";
-    margin: 0 0 17px;
+    margin: 0 0 15px;
     vertical-align: top;
     .label {
       min-width: 80px;
