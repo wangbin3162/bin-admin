@@ -12,7 +12,6 @@ export default {
       list: [], // 当前页面显示的数据列表
       listLoading: false, // 列表加载状态
       btnLoading: false, // 按钮加载状态
-      dialogFormVisible: false, // 编辑页是否显示
       dialogStatus: '' // 编辑页显示状态[create,check,modify] 默认状态为''
     }
   },
@@ -40,7 +39,7 @@ export default {
   },
   watch: {
     dialogStatus() {
-      window.scrollTo(0, 0) // 触发为滚动更新
+      window.scrollTo(0, 0) // 触发伪装滚动更新
     }
   },
   methods: {
@@ -76,7 +75,6 @@ export default {
         this.total = obj.total
         this.listLoading = false
       } else {
-        this.list = []
         this.listLoading = true
       }
     },
@@ -88,6 +86,14 @@ export default {
     // 弹窗取消
     handleCancel() {
       this.dialogStatus = ''
+    },
+    // 提交完毕事件
+    submitDone(isSuccess) {
+      this.dialogStatus = '' // 状态需要改回默认
+      this.btnLoading = false // 按钮状态清空
+      if (isSuccess) {
+        this.$message({ type: 'success', content: '操作成功' })
+      }
     },
     // 组件内部overwrite
     searchList() {

@@ -284,17 +284,12 @@
       handleSubmit() {
         this.$refs.form.validate((valid) => {
           if (valid) {
-            // 校验成功后根据状态去创建或修改
-            this.$message({ type: 'success', content: '操作成功' })
-            // 手动关闭弹窗
-            this.dialogFormVisible = false
+            this.submitDone(true)
             // this.btnLoading = true
             // let fun = this.dialogStatus === 'create' ? api.createDept : api.modifyDept
             // fun(this.user).then(res => {
             //   if (res.data.code === '0') {
-            //     this.btnLoading = false
-            //     this.dialogFormVisible = false
-            //     this.$message({ type: 'success', content: '操作成功' })
+            //     this.submitDone(true)
             //     this.initTree()
             //   } else {
             //     this.$message({ type: 'error', content: res.data.message })
