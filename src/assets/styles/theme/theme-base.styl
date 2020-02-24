@@ -26,7 +26,14 @@
       top: 0;
       left: 0;
       height: 100%;
+      overflow: hidden;
       box-shadow: 2px 0 8px 0 rgba(29, 35, 41, .05);
+      &:hover {
+        overflow-y: auto;
+      }
+      &::-webkit-scrollbar {
+        display: none;
+      }
     }
     .logo {
       position: relative;
@@ -47,14 +54,6 @@
     }
     &-children {
       padding: 16px 0;
-      height: calc(100vh - 65px);
-      overflow: hidden;
-      &:hover {
-        overflow-y: auto;
-      }
-      &::-webkit-scrollbar {
-        display: none;
-      }
     }
     // 收起菜单样式
     .menu-collapsed .bin-dropdown, .menu-collapsed .bin-dropdown .bin-dropdown-rel a,
@@ -98,6 +97,7 @@
         transition: all .3s, padding 0s;
       }
       &-right {
+        padding-right: 16px;
         .dropdown-trigger {
           display: inline-block;
           height: 100%;

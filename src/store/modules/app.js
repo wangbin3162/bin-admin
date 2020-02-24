@@ -6,6 +6,7 @@ const app = {
       sidebar: true,
       theme: '',
       menuType: '',
+      wideType: 'wide', // 内容区域宽度 [wide:固定,flow:流式]
       fixedHeader: false,
       fixedAside: false
     },
@@ -28,6 +29,10 @@ const app = {
     },
     SET_MENU_TYPE: (state, type) => {
       state.setting.menuType = type
+      setAdminSetting(state.setting)
+    },
+    SET_WIDE_TYPE: (state, type) => {
+      state.setting.wideType = type
       setAdminSetting(state.setting)
     },
     TOGGLE_FIXED_HEADER: (state, isFixed) => {
@@ -61,6 +66,9 @@ const app = {
     },
     setMenuType: ({ commit }, type) => {
       commit('SET_MENU_TYPE', type)
+    },
+    setWideType: ({ commit }, type) => {
+      commit('SET_WIDE_TYPE', type)
     },
     toggleFixedHeader: ({ commit }, isFixed) => {
       commit('TOGGLE_FIXED_HEADER', isFixed)
