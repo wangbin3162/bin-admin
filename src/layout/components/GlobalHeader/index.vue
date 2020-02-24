@@ -14,7 +14,7 @@
     </div>
     <!--顶部导航栏时的内容-->
     <div v-else class="top-nav-header">
-      <div class="top-nav-header-main wide">
+      <div class="top-nav-header-main" :class="{'wide':isWide}">
         <div class="logo">
           <img class="icon" src="../../../assets/images/logo-icon-b.png" alt="logo-small"/>
           <h1>Bin Admin Pro</h1>
@@ -72,6 +72,13 @@
             </span>
             </b-tooltip>
           </div>
+        </div>
+        <div class="setting-list-item">
+          <span>内容区域宽度</span>
+          <b-select size="mini" style="width:100px;" :value="wideType" @on-change="changeWideType">
+            <b-option value="wide" v-if="menuType==='header'">固定</b-option>
+            <b-option value="flow">流式</b-option>
+          </b-select>
         </div>
         <div class="setting-list-item">
           <span>固定Header</span>
@@ -153,9 +160,12 @@
       }
     },
     computed: {
-      ...mapGetters(['theme', 'sidebar', 'menuType', 'fixedHeader', 'fixedAside']),
+      ...mapGetters(['theme', 'sidebar', 'menuType', 'wideType', 'fixedHeader', 'fixedAside']),
       hasAside() {
         return this.menuType === 'aside'
+      },
+      isWide() {
+        return this.menuType === 'header' && this.wideType === 'wide'
       },
       fixedHeaderStyle() {
         return {
@@ -175,12 +185,16 @@
       },
       menuTypeChange(type) {
         this.$store.dispatch('setMenuType', type)
+        // 如果是侧边栏模式,则设置宽度类型为流式flow
+        this.changeWideType(this.hasAside ? 'flow' : 'wide')
         // 重定向当前页面
         this.$router.replace('/refresh')
       },
+      changeWideType(type) {
+        this.$store.dispatch('setWideType', type)
+      },
       changeFixedHeader(val) {
         this.$store.dispatch('toggleFixedHeader', val)
-        console.log(val)
       },
       changeFixedAside(val) {
         this.$store.dispatch('toggleFixedAside', val)

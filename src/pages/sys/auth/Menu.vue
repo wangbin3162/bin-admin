@@ -28,7 +28,7 @@
           </b-button>
         </v-table-tool-bar>
         <!--中央表格-->
-        <b-table :columns="columns" :data="list" :loading="listLoading" ref="table">
+        <b-table :columns="columns" :data="list" :loading="listLoading">
           <template v-slot:name="scope">
             <a href="" @click.stop.prevent="handleCheck(scope.row)">{{ scope.row.name }}</a>
           </template>
@@ -184,7 +184,7 @@
   import permission from '../../../common/mixins/permission'
   import * as api from '../../../api/sys/menu.api'
   import { getYn, getMenuType } from '../../../api/enum.api'
-  import { validateRoutePath, requireRule } from '../../../common/utils/validate'
+  import { validateRoutePath, requiredRule } from '../../../common/utils/validate'
   import { deepCopy } from '../../../common/utils/assist'
 
   export default {
@@ -206,14 +206,7 @@
         },
         treeData: [],
         columns: [
-          {
-            type: 'index',
-            width: 50,
-            align: 'center',
-            indexMethod: (row) => {
-              return this.listQuery.size * (this.listQuery.page - 1) + row._index + 1
-            }
-          },
+          { type: 'index', width: 50, align: 'center' },
           { title: '菜单名称', slot: 'name' },
           { title: '前端路由', key: 'path' },
           { title: '菜单类型', slot: 'type', width: 95, align: 'center' },
@@ -223,8 +216,8 @@
         ],
         menu: null,
         ruleValidate: {
-          name: [requireRule],
-          path: [requireRule, { validator: checkMenuPath, trigger: 'blur' }]
+          name: [requiredRule],
+          path: [requiredRule, { validator: checkMenuPath, trigger: 'blur' }]
         },
         ynMap: { 'N': '否', 'Y': '是' }, // 默认值这里Y是可以删除，可删除状态及为禁用
         menuTypeMap: { '1': '功能菜单', '2': '目录菜单', '3': '动作菜单' },
@@ -310,11 +303,10 @@
             let fun = this.dialogStatus === 'create' ? api.createMenu : api.modifyMenu
             fun(this.menu).then(res => {
               if (res.data.code === '0') {
-                this.btnLoading = false
-                this.dialogFormVisible = false
-                this.$message({ type: 'success', content: '操作成功' })
+                this.submitDone(true)
                 this.initTree()
               } else {
+                this.submitDone(false)
                 this.$message({ type: 'error', content: res.data.message })
               }
             })

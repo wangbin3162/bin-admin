@@ -2,7 +2,7 @@
  * Created by wangbin on 2018/2.27.
  */
 
-export const requireRule = { required: true, message: '必填项', trigger: 'blur' }
+export const requiredRule = { required: true, message: '必填项', trigger: 'blur' }
 
 /**
  * 校验合法日期

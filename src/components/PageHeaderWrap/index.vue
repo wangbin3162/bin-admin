@@ -1,7 +1,7 @@
 <template>
   <div class="page-header-wrap">
     <div class="page-header-wrap-page-header-warp">
-      <div class="grid-content wide">
+      <div class="grid-content" :class="{'wide':isWide}">
         <div class="page-header has-breadcrumb">
           <div class="breadcrumb-box">
             <v-breadcrumb/>
@@ -15,7 +15,7 @@
         </div>
       </div>
     </div>
-    <div class="grid-content wide">
+    <div class="grid-content" :class="{'wide':isWide}">
       <div class="page-header-wrap-children-content">
         <slot>
         </slot>
@@ -25,6 +25,7 @@
 </template>
 
 <script>
+  import { mapGetters } from 'vuex'
   import VBreadcrumb from '../VBreadcrumb'
 
   export default {
@@ -39,8 +40,12 @@
       }
     },
     computed: {
+      ...mapGetters(['menuType', 'wideType']),
       normalTitle() {
         return this.title ? this.title : this.$route.meta.title || 'no-title'
+      },
+      isWide() {
+        return this.menuType === 'header' && this.wideType === 'wide'
       }
     }
   }

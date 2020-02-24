@@ -8,6 +8,7 @@ export default {
   theme: 'dark',
   sidebar: true, // 侧边栏开启状态
   menuType: 'aside',
-  fixedHeader: true,
-  fixedAside: true
+  wideType: 'flow', // 内容区域宽度 [wide:固定,flow:流式]
+  fixedHeader: false,
+  fixedAside: false
 }

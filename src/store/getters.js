@@ -2,6 +2,7 @@ const getters = {
   theme: state => state.app.setting.theme,
   sidebar: state => state.app.setting.sidebar,
   menuType: state => state.app.setting.menuType,
+  wideType: state => state.app.setting.wideType,
   fixedHeader: state => state.app.setting.fixedHeader,
   fixedAside: state => state.app.setting.fixedAside,
   // 菜单

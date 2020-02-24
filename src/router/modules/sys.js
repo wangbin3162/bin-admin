@@ -24,6 +24,12 @@ export default {
           name: 'Menu',
           component: () => import(/* webpackChunkName: "auth" */ '../../pages/sys/auth/Menu'),
           meta: { title: '菜单管理' }
+        },
+        {
+          path: 'role',
+          name: 'Role',
+          component: () => import(/* webpackChunkName: "auth" */ '../../pages/sys/auth/Role'),
+          meta: { title: '角色管理' }
         }
       ]
     }
