@@ -66,6 +66,32 @@ export default {
           meta: { title: '系统日志' }
         }
       ]
+    },
+    {
+      path: 'setting',
+      component: Wrap,
+      redirect: { name: 'Dict' },
+      meta: { title: '系统设置', icon: 'ios-settings' },
+      children: [
+        {
+          path: 'dict',
+          name: 'Dict',
+          component: () => import(/* webpackChunkName: "setting" */ '../../pages/sys/setting/Dict'),
+          meta: { title: '字典管理' }
+        },
+        {
+          path: 'paramType',
+          name: 'ParamType',
+          component: () => import(/* webpackChunkName: "setting" */ '../../pages/sys/setting/ParamType'),
+          meta: { title: '类别信息' }
+        },
+        {
+          path: 'paramSetting',
+          name: 'ParamSetting',
+          component: () => import(/* webpackChunkName: "setting" */ '../../pages/sys/setting/ParamSetting'),
+          meta: { title: '参数设置' }
+        }
+      ]
     }
   ]
 }

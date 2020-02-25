@@ -15,9 +15,9 @@
     <!--顶部导航栏时的内容-->
     <div v-else class="top-nav-header">
       <div class="top-nav-header-main" :class="{'wide':isWide}">
-        <div class="logo">
+        <div class="logo" style="width: 200px;">
           <img class="icon" src="../../../assets/images/logo-icon-b.png" alt="logo-small"/>
-          <h1>Bin Admin Pro</h1>
+          <h1>公共信用信息共享平台</h1>
         </div>
         <!--顶部导航栏菜单-->
         <div style="flex: 1 1 0;">

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-header-wrap v-show="visible && !detailDialog" show-close @on-close="close" title="导入/导出记录 ">
+    <page-header-wrap v-show="visible && !detailDialog" show-close @on-close="close" title="导入/导出记录">
       <v-table-wrap>
         <!--查询条件-->
         <v-filter-bar>
