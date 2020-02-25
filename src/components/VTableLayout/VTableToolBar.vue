@@ -1,6 +1,8 @@
 <template>
   <div class="table-tool-bar">
-    <slot></slot>
+    <div class="left">
+      <slot></slot>
+    </div>
     <div class="right" v-if="$slots.right">
       <slot name="right"></slot>
     </div>

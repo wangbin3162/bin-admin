@@ -1,5 +1,5 @@
 <template>
-  <b-col :xs="20" :sm="20" :md="20" :lg="12" :xl="8" :xxl="6">
+  <b-col :xs="20" :sm="20" :md="12" :lg="8" :xl="6" :xxl="6">
     <div class="filter-item">
       <span class="label" v-if="showLabel" :style="{width:labelWidth}">{{ title }}</span>
       <slot>

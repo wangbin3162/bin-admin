@@ -8,7 +8,7 @@
         <!--查询条件-->
         <v-filter-bar>
           <v-filter-item title="菜单名称">
-            <b-input v-model.trim="listQuery.menuName" size="small" placeholder="请输入菜单名称" clearable></b-input>
+            <b-input v-model.trim="listQuery.menuName" size="small" placeholder="请输入" clearable></b-input>
           </v-filter-item>
           <v-filter-item title="禁用状态">
             <b-switch size="large" v-model="listQuery.delFlag" :true-value="ENUM.Y" :false-value="ENUM.N"
@@ -30,7 +30,7 @@
         <!--中央表格-->
         <b-table :columns="columns" :data="list" :loading="listLoading">
           <template v-slot:name="scope">
-            <a href="" @click.stop.prevent="handleCheck(scope.row)">{{ scope.row.name }}</a>
+            <b-button type="text" @click="handleCheck(scope.row)">{{ scope.row.name }}</b-button>
           </template>
           <!--菜单类型-->
           <template v-slot:type="scope">
@@ -240,9 +240,6 @@
       handTreeCurrentChange(data, node) {
         this.currentTreeNode = node
         this.listQuery.parentId = node.id
-        if (this.dialogFormVisible) { // 如果打开了右侧编辑区域则不需要查询，并且需要缓存当前树节点，需要修改父节点id
-          this.menu.parentId = node.id
-        }
         this.handleFilter()
       },
       // filter-Bar:重置查询条件

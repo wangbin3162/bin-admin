@@ -58,13 +58,19 @@ export function validateAlphabets(str) {
 
 /* 是否带有小数 */
 export function isDecimal(strValue) {
-  var objRegExp = /^\d+\.\d+$/
+  let objRegExp = /^\d+\.\d+$/
   return objRegExp.test(strValue)
 }
 
 /* 校验是否中文名称组成 */
 export function ischina(str) {
-  var reg = /^[\u4E00-\u9FA5]{2,64}$/
+  let reg = /^[\u4E00-\u9FA5]{2,64}$/
+  return reg.test(str)
+}
+
+/* 校验是否中文名称带字幕组成 */
+export function ischina2(str) {
+  let reg = /^[\u4E00-\u9FA5,A-Za-z]{2,64}$/
   return reg.test(str)
 }
 
@@ -74,21 +80,33 @@ export function isNonChinese(str) {
   return reg.test(str)
 }
 
+/* 字母开头，字母数字下划线 */
+export function isLetterW(str) {
+  const reg = /^[A-Z,a-z]\w+$/
+  return reg.test(str)
+}
+
+/*  中文、字母、数字、()、（）、/和下划线，且数字不能出现在首位的字符串 */
+export function isTitleNotStartNum(str) {
+  const reg = /^([^0-9])([\u4E00-\u9FA5]|\w|[()（）]+|_)*$/
+  return reg.test(str)
+}
+
 /* 校验正整数 */
 export function isInteger(str) {
-  var reg = /^\d+$/
+  let reg = /^\d+$/
   return reg.test(str)
 }
 
 /* 校验电话码格式 */
 export function isTelCode(str) {
-  var reg = /^((0\d{2,3}-\d{7,8})|(1[35874]\d{9}))$/
+  let reg = /^((0\d{2,3}-\d{7,8})|(1[35874]\d{9}))$/
   return reg.test(str)
 }
 
 /* 校验邮件地址是否合法 */
 export function isEmail(str) {
-  var reg = /^([a-zA-Z0-9_\\.-])+@([a-zA-Z0-9_-])+(\.[a-zA-Z0-9_-])+/
+  let reg = /^([a-zA-Z0-9_\\.-])+@([a-zA-Z0-9_-])+(\.[a-zA-Z0-9_-])+/
   return reg.test(str)
 }
 
@@ -144,7 +162,7 @@ export function checkIdCard(str) {
     return false
   }
   let iSum = 0
-  for (var i = 17; i >= 0; i--) {
+  for (let i = 17; i >= 0; i--) {
     iSum += (Math.pow(2, i) % 11) * parseInt(str.charAt(17 - i), 11)
   }
   return iSum % 11 === 1
@@ -189,7 +207,7 @@ function checkCode(code) {
 
 /* 校验工商注册号 */
 export function verifyRegNo(regNo) {
-  var regex = /^[0-9]{15}$/
+  let regex = /^[0-9]{15}$/
   return (regex.test(regNo) && checkCode(regNo))
 }
 

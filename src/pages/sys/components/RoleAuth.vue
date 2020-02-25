@@ -1,5 +1,5 @@
 <template>
-  <!--角色授权抽屉-->
+  <!--角色授权-->
   <page-header-wrap v-show="visible" show-close @on-close="close" :title="pageTitle">
     <v-table-wrap>
       <!--树结构-->

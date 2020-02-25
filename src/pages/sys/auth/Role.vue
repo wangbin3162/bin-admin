@@ -5,10 +5,10 @@
         <!--查询条件-->
         <v-filter-bar>
           <v-filter-item title="角色名称">
-            <b-input v-model.trim="listQuery.name" size="small" placeholder="请输入角色名称" clearable></b-input>
+            <b-input v-model.trim="listQuery.name" size="small" placeholder="请输入" clearable></b-input>
           </v-filter-item>
           <v-filter-item title="角色编码">
-            <b-input v-model.trim="listQuery.code" size="small" placeholder="请输入角色编码" clearable></b-input>
+            <b-input v-model.trim="listQuery.code" size="small" placeholder="请输入" clearable></b-input>
           </v-filter-item>
           <v-filter-item @on-search="handleFilter" @on-reset="resetQuery"></v-filter-item>
         </v-filter-bar>
