@@ -83,7 +83,7 @@ export default {
           path: 'paramType',
           name: 'ParamType',
           component: () => import(/* webpackChunkName: "setting" */ '../../pages/sys/setting/ParamType'),
-          meta: { title: '类别信息' }
+          meta: { title: '类别管理' }
         },
         {
           path: 'paramSetting',
