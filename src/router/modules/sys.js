@@ -32,6 +32,20 @@ export default {
           meta: { title: '角色管理' }
         }
       ]
-    }
+    },
+    {
+      path: 'logs',
+      component: Wrap,
+      redirect: { name: 'SysLog' },
+      meta: { title: '日志管理', icon: 'ios-clipboard' },
+      children: [
+        {
+          path: 'sysLog',
+          name: 'SysLog',
+          component: () => import(/* webpackChunkName: "logs" */ '../../pages/sys/logs/SysLog'),
+          meta: { title: '系统日志' }
+        }
+      ]
+    },
   ]
 }
