@@ -1,5 +1,5 @@
 <template>
-  <b-cascade :data="options" :placeholder="placeholder" size="small" :render-format="format" :disabled="disabled"
+  <b-cascade :data="options" :placeholder="placeholder" :size="size" :render-format="format" :disabled="disabled"
              @on-change="handleChange" v-model="current" change-on-select></b-cascade>
 </template>
 
@@ -21,6 +21,9 @@
       showLast: {
         type: Boolean,
         default: true
+      },
+      size: {
+        type: String
       },
       disabled: Boolean
     },

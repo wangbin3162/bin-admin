@@ -31,6 +31,12 @@ export default {
           name: 'Metadata',
           component: () => import(/* webpackChunkName: "res" */ '../../pages/data-manage/res/Metadata'),
           meta: { title: '元信息' }
+        },
+        {
+          path: 'resInfo',
+          name: 'ResInfo',
+          component: () => import(/* webpackChunkName: "res" */ '../../pages/data-manage/res/ResInfo'),
+          meta: { title: '资源信息' }
         }
       ]
     }
