@@ -185,6 +185,11 @@
           }
         })
       },
+      // 弹窗取消
+      handleCancel() {
+        this.dialogStatus = ''
+        this.dialogFormVisible = false
+      },
       // 表单提交
       handleSubmit() {
         this.$refs.form.validate((valid) => {

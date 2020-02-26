@@ -95,7 +95,6 @@
 
     .search-btn {
       width: 100%;
-      text-align: center;
       .open {
         display: inline-block;
         margin-left: 10px;

@@ -207,7 +207,7 @@
         treeData: [],
         columns: [
           { type: 'index', width: 50, align: 'center' },
-          { title: '菜单名称', slot: 'name' },
+          { title: '菜单名称', slot: 'name', width: 120 },
           { title: '前端路由', key: 'path' },
           { title: '菜单类型', slot: 'type', width: 95, align: 'center' },
           { title: '排序编号', key: 'sortNum', width: 95, align: 'center' },
