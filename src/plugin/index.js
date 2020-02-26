@@ -7,6 +7,8 @@ import { VTableWrap, VTableToolBar, VFilterBar, VFilterItem, VEditWrap } from '.
 import VKeyLabel from '../components/VKeyLabel'
 import VSimpleLabel from '../components/VKeyLabel/Simple'
 import VTitleBar from '../components/VTitleBar'
+import VSortArrow from '../components/VSortArrow'
+import VCascade from '../components/VCascade'
 
 export default {
   async install(Vue, options) {
@@ -21,6 +23,8 @@ export default {
     Vue.component(VKeyLabel.name, VKeyLabel)
     Vue.component(VSimpleLabel.name, VSimpleLabel)
     Vue.component(VTitleBar.name, VTitleBar)
+    Vue.component(VSortArrow.name, VSortArrow)
+    Vue.component(VCascade.name, VCascade)
     // 全局通信
     Vue.prototype.$EventBus = new Vue()
   }

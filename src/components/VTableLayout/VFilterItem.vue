@@ -1,7 +1,7 @@
 <template>
   <b-col :xs="20" :sm="20" :md="12" :lg="8" :xl="6" :xxl="6">
     <div class="filter-item">
-      <span class="label" v-if="showLabel" :style="{width:labelWidth}">{{ title }}</span>
+      <span class="label" v-if="showLabel" :style="{width:labelWidth,textAlign:labelPos}">{{ title }}</span>
       <slot>
         <!--默认插槽，用于插入查询条件，如不插入则生成查询按钮，生成查询按钮需要传入是否需要显示展开按钮并传入状态-->
         <div class="search-btn">
@@ -32,6 +32,9 @@
         default: null
       },
       labelWidth: {
+        type: String
+      },
+      labelPos: {
         type: String
       },
       showToggle: {

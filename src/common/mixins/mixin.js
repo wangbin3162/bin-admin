@@ -68,6 +68,14 @@ export default {
         children: child
       }
     },
+    // options根据对象返回选项数组
+    formatOptions(obj) {
+      let ret = []
+      Object.keys(obj).forEach(key => {
+        ret.push({ value: key, label: obj[key] })
+      })
+      return ret
+    },
     // 设置列表数据
     setListData(obj) {
       if (obj) {

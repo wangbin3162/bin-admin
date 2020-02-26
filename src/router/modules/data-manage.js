@@ -25,6 +25,12 @@ export default {
           name: 'Classify',
           component: () => import(/* webpackChunkName: "res" */ '../../pages/data-manage/res/Classify'),
           meta: { title: '资源类目' }
+        },
+        {
+          path: 'metadata',
+          name: 'Metadata',
+          component: () => import(/* webpackChunkName: "res" */ '../../pages/data-manage/res/Metadata'),
+          meta: { title: '元信息' }
         }
       ]
     }
