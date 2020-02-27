@@ -202,12 +202,10 @@
       // 查看执行记录详情
       handleCheckDetail(row) {
         let { id, cfgDetailId } = row
-        console.log(id, cfgDetailId)
         api.queryDirBatchInfo(id, cfgDetailId).then(res => {
           if (res.data.code === '0') {
             this.batchDetail = res.data.data
             this.detailDialog = true
-            console.log(this.batchDetail)
           }
         })
       },
