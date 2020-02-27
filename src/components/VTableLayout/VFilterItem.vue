@@ -86,7 +86,8 @@
     margin: 0 0 15px;
     vertical-align: top;
     .label {
-      min-width: 80px;
+      width: auto;
+      flex: 0 0 auto;
       text-align: right;
       overflow: hidden;
       line-height: 40px;

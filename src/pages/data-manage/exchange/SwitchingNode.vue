@@ -132,7 +132,7 @@
 <script>
   import commonMixin from '../../../common/mixins/mixin'
   import permission from '../../../common/mixins/permission'
-  import * as api from '../../../api/dir/switching-node.api'
+  import * as api from '../../../api/data-manage/switching-node.api'
   import { getExchangeNodeType } from '../../../api/enum.api'
   import { requiredRule } from '../../../common/utils/validate'
   import { DataSourceChoose } from './components/SwitchingNode'

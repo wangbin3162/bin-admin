@@ -63,6 +63,18 @@ export default {
           name: 'SwitchingNode',
           component: () => import(/* webpackChunkName: "exchange" */ '../../pages/data-manage/exchange/SwitchingNode'),
           meta: { title: '节点管理' }
+        },
+        {
+          path: 'switchingScheme',
+          name: 'SwitchingScheme',
+          component: () => import(/* webpackChunkName: "exchange" */ '../../pages/data-manage/exchange/SwitchingScheme'),
+          meta: { title: '交换方案' }
+        },
+        {
+          path: 'switchingMission',
+          name: 'SwitchingMission',
+          component: () => import(/* webpackChunkName: "exchange" */ '../../pages/data-manage/exchange/SwitchingMission'),
+          meta: { title: '交换任务' }
         }
       ]
     }
