@@ -34,7 +34,6 @@
 
 <style lang="stylus" scoped>
   .edit-wrap {
-    position: relative;
     width: 100%;
     overflow: hidden;
     background: #ffffff;

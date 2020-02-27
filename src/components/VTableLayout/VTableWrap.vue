@@ -17,7 +17,6 @@
 
 <style lang="stylus">
   .table-layout-wrapper {
-    position: relative;
     width: 100%;
     overflow: hidden;
     background: #ffffff;
@@ -33,7 +32,6 @@
       overflow-x: auto;
     }
     .table-wrap {
-      position: relative;
       flex: auto;
       overflow-x: hidden;
       padding: 16px;
