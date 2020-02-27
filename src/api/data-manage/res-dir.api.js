@@ -23,23 +23,6 @@ export function getSelectedResList(key) {
   })
 }
 
-/* 获取所有部门列表 */
-export function getDeptList(query) {
-  const data = new URLSearchParams()
-  data.append('size', query.size)
-  data.append('page', query.page - 1)
-  data.append('departName', query.departName)
-  data.append('status', query.status)
-  data.append('parentId', query.parentId)
-  data.append('sort', 'sortNum,asc')
-  data.append('sort', 'createDate,desc')
-  return request({
-    url: '/management/depart/search',
-    method: 'get',
-    params: data
-  })
-}
-
 /* 查看部门详情 */
 export function getIdDetail(query) {
   return request({

@@ -37,6 +37,12 @@ export default {
           name: 'ResInfo',
           component: () => import(/* webpackChunkName: "res" */ '../../pages/data-manage/res/ResInfo'),
           meta: { title: '资源信息' }
+        },
+        {
+          path: 'resDir',
+          name: 'ResDir',
+          component: () => import(/* webpackChunkName: "res" */ '../../pages/data-manage/res/ResDir'),
+          meta: { title: '资源目录' }
         }
       ]
     }

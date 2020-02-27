@@ -225,7 +225,7 @@
   import { getClassifyTree } from '../../../api/data-manage/classify.api'
   import { getPersonClassTree } from '../../../api/data-manage/metadata.api'
   import { getFieldCtrl } from '../../../api/enum.api'
-  import * as api from '../../../api/dir/res-info.api'
+  import * as api from '../../../api/data-manage/res-info.api'
   import { MetaDataChoose, ResExtEdit } from './components/ResInfo'
   import ResInfoItems from './components/ResInfoItems'
   import { requiredRule } from '../../../common/utils/validate'
