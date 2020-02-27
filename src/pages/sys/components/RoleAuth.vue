@@ -12,7 +12,7 @@
         <v-filter-item @on-search="handleFilter" @on-reset="resetQuery"></v-filter-item>
       </v-filter-bar>
       <v-table-tool-bar>
-        <b-button v-if="canCreate" type="primary" v-waves size="small" @click="batchAuth"
+        <b-button v-if="canCreate" type="primary" size="small" @click="batchAuth"
                   :icon="isAllGrant ? 'ios-remove':'ios-add'">
           {{ grantAllTitle }}
         </b-button>

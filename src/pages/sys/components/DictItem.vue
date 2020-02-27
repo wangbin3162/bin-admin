@@ -24,11 +24,11 @@
         <b-table :columns="columns" :data="list" :loading="listLoading">
           <!--操作栏-->
           <template v-slot:action="scope">
-            <b-button :disabled="!canModify" type="text" @click="handleModify(scope.row)" v-waves>修改</b-button>
+            <b-button :disabled="!canModify" type="text" @click="handleModify(scope.row)">修改</b-button>
             <!--是否有删除键-->
             <template v-if="canRemove">
               <b-divider type="vertical"></b-divider>
-              <b-button type="text" v-waves style="color:red;" @click="handleRemove(scope.row)">删除</b-button>
+              <b-button type="text" style="color:red;" @click="handleRemove(scope.row)">删除</b-button>
             </template>
           </template>
         </b-table>
@@ -54,7 +54,7 @@
       </div>
       <div slot="footer">
         <b-button type="primary" @click="handleSubmit" :loading="btnLoading">提 交</b-button>
-        <b-button v-waves @click="handleCancel">取 消</b-button>
+        <b-button @click="handleCancel">取 消</b-button>
       </div>
     </b-modal>
   </div>

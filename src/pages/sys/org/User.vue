@@ -62,7 +62,7 @@
           <template v-slot:action="scope">
             <!--如果可编辑且是禁用（可删除即为禁用）状态下不可编辑-->
             <b-button :disabled="canModify && scope.row.status===ENUM.DISABLE"
-                      type="text" @click="handleModify(scope.row)" v-waves>
+                      type="text" @click="handleModify(scope.row)">
               修改
             </b-button>
             <!--是否有删除键-->
@@ -115,7 +115,7 @@
                    :closable="!isAdmin(user)" @on-close="handleRemoveRole(role)">
               {{ role.name }}
             </b-tag>
-            <b-button type="primary" v-waves size="small" style="vertical-align: middle;" plain
+            <b-button type="primary" size="small" style="vertical-align: middle;" plain
                       :disabled="isAdmin(user)" @click="handleShowDialogChoose">选择角色
             </b-button>
           </b-form-item>

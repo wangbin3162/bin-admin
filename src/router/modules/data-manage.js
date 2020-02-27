@@ -45,6 +45,20 @@ export default {
           meta: { title: '资源目录' }
         }
       ]
+    },
+    {
+      path: 'exchange',
+      component: Wrap,
+      redirect: { name: 'DataSource' },
+      meta: { title: '交换配置', icon: 'ios-git-compare' },
+      children: [
+        {
+          path: 'dataSource',
+          name: 'DataSource',
+          component: () => import(/* webpackChunkName: "exchange" */ '../../pages/data-manage/exchange/DataSource'),
+          meta: { title: '数据源管理' }
+        }
+      ]
     }
   ]
 }

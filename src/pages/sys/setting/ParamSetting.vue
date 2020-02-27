@@ -36,13 +36,13 @@
           </template>
           <!--操作栏-->
           <template v-slot:action="scope">
-            <b-button :disabled="!canModify" type="text" @click="handleModify(scope.row)" v-waves>修改</b-button>
+            <b-button :disabled="!canModify" type="text" @click="handleModify(scope.row)">修改</b-button>
             <b-divider type="vertical"></b-divider>
-            <b-button :disabled="!canModify" type="text" @click="handleSet(scope.row)" v-waves>设置</b-button>
+            <b-button :disabled="!canModify" type="text" @click="handleSet(scope.row)">设置</b-button>
             <!--是否有删除键-->
             <template v-if="canRemove">
               <b-divider type="vertical"></b-divider>
-              <b-button type="text" v-waves style="color:red;" @click="handleRemove(scope.row)">删除</b-button>
+              <b-button type="text" style="color:red;" @click="handleRemove(scope.row)">删除</b-button>
             </template>
           </template>
         </b-table>
@@ -173,8 +173,8 @@
         <v-simple-label label="参数描述" style="padding: 0;">{{ conf.desc}}</v-simple-label>
       </div>
       <div slot="footer" class="t-right">
-        <b-button type="primary" v-waves @click="confSave" :loading="btnLoading">保 存</b-button>
-        <b-button v-waves @click="settingVisible = false">取 消</b-button>
+        <b-button type="primary" @click="confSave" :loading="btnLoading">保 存</b-button>
+        <b-button @click="settingVisible = false">取 消</b-button>
       </div>
     </b-modal>
   </div>

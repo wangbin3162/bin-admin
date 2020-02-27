@@ -66,7 +66,7 @@
       </div>
       <div slot="footer">
         <b-button type="primary" @click="handleSubmit" :loading="btnLoading">提 交</b-button>
-        <b-button v-waves @click="handleCancel">取 消</b-button>
+        <b-button @click="handleCancel">取 消</b-button>
       </div>
     </b-modal>
     <!--字典项配置-->

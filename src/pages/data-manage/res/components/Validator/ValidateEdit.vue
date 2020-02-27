@@ -4,7 +4,7 @@
     <div style="min-height: 300px;" v-show="status==='normal'">
       <!--控制栏-->
       <div class="mb-15">
-        <b-button type="primary" v-waves size="small" icon="ios-add" @click="handleCreate">添加规则</b-button>
+        <b-button type="primary" size="small" icon="ios-add" @click="handleCreate">添加规则</b-button>
       </div>
       <b-table :columns="columns" :data="totalData" size="small" disabled-hover>
         <template v-slot:args="scope">

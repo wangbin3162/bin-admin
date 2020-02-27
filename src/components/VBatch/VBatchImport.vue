@@ -1,6 +1,6 @@
 <template>
   <div style="display: inline-block;" class="ml-15">
-    <b-button v-waves size="small" icon="ios-exit" @click="handleBatchImport">
+    <b-button size="small" icon="ios-exit" @click="handleBatchImport">
       <slot>批量导入</slot>
     </b-button>
     <!--批量导入弹窗-->

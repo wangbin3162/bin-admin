@@ -7,7 +7,7 @@
         </b-input>
       </div>
       <b-divider align="left">角色列表</b-divider>
-      <b-button v-for="item in list" :key="item.id" v-waves round plain
+      <b-button v-for="item in list" :key="item.id" round plain
                 :disabled="noAdmin&&item.code==='ROLE_ADMIN'" size="small"
                 :type="item.roleType==='I'?'primary':'warning'"
                 style="margin:0 5px 5px 0;"

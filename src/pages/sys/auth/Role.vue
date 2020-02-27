@@ -31,12 +31,12 @@
           </template>
           <!--操作栏-->
           <template v-slot:action="scope">
-            <b-button :disabled="!canModify || !isAdmin" type="text" @click="handleModify(scope.row)" v-waves>修改
+            <b-button :disabled="!canModify || !isAdmin" type="text" @click="handleModify(scope.row)">修改
             </b-button>
             <!--是否有删除键-->
             <template v-if="canRemove && scope.row.roleType===ENUM.S">
               <b-divider type="vertical"></b-divider>
-              <b-button type="text" v-waves style="color:red;" @click="handleRemove(scope.row)">删除</b-button>
+              <b-button type="text" style="color:red;" @click="handleRemove(scope.row)">删除</b-button>
             </template>
           </template>
         </b-table>

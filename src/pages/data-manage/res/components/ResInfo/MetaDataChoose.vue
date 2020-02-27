@@ -16,7 +16,7 @@
     <b-table :columns="columns" :data="list" :loading="listLoading" size="small">
       <!--操作栏-->
       <template v-slot:action="scope">
-        <b-button type="primary" size="mini" plain @click="chooseOne(scope.row)" v-waves>
+        <b-button type="primary" size="mini" plain @click="chooseOne(scope.row)">
           选择
         </b-button>
       </template>
