@@ -211,7 +211,7 @@
                 this.searchList()
               } else {
                 this.submitDone(false)
-                this.$message({ type: 'error', content: res.data.message })
+                this.$message({ type: 'danger', content: res.data.message })
               }
               this.dialogFormVisible = false
             })

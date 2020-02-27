@@ -57,6 +57,12 @@ export default {
           name: 'DataSource',
           component: () => import(/* webpackChunkName: "exchange" */ '../../pages/data-manage/exchange/DataSource'),
           meta: { title: '数据源管理' }
+        },
+        {
+          path: 'switchingNode',
+          name: 'SwitchingNode',
+          component: () => import(/* webpackChunkName: "exchange" */ '../../pages/data-manage/exchange/SwitchingNode'),
+          meta: { title: '节点管理' }
         }
       ]
     }

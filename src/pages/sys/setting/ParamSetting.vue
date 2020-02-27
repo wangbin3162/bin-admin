@@ -339,7 +339,7 @@
             this.$message({ type: 'success', content: '操作成功' })
             this.searchList()
           } else {
-            this.$message({ type: 'error', content: res.data.message })
+            this.$message({ type: 'danger', content: res.data.message })
           }
         })
       },
@@ -391,11 +391,11 @@
                 this.handleFilter()
               } else {
                 this.submitDone(false)
-                this.$message({ type: 'error', content: res.data.message })
+                this.$message({ type: 'danger', content: res.data.message })
               }
             })
           } else {
-            this.$message({ type: 'error', content: '表单校验失败!' })
+            this.$message({ type: 'danger', content: '表单校验失败!' })
           }
         })
       },

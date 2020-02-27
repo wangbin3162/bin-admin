@@ -131,7 +131,7 @@
   import permission from '../../../common/mixins/permission'
   import { requiredRule } from '../../../common/utils/validate'
   import { getDataSourceType } from '../../../api/enum.api'
-  import * as api from '../../../api/dir/data-source.api'
+  import * as api from '../../../api/data-manage/data-source.api'
 
   export default {
     name: 'DataSource',
@@ -230,7 +230,7 @@
                 this.handleFilter()
               } else {
                 this.submitDone(false)
-                this.$message({ type: 'error', content: res.data.message })
+                this.$message({ type: 'danger', content: res.data.message })
               }
             })
           }
