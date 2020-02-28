@@ -1,4 +1,5 @@
 import layout from '../layout'
+import components from './modules/components'
 import tableDemo from './modules/table-demo'
 import errorPage from './modules/error-page'
 import nested from './modules/nested'
@@ -15,6 +16,7 @@ import nested from './modules/nested'
   }
  **/
 export const asyncRouterMap = [
+  components,
   tableDemo,
   errorPage,
   nested,
@@ -44,7 +46,7 @@ export const constantRouterMap = [
         name: 'refresh',
         hidden: true,
         component: {
-          beforeRouteEnter (to, from, next) {
+          beforeRouteEnter(to, from, next) {
             next(vm => vm.$router.replace(from.fullPath))
           },
           render: h => h()
@@ -56,7 +58,7 @@ export const constantRouterMap = [
         name: 'redirect',
         hidden: true,
         component: {
-          beforeRouteEnter (to, from, next) {
+          beforeRouteEnter(to, from, next) {
             next(vm => vm.$router.replace(JSON.parse(from.params.route)))
           },
           render: h => h()
