@@ -8,6 +8,12 @@ export default {
   meta: { title: '数据分析', icon: 'ios-analytics' },
   children: [
     {
+      path: 'analyze',
+      name: 'Analyze',
+      component: () => import(/* webpackChunkName: "analysis" */ '../../pages/data-analyze/Analyze'),
+      meta: { title: '采集分析' }
+    },
+    {
       path: 'daTheme',
       name: 'DaTheme',
       component: () => import(/* webpackChunkName: "analysis" */ '../../pages/data-analyze/DaTheme'),
