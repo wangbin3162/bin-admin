@@ -64,15 +64,16 @@
           <b-row>
             <b-col span="12">
               <b-form-item label="父角色">
-                <b-input :value="role.parentName" readonly class="choose-btn">
+                <div flex>
+                  <b-input :value="role.parentName" readonly class="choose-btn"></b-input>
                   <b-button v-if="role.parentId.length===0" slot="suffix" type="primary" plain
-                            @click="handleShowDialogChoose">
+                            @click="handleShowDialogChoose" style="flex: 0 0 auto;">
                     选择
                   </b-button>
-                  <b-button v-else type="danger" slot="suffix" plain
+                  <b-button v-else type="danger" slot="suffix" plain style="flex: 0 0 auto;"
                             @click="handleChooseOne({id:'',name:''})">清空
                   </b-button>
-                </b-input>
+                </div>
               </b-form-item>
             </b-col>
             <b-col span="12">
