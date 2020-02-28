@@ -1,12 +1,5 @@
 import layout from '../../layout'
 
-// 容器组件
-const Wrap = {
-  render: h => {
-    return h('router-view')
-  }
-}
-
 // 数据治理
 export default {
   path: '/dataAnalyze',
@@ -19,6 +12,12 @@ export default {
       name: 'DaTheme',
       component: () => import(/* webpackChunkName: "analysis" */ '../../pages/data-analyze/DaTheme'),
       meta: { title: '分析主题' }
+    },
+    {
+      path: 'daContent',
+      name: 'daContent',
+      component: () => import(/* webpackChunkName: "analysis" */ '../../pages/data-analyze/DaContent'),
+      meta: { title: '分析内容' }
     }
   ]
 }
