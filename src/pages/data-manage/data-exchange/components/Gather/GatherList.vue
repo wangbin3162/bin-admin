@@ -140,7 +140,7 @@
   import commonMixin from '../../../../../common/mixins/mixin'
   import permission from '../../../../../common/mixins/permission'
   import { deepCopy } from '../../../../../common/utils/assist'
-  import * as api from '../../../../../api/dir/gather.api'
+  import * as api from '../../../../../api/data-manage/gather.api'
   import { jsonDataToRules } from '../../../res/components/Validator/validate.cfg'
   import FormItem from '../FormControl/FormItem'
   import FormControl from '../FormControl/FormControl'

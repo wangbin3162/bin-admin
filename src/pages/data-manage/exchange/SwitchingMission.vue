@@ -185,7 +185,7 @@
 <script>
   import commonMixin from '../../../common/mixins/mixin'
   import permission from '../../../common/mixins/permission'
-  import * as api from '../../../api/dir/switching-mission.api'
+  import * as api from '../../../api/data-manage/switching-mission.api'
   import { getAvailableStatus, getExchangeType, getFlowDirection } from '../../../api/enum.api'
   import { getTablesFields } from '../../../api/data-manage/data-source.api'
   import { getFields } from '../../../api/data-manage/res-info.api'

@@ -39,7 +39,7 @@
 <script>
   import commonMixin from '../../../../../common/mixins/mixin'
   import permission from '../../../../../common/mixins/permission'
-  import { getNatList } from '../../../../../api/dir/gather.api'
+  import { getNatList } from '../../../../../api/data-manage/gather.api'
   import { Decode, MaskCode } from '../../../../../common/utils/secret'
 
   export default {

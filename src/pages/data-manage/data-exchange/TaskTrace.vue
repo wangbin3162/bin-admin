@@ -119,7 +119,7 @@
 <script>
   import commonMixin from '../../../common/mixins/mixin'
   import permission from '../../../common/mixins/permission'
-  import * as api from '../../../api/dir/auto-collection.api'
+  import * as api from '../../../api/data-manage/task-trace.api'
   import Util from '../../../common/utils/util'
 
   export default {

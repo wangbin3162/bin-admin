@@ -9,7 +9,7 @@
 </template>
 
 <script>
-  import * as api from '../../../../../api/dir/gather.api'
+  import * as api from '../../../../../api/data-manage/gather.api'
 
   export default {
     name: 'GatherHistory',

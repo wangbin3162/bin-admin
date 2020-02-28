@@ -39,7 +39,7 @@
 <script>
   import commonMixin from '../../../../../common/mixins/mixin'
   import permission from '../../../../../common/mixins/permission'
-  import { getLegList } from '../../../../../api/dir/gather.api'
+  import { getLegList } from '../../../../../api/data-manage/gather.api'
 
   export default {
     name: 'LegPersonChoose',

@@ -35,7 +35,7 @@
   import permission from '../../../common/mixins/permission'
   import { getMyGather } from '../../../api/data-manage/res-info.api'
   import GatherList from './components/Gather/GatherList'
-  import * as api from '../../../api/dir/gather.api'
+  import * as api from '../../../api/data-manage/gather.api'
 
   export default {
     name: 'Gather',
