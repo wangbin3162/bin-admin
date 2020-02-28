@@ -113,7 +113,6 @@
               </b-form-item>
             </b-col>
           </b-row>
-
           <b-form-item label="示例数据" prop="describe">
             <b-input v-model="content.describe" type="textarea" :autosize="{minRows: 2,maxRows: 5}"></b-input>
           </b-form-item>
@@ -151,7 +150,7 @@
 <script>
   import commonMixin from '../../common/mixins/mixin'
   import permission from '../../common/mixins/permission'
-  import * as conApi from '../../api/dir/da-content.api'
+  import * as conApi from '../../api/data-analyze/da-content.api'
   import ApiChoose from './components/DaContent/ApiChoose'
   import ThemeChoose from './components/DaContent/ThemeChoose'
 

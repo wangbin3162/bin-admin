@@ -24,6 +24,18 @@ export default {
       name: 'DaApi',
       component: () => import(/* webpackChunkName: "analysis" */ '../../pages/data-analyze/DaApi'),
       meta: { title: '接口管理' }
+    },
+    {
+      path: 'daInnerTemplate',
+      name: 'DaInnerTemplate',
+      component: () => import(/* webpackChunkName: "analysis" */ '../../pages/data-analyze/DaInnerTemplate'),
+      meta: { title: '内置模板' }
+    },
+    {
+      path: 'daBusinessTemplate',
+      name: 'DaBusinessTemplate',
+      component: () => import(/* webpackChunkName: "analysis" */ '../../pages/data-analyze/DaBusinessTemplate'),
+      meta: { title: '业务模板' }
     }
   ]
 }

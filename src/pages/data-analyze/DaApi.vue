@@ -42,7 +42,7 @@
 <script>
   import commonMixin from '../../common/mixins/mixin'
   import permission from '../../common/mixins/permission'
-  import * as api from '../../api/dir/analysis-daApi.api'
+  import * as api from '../../api/data-analyze/analysis-daApi.api'
   import { requiredRule } from '../../common/utils/validate'
 
   export default {
