@@ -3,34 +3,33 @@
   <div flex>
     <b-input v-model="current" :placeholder="placeholder" readonly clearable @on-clear="handleClear"></b-input>
     <b-button type="primary" v-waves @click="handleShowModal"
-              style="padding: 10px;margin-left: 4px;font-size: 12px;">
+              style="padding: 10px;flex:0 0 auto;margin-left: 0;font-size: 12px;">
       选择自然人
     </b-button>
     <!--选择自然人弹窗 for ResInfo.vue -->
     <b-modal v-model="dialogFormVisible" title="选择自然人" width="860" class="layout-inner" :mask-closable="false">
-      <v-table-layout>
+      <div style="padding: 0;">
         <!--查询条件-->
-        <v-filter-bar slot="filter">
-          <v-filter-item title="名称" width="230px">
+        <v-filter-bar>
+          <v-filter-item title="名称">
             <b-input v-model.trim="listQuery.name" size="small" placeholder="输入名称" clearable></b-input>
           </v-filter-item>
           <!--添加查询按钮位置-->
           <v-filter-item @on-search="handleFilter" @on-reset="resetQuery"></v-filter-item>
         </v-filter-bar>
         <!--中央表格-->
-        <b-table slot="table" :columns="columns" :data="list" :loading="listLoading"
-                 stripe max-height="360" ref="table" :width="820" size="small">
+        <b-table :columns="columns" :data="list" :loading="listLoading" size="small">
           <!--操作栏-->
           <template v-slot:action="scope">
-            <b-button type="primary" size="mini" plain @click="chooseOne(scope.row)" v-waves>
+            <b-button type="primary" size="mini" plain @click="chooseOne(scope.row)">
               选择
             </b-button>
           </template>
         </b-table>
-      </v-table-layout>
-      <div slot="footer" class="t-right">
+      </div>
+      <div slot="footer">
         <!--下方分页器-->
-        <b-page slot="pager" :total="total" show-sizer
+        <b-page :total="total" show-sizer
                 @on-change="handleCurrentChange" @on-page-size-change="handleSizeChange"></b-page>
       </div>
     </b-modal>
@@ -58,6 +57,7 @@
     },
     data() {
       return {
+        dialogFormVisible: false,
         listQuery: {
           name: '' // 名称
         },

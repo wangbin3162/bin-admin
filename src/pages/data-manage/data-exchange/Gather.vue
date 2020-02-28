@@ -26,6 +26,7 @@
         </div>
       </v-table-wrap>
     </page-header-wrap>
+    <gather-list ref="gatherList" @on-close="handleCancel"></gather-list>
   </div>
 </template>
 
@@ -58,6 +59,7 @@
             let detail = res.data.data
             if (resource.status === 'audited' && detail && detail.items) { // 已经发布过的
               let columns = this.formatItemsToColumns(detail.items)
+              this.dialogStatus = 'gatherList'
               this.$refs.gatherList.open(detail, columns)
             } else {
               this.$message({ type: 'danger', content: '当前资源没有发布' })

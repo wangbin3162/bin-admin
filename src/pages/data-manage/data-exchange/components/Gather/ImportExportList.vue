@@ -1,97 +1,114 @@
 <template>
-  <!--导入导出记录-->
-  <b-modal v-model="drawerVisible" append-to-body width="940" class="layout-inner" :mask-closable="false" title="查看记录">
-    <v-table-layout>
-      <!--查询条件-->
-      <v-filter-bar slot="filter">
-        <v-filter-item title="类型">
-          <b-select v-model="handleType" @on-change="typeChange">
-            <b-option value="import">导入记录</b-option>
-            <b-option value="export">导出记录</b-option>
-          </b-select>
-        </v-filter-item>
-        <v-filter-item title="时间">
-          <b-date-picker type="daterange" placeholder="选择日期" size="small"
-                         ref="datePickerRange"
-                         @on-change="dateChange"></b-date-picker>
-        </v-filter-item>
-        <v-filter-item title="状态">
-          <b-select v-model="listQuery.status" clearable>
-            <b-option v-for="(value,key) in statusMap" :key="key" :value="key">{{ value }}</b-option>
-          </b-select>
-        </v-filter-item>
-        <!--添加查询按钮位置-->
-        <v-filter-item @on-search="handleFilter" @on-reset="resetQuery"></v-filter-item>
-      </v-filter-bar>
-      <!--中央表格-->
-      <b-table slot="table" :columns="columns" :data="list" :loading="listLoading"
-               stripe ref="table" width="900" size="small">
-        <template v-slot:jobStatus="{row}">
-          <b-tag v-if="row.jobStatus" :type="statusStyleMap[row.jobStatus]" size="small">
-            {{ statusMap[row.jobStatus] }}
-          </b-tag>
-          <span v-else>-</span>
-        </template>
-        <!--操作栏-->
-        <template v-slot:action="{row}">
-          <span v-if="handleType==='import'" class="link"
-                @click="handleCheckImport(row.id)">
-            查看
-          </span>
-          <span v-else class="link" :class="{'link-disable':row.jobStatus!=='COMPLETED'}"
-                @click="handleDownloadExport(row.id)">
-            下载
-          </span>
-        </template>
-      </b-table>
-    </v-table-layout>
-    <b-modal v-model="detailDialog" title="导入详情" append-to-body width="940" :mask-closable="false">
-      <div class="detail-wrap">
-        <div class="detail" v-if="importDetail">
-          <p class="status">
-                    <span>导入状态：
-                      <b-tag :type="statusStyleMap[importDetail.jobStatus]" size="small"
-                             :tag-style="{borderRadius: '30px'}">
-                        {{ statusMap[importDetail.jobStatus] }}
-                      </b-tag>
-                    </span>
-          </p>
-          <p flex="box:mean">
-            <span>导入用户：<span>{{ importDetail.createName }}</span></span>
-            <span>导入时间：<span>{{ importDetail.uploadDate }}</span></span>
-            <span>导入组织：<span>{{ importDetail.createDeptName }}</span></span>
-          </p>
-          <p flex="box:mean">
-            <span>原文件名：<span>{{ importDetail.fileName }}</span></span>
-            <span>文件大小：<span>{{ importDetail.fileLength }}</span></span>
-            <span>数据总量：<span>{{ importDetail.totalCount }}</span></span>
-          </p>
-          <p flex="box:mean">
-            <span>
-              <span>错误数据量：<span>{{ importDetail.validationCount }}</span></span>&nbsp;
-              <span class="link" v-if="importDetail.validationCount>0"
-                    @click="handleDownloadImportFile(importDetail.batchInfoId,'error')">下载：错误数据</span>
-            </span>
-            <span>成功数据量：<span>{{ importDetail.cachedCount }}</span></span>
-            <span></span>
-          </p>
+  <div>
+    <page-header-wrap v-show="visible && !detailDialog" show-close @on-close="close" title="导入/导出记录">
+      <v-table-wrap>
+        <!--查询条件-->
+        <v-filter-bar>
+          <v-filter-item title="类型">
+            <b-select v-model="handleType" @on-change="typeChange" size="small">
+              <b-option value="import">导入记录</b-option>
+              <b-option value="export">导出记录</b-option>
+            </b-select>
+          </v-filter-item>
+          <v-filter-item title="时间">
+            <b-date-picker type="daterange" placeholder="选择日期" size="small"
+                           ref="datePickerRange"
+                           @on-change="dateChange"></b-date-picker>
+          </v-filter-item>
+          <v-filter-item title="状态">
+            <b-select v-model="listQuery.status" clearable size="small">
+              <b-option v-for="(value,key) in statusMap" :key="key" :value="key">{{ value }}</b-option>
+            </b-select>
+          </v-filter-item>
+          <v-filter-item @on-search="handleFilter" @on-reset="resetQuery"></v-filter-item>
+        </v-filter-bar>
+        <!--中央表格-->
+        <b-table :columns="columns" :data="list" :loading="listLoading">
+          <template v-slot:jobStatus="{row}">
+            <b-tag v-if="row.jobStatus" :type="statusStyleMap[row.jobStatus]" size="small">
+              {{ statusMap[row.jobStatus] }}
+            </b-tag>
+            <span v-else>-</span>
+          </template>
+          <!--操作栏-->
+          <template v-slot:action="{row}">
+            <b-button v-if="handleType==='import'" type="text"
+                      @click="handleCheckImport(row.id)">
+              查看
+            </b-button>
+            <b-button v-else type="text" :disabled="row.jobStatus!=='COMPLETED'"
+                      @click="handleDownloadExport(row.id)">
+              下载
+            </b-button>
+          </template>
+        </b-table>
+        <!--下方分页器-->
+        <b-page :total="total" show-sizer
+                @on-change="handleCurrentChange" @on-page-size-change="handleSizeChange"></b-page>
+      </v-table-wrap>
+    </page-header-wrap>
+    <page-header-wrap v-show="detailDialog" show-close @on-close="detailDialog=false" title="导入详情">
+      <v-edit-wrap>
+        <div slot="full">
+          <v-title-bar label="文件导入信息" class="mb-20"></v-title-bar>
+          <div class="detail" v-if="importDetail">
+            <b-row>
+              <b-col span="24">
+                <v-simple-label label="导入状态">
+                  <b-tag :type="statusStyleMap[importDetail.jobStatus]" size="small"
+                         :tag-style="{borderRadius: '30px'}">
+                    {{ statusMap[importDetail.jobStatus] }}
+                  </b-tag>
+                </v-simple-label>
+              </b-col>
+            </b-row>
+            <b-row>
+              <b-col span="8">
+                <v-simple-label label="导入用户">{{ importDetail.createName }}</v-simple-label>
+              </b-col>
+              <b-col span="8">
+                <v-simple-label label="导入时间">{{ importDetail.uploadDate }}</v-simple-label>
+              </b-col>
+              <b-col span="8">
+                <v-simple-label label="导入组织">{{ importDetail.createDeptName }}</v-simple-label>
+              </b-col>
+            </b-row>
+            <b-row>
+              <b-col span="8">
+                <v-simple-label label="原文件名">{{ importDetail.fileName }}</v-simple-label>
+              </b-col>
+              <b-col span="8">
+                <v-simple-label label="文件大小">{{ importDetail.fileLength }}</v-simple-label>
+              </b-col>
+              <b-col span="8">
+                <v-simple-label label="数据总量">{{ importDetail.totalCount }}</v-simple-label>
+              </b-col>
+            </b-row>
+            <b-row>
+              <b-col span="8">
+                <v-simple-label label="错误数据量">
+                  {{ importDetail.validationCount }}
+                  <b-button type="text" v-if="importDetail.validationCount>0"
+                            @click="handleDownloadImportFile(importDetail.batchInfoId,'error')">下载：错误数据
+                  </b-button>
+                </v-simple-label>
+              </b-col>
+              <b-col span="8">
+                <v-simple-label label="成功数据量">{{ importDetail.cachedCount }}</v-simple-label>
+              </b-col>
+            </b-row>
+          </div>
+          <template v-if="errDataColumns.length>0">
+            <v-title-bar label="导入错误数据信息" class="mb-20"></v-title-bar>
+            <b-table :columns="errDataColumns" :data="errDataRows" size="small"></b-table>
+          </template>
         </div>
-        <template v-if="errDataColumns.length>0">
-          <b-divider></b-divider>
-          <v-title-bar tip-pos="left" label="导入错误数据信息" no-border></v-title-bar>
-          <b-table slot="table" :columns="errDataColumns" :data="errDataRows" size="small"
-                   stripe ref="table" width="900">
-          </b-table>
+        <template slot="footer">
+          <b-button @click="detailDialog=false">返 回</b-button>
         </template>
-      </div>
-      <div slot="footer" class="t-center">
-        <b-button size="small" @click="detailDialog=false">关闭</b-button>
-      </div>
-    </b-modal>
-    <!--下方分页器-->
-    <b-page slot="footer" :total="total" show-sizer
-            @on-change="handleCurrentChange" @on-page-size-change="handleSizeChange"></b-page>
-  </b-modal>
+      </v-edit-wrap>
+    </page-header-wrap>
+  </div>
 </template>
 
 <script>
@@ -106,7 +123,7 @@
     mixins: [commonMixin, permission],
     data() {
       return {
-        drawerVisible: false,
+        visible: false,
         detailDialog: false,
         listQuery: {
           jobType: '', // 任务类型
@@ -170,7 +187,11 @@
         this.resourceName = resource.resourceName
         this.resetQuery()
         // 查询成功时打开
-        this.drawerVisible = true
+        this.visible = true
+      },
+      close() {
+        this.visible = false
+        this.$emit('on-close')
       },
       // 操作类型改变事件
       typeChange() {

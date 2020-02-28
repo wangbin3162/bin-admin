@@ -75,7 +75,8 @@ export default {
         node = h('b-date-picker', {
           props: {
             value: this.currentValue,
-            placeholder: `${this.fieldDesc ? this.fieldDesc : '请选择' + this.fieldTitle}`
+            placeholder: `${this.fieldDesc ? this.fieldDesc : '请选择' + this.fieldTitle}`,
+            appendToBody: true
           },
           on: { 'on-change': this.handleInput }
         })
@@ -85,7 +86,8 @@ export default {
           props: {
             type: 'datetime',
             value: this.currentValue,
-            placeholder: `${this.fieldDesc ? this.fieldDesc : '请选择' + this.fieldTitle}`
+            placeholder: `${this.fieldDesc ? this.fieldDesc : '请选择' + this.fieldTitle}`,
+            appendToBody: true
           },
           on: { 'on-change': this.handleInput }
         })
@@ -95,9 +97,9 @@ export default {
             props: {
               value: this.currentValue,
               placeholder: `${this.fieldDesc ? this.fieldDesc : '请选择' + this.fieldTitle}`,
-              size: 'large',
               disabled: readonly,
-              clearable: !readonly
+              clearable: !readonly,
+              appendToBody: true
             },
             on: { 'on-change': this.handleInput }
           },

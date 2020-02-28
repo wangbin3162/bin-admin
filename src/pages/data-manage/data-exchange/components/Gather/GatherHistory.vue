@@ -1,9 +1,9 @@
 <template>
   <b-modal v-model="historyDialog" title="查看历史" width="860" :mask-closable="false"
            append-to-body>
-    <b-table :columns="columns" :data="historyList" stripe ref="table" :width="820"></b-table>
-    <div slot="footer" class="t-center">
-      <b-button size="small" @click="historyDialog=false">取消</b-button>
+    <b-table :columns="columns" :data="historyList" size="small"></b-table>
+    <div slot="footer">
+      <b-button @click="historyDialog=false">取消</b-button>
     </div>
   </b-modal>
 </template>

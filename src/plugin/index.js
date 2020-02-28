@@ -27,5 +27,10 @@ export default {
     Vue.component(VCascade.name, VCascade)
     // 全局通信
     Vue.prototype.$EventBus = new Vue()
+    // 扩展string方法
+    // eslint-disable-next-line no-extend-native
+    String.prototype.isNotEmpty = function () {
+      return this.length > 0 || this !== ''
+    }
   }
 }

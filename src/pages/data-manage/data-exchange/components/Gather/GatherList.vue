@@ -1,32 +1,31 @@
 <template>
-  <b-drawer v-model="chooseDialog" :append-to-body="false" :title="resource.resourceName" fullscreen
-            class="layout-inner" :footer-hide="dialogFormVisible">
-    <div style="padding: 20px;">
-      <!--查询条件-->
-      <v-filter-bar>
-        <v-filter-item title="名称">
-          <b-input v-model.trim="listQuery.name" size="small" placeholder="名称" clearable></b-input>
-        </v-filter-item>
-        <!--添加查询按钮位置-->
-        <v-filter-item @on-search="handleFilter" @on-reset="resetQuery"></v-filter-item>
-      </v-filter-bar>
-      <br>
-      <!--控制栏-->
-      <template>
-        <div flex="main:justify">
-          <div>
-            <b-button type="primary" v-waves size="small" icon="ios-add" @click="handleCreate">新增</b-button>
-            <b-button v-waves size="small" icon="ios-exit" @click="handleBatchImport">批量导入</b-button>
-          </div>
-          <div>
+  <div>
+    <page-header-wrap v-show="gatherVisible && isNormal" :title="resource.resourceName"
+                      show-close @on-close="handleClose">
+      <v-table-wrap>
+        <!--查询条件-->
+        <v-filter-bar>
+          <v-filter-item title="名称">
+            <b-input v-model.trim="listQuery.name" size="small" placeholder="名称" clearable></b-input>
+          </v-filter-item>
+          <!--添加查询按钮位置-->
+          <v-filter-item @on-search="handleFilter" @on-reset="resetQuery"></v-filter-item>
+        </v-filter-bar>
+        <!--操作栏-->
+        <v-table-tool-bar>
+          <b-button v-if="canCreate" type="primary"
+                    v-waves size="small" icon="ios-add"
+                    @click="handleCreate">新 增
+          </b-button>
+          <b-button v-waves size="small" icon="ios-exit" @click="handleBatchImport">批量导入</b-button>
+          <div slot="right">
             <b-button type="text" @click="handleDownloadTemplate">模板下载</b-button>
             <b-divider type="vertical"></b-divider>
             <b-button type="text" @click="handleExport">导出</b-button>
             <b-divider type="vertical"></b-divider>
             <b-button type="text" @click="handleOpenRecordDialog">导入/导出记录</b-button>
             <b-divider type="vertical"></b-divider>
-            <b-dropdown trigger="custom" :visible="visible" placement="bottom-end"
-                        @on-click-outside="visible=false" append-to-body>
+            <b-dropdown trigger="custom" :visible="visible" placement="bottom-end" append-to-body>
               <b-button type="text" @click="visible=true">
                 字段选择
                 <b-icon name="ios-arrow-down"></b-icon>
@@ -38,86 +37,77 @@
                     <span>{{col.fieldTitle}}</span>
                   </b-checkbox>
                 </b-checkbox-group>
+                <div class="t-right p5">
+                  <b-button size="mini" @click="visible=false">关闭</b-button>
+                </div>
               </b-dropdown-menu>
             </b-dropdown>
           </div>
-        </div>
-      </template>
-      <!--中央表格-->
-      <b-table :columns="dynamicColumns" :data="list" :loading="listLoading" size="small"
-               stripe max-height="526" ref="table" :width="tableWidth+30">
-        <!--操作栏-->
-        <template v-slot:action="scope">
-          <span class="link" @click="handleCheck(scope.row)">查看</span>
-          <b-divider type="vertical"></b-divider>
-          <span class="link" @click="handleModify(scope.row)">修改</span>
-          <!--是否有删除键v-if="canRemove"-->
-          <template>
+        </v-table-tool-bar>
+        <!--中央表格-->
+        <b-table :columns="dynamicColumns" :data="list" :loading="listLoading" size="small">
+          <!--操作栏-->
+          <template v-slot:action="scope">
+            <b-button type="text" @click="handleCheck(scope.row)">查看</b-button>
             <b-divider type="vertical"></b-divider>
-            <span class="link-red" type="text" @click="handleRemove(scope.row)">删除</span>
-          </template>
-          <template v-if="scope.row.version&&scope.row.version>0">
-            <b-divider type="vertical"></b-divider>
-            <span class="link" @click="handleHistory(scope.row)">历史</span>
-          </template>
-        </template>
-      </b-table>
-    </div>
-    <!--下方分页器-->
-    <div class="t-right" slot="footer">
-      <b-page :total="total" show-sizer
-              @on-change="handleCurrentChange" @on-page-size-change="handleSizeChange"></b-page>
-    </div>
-    <b-modal v-model="dialogFormVisible" :title="editTitle" width="860" :mask-closable="false"
-             append-to-body class="layout-inner">
-      <div slot="header">
-        <span>{{ editTitle }}</span> &nbsp;
-        <span style="color: #5181ff;">[ {{resource.resourceName}} ]</span>
-      </div>
-      <div style="height: 470px;">
-        <b-scrollbar style="height: 100%;">
-          <div style="margin: 20px;">
-            <!--查询内容区域-->
-            <template v-if="isCheck">
-              <v-key-label v-for="(item,index) in columns" :key="index"
-                           :label="item.fieldTitle"
-                           :is-bottom="index===columns.length-1">
-                {{ gather[item.fieldName] }}
-              </v-key-label>
+            <b-button type="text" @click="handleModify(scope.row)">修改</b-button>
+            <!--是否有删除键v-if="canRemove"-->
+            <template>
+              <b-divider type="vertical"></b-divider>
+              <b-button type="text" style="color:red;" @click="handleRemove(scope.row)">删除</b-button>
             </template>
-            <!--新增编辑区域-->
-            <div v-if="isEdit">
-              <b-form :model="form" ref="form" :label-width="100" :rules="rules">
-                <form-item :key="item.id" v-for="item in dynamicForm"
-                           :label="item.fieldTitle"
-                           :prop="item.fieldName"
-                           :control-type="item.controlType">
-                  <!--动态控件-->
-                  <form-control v-model="form[item.fieldName]"
-                                :control-type="item.controlType"
-                                :field-name="item.fieldName"
-                                :field-desc="item.fieldDesc"
-                                :field-title="item.fieldTitle"
-                                :options="item.validOptions"
-                                :table-name="resource.tableName"
-                                @on-select-leg="handleSelectLeg"
-                                @on-select-nat="handleSelectNat">
-                  </form-control>
-                </form-item>
-              </b-form>
-            </div>
-          </div>
-        </b-scrollbar>
-      </div>
-      <div slot="footer" class="t-center">
-        <template v-if="isEdit">
-          <b-button type="primary" v-waves @click="handleSubmit" size="small" :loading="btnLoading">确 定</b-button>
-          <b-button v-waves @click="dialogFormVisible=false" size="small">返 回</b-button>
+            <template v-if="scope.row.version&&scope.row.version>0">
+              <b-divider type="vertical"></b-divider>
+              <b-button type="text" style="color:#ff6609;" @click="handleHistory(scope.row)">历史</b-button>
+            </template>
+          </template>
+        </b-table>
+        <!--下方分页器-->
+        <b-page :total="total" show-sizer
+                @on-change="handleCurrentChange" @on-page-size-change="handleSizeChange"></b-page>
+      </v-table-wrap>
+    </page-header-wrap>
+    <page-header-wrap v-show="isCheck" :title="resource.resourceName+' 详情'" show-close @on-close="handleCancel">
+      <v-edit-wrap v-if="gather" style="user-select: text;">
+        <v-key-label v-for="(item,index) in columns" :key="index"
+                     :label="item.fieldTitle"
+                     :is-bottom="index===columns.length-1">
+          {{ gather[item.fieldName] }}
+        </v-key-label>
+        <b-button slot="footer" @click="handleCancel">返 回</b-button>
+      </v-edit-wrap>
+    </page-header-wrap>
+    <page-header-wrap v-show="isEdit" :title="editTitle +' '+ resource.resourceName" show-close
+                      @on-close="handleCancel">
+      <!--为了触发重绘更新form字段设置 使用v-if-->
+      <v-edit-wrap v-if="isEdit">
+        <b-form slot="full" :model="form" ref="form" label-position="top" :rules="rules">
+          <form-item :key="item.id" v-for="item in dynamicForm"
+                     :label="item.fieldTitle"
+                     :prop="item.fieldName"
+                     :control-type="item.controlType">
+            <!--动态控件-->
+            <form-control v-model="form[item.fieldName]"
+                          :control-type="item.controlType"
+                          :field-name="item.fieldName"
+                          :field-desc="item.fieldDesc"
+                          :field-title="item.fieldTitle"
+                          :options="item.validOptions"
+                          :table-name="resource.tableName"
+                          @on-select-leg="handleSelectLeg"
+                          @on-select-nat="handleSelectNat">
+            </form-control>
+          </form-item>
+        </b-form>
+        <!--保存提交-->
+        <template slot="footer">
+          <b-button type="primary" @click="handleSubmit" :loading="btnLoading">提 交</b-button>
+          <b-button @click="handleCancel">取 消</b-button>
         </template>
-        <b-button v-else-if="isCheck" v-waves @click="dialogFormVisible=false" size="small">返 回</b-button>
-      </div>
-    </b-modal>
-    <gather-history ref="gatherHistory"></gather-history>
+      </v-edit-wrap>
+    </page-header-wrap>
+    <!--批量导入/导出记录模块 -->
+    <import-export-list ref="importExportList" @on-close="handleCancel"></import-export-list>
     <!--批量导入弹窗-->
     <b-modal v-model="batchDialog" append-to-body
              :title="$slots.default?$slots.default[0].text:'批量导入'"
@@ -141,9 +131,9 @@
         </b-button>
       </div>
     </b-modal>
-    <!--批量导入/导出记录模块 -->
-    <import-export-list ref="importExportList"></import-export-list>
-  </b-drawer>
+    <!--修改历史弹窗-->
+    <gather-history ref="gatherHistory"></gather-history>
+  </div>
 </template>
 
 <script>
@@ -159,23 +149,20 @@
   import Util from '../../../../../common/utils/util'
   import ImportExportList from './ImportExportList'
 
-  const moduleName = 'SysUserController' // 模块名称，提供下载模板和批量导入导出
-
   export default {
     name: 'GatherList',
     components: { ImportExportList, GatherHistory, FormControl, FormItem },
     mixins: [commonMixin, permission],
     data() {
       return {
-        moduleName: moduleName,
         listQuery: {
           resourceKey: '',
           name: ''
         },
         isLeg: false, // 是否是法人，这里用resource.tableName 来判断
         resource: null,
-        visible: false, // 字段选择弹窗
-        chooseDialog: false,
+        visible: false,
+        gatherVisible: false,
         showFields: [],
         columns: [], // 原始表头列数据
         gather: null,
@@ -200,7 +187,7 @@
           }
         })
         // 最后拼接一个操作栏
-        ret.push({ title: '操作', slot: 'action', width: 180 })
+        ret.push({ title: '操作', slot: 'action', width: 200 })
         return ret
       }
     },
@@ -227,7 +214,6 @@
       },
       // 新增按钮事件
       handleCreate() {
-        console.log(this.dynamicForm)
         // 重置form表单，注意这里不可深拷贝，因为form对象被引用至rules校验函数
         this.setFormObj(this.resetForm)
         this.openEditPage('create')
@@ -298,6 +284,7 @@
       },
       // 导入导出列表
       handleOpenRecordDialog() {
+        this.dialogStatus = 'importExportList'
         this.$refs.importExportList && this.$refs.importExportList.open(this.resource)
       },
       // 弹窗提示是否删除
@@ -345,16 +332,15 @@
             let fun = this.dialogStatus === 'create' ? api.createGather : api.modifyGather
             fun(this.resource.resourceKey, tmpForm).then(res => {
               if (res.data.code === '0') {
-                this.btnLoading = false
-                this.dialogFormVisible = false
-                this.$message({ type: 'success', content: '操作成功' })
+                this.submitDone(true)
                 this.handleFilter()
               } else {
-                this.btnLoading = false
-                this.dialogFormVisible = false
+                this.submitDone(false)
                 this.$message({ type: 'error', content: res.data.message })
               }
             })
+          } else {
+            this.$message({ type: 'danger', content: '表单校验失败,请填写正确后提交!' })
           }
         })
       },
@@ -374,7 +360,11 @@
         })
         // 根据resourceKey再获取列表值
         this.searchList()
-        this.chooseDialog = true
+        this.gatherVisible = true
+      },
+      handleClose() {
+        this.gatherVisible = false
+        this.$emit('on-close')
       },
       // 初始化form集合，扩展form对象和rules校验对象
       initDynamicForm(dynamicForm) {

@@ -28,8 +28,9 @@ export default {
   computed: {
     wrapStyle() {
       return {
-        width: this.controlType === 'TEXTAREA' ? '100%' : '50%',
+        width: this.controlType === 'TEXTAREA' ? '100%' : '25%',
         display: 'inline-block',
+        padding: '0 5px',
         marginBottom: '4px'
       }
     }
