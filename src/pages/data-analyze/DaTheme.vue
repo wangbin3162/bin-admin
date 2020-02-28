@@ -66,7 +66,7 @@
 <script>
   import commonMixin from '../../common/mixins/mixin'
   import permission from '../../common/mixins/permission'
-  import * as api from '../../api/data-analyze/analysis-daTheme.api'
+  import * as api from '../../api/data-analyze/da-theme.api'
   import { requiredRule } from '../../common/utils/validate'
 
   export default {

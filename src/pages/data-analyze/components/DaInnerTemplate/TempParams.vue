@@ -86,7 +86,7 @@
 
 <script>
   import { deepCopy } from '../../../../common/utils/assist'
-  import * as api from '../../../../api/data-analyze/analysis-daInnerTemplate.api'
+  import * as api from '../../../../api/data-analyze/da-inner-temp.api'
   // 非空字段提示
   const requiredRule = { required: true, message: '必填项', trigger: 'blur' }
 
