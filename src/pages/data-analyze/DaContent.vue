@@ -161,6 +161,7 @@
     mixins: [commonMixin, permission],
     data() {
       return {
+        moduleName: '内容',
         listQuery: {
           name: '',
           code: ''

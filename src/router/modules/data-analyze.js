@@ -18,6 +18,12 @@ export default {
       name: 'daContent',
       component: () => import(/* webpackChunkName: "analysis" */ '../../pages/data-analyze/DaContent'),
       meta: { title: '分析内容' }
+    },
+    {
+      path: 'daApi',
+      name: 'DaApi',
+      component: () => import(/* webpackChunkName: "analysis" */ '../../pages/data-analyze/DaApi'),
+      meta: { title: '接口管理' }
     }
   ]
 }
