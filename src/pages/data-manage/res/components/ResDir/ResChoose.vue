@@ -48,7 +48,7 @@
   import {
     getResClassifyTree,
     getSelectedResList,
-    getResInfoList,
+    getNoRelateResInfoList,
     postAddResources
   } from '../../../../../api/data-manage/res-dir.api'
   import { getPersonClassTree } from '../../../../../api/data-manage/metadata.api'
@@ -276,7 +276,7 @@
       // 查询所有资源列表
       searchList() {
         this.setListData()
-        getResInfoList(this.listQuery).then(response => {
+        getNoRelateResInfoList(this.departId, this.currentTreeNode.code).then(response => {
           if (response.status === 200) {
             this.setListData({
               list: response.data.rows,

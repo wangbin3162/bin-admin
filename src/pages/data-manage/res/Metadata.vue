@@ -14,7 +14,7 @@
             <b-input v-model.trim="listQuery.metadataName" size="small" placeholder="中文名" clearable></b-input>
           </v-filter-item>
           <v-filter-item title="状态" label-pos="center">
-            <b-select v-model="listQuery.status" size="small">
+            <b-select v-model="listQuery.status" size="small" clearable>
               <b-option v-for="item in statusOptions" :key="item.value" :value="item.value">
                 {{ item.label }}
               </b-option>
@@ -71,7 +71,7 @@
           <b-row>
             <b-col span="12">
               <b-form-item label="所属类目" class="bin-form-item-required">
-                <b-alert v-if="currentTreeNode">{{currentTreeNode.title}}</b-alert>
+                <b-alert v-if="currentTreeNode">{{metadata.dirClassifyName}}</b-alert>
               </b-form-item>
             </b-col>
             <b-col span="12">
@@ -126,7 +126,7 @@
     <page-header-wrap v-show="isCheck" :title="editTitle" show-close @on-close="handleCancel">
       <v-edit-wrap v-if="metadata&&currentTreeNode">
         <div>
-          <v-key-label label="类目类别" is-half is-first>{{ currentTreeNode.title }}</v-key-label>
+          <v-key-label label="类目类别" is-half is-first>{{ metadata.dirClassifyName }}</v-key-label>
           <v-key-label label="英文名" is-half>{{ metadata.tableName }}</v-key-label>
           <v-key-label label="名称" is-half is-first>{{ metadata.metadataName }}</v-key-label>
           <v-key-label label="主体类别" is-half>{{ metadata.personClass }}</v-key-label>
@@ -208,7 +208,7 @@
           metadataCode: '', // 类目类别
           tableName: '', // 元信息英文名
           metadataName: '', // 元信息中文名
-          status: 'audited'// 状态
+          status: ''// 状态
         },
         treeData: [],
         columns: [
@@ -261,7 +261,7 @@
           metadataCode: this.currentTreeNode ? this.currentTreeNode.code : '', // 类目类别
           tableName: '', // 元信息英文名
           metadataName: '', // 元信息中文名
-          status: 'audited' // 状态
+          status: '' // 状态
         }
         this.handleFilter()
       },
@@ -374,7 +374,8 @@
             fun(this.metadata).then(res => {
               if (res.data.code === '0') {
                 this.submitDone(true)
-                this.initTree()
+                this.searchList()
+                // this.initTree()
               } else {
                 this.submitDone(false)
                 this.$message({ type: 'danger', content: res.data.message })
@@ -482,6 +483,7 @@
           metadataDesc: '', // 摘要
           personClass: '', // 主体类别
           metadataKey: '', // 资源标识符
+          dirClassifyName: '',
           idsFlag: 0, // 多主体标识,默认为0
           fields: [] // 信息项,不能为空
         }
