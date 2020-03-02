@@ -36,6 +36,10 @@
     watch: {
       value: {
         handler(val) {
+          if (val === '') {
+            this.current = []
+            return
+          }
           const select = this.findChoose(this.options, val)
           if (select) {
             if (select.choose) {

@@ -171,13 +171,13 @@
               if (!response.data.data) {
                 callback()
               } else {
-                callback(new Error('中文名称重复'))
+                callback(new Error('元信息描述重复'))
               }
             }).catch(() => {
               callback(new Error('请求验证重复性出错'))
             })
           } else {
-            callback(new Error('请输入中文名称'))
+            callback(new Error('元信息描述'))
           }
         }
       }

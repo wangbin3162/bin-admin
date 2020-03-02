@@ -152,7 +152,7 @@
                 this.$message({ type: 'success', content: '操作成功' })
                 this.searchList()
               } else {
-                this.$message({ type: 'error', content: res.data.message })
+                this.$message({ type: 'danger', content: res.data.message })
               }
             })
           }

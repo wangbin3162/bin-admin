@@ -207,7 +207,7 @@
         // 根据id获取详情值
         api.show(row.id, this.resource.resourceKey).then(res => {
           if (res.data.code === '0') {
-            this.gather = res.data.data
+            this.gather = this.decodeOneFormat(res.data.data)
             this.openEditPage('check')
           }
         })
@@ -336,7 +336,7 @@
                 this.handleFilter()
               } else {
                 this.submitDone(false)
-                this.$message({ type: 'error', content: res.data.message })
+                this.$message({ type: 'danger', content: res.data.message })
               }
             })
           } else {
@@ -349,6 +349,7 @@
         this.resource = deepCopy(res)
         this.isLeg = this.resource.tableName.includes('leg_')
         this.listQuery.resourceKey = res.resourceKey
+        this.listQuery.name = '' // 清空查询条件
         // 获取原始列数组
         this.columns = columns.filter(item => !item.fieldName.includes('_id'))
         // 默认勾选显示前8列，如太多则需要额外查看
