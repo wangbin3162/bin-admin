@@ -21,12 +21,12 @@
     "serve": "vue-cli-service serve --open",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
+    "bin-ui": "^2.7.9",
     "dev:doc": "vuepress dev docs",
     "build:doc": "vuepress build docs"
   },
   "dependencies": {
     "axios": "^0.19.0",
-    "bin-ui": "^2.7.9",
     "core-js": "^2.6.5",
     "echarts": "^4.6.0",
     "good-storage": "^1.1.0",

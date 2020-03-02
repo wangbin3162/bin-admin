@@ -10,6 +10,7 @@ import BinUI from 'bin-ui'
 import util from '../common/utils/util'
 
 const service = request.create({
+  baseURL:'/ncloud',
   headers: {
     'X-Requested-With': 'XMLHttpRequest'
   },
