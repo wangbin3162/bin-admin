@@ -1,5 +1,5 @@
 <template>
-  <b-modal v-model="chooseDialog" title="选择主题"  width="500px" min-height="400px">
+  <b-modal v-model="chooseDialog" title="选择主题" width="500px" min-height="400px">
     <b-table :columns="columns" :data="list">
       <!--操作栏-->
       <template v-slot:action="scope">
@@ -10,7 +10,7 @@
     </b-table>
     <div slot="footer" class="t-center">
       <!--下方分页器-->
-      <b-page :total="total" size="small" @on-change="handleCurrentChange"></b-page>
+      <b-page :total="total" :current.sync="listQuery.page" size="small" @on-change="handleCurrentChange"></b-page>
     </div>
   </b-modal>
 </template>
@@ -30,9 +30,9 @@
         },
         chooseDialog: false,
         columns: [
-            { title: '主题名称', key: 'name', align: 'center' },
-            { title: '主题编码', key: 'code', align: 'center' },
-            { title: '操作', slot: 'action', align: 'center' }
+          { title: '主题名称', key: 'name', align: 'center' },
+          { title: '主题编码', key: 'code', align: 'center' },
+          { title: '操作', slot: 'action', align: 'center' }
         ],
         list: []
       }
@@ -46,13 +46,13 @@
       // 查询所有部门列表
       searchList() {
         api.getThemeTree().then(response => {
-              this.list = response.data.data
+          this.list = response.data.data
         })
       },
       // 选中一个角色
       handleChoose(item) {
-          this.chooseDialog = false
-          this.$emit('on-choose', { id: item.id, code: item.code })
+        this.chooseDialog = false
+        this.$emit('on-choose', { id: item.id, code: item.code })
       }
     }
   }

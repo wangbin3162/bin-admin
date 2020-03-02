@@ -23,7 +23,7 @@
     </div>
     <div slot="footer" class="t-right">
       <!--下方分页器-->
-      <b-page :total="total" show-sizer
+      <b-page :total="total" show-sizer :current.sync="listQuery.page"
               @on-change="handleCurrentChange" @on-page-size-change="handleSizeChange"></b-page>
     </div>
   </b-modal>
@@ -65,7 +65,6 @@
       },
       open() {
         this.chooseDialog = true
-        this.$refs.pager.changePage(1)
         this.resetQuery()
       },
       // 选中一个角色

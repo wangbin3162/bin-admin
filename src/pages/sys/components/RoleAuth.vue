@@ -24,7 +24,7 @@
           <b-switch v-model="scope.row.authorized" @on-change="singleAuth(scope.row)"></b-switch>
         </template>
       </b-table>
-      <b-page :total="total" show-sizer
+      <b-page :total="total" show-sizer :current.sync="listQuery.page"
               @on-change="handleCurrentChange" @on-page-size-change="handleSizeChange"></b-page>
     </v-table-wrap>
   </page-header-wrap>

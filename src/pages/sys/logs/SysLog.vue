@@ -15,7 +15,7 @@
       <!--中央表格-->
       <b-table :columns="columns" :data="list" :loading="listLoading"></b-table>
       <!--下方分页器-->
-      <b-page :total="total" show-sizer
+      <b-page :total="total" show-sizer :current.sync="listQuery.page"
               @on-change="handleCurrentChange" @on-page-size-change="handleSizeChange"></b-page>
     </v-table-wrap>
   </page-header-wrap>

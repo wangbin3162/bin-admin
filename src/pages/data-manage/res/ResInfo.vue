@@ -10,22 +10,21 @@
           <v-filter-item title="资源名称">
             <b-input v-model.trim="listQuery.resourceName" size="small" placeholder="资源名称(中文名)" clearable></b-input>
           </v-filter-item>
-          <v-filter-item title="资源性质">
-            <v-cascade :data="resPropertyOptions" v-model="listQuery.resProperty" size="small"></v-cascade>
+          <v-filter-item title="资源性质" :span="5">
+            <v-cascade :data="resPropertyOptions" v-model="listQuery.resProperty" size="small" style="width: 100%;"></v-cascade>
           </v-filter-item>
-          <v-filter-item title="资源状态">
+          <v-filter-item title="资源状态" :span="4">
             <b-select v-model="listQuery.status" clearable size="small">
               <b-option v-for="(value,key) in resStatusMap" :key="key" :value="key">{{ value }}</b-option>
             </b-select>
           </v-filter-item>
-          <v-filter-item title="可用状态" v-show="filterOpened">
+          <v-filter-item title="可用状态" :span="4">
             <b-select v-model="listQuery.availableStatus" clearable size="small">
               <b-option v-for="(value,key) in availableStatusMap" :key="key" :value="key">{{ value }}</b-option>
             </b-select>
           </v-filter-item>
           <!--添加查询按钮位置-->
-          <v-filter-item @on-search="handleFilter" @on-reset="resetQuery"
-                         show-toggle :is-opened="filterOpened" @on-toggle="filterOpened=!filterOpened"></v-filter-item>
+          <v-filter-item :span="5" @on-search="handleFilter" @on-reset="resetQuery"></v-filter-item>
         </v-filter-bar>
         <!--操作栏-->
         <v-table-tool-bar>
@@ -68,7 +67,7 @@
           </template>
         </b-table>
         <!--下方分页器-->
-        <b-page :total="total" show-sizer
+        <b-page :total="total" show-sizer :current.sync="listQuery.page"
                 @on-change="handleCurrentChange"
                 @on-page-size-change="handleSizeChange"></b-page>
       </v-table-wrap>
@@ -81,9 +80,10 @@
             <b-row :gutter="10">
               <b-col span="6">
                 <b-form-item label="元信息名称" prop="tableName">
-                  <b-input v-model="resource.tableName" placeholder="选择元信息带入" readonly class="choose-btn">
-                    <b-button slot="suffix" type="primary" plain @click="handleShowDialogChoose">选择</b-button>
-                  </b-input>
+                  <div flex>
+                    <b-input v-model="resource.tableName" placeholder="选择元信息带入" readonly class="choose-btn"></b-input>
+                    <b-button style="flex:0 0 auto;" type="primary" plain @click="handleShowDialogChoose">选择</b-button>
+                  </div>
                 </b-form-item>
               </b-col>
               <b-col span="6">

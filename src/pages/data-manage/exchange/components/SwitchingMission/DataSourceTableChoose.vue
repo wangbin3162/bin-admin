@@ -23,7 +23,7 @@
       </div>
       <div slot="footer">
         <!--下方分页器-->
-        <b-page :total="total" show-sizer
+        <b-page :total="total" show-sizer :current.sync="listQuery.page"
                 @on-change="handleCurrentChange" @on-page-size-change="handleSizeChange"></b-page>
       </div>
     </b-modal>

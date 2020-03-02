@@ -30,7 +30,7 @@
           </template>
         </b-table>
         <!--下方分页器-->
-        <b-page :total="total" show-sizer
+        <b-page :total="total" show-sizer :current.sync="listQuery.page"
                 @on-change="handleCurrentChange" @on-page-size-change="handleSizeChange"></b-page>
       </v-table-wrap>
     </page-header-wrap>
@@ -67,7 +67,7 @@
           </template>
         </b-table>
         <!--下方分页器-->
-        <b-page :total="dirBatchTotal" @on-change="handleDirPageChange"></b-page>
+        <b-page :total="dirBatchTotal"  :current.sync="dirBatchQuery.page" @on-change="handleDirPageChange"></b-page>
       </v-table-wrap>
     </page-header-wrap>
     <b-modal v-model="detailDialog" title="任务执行详情" width="940" :mask-closable="false">
