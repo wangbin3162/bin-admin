@@ -9,8 +9,9 @@ import Qs from 'qs'
 import BinUI from 'bin-ui'
 import util from '../common/utils/util'
 
+let baseUrl = process.env.NODE_ENV !== 'production' ? '/' : '/ncloud'
 const service = request.create({
-  baseURL:'/ncloud',
+  baseURL: baseUrl,
   headers: {
     'X-Requested-With': 'XMLHttpRequest'
   },
