@@ -42,7 +42,8 @@
         listQuery: {
           metadataCode: '', // 类目类别
           tableName: '', // 元信息英文名
-          metadataName: '' // 元信息中文名
+          metadataName: '', // 元信息中文名
+          status: 'audited'
         },
         columns: [
           { type: 'index', width: 50, align: 'center' },
@@ -61,7 +62,8 @@
           size: 10,
           metadataCode: '', // 类目类别,默认全部
           tableName: '', // 元信息英文名
-          metadataName: '' // 元信息中文名
+          metadataName: '', // 元信息中文名
+          status: 'audited'
         }
         this.handleFilter()
       },

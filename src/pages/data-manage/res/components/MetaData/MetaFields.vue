@@ -155,9 +155,12 @@
       }
       // 信息项数据长度校验
       const validateDataLength = (rule, value, callback) => {
+        const reg = /^\d+$/ // 正整数
         if (value <= 0) {
           callback(new Error('数据长度必须大于0'))
-        } else {
+        } else if (!reg.test(value)) {
+        callback(new Error('数据长度必须为整数'))
+      } else {
           callback()
         }
       }

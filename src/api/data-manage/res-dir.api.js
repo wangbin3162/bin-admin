@@ -62,6 +62,18 @@ export function getRelateResInfoList(query) {
   })
 }
 
+/* 获取部门未关联的资源信息列表 */
+export function getNoRelateResInfoList(departId, code) {
+  return request({
+    url: '/api/dir/depart/noRelate',
+    method: 'get',
+    params: {
+      departId: departId,
+      code: code
+    }
+  })
+}
+
 /* 获取部门树 */
 export function getDeptTree(departCode = '10000') {
   return request({
