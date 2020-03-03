@@ -152,7 +152,7 @@
             <span class="text">未填报部门</span>
             <span class="float-right pr-12">
               <b-select style="width:100px" v-model="monthUngetSelect" size="mini" clearable>
-                <b-option v-for="item in monthList" :value="item.value" :key="item.value">{{ item.label }}</b-option>
+                <b-option v-for="item in monthList.slice(0,6)" :value="item.value" :key="item.value">{{ item.label }}</b-option>
               </b-select>
             </span>
           </div>
@@ -756,7 +756,7 @@
       },
       // 自动重绘图表
       resizeTheChart() {
-        if (this.$refs) {
+        if (this.$refs && this.$refs.chart1 && this.$refs.chart2 && this.$refs.chart3 && this.$refs.chart4) {
           this.$refs.chart1.resize()
           this.$refs.chart2.resize()
           this.$refs.chart3.resize()
