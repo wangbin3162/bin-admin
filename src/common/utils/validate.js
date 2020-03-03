@@ -82,7 +82,7 @@ export function isNonChinese(str) {
 
 /* 字母开头，字母数字下划线 */
 export function isLetterW(str) {
-  const reg = /^[A-Z,a-z]\w+$/
+  const reg = /^([^0-9])([A-Z,a-z]|[0-9]+|_)*$/
   return reg.test(str)
 }
 

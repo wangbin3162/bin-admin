@@ -49,10 +49,10 @@
             <b-alert v-if="currentTreeNode" style="margin: 0;">{{currentTreeNode.title}}</b-alert>
           </b-form-item>
           <b-form-item label="类目名称" prop="classifyName">
-            <b-input v-model="classify.classifyName" placeholder="请输入类目名称" clearable></b-input>
+            <b-input v-model.trim="classify.classifyName" placeholder="请输入类目名称" clearable :maxlength="30"></b-input>
           </b-form-item>
           <b-form-item label="类目编码" prop="classifyCode">
-            <b-input v-model="classify.classifyCode" placeholder="请输入类目编码" clearable
+            <b-input v-model.trim="classify.classifyCode" placeholder="请输入类目编码" clearable
                      :disabled="dialogStatus==='modify'"></b-input>
           </b-form-item>
           <b-form-item label="类目描述" prop="classifyDesc">

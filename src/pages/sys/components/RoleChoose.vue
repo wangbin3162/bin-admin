@@ -13,6 +13,7 @@
               style="margin:0 5px 5px 0;"
               @click="chooseOne(item)">{{item.name}}
     </b-button>
+    <b-alert type="error" v-show="list.length===0" class="t-center">暂无角色</b-alert>
     <div slot="footer" class="t-center">
       <!--下方分页器-->
       <b-page :total="total" :current.sync="listQuery.page" size="small" @on-change="handleCurrentChange"></b-page>

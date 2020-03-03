@@ -216,7 +216,7 @@
                 this.searchList()
               } else {
                 this.btnLoading = false
-                this.$message({ type: 'error', content: res.data.message })
+                this.$message({ type: 'danger', content: res.data.message })
               }
             })
           }

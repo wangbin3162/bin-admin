@@ -81,7 +81,6 @@
     methods: {
       postSelectedList() {
         let arr = []
-        if (this.selectedList.length > 0) {
           this.selectedList.forEach(item => arr.push(item.departId))
           const str = arr.join(',')
           postAddDept(this.resId, str).then(res => {
@@ -89,7 +88,6 @@
             this.$message({ type: 'success', content: '操作成功' })
             this.$emit('on-add-success')
           })
-        }
       },
       handleCloseTag(index) {
         this.selectedList.splice(index, 1)

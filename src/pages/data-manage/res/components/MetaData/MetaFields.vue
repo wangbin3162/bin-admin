@@ -33,13 +33,13 @@
           <b-row>
             <b-col span="12">
               <b-form-item label="名称" prop="fieldName">
-                <b-input v-model="metaItem.fieldName" placeholder="请输入名称" clearable
+                <b-input v-model="metaItem.fieldName" placeholder="请输入名称" clearable :maxlength="30"
                          :disabled="dialogStatus === 'modify' && !!metaItem.id"></b-input>
               </b-form-item>
             </b-col>
             <b-col span="12">
               <b-form-item label="标题" prop="fieldTitle">
-                <b-input v-model="metaItem.fieldTitle" placeholder="请输入标题" clearable></b-input>
+                <b-input v-model="metaItem.fieldTitle" placeholder="请输入标题" clearable :maxlength="64"></b-input>
               </b-form-item>
             </b-col>
           </b-row>
@@ -48,7 +48,7 @@
               <b-form-item label="数据类型" prop="dataType">
                 <b-select v-model="metaItem.dataType" placeholder="请选择类型"
                           :disabled="dialogStatus === 'modify' && !!metaItem.id"
-                          clearable size="large" @on-change="handleTypeChange">
+                          clearable @on-change="handleTypeChange">
                   <b-option v-for="item in dataTypeOptions" :value="item.value" :key="item.value" :label="item.label">
                     <span>{{ item.label }}</span>
                     <span style="float:right;color:#ccc">{{ item.value }}</span>
@@ -133,7 +133,7 @@
               if (!response.data.data) {
                 callback()
               } else {
-                callback(new Error('中文名称重复'))
+                callback(new Error('字段名不合法或重复!'))
               }
             }).catch(() => {
               callback(new Error('请求验证重复性出错'))
@@ -155,9 +155,12 @@
       }
       // 信息项数据长度校验
       const validateDataLength = (rule, value, callback) => {
+        const reg = /^\d+$/ // 正整数
         if (value <= 0) {
           callback(new Error('数据长度必须大于0'))
-        } else {
+        } else if (!reg.test(value)) {
+        callback(new Error('数据长度必须为整数'))
+      } else {
           callback()
         }
       }

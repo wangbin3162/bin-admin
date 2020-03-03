@@ -184,7 +184,7 @@
               } else {
                 this.submitDone(false)
                 this.dialogFormVisible = false
-                this.$message({ type: 'error', content: res.data.message })
+                this.$message({ type: 'danger', content: res.data.message })
               }
             })
           }

@@ -251,7 +251,7 @@
                 this.handleFilter()
               } else {
                 this.submitDone(false)
-                this.$message({ type: 'error', content: res.data.message })
+                this.$message({ type: 'danger', content: res.data.message })
               }
             }).catch(() => {
               this.btnLoading = false
