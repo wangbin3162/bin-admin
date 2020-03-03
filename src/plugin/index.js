@@ -11,6 +11,8 @@ import VSortArrow from '../components/VSortArrow'
 import VCascade from '../components/VCascade'
 import ECharts from 'vue-echarts'
 import 'echarts/lib/chart/line'
+import 'echarts/lib/chart/bar'
+import 'echarts/lib/chart/pie'
 
 export default {
   async install(Vue, options) {
