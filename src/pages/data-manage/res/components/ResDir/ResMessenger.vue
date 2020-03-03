@@ -187,7 +187,6 @@
           this.treeData.push(data)
           if (this.treeData.length > 0) {
             this.currentTreeNode = this.treeData[0].children[0]
-            // console.log(this.treeData[0].children[0])
             this.listQuery.departId = this.currentTreeNode.id
             // 这里要注意，扩展响应式属性需要这么写
             this.$set(this.treeData[0].children[0], 'selected', true)

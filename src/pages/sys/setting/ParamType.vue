@@ -136,7 +136,7 @@
         ],
         type: null,
         ruleValidate: {
-          typeName: [requiredRule, { validator: validateTypeName, trigger: 'blur' }],
+          typeName: [requiredRule],
           typeCode: [requiredRule, { validator: validateTypeCode, trigger: 'blur' }]
         }
       }
