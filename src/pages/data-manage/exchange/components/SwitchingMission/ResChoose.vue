@@ -101,6 +101,9 @@
     },
     methods: {
       handTreeCurrentChange(data, node) {
+        if (this.currentTreeNode.id === node.id) {
+          node.selected = true
+        }
         this.currentTreeNode = node
         this.listQuery.resourceCode = node.code
         this.handleFilter()

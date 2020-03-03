@@ -177,7 +177,7 @@
               callback(new Error('请求验证重复性出错'))
             })
           } else {
-            callback(new Error('元信息描述'))
+            callback(new Error('元信息描述长度为2-64,且是文字和字母组合'))
           }
         }
       }
@@ -249,6 +249,9 @@
     methods: {
       /* [事件响应] */
       handTreeCurrentChange(data, node) {
+        if (this.currentTreeNode.id === node.id) {
+          node.selected = true
+        }
         this.currentTreeNode = node
         this.listQuery.metadataCode = node.code
         this.handleFilter()
@@ -273,9 +276,11 @@
         }
         // 获取资源标识符
         this.resetMetadata()
+        this.metadata.dirClassifyName = this.currentTreeNode.title
         api.getBizKey().then(res => {
           if (res.data.code === '0') {
             this.metadata.metadataKey = res.data.data
+            console.log(this.metadata)
             this.openEditPage('create')
           } else {
             this.$message({ type: 'danger', content: '获取资源标识符失败' })
