@@ -32,7 +32,8 @@
     data() {
       return {
         listQuery: {
-          operateName: ''
+          operateName: '',
+          moduleName: ''
         },
         columns: [
           {
