@@ -2,16 +2,16 @@
   <!--信息项映射 for SwitchingMission.vue -->
   <div>
     <div class="info-item-map" flex>
-      <b-row :gutter="15">
+      <b-row :gutter="15" style="width:100%;">
         <b-col span="4">
           <b-tag type="primary" style="margin-bottom: 5px;" size="small">源资源</b-tag>
-          <b-table :columns="columns1" :data="fields1" highlight-row
+          <b-table :columns="columns1" :data="fields1" highlight-row max-height="475"
                    @on-current-change="handleCurrentChange1" size="small">
           </b-table>
         </b-col>
         <b-col span="6">
           <b-tag type="danger" style="margin-bottom: 5px;" size="small">目标资源</b-tag>
-          <b-table :columns="columns2" :data="fields2" highlight-row
+          <b-table :columns="columns2" :data="fields2" highlight-row max-height="475"
                    @on-current-change="handleCurrentChange2" size="small">
           </b-table>
         </b-col>
@@ -28,7 +28,7 @@
         </b-col>
         <b-col span="12">
           <b-tag type="success" style="margin-bottom: 5px;" size="small">映射关系</b-tag>
-          <b-table :columns="columns3" :data="itemMaps" size="small">s
+          <b-table :columns="columns3" :data="itemMaps" size="small" max-height="475">
             <template v-slot:desc="scope">
               <b-input v-model="itemMaps[scope.index].desc" size="mini" @on-change="emitValue"></b-input>
             </template>

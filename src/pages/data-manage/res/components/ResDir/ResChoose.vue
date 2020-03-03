@@ -129,7 +129,7 @@
         getResClassifyTree().then(response => {
           const tree = response.data.data
           // 根据返回的数组格式化为树结构的格式，并追加parents用于级联选择和展开
-          let data = tree ? this.treeMapper(tree) : {}
+          let data = tree ? this.treeMapper(tree, null, ['code']) : {}
           this.treeData.push(data)
           if (this.treeData.length > 0) {
             // 如果没有当前选中节点则初始化为第一个选中
@@ -144,31 +144,6 @@
         })
       },
       // 树节点格式化mapper
-      treeMapper(node, parentId) {
-        // 当前id
-        const currentId = node.id
-        let parents = parentId ? parentId.split(',') : []
-        parents.push(currentId)
-        let child = []
-        if (node.children) {
-          node.children.forEach(item => {
-            child.push(this.treeMapper(item, parents.join(',')))
-          })
-        }
-        // 是否是选中状态
-        let isSelect = this.currentTreeNode ? this.currentTreeNode.id === currentId : false
-        // 是否是展开状态，根据当前选择的节点中的parents数组来判定自身和父级的展开状态
-        let isExpand = this.currentTreeNode ? this.currentTreeNode.parents.includes(currentId) : false
-        return {
-          id: node.id,
-          title: node.text,
-          code: node.code,
-          parents: parents, // 配合级联展开时使用
-          selected: isSelect,
-          expand: isExpand, // 先全部打开,后再进行比对关闭
-          children: child
-        }
-      },
       checkRowSelected(row) {
         const dept = this.selectedList.find(item => {
           return item.resId === row.resourceKey

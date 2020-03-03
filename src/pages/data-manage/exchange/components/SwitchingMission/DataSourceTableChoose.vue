@@ -9,10 +9,10 @@
         选择
       </b-button>
     </div>
-    <b-modal v-model="dialogFormVisible" title="选择交换方案" width="860" class="layout-inner" :mask-closable="false">
+    <b-modal v-model="dialogFormVisible" title="选择数据源库表" width="860" class="layout-inner" :mask-closable="false">
       <div>
         <!--中央表格-->
-        <b-table :columns="columns" :data="list" :loading="listLoading" size="small">
+        <b-table :columns="columns" :data="list" :loading="listLoading" size="small" max-height="375">
           <!--操作栏-->
           <template v-slot:action="scope">
             <b-button type="primary" size="mini" plain @click="chooseOne(scope.row)" v-waves>
@@ -22,9 +22,7 @@
         </b-table>
       </div>
       <div slot="footer">
-        <!--下方分页器-->
-        <b-page :total="total" show-sizer :current.sync="listQuery.page"
-                @on-change="handleCurrentChange" @on-page-size-change="handleSizeChange"></b-page>
+        <b-button @click="dialogFormVisible = false">取 消</b-button>
       </div>
     </b-modal>
   </div>
@@ -96,7 +94,7 @@
       searchList() {
         this.setListData()
         getTables(this.dsId).then(response => {
-          if (response.data.code === '0') {
+          if (response.status === 200) {
             this.setListData({
               list: response.data,
               total: response.data.length
