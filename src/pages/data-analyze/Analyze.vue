@@ -213,6 +213,9 @@
       this.setYearList()
       this.searchList()
     },
+    mounted() {
+      window.addEventListener('resize', this.resizeTheChart)
+    },
     methods: {
       setYearList() {
         let yearList = new Date().getFullYear()
@@ -282,6 +285,13 @@
         api.getDataHistory(this.listQuery).then(res => {
           this.historyList = res.data.data.rows
         })
+      },
+      // 自动重绘表格
+      resizeTheChart() {
+        if (this.$refs) {
+          this.$refs.chart1.resize()
+          this.$refs.chart2.resize()
+        }
       }
     }
   }

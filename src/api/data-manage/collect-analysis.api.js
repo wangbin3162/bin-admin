@@ -70,6 +70,16 @@ export function getResourceData () {
     method: 'get'
   })
 }
+// 2.5.10 月度部门归集统计
+export function getMonthDeptCollectData (month) {
+  return request({
+    url: '/da/data/collect/ydbmgjtj',
+    method: 'get',
+    params: {
+      month
+    }
+  })
+}
 // 2.5.12 主体及资源数据分析
 export function getSubjectData () {
   return request({

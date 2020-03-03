@@ -50,19 +50,24 @@
       </div>
     </div>
     <div class="main" flex="main:justify; wrap:wrap">
+      <b-modal v-model="modal" footer-hide>
+        <p>我是弹窗内容...</p>
+        <p>我是弹窗内容...</p>
+        <p>我是弹窗内容...</p>
+      </b-modal>
       <div class="mr-20 w-percent-70">
         <div class="area mb-20 pd-10">
           <div class="title">
             <span class="text">月度信息归集趋势</span>
             <span class="float-right pr-12">
-              <b-select style="width:100px" v-model="select" size="mini" clearable>
+              <b-select style="width:100px" v-model="monthMsgSelect" size="mini" clearable>
                 <b-option v-for="item in monthList" :value="item.value" :key="item.value">{{ item.label }}</b-option>
               </b-select>
             </span>
           </div>
           <div class="content" flex="main:justify">
             <div class="trend mg-0-auto">
-              <v-chart ref="chart1" :options="lineSmoothChartOption" style="height: 280px;width: 100%"></v-chart>
+              <v-chart ref="chart1" :options="lineSmoothChartOption" :auto-resize="true" style="height: 280px;width: 100%"></v-chart>
             </div>
           </div>
         </div>
@@ -71,10 +76,10 @@
             <div class="title">
               <span class="text">资源信息分类统计</span>
               <span class="float-right pr-12">
-              <b-select style="width:100px" v-model="select" size="mini" clearable>
-                <b-option v-for="item in monthList" :value="item.value" :key="item.value">{{ item.label }}</b-option>
-              </b-select>
-            </span>
+                <b-select style="width:100px" v-model="crowdSelect" size="mini" clearable>
+                  <b-option v-for="item in crowdList" :value="item.value" :key="item.value">{{ item.label }}</b-option>
+                </b-select>
+              </span>
             </div>
             <div class="content" flex="main:justify">
               <div class="trend">
@@ -86,7 +91,7 @@
             <div class="title">
               <span class="text">月度部门归集统计</span>
               <span class="float-right pr-12">
-              <b-select style="width:100px" v-model="select" size="mini" clearable>
+              <b-select style="width:100px" v-model="monthDeptSelect" size="mini" clearable>
                 <b-option v-for="item in monthList" :value="item.value" :key="item.value">{{ item.label }}</b-option>
               </b-select>
             </span>
@@ -103,8 +108,8 @@
             <div class="title">
               <span class="text">部门数据归集统计分析</span>
               <span class="float-right pr-12">
-              更多>>
-            </span>
+                <b-button type="text" @click="modal = true">更多>></b-button>
+              </span>
             </div>
             <div class="pd-12">
               <b-table :columns="departSumColumns" :data="departSumData" size="small" stripe border></b-table>
@@ -145,11 +150,16 @@
         <div class="area mb-20 pd-10">
           <div class="title" flex="main:justify">
             <span class="text">未填报部门</span>
+            <span class="float-right pr-12">
+              <b-select style="width:100px" v-model="monthUngetSelect" size="mini" clearable>
+                <b-option v-for="item in monthList" :value="item.value" :key="item.value">{{ item.label }}</b-option>
+              </b-select>
+            </span>
           </div>
           <div class="resource-list">
             <p>资源信息</p>
             <ul class="list">
-              <li class="list-item"></li>
+              <li class="list-item" v-for="(item, index) in ungetDeparts.slice(0,6)" :key="index">{{ item.departName }}</li>
             </ul>
           </div>
         </div>
@@ -385,10 +395,10 @@
         },
 
         monthDepartColumns: [
-          { title: '部门', key: 'depart' },
-          { title: '归集数量', key: 'count' }
+          { title: '部门', key: 'departName' },
+          { title: '归集数量', key: 'value' }
         ],
-        monthDepartData: [{ depart: '部门1', count: 1200 }, { depart: '部门1', count: 1200 }, { depart: '部门1', count: 1200 }, { depart: '部门1', count: 1200 }, { depart: '部门1', count: 1200 }, { depart: '部门1', count: 1200 }],
+        monthDepartData: [],
         departSumColumns: [
           { title: '部门', key: 'departName', width: 300 },
           { title: '归集数量', key: 'value' },
@@ -401,6 +411,12 @@
                   type: 'primary',
                   size: 'mini',
                   plain: true
+                },
+                nativeOn: {
+                  click: (e) => {
+                    this.modal = true
+                    console.log(e)
+                  }
                 }
               }, '趋势')
             }
@@ -414,18 +430,20 @@
           { departName: '部门1', value: 1200, percent: '10%' },
           { departName: '部门1', value: 1200, percent: '10%' }
         ],
-        monthList: [],
-        select: '',
-        date: new Date(),
-        columns: [
-          { title: '资源信息', key: 'resourceName' },
-          { title: '归集数量', key: 'count' },
-          { title: '归集日期', key: 'date' }
+        crowdSelect: '',
+        crowdList: [{ label: '自然人', value: 'zrp' }, { label: '法人或其他', value: 'fo' }],
+        monthMsgSelect: '',
+        monthDeptSelect: '',
+        monthUngetSelect: '',
+        monthList: [
+          { value: '2020-2', label: '1月' },
+          { value: '2020-3', label: '2月' },
+          { value: '2020-4', label: '3月' }
         ],
-        historyList: [],
-        resourceList: [],
-        yearList: [],
-        yearSelect: ''
+        ungetDeparts: [
+          { departId: 'aabbcc', departName: '市发改委' }
+        ],
+        modal: false
       }
     },
 
@@ -437,7 +455,24 @@
       this.searchList()
     },
 
+    mounted() {
+      window.addEventListener('resize', this.resizeTheChart)
+      this.monthList = this.newMonth(3)
+    },
+
     methods: {
+      // 生成当前年月
+      newMonth(param = 1) {
+        if (param === 1) {
+          return new Date().getFullYear() + '-' + (new Date().getMonth() + 1)
+        } else if (param === 3) {
+          let getDate = (length) => new Date().getFullYear() + '-' + (new Date().getMonth() + length)
+          let arr = [0, 1, 2]
+          let reArr = []
+          arr.forEach((item) => reArr.push({ value: getDate(item), label: (new Date().getMonth() + item - 1 + '月') }))
+          return reArr
+        }
+      },
       // 查询所有列表
       searchList() {
         this.resetListQuery()
@@ -454,10 +489,11 @@
           api.getClassifyMonthCount(),
           api.getClassifyZrpCount(),
           api.getClassifyFoCount(),
-          api.getMonthCollectData(new Date().getFullYear() + '-' + (new Date().getMonth() + 1))
+          api.getMonthCollectData(_self.newMonth())
         ]).then(function(res) {
           // 顶部数据
-          let obj = {
+          let obj = {}
+          obj = {
             totalResource: res[0].data.data.totalResource,
             totalCount: res[1].data.data.totalCount,
             monthCount: res[2].data.data.monthCount,
@@ -484,9 +520,6 @@
           let monthInfos = []
           let monthSubs = []
           monthCollect.forEach(item => { monthInfos.push(item.data); monthSubs.push(item.legend) })
-          console.log(monthInfos)
-          console.log('-------------')
-          console.log(monthSubs)
           _self.lineSmoothChartOption = {
             color: ['#4065e0', '#35a4ff', '#6fcafa', '#18e5e6', '#1ed1b8'],
             legend: {
@@ -603,7 +636,7 @@
           res[2].data.data.forEach(item => resourceNames.push(item.resourceName))
           _self.barChartOption = {
             color: ['#4065e0', '#35a4ff', '#6fcafa', '#18e5e6', '#1ed1b8'],
-              tooltip: {
+            tooltip: {
               trigger: 'axis',
                 axisPointer: {
                 type: 'shadow'
@@ -690,24 +723,50 @@
           }
         })
       },
-      //
+      // async 获取表数据
       getTableData() {
         var _self = this
         Promise.all([
-          api.getDeptCollectData()
+          api.getDeptCollectData(),
+          api.getMonthDeptCollectData(_self.newMonth())
         ]).then(res => {
+          // 按部门数据归集统计
           _self.departSumData = res[0].data.data
           var total = 0
           _self.departSumData.forEach(item => { total += parseInt(item.value) })
           _self.departSumData.forEach(item => {
             item.percent = parseInt(item.value / total * 100) + '%'
           })
+          // 月度部门归集统计
+          _self.monthDepartData = res[1].data.data
+          // 未填报部门
+          _self.ungetDeparts = [
+            { departId: 'aabbcc', departName: '市发改委' },
+            { departId: 'aabbcc', departName: '环保办' },
+            { departId: 'aabbcc', departName: '市发改委' },
+            { departId: 'aabbcc', departName: '环保办' },
+            { departId: 'aabbcc', departName: '市发改委' },
+            { departId: 'aabbcc', departName: '市发改委' }
+          ]
         })
       },
       // 临时设置departId
       resetListQuery() {
         this.listQuery.departId = this.$store.state.user.info.departId
+      },
+      // 自动重绘图表
+      resizeTheChart() {
+        if (this.$refs) {
+          this.$refs.chart1.resize()
+          this.$refs.chart2.resize()
+          this.$refs.chart3.resize()
+          this.$refs.chart4.resize()
+        }
       }
+      // 取消resize事件监听
+      // beforeDestroy() {
+      //   window.removeEventListener('resize', this.resizeTheChart)
+      // }
     }
 
   }
@@ -786,6 +845,19 @@
         border-radius: 8px
         background-color: #fff
         overflow hidden
+        .resource-list{
+          padding-left: 20px
+          padding-bottom: 20px
+          p{
+            color #c5c8ce
+            font-size: 12px
+          }
+          .list-item{
+            font-size: 14px
+            line-height: 26px
+            font-weight: 700
+          }
+        }
         .title{
           font-size: 18px
           line-height: 40px
