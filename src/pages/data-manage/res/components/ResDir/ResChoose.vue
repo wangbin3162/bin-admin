@@ -129,7 +129,7 @@
         getResClassifyTree().then(response => {
           const tree = response.data.data
           // 根据返回的数组格式化为树结构的格式，并追加parents用于级联选择和展开
-          let data = tree ? this.treeMapper(tree) : {}
+          let data = tree ? this.treeMapper(tree, null, ['code']) : {}
           this.treeData.push(data)
           if (this.treeData.length > 0) {
             // 如果没有当前选中节点则初始化为第一个选中
@@ -143,6 +143,7 @@
           }
         })
       },
+      // 树节点格式化mapper
       checkRowSelected(row) {
         const dept = this.selectedList.find(item => {
           return item.resId === row.resourceKey

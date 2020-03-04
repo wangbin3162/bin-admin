@@ -276,11 +276,11 @@
     methods: {
       /* [事件响应] */
       handTreeCurrentChange(data, node) {
+        if (this.currentTreeNode.id === node.id) {
+          node.selected = true
+        }
         this.currentTreeNode = node
         this.listQuery.typeId = node.id
-        if (this.dialogFormVisible) { // 如果打开了右侧编辑区域则不需要查询，并且需要缓存当前树节点，需要修改父节点id
-          this.conf.typeId = node.id
-        }
         this.handleFilter()
       },
       // filter-Bar:重置查询条件

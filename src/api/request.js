@@ -69,7 +69,7 @@ service.interceptors.response.use(
       } else if (error.response.status === 403) {
         router.push({ path: '/403' })
       } else {
-        BinUI.Message.message({ content: error.response.data, type: 'danger' })
+        BinUI.Message.message({ content: error.response.data.message, type: 'danger' })
       }
     } else {
       // console.log('Error', error.message)

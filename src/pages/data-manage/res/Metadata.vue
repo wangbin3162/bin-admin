@@ -177,7 +177,7 @@
               callback(new Error('请求验证重复性出错'))
             })
           } else {
-            callback(new Error('元信息描述'))
+            callback(new Error('元信息描述长度为2-64,且是文字和字母组合'))
           }
         }
       }
@@ -249,6 +249,9 @@
     methods: {
       /* [事件响应] */
       handTreeCurrentChange(data, node) {
+        if (this.currentTreeNode.id === node.id) {
+          node.selected = true
+        }
         this.currentTreeNode = node
         this.listQuery.metadataCode = node.code
         this.handleFilter()
@@ -273,6 +276,7 @@
         }
         // 获取资源标识符
         this.resetMetadata()
+        this.metadata.dirClassifyName = this.currentTreeNode.title
         api.getBizKey().then(res => {
           if (res.data.code === '0') {
             this.metadata.metadataKey = res.data.data
@@ -495,7 +499,7 @@
         getClassifyTree('C').then(response => {
           const tree = response.data.data
           // 根据返回的数组格式化为树结构的格式，并追加parents用于级联选择和展开
-          let data = tree ? this.treeMapper(tree) : {}
+          let data = tree ? this.treeMapper(tree, null, ['code']) : {}
           this.treeData.push(data)
           if (this.treeData.length > 0) {
             // 如果没有当前选中节点则初始化为第一个选中
@@ -509,32 +513,6 @@
             this.handleFilter()
           }
         })
-      },
-      // 树节点格式化mapper
-      treeMapper(node, parentId) {
-        // 当前id
-        const currentId = node.id
-        let parents = parentId ? parentId.split(',') : []
-        parents.push(currentId)
-        let child = []
-        if (node.children) {
-          node.children.forEach(item => {
-            child.push(this.treeMapper(item, parents.join(',')))
-          })
-        }
-        // 是否是选中状态
-        let isSelect = this.currentTreeNode ? this.currentTreeNode.id === currentId : false
-        // 是否是展开状态，根据当前选择的节点中的parents数组来判定自身和父级的展开状态
-        let isExpand = this.currentTreeNode ? this.currentTreeNode.parents.includes(currentId) : false
-        return {
-          id: node.id,
-          title: node.text,
-          code: node.code,
-          parents: parents, // 配合级联展开时使用
-          selected: isSelect,
-          expand: isExpand, // 先全部打开,后再进行比对关闭
-          children: child
-        }
       },
       // 查询所有列表
       searchList() {

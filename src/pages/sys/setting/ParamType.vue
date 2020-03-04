@@ -136,7 +136,7 @@
         ],
         type: null,
         ruleValidate: {
-          typeName: [requiredRule, { validator: validateTypeName, trigger: 'blur' }],
+          typeName: [requiredRule],
           typeCode: [requiredRule, { validator: validateTypeCode, trigger: 'blur' }]
         }
       }
@@ -148,6 +148,9 @@
     methods: {
       /* [事件响应] */
       handTreeCurrentChange(data, node) {
+        if (this.currentTreeNode.id === node.id) {
+          node.selected = true
+        }
         this.currentTreeNode = node
         this.listQuery.parentId = node.id
         this.handleFilter()

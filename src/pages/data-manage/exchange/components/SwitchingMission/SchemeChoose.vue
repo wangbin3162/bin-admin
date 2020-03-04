@@ -82,7 +82,7 @@
         },
         columns: [
           { title: '交换方案名称', key: 'cfgName', width: 150, tooltip: true },
-          { title: '信息流向', slot: 'flowDirection', align: 'center' },
+          { title: '信息流向', slot: 'flowDirection', width: 85, align: 'center' },
           { title: '交换类型', slot: 'changeType', align: 'center' },
           { title: '传输方式', slot: 'transmitKind', align: 'center' },
           { title: '信息源', key: 'nameSource' },

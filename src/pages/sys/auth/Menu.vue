@@ -158,15 +158,16 @@
           <v-key-label label="菜单类型" is-half is-first>
             <b-tag>{{ menuTypeMap[menu.type] }}</b-tag>
           </v-key-label>
-          <v-key-label label="排序编号" is-half>{{ menu.sortNum }}</v-key-label>
-          <v-key-label label="前端路由" is-bottom>{{ menu.path }}</v-key-label>
+          <v-key-label label="前端路由" is-half>{{ menu.path }}</v-key-label>
+          <v-key-label label="菜单路径" is-half is-bottom>{{ menu.url }}</v-key-label>
+          <v-key-label label="排序编号" is-half is-bottom>{{ menu.sortNum }}</v-key-label>
         </div>
         <template v-if="menu.permissions.length>0" slot="full">
           <b-divider align="left">动作列表</b-divider>
           <b-table disabled-hover :data="menu.permissions"
                    :columns="[
                      { title: '动作名称', key: 'name', width:120, align: 'center', },
-                     { title: '前端路由', key: 'path'},
+                     { title: '前端路径', key: 'path'},
                      { title: '菜单路径', key: 'url' }]">
           </b-table>
         </template>
@@ -238,6 +239,9 @@
     methods: {
       /* [事件响应] */
       handTreeCurrentChange(data, node) {
+        if (this.currentTreeNode.id === node.id) {
+          node.selected = true
+        }
         this.currentTreeNode = node
         this.listQuery.parentId = node.id
         this.handleFilter()
@@ -425,31 +429,6 @@
             this.handleFilter()
           }
         })
-      },
-      // 树节点格式化mapper
-      treeMapper(node, parentId) {
-        // 当前id
-        const currentId = node.id
-        let parents = parentId ? parentId.split(',') : []
-        parents.push(currentId)
-        let child = []
-        if (node.children) {
-          node.children.forEach(item => {
-            child.push(this.treeMapper(item, parents.join(',')))
-          })
-        }
-        // 是否是选中状态
-        let isSelect = this.currentTreeNode ? this.currentTreeNode.id === currentId : false
-        // 是否是展开状态，根据当前选择的节点中的parents数组来判定自身和父级的展开状态
-        let isExpand = this.currentTreeNode ? this.currentTreeNode.parents.includes(currentId) : false
-        return {
-          id: node.id,
-          title: node.menuName, // 返回值不同
-          parents: parents, // 配合级联展开时使用
-          selected: isSelect,
-          expand: isExpand, // 先全部打开,后再进行比对关闭
-          children: child
-        }
       },
       // 查询所有部门列表
       searchList() {
