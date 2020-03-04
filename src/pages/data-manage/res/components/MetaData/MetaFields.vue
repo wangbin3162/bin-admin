@@ -139,7 +139,7 @@
               callback(new Error('请求验证重复性出错'))
             })
           } else {
-            callback(new Error('只能是以字母开头的字母、数字和下划线'))
+            callback(new Error('英文字母开头(包括字母、数字和下划线)'))
           }
         }
       }
@@ -149,7 +149,7 @@
           if (isTitleNotStartNum(value)) { // 中文、字母、数字、()、（）、/和下划线，且数字不能出现在首位的字符串
             callback()
           } else {
-            callback(new Error('标题是非数字开头的中文、字母、数字、()、（）、/和_'))
+            callback(new Error('非数字开头(中文、字母、数字、中英文括号、/和_)'))
           }
         }
       }

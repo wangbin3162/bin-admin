@@ -82,13 +82,13 @@ export function isNonChinese(str) {
 
 /* 字母开头，字母数字下划线 */
 export function isLetterW(str) {
-  const reg = /^([^0-9])([A-Z,a-z]|[0-9]+|_)*$/
+  const reg = /^[a-zA-Z][a-zA-Z0-9_]*$/
   return reg.test(str)
 }
 
 /*  中文、字母、数字、()、（）、/和下划线，且数字不能出现在首位的字符串 */
 export function isTitleNotStartNum(str) {
-  const reg = /^([^0-9])([\u4E00-\u9FA5]|\w|[()（）]+|_)*$/
+  const reg = /^([^0-9])([\u4E00-\u9FA5]|[a-zA-Z0-9_\\/]|[()（）]+|_)*$/
   return reg.test(str)
 }
 
