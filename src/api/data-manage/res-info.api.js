@@ -13,7 +13,8 @@ export function getResInfoList(query) {
       resourceName: query.resourceName,
       status: query.status,
       availableStatus: query.availableStatus,
-      resProperty: query.resProperty
+      resProperty: query.resProperty,
+      sort: 'resourceKey,desc'
     }
   })
 }
