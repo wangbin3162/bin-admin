@@ -187,6 +187,7 @@
       /* [事件响应] */
       handResTreeCurrentChange(data, node) {
         this.currentTreeNode = node
+        this.listQuery.resourceCode = node.code
         this.listQuery.page = 1
         this.handleFilter()
       },
@@ -276,7 +277,7 @@
       // 查询所有资源列表
       searchList() {
         this.setListData()
-        getNoRelateResInfoList(this.departId, this.currentTreeNode.id).then(response => {
+        getNoRelateResInfoList(this.departId, this.currentTreeNode.code).then(response => {
           if (response.status === 200) {
             this.setListData({
               list: response.data.rows,

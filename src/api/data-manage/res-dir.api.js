@@ -63,13 +63,13 @@ export function getRelateResInfoList(query) {
 }
 
 /* 获取部门未关联的资源信息列表 */
-export function getNoRelateResInfoList(departId, dirClassifyId) {
+export function getNoRelateResInfoList(departId, code) {
   return request({
     url: '/api/dir/depart/noRelate',
     method: 'get',
     params: {
       departId: departId,
-      dirClassifyId: dirClassifyId
+      code: code
     }
   })
 }
