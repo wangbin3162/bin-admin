@@ -60,6 +60,16 @@ export default {
           on: { input: this.handleInput }
         })
         break
+      case 'NUMBER_TEXT':
+        node = h('b-input-number', {
+          props: {
+            value: this.currentValue,
+            disabled: readonly,
+            clearable: !readonly
+          },
+          on: { 'on-change': this.handleInput }
+        })
+        break
       case 'TEXTAREA':
         node = h('b-input', {
           props: {
@@ -68,7 +78,7 @@ export default {
             rows: 2,
             type: 'textarea'
           },
-          on: { input: this.handleInput }
+          on: { 'input': this.handleInput }
         })
         break
       case 'DATE':

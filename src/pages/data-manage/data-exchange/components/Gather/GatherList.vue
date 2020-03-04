@@ -385,6 +385,9 @@
             this.$set(this.rules, item.fieldName, rules)
           }
         })
+        // this.$log.primary('----rules----')
+        // console.log(this.rules)
+        // this.$log.primary('-------------')
         this.resetForm = deepCopy(this.form)
         this.$refs.form && this.$refs.form.resetFields()
       },

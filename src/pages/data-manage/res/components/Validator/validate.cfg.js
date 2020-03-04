@@ -956,7 +956,12 @@ export function jsonDataToRules(item, currentStrip) {
       let funcValidator = validatorBuild[tmp.funcName]
       // 获取的opts拼接trigger触发方式
       let opts = { ...tmp.opts, trigger: getTriggerByCType(item.controlType) }
+      if (item.controlType === 'NUMBER_TEXT') {
+        opts.type = 'number'
+      }
+      console.log(opts)
       if (funcValidator) {
+        console.log(funcValidator)
         let result = funcValidator(currentStrip, null, opts)
         if (result) {
           ret.push(result)

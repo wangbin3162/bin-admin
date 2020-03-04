@@ -22,6 +22,7 @@
             </b-form-item>
             <b-form-item prop="captcha">
               <b-input type="text" v-model="formLogin.captcha" placeholder="- - - -" style="width: 60%;"
+                       @on-keyup.enter="submit"
                        prefix="ios-bulb"></b-input>
               <span class="login-code" @click="refreshCode" title="点击刷新">
                     <img :src="verifyCodeUrl" alt="code">
