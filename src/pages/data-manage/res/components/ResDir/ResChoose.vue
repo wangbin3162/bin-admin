@@ -32,8 +32,8 @@
             @on-close="handleCloseTag(index)">
             {{tag.resName}}
           </b-tag>
-          <b-button type="dashed" style="width: 100%;margin: 10px 0;"
-                    v-if="selectedList.length" size="small" @click="postSelectedList">
+          <b-button type="warning" size="small" transparent style="width: 100%;margin: 10px 0;"
+                    v-if="selectedList.length" @click="postSelectedList">
             确定添加
           </b-button>
         </b-card>

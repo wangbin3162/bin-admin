@@ -17,9 +17,6 @@ export default {
     },
     canModify() {
       return this.havePermission('modify')
-    },
-    canSearch() {
-      return this.havePermission('search')
     }
   },
   methods: {

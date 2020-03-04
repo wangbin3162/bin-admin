@@ -35,7 +35,6 @@
 <style lang="stylus" scoped>
   .edit-wrap {
     width: 100%;
-    overflow: hidden;
     background: #ffffff;
     border-radius: 2px;
     padding: 32px 16px 24px;

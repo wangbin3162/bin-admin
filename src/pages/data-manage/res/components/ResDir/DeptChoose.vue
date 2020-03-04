@@ -29,8 +29,8 @@
                  @on-close="handleCloseTag(index)">
             {{ tag.departName }}
           </b-tag>
-          <b-button type="dashed" style="width: 100%;margin: 10px 0;"
-                    v-if="selectedList.length" size="small" @click="postSelectedList">
+          <b-button type="warning" size="small" transparent style="width: 100%;margin: 10px 0;"
+                    v-if="selectedList.length" @click="postSelectedList">
             确定分配
           </b-button>
         </b-card>
@@ -81,13 +81,13 @@
     methods: {
       postSelectedList() {
         let arr = []
-          this.selectedList.forEach(item => arr.push(item.departId))
-          const str = arr.join(',')
-          postAddDept(this.resId, str).then(res => {
-            this.searchSelected(this.resId)
-            this.$message({ type: 'success', content: '操作成功' })
-            this.$emit('on-add-success')
-          })
+        this.selectedList.forEach(item => arr.push(item.departId))
+        const str = arr.join(',')
+        postAddDept(this.resId, str).then(res => {
+          this.searchSelected(this.resId)
+          this.$message({ type: 'success', content: '操作成功' })
+          this.$emit('on-add-success')
+        })
       },
       handleCloseTag(index) {
         this.selectedList.splice(index, 1)

@@ -322,7 +322,7 @@
               if (res.data.code === '0') {
                 this.$message({ type: 'success', content: '操作成功' })
                 this.$modal.remove()
-                this.initTree()
+                this.searchList()
               } else {
                 this.$modal.remove()
                 this.$message({ type: 'danger', content: res.data.message })
@@ -343,7 +343,7 @@
               if (res.data.code === '0') {
                 this.$message({ type: 'success', content: '操作成功' })
                 this.$modal.remove()
-                this.initTree()
+                this.searchList()
               } else {
                 this.$modal.remove()
                 this.$message({ type: 'danger', content: res.data.message })

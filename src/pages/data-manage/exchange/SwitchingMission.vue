@@ -37,8 +37,8 @@
           <template v-slot:transmitKind="scope">{{ transmitKindMap[scope.row.transmitKind] }}</template>
           <!--有效状态-->
           <template v-slot:availableStatus="scope">
-            <span v-if="scope.row.availableStatus==='available'" style="color:#48c9b0;">有效</span>
-            <span v-else style="color:#e91e63;">无效</span>
+            <span v-if="scope.row.availableStatus==='available'" style="color:#48c9b0;">可用</span>
+            <span v-else style="color:#e91e63;">不可用</span>
           </template>
           <!--操作栏-->
           <template v-slot:action="scope">
@@ -295,11 +295,19 @@
         let configId = row.configId
         // 查询cfgCode
         api.getMissionDetail(row.id).then(response => {
+          if (!response.data.code || response.data.code !== '0') {
+            this.$message({ type: 'danger', content: response.data.message || '任务详情查询出错!' })
+            return
+          }
           this.mission = response.data.data
           // 判断是否是文件类型
           this.openEditPage('modify')
           // 查询两个数据源
           api.queryDataSourceByCfgId(configId).then(res => {
+            if (!res.data.code || res.data.code !== '0') {
+              this.$message({ type: 'danger', content: res.data.message || '数据源查询错误!' })
+              return
+            }
             this.sourceDataSource = res.data.data.sourceDataSource
             this.targetDataSource = res.data.data.targetDataSource
             // 如果是归集模式则分别填充两个列表

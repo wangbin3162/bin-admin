@@ -138,7 +138,7 @@
               </b-button>
             </template>
           </b-table>
-          <b-button type="dashed" size="small" icon="ios-add-circle-outline"
+          <b-button type="primary" size="small" icon="ios-add" transparent
                     style="width: 100%;margin-top: 16px;margin-bottom: 8px;"
                     @click="addBufferRow">添加动作
           </b-button>
@@ -329,11 +329,10 @@
       /* [动作菜单操作相关] */
       // 初始化4个基本动作菜单
       initPermissions() {
-        // 创建时动作缓存初始化4个动作
+        // 创建时动作缓存初始化3个动作
         this.menu.permissions = [
           { id: '', name: '新增', path: 'create', url: '', type: this.TYPE.ACT },
           { id: '', name: '更新', path: 'modify', url: '', type: this.TYPE.ACT },
-          { id: '', name: '查询', path: 'search', url: '', type: this.TYPE.ACT },
           { id: '', name: '删除', path: 'remove', url: '', type: this.TYPE.ACT }
         ]
       },

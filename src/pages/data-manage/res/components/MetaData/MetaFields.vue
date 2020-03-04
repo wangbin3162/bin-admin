@@ -21,7 +21,7 @@
         </template>
       </template>
     </b-table>
-    <b-button type="dashed" size="small" icon="ios-add-circle-outline"
+    <b-button type="primary" size="small" icon="ios-add" transparent
               style="width: 100%;margin-top: 16px;margin-bottom: 8px;"
               @click="handleCreateItem">添加信息项
     </b-button>
