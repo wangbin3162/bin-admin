@@ -60,9 +60,12 @@
           <div class="title">
             <span class="text">月度信息归集趋势</span>
             <span class="float-right pr-12">
-              <b-select style="width:100px" v-model="monthMsgSelect" size="mini" clearable>
-                <b-option v-for="item in monthList" :value="item.value" :key="item.value">{{ item.label }}</b-option>
-              </b-select>
+              <!--保留select下拉选择备份-->
+              <!--<b-select style="width:100px" v-model="monthMsgSelect" size="mini" clearable>-->
+              <!--  <b-option v-for="item in monthList" :value="item.value" :key="item.value">{{ item.label }}</b-option>-->
+              <!--</b-select>-->
+              <!--新添加滑块选择器-->
+              <GrooveSelect :year-list="yearList" @choose="choose" :selected="selected"></GrooveSelect>
             </span>
           </div>
           <div class="content" flex="main:justify">
@@ -151,7 +154,7 @@
           <div class="title" flex="main:justify">
             <span class="text">未填报部门</span>
             <span class="float-right pr-12">
-              <b-select style="width:100px" v-model="monthUngetSelect" size="mini" clearable>
+              <b-select style="width:100px" v-model="monthUnGetSelect" size="mini" clearable>
                 <b-option v-for="item in monthList.slice(0,6)" :value="item.value" :key="item.value">{{ item.label }}</b-option>
               </b-select>
             </span>
@@ -159,7 +162,7 @@
           <div class="resource-list">
             <p>资源信息</p>
             <ul class="list">
-              <li class="list-item" v-for="(item, index) in ungetDeparts.slice(0,6)" :key="index">{{ item.departName }}</li>
+              <li class="list-item" v-for="(item, index) in unGetDeparts.slice(0,6)" :key="index">{{ item.departName }}</li>
             </ul>
           </div>
         </div>
@@ -178,6 +181,7 @@
 
 <script>
   import * as api from '../../../api/data-manage/collect-analysis.api.js'
+  import GrooveSelect from './components/Groove/GrooveSelect'
   export default {
     name: 'CollectAnalysis',
     data () {
@@ -196,203 +200,10 @@
           sbCount: '',
           hlCount: ''
         },
-        lineSmoothChartOption: {
-          color: ['#4065e0', '#35a4ff', '#6fcafa', '#18e5e6', '#1ed1b8'],
-          legend: {
-            data: ['自然人', '法人及其他组织'],
-            icon: 'rect'
-          },
-          grid: {
-            left: '3%',
-            right: '4%',
-            bottom: '3%',
-            containLabel: true
-          },
-          xAxis: {
-            type: 'category',
-            data: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
-            boundaryGap: false,
-            axisLine: {
-              lineStyle: {
-                color: '#b8b8b8'
-              }
-            },
-            axisLabel: {
-              color: '#333'
-            },
-            splitLine: {
-              show: true,
-              lineStyle: {
-                color: '#eee'
-              }
-            }
-          },
-          yAxis: {
-            type: 'value',
-            axisLine: {
-              lineStyle: {
-                color: '#b8b8b8'
-              }
-            },
-            axisLabel: {
-              color: '#333'
-            },
-            splitLine: {
-              show: true,
-              lineStyle: {
-                color: '#eee'
-              }
-            }
-          },
-          series: [{
-            name: '自然人',
-            smooth: true,
-            data: [200, 300, 400, 500, 200, 300, 400, 500, 400, 500, 400, 500],
-            type: 'line',
-            areaStyle: {},
-            symbolSize: 8
-          },
-          {
-            name: '法人及其他组织',
-            smooth: true,
-            data: [100, 200, 300, 400, 400, 100, 200, 300, 400, 400, 400, 400],
-            type: 'line',
-            areaStyle: {},
-            symbolSize: 8
-          }]
-        },
-        lineChartOption: {
-          color: ['#4065e0', '#35a4ff', '#6fcafa', '#18e5e6', '#1ed1b8'],
-          xAxis: {
-            type: 'category',
-            data: ['部门1', '部门2', '部门3', '部门4', '部门5', '部门6'],
-            boundaryGap: false,
-            axisLine: {
-              lineStyle: {
-                color: '#b8b8b8'
-              }
-            },
-            axisLabel: {
-              color: '#333'
-            },
-            splitLine: {
-              show: true,
-              lineStyle: {
-                color: '#eee'
-              }
-            }
-          },
-          yAxis: {
-            type: 'value',
-            axisLine: {
-              lineStyle: {
-                color: '#b8b8b8'
-              }
-            },
-            axisLabel: {
-              color: '#333'
-            },
-            splitLine: {
-              show: true,
-              lineStyle: {
-                color: '#eee'
-              }
-            }
-          },
-          series: {
-            data: [],
-            type: 'line',
-            areaStyle: {},
-            symbolSize: 8
-          }
-        },
-        barChartOption: {
-          color: ['#4065e0', '#35a4ff', '#6fcafa', '#18e5e6', '#1ed1b8'],
-          tooltip: {
-            trigger: 'axis',
-            axisPointer: {
-              type: 'shadow'
-            }
-          },
-          grid: {
-            left: '6%',
-            right: '6%',
-            bottom: '3%',
-            containLabel: true
-          },
-          xAxis: {
-            type: 'value',
-            axisLine: {
-              lineStyle: {
-                color: '#b8b8b8'
-              }
-            },
-            axisLabel: {
-              color: '#333'
-            }
-          },
-          yAxis: {
-            type: 'category',
-            data: ['基本信息', '业务信息', '司法信息', '行政执法信息', '公共事业信息', '信用评级信息', '其他信息'],
-            axisLine: {
-              lineStyle: {
-                color: '#b8b8b8'
-              }
-            },
-            axisLabel: {
-              color: '#333'
-            }
-          },
-          series: {
-            type: 'bar',
-            data: [ 18203, 23489, 29034, 10497, 13174, 63023, 13144 ]
-          }
-        },
-        pieChartOption: {
-          color: ['#4065e0', '#35a4ff', '#6fcafa', '#18e5e6', '#1ed1b8'],
-          tooltip: {
-            trigger: 'item',
-            formatter: '{a} <br/>{b}: {c} ({d}%)'
-          },
-          series: [
-            {
-              name: '访问来源',
-              type: 'pie',
-              selectedMode: 'single',
-              radius: [0, '40%'],
-              label: {
-                formatter: '{a}\n{c}',
-                position: 'inner'
-              },
-              labelLine: {
-                show: false
-              },
-              data: [
-                { value: 335, name: '直达', selected: true },
-                { value: 679, name: '营销广告' },
-                { value: 1548, name: '搜索引擎' }
-              ]
-            },
-            {
-              name: '访问来源',
-              type: 'pie',
-              radius: ['50%', '70%'],
-              label: {
-                formatter: '{a}\n{c}'
-              },
-              data: [
-                { value: 335, name: '直达' },
-                { value: 310, name: '邮件营销' },
-                { value: 234, name: '联盟广告' },
-                { value: 135, name: '视频广告' },
-                { value: 1048, name: '百度' },
-                { value: 251, name: '谷歌' },
-                { value: 147, name: '必应' },
-                { value: 102, name: '其他' }
-              ]
-            }
-          ]
-        },
+        lineSmoothChartOption: {},
+        lineChartOption: {},
+        barChartOption: {},
+        pieChartOption: {},
 
         monthDepartColumns: [
           { title: '部门', key: 'departName' },
@@ -434,13 +245,15 @@
         crowdList: [{ label: '自然人', value: 'zrp' }, { label: '法人或其他', value: 'fo' }],
         monthMsgSelect: '',
         monthDeptSelect: '',
-        monthUngetSelect: '',
+        monthUnGetSelect: '',
         monthList: [
           { value: '2020-2', label: '1月' },
           { value: '2020-3', label: '2月' },
           { value: '2020-4', label: '3月' }
         ],
-        ungetDeparts: [
+        selected: '', // 三选按钮
+        yearList: [],
+        unGetDeparts: [
           { departId: 'aabbcc', departName: '市发改委' }
         ],
         modal: false
@@ -453,6 +266,8 @@
       // this.renderChart( this.lineChartOption, this.$refs.chart3 )
       // this.renderChart( this.pieChartOption, this.$refs.chart4 )
       this.searchList()
+      this.createYearList()
+      this.listQuery.month = this.newMonth(1)
     },
 
     mounted() {
@@ -461,6 +276,9 @@
     },
 
     methods: {
+      choose(index) {
+        this.selected = index
+      },
       // 生成当前年月
       newMonth(param = 1) {
         if (param === 1) {
@@ -472,6 +290,15 @@
           arr.forEach((item) => reArr.push({ value: getDate(item), label: (new Date().getMonth() + item - 1 + '月') }))
           return reArr
         }
+      },
+      // 生成近三年列表
+      createYearList() {
+        this.yearList = []
+        let arr = [0, 1, 2]
+        var year = new Date().getFullYear()
+        arr.forEach(
+          item => this.yearList.push({ label: year - item + '年', value: year - item })
+        )
       },
       // 查询所有列表
       searchList() {
@@ -517,9 +344,8 @@
         ]).then(function(res) {
           let monthCollect = res[0].data.data
           // 月度信息归集趋势
-          let monthInfos = []
-          let monthSubs = []
-          monthCollect.forEach(item => { monthInfos.push(item.data); monthSubs.push(item.legend) })
+          let monthInfos = monthCollect.map(item => item.data)
+          let monthSubs = monthCollect.map(item => item.legend)
           _self.lineSmoothChartOption = {
             color: ['#4065e0', '#35a4ff', '#6fcafa', '#18e5e6', '#1ed1b8'],
             legend: {
@@ -566,7 +392,7 @@
               {
                 name: monthSubs[0],
                 smooth: true,
-                data: monthInfos[0],
+                data: monthInfos[0].map(item => item.value),
                 type: 'line',
                 areaStyle: {},
                 symbolSize: 8
@@ -574,7 +400,7 @@
               {
                 name: monthSubs[1],
                 smooth: true,
-                data: monthInfos[1],
+                data: monthInfos[1].map(item => item.value),
                 type: 'line',
                 areaStyle: {},
                 symbolSize: 8
@@ -635,7 +461,7 @@
           let resourceNames = []
           res[2].data.data.forEach(item => resourceNames.push(item.resourceName))
           _self.barChartOption = {
-            color: ['#4065e0', '#35a4ff', '#6fcafa', '#18e5e6', '#1ed1b8'],
+            color: '#48c9b0',
             tooltip: {
               trigger: 'axis',
                 axisPointer: {
@@ -673,7 +499,7 @@
             },
             series: {
               type: 'bar',
-                data: res[2].data.data
+              data: res[2].data.data
             }
           }
 
@@ -740,7 +566,7 @@
           // 月度部门归集统计
           _self.monthDepartData = res[1].data.data
           // 未填报部门
-          _self.ungetDeparts = [
+          _self.unGetDeparts = [
             { departId: 'aabbcc', departName: '市发改委' },
             { departId: 'aabbcc', departName: '环保办' },
             { departId: 'aabbcc', departName: '市发改委' },
@@ -767,8 +593,9 @@
       // beforeDestroy() {
       //   window.removeEventListener('resize', this.resizeTheChart)
       // }
-    }
+    },
 
+    components: { GrooveSelect }
   }
 </script>
 
