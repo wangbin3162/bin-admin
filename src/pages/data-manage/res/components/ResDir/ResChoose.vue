@@ -74,7 +74,7 @@
           resourceName: '', // 资源名称(中文名)
           resProperty: '', // 资源性质
           availableStatus: 'available', // 可用状态
-          status: 'audited'// 状态
+          status: 'audited' // 状态
         },
         deptListLoading: false,
         deptMap: { 'DOMAIN': '机构', 'NORMAL': '一般组织' },
@@ -187,7 +187,6 @@
       /* [事件响应] */
       handResTreeCurrentChange(data, node) {
         this.currentTreeNode = node
-        this.listQuery.resourceCode = node.code
         this.listQuery.page = 1
         this.handleFilter()
       },
@@ -277,7 +276,7 @@
       // 查询所有资源列表
       searchList() {
         this.setListData()
-        getNoRelateResInfoList(this.departId, this.currentTreeNode.code).then(response => {
+        getNoRelateResInfoList(this.departId, this.currentTreeNode.id).then(response => {
           if (response.status === 200) {
             this.setListData({
               list: response.data.rows,

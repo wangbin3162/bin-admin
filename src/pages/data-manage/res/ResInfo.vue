@@ -374,7 +374,7 @@
           this.resource = res.data.data
           // 分隔类目编码,并显示后四位 210,C0204,1234
           this.resource.metadataCode = this.resource.resourceCode.slice(3, 8)
-          this.resource.resourceCode = this.resource.resourceCode.slice(8)
+          this.resource.resourceCode = this.resource.resourceCode.slice(-4)
           this.openEditPage('modify')
         })
       },

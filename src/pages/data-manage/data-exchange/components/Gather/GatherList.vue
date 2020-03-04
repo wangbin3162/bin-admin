@@ -335,7 +335,8 @@
                 this.submitDone(true)
                 this.handleFilter()
               } else {
-                this.submitDone(false)
+                // this.submitDone(false)
+                this.btnLoading = false // 按钮状态清空
                 this.$message({ type: 'danger', content: res.data.message })
               }
             })

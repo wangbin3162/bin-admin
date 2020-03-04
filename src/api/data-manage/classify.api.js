@@ -22,7 +22,8 @@ export function getClassifyList(query) {
       page: query.page - 1,
       classifyName: query.classifyName,
       classifyCode: query.classifyCode,
-      parentId: query.parentId
+      parentId: query.parentId,
+      sort: 'createDate,desc'
     }
   })
 }

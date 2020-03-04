@@ -49,10 +49,10 @@
             <b-alert v-if="currentTreeNode" style="margin: 0;">{{currentTreeNode.title}}</b-alert>
           </b-form-item>
           <b-form-item label="类目名称" prop="classifyName">
-            <b-input v-model.trim="classify.classifyName" placeholder="请输入类目名称" clearable :maxlength="30"></b-input>
+            <b-input v-model.trim="classify.classifyName" placeholder="请输入类目名称" clearable :maxlength="15"></b-input>
           </b-form-item>
           <b-form-item label="类目编码" prop="classifyCode">
-            <b-input v-model.trim="classify.classifyCode" placeholder="请输入类目编码" clearable
+            <b-input v-model.trim="classify.classifyCode" placeholder="请输入类目编码" clearable :maxlength="30"
                      :disabled="dialogStatus==='modify'"></b-input>
           </b-form-item>
           <b-form-item label="类目描述" prop="classifyDesc">
@@ -78,6 +78,21 @@
     name: 'Classify',
     mixins: [commonMixin, permission],
     data() {
+      const validateClassifyLength = (rule, value, callback) => {
+        let len = 0
+        for (let i = 0; i < value.length; i++) {
+          if (value.charCodeAt(i) > 127 || value.charCodeAt(i) === 94) {
+            len += 2
+          } else {
+            len++
+          }
+        }
+        if (len > 60) {
+          callback(new Error('类目编码长度超出限制'))
+        } else {
+          callback()
+        }
+      }
       const validateClassifyName = (rule, value, callback) => {
         if (value.length > 0) {
           api.oneClassifyName(this.classify).then(response => {
@@ -122,7 +137,7 @@
         classify: null,
         ruleValidate: {
           classifyName: [requiredRule, { validator: validateClassifyName, trigger: 'blur' }],
-          classifyCode: [requiredRule, { validator: validateClassifyCode, trigger: 'blur' }]
+          classifyCode: [requiredRule, { validator: validateClassifyLength, trigger: 'blur' }, { validator: validateClassifyCode, trigger: 'blur' }]
         },
         dialogFormVisible: false
       }
