@@ -23,7 +23,7 @@ export function getClassifyList(query) {
       classifyName: query.classifyName,
       classifyCode: query.classifyCode,
       parentId: query.parentId,
-      sort: 'createDate,desc'
+      sort: 'classifyCode,asc'
     }
   })
 }
