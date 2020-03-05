@@ -1,92 +1,63 @@
 <template>
-  <!--资源信息，信息项表格组件 for ResInfo.vue 模板参数项-->
-  <div style="padding: 10px 0;">
+  <!--模板参数 for DaInnerTemplate.vue 模板参数项-->
+  <div>
     <b-table disabled-hover :data="totalData" size="small" :columns="fieldsColumns">
-      <!--参数名-->
-      <template v-slot:paramName="scope">
-        <b-input v-model="totalData[scope.index].paramName" size="small" @on-change="emitValue"></b-input>
+      <template v-slot:paramName="{row,index}">
+        <b-input type="text" v-model="totalData[index].paramName" v-if="row.edit" size="mini"
+                 placeholder="参数名称"></b-input>
+        <span v-else>{{ row.paramName }}</span>
       </template>
-      <!--参数编码-->
-      <template v-slot:paramCode="scope">
-        <b-input v-model="totalData[scope.index].paramCode" size="small" @on-change="emitValue"></b-input>
+      <template v-slot:paramCode="{row,index}">
+        <b-input type="text" v-model="totalData[index].paramCode" v-if="row.edit" size="mini"
+                 placeholder="参数编码"></b-input>
+        <span v-else>{{  row.paramCode }}</span>
       </template>
-      <!--参数类型-->
-      <template v-slot:paramType="scope">
-        <b-select v-model="totalData[scope.index].paramType" append-to-body @on-change="emitValue" size="small">
-          <b-option v-for="(value,key) in dataTypeMap" :key="key" :value="key">{{ value }}</b-option>
+      <template v-slot:paramType="{row,index}">
+        <b-select v-model="totalData[index].paramType" v-if="row.edit" size="mini" placeholder="参数类型" append-to-body>
+          <b-option value="string">string</b-option>
+          <b-option value="number">number</b-option>
         </b-select>
+        <span v-else>{{ {row,index}.row.paramType }}</span>
       </template>
-      <!--是否必填-->
-      <template v-slot:isRequired="scope">
-        <b-switch v-model="totalData[scope.index].isRequired" size="small"
-                  true-value="Y" false-value="N"
-                  @on-change="emitValue"></b-switch>
+      <template v-slot:isRequired="{row,index}">
+        <b-switch v-model="totalData[index].isRequired" v-if="row.edit" true-value="Y" false-value="N">
+          <span slot="open">是</span>
+          <span slot="close">否</span>
+        </b-switch>
+        <span v-else>{{ isRequiredMap[row.isRequired] }}</span>
       </template>
-      <!--默认值-->
-      <template v-slot:defaultVal="scope">
-        <b-input v-model="totalData[scope.index].defaultVal" size="small" @on-change="emitValue"></b-input>
+      <template v-slot:defaultVal="{row,index}">
+        <b-input type="text" v-model="totalData[index].defaultVal" v-if="row.edit" size="mini"
+                 placeholder="默认值"></b-input>
+        <span v-else>{{ row.defaultVal }}</span>
       </template>
-      <!--参数说明-->
-      <template v-slot:paramDesc="scope">
-        <b-input v-model="totalData[scope.index].paramDesc" size="small" @on-change="emitValue"></b-input>
+      <template v-slot:paramDesc="{row,index}">
+        <b-input type="text" v-model="totalData[index].paramDesc" v-if="row.edit" size="mini"
+                 placeholder="参数描述"></b-input>
+        <span v-else>{{ row.paramDesc }}</span>
       </template>
-      <!--操作栏-->
-      <template v-slot:action="scope">
-        <b-button type="text" @click="handleModify(scope.row,scope.index)">编辑</b-button>
-        <b-button type="text" @click="handleDelete(scope.row,scope.index)">删除</b-button>
+      <template v-slot:action="{row,index}">
+        <div v-if="row.newOne">
+          <b-button @click="handleSave(row,index)" size="mini" type="success" transparent>添加</b-button>
+          <b-button @click="handleCancel(index)" size="mini" type="info" transparent>取消</b-button>
+        </div>
+        <div v-else>
+          <b-button v-if="row.edit" @click="handleSave(row,index)" size="mini" type="primary" transparent>保存</b-button>
+          <b-button v-else @click="handleEdit(index)" size="mini" type="primary" transparent>编辑</b-button>
+          <b-button v-if="row.edit" @click="handleCancel(index)" size="mini" type="info" transparent>取消</b-button>
+          <b-button v-else @click="handleRemove(index)" type="danger" size="mini" transparent>删除</b-button>
+        </div>
       </template>
     </b-table>
-    <!--编辑弹窗-->
-    <b-modal v-model="dialogFormVisible" width="800" title="修改信息项" :mask-closable="false">
-      <div style="padding-right: 20px;">
-        <b-form :model="item" ref="form" :rules="ruleValidate" :label-width="80">
-          <b-row>
-            <b-col span="12">
-              <b-form-item label="模板名称" prop="paramName" class="bin-form-item-required">
-                <b-input v-model="item.paramName" placeholder="请输入模板名称" clearable></b-input>
-              </b-form-item>
-            </b-col>
-            <b-col span="12">
-              <b-form-item label="模板编码" prop="paramCode" class="bin-form-item-required">
-                <b-input v-model="item.paramCode" placeholder="请输入模板编码" clearable></b-input>
-              </b-form-item>
-            </b-col>
-          </b-row>
-          <b-row>
-            <b-col span="12">
-              <b-form-item label="模板类型" prop="paramType">
-                <b-select v-model="item.paramType" placeholder="请选择类型" clearable>
-                  <b-option v-for="(value,key) in dataTypeMap" :value="key" :key="key">{{ value }}</b-option>
-                </b-select>
-              </b-form-item>
-            </b-col>
-            <b-col span="12">
-              <b-form-item label="是否必填">
-                <b-select v-model="item.isRequired">
-                  <b-option v-for="(value,key) in tokenizerMap" :key="key" :value="key">{{ value }}</b-option>
-                </b-select>
-              </b-form-item>
-            </b-col>
-          </b-row>
-          <b-form-item label="默认值" prop="defaultVal" class="bin-form-item-required">
-            <b-input v-model="item.defaultVal" placeholder="请输入默认值" clearable></b-input>
-          </b-form-item>
-          <b-form-item label="参数说明" prop="paramDesc" class="bin-form-item-required">
-            <b-input v-model="item.paramDesc" placeholder="请输入参数说明" clearable></b-input>
-          </b-form-item>
-        </b-form>
-      </div>
-      <div slot="footer">
-        <b-button type="primary" @click="handleSubmit">确 定</b-button>
-        <b-button @click="dialogFormVisible = false">取 消</b-button>
-      </div>
-    </b-modal>
+    <b-button type="dashed" size="small" icon="ios-add"
+              style="width: 100%;margin-top: 16px;margin-bottom: 8px;"
+              @click="handleAdd">添加参数
+    </b-button>
   </div>
 </template>
 
 <script>
   import { deepCopy } from '../../../../common/utils/assist'
-  import * as api from '../../../../api/data-analyze/da-inner-temp.api'
   // 非空字段提示
   const requiredRule = { required: true, message: '必填项', trigger: 'blur' }
 
@@ -98,178 +69,105 @@
         default() {
           return []
         }
-      },
-      dataTypeMap: {
-        type: Object,
-        required: true
       }
     },
     data() {
       return {
         fieldsColumns: [
-          { title: '参数名称', key: 'paramName' },
+          { type: 'index', width: 50, align: 'center' },
+          { title: '参数名称', slot: 'paramName' },
           { title: '参数编码', slot: 'paramCode' },
-          { title: '参数类型', slot: 'paramType' },
-          { title: '是否必填', slot: 'isRequired' },
-          { title: '默认值', slot: 'defaultVal', width: 200 },
-          { title: '参数描述', slot: 'paramDesc', width: 140, align: 'center' },
-          { title: '操作', slot: 'action', width: 100, align: 'center' }
+          { title: '参数类型', slot: 'paramType', width: 100 },
+          { title: '是否必填', slot: 'isRequired', width: 100, align: 'center' },
+          { title: '默认值', slot: 'defaultVal' },
+          { title: '参数说明', slot: 'paramDesc' },
+          { title: '操作', slot: 'action', width: 150, align: 'center' }
         ],
         totalData: [],
-        item: null,
-        ruleValidate: {
-          paramName: [requiredRule],
-          paramCode: [requiredRule],
-          paramType: [{ required: true, message: '参数类型必选', trigger: 'change' }],
-          isRequired: [{ required: true, message: '是否必填必选', trigger: 'change' }]
+        beforeEditItem: {
+          paramName: '',
+          paramCode: '',
+          paramType: '',
+          isRequired: '',
+          defaultVal: '',
+          paramDesc: ''
         },
-        formLoading: false,
-        dialogFormVisible: false, // 编辑页是否显示
-        dialogStatus: '',
-        currentIndex: -1,
-        tokenizerMap: { N: '否', Y: '是' }
+        isRequiredMap: { N: '否', Y: '是' }
       }
-    },
-    created() {
-      this.resetItem()
     },
     watch: {
       value: {
         handler(val) {
-          this.totalData = this.formatItems(val)
+          this.totalData = deepCopy(val)
         },
         immediate: true
       }
     },
     methods: {
-      // 针对传入的数组对是否分词进行初始化
-      formatItems(items) {
-        return items.map(i => {
-          let item = { ...i }
-          // 如果已经有值
-          if (item.isRequired) {
-            // 如果设置了有效值则必须为Y
-            if (item.validValue.length > 0) {
-              item.isRequired = 'Y'
-            }
-          } else {
-            // 如果类型为字符型
-            if (item.dataType === 'string') {
-              // 如果有效值存在
-              item.isRequired = item.validValue.length > 0 ? 'Y' : 'N'
-            } else {
-              item.validValue = '' // 如果类型不是字符型，则有效值必须为空
-              item.isRequired = '' // 是否分词也必须为空
-            }
-          }
-          return item
-        })
-      },
-      // 下拉选择填充有效值事件
-      handleCommand(type, index) {
-        this.currentIndex = index // 当前选中的行数
-        if (type === 'DICT') {
-          this.$refs.sysDictChoose && this.$refs.sysDictChoose.open()
-        } else {
-          const valid = this.totalData[this.currentIndex].validValue
-          this.$refs.enumEdit && this.$refs.enumEdit.open(valid)
+      handleAdd() {
+        let newRow = {
+          paramName: '', // 参数名称
+          paramCode: '', // 参数编码
+          paramType: 'string', // 参数类型
+          isRequired: 'Y', // 是否必填
+          defaultVal: '', // 默认值
+          paramDesc: '', // 参数说明
+          edit: false,
+          newOne: true
         }
-      },
-      // 清空有效值事件
-      handleClearValidValue(index) {
-        this.currentIndex = index // 当前清空有效值的行数
-        this.totalData[this.currentIndex].validValue = ''
-        // 清空当前修改行
-        this.currentIndex = -1
-        // emit-input
+        this.totalData.push(newRow)
+        this.handleEdit(this.totalData.length - 1)
         this.emitValue()
       },
-      // 点击校验配置事件
-      handleClickValidate(index) {
-        this.currentIndex = index // 当前选中的行数
-        this.$refs.validateEdit && this.$refs.validateEdit.open(this.totalData[index].checkRules)
+      handleEdit(index) {
+        this.totalData[index].edit = true
       },
-      // 拖拽排序
-      handleDragDrop(index1, index2) {
-        // 复制两个索引位置的项
-        let tmp = deepCopy(this.totalData[index1])
-        // 交换
-        this.totalData[index1] = deepCopy(this.totalData[index2])
-        this.totalData[index2] = tmp
-        // 重置操作
-        this.resetHandle('拖动排序成功')
+      handleCancel(index) {
+        if (this.totalData[index].newOne) { // 如果当前是新增未保存的则取消即为移除
+          this.totalData.splice(index, 1)
+          this.emitValue() // 移除后需要更新
+        } else { // 编辑的则设置取消
+          // 从value里获取当前行恢复
+          const { paramName, paramCode, paramType, isRequired, defaultVal, paramDesc } = this.value[index]
+          this.totalData[index].paramName = paramName
+          this.totalData[index].paramCode = paramCode
+          this.totalData[index].paramType = paramType
+          this.totalData[index].isRequired = isRequired
+          this.totalData[index].defaultVal = defaultVal
+          this.totalData[index].paramDesc = paramDesc
+          this.totalData[index].edit = false
+        }
+      },
+      handleRemove(index) {
+        this.$confirm({
+          title: '警告',
+          content: '确认删除此参数项吗？',
+          onOk: () => {
+            this.totalData.splice(index, 1) // 清除一个未保存的项
+            this.resetHandle('删除项成功')
+          }
+        })
+      },
+      handleSave(row, index) {
+        if (row.paramName.length === 0 || row.paramCode.length === 0) {
+          this.$message({ type: 'danger', content: '参数名称和编码需要填写完整' })
+          return
+        }
+        this.totalData[index].edit = false
+        this.totalData[index].newOne = false
+        this.resetHandle('保存成功')
       },
       // 重置操作和更新model
       resetHandle(message) {
-        // 清空当前修改行
-        this.currentIndex = -1
         // 1.emit-input
         this.emitValue()
-        // 2.关闭窗口
-        this.dialogFormVisible = false
         // 3.打印操作
-        this.$message(message)
-      },
-      // 修改信息项
-      handleModify(row, index) {
-        this.item = deepCopy(row)
-        this.currentIndex = index // 当前选中的行数
-        this.openDialog('modify')
-      },
-      handleDelete(row) {
-        let theme = { ...row }
-        this.$confirm({
-          title: '警告',
-          content: `确实要删除当前参数吗？`,
-          loading: true,
-          onOk: () => {
-            api.removeParam(theme).then(res => {
-              if (res.data.code === '0') {
-                this.$message({ type: 'success', content: '操作成功' })
-                this.$modal.remove()
-                this.handleFilter()
-              } else {
-                this.$modal.remove()
-                this.$message({ type: 'danger', content: res.data.message })
-              }
-            })
-          }
-        })
-      },
-      // 打开窗口
-      openDialog(status) {
-        this.$refs.form && this.$refs.form.resetFields()
-        this.dialogFormVisible = true
-        this.dialogStatus = status
-      },
-      // 表单提交,只需要缓存至数组即可
-      handleSubmit() {
-        this.$refs.form.validate((valid) => {
-          if (valid) {
-            if (this.dialogStatus === 'modify') {
-              this.totalData[this.currentIndex] = deepCopy(this.item)
-            }
-            this.resetHandle('修改成功')
-          }
-        })
+        this.$message({ type: 'success', content: message })
       },
       // 更新model value
       emitValue() {
         this.$emit('input', this.totalData)
         this.$emit('on-change', this.totalData)
-      },
-      // 初始化信息项操作
-      resetItem() {
-        this.item = {
-          paramName: '',
-          paramCode: '',
-          dataType: '',
-          paramType: 'STRING', // 控件类型,默认文本框
-          paramDesc: '', // 提示信息
-          defaultVal: '', // 有效值
-          isRequired: '', // 是否必填
-          checkRules: '{"rules":["$required(obj, value, {\\"message\\":\\"${title}不可以为空\\"})"]}'
-        }
       }
     }
   }

@@ -29,7 +29,7 @@
                  @on-close="handleCloseTag(index)">
             {{ tag.departName }}
           </b-tag>
-          <b-button type="warning" size="small" transparent style="width: 100%;margin: 10px 0;"
+          <b-button type="dashed" size="small" style="width: 100%;margin: 10px 0;"
                     v-if="selectedList.length" @click="postSelectedList">
             确定分配
           </b-button>

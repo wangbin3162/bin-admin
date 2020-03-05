@@ -21,7 +21,7 @@
         </template>
       </template>
     </b-table>
-    <b-button type="primary" size="small" icon="ios-add" transparent
+    <b-button type="dashed" size="small" icon="ios-add"
               style="width: 100%;margin-top: 16px;margin-bottom: 8px;"
               @click="handleCreateItem">添加信息项
     </b-button>
@@ -159,8 +159,8 @@
         if (value <= 0) {
           callback(new Error('数据长度必须大于0'))
         } else if (!reg.test(value)) {
-        callback(new Error('数据长度必须为整数'))
-      } else {
+          callback(new Error('数据长度必须为整数'))
+        } else {
           callback()
         }
       }

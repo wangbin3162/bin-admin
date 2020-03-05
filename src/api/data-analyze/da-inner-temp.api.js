@@ -4,8 +4,11 @@ import request from '../request'
 /* 获取模板列表(树) */
 export function getTemplateTree() {
   return request({
-    url: '/da/innerTemplate/allList',
-    method: 'get'
+    url: 'api/confType/tree',
+    method: 'get',
+    params: {
+      typeCode: 'inner_template_type'
+    }
   })
 }
 
@@ -23,25 +26,8 @@ export function getInnerTemplateList(query) {
   })
 }
 
-/* 新增内置模板 */
-export function createInnerTemp(item) {
-  const data = {
-    tempName: item.tempName,
-    tempCode: item.tempCode,
-    tempType: item.tempType,
-    tempSource: item.tempSource,
-    tempDesc: item.tempDesc,
-    fields: item.fields
-  }
-  return request({
-    url: '/da/innerTemplate/add',
-    method: 'post',
-    data
-  })
-}
-
 /* 删除内置模板 */
-export function handleRemove(item) {
+export function removeInnerTemp(item) {
   return request({
     url: '/da/innerTemplate/remove',
     method: 'post',
@@ -51,28 +37,43 @@ export function handleRemove(item) {
   })
 }
 
-/* 删除模板参数 */
-export function removeParam(item) {
+/* 查询模板详情  */
+export function getInnerTempDetail(id) {
   return request({
-    url: '/da/templateParam/remove',
+    url: '/da/innerTemplate/detail',
+    method: 'get',
+    params: { id }
+  })
+}
+
+/* 新增内置模板 */
+export function createInnerTemp(template, params) {
+  return request({
+    url: '/da/innerTemplate/add',
     method: 'post',
-    params: {
-      id: item.id
+    data: {
+      tempName: template.tempName,
+      tempCode: template.tempCode,
+      tempType: template.tempType,
+      tempSource: template.tempSource,
+      tempDesc: template.tempDesc,
+      fields: params
     }
   })
 }
 
-/* 修改字典项 */
-export function modifyInnerTemplate(item) {
-  const data = {
-    id: item.id,
-    name: item.name,
-    code: item.code,
-    describe: item.describe
-  }
+/* 修改模板 */
+export function modifyInnerTemplate(template, params) {
   return request({
-    url: '/da/theme/modifyDaTheme',
+    url: '/da/innerTemplate/modify',
     method: 'post',
-    data
+    data: {
+      id: template.id,
+      tempName: template.tempName,
+      tempType: template.tempType,
+      tempSource: template.tempSource,
+      tempDesc: template.tempDesc,
+      fields: params
+    }
   })
 }

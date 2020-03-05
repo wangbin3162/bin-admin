@@ -138,7 +138,7 @@
               </b-button>
             </template>
           </b-table>
-          <b-button type="primary" size="small" icon="ios-add" transparent
+          <b-button type="dashed" size="small" icon="ios-add"
                     style="width: 100%;margin-top: 16px;margin-bottom: 8px;"
                     @click="addBufferRow">添加动作
           </b-button>
