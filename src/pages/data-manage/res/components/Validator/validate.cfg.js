@@ -959,9 +959,9 @@ export function jsonDataToRules(item, currentStrip) {
       if (item.controlType === 'NUMBER_TEXT') {
         opts.type = 'number'
       }
-      console.log(opts)
+      // console.log(opts)
       if (funcValidator) {
-        console.log(funcValidator)
+        // console.log(funcValidator)
         let result = funcValidator(currentStrip, null, opts)
         if (result) {
           ret.push(result)
