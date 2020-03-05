@@ -150,7 +150,7 @@
           let mapper = node => {
             return {
               id: node.id,
-              title: node.menuName,
+              title: node.text,
               children: (node.children && node.children.map(mapper)) || []
             }
           }

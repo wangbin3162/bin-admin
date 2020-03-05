@@ -74,7 +74,7 @@
           resourceName: '', // 资源名称(中文名)
           resProperty: '', // 资源性质
           availableStatus: 'available', // 可用状态
-          status: 'audited'// 状态
+          status: 'audited' // 状态
         },
         deptListLoading: false,
         deptMap: { 'DOMAIN': '机构', 'NORMAL': '一般组织' },

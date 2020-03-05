@@ -71,7 +71,7 @@
           <b-row>
             <b-col span="12">
               <b-form-item label="所属类目" class="bin-form-item-required">
-                <b-alert v-if="currentTreeNode">{{metadata.dirClassifyName}}</b-alert>
+                <b-alert v-if="currentTreeNode">{{currentTreeNode.title}}</b-alert>
               </b-form-item>
             </b-col>
             <b-col span="12">

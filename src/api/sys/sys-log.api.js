@@ -8,6 +8,7 @@ export function getLogList(query) {
       size: query.size,
       page: query.page - 1,
       operateName: query.operateName,
+      moduleName: query.moduleName,
       sort: 'operateDate,desc'
     }
   })
