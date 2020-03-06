@@ -11,7 +11,8 @@
         </b-button>
       </div>
     </div>
-    <b-modal v-model="dialogFormVisible" title="选择节点" width="860" class="layout-inner" :mask-closable="false">
+    <b-modal v-model="dialogFormVisible" title="选择节点" width="860" class="layout-inner" append-to-body
+             :mask-closable="false">
       <div>
         <!--查询条件-->
         <v-filter-bar>
