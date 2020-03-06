@@ -1,6 +1,6 @@
 import layout from '../../layout'
 
-// 数据治理
+// 数据分析
 export default {
   path: '/dataAnalyze',
   component: layout,
