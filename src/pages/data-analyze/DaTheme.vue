@@ -76,7 +76,6 @@
       const validateCode = (rule, value, callback) => {
         if (value.length > 0) {
           api.oneCode(this.current).then(response => {
-            console.log(response)
             if (response.data.code === '0') {
               callback()
             } else {

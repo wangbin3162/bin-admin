@@ -92,7 +92,6 @@
             </b-col>
           </b-row>
         </b-form>
-        <p>{{exchangeNode}}</p>
         <!--保存提交-->
         <template slot="footer">
           <b-button type="primary" @click="handleSubmit" :loading="btnLoading">提 交</b-button>
