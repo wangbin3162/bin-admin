@@ -6,8 +6,10 @@
           <v-filter-item title="接口名称">
             <b-input v-model.trim="listQuery.name" size="small" placeholder="请输入" clearable></b-input>
           </v-filter-item>
-          <v-filter-item title="接口编码">
-            <b-input v-model.trim="listQuery.code" size="small" placeholder="请输入" clearable></b-input>
+          <v-filter-item title="接口类型">
+            <b-select style="width:200px" v-model="listQuery.type" clearable>
+              <b-option v-for="(value,key) in typeMap" :value="key" :key="key">{{ value }}</b-option>
+            </b-select>
           </v-filter-item>
           <!--添加查询按钮位置-->
           <v-filter-item @on-search="handleFilter" @on-reset="resetQuery"></v-filter-item>
@@ -50,8 +52,7 @@
           <b-row>
             <b-col span="12">
               <b-form-item label="接口类型" prop="type">
-                <!--<b-input v-model="current.type" placeholder="请输入接口类型"></b-input>-->
-                <b-select style="width:200px" v-model="current.type">
+                <b-select style="width:200px" v-model="current.type" @on-change="initType">
                   <b-option v-for="(value,key) in typeMap" :value="key" :key="key">{{ value }}</b-option>
                 </b-select>
               </b-form-item>
@@ -59,21 +60,21 @@
           </b-row>
           <b-row v-if="current.type === 'SQL'">
             <b-col span="12">
-              <b-form-item label="sql语句" prop="sql">
+              <b-form-item label="sql语句">
                 <b-input v-model="current.sql" placeholder="请输入sql语句" type="textarea"></b-input>
               </b-form-item>
             </b-col>
           </b-row>
           <b-row v-if="current.type === 'URL'">
             <b-col span="12">
-              <b-form-item label="url" prop="url">
+              <b-form-item label="url">
                 <b-input v-model="current.url" placeholder="请输入url"></b-input>
               </b-form-item>
             </b-col>
           </b-row>
           <b-row v-if="current.type === 'TEMPLATE'">
             <b-col span="12">
-              <b-form-item label="模板" prop="sql">
+              <b-form-item label="模板">
                 <template-choose v-model="current.tempId"
                                  :default-name="tempName"></template-choose>
               </b-form-item>
@@ -145,7 +146,7 @@
         moduleName: 'API',
         listQuery: {
           name: '',
-          code: ''
+          type: ''
         },
         columns: [
           {type: 'index', width: 50, align: 'center'},
@@ -155,7 +156,7 @@
           {title: '操作时间', key: 'createDate'},
           {title: '操作', slot: 'action', width: 180, align: 'center'}
         ],
-        current: null,
+        current: {},
         typeMap: {'0': 'sql', '1': 'url', '2': '模板'},
         dataTypeOptions: [
           {label: '字符型', value: 'string'},
@@ -174,6 +175,14 @@
       this.init()
     },
     methods: {
+      initType(value){
+        if (this.dialogStatus === 'create'){
+          this.tempName =''
+          this.current.tempId=''
+          this.current.url =''
+          this.current.sql =''
+        }
+      },
       init() {
         getApiType().then(res => {
           if (res.status === 200) {
@@ -232,7 +241,9 @@
           describe: '',
           code: '',
           createBy: '',
-          tempId: ''
+          tempId: '',
+          url:'',
+          sql:'',
         }
         this.tempName = ''
       },
@@ -252,7 +263,6 @@
           if (valid) {
             let fun = this.dialogStatus === 'create' ? api.createTheme : api.modifyTheme
             fun(this.current).then(res => {
-              console.log(res)
               if (res.data.code === '0') {
                 this.btnLoading = false
                 this.dialogStatus = ''

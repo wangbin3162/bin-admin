@@ -2,7 +2,7 @@
 import request from '../request'
 
 const urlMap = {
-  search: '/da/api/searchDaTheme',
+  search: '/da/api/searchDaApi',
   add: '/da/api/add',
   modify: '/da/api/modify',
   remove: '/da/api/remove',
@@ -16,7 +16,7 @@ export function getApiList(query) {
       size: query.size,
       page: query.page - 1,
       name: query.name,
-      code: query.code,
+      type: query.type,
       sort: 'createDate,desc'
     }
   })
