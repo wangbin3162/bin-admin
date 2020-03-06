@@ -290,7 +290,6 @@
       searchList() {
         this.setListData()
         api.getBusinessTemplateList(this.listQuery).then(response => {
-          console.log(response)
           if (response.status === 200) {
             this.setListData({
               list: response.data.rows,
