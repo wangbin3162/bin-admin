@@ -2,14 +2,14 @@
   <!--选择资源 for SwitchingMission.vue -->
   <div>
     <div flex="box:last">
-      <b-input v-model="current" placeholder="选择填充" readonly clearable
+      <b-input v-model="current" placeholder="选择模板" readonly clearable
                @on-clear="handleClear"></b-input>
       <b-button type="primary" v-waves @click="handleShowModal"
                 style="padding: 10px;margin-left: 0;font-size: 12px;">
         选择
       </b-button>
     </div>
-    <b-modal v-model="dialogFormVisible" title="选择资源" width="1020" class="layout-inner" :mask-closable="false">
+    <b-modal v-model="dialogFormVisible" title="选择模板" width="1020" class="layout-inner" :mask-closable="false">
       <v-table-wrap style="padding: 0;">
         <!--树结构-->
         <b-tree :data="treeData" slot="tree" :lock-select="lockTreeSelect"
@@ -27,8 +27,6 @@
         </v-filter-bar>
         <!--中央表格-->
         <b-table :columns="columns" :data="list" :loading="listLoading" size="small">
-          <template v-slot:sharedType="scope">{{ shareMap[scope.row.sharedType] }}</template>
-          <template v-slot:status="scope">{{ resStatusMap[scope.row.status] }}</template>
           <!--操作栏-->
           <template v-slot:action="scope">
             <b-button type="primary" size="mini" plain @click="chooseOne(scope.row)">
@@ -91,8 +89,6 @@
           {title: '模板操作', slot: 'action', width: 130, align: 'center'}
         ],
         current: '',
-        resStatusMap: {edit: '草稿', audited: '已发布', closed: '已删除'}, // 资源状态映射 #static
-        shareMap: {PUBLIC: '共享', PRIVATE: '不共享', DEPART_RANGE: '有条件共享'} // 共享属性 #static
       }
     },
     created() {
