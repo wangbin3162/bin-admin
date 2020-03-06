@@ -12,6 +12,17 @@ export function getTemplateTree() {
   })
 }
 
+/* 获取模板列表(树) */
+export function getTemplateTreeAll() {
+  return request({
+    url: 'management/confType/templateTree',
+    method: 'get',
+    params: {
+      typeCode: 'inner_template_type:outer_template_type'
+    }
+  })
+}
+
 /* 获取所有列表 */
 export function getInnerTemplateList(query) {
   return request.get('/da/innerTemplate/search', {
