@@ -87,7 +87,7 @@
               </b-form-item>
             </b-col>
           </b-row>
-          <template v-if="scheme.flowDirection.length>0">
+          <template v-if="scheme.flowDirection&&scheme.flowDirection.length>0">
             <b-divider dashed></b-divider>
             <b-row>
               <b-col span="12">

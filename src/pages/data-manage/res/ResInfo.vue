@@ -504,7 +504,7 @@
             fun(this.resource).then(res => {
               if (res.data.code === '0') {
                 this.submitDone(true)
-                this.searchList()
+                this.handleFilter()
               } else {
                 this.submitDone(false)
                 this.$message({ type: 'danger', content: res.data.message })

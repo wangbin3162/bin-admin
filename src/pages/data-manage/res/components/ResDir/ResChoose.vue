@@ -143,7 +143,6 @@
           }
         })
       },
-      // 树节点格式化mapper
       checkRowSelected(row) {
         const dept = this.selectedList.find(item => {
           return item.resId === row.resourceKey
@@ -164,8 +163,8 @@
         }
       },
       open(key) {
-        this.getEnum()
         this.departId = key
+        this.selectedList = []
         this.searchList()
       },
       cancelOutTreeLock() {

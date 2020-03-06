@@ -22,6 +22,9 @@
         </v-table-tool-bar>
         <!--中央表格-->
         <b-table :columns="columns" :data="list" :loading="listLoading">
+          <template v-slot:url="scope">
+            <router-link :to="scope.row.url" tag="a">预览</router-link>
+          </template>
           <!--操作栏-->
           <template v-slot:action="scope">
             <b-button type="text" @click="handleModify(scope.row)">修改</b-button>
@@ -76,7 +79,6 @@
       const validateCode = (rule, value, callback) => {
         if (value.length > 0) {
           api.oneCode(this.current).then(response => {
-            console.log(response)
             if (response.data.code === '0') {
               callback()
             } else {
@@ -99,6 +101,7 @@
           { title: '名称', key: 'name' },
           { title: '编码', key: 'code' },
           { title: '描述', key: 'describe' },
+          { title: '预览', slot: 'url', width: 130, align: 'center' },
           { title: '操作', slot: 'action', width: 130, align: 'center' }
         ],
         current: null,
