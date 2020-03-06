@@ -148,7 +148,11 @@
         ],
         ruleValidate: {
           tempName: [requiredRule],
-          tempCode: [requiredRule],
+          tempCode: [requiredRule, {
+            pattern: /^sys_[a-zA-Z0-9_]+ *$/,
+            message: '内置模板sys_开头(包含字母、数字和下划线)',
+            trigger: 'blur'
+          }],
           tempType: [requiredRule],
           tempSource: [requiredRule]
         }
@@ -195,6 +199,7 @@
       handleCreate() {
         // 获取资源标识符
         this.resetTemplate()
+        this.template.tempCode = 'sys_'
         this.openEditPage('create')
       },
       // 弹窗提示是否删除

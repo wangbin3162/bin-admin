@@ -144,7 +144,7 @@
           content: '确认删除此参数项吗？',
           onOk: () => {
             this.totalData.splice(index, 1) // 清除一个未保存的项
-            this.resetHandle('删除项成功')
+            this.emitValue()
           }
         })
       },
@@ -155,14 +155,7 @@
         }
         this.totalData[index].edit = false
         this.totalData[index].newOne = false
-        this.resetHandle('保存成功')
-      },
-      // 重置操作和更新model
-      resetHandle(message) {
-        // 1.emit-input
         this.emitValue()
-        // 3.打印操作
-        this.$message({ type: 'success', content: message })
       },
       // 更新model value
       emitValue() {

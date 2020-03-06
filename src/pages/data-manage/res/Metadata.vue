@@ -129,7 +129,7 @@
           <v-key-label label="类目类别" is-half is-first>{{ metadata.dirClassifyName }}</v-key-label>
           <v-key-label label="英文名" is-half>{{ metadata.tableName }}</v-key-label>
           <v-key-label label="名称" is-half is-first>{{ metadata.metadataName }}</v-key-label>
-          <v-key-label label="主体类别" is-half>{{ metadata.personClass }}</v-key-label>
+          <v-key-label label="主体类别" is-half>{{ personClassMap[metadata.personClass] }}</v-key-label>
           <v-key-label label="资源标识符" is-half is-first>{{ metadata.metadataKey }}</v-key-label>
           <v-key-label label="状态" is-half>{{ statusMap[metadata.status] }}</v-key-label>
           <v-key-label label="摘要" is-bottom>{{ metadata.metadataDesc }}</v-key-label>
