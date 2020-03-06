@@ -18,7 +18,8 @@ export function getSelectedResList(key) {
     url: '/api/dir/depart/byDepart',
     method: 'get',
     params: {
-      departId: key
+      departId: key,
+      resourceName: ''
     }
   })
 }
@@ -57,17 +58,20 @@ export function getRelateResInfoList(query) {
     url: '/api/dir/depart/byDepart',
     method: 'get',
     params: {
-      departId: query.departId
+      departId: query.departId,
+      resourceName: query.resourceName
     }
   })
 }
 
 /* 获取部门未关联的资源信息列表 */
-export function getNoRelateResInfoList(departId, code) {
+export function getNoRelateResInfoList(departId, code, query) {
   return request({
     url: '/api/dir/depart/noRelate',
     method: 'get',
     params: {
+      size: query.size,
+      page: query.page - 1,
       departId: departId,
       code: code
     }

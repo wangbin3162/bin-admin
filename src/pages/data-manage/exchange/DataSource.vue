@@ -265,7 +265,7 @@
           dbType: '',
           driverClass: '',
           host: '',
-          port: 8080,
+          port: '',
           userName: '',
           password: ''
         }
