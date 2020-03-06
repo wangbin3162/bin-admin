@@ -201,7 +201,8 @@
           size: 10,
           departName: '',
           status: this.ENUM.ENABLE,
-          departId: this.currentTreeNode ? this.currentTreeNode.id : ''
+          departId: this.currentTreeNode ? this.currentTreeNode.id : '',
+          resourceName: ''
         }
         this.handleFilter()
       },

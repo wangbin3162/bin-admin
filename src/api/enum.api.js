@@ -20,6 +20,11 @@ export function getDeptType() {
   return request.get('/management/enum/departType')
 }
 
+// 部门类型枚举
+export function getApiType() {
+  return request.get('/management/enum/apiType')
+}
+
 // 通用yes no 枚举
 export function getYn() {
   return request.get('/management/enum/yn')

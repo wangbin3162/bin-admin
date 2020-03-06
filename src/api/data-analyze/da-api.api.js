@@ -5,7 +5,8 @@ const urlMap = {
   search: '/da/api/searchDaTheme',
   add: '/da/api/add',
   modify: '/da/api/modify',
-  remove: '/da/api/remove'
+  remove: '/da/api/remove',
+  detail: '/da/api/daApiDetail',
 }
 
 /* 获取所有列表 */
@@ -20,6 +21,15 @@ export function getApiList(query) {
     }
   })
 }
+/* 获取明细 */
+export function getApiDetail(id) {
+  console.log(id)
+  return request.get(urlMap.detail, {
+    params: {
+      id : id
+    }
+  })
+}
 /* 编码唯一 */
 export function oneCode(item) {
   return request({
@@ -30,22 +40,17 @@ export function oneCode(item) {
 
 /* 新增字典项 */
 export function createTheme(item) {
-  const data = {
-    name: item.name,
-    code: item.code,
-    describe: item.describe
-  }
   return request({
-    url: '/da/theme/addDaTheme',
+    url: '/da/api/addDaApi',
     method: 'post',
-    data
+    data: item
   })
 }
 
 /* 删除用户信息 */
 export function handleRemove(item) {
   return request({
-    url: '/da/theme/removeDaTheme',
+    url: '/da/api/removeDaApi',
     method: 'post',
     params: {
       id: item.id
@@ -55,15 +60,9 @@ export function handleRemove(item) {
 
 /* 修改字典项 */
 export function modifyTheme(item) {
-  const data = {
-    id: item.id,
-    name: item.name,
-    code: item.code,
-    describe: item.describe
-  }
   return request({
-    url: '/da/theme/modifyDaTheme',
+    url: '/da/api/modifyDaApi',
     method: 'post',
-    data
+    data: item
   })
 }

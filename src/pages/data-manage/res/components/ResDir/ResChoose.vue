@@ -276,7 +276,7 @@
       // 查询所有资源列表
       searchList() {
         this.setListData()
-        getNoRelateResInfoList(this.departId, this.currentTreeNode.code).then(response => {
+        getNoRelateResInfoList(this.departId, this.currentTreeNode.code, this.listQuery).then(response => {
           if (response.status === 200) {
             this.setListData({
               list: response.data.rows,

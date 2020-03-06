@@ -7,25 +7,14 @@ export function getTemplateTree() {
     url: 'api/confType/tree',
     method: 'get',
     params: {
-      typeCode: 'inner_template_type'
-    }
-  })
-}
-
-/* 获取模板列表(树) */
-export function getTemplateTreeAll() {
-  return request({
-    url: 'management/confType/templateTree',
-    method: 'get',
-    params: {
-      typeCode: 'inner_template_type:outer_template_type'
+      typeCode: 'outer_template_type'
     }
   })
 }
 
 /* 获取所有列表 */
-export function getInnerTemplateList(query) {
-  return request.get('/da/innerTemplate/search', {
+export function getBusinessTemplateList(query) {
+  return request.get('/da/businessTemplate/search', {
     params: {
       size: query.size,
       page: query.page - 1,
@@ -38,9 +27,9 @@ export function getInnerTemplateList(query) {
 }
 
 /* 删除内置模板 */
-export function removeInnerTemp(item) {
+export function removeBusinessTemp(item) {
   return request({
-    url: '/da/innerTemplate/remove',
+    url: '/da/businessTemplate/remove',
     method: 'post',
     params: {
       id: item.id
@@ -49,18 +38,18 @@ export function removeInnerTemp(item) {
 }
 
 /* 查询模板详情  */
-export function getInnerTempDetail(id) {
+export function getBusinessTempDetail(id) {
   return request({
-    url: '/da/innerTemplate/detail',
+    url: '/da/businessTemplate/detail',
     method: 'get',
     params: { id }
   })
 }
 
 /* 新增内置模板 */
-export function createInnerTemp(template, params) {
+export function createBusinessTemp(template, params) {
   return request({
-    url: '/da/innerTemplate/add',
+    url: '/da/businessTemplate/add',
     method: 'post',
     data: {
       tempName: template.tempName,
@@ -74,9 +63,9 @@ export function createInnerTemp(template, params) {
 }
 
 /* 修改模板 */
-export function modifyInnerTemplate(template, params) {
+export function modifyBusinessTemplate(template, params) {
   return request({
-    url: '/da/innerTemplate/modify',
+    url: '/da/businessTemplate/modify',
     method: 'post',
     data: {
       id: template.id,
