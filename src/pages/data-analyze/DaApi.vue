@@ -36,7 +36,6 @@
                 @on-page-size-change="handleSizeChange"></b-page>
       </v-table-wrap>
     </page-header-wrap>
-
     <page-header-wrap v-show="isEdit" :title="editTitle" show-close @on-close="handleCancel">
       <v-edit-wrap>
         <b-form :model="current" ref="form" :rules="ruleValidate" :label-width="130">
@@ -46,48 +45,27 @@
                 <b-input v-model="current.name" placeholder="请输入接口名称"></b-input>
               </b-form-item>
             </b-col>
-          </b-row>
-          <b-row>
             <b-col span="12">
               <b-form-item label="接口类型" prop="type">
-                <!--<b-input v-model="current.type" placeholder="请输入接口类型"></b-input>-->
-                <b-select style="width:200px" v-model="current.type">
+                <b-select v-model="current.type">
                   <b-option v-for="(value,key) in typeMap" :value="key" :key="key">{{ value }}</b-option>
                 </b-select>
               </b-form-item>
             </b-col>
           </b-row>
-          <b-row v-if="current.type === 'SQL'">
-            <b-col span="12">
-              <b-form-item label="sql语句" prop="sql">
-                <b-input v-model="current.sql" placeholder="请输入sql语句" type="textarea"></b-input>
-              </b-form-item>
-            </b-col>
-          </b-row>
-          <b-row v-if="current.type === 'URL'">
-            <b-col span="12">
-              <b-form-item label="url" prop="url">
-                <b-input v-model="current.url" placeholder="请输入url"></b-input>
-              </b-form-item>
-            </b-col>
-          </b-row>
-          <b-row v-if="current.type === 'TEMPLATE'">
-            <b-col span="12">
-              <b-form-item label="模板" prop="sql">
-                <template-choose v-model="current.tempId"
-                                 :default-name="tempName"></template-choose>
-              </b-form-item>
-            </b-col>
-          </b-row>
-
-          <b-row>
-            <b-col span="12">
-              <b-form-item label="接口描述" prop="describe">
-                <b-input v-model="current.describe" placeholder="请输入接口描述" type="textarea"></b-input>
-              </b-form-item>
-            </b-col>
-          </b-row>
-          <!--<p>{{current}}</p>-->
+          <b-form-item v-if="current.type === 'SQL'" label="sql语句" prop="sql">
+            <b-input v-model="current.sql" placeholder="请输入sql语句" type="textarea"></b-input>
+          </b-form-item>
+          <b-form-item v-if="current.type === 'URL'" label="url" prop="url">
+            <b-input v-model="current.url" placeholder="请输入url"></b-input>
+          </b-form-item>
+          <b-form-item v-if="current.type === 'TEMPLATE'" label="模板" prop="tempId">
+            <template-choose v-model="current.tempId"
+                             :default-name="tempName"></template-choose>
+          </b-form-item>
+          <b-form-item label="接口描述" prop="describe">
+            <b-input v-model="current.describe" placeholder="请输入接口描述" type="textarea"></b-input>
+          </b-form-item>
         </b-form>
         <!--信息项-->
         <template slot="full">
@@ -95,9 +73,9 @@
             <b-tag type="primary">新增参数信息</b-tag>
           </div>
           <!--信息项表格组件-->
-          <daApi-Fields v-model="current.daParameters"
-                        :data-type-options="dataTypeOptions"
-          ></daApi-Fields>
+          <da-api-fields v-model="current.daParameters"
+                         :data-type-options="dataTypeOptions"
+          ></da-api-fields>
         </template>
         <!--保存提交-->
         <template slot="footer">
@@ -106,8 +84,6 @@
         </template>
       </v-edit-wrap>
     </page-header-wrap>
-    <!--选择主题弹窗-->
-
   </div>
 </template>
 
@@ -115,30 +91,17 @@
   import commonMixin from '../../common/mixins/mixin'
   import permission from '../../common/mixins/permission'
   import * as api from '../../api/data-analyze/da-api.api'
-  import {requiredRule} from '../../common/utils/validate'
-  import {DaApiFields} from './components/DaApi'
+  import { requiredRule } from '../../common/utils/validate'
+  import { DaApiFields } from './components/DaApi'
   import TemplateChoose from './components/DaApi/TemplateChoose'
-  import {getApiType} from '../../api/enum.api'
-  import {getInnerTempDetail} from '../../api/data-analyze/da-inner-temp.api.js'
+  import { getApiType } from '../../api/enum.api'
+  import { getInnerTempDetail } from '../../api/data-analyze/da-inner-temp.api.js'
 
   export default {
     name: 'DaTheme',
     mixins: [commonMixin, permission],
-    components: {DaApiFields, TemplateChoose},
+    components: { DaApiFields, TemplateChoose },
     data() {
-      const validateCode = (rule, value, callback) => {
-        if (value.length > 0) {
-          api.oneCode(this.current).then(response => {
-            if (response.data.code === '0') {
-              callback()
-            } else {
-              callback(new Error('字典项编码重复'))
-            }
-          }).catch(() => {
-            callback(new Error('请求验证重复性出错'))
-          })
-        }
-      }
       return {
         dialogFormVisible: false,
         tempName: '',
@@ -148,23 +111,27 @@
           code: ''
         },
         columns: [
-          {type: 'index', width: 50, align: 'center'},
-          {title: '接口名称', key: 'name'},
-          {title: '接口类型', key: 'type'},
-          {title: '创建人', key: 'createName'},
-          {title: '操作时间', key: 'createDate'},
-          {title: '操作', slot: 'action', width: 180, align: 'center'}
+          { type: 'index', width: 50, align: 'center' },
+          { title: '接口名称', key: 'name' },
+          { title: '接口类型', key: 'type' },
+          { title: '创建人', key: 'createName' },
+          { title: '操作时间', key: 'createDate' },
+          { title: '操作', slot: 'action', width: 180, align: 'center' }
         ],
         current: null,
-        typeMap: {'0': 'sql', '1': 'url', '2': '模板'},
+        typeMap: { '0': 'sql', '1': 'url', '2': '模板' },
         dataTypeOptions: [
-          {label: '字符型', value: 'string'},
-          {label: '日期型', value: 'date'},
-          {label: '数字型', value: 'number'},
-          {label: '其他', value: 'object'}
+          { label: '字符型', value: 'string' },
+          { label: '日期型', value: 'date' },
+          { label: '数字型', value: 'number' },
+          { label: '其他', value: 'object' }
         ],
         ruleValidate: {
-          code: [requiredRule, {validator: validateCode, trigger: 'blur'}]
+          name: [requiredRule],
+          type: [{ required: true, message: '必填项', trigger: 'change' }],
+          sql: [requiredRule],
+          url: [requiredRule],
+          tempId: [{ required: true, message: '必填项', trigger: 'change' }]
         }
       }
     },
@@ -186,20 +153,20 @@
       },
       // 弹窗提示是否删除
       handleRemove(row) {
-        let theme = {...row}
+        let apiObj = { ...row }
         this.$confirm({
           title: '警告',
           content: `确实要删除接口吗？`,
           loading: true,
           onOk: () => {
-            api.handleRemove(theme).then(res => {
+            api.removeApi(apiObj).then(res => {
               if (res.data.code === '0') {
-                this.$message({type: 'success', content: '操作成功'})
+                this.$message({ type: 'success', content: '操作成功' })
                 this.$modal.remove()
                 this.handleFilter()
               } else {
                 this.$modal.remove()
-                this.$message({type: 'danger', content: res.data.message})
+                this.$message({ type: 'danger', content: res.data.message })
               }
             })
           }
@@ -213,7 +180,7 @@
       // 编辑事件
       handleModify(row) {
         this.resetCurrent()
-        this.current = {...this.current, ...row}
+        this.current = { ...this.current, ...row }
         api.getApiDetail(this.current.id).then(response => {
           this.current.daParameters = response.data.data
         })
@@ -248,19 +215,16 @@
       // 表单提交
       handleSubmit() {
         this.$refs.form.validate((valid) => {
-          this.btnLoading = true
           if (valid) {
-            let fun = this.dialogStatus === 'create' ? api.createTheme : api.modifyTheme
+            this.btnLoading = true
+            let fun = this.dialogStatus === 'create' ? api.createApi : api.modifyApi
             fun(this.current).then(res => {
-              console.log(res)
               if (res.data.code === '0') {
-                this.btnLoading = false
-                this.dialogStatus = ''
-                this.$message({type: 'success', content: '操作成功'})
+                this.submitDone(true)
                 this.searchList()
               } else {
-                this.btnLoading = false
-                this.$message({type: 'danger', content: res.data.message})
+                this.submitDone(false)
+                this.$message({ type: 'danger', content: res.data.message })
               }
             })
           }
@@ -272,13 +236,12 @@
         api.getApiList(this.listQuery).then(response => {
           if (response.status === 200) {
             this.setListData({
-              list: response.data.rows,
+              list: response.data.data,
               total: response.data.total
             })
           }
         })
       }
-    },
-
+    }
   }
 </script>

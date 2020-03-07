@@ -452,7 +452,7 @@
           id: '',
           cfgName: '',
           cfgCode: '',
-          flowDirection: '',
+          flowDirection: 'COLLECT',
           changeType: '',
           transmitKind: '',
           source: '',

@@ -17,7 +17,7 @@
         <!--查询条件-->
         <v-filter-bar>
           <v-filter-item title="节点名称">
-            <b-input v-model="listQuery.nodeName" clearable size="small"></b-input>
+            <b-input v-model="listQuery.nodeName" placeholder="请输入" clearable size="small"></b-input>
           </v-filter-item>
           <!--添加查询按钮位置-->
           <v-filter-item @on-search="handleFilter" @on-reset="resetQuery"></v-filter-item>

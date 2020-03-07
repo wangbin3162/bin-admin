@@ -63,7 +63,7 @@
     </page-header-wrap>
     <page-header-wrap v-show="isEdit" :title="editTitle" show-close @on-close="handleCancel">
       <v-edit-wrap>
-        <b-form :model="content" ref="form" :label-width="100">
+        <b-form :model="content" ref="form" :rules="ruleValidate" :label-width="100">
           <b-row>
             <b-col span="12">
               <b-form-item label="名称" prop="name">
@@ -153,6 +153,7 @@
   import * as conApi from '../../api/data-analyze/da-content.api'
   import ApiChoose from './components/DaContent/ApiChoose'
   import ThemeChoose from './components/DaContent/ThemeChoose'
+  import { requiredRule } from '../../common/utils/validate'
 
   export default {
     name: 'Content',
@@ -175,6 +176,14 @@
           { title: '操作', slot: 'action', width: 140 }
         ],
         content: null,
+        ruleValidate: {
+          name: [requiredRule],
+          code: [requiredRule],
+          category: [requiredRule],
+          toggle: [{ required: true, message: '必填项', trigger: 'change' }],
+          themeCode: [{ required: true, message: '必填项', trigger: 'change' }],
+          apiId: [{ required: true, message: '必填项', trigger: 'change' }]
+        },
         statusMap: { 'I': '初始', 'Y': '启用', 'D': '禁用' },
         apiModel: true
       }

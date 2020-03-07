@@ -96,7 +96,7 @@
         modalFlag: false,
         currentDeptTreeNode: '',
         tabs: [
-          { key: 'tab1', title: '资源目录' },
+          { key: 'tab1', title: '资源信息' },
           { key: 'tab2', title: '信源单位' }
         ],
         activeTab: 'tab1'

@@ -1,17 +1,9 @@
-// 系统日志管理相关请求
+// api管理
 import request from '../request'
-
-const urlMap = {
-  search: '/da/api/searchDaTheme',
-  add: '/da/api/add',
-  modify: '/da/api/modify',
-  remove: '/da/api/remove',
-  detail: '/da/api/daApiDetail',
-}
 
 /* 获取所有列表 */
 export function getApiList(query) {
-  return request.get(urlMap.search, {
+  return request.get('/da/api/list', {
     params: {
       size: query.size,
       page: query.page - 1,
@@ -21,25 +13,19 @@ export function getApiList(query) {
     }
   })
 }
+
 /* 获取明细 */
 export function getApiDetail(id) {
   console.log(id)
-  return request.get(urlMap.detail, {
+  return request.get('/da/api/daApiDetail', {
     params: {
-      id : id
+      id: id
     }
   })
 }
-/* 编码唯一 */
-export function oneCode(item) {
-  return request({
-    url: '/da/theme/check/' + item.code + '?id=' + item.id,
-    method: 'get'
-  })
-}
 
-/* 新增字典项 */
-export function createTheme(item) {
+/* 新增api */
+export function createApi(item) {
   return request({
     url: '/da/api/addDaApi',
     method: 'post',
@@ -47,8 +33,8 @@ export function createTheme(item) {
   })
 }
 
-/* 删除用户信息 */
-export function handleRemove(item) {
+/* 删除api */
+export function removeApi(item) {
   return request({
     url: '/da/api/removeDaApi',
     method: 'post',
@@ -58,8 +44,8 @@ export function handleRemove(item) {
   })
 }
 
-/* 修改字典项 */
-export function modifyTheme(item) {
+/* 修改api */
+export function modifyApi(item) {
   return request({
     url: '/da/api/modifyDaApi',
     method: 'post',
