@@ -7,7 +7,6 @@ import BaseHeader from '../components/BaseHeader/index'
 import BaseFooter from '../components/BaseFooter/index'
 import BaseSearch from '../components/BaseSearch/index'
 import TopSearch from '../components/TopSearch/index'
-import TopAffix from '../components/TopAffix/index'
 import TitleBar from '../components/TitleBar/index'
 import KeyLabelWrap from '../components/KeyLabel/KeyLabelWrap'
 import KeyLabel from '../components/KeyLabel/KeyLabel'
@@ -26,8 +25,6 @@ export default {
     Vue.component(BaseSearch.name, BaseSearch)
     // 顶部查询
     Vue.component(TopSearch.name, TopSearch)
-    // 图钉固定
-    Vue.component(TopAffix.name, TopAffix)
     // 标题组件
     Vue.component(TitleBar.name, TitleBar)
     // 查看显示组件容器

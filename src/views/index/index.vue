@@ -137,8 +137,8 @@
 
 <style scoped lang="stylus">
   .main-wrap {
+    height: 100%;
     background: url("../../assets/images/banner-bg0.png") no-repeat 0 0;
-
     &.mini-wrap {
       background: url("../../assets/images/banner-bg.png") no-repeat 0 -370px;
       animation: bg .4s ease-in-out forwards;

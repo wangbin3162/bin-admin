@@ -196,7 +196,7 @@
       // 返回上一层路由
       backToDetail() {
         this.$router.push({
-          name: 'detail',
+          name: 'Detail',
           query: {
             id: this.$route.query.id,
             type: this.$route.query.type,

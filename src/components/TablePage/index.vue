@@ -11,15 +11,15 @@
     <b-modal v-model="detailVisible" class-name="table-page-detail-modal"
              :title="modalTitle" footer-hide width="1200" :mask-closable="false">
       <title-bar tip-pos="left" :font-size="18" :label="modalTitle" slot="header"></title-bar>
-      <b-scrollbar style="height: 100%;" always>
-        <key-label-wrap style="margin-right:20px;">
+      <div style="height:500px;overflow:auto;padding: 16px;">
+        <key-label-wrap v-if="detailVisible">
           <key-label
             v-for="col in detailColumns" :key="col.key"
             is-full :label="col.title" label-width="155px">
             {{ detailObj[col.key] | valueFilter }}
           </key-label>
         </key-label-wrap>
-      </b-scrollbar>
+      </div>
     </b-modal>
   </div>
 </template>

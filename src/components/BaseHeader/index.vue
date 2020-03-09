@@ -7,7 +7,7 @@
           <div class="inner">
             <span class="item"><a href="" @click.stop.prevent="home">首页</a></span>
             <span class="item"><a href="">信用监管</a></span>
-            <span class="item"><a href="">信用评级</a></span>
+            <span class="item"><a href="">信用评价</a></span>
             <span class="item"><a href="">大数据分析</a></span>
             <span class="item"><a href="">专项应用</a></span>
             <span class="item"><a href="/dir/" target="_blank">数据治理</a></span>
@@ -49,39 +49,39 @@
         type: Boolean
       }
     },
-    data () {
+    data() {
       return {
         display: false
       }
     },
     watch: {
       value: {
-        handler (val) {
+        handler(val) {
           this.display = val
         },
         immediate: true
       }
     },
     computed: {
-      userRoles () {
+      userRoles() {
         return this.$store.state.user.roles
       },
-      userName () {
+      userName() {
         return this.$store.state.user.info.roleNames
       }
     },
     methods: {
-      home () {
+      home() {
         this.$store.dispatch('resetQuery')
         this.$emit('on-home')
         this.$router.push('/index')
       },
-      logout () {
+      logout() {
         this.$store.dispatch('logout').then(res => {
           this.$router.push('/login')
         })
       },
-      changeDisplay (val) {
+      changeDisplay(val) {
         this.display = val
         this.$emit('input', val)
       }

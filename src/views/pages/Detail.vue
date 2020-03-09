@@ -1,11 +1,9 @@
 <template>
   <base-layout>
-    <div class="main-wrap">
-      <top-affix>
-        <base-header show-search v-model="topSearchToggle">
-          <top-search v-model="query" @on-search="handleSearch" @on-back="topSearchToggle=false"></top-search>
-        </base-header>
-      </top-affix>
+    <div class="main-wrap" v-show="!hideDetail">
+      <base-header show-search v-model="topSearchToggle">
+        <top-search v-model="query" @on-search="handleSearch" @on-back="topSearchToggle=false"></top-search>
+      </base-header>
       <div class="detail-wrap">
         <!--顶部详情-->
         <transition name="fade-scale-move">
@@ -189,6 +187,7 @@
     </div>
     <detail-pn :title="currentPnTitle" :type="type" ref="pnDetailModal"
                :current="current" :log-total="logTotal" :mapping="mapping"
+               @on-close="handleCloseDetailPn"
     ></detail-pn>
   </base-layout>
 </template>
@@ -246,7 +245,8 @@
         activeFloatCode: '', // 子类别默认选中的code
         resourcesText: '', // 缓存点击的分类信息名称
         resourcesData: [], // 点击查询资源信息列表数据绑定值
-        showResources: false
+        showResources: false,
+        hideDetail: false
       }
     },
     computed: {
@@ -330,6 +330,10 @@
       }
     },
     methods: {
+      handleCloseDetailPn() {
+        this.hideDetail = false
+        window.scrollTo(0, 0)
+      },
       // 顶部查询事件
       handleSearch() {
         if (this.query.q.length === 0) {
@@ -458,6 +462,7 @@
         }
         const pnDetail = this.$refs.pnDetailModal
         if (pnDetail) {
+          this.hideDetail = true
           pnDetail.open(pnType, tabs)
         }
       },
@@ -499,10 +504,6 @@
 </script>
 
 <style scoped lang="stylus">
-  .main-wrap {
-    background: #eaeff3;
-  }
-
   .detail-wrap {
     width: 1300px;
     margin: 20px auto;

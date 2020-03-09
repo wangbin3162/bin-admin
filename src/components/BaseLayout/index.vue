@@ -1,12 +1,10 @@
 <template>
   <div class="app-wrap">
-    <div class="scroll-box">
-      <div class="index-wrap">
-        <slot></slot>
-        <base-footer v-if="!footHide"></base-footer>
-      </div>
+    <div class="index-wrap">
+      <slot></slot>
     </div>
-    <b-back-top></b-back-top>
+    <base-footer v-if="!footHide"></base-footer>
+    <b-back-top :height="200"></b-back-top>
   </div>
 </template>
 
