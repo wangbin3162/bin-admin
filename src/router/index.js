@@ -58,7 +58,7 @@ router.beforeEach((to, from, next) => {
             util.log.danger(err.message)
             // 无效token则登出并重定向到登录页面
             store.dispatch('logout').then(() => {
-              next({ name: 'login', query: { redirect: to.fullPath } })
+              next({ name: 'Login', query: { redirect: to.fullPath } })
               BinUI.LoadingBar.done()
             })
           })
@@ -72,7 +72,7 @@ router.beforeEach((to, from, next) => {
       next()
     } else {
       // other pages that do not have permission to access are redirected to the login page.
-      next({ name: 'login', query: { redirect: to.fullPath } })
+      next({ name: 'Login', query: { redirect: to.fullPath } })
       BinUI.LoadingBar.done()
     }
   }
