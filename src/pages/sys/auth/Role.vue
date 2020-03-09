@@ -161,7 +161,7 @@
           { title: '角色编码', key: 'code' },
           { title: '父角色名称', key: 'parentName' },
           { title: '角色类型', slot: 'roleType', width: 100, align: 'center' },
-          { title: '描述', key: 'desc', ellipsis: true },
+          { title: '描述', key: 'desc', width: 350, ellipsis: true, tooltip: true },
           { title: '角色授权', slot: 'auth', width: 100, align: 'center' },
           { title: '操作', slot: 'action', width: 120 }
         ],

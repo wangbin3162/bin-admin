@@ -448,7 +448,7 @@
           mobile: '',
           sortNum: '',
           remark: '',
-          roles: []
+          roles: null
         }
       },
       // tree:初始化树结构
