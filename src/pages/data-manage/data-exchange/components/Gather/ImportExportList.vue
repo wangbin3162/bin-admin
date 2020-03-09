@@ -131,8 +131,8 @@
           endTime: '', // 结束时间
           status: ''
         },
-        statusMap: { COMPLETED: '已完成', STARTED: '正在进行中', FAILED: '失败' },
-        statusStyleMap: { COMPLETED: 'primary', STARTED: 'warning', FAILED: 'danger' },
+        statusMap: { COMPLETED: '已完成', STARTED: '正在进行中', FAILED: '失败', REPEATING: '重复性验证' },
+        statusStyleMap: { COMPLETED: 'primary', STARTED: 'warning', FAILED: 'danger', REPEATING: 'warning' },
         handleType: 'import', // 操作类型，['import','export']
         importDetail: null, // 文件导入信息详情
         errDataColumns: [],

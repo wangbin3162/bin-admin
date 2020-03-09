@@ -22,7 +22,7 @@
               自动映射
             </b-button>
             <b-button plain size="small" type="primary" style="width: 95%;margin: 0;" @click="handleAdd">
-              Add
+              移动
             </b-button>
           </div>
         </b-col>
