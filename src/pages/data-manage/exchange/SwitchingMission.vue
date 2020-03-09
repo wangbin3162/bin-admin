@@ -209,7 +209,7 @@
         listQuery: {
           resourceName: '',
           flowDirection: '',
-          changeType: '',
+          changeType: 'AUTO',
           availableStatus: ''
         },
         columns: [
@@ -267,7 +267,7 @@
           size: 10,
           resourceName: '',
           flowDirection: '',
-          changeType: '',
+          changeType: 'AUTO',
           availableStatus: ''
         }
         this.handleFilter()

@@ -10,7 +10,8 @@ export function getExchangeNodeList(query) {
       size: query.size,
       page: query.page - 1,
       nodeName: query.nodeName,
-      nodeType: query.nodeType
+      nodeType: query.nodeType,
+      sort: 'createDate,desc'
     }
   })
 }

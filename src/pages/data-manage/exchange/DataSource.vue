@@ -50,7 +50,7 @@
           <b-row>
             <b-col span="12">
               <b-form-item label="数据源名称" prop="dataSourceName">
-                <b-input v-model="ds.dataSourceName" placeholder="请输入数据源名称" clearable></b-input>
+                <b-input v-model="ds.dataSourceName" placeholder="请输入数据源名称" :maxlength="20" clearable></b-input>
               </b-form-item>
             </b-col>
             <b-col span="12">
@@ -64,24 +64,24 @@
           <b-row>
             <b-col span="12">
               <b-form-item label="连接驱动" prop="driverClass">
-                <b-input v-model="ds.driverClass" placeholder="请输入连接驱动" clearable></b-input>
+                <b-input v-model="ds.driverClass" placeholder="请输入连接驱动" :maxlength="50" clearable></b-input>
               </b-form-item>
             </b-col>
             <b-col span="12">
               <b-form-item label="数据库名称" prop="dbName">
-                <b-input v-model="ds.dbName" placeholder="请输入数据库名称" clearable></b-input>
+                <b-input v-model="ds.dbName" placeholder="请输入数据库名称" :maxlength="20" clearable></b-input>
               </b-form-item>
             </b-col>
           </b-row>
           <b-row>
             <b-col span="12">
-              <b-form-item label="主机地址" prop="host">
-                <b-input v-model="ds.host" placeholder="请输入主机地址" clearable></b-input>
+              <b-form-item label="主机IP地址" prop="host">
+                <b-input v-model="ds.host" placeholder="请输入主机地址" clearable  :maxlength="20"></b-input>
               </b-form-item>
             </b-col>
             <b-col span="12">
               <b-form-item label="端口号" prop="port">
-                <b-input-number v-model="ds.port" :min="0" style="width: 100%;"></b-input-number>
+                <b-input-number v-model="ds.port" :min="0" style="width: 100%;" :maxlength="6"></b-input-number>
               </b-form-item>
             </b-col>
           </b-row>

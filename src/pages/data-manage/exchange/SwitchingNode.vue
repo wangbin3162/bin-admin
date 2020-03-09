@@ -52,7 +52,7 @@
           <b-row>
             <b-col span="12">
               <b-form-item label="节点名称" prop="nodeName">
-                <b-input v-model="exchangeNode.nodeName" placeholder="请输入节点名称" clearable></b-input>
+                <b-input v-model="exchangeNode.nodeName" placeholder="请输入节点名称" :maxlength="20" clearable></b-input>
               </b-form-item>
             </b-col>
             <b-col span="12">
@@ -67,12 +67,12 @@
           <b-row>
             <b-col span="12">
               <b-form-item label="节点编码" prop="nodeCode">
-                <b-input v-model="exchangeNode.nodeCode" placeholder="请输入节点编码" clearable></b-input>
+                <b-input v-model="exchangeNode.nodeCode" placeholder="请输入节点编码" :maxlength="20" clearable></b-input>
               </b-form-item>
             </b-col>
             <b-col span="12">
               <b-form-item label="节点描述" prop="nodeDesc">
-                <b-input v-model="exchangeNode.nodeDesc" placeholder="请输入节点描述" clearable></b-input>
+                <b-input v-model="exchangeNode.nodeDesc" placeholder="请输入节点描述" :maxlength="100" clearable></b-input>
               </b-form-item>
             </b-col>
           </b-row>
@@ -150,8 +150,8 @@
         },
         columns: [
           { type: 'index', width: 50, align: 'center' },
-          { title: '节点名称', slot: 'nodeName' },
-          { title: '节点编码', key: 'nodeCode', align: 'center', width: 180 },
+          { title: '节点名称', slot: 'nodeName', tooltip: true, width: 300 },
+          { title: '节点编码', key: 'nodeCode', align: 'center', width: 120 },
           { title: '节点类型', slot: 'nodeType', align: 'center' },
           { title: '节点描述', key: 'nodeDesc', tooltip: true },
           { title: '引用数据源', key: 'nameSource' },
@@ -242,7 +242,8 @@
                 this.submitDone(true)
                 this.handleFilter()
               } else {
-                this.submitDone(false)
+                // this.submitDone(false)
+                this.btnLoading = false // 按钮状态清空
                 this.$message({ type: 'danger', content: res.data.message })
               }
             })
