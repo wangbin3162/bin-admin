@@ -57,7 +57,7 @@ export default {
       path: 'logs',
       component: Wrap,
       redirect: { name: 'SysLog' },
-      meta: { title: '日志管理', icon: 'ios-clipboard' },
+      meta: { title: '日志审计', icon: 'ios-clipboard' },
       children: [
         {
           path: 'sysLog',

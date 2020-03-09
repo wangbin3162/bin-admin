@@ -16,7 +16,6 @@ export function getApiList(query) {
 
 /* 获取明细 */
 export function getApiDetail(id) {
-  console.log(id)
   return request.get('/da/api/daApiDetail', {
     params: {
       id: id

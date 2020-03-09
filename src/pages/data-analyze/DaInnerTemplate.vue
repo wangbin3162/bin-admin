@@ -50,29 +50,27 @@
           <v-title-bar label="模板信息" class="mb-15"/>
           <b-row type="flex" justify="center">
             <b-col span="18">
-              <slot>
-                <b-form :model="template" ref="form" :rules="ruleValidate" :label-width="130">
-                  <b-row>
-                    <b-col span="12">
-                      <b-form-item label="模板名称" prop="tempName">
-                        <b-input v-model="template.tempName" placeholder="请输入模板名称" clearable></b-input>
-                      </b-form-item>
-                    </b-col>
-                    <b-col span="12">
-                      <b-form-item label="模板编码" prop="tempCode">
-                        <b-input v-model="template.tempCode" placeholder="编码为sys_开头" clearable
-                                 :disabled="dialogStatus==='modify'"></b-input>
-                      </b-form-item>
-                    </b-col>
-                  </b-row>
-                  <b-form-item label="模板脚本" prop="tempSource">
-                    <b-input v-model="template.tempSource" placeholder="请输入模板脚本" type="textarea" :rows="4"></b-input>
-                  </b-form-item>
-                  <b-form-item label="模板说明" prop="tempDesc">
-                    <b-input v-model="template.tempDesc" placeholder="请输入模板说明" type="textarea" :rows="4"></b-input>
-                  </b-form-item>
-                </b-form>
-              </slot>
+              <b-form :model="template" ref="form" :rules="ruleValidate" :label-width="130">
+                <b-row>
+                  <b-col span="12">
+                    <b-form-item label="模板名称" prop="tempName">
+                      <b-input v-model="template.tempName" placeholder="请输入模板名称" clearable></b-input>
+                    </b-form-item>
+                  </b-col>
+                  <b-col span="12">
+                    <b-form-item label="模板编码" prop="tempCode">
+                      <b-input v-model="template.tempCode" placeholder="编码为sys_开头" clearable
+                               :disabled="dialogStatus==='modify'"></b-input>
+                    </b-form-item>
+                  </b-col>
+                </b-row>
+                <b-form-item label="模板脚本" prop="tempSource">
+                  <b-input v-model="template.tempSource" placeholder="请输入模板脚本" type="textarea" :rows="4"></b-input>
+                </b-form-item>
+                <b-form-item label="模板说明" prop="tempDesc">
+                  <b-input v-model="template.tempDesc" placeholder="请输入模板说明" type="textarea" :rows="4"></b-input>
+                </b-form-item>
+              </b-form>
             </b-col>
           </b-row>
           <v-title-bar label="参数信息" class="mt-20 mb-15"/>

@@ -48,31 +48,34 @@
       <v-edit-wrap>
         <template slot="full">
           <v-title-bar label="模板信息" class="mb-15"/>
-          <b-row type="flex" justify="center">
+          <b-row type="flex" justify="end">
             <b-col span="18">
-              <slot>
-                <b-form :model="template" ref="form" :rules="ruleValidate" :label-width="130">
-                  <b-row>
-                    <b-col span="12">
-                      <b-form-item label="模板名称" prop="tempName">
-                        <b-input v-model="template.tempName" placeholder="请输入模板名称" clearable></b-input>
-                      </b-form-item>
-                    </b-col>
-                    <b-col span="12">
-                      <b-form-item label="模板编码" prop="tempCode">
-                        <b-input v-model="template.tempCode" placeholder="编码为biz_开头" clearable
-                                 :disabled="dialogStatus==='modify'"></b-input>
-                      </b-form-item>
-                    </b-col>
-                  </b-row>
-                  <b-form-item label="模板脚本" prop="tempSource">
-                    <b-input v-model="template.tempSource" placeholder="请输入模板脚本" type="textarea" :rows="4"></b-input>
-                  </b-form-item>
-                  <b-form-item label="模板说明" prop="tempDesc">
-                    <b-input v-model="template.tempDesc" placeholder="请输入模板说明" type="textarea" :rows="4"></b-input>
-                  </b-form-item>
-                </b-form>
-              </slot>
+              <b-form :model="template" ref="form" :rules="ruleValidate" :label-width="130">
+                <b-row>
+                  <b-col span="12">
+                    <b-form-item label="模板名称" prop="tempName">
+                      <b-input v-model="template.tempName" placeholder="请输入模板名称" clearable></b-input>
+                    </b-form-item>
+                  </b-col>
+                  <b-col span="12">
+                    <b-form-item label="模板编码" prop="tempCode">
+                      <b-input v-model="template.tempCode" placeholder="编码为biz_开头" clearable
+                               :disabled="dialogStatus==='modify'"></b-input>
+                    </b-form-item>
+                  </b-col>
+                </b-row>
+                <b-form-item label="模板脚本" prop="tempSource">
+                  <b-input v-model="template.tempSource" placeholder="请输入模板脚本" type="textarea" :rows="4"></b-input>
+                </b-form-item>
+                <b-form-item label="模板说明" prop="tempDesc">
+                  <b-input v-model="template.tempDesc" placeholder="请输入模板说明" type="textarea" :rows="4"></b-input>
+                </b-form-item>
+              </b-form>
+            </b-col>
+            <b-col span="4">
+              <div style="padding:58px 0 0 20px;">
+                <b-button @click="handleOpenInner">提取内置模板</b-button>
+              </div>
             </b-col>
           </b-row>
           <v-title-bar label="参数信息" class="mt-20 mb-15"/>
@@ -105,6 +108,7 @@
         </template>
       </v-edit-wrap>
     </page-header-wrap>
+    <InnerTempChoose ref="innerTempModal" @on-choose="handleChooseTemp"/>
   </div>
 </template>
 
@@ -113,11 +117,12 @@
   import permission from '../../common/mixins/permission'
   import * as api from '../../api/data-analyze/da-business-temp.api.js'
   import { requiredRule } from '../../common/utils/validate'
-  import TempParams from './components/DaInnerTemplate/TempParams' // 使用同内置模板模块
+  import TempParams from './components/DaInnerTemplate/TempParams'
+  import InnerTempChoose from './components/DaInnerTemplate/InnerTempChoose' // 使用同内置模板模块
 
   export default {
     name: 'DaBusinessTemplate',
-    components: { TempParams },
+    components: { InnerTempChoose, TempParams },
     mixins: [commonMixin, permission],
     data() {
       return {
@@ -229,6 +234,13 @@
         this.getTempFields(() => {
           this.openEditPage('modify')
         })
+      },
+      // 打开提取内置模板面板
+      handleOpenInner() {
+        this.$refs.innerTempModal && this.$refs.innerTempModal.open()
+      },
+      handleChooseTemp(temp) {
+        this.template.tempSource = temp.tempSource
       },
       // 表单提交
       handleSubmit() {

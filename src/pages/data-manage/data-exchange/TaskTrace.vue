@@ -38,7 +38,7 @@
       <v-table-wrap>
         <v-filter-bar>
           <v-filter-item title="日期">
-            <b-date-picker style="width: 200px;" type="daterange" @on-change="dateChange" placement="bottom-start"
+            <b-date-picker type="daterange" @on-change="dateChange" placement="bottom-start"
                            size="small" placeholder="选择起止日期" append-to-body></b-date-picker>
           </v-filter-item>
           <v-filter-item title="状态">
@@ -67,7 +67,7 @@
           </template>
         </b-table>
         <!--下方分页器-->
-        <b-page :total="dirBatchTotal"  :current.sync="dirBatchQuery.page" @on-change="handleDirPageChange"></b-page>
+        <b-page :total="dirBatchTotal" :current.sync="dirBatchQuery.page" @on-change="handleDirPageChange"></b-page>
       </v-table-wrap>
     </page-header-wrap>
     <b-modal v-model="detailDialog" title="任务执行详情" width="940" :mask-closable="false">
@@ -127,7 +127,6 @@
     mixins: [commonMixin, permission],
     data() {
       return {
-        moduleName: '执行记录',
         listQuery: {
           resourceName: '',
           cfgName: '',
@@ -169,11 +168,17 @@
         ],
         dirBatchLoading: false,
         detailDialog: false,
-        batchDetail: null
+        batchDetail: null,
+        resourceName: ''
       }
     },
     created() {
       this.searchList()
+    },
+    computed: {
+      editTitle() {
+        return this.resourceName + '执行记录'
+      }
     },
     methods: {
       // filter-Bar:重置查询条件
@@ -197,6 +202,7 @@
           dateRange: [],
           jobStatus: ''
         }
+        this.resourceName = row.resourceName
         this.getDirBatchList()
       },
       // 查看执行记录详情

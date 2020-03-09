@@ -67,6 +67,7 @@
 
 <script>
   import { deepCopy } from '../../../../common/utils/assist'
+
   export default {
     name: 'daApi-Fields',
     props: {
@@ -101,18 +102,18 @@
           { title: '中文释义', key: 'name' },
           { title: '字段编码', key: 'fieldName', align: 'center' },
           { title: '默认值', key: 'defaultValue', align: 'center' },
-          { title: '参数类型', key: 'dataType' ,align: 'center' },
+          { title: '参数类型', key: 'dataType', align: 'center' },
           { title: '参数描述', key: 'describe', align: 'center' },
           { title: '操作', slot: 'action', width: 150, align: 'center' }
         ],
         totalData: [
-          { }
+          {}
         ],
         metaItem: null,
         ruleValidate: {
-          name: [{required: true, message: '请输入中文释义', trigger: 'change'}],
+          name: [{ required: true, message: '请输入中文释义', trigger: 'change' }],
           dataType: [{ required: true, message: '参数类型必选', trigger: 'change' }],
-          fieldName: [{ required: true, message: '请输入参数字段名', trigger: 'change' }],
+          fieldName: [{ required: true, message: '请输入参数字段名', trigger: 'change' }]
         },
         formLoading: false,
         dialogFormVisible: false, // 编辑页是否显示
@@ -127,7 +128,7 @@
       value: {
         immediate: true,
         handler(val) {
-          if (val){
+          if (val) {
             this.totalData = [...val]
           }
         }
@@ -194,7 +195,7 @@
       // 初始化信息项操作
       resetItem() {
         this.metaItem = {
-          name:'',
+          name: '',
           fieldName: '',
           dataType: '',
           defaultValue: '',

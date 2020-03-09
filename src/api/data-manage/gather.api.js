@@ -18,7 +18,10 @@ export function getGatherList(query, keyValues, ops) {
     resourceKey: query.resourceKey,
     searchPage: {
       size: query.size,
-      page: query.page - 1
+      page: query.page - 1,
+      sorts: [
+        { property: 'create_date', direction: 'desc' }
+      ]
     }
   }
   if (keyValues) {
