@@ -262,7 +262,7 @@
           resourceCode: '', // 所属分类
           resourceName: '', // 资源名称(中文名)
           resProperty: '', // 资源性质
-          availableStatus: 'available', // 可用状态
+          availableStatus: '', // 可用状态
           status: '' // 状态
         },
         treeData: [],
@@ -351,7 +351,7 @@
           resourceCode: this.currentTreeNode ? this.currentTreeNode.code : '', // 类目类别所属分类
           resourceName: '', // 资源名称(中文名)
           resProperty: '', // 资源性质
-          availableStatus: 'available', // 可用状态
+          availableStatus: '', // 可用状态
           status: ''// 状态
         }
         this.handleFilter()

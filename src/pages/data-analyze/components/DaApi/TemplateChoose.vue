@@ -9,16 +9,16 @@
         选择模板
       </b-button>
     </div>
-    <inner-temp-choose ref="innerTempModal" @on-choose="handleChooseTemp"/>
+    <biz-temp-choose ref="bizTempModal" @on-choose="handleChooseTemp"/>
   </div>
 </template>
 
 <script>
-  import InnerTempChoose from '../DaInnerTemplate/InnerTempChoose'
+  import BizTempChoose from '../DaInnerTemplate/BizTempChoose'
 
   export default {
     name: 'TemplateChoose',
-    components: { InnerTempChoose },
+    components: { BizTempChoose },
     props: {
       value: {
         type: String,
@@ -44,7 +44,7 @@
     },
     methods: {
       handleShowModal() {
-        this.$refs.innerTempModal && this.$refs.innerTempModal.open()
+        this.$refs.bizTempModal && this.$refs.bizTempModal.open()
       },
       handleChooseTemp(temp) {
         this.current = temp.tempName

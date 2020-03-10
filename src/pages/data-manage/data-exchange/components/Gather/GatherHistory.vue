@@ -3,7 +3,8 @@
            append-to-body>
     <b-table :columns="columns" :data="historyList" size="small" max-height="400"></b-table>
     <div slot="footer">
-      <b-button @click="historyDialog=false">取消</b-button>
+      <b-page :total="total" :current.sync="listQuery.page"
+              @on-change="handleCurrentChange"></b-page>
     </div>
   </b-modal>
 </template>
@@ -17,6 +18,12 @@
       return {
         historyDialog: false,
         historyList: [],
+        listQuery: {
+          page: 1,
+          size: 10,
+          recordId: ''
+        },
+        total: 0,
         columns: [
           { title: '操作类型', key: 'operationType' },
           { title: '操作人', key: 'operatorName' },
@@ -28,7 +35,15 @@
     methods: {
       // 打开弹窗
       open(recordId) {
-        api.getHistory(recordId).then(res => {
+        this.listQuery.recordId = recordId
+        this.searchList()
+      },
+      handleCurrentChange(page) {
+        this.listQuery.page = page
+        this.searchList()
+      },
+      searchList() {
+        api.getHistory(this.listQuery).then(res => {
           if (res.status === 200) {
             this.historyDialog = true
             this.historyList = res.data.rows

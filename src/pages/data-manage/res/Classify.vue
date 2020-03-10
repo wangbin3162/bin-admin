@@ -52,8 +52,14 @@
             <b-input v-model.trim="classify.classifyName" placeholder="请输入类目名称" clearable :maxlength="15"></b-input>
           </b-form-item>
           <b-form-item label="类目编码" prop="classifyCode">
-            <b-input v-model.trim="classify.classifyCode" placeholder="请输入类目编码" clearable :maxlength="30"
-                     :disabled="dialogStatus==='modify'"></b-input>
+            <div flex>
+              <b-tag v-if="codePrefix"
+                     type="info" style="margin: 0;flex:0 0 auto;height:36px;line-height: 36px;">
+                {{currentTreeNode.code}}
+              </b-tag>
+              <b-input v-model.trim="classify.classifyCode" placeholder="请输入类目编码(不超过2个字符)" clearable
+                       :maxlength="2" :disabled="dialogStatus==='modify'"/>
+            </div>
           </b-form-item>
           <b-form-item label="类目描述" prop="classifyDesc">
             <b-input v-model="classify.classifyDesc" placeholder="请输入描述" type="textarea"></b-input>
@@ -137,7 +143,10 @@
         classify: null,
         ruleValidate: {
           classifyName: [requiredRule, { validator: validateClassifyName, trigger: 'blur' }],
-          classifyCode: [requiredRule, { validator: validateClassifyLength, trigger: 'blur' }, { validator: validateClassifyCode, trigger: 'blur' }]
+          classifyCode: [requiredRule, {
+            validator: validateClassifyLength,
+            trigger: 'blur'
+          }, { validator: validateClassifyCode, trigger: 'blur' }]
         },
         dialogFormVisible: false
       }
@@ -145,6 +154,11 @@
     created() {
       this.initTree()
       this.resetClassify()
+    },
+    computed: {
+      codePrefix() {
+        return this.dialogStatus === 'create' && this.currentTreeNode && this.currentTreeNode.code && this.currentTreeNode.code.length > 0
+      }
     },
     methods: {
       /* [事件响应] */
@@ -154,6 +168,7 @@
         }
         this.currentTreeNode = node
         this.listQuery.parentId = node.id
+        console.log(this.currentTreeNode)
         this.handleFilter()
       },
       // filter-Bar:重置查询条件
@@ -243,7 +258,8 @@
         api.getClassifyTree().then(response => {
           const tree = response.data.data
           // 根据返回的数组格式化为树结构的格式，并追加parents用于级联选择和展开
-          let data = tree ? this.treeMapper(tree) : {}
+          let data = tree ? this.treeMapper(tree, null, ['code']) : {}
+          console.log(data)
           this.treeData.push(data)
           if (this.treeData.length > 0) {
             // 如果没有当前选中节点则初始化为第一个选中

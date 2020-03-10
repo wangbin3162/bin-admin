@@ -93,7 +93,7 @@
             </b-col>
             <b-col span="12">
               <b-form-item label="密码" prop="password">
-                <b-input v-model="ds.password" placeholder="请输入密码" clearable></b-input>
+                <b-input v-model="ds.password" placeholder="请输入密码" type="password" clearable></b-input>
               </b-form-item>
             </b-col>
           </b-row>
@@ -265,7 +265,7 @@
           dbType: '',
           driverClass: '',
           host: '',
-          port: '',
+          port: 0,
           userName: '',
           password: ''
         }

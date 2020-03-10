@@ -105,10 +105,14 @@ export function removeGather(resourceKey, id) {
 }
 
 /* 获取历史列表 */
-export function getHistory(recordId) {
+export function getHistory(query) {
   return request({
-    url: `/api/dir/gather/history/${recordId}`,
-    method: 'get'
+    url: `/api/dir/gather/history/${query.recordId}`,
+    method: 'get',
+    params: {
+      size: query.size,
+      page: query.page - 1
+    }
   })
 }
 

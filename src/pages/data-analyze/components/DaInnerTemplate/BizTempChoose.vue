@@ -1,5 +1,5 @@
 <template>
-  <b-modal v-model="dialogFormVisible" title="选择内置模板" width="1020" class="layout-inner" :mask-closable="false">
+  <b-modal v-model="dialogFormVisible" title="选择业务模板" width="1020" class="layout-inner" :mask-closable="false">
     <v-table-wrap style="padding: 0;">
       <!--树结构-->
       <b-tree :data="treeData" slot="tree" :lock-select="lockTreeSelect"
@@ -28,7 +28,7 @@
     <div slot="footer">
       <!--下方分页器-->
       <b-page :total="total" show-sizer :current.sync="listQuery.page"
-              @on-change="handleCurrentChange" @on-page-size-change="handleSizeChange"></b-page>
+              @on-change="handleCurrentChange" @on-page-size-change="handleSizeChange"/>
     </div>
   </b-modal>
 </template>
@@ -36,10 +36,10 @@
 <script>
   import commonMixin from '../../../../common/mixins/mixin'
   import permission from '../../../../common/mixins/permission'
-  import * as api from '../../../../api/data-analyze/da-inner-temp.api.js'
+  import * as api from '../../../../api/data-analyze/da-business-temp.api.js'
 
   export default {
-    name: 'InnerTempChoose',
+    name: 'BizTempChoose',
     mixins: [commonMixin, permission],
     data() {
       return {
@@ -131,7 +131,7 @@
       // 查询所有列表
       searchList() {
         this.setListData()
-        api.getInnerTemplateList(this.listQuery).then(response => {
+        api.getBusinessTemplateList(this.listQuery).then(response => {
           if (response.status === 200) {
             this.setListData({
               list: response.data.rows,
