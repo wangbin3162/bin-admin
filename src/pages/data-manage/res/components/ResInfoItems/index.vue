@@ -31,8 +31,9 @@
         </b-button>
       </template>
       <!--是否分词-->
-      <template v-slot:is_tokenizer="scope">
-        <b-select v-model="totalData[scope.index].is_tokenizer" append-to-body @on-change="emitValue" size="small"
+      <template v-slot:tokenizer="scope">
+        <b-select v-model="totalData[scope.index].tokenizer" append-to-body @on-change="emitValue" size="small"
+                  placeholder=""
                   :disabled="scope.row.dataType!=='string'||scope.row.validValue.length>0">
           <b-option v-for="(value,key) in tokenizerMap" :key="key" :value="key">{{ value }}</b-option>
         </b-select>
@@ -109,7 +110,7 @@
           </b-col>
           <b-col span="12">
             <b-form-item label="是否分词">
-              <b-select v-model="item.is_tokenizer"
+              <b-select v-model="item.tokenizer"
                         :disabled="item.dataType!=='string'||item.validValue.length>0">
                 <b-option v-for="(value,key) in tokenizerMap" :key="key" :value="key">{{ value }}</b-option>
               </b-select>
@@ -172,7 +173,7 @@
           { title: '数据类型', slot: 'dataType', width: 80, align: 'center' },
           { title: '有效值', slot: 'validValue', width: 190 },
           { title: '验证规则', slot: 'ruleCfg', width: 80, align: 'center' },
-          { title: '是否分词', slot: 'is_tokenizer', width: 80 },
+          { title: '是否分词', slot: 'tokenizer', width: 80 },
           { title: '排序', slot: 'sort', width: 75, align: 'center' },
           { title: '启用状态', slot: 'status', width: 90, align: 'center' },
           { title: '操作', slot: 'action', width: 80, align: 'center' }
@@ -211,19 +212,19 @@
         return items.map(i => {
           let item = { ...i }
           // 如果已经有值
-          if (item.is_tokenizer) {
+          if (item.tokenizer) {
             // 如果设置了有效值则必须为Y
             if (item.validValue.length > 0) {
-              item.is_tokenizer = 'Y'
+              item.tokenizer = 'Y'
             }
           } else {
             // 如果类型为字符型
             if (item.dataType === 'string') {
               // 如果有效值存在
-              item.is_tokenizer = item.validValue.length > 0 ? 'Y' : 'N'
+              item.tokenizer = item.validValue.length > 0 ? 'Y' : 'N'
             } else {
               item.validValue = '' // 如果类型不是字符型，则有效值必须为空
-              item.is_tokenizer = '' // 是否分词也必须为空
+              item.tokenizer = '' // 是否分词也必须为空
             }
           }
           return item
@@ -339,7 +340,7 @@
           isEncrypt: '', // 是否加密
           required: 'Y', // 信息项类型，默认核心项
           status: 'use', // 启用状态，默认启用
-          is_tokenizer: '', // 是否分词
+          tokenizer: '', // 是否分词
           // eslint-disable-next-line no-template-curly-in-string
           checkRules: '{"rules":["$required(obj, value, {\\"message\\":\\"${title}不可以为空\\"})"]}'
         }

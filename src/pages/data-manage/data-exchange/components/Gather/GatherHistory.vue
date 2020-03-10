@@ -1,7 +1,7 @@
 <template>
   <b-modal v-model="historyDialog" title="查看历史" width="860" :mask-closable="false"
            append-to-body>
-    <b-table :columns="columns" :data="historyList" size="small" max-height="400"></b-table>
+    <b-table :columns="columns" :data="historyList" size="small"></b-table>
     <div slot="footer">
       <b-page :total="total" :current.sync="listQuery.page"
               @on-change="handleCurrentChange"></b-page>

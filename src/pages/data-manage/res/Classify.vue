@@ -168,7 +168,6 @@
         }
         this.currentTreeNode = node
         this.listQuery.parentId = node.id
-        console.log(this.currentTreeNode)
         this.handleFilter()
       },
       // filter-Bar:重置查询条件
