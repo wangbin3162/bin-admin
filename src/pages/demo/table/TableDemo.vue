@@ -8,7 +8,7 @@
         <!--查询条件-->
         <v-filter-bar>
           <v-filter-item title="用户名称">
-            <b-input v-model.trim="listQuery.name" size="small" placeholder="请输入部门名称" clearable></b-input>
+            <b-input v-model.trim="listQuery.name" size="small" placeholder="请输入" clearable></b-input>
           </v-filter-item>
           <v-filter-item title="地址">
             <b-input v-model.trim="listQuery.address" size="small" placeholder="请输入" clearable></b-input>
@@ -43,11 +43,16 @@
           </template>
           <!--操作栏-->
           <template v-slot:action="scope">
-            <b-button type="text" @click="handleModify(scope.row)">编辑</b-button>
+            <b-button type="text" text-color="primary" @click="handleModify(scope.row)">编辑</b-button>
             <!--是否有删除键-->
             <template>
               <b-divider type="vertical"></b-divider>
-              <b-button type="text" style="color:red;" @click="handleRemove(scope.row)">删除</b-button>
+              <b-popover
+                confirm append-to-body
+                title="确实要删除当前用户吗?"
+                @on-ok="handleRemove(scope.row)">
+                <b-button type="text" text-color="danger" plain>删除</b-button>
+              </b-popover>
             </template>
           </template>
         </b-table>
@@ -59,7 +64,7 @@
     </page-header-wrap>
     <page-header-wrap v-show="isEdit" :title="editTitle" show-close @on-close="handleCancel">
       <v-edit-wrap>
-        <b-form :model="user" ref="form" :rules="ruleValidate" placement="top">
+        <b-form :model="user" ref="form" :rules="ruleValidate" label-position="top">
           <b-row :gutter="10">
             <b-col span="12">
               <b-form-item label="姓名" prop="name" class="mr-15">
@@ -260,25 +265,8 @@
       // 弹窗提示是否删除
       handleRemove(row) {
         let user = { ...row }
-        this.$confirm({
-          title: '警告',
-          content: `确实要删除当前用户吗？`,
-          // loading: true,
-          onOk: () => {
-            console.log(user)
-            this.$message({ type: 'success', content: '删除成功' })
-            // api.removeDepart(depart).then(res => {
-            //   if (res.data.code === '0') {
-            //     this.$message({ type: 'success', content: '操作成功' })
-            //     this.$modal.remove()
-            //     this.initTree()
-            //   } else {
-            //     this.$modal.remove()
-            //     this.$message({ type: 'danger', content: res.data.message })
-            //   }
-            // })
-          }
-        })
+        console.log(user)
+        this.$notice.success({ title: '删除成功' })
       },
       // 表单提交
       handleSubmit() {
@@ -286,20 +274,6 @@
           if (valid) {
             // 校验成功后根据状态去创建或修改
             this.$message({ type: 'success', content: '操作成功' })
-            // 手动关闭弹窗
-            this.dialogFormVisible = false
-            // this.btnLoading = true
-            // let fun = this.dialogStatus === 'create' ? api.createDept : api.modifyDept
-            // fun(this.user).then(res => {
-            //   if (res.data.code === '0') {
-            //     this.btnLoading = false
-            //     this.dialogFormVisible = false
-            //     this.$message({ type: 'success', content: '操作成功' })
-            //     this.initTree()
-            //   } else {
-            //     this.$message({ type: 'danger', content: res.data.message })
-            //   }
-            // })
           }
         })
       },
