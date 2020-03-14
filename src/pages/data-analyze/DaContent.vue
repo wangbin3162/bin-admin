@@ -94,20 +94,20 @@
           <b-row>
             <b-col span="12">
               <b-form-item label="所属主题" prop="themeCode">
-                <div flex>
+                <div flex style="width:100%;">
                   <b-input v-model="content.themeCode" disabled></b-input>
                   <b-button type="primary" @click="handleShowThemeChoose"
-                            style="padding: 10px;flex:0 0 auto;margin-left:0;font-size: 12px;">选择主题
+                            style="flex:0 0 auto;margin-left:0;font-size: 12px;">选择主题
                   </b-button>
                 </div>
               </b-form-item>
             </b-col>
             <b-col span="12">
               <b-form-item label="接口" prop="apiId">
-                <div flex>
+                <div flex style="width:100%;">
                   <b-input v-model="content.apiId" disabled></b-input>
                   <b-button type="primary" @click="handleShowApiChoose"
-                            style="padding: 10px;flex:0 0 auto;margin-left:0;font-size: 12px;">选择接口
+                            style="flex:0 0 auto;margin-left:0;font-size: 12px;">选择接口
                   </b-button>
                 </div>
               </b-form-item>
@@ -285,8 +285,8 @@
       handleRemove(row) {
         let content = { ...row }
         this.$confirm({
-          title: '警告',
-          content: `确实要删除当前分析内容吗？`,
+          title: '确实要删除当前分析内容吗？',
+          content: '删除后不可恢复。',
           loading: true,
           onOk: () => {
             conApi.removeContent(content).then(res => {

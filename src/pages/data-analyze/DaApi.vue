@@ -4,20 +4,17 @@
       <v-table-wrap>
         <v-filter-bar>
           <v-filter-item title="接口名称">
-            <b-input v-model.trim="listQuery.name"  placeholder="请输入" clearable></b-input>
+            <b-input v-model.trim="listQuery.name" placeholder="请输入" clearable></b-input>
           </v-filter-item>
           <v-filter-item title="接口编码">
-            <b-input v-model.trim="listQuery.code"  placeholder="请输入" clearable></b-input>
+            <b-input v-model.trim="listQuery.code" placeholder="请输入" clearable></b-input>
           </v-filter-item>
           <!--添加查询按钮位置-->
           <v-filter-item @on-search="handleFilter" @on-reset="resetQuery"></v-filter-item>
         </v-filter-bar>
         <!--操作栏-->
         <v-table-tool-bar>
-          <b-button type="primary"
-                      icon="ios-add-circle-outline"
-                    @click="handleCreate">新 增
-          </b-button>
+          <b-button type="primary" icon="ios-add-circle-outline" @click="handleCreate">新 增</b-button>
         </v-table-tool-bar>
         <!--中央表格-->
         <b-table :columns="columns" :data="list" :loading="listLoading">

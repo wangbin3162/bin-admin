@@ -1,19 +1,19 @@
 <template>
   <!--模板参数 for DaInnerTemplate.vue 模板参数项-->
   <div>
-    <b-table disabled-hover :data="totalData"  :columns="fieldsColumns">
+    <b-table disabled-hover :data="totalData" :columns="fieldsColumns" size="small">
       <template v-slot:paramName="{row,index}">
-        <b-input type="text" v-model="totalData[index].paramName" v-if="row.edit"
+        <b-input type="text" v-model="totalData[index].paramName" v-if="row.edit" size="small"
                  placeholder="参数名称"></b-input>
         <span v-else>{{ row.paramName }}</span>
       </template>
       <template v-slot:paramCode="{row,index}">
-        <b-input type="text" v-model="totalData[index].paramCode" v-if="row.edit"
+        <b-input type="text" v-model="totalData[index].paramCode" v-if="row.edit" size="small"
                  placeholder="参数编码"></b-input>
         <span v-else>{{  row.paramCode }}</span>
       </template>
       <template v-slot:paramType="{row,index}">
-        <b-select v-model="totalData[index].paramType" v-if="row.edit" placeholder="参数类型" append-to-body>
+        <b-select v-model="totalData[index].paramType" v-if="row.edit" placeholder="参数类型" append-to-body size="small">
           <b-option value="string">string</b-option>
           <b-option value="number">number</b-option>
         </b-select>
@@ -27,29 +27,36 @@
         <span v-else>{{ isRequiredMap[row.isRequired] }}</span>
       </template>
       <template v-slot:defaultVal="{row,index}">
-        <b-input type="text" v-model="totalData[index].defaultVal" v-if="row.edit"
+        <b-input type="text" v-model="totalData[index].defaultVal" v-if="row.edit" size="small"
                  placeholder="默认值"></b-input>
         <span v-else>{{ row.defaultVal }}</span>
       </template>
       <template v-slot:paramDesc="{row,index}">
-        <b-input type="text" v-model="totalData[index].paramDesc" v-if="row.edit"
+        <b-input type="text" v-model="totalData[index].paramDesc" v-if="row.edit" size="small"
                  placeholder="参数描述"></b-input>
         <span v-else>{{ row.paramDesc }}</span>
       </template>
       <template v-slot:action="{row,index}">
         <div v-if="row.newOne">
-          <b-button @click="handleSave(row,index)" type="success" transparent>添加</b-button>
-          <b-button @click="handleCancel(index)" type="info" transparent>取消</b-button>
+          <b-button @click="handleSave(row,index)" type="success" size="small" transparent>添加</b-button>
+          <b-button @click="handleCancel(index)" size="small">取消</b-button>
         </div>
         <div v-else>
-          <b-button v-if="row.edit" @click="handleSave(row,index)" type="primary" transparent>保存</b-button>
-          <b-button v-else @click="handleEdit(index)" type="primary" transparent>编辑</b-button>
-          <b-button v-if="row.edit" @click="handleCancel(index)" type="info" transparent>取消</b-button>
-          <b-button v-else @click="handleRemove(index)" type="danger" transparent>删除</b-button>
+          <b-button v-if="row.edit" @click="handleSave(row,index)" type="primary" size="small" transparent>保存</b-button>
+          <b-button v-else @click="handleEdit(index)" type="primary" size="small" transparent>编辑</b-button>
+          <b-button v-if="row.edit" @click="handleCancel(index)" size="small">取消</b-button>
+          <span v-else style="margin-left: 10px;">
+            <b-popover
+              confirm append-to-body
+              title="确认删除此项吗?"
+              @on-ok="handleRemove(index)">
+              <b-button type="danger" size="small" transparent>删除</b-button>
+            </b-popover>
+          </span>
         </div>
       </template>
     </b-table>
-    <b-button type="dashed"  icon="ios-add-circle-outline"
+    <b-button type="dashed" icon="ios-add-circle-outline"
               style="width: 100%;margin-top: 16px;margin-bottom: 8px;"
               @click="handleAdd">添加参数
     </b-button>
@@ -77,11 +84,11 @@
           { type: 'index', width: 50, align: 'center' },
           { title: '参数名称', slot: 'paramName' },
           { title: '参数编码', slot: 'paramCode' },
-          { title: '参数类型', slot: 'paramType', width: 100 },
+          { title: '参数类型', slot: 'paramType', width: 120 },
           { title: '是否必填', slot: 'isRequired', width: 100, align: 'center' },
           { title: '默认值', slot: 'defaultVal' },
           { title: '参数说明', slot: 'paramDesc' },
-          { title: '操作', slot: 'action', width: 150, align: 'center' }
+          { title: '操作', slot: 'action', width: 150 }
         ],
         totalData: [],
         beforeEditItem: {
@@ -139,14 +146,8 @@
         }
       },
       handleRemove(index) {
-        this.$confirm({
-          title: '警告',
-          content: '确认删除此参数项吗？',
-          onOk: () => {
-            this.totalData.splice(index, 1) // 清除一个未保存的项
-            this.emitValue()
-          }
-        })
+        this.totalData.splice(index, 1) // 清除一个未保存的项
+        this.emitValue()
       },
       handleSave(row, index) {
         if (row.paramName.length === 0 || row.paramCode.length === 0) {

@@ -1,11 +1,11 @@
 <template>
   <!--选择模板 for SwitchingMission.vue -->
-  <div>
+  <div style="width: 100%;">
     <div flex="box:last">
       <b-input v-model="current" placeholder="选择模板" readonly clearable
                @on-clear="handleClear"></b-input>
       <b-button type="primary"  @click="handleShowModal"
-                style="padding: 10px;margin-left: 0;font-size: 12px;">
+                style="margin-left: 0;font-size: 12px;">
         选择模板
       </b-button>
     </div>

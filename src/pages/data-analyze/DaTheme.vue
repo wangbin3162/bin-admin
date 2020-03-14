@@ -38,9 +38,9 @@
                 @on-page-size-change="handleSizeChange"></b-page>
       </v-table-wrap>
     </page-header-wrap>
-    <b-modal v-model="dialogFormVisible" :title="editTitle" append-to-body :mask-closable="false" width="500px">
+    <b-modal v-model="dialogFormVisible" :title="editTitle" append-to-body :mask-closable="false" width="550px">
       <div class="p15">
-        <b-form :model="current" ref="form" :rules="ruleValidate" :label-width="75">
+        <b-form :model="current" ref="form" :rules="ruleValidate" :label-width="100">
           <b-row>
             <b-col span="12">
               <b-form-item label="主题名称" prop="name">
@@ -119,8 +119,8 @@
       handleRemove(row) {
         let theme = { ...row }
         this.$confirm({
-          title: '警告',
-          content: `确实要删除当前主题吗？`,
+          title: '确实要删除当前主题吗？',
+          content: '删除后不可恢复。',
           loading: true,
           onOk: () => {
             api.handleRemove(theme).then(res => {
