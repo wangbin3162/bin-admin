@@ -112,25 +112,25 @@
         <template v-if="menu.permissions.length!==0" slot="full">
           <!--动作列表编辑框-->
           <b-divider align="left">动作列表</b-divider>
-          <b-table disabled-hover :data="menu.permissions"
+          <b-table disabled-hover :data="menu.permissions" size="small"
                    :columns="[
                      { title: '动作名称', slot: 'name', width:120 },
                      { title: '前端路径', slot: 'path'},
                      { title: '菜单路径', slot: 'url' },
-                     { title: '操作', slot: 'action', width: 70, align: 'center'}]">
+                     { title: '操作', slot: 'action', width: 100, align: 'center'}]">
             <template v-slot:name="scope">
-              <b-input v-model="menu.permissions[scope.index].name"
+              <b-input v-model="menu.permissions[scope.index].name" size="small"
                        :readonly="permissionReadOnly(scope.row.path)"></b-input>
             </template>
             <template v-slot:path="scope">
-              <b-input v-model="menu.permissions[scope.index].path"
+              <b-input v-model="menu.permissions[scope.index].path" size="small"
                        :readonly="permissionReadOnly(scope.row.path)"></b-input>
             </template>
             <template v-slot:url="scope">
-              <b-input v-model="menu.permissions[scope.index].url"></b-input>
+              <b-input v-model="menu.permissions[scope.index].url" size="small"></b-input>
             </template>
             <template v-slot:action="scope">
-              <b-button type="danger" transparent
+              <b-button type="danger" transparent size="small"
                         @click="removeBufferRow(scope.row,scope.index)">删除
               </b-button>
             </template>
@@ -156,12 +156,12 @@
             <b-tag>{{ menuTypeMap[menu.type] }}</b-tag>
           </v-key-label>
           <v-key-label label="前端路由" is-half>{{ menu.path }}</v-key-label>
-          <v-key-label label="菜单路径" is-half is-bottom>{{ menu.url }}</v-key-label>
+          <v-key-label label="菜单路径" is-half is-first is-bottom>{{ menu.url }}</v-key-label>
           <v-key-label label="排序编号" is-half is-bottom>{{ menu.sortNum }}</v-key-label>
         </div>
         <template v-if="menu.permissions.length>0" slot="full">
           <b-divider align="left">动作列表</b-divider>
-          <b-table disabled-hover :data="menu.permissions"
+          <b-table disabled-hover :data="menu.permissions" size="small"
                    :columns="[
                      { title: '动作名称', key: 'name', width:120, align: 'center', },
                      { title: '前端路径', key: 'path'},
@@ -274,8 +274,8 @@
       handleRemove(row) {
         let menu = { ...row }
         this.$confirm({
-          title: '警告',
-          content: `确实要删除当前菜单吗？`,
+          title: '确实要删除当前菜单吗',
+          content: '删除后不可恢复。',
           loading: true,
           onOk: () => {
             api.removeMenu(menu).then(res => {

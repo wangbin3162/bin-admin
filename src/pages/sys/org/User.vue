@@ -387,8 +387,8 @@
       handleRemove(row) {
         let user = { ...row }
         this.$confirm({
-          title: '警告',
-          content: `确实要删除当前用户吗？`,
+          title: '确定删除这项内容吗？',
+          content: '删除这条数据后，就无法使用此用户进行登录。',
           loading: true,
           onOk: () => {
             api.removeUser(user).then(res => {
@@ -408,8 +408,8 @@
       handleResetPwd(row) {
         let user = { ...row }
         this.$confirm({
-          title: '警告',
-          content: `确定要重置此用户的密码吗？<br>初始密码为：123456`,
+          title: '确定要重置此用户的密码吗？',
+          content: '初始密码为：123456',
           loading: true,
           onOk: () => {
             api.resetUserPwd(user).then(res => {

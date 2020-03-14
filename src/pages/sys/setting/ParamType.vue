@@ -183,8 +183,8 @@
       handleRemove(row) {
         let type = { ...row }
         this.$confirm({
-          title: '警告',
-          content: `确实要删除当前类别吗？`,
+          title: '确实要删除当前类别吗？',
+          content: '删除后不可恢复。',
           loading: true,
           onOk: () => {
             api.removeType(type).then(res => {

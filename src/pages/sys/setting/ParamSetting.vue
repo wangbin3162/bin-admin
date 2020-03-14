@@ -88,7 +88,7 @@
           </b-form-item>
           <template v-if="conf.valueMode===ENUM.RADIO||conf.valueMode===ENUM.CHECKBOX">
             <b-divider align="left">{{ valueModeMap[conf.valueMode] }}参数</b-divider>
-            <b-table disabled-hover :data="conf.bufferValue"
+            <b-table disabled-hover :data="conf.bufferValue" size="small"
                      :columns="[
                      { title: '显示', slot: 'label'},
                      { title: '值', slot: 'value' },
@@ -105,16 +105,16 @@
               </template>
               <template v-slot:action="scope">
                 <!--根据状态显示保存或删除编辑按钮-->
-                <b-button v-if="scope.row.edit" type="success"
+                <b-button v-if="scope.row.edit" type="success" size="small"
                           @click="saveRow(scope.row,scope.index)" transparent>
                   保存
                 </b-button>
                 <!--根据状态显示保存或删除编辑按钮-->
-                <b-button v-else type="primary" transparent
+                <b-button v-else type="primary" transparent size="small"
                           @click="conf.bufferValue[scope.index].edit = true">
                   编辑
                 </b-button>
-                <b-button type="danger" transparent @click="removeBufferRow(scope.row)">移除</b-button>
+                <b-button type="danger" size="small" transparent @click="removeBufferRow(scope.row)">移除</b-button>
               </template>
             </b-table>
             <!--添加按钮-->

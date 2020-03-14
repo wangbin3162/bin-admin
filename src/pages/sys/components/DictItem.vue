@@ -165,8 +165,8 @@
       handleRemove(row) {
         let item = { ...row }
         this.$confirm({
-          title: '警告',
-          content: `确实要删除当前字典项吗？`,
+          title: '确实要删除当前字典项吗？',
+          content: '删除后不可恢复。',
           loading: true,
           onOk: () => {
             api.removeDictItem(item).then(res => {

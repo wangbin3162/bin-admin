@@ -179,8 +179,8 @@
       handleRemove(row) {
         let dict = { ...row }
         this.$confirm({
-          title: '警告',
-          content: `确实要删除当前字典组吗？`,
+          title: '确实要删除当前字典组吗？',
+          content: '存在字典项时不可删除。',
           loading: true,
           onOk: () => {
             api.removeDictGroup(dict).then(res => {

@@ -342,8 +342,8 @@
       handleRemove(row) {
         let depart = { ...row }
         this.$confirm({
-          title: '警告',
-          content: `确实要删除当前部门吗？`,
+          title: '确实要删除当前部门吗？',
+          content: '删除这条数据后不可恢复。',
           loading: true,
           onOk: () => {
             api.removeDepart(depart).then(res => {
