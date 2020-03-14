@@ -1,8 +1,8 @@
 <template>
   <!--资源信息扩展弹窗 for ResInfo.vue -->
-  <b-modal v-model="chooseDialog" title="扩展配置" :mask-closable="false">
+  <b-modal v-model="chooseDialog" title="扩展配置" :mask-closable="false" width="600">
     <div>
-      <b-form :model="config" ref="form" :label-width="90" label-position="left">
+      <b-form :model="config" ref="form" :label-width="100" label-position="left">
         <b-row>
           <b-col span="8">
             <b-form-item label="是否重复验证" prop="name">
@@ -12,7 +12,7 @@
             </b-form-item>
           </b-col>
           <b-col span="8">
-            <b-form-item label="是否增补基础信息" prop="name" :label-width="110">
+            <b-form-item label="是否增补基础信息" prop="name" :label-width="130">
               <b-switch v-model="config.appendBaseCfg" true-value="1" false-value="0">
                 <span slot="open">是</span><span slot="close">否</span>
               </b-switch>

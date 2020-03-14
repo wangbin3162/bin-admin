@@ -122,6 +122,7 @@
           title: '确实要删除当前主题吗？',
           content: '删除后不可恢复。',
           loading: true,
+          okType: 'danger',
           onOk: () => {
             api.handleRemove(theme).then(res => {
               if (res.data.code === '0') {

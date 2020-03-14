@@ -344,9 +344,10 @@
       handleRemove(row) {
         let conf = { ...row }
         this.$confirm({
-          title: '警告',
-          content: `确实要删除当前配置吗？`,
+          title: '确实要删除当前配置吗？',
+          content: '删除后不可恢复。',
           loading: true,
+          okType: 'danger',
           onOk: () => {
             api.removeConf(conf).then(res => {
               if (res.data.code === '0') {

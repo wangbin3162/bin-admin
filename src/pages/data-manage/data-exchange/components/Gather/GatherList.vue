@@ -287,9 +287,10 @@
       // 弹窗提示是否删除
       handleRemove(row) {
         this.$confirm({
-          title: '警告',
-          content: `确实要删除当前采集信息吗？`,
+          title: '确实要删除当前采集信息吗？',
+          content: '删除后不可恢复。',
           loading: true,
+          okType: 'danger',
           onOk: () => {
             api.removeGather(this.resource.resourceKey, row.id).then(res => {
               if (res.data.code === '0') {

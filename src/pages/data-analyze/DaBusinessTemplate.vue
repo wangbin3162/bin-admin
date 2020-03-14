@@ -208,9 +208,10 @@
       handleRemove(row) {
         let template = { ...row }
         this.$confirm({
-          title: '警告',
-          content: `确实要删除当前模板吗？`,
+          title: '确实要删除当前模板吗？',
+          content: '删除后不可恢复。',
           loading: true,
+          okType: 'danger',
           onOk: () => {
             api.removeBusinessTemp(template).then(res => {
               if (res.data.code === '0') {

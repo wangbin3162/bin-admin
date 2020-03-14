@@ -149,8 +149,9 @@
       // 删除信息项
       handleRemove(row, index) {
         this.$confirm({
-          title: '警告',
-          content: '确认删除此信息项吗？',
+          title: '确认删除此信息项吗？',
+          content: '删除后不可恢复。',
+          okType: 'danger',
           onOk: () => {
             this.totalData.splice(index, 1) // 清除一个未保存的项
             this.resetHandle('删除项成功')

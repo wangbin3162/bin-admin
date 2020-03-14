@@ -387,9 +387,10 @@
       handleRemove(row) {
         let user = { ...row }
         this.$confirm({
-          title: '确定删除这项内容吗？',
+          title: '确定删除当前用户吗？',
           content: '删除这条数据后，就无法使用此用户进行登录。',
           loading: true,
+          okType: 'danger',
           onOk: () => {
             api.removeUser(user).then(res => {
               if (res.data.code === '0') {

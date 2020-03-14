@@ -49,13 +49,15 @@
             <b-input v-model.trim="classify.classifyName" placeholder="请输入类目名称" clearable :maxlength="15"></b-input>
           </b-form-item>
           <b-form-item label="类目编码" prop="classifyCode">
-            <div flex>
+            <div flex style="width: 100%;">
               <b-tag v-if="codePrefix"
-                     type="info" style="margin: 0;flex:0 0 auto;height:36px;line-height: 36px;">
+                     type="info" style="margin: 0;flex:0 0 40px; text-align: center;">
                 {{currentTreeNode.code}}
               </b-tag>
-              <b-input v-model.trim="classify.classifyCode" placeholder="请输入类目编码(不超过2个字符)" clearable
-                       :maxlength="2" :disabled="dialogStatus==='modify'"/>
+              <div flex-box="1">
+                <b-input v-model.trim="classify.classifyCode" placeholder="请输入类目编码(不超过2个字符)" clearable
+                         :maxlength="2" :disabled="dialogStatus==='modify'"/>
+              </div>
             </div>
           </b-form-item>
           <b-form-item label="类目描述" prop="classifyDesc">
@@ -195,9 +197,10 @@
       handleRemove(row) {
         let classify = { ...row }
         this.$confirm({
-          title: '警告',
-          content: `确实要删除当前类目吗？`,
+          title: '确实要删除当前类目吗？',
+          content: '删除后不可恢复。',
           loading: true,
+          okType: 'danger',
           onOk: () => {
             api.removeClassify(classify).then(res => {
               if (res.data.code === '0') {

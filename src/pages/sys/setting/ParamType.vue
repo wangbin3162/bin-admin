@@ -186,6 +186,7 @@
           title: '确实要删除当前类别吗？',
           content: '删除后不可恢复。',
           loading: true,
+          okType: 'danger',
           onOk: () => {
             api.removeType(type).then(res => {
               if (res.data.code === '0') {

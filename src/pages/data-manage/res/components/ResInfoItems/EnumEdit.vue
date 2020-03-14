@@ -2,7 +2,7 @@
   <!--枚举值编辑组件 for ResInfoItems.vue -->
   <b-modal v-model="chooseDialog" title="编辑枚举值" width="860" class="layout-inner" :mask-closable="false">
     <div>
-      <b-table :columns="columns" :data="totalData"  disabled-hover>
+      <b-table :columns="columns" :data="totalData" size="small" disabled-hover>
         <!--编码-->
         <template v-slot:code="scope">
           <b-input v-model="totalData[scope.index].code" placeholder="编码" clearable></b-input>
@@ -19,7 +19,7 @@
           <b-button type="text" @click="handleRemove(scope.row,scope.index)">删除</b-button>
         </template>
       </b-table>
-      <b-button type="dashed"  icon="ios-add-circle-outline"
+      <b-button type="dashed" icon="ios-add-circle-outline"
                 style="width: 100%;margin-top: 16px;margin-bottom: 8px;"
                 @click="handleCreate">添加信息项
       </b-button>

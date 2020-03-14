@@ -204,6 +204,7 @@
           title: '确实要删除当前模板吗？',
           content: '删除后不可恢复。',
           loading: true,
+          okType: 'danger',
           onOk: () => {
             api.removeInnerTemp(template).then(res => {
               if (res.data.code === '0') {

@@ -168,6 +168,7 @@
           title: '确实要删除当前字典项吗？',
           content: '删除后不可恢复。',
           loading: true,
+          okType: 'danger',
           onOk: () => {
             api.removeDictItem(item).then(res => {
               if (res.data.code === '0') {

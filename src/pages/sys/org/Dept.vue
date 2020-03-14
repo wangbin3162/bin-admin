@@ -345,6 +345,7 @@
           title: '确实要删除当前部门吗？',
           content: '删除这条数据后不可恢复。',
           loading: true,
+          okType: 'danger',
           onOk: () => {
             api.removeDepart(depart).then(res => {
               if (res.data.code === '0') {

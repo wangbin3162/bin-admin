@@ -254,8 +254,8 @@
       // 自动映射
       autoMap() {
         this.$confirm({
-          title: '警告',
-          content: `执行自动映射会取消已添加的映射，确定执行吗？`,
+          title: '确定执行自动映射吗？',
+          content: '执行自动映射会取消已添加的映射。',
           loading: true,
           onOk: () => {
             // 清空自动映射

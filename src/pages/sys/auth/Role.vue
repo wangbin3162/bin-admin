@@ -219,6 +219,7 @@
           title: '确实要删除当前角色吗？',
           content: '删除此角色，相关联的用户会自动解除该角色。',
           loading: true,
+          okType: 'danger',
           onOk: () => {
             api.removeRole(role).then(res => {
               if (res.data.code === '0') {

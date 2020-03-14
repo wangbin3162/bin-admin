@@ -1,14 +1,14 @@
 <template>
   <!--资源信息，信息项表格组件 for ResInfo.vue -->
   <div style="padding: 10px 0;">
-    <b-table disabled-hover :data="totalData"  :columns="fieldsColumns">
+    <b-table disabled-hover :data="totalData" :columns="fieldsColumns" size="small">
       <!--标题-->
       <template v-slot:fieldTitle="scope">
-        <b-input v-model="totalData[scope.index].fieldTitle"  @on-change="emitValue"></b-input>
+        <b-input v-model="totalData[scope.index].fieldTitle" @on-change="emitValue" size="small"></b-input>
       </template>
       <!--信息项类型-选择必填项下拉框-->
       <template v-slot:required="scope">
-        <b-select v-model="totalData[scope.index].required" append-to-body @on-change="emitValue" >
+        <b-select v-model="totalData[scope.index].required" append-to-body @on-change="emitValue" size="small">
           <b-option v-for="(value,key) in fieldTypeMap" :key="key" :value="key">{{ value }}</b-option>
         </b-select>
       </template>
@@ -167,16 +167,16 @@
     data() {
       return {
         fieldsColumns: [
-          { title: '名称', key: 'fieldName' },
+          { title: '名称', key: 'fieldName'},
           { title: '标题', slot: 'fieldTitle' },
           { title: '信息项类型', slot: 'required', width: 110 },
-          { title: '数据类型', slot: 'dataType', width: 80, align: 'center' },
-          { title: '有效值', slot: 'validValue', width: 190 },
-          { title: '验证规则', slot: 'ruleCfg', width: 80, align: 'center' },
-          { title: '是否分词', slot: 'tokenizer', width: 80 },
+          { title: '数据类型', slot: 'dataType', width: 90, align: 'center' },
+          { title: '有效值', slot: 'validValue', width: 200 },
+          { title: '验证规则', slot: 'ruleCfg', width: 90, align: 'center' },
+          { title: '是否分词', slot: 'tokenizer', width: 90 },
           { title: '排序', slot: 'sort', width: 75, align: 'center' },
           { title: '启用状态', slot: 'status', width: 90, align: 'center' },
-          { title: '操作', slot: 'action', width: 80, align: 'center' }
+          { title: '操作', slot: 'action', width: 90, align: 'center' }
         ],
         totalData: [],
         item: null,

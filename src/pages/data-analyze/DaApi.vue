@@ -152,9 +152,10 @@
       handleRemove(row) {
         let apiObj = { ...row }
         this.$confirm({
-          title: '警告',
-          content: `确实要删除接口吗？`,
+          title: '确实要删除接口吗？',
+          content: '删除后不可恢复。',
           loading: true,
+          okType: 'danger',
           onOk: () => {
             api.removeApi(apiObj).then(res => {
               if (res.data.code === '0') {

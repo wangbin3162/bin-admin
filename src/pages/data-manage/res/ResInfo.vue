@@ -8,18 +8,18 @@
         <!--查询条件-->
         <v-filter-bar>
           <v-filter-item title="资源名称">
-            <b-input v-model.trim="listQuery.resourceName"  placeholder="资源名称(中文名)" clearable></b-input>
+            <b-input v-model.trim="listQuery.resourceName" placeholder="资源名称(中文名)" clearable></b-input>
           </v-filter-item>
           <v-filter-item title="资源性质" :span="5">
-            <v-cascade :data="resPropertyOptions" v-model="listQuery.resProperty"  style="width: 100%;"></v-cascade>
+            <v-cascade :data="resPropertyOptions" v-model="listQuery.resProperty" style="width: 100%;"></v-cascade>
           </v-filter-item>
           <v-filter-item title="资源状态" :span="4">
-            <b-select v-model="listQuery.status" clearable >
+            <b-select v-model="listQuery.status" clearable>
               <b-option v-for="(value,key) in resStatusMap" :key="key" :value="key">{{ value }}</b-option>
             </b-select>
           </v-filter-item>
           <v-filter-item title="可用状态" :span="4">
-            <b-select v-model="listQuery.availableStatus" clearable >
+            <b-select v-model="listQuery.availableStatus" clearable>
               <b-option v-for="(value,key) in availableStatusMap" :key="key" :value="key">{{ value }}</b-option>
             </b-select>
           </v-filter-item>
@@ -77,7 +77,7 @@
             <b-row :gutter="10">
               <b-col span="6">
                 <b-form-item label="元信息名称" prop="tableName">
-                  <div flex>
+                  <div flex style="width: 100%;">
                     <b-input v-model="resource.tableName" placeholder="选择元信息带入" readonly class="choose-btn"></b-input>
                     <b-button style="flex:0 0 auto;" type="primary" plain @click="handleShowDialogChoose">选择</b-button>
                   </div>
@@ -96,7 +96,7 @@
               <b-col span="6">
                 <b-form-item label="资源代码" prop="resourceCode">
                   <div flex>
-                    <b-tag type="primary" style="margin: 0;flex:0 0 auto;height:36px;line-height: 36px;">
+                    <b-tag type="primary" style="margin: 0;flex:0 0 auto;">
                       210{{ resource.metadataCode }}
                     </b-tag>
                     <b-input v-model="resource.resourceCode" placeholder="请输入资源代码" clearable></b-input>
@@ -198,7 +198,7 @@
             </b-col>
           </b-row>
           <v-title-bar label="信息项明细" class="mb-15 mt-15"></v-title-bar>
-          <b-table disabled-hover :data="resource.items"  :columns="checkItemsTableColumns">
+          <b-table disabled-hover :data="resource.items" :columns="checkItemsTableColumns">
             <template v-slot:dataType="scope">{{ dataTypeMap[scope.row.dataType] }}</template>
             <template v-slot:status="scope">{{ fieldStatusMap[scope.row.status] }}</template>
           </b-table>
@@ -379,9 +379,10 @@
       handleRemove(row) {
         let res = { ...row }
         this.$confirm({
-          title: '警告',
-          content: `确定要删除当前资源信息吗？`,
+          title: '确定要删除当前资源信息吗？',
+          content: '删除后不可恢复。',
           loading: true,
+          type: 'danger',
           onOk: () => {
             api.removeResInfo(res).then(res => {
               if (res.data.code === '0') {
@@ -400,8 +401,8 @@
       handlePublish(row) {
         let res = { ...row }
         this.$confirm({
-          title: '警告',
-          content: `确定要发布本条资源信息？`,
+          title: '确定要发布本条资源信息？',
+          content: '发布后原数据会变为历史。',
           loading: true,
           onOk: () => {
             api.publishResInfo(res).then(res => {

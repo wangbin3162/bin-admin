@@ -1,12 +1,11 @@
 <template>
   <!--节点选择 for switching-scheme -->
-  <div>
+  <div style="width: 100%;">
     <div flex>
       <b-input :value="current" placeholder="选择填充" :disabled="disabledBtn" readonly clearable @on-clear="handleClear"
                flex-box="1"></b-input>
       <div v-if="!disabledBtn">
-        <b-button type="primary"  @click="handleShowModal"
-                  style="font-size: 12px;height: 36px;" size="">
+        <b-button type="primary"  @click="handleShowModal">
           选择
         </b-button>
       </div>

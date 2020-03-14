@@ -288,6 +288,7 @@
           title: '确实要删除当前分析内容吗？',
           content: '删除后不可恢复。',
           loading: true,
+          okType: 'danger',
           onOk: () => {
             conApi.removeContent(content).then(res => {
               if (res.data.code === '0') {

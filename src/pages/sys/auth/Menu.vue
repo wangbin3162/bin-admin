@@ -277,6 +277,7 @@
           title: '确实要删除当前菜单吗',
           content: '删除后不可恢复。',
           loading: true,
+          okType: 'danger',
           onOk: () => {
             api.removeMenu(menu).then(res => {
               if (res.data.code === '0') {
@@ -348,9 +349,10 @@
         } else {
           let menu = { ...item }
           this.$confirm({
-            title: '警告',
-            content: `删除此行可能会移除授权关联，确认删除嘛？`,
+            title: '确认删除此行吗？',
+            content: '删除此行可能会移除授权关联。',
             loading: true,
+            okType: 'danger',
             onOk: () => {
               api.removeMenu(menu).then(res => {
                 if (res.data.code === '0') {

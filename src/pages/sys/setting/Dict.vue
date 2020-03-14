@@ -182,6 +182,7 @@
           title: '确实要删除当前字典组吗？',
           content: '存在字典项时不可删除。',
           loading: true,
+          okType: 'danger',
           onOk: () => {
             api.removeDictGroup(dict).then(res => {
               if (res.data.code === '0') {

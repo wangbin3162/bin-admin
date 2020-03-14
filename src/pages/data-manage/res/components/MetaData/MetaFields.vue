@@ -1,7 +1,7 @@
 <template>
   <!--元信息项编辑 for Metadata.vue -->
   <div>
-    <b-table disabled-hover :data="totalData"  :columns="fieldsColumns">
+    <b-table disabled-hover :data="totalData"  :columns="fieldsColumns" size="small">
       <!--类型-->
       <template v-slot:dataType="scope">{{ dataTypeMap[scope.row.dataType] }}</template>
       <!--排序-->
@@ -221,6 +221,7 @@
         this.$confirm({
           title: '警告',
           content: '确认删除此信息项吗？',
+          okType: 'danger',
           onOk: () => {
             this.totalData.splice(index, 1) // 清除一个未保存的项
             this.resetHandle('删除项成功')

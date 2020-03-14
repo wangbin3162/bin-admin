@@ -3,7 +3,7 @@
   <div flex>
     <b-input v-model="current" :placeholder="placeholder" readonly clearable @on-clear="handleClear"></b-input>
     <b-button type="primary"  @click="handleShowModal"
-              style="padding: 10px;flex:0 0 auto;margin-left: 0;font-size: 12px;">
+              style="flex:0 0 auto;margin-left: 0;">
       选择自然人
     </b-button>
     <!--选择自然人弹窗 for ResInfo.vue -->

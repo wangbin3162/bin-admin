@@ -1,9 +1,9 @@
 <template>
   <!--数据源选择框 for switching-node -->
-  <div>
+  <div style="width: 100%;">
     <div flex="box:last">
       <b-input v-model="current" placeholder="选择填充" readonly clearable @on-clear="handleClear"></b-input>
-      <b-button type="primary"  @click="handleShowModal" style="padding: 10px;font-size: 12px;">
+      <b-button type="primary"  @click="handleShowModal">
         选择
       </b-button>
     </div>
