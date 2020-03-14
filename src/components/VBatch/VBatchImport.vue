@@ -1,6 +1,6 @@
 <template>
   <div style="display: inline-block;" class="ml-15">
-    <b-button size="small" icon="ios-exit" @click="handleBatchImport">
+    <b-button  icon="ios-exit" @click="handleBatchImport">
       <slot>批量导入</slot>
     </b-button>
     <!--批量导入弹窗-->
@@ -21,7 +21,7 @@
         </div>
       </div>
       <div slot="footer">
-        <b-button type="primary" size="small" @click="handleImport" :loading="uploadLoading">
+        <b-button type="primary"  @click="handleImport" :loading="uploadLoading">
           {{ uploadLoading ? '导入中' : '导入' }}
         </b-button>
       </div>
@@ -88,7 +88,7 @@
               if (res.status === 200 && res.data.code === '0') {
                 this.$message({ type: 'success', content: '导入成功，请查看[导入/导出记录]。' })
               } else {
-                this.$message({ type: 'danger', content: res.data.message })
+                this.$notice.danger({ title: '操作错误', desc: res.data.message })
               }
               this.file = null
               this.uploadLoading = false

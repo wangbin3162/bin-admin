@@ -4,7 +4,7 @@
     <div flex="box:last">
       <b-input v-model="current" placeholder="选择填充" readonly clearable
                @on-clear="handleClear"></b-input>
-      <b-button type="primary" v-waves @click="handleShowModal"
+      <b-button type="primary"  @click="handleShowModal"
                 style="padding: 10px;margin-left: 0;font-size: 12px;">
         选择
       </b-button>
@@ -17,18 +17,18 @@
         <!--查询条件-->
         <v-filter-bar>
           <v-filter-item title="资源名称" :span="12">
-            <b-input v-model.trim="listQuery.resourceName" size="small" placeholder="资源名称(中文名)" clearable></b-input>
+            <b-input v-model.trim="listQuery.resourceName"  placeholder="资源名称(中文名)" clearable></b-input>
           </v-filter-item>
           <!--添加查询按钮位置-->
           <v-filter-item @on-search="handleFilter" @on-reset="resetQuery"></v-filter-item>
         </v-filter-bar>
         <!--中央表格-->
-        <b-table :columns="columns" :data="list" :loading="listLoading" size="small">
+        <b-table :columns="columns" :data="list" :loading="listLoading" >
           <template v-slot:sharedType="scope">{{ shareMap[scope.row.sharedType] }}</template>
           <template v-slot:status="scope">{{ resStatusMap[scope.row.status] }}</template>
           <!--操作栏-->
           <template v-slot:action="scope">
-            <b-button type="primary" size="mini" plain @click="chooseOne(scope.row)">
+            <b-button type="primary" plain @click="chooseOne(scope.row)">
               选择
             </b-button>
           </template>

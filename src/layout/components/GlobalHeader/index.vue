@@ -75,7 +75,7 @@
         </div>
         <div class="setting-list-item">
           <span>内容区域宽度</span>
-          <b-select size="mini" style="width:100px;" :value="wideType" @on-change="changeWideType">
+          <b-select style="width:100px;" :value="wideType" @on-change="changeWideType">
             <b-option value="wide" v-if="menuType==='header'">固定</b-option>
             <b-option value="flow">流式</b-option>
           </b-select>
@@ -92,8 +92,9 @@
       </div>
     </b-drawer>
     <!--修改密码弹窗-->
-    <b-modal v-model="pwdModal" title="修改密码" append-to-body loading width="400">
-      <b-form :model="user" ref="form" :rules="ruleValidate" :label-width="80" class="pt-10">
+    <b-modal v-model="pwdModal" title="修改密码" append-to-body loading width="400"
+             ok-text="保存" @on-ok="handleSubmit" @on-cancel="pwdModal = false">
+      <b-form :model="user" ref="form" :rules="ruleValidate" :label-width="100" class="pt-10">
         <b-form-item label="原密码" prop="oldPwd">
           <b-input v-model="user.oldPwd" type="password" clearable></b-input>
         </b-form-item>
@@ -104,10 +105,6 @@
           <b-input v-model="user.confirmPwd" type="password" clearable></b-input>
         </b-form-item>
       </b-form>
-      <div slot="footer">
-        <b-button type="primary" @click="handleSubmit">保存</b-button>
-        <b-button plain @click="pwdModal = false">取消</b-button>
-      </div>
     </b-modal>
   </header>
 </template>

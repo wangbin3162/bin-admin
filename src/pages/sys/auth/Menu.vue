@@ -8,7 +8,7 @@
         <!--查询条件-->
         <v-filter-bar>
           <v-filter-item title="菜单名称">
-            <b-input v-model.trim="listQuery.menuName" size="small" placeholder="请输入" clearable></b-input>
+            <b-input v-model.trim="listQuery.menuName" placeholder="请输入" clearable></b-input>
           </v-filter-item>
           <v-filter-item title="禁用状态">
             <b-switch size="large" v-model="listQuery.delFlag" :true-value="ENUM.Y" :false-value="ENUM.N"
@@ -22,10 +22,7 @@
         </v-filter-bar>
         <!--操作栏-->
         <v-table-tool-bar>
-          <b-button v-if="canCreate" type="primary"
-                    v-waves size="small" icon="ios-add"
-                    @click="handleCreate">新 增
-          </b-button>
+          <b-button v-if="canCreate" type="primary" icon="ios-add-circle-outline" @click="handleCreate">新 增</b-button>
         </v-table-tool-bar>
         <!--中央表格-->
         <b-table :columns="columns" :data="list" :loading="listLoading">
@@ -41,7 +38,7 @@
           <!--状态-->
           <template v-slot:delFlag="scope">
             <b-switch v-model="scope.row.delFlag" :true-value="ENUM.N" :false-value="ENUM.Y"
-                      inactive-color="#ff4949" size="small"
+                      inactive-color="#ff4949"
                       @on-change="handleChangeDelFlag(scope.row)">
             </b-switch>
           </template>
@@ -55,7 +52,7 @@
             <!--是否有删除键-->
             <template v-if="canRemove && scope.row.delFlag===ENUM.Y">
               <b-divider type="vertical"></b-divider>
-              <b-button type="text" style="color:red;" @click="handleRemove(scope.row)">删除</b-button>
+              <b-button type="text" text-color="danger" @click="handleRemove(scope.row)">删除</b-button>
             </template>
           </template>
         </b-table>
@@ -122,31 +119,31 @@
                      { title: '菜单路径', slot: 'url' },
                      { title: '操作', slot: 'action', width: 70, align: 'center'}]">
             <template v-slot:name="scope">
-              <b-input v-model="menu.permissions[scope.index].name" size="small"
+              <b-input v-model="menu.permissions[scope.index].name"
                        :readonly="permissionReadOnly(scope.row.path)"></b-input>
             </template>
             <template v-slot:path="scope">
-              <b-input v-model="menu.permissions[scope.index].path" size="small"
+              <b-input v-model="menu.permissions[scope.index].path"
                        :readonly="permissionReadOnly(scope.row.path)"></b-input>
             </template>
             <template v-slot:url="scope">
-              <b-input v-model="menu.permissions[scope.index].url" size="small"></b-input>
+              <b-input v-model="menu.permissions[scope.index].url"></b-input>
             </template>
             <template v-slot:action="scope">
-              <b-button type="danger" transparent size="mini"
+              <b-button type="danger" transparent
                         @click="removeBufferRow(scope.row,scope.index)">删除
               </b-button>
             </template>
           </b-table>
-          <b-button type="dashed" size="small" icon="ios-add"
+          <b-button type="dashed" icon="ios-add-circle-outline"
                     style="width: 100%;margin-top: 16px;margin-bottom: 8px;"
                     @click="addBufferRow">添加动作
           </b-button>
         </template>
         <!--保存提交-->
         <template slot="footer">
-          <b-button type="primary" @click="handleSubmit" :loading="btnLoading">提 交</b-button>
           <b-button @click="handleCancel">取 消</b-button>
+          <b-button type="primary" @click="handleSubmit" :loading="btnLoading">提 交</b-button>
         </template>
       </v-edit-wrap>
     </page-header-wrap>
@@ -288,7 +285,7 @@
                 this.searchList()
               } else {
                 this.$modal.remove()
-                this.$message({ type: 'danger', content: res.data.message })
+                this.$notice.danger({ title: '操作错误', desc: res.data.message })
               }
             })
           }
@@ -308,7 +305,7 @@
                 this.initTree()
               } else {
                 this.submitDone(false)
-                this.$message({ type: 'danger', content: res.data.message })
+                this.$notice.danger({ title: '操作错误', desc: res.data.message })
               }
             })
           }
@@ -362,7 +359,7 @@
                   this.menu.permissions.splice(index, 1)
                 } else {
                   this.$modal.remove()
-                  this.$message({ type: 'danger', content: res.data.message })
+                  this.$notice.danger({ title: '操作错误', desc: res.data.message })
                 }
               })
             }

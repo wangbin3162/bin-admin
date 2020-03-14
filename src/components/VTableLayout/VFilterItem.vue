@@ -5,10 +5,10 @@
       <slot>
         <!--默认插槽，用于插入查询条件，如不插入则生成查询按钮，生成查询按钮需要传入是否需要显示展开按钮并传入状态-->
         <div class="search-btn">
-          <b-button size="small" type="primary" @click="handleFilter" v-waves>
+          <b-button  type="primary" @click="handleFilter" >
             &nbsp;查&nbsp;询&nbsp;
           </b-button>
-          <b-button size="small" @click="handleReset" v-waves>
+          <b-button  @click="handleReset" >
             &nbsp;重&nbsp;置&nbsp;
           </b-button>
           <template v-if="showToggle">
@@ -106,7 +106,7 @@
       .open {
         display: inline-block;
         margin-left: 10px;
-        color: #20a0ff;
+        color: #1089ff;
         font-size: 14px;
         cursor: pointer;
         &:hover {

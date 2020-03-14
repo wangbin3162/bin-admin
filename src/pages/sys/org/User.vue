@@ -8,10 +8,10 @@
         <!--查询条件-->
         <v-filter-bar>
           <v-filter-item title="登录名称">
-            <b-input v-model.trim="listQuery.username" size="small" placeholder="请输入" clearable></b-input>
+            <b-input v-model.trim="listQuery.username" placeholder="请输入" clearable></b-input>
           </v-filter-item>
           <v-filter-item title="真实名称">
-            <b-input v-model.trim="listQuery.realName" size="small" placeholder="请输入" clearable></b-input>
+            <b-input v-model.trim="listQuery.realName" placeholder="请输入" clearable></b-input>
           </v-filter-item>
           <v-filter-item title="禁用状态" width="160px">
             <b-switch size="large" v-model="listQuery.status" :true-value="ENUM.DISABLE" :false-value="ENUM.ENABLE"
@@ -25,10 +25,7 @@
         </v-filter-bar>
         <!--操作栏-->
         <v-table-tool-bar>
-          <b-button v-if="canCreate" type="primary"
-                    v-waves size="small" icon="ios-add"
-                    @click="handleCreate">新 增
-          </b-button>
+          <b-button v-if="canCreate" type="primary" icon="ios-add-circle-outline" @click="handleCreate">新 增</b-button>
           <v-batch-import :module-name="batchType" :current-tree-node="currentTreeNode">批量导入</v-batch-import>
           <div slot="right">
             <v-download-template :module-name="batchType">模板下载</v-download-template>
@@ -54,7 +51,7 @@
             <b-tag v-if="scope.row.status===ENUM.INIT" type="primary">初始</b-tag>
             <b-switch v-else
                       v-model="scope.row.status" :true-value="ENUM.ENABLE" :false-value="ENUM.DISABLE"
-                      inactive-color="#ff4949" size="small"
+                      inactive-color="#ff4949"
                       @on-change="handleChangeStatus(scope.row)">
             </b-switch>
           </template>
@@ -68,7 +65,7 @@
             <!--是否有删除键-->
             <template v-if="canRemove && scope.row.status===ENUM.DISABLE">
               <b-divider type="vertical"></b-divider>
-              <b-button type="text" style="color:red;" @click="handleRemove(scope.row)">删除</b-button>
+              <b-button type="text" text-color="danger" @click="handleRemove(scope.row)">删除</b-button>
             </template>
           </template>
         </b-table>
@@ -115,7 +112,7 @@
                    :closable="!isAdmin(user)" @on-close="handleRemoveRole(role)">
               {{ role.name }}
             </b-tag>
-            <b-button type="primary" size="small" style="vertical-align: middle;" plain
+            <b-button type="primary" style="vertical-align: middle;" plain
                       :disabled="isAdmin(user)" @click="handleShowDialogChoose">选择角色
             </b-button>
           </b-form-item>
@@ -125,8 +122,8 @@
         </b-form>
         <!--保存提交-->
         <template slot="footer">
-          <b-button type="primary" @click="handleSubmit" :loading="btnLoading">提 交</b-button>
           <b-button @click="handleCancel">取 消</b-button>
+          <b-button type="primary" @click="handleSubmit" :loading="btnLoading">提 交</b-button>
         </template>
       </v-edit-wrap>
     </page-header-wrap>
@@ -366,7 +363,7 @@
                 this.handleFilter()
               } else {
                 this.submitDone(false)
-                this.$message({ type: 'danger', content: res.data.message })
+                this.$notice.danger({ title: '操作错误', desc: res.data.message })
               }
             }).catch(() => {
               this.btnLoading = false
@@ -401,7 +398,7 @@
                 this.handleFilter()
               } else {
                 this.$modal.remove()
-                this.$message({ type: 'danger', content: res.data.message })
+                this.$notice.danger({ title: '操作错误', desc: res.data.message })
               }
             })
           }
@@ -421,7 +418,7 @@
                 this.$modal.remove()
               } else {
                 this.$modal.remove()
-                this.$message({ type: 'danger', content: res.data.message })
+                this.$notice.danger({ title: '操作错误', desc: res.data.message })
               }
             })
           }

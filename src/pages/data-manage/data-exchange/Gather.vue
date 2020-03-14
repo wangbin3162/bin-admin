@@ -8,7 +8,7 @@
             <b-input v-model.trim="resourceName" placeholder="请输入资源名称" clearable
                      @on-keyup.enter="handleFilter"
                      style="width: 400px;margin-right: 4px;"></b-input>
-            <b-button type="primary" v-waves @click="handleFilter">查 询</b-button>
+            <b-button type="primary"  @click="handleFilter">查 询</b-button>
           </div>
         </div>
         <div class="gather-wrap">

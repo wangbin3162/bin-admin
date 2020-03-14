@@ -1,19 +1,19 @@
 <template>
   <!--模板参数 for DaInnerTemplate.vue 模板参数项-->
   <div>
-    <b-table disabled-hover :data="totalData" size="small" :columns="fieldsColumns">
+    <b-table disabled-hover :data="totalData"  :columns="fieldsColumns">
       <template v-slot:paramName="{row,index}">
-        <b-input type="text" v-model="totalData[index].paramName" v-if="row.edit" size="mini"
+        <b-input type="text" v-model="totalData[index].paramName" v-if="row.edit"
                  placeholder="参数名称"></b-input>
         <span v-else>{{ row.paramName }}</span>
       </template>
       <template v-slot:paramCode="{row,index}">
-        <b-input type="text" v-model="totalData[index].paramCode" v-if="row.edit" size="mini"
+        <b-input type="text" v-model="totalData[index].paramCode" v-if="row.edit"
                  placeholder="参数编码"></b-input>
         <span v-else>{{  row.paramCode }}</span>
       </template>
       <template v-slot:paramType="{row,index}">
-        <b-select v-model="totalData[index].paramType" v-if="row.edit" size="mini" placeholder="参数类型" append-to-body>
+        <b-select v-model="totalData[index].paramType" v-if="row.edit" placeholder="参数类型" append-to-body>
           <b-option value="string">string</b-option>
           <b-option value="number">number</b-option>
         </b-select>
@@ -27,29 +27,29 @@
         <span v-else>{{ isRequiredMap[row.isRequired] }}</span>
       </template>
       <template v-slot:defaultVal="{row,index}">
-        <b-input type="text" v-model="totalData[index].defaultVal" v-if="row.edit" size="mini"
+        <b-input type="text" v-model="totalData[index].defaultVal" v-if="row.edit"
                  placeholder="默认值"></b-input>
         <span v-else>{{ row.defaultVal }}</span>
       </template>
       <template v-slot:paramDesc="{row,index}">
-        <b-input type="text" v-model="totalData[index].paramDesc" v-if="row.edit" size="mini"
+        <b-input type="text" v-model="totalData[index].paramDesc" v-if="row.edit"
                  placeholder="参数描述"></b-input>
         <span v-else>{{ row.paramDesc }}</span>
       </template>
       <template v-slot:action="{row,index}">
         <div v-if="row.newOne">
-          <b-button @click="handleSave(row,index)" size="mini" type="success" transparent>添加</b-button>
-          <b-button @click="handleCancel(index)" size="mini" type="info" transparent>取消</b-button>
+          <b-button @click="handleSave(row,index)" type="success" transparent>添加</b-button>
+          <b-button @click="handleCancel(index)" type="info" transparent>取消</b-button>
         </div>
         <div v-else>
-          <b-button v-if="row.edit" @click="handleSave(row,index)" size="mini" type="primary" transparent>保存</b-button>
-          <b-button v-else @click="handleEdit(index)" size="mini" type="primary" transparent>编辑</b-button>
-          <b-button v-if="row.edit" @click="handleCancel(index)" size="mini" type="info" transparent>取消</b-button>
-          <b-button v-else @click="handleRemove(index)" type="danger" size="mini" transparent>删除</b-button>
+          <b-button v-if="row.edit" @click="handleSave(row,index)" type="primary" transparent>保存</b-button>
+          <b-button v-else @click="handleEdit(index)" type="primary" transparent>编辑</b-button>
+          <b-button v-if="row.edit" @click="handleCancel(index)" type="info" transparent>取消</b-button>
+          <b-button v-else @click="handleRemove(index)" type="danger" transparent>删除</b-button>
         </div>
       </template>
     </b-table>
-    <b-button type="dashed" size="small" icon="ios-add"
+    <b-button type="dashed"  icon="ios-add-circle-outline"
               style="width: 100%;margin-top: 16px;margin-bottom: 8px;"
               @click="handleAdd">添加参数
     </b-button>

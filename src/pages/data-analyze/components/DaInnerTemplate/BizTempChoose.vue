@@ -7,19 +7,19 @@
       <!--查询条件-->
       <v-filter-bar>
         <v-filter-item title="模板名称">
-          <b-input v-model.trim="listQuery.tempName" size="small" placeholder="请输入" clearable></b-input>
+          <b-input v-model.trim="listQuery.tempName"  placeholder="请输入" clearable></b-input>
         </v-filter-item>
         <v-filter-item title="模板编码">
-          <b-input v-model.trim="listQuery.tempCode" size="small" placeholder="请输入" clearable></b-input>
+          <b-input v-model.trim="listQuery.tempCode"  placeholder="请输入" clearable></b-input>
         </v-filter-item>
         <!--添加查询按钮位置-->
         <v-filter-item @on-search="handleFilter" @on-reset="resetQuery"></v-filter-item>
       </v-filter-bar>
       <!--中央表格-->
-      <b-table :columns="columns" :data="list" :loading="listLoading" size="small">
+      <b-table :columns="columns" :data="list" :loading="listLoading" >
         <!--操作栏-->
         <template v-slot:action="scope">
-          <b-button type="primary" size="mini" plain @click="chooseOne(scope.row)">
+          <b-button type="primary" plain @click="chooseOne(scope.row)">
             选择
           </b-button>
         </template>

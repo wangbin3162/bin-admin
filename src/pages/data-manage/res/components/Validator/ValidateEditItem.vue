@@ -4,25 +4,25 @@
     <b-alert show-icon>编辑完校验项后可点击下方操作按钮保存至主配置列表</b-alert>
     <div class="mb-15">
       <span>验证规则：</span>
-      <b-select style="width:200px" v-model="ruleType" @on-change="ruleTypeChange" size="small">
+      <b-select style="width:200px" v-model="ruleType" @on-change="ruleTypeChange" >
         <b-option value="global" label="全局规则"></b-option>
         <b-option value="fields" label="信息项规则"></b-option>
       </b-select>&nbsp;
-      <b-select style="width:200px" v-model="validateName" @on-change="handleChange" size="small">
+      <b-select style="width:200px" v-model="validateName" @on-change="handleChange" >
         <b-option v-for="validate in validateOptions" :key="validate.name"
                   :value="validate.name" :label="validate.title"></b-option>
       </b-select>&nbsp;
     </div>
-    <b-table :columns="columns" :data="argsData" size="small" disabled-hover>
+    <b-table :columns="columns" :data="argsData"  disabled-hover>
       <template v-slot:value="scope">
         <b-switch v-if="typeOfCurrent(argsData[scope.index].value)==='boolean'"
                   v-model="argsData[scope.index].value"></b-switch>
-        <b-input v-else v-model="argsData[scope.index].value" size="mini"></b-input>
+        <b-input v-else v-model="argsData[scope.index].value" ></b-input>
       </template>
     </b-table>
     <div class="p15 t-center">
-      <b-button type="primary" size="small" @click="handleSubmit">{{ drawerTitle }}</b-button>
-      <b-button size="small" @click="$emit('on-close')">返回主面板</b-button>
+      <b-button type="primary"  @click="handleSubmit">{{ drawerTitle }}</b-button>
+      <b-button  @click="$emit('on-close')">返回主面板</b-button>
     </div>
   </div>
 </template>

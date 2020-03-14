@@ -1,7 +1,7 @@
 <template>
   <!--元信息项编辑 for Metadata.vue -->
   <div>
-    <b-table disabled-hover :data="totalData" size="small" :columns="fieldsColumns">
+    <b-table disabled-hover :data="totalData"  :columns="fieldsColumns">
       <!--操作栏-->
       <template v-slot:action="scope">
         <template v-if="!scope.row.status">
@@ -9,11 +9,11 @@
             修改
           </b-button>
           <b-divider type="vertical"></b-divider>
-          <b-button type="text" style="color:red;" @click="handleRemove(scope.row,scope.index)">删除</b-button>
+          <b-button type="text" text-color="danger" @click="handleRemove(scope.row,scope.index)">删除</b-button>
         </template>
       </template>
     </b-table>
-    <b-button type="dashed" size="small" icon="ios-add-circle-outline"
+    <b-button type="dashed"  icon="ios-add-circle-outline"
               style="width: 100%;margin-top: 16px;margin-bottom: 8px;"
               @click="handleCreateItem">添加参数
     </b-button>
@@ -21,7 +21,7 @@
     <b-modal v-model="dialogFormVisible" width="800"
              :title="dialogTitle" :mask-closable="false">
       <div class="p10">
-        <b-form :model="metaItem" ref="form" :rules="ruleValidate" :label-width="80">
+        <b-form :model="metaItem" ref="form" :rules="ruleValidate" :label-width="100">
           <b-row>
             <b-col span="12">
               <b-form-item label="中文释义" prop="fieldName">

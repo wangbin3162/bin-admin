@@ -2,13 +2,13 @@
   <b-modal v-model="chooseDialog" title="选择角色">
     <div flex="cross:center">
       <span style="width: 70px;">角色名称</span>
-      <b-input v-model.trim="listQuery.name" size="small" placeholder="角色名称" style="width: 280px;">
+      <b-input v-model.trim="listQuery.name"  placeholder="角色名称" style="width: 280px;">
         <b-icon name="ios-search" slot="suffix" @click.native="handleFilter" style="cursor: pointer;"></b-icon>
       </b-input>
     </div>
     <b-divider align="left">角色列表</b-divider>
     <b-button v-for="item in list" :key="item.id" round plain
-              :disabled="noAdmin&&item.code==='ROLE_ADMIN'" size="small"
+              :disabled="noAdmin&&item.code==='ROLE_ADMIN'"
               :type="item.roleType==='I'?'primary':'warning'"
               style="margin:0 5px 5px 0;"
               @click="chooseOne(item)">{{item.name}}
@@ -16,7 +16,7 @@
     <b-alert type="error" v-show="list.length===0" class="t-center">暂无角色</b-alert>
     <div slot="footer" class="t-center">
       <!--下方分页器-->
-      <b-page :total="total" :current.sync="listQuery.page" size="small" @on-change="handleCurrentChange"></b-page>
+      <b-page :total="total" :current.sync="listQuery.page"  @on-change="handleCurrentChange"></b-page>
     </div>
   </b-modal>
 </template>

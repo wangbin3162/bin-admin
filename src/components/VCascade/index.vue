@@ -1,6 +1,6 @@
 <template>
-  <b-cascade :data="options" :placeholder="placeholder" :size="size" :render-format="format" :disabled="disabled"
-             @on-change="handleChange" v-model="current" change-on-select></b-cascade>
+  <b-cascader :data="options" :placeholder="placeholder" :size="size" :render-format="format" :disabled="disabled"
+             @on-change="handleChange" v-model="current" change-on-select></b-cascader>
 </template>
 
 <script>

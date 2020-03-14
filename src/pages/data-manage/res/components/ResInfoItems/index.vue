@@ -1,14 +1,14 @@
 <template>
   <!--资源信息，信息项表格组件 for ResInfo.vue -->
   <div style="padding: 10px 0;">
-    <b-table disabled-hover :data="totalData" size="small" :columns="fieldsColumns">
+    <b-table disabled-hover :data="totalData"  :columns="fieldsColumns">
       <!--标题-->
       <template v-slot:fieldTitle="scope">
-        <b-input v-model="totalData[scope.index].fieldTitle" size="small" @on-change="emitValue"></b-input>
+        <b-input v-model="totalData[scope.index].fieldTitle"  @on-change="emitValue"></b-input>
       </template>
       <!--信息项类型-选择必填项下拉框-->
       <template v-slot:required="scope">
-        <b-select v-model="totalData[scope.index].required" append-to-body @on-change="emitValue" size="small">
+        <b-select v-model="totalData[scope.index].required" append-to-body @on-change="emitValue" >
           <b-option v-for="(value,key) in fieldTypeMap" :key="key" :value="key">{{ value }}</b-option>
         </b-select>
       </template>
@@ -32,7 +32,7 @@
       </template>
       <!--是否分词-->
       <template v-slot:tokenizer="scope">
-        <b-select v-model="totalData[scope.index].tokenizer" append-to-body @on-change="emitValue" size="small"
+        <b-select v-model="totalData[scope.index].tokenizer" append-to-body @on-change="emitValue"
                   placeholder=""
                   :disabled="scope.row.dataType!=='string'||scope.row.validValue.length>0">
           <b-option v-for="(value,key) in tokenizerMap" :key="key" :value="key">{{ value }}</b-option>
@@ -44,7 +44,7 @@
       </template>
       <!--启用状态-->
       <template v-slot:status="scope">
-        <b-switch v-model="totalData[scope.index].status" size="small"
+        <b-switch v-model="totalData[scope.index].status"
                   true-value="use" false-value="ignore"
                   @on-change="emitValue"></b-switch>
       </template>
@@ -55,7 +55,7 @@
     </b-table>
     <!--编辑弹窗-->
     <b-modal v-model="dialogFormVisible" width="800" title="修改信息项" :mask-closable="false">
-      <b-form :model="item" ref="form" :rules="ruleValidate" :label-width="80">
+      <b-form :model="item" ref="form" :rules="ruleValidate" :label-width="100">
         <b-row>
           <b-col span="12">
             <b-form-item label="名称" prop="fieldName" class="bin-form-item-required">

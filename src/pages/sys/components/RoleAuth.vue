@@ -7,12 +7,12 @@
       <!--查询条件-->
       <v-filter-bar>
         <v-filter-item title="权限名称">
-          <b-input v-model.trim="listQuery.name" size="small" placeholder="请输入权限名称" clearable></b-input>
+          <b-input v-model.trim="listQuery.name"  placeholder="请输入权限名称" clearable></b-input>
         </v-filter-item>
         <v-filter-item @on-search="handleFilter" @on-reset="resetQuery"></v-filter-item>
       </v-filter-bar>
       <v-table-tool-bar>
-        <b-button v-if="canCreate" type="primary" size="small" @click="batchAuth"
+        <b-button v-if="canCreate" type="primary"  @click="batchAuth"
                   :icon="isAllGrant ? 'ios-remove':'ios-add'">
           {{ grantAllTitle }}
         </b-button>

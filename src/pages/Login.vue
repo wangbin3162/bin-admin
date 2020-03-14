@@ -13,22 +13,26 @@
       <div class="content" flex="dir:top main:center cross:center">
         <div class="form">
           <div class="title">登录系统</div>
-          <b-form ref="loginForm" label-position="top" :rules="rules" :model="formLogin" size="default">
+          <b-form ref="loginForm" label-position="top" :rules="rules" :model="formLogin">
             <b-form-item prop="username">
-              <b-input type="text" v-model="formLogin.username" placeholder="请输入用户名" prefix="ios-contact"></b-input>
+              <b-input size="large" v-model="formLogin.username" placeholder="请输入用户名" prefix="ios-contact"></b-input>
             </b-form-item>
             <b-form-item prop="password">
-              <b-input type="password" v-model="formLogin.password" placeholder="请输入密码" prefix="ios-key"></b-input>
+              <b-input size="large" type="password" v-model="formLogin.password" placeholder="请输入密码"
+                       prefix="ios-key"></b-input>
             </b-form-item>
             <b-form-item prop="captcha">
-              <b-input type="text" v-model="formLogin.captcha" placeholder="- - - -" style="width: 60%;"
+              <b-input v-model="formLogin.captcha" placeholder="- - - -" style="width: 60%;"
+                       size="large"
                        @on-keyup.enter="submit"
                        prefix="ios-bulb"></b-input>
-              <span class="login-code" @click="refreshCode" title="点击刷新">
-                    <img :src="verifyCodeUrl" alt="code">
-                  </span>
+              <div class="login-code" @click="refreshCode">
+                <b-tooltip content="点击刷新" placement="right">
+                  <img :src="verifyCodeUrl" alt="code">
+                </b-tooltip>
+              </div>
             </b-form-item>
-            <b-button @click="submit" type="primary" class="button-login" v-waves :loading="loginLoading">
+            <b-button @click="submit" type="primary" class="button-login" :loading="loginLoading" size="large">
               {{ loginLoading? '登录中...' :'登 录' }}
             </b-button>
           </b-form>
@@ -187,13 +191,13 @@
           vertical-align: middle;
           width: 40%;
           padding-left: 10px;
-          height: 36px;
+          height: 40px;
           overflow: hidden;
           cursor: pointer;
           img {
             width: 100%;
-            height: 100%;
-            border-radius: 5px;
+            height: 40px;
+            border-radius: 2px;
             border: 1px solid #dcdee2;
           }
         }

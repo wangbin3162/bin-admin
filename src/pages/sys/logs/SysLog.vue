@@ -4,10 +4,10 @@
       <!--查询条件-->
       <v-filter-bar>
         <v-filter-item title="操作名称">
-          <b-input v-model.trim="listQuery.operateName" size="small" placeholder="请输入" clearable></b-input>
+          <b-input v-model.trim="listQuery.operateName"  placeholder="请输入" clearable></b-input>
         </v-filter-item>
         <v-filter-item title="模块名称">
-          <b-input v-model.trim="listQuery.moduleName" size="small" placeholder="请输入" clearable></b-input>
+          <b-input v-model.trim="listQuery.moduleName"  placeholder="请输入" clearable></b-input>
         </v-filter-item>
         <!--添加查询按钮位置-->
         <v-filter-item @on-search="handleFilter" @on-reset="resetQuery"></v-filter-item>

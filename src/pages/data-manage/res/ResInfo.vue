@@ -8,18 +8,18 @@
         <!--查询条件-->
         <v-filter-bar>
           <v-filter-item title="资源名称">
-            <b-input v-model.trim="listQuery.resourceName" size="small" placeholder="资源名称(中文名)" clearable></b-input>
+            <b-input v-model.trim="listQuery.resourceName"  placeholder="资源名称(中文名)" clearable></b-input>
           </v-filter-item>
           <v-filter-item title="资源性质" :span="5">
-            <v-cascade :data="resPropertyOptions" v-model="listQuery.resProperty" size="small" style="width: 100%;"></v-cascade>
+            <v-cascade :data="resPropertyOptions" v-model="listQuery.resProperty"  style="width: 100%;"></v-cascade>
           </v-filter-item>
           <v-filter-item title="资源状态" :span="4">
-            <b-select v-model="listQuery.status" clearable size="small">
+            <b-select v-model="listQuery.status" clearable >
               <b-option v-for="(value,key) in resStatusMap" :key="key" :value="key">{{ value }}</b-option>
             </b-select>
           </v-filter-item>
           <v-filter-item title="可用状态" :span="4">
-            <b-select v-model="listQuery.availableStatus" clearable size="small">
+            <b-select v-model="listQuery.availableStatus" clearable >
               <b-option v-for="(value,key) in availableStatusMap" :key="key" :value="key">{{ value }}</b-option>
             </b-select>
           </v-filter-item>
@@ -28,10 +28,7 @@
         </v-filter-bar>
         <!--操作栏-->
         <v-table-tool-bar>
-          <b-button v-if="canCreate" type="primary"
-                    v-waves size="small" icon="ios-add"
-                    @click="handleCreate">新 增
-          </b-button>
+          <b-button v-if="canCreate" type="primary" icon="ios-add-circle-outline" @click="handleCreate">新 增</b-button>
         </v-table-tool-bar>
         <!--中央表格-->
         <b-table :columns="columns" :data="list" :loading="listLoading">
@@ -57,7 +54,7 @@
             <!--是否有删除键-->
             <template v-if="canRemove && scope.row.status!=='closed'">
               <b-divider type="vertical"></b-divider>
-              <b-button type="text" style="color:red;" @click="handleRemove(scope.row)">删除</b-button>
+              <b-button type="text" text-color="danger" @click="handleRemove(scope.row)">删除</b-button>
             </template>
             <!--草稿状态有发布按钮-->
             <template v-if="scope.row.status==='edit'">
@@ -175,8 +172,8 @@
         </template>
         <!--保存提交-->
         <template slot="footer">
-          <b-button type="primary" @click="handleSubmit" :loading="btnLoading">提 交</b-button>
           <b-button @click="handleCancel">取 消</b-button>
+          <b-button type="primary" @click="handleSubmit" :loading="btnLoading">提 交</b-button>
         </template>
       </v-edit-wrap>
     </page-header-wrap>
@@ -201,7 +198,7 @@
             </b-col>
           </b-row>
           <v-title-bar label="信息项明细" class="mb-15 mt-15"></v-title-bar>
-          <b-table disabled-hover :data="resource.items" size="small" :columns="checkItemsTableColumns">
+          <b-table disabled-hover :data="resource.items"  :columns="checkItemsTableColumns">
             <template v-slot:dataType="scope">{{ dataTypeMap[scope.row.dataType] }}</template>
             <template v-slot:status="scope">{{ fieldStatusMap[scope.row.status] }}</template>
           </b-table>
@@ -393,7 +390,7 @@
                 this.handleFilter()
               } else {
                 this.$modal.remove()
-                this.$message({ type: 'danger', content: res.data.message })
+                this.$notice.danger({ title: '操作错误', desc: res.data.message })
               }
             })
           }
@@ -414,7 +411,7 @@
                 this.searchList()
               } else {
                 this.$modal.remove()
-                this.$message({ type: 'danger', content: res.data.message })
+                this.$notice.danger({ title: '操作错误', desc: res.data.message })
               }
             })
           }
@@ -440,7 +437,7 @@
           if (res.status === 200) {
             this.$message({ type: 'success', content: '配置成功' })
           } else {
-            this.$message({ type: 'danger', content: res.data.message })
+            this.$notice.danger({ title: '操作错误', desc: res.data.message })
           }
         })
       },
@@ -507,7 +504,7 @@
                 this.handleFilter()
               } else {
                 this.submitDone(false)
-                this.$message({ type: 'danger', content: res.data.message })
+                this.$notice.danger({ title: '操作错误', desc: res.data.message })
               }
             })
           }

@@ -4,13 +4,13 @@
     <div style="min-height: 300px;" v-show="status==='normal'">
       <!--控制栏-->
       <div class="mb-15">
-        <b-button type="primary" size="small" icon="ios-add" @click="handleCreate">添加规则</b-button>
+        <b-button type="primary"  icon="ios-add-circle-outline" @click="handleCreate">添加规则</b-button>
       </div>
-      <b-table :columns="columns" :data="totalData" size="small" disabled-hover>
+      <b-table :columns="columns" :data="totalData"  disabled-hover>
         <template v-slot:args="scope">
           <template v-for="(arg,key) in scope.row.args">
             <b-tag :key="key" v-if="arg.value && key !=='message'"
-                   type="primary" size="small" style="margin-right: 4px;">
+                   type="primary"  style="margin-right: 4px;">
               {{arg.title}}= {{ arg.value }}
             </b-tag>
           </template>
@@ -19,7 +19,7 @@
         <template v-slot:action="scope">
           <b-button type="text" @click="handleModify(scope.row,scope.index)">编辑</b-button>
           <b-divider type="vertical"></b-divider>
-          <b-button type="text" style="color:red;" @click="handleRemove(scope.row,scope.index)">删除</b-button>
+          <b-button type="text" text-color="danger" @click="handleRemove(scope.row,scope.index)">删除</b-button>
         </template>
       </b-table>
     </div>

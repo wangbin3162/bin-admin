@@ -6,18 +6,15 @@
         <!--查询条件-->
         <v-filter-bar>
           <v-filter-item title="名称">
-            <b-input v-model.trim="listQuery.name" size="small" placeholder="名称" clearable></b-input>
+            <b-input v-model.trim="listQuery.name" placeholder="名称" clearable></b-input>
           </v-filter-item>
           <!--添加查询按钮位置-->
           <v-filter-item @on-search="handleFilter" @on-reset="resetQuery"></v-filter-item>
         </v-filter-bar>
         <!--操作栏-->
         <v-table-tool-bar>
-          <b-button v-if="canCreate" type="primary"
-                    v-waves size="small" icon="ios-add"
-                    @click="handleCreate">新 增
-          </b-button>
-          <b-button v-waves size="small" icon="ios-exit" @click="handleBatchImport">批量导入</b-button>
+          <b-button v-if="canCreate" type="primary" icon="ios-add-circle-outline" @click="handleCreate">新 增</b-button>
+          <b-button icon="ios-exit" @click="handleBatchImport">批量导入</b-button>
           <div slot="right">
             <b-button type="text" @click="handleDownloadTemplate">模板下载</b-button>
             <b-divider type="vertical"></b-divider>
@@ -38,14 +35,14 @@
                   </b-checkbox>
                 </b-checkbox-group>
                 <div class="t-right p5">
-                  <b-button size="mini" @click="visible=false">关闭</b-button>
+                  <b-button @click="visible=false">关闭</b-button>
                 </div>
               </b-dropdown-menu>
             </b-dropdown>
           </div>
         </v-table-tool-bar>
         <!--中央表格-->
-        <b-table :columns="dynamicColumns" :data="list" :loading="listLoading" size="small">
+        <b-table :columns="dynamicColumns" :data="list" :loading="listLoading">
           <!--操作栏-->
           <template v-slot:action="scope">
             <b-button type="text" @click="handleCheck(scope.row)">查看</b-button>
@@ -54,7 +51,7 @@
             <!--是否有删除键v-if="canRemove"-->
             <template>
               <b-divider type="vertical"></b-divider>
-              <b-button type="text" style="color:red;" @click="handleRemove(scope.row)">删除</b-button>
+              <b-button type="text" text-color="danger" @click="handleRemove(scope.row)">删除</b-button>
             </template>
             <template v-if="scope.row.version&&scope.row.version>0">
               <b-divider type="vertical"></b-divider>
@@ -101,8 +98,8 @@
         </b-form>
         <!--保存提交-->
         <template slot="footer">
-          <b-button type="primary" @click="handleSubmit" :loading="btnLoading">提 交</b-button>
           <b-button @click="handleCancel">取 消</b-button>
+          <b-button type="primary" @click="handleSubmit" :loading="btnLoading">提 交</b-button>
         </template>
       </v-edit-wrap>
     </page-header-wrap>
@@ -126,7 +123,7 @@
         </div>
       </div>
       <div slot="footer">
-        <b-button type="primary" size="small" @click="handleImport" :loading="uploadLoading">
+        <b-button type="primary" @click="handleImport" :loading="uploadLoading">
           {{ uploadLoading ? '导入中' : '导入' }}
         </b-button>
       </div>
@@ -241,7 +238,7 @@
               if (res.status === 200 && res.data.code === '0') {
                 this.$message({ type: 'success', content: '导入成功，请查看[导入/导出记录]。' })
               } else {
-                this.$message({ type: 'danger', content: res.data.message })
+                this.$notice.danger({ title: '操作错误', desc: res.data.message })
               }
               this.file = null
               this.uploadLoading = false
@@ -301,7 +298,7 @@
                 this.handleFilter()
               } else {
                 this.$modal.remove()
-                this.$message({ type: 'danger', content: res.data.message })
+                this.$notice.danger({ title: '操作错误', desc: res.data.message })
               }
             })
           }
@@ -337,7 +334,7 @@
               } else {
                 // this.submitDone(false)
                 this.btnLoading = false // 按钮状态清空
-                this.$message({ type: 'danger', content: res.data.message })
+                this.$notice.danger({ title: '操作错误', desc: res.data.message })
               }
             })
           } else {

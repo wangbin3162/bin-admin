@@ -5,18 +5,18 @@
         <!--查询条件-->
         <v-filter-bar>
           <v-filter-item title="类型">
-            <b-select v-model="handleType" @on-change="typeChange" size="small">
+            <b-select v-model="handleType" @on-change="typeChange" >
               <b-option value="import">导入记录</b-option>
               <b-option value="export">导出记录</b-option>
             </b-select>
           </v-filter-item>
           <v-filter-item title="时间">
-            <b-date-picker type="daterange" placeholder="选择日期" size="small"
+            <b-date-picker type="daterange" placeholder="选择日期"
                            ref="datePickerRange"
                            @on-change="dateChange"></b-date-picker>
           </v-filter-item>
           <v-filter-item title="状态">
-            <b-select v-model="listQuery.status" clearable size="small">
+            <b-select v-model="listQuery.status" clearable >
               <b-option v-for="(value,key) in statusMap" :key="key" :value="key">{{ value }}</b-option>
             </b-select>
           </v-filter-item>
@@ -25,7 +25,7 @@
         <!--中央表格-->
         <b-table :columns="columns" :data="list" :loading="listLoading">
           <template v-slot:jobStatus="{row}">
-            <b-tag v-if="row.jobStatus" :type="statusStyleMap[row.jobStatus]" size="small">
+            <b-tag v-if="row.jobStatus" :type="statusStyleMap[row.jobStatus]" >
               {{ statusMap[row.jobStatus] }}
             </b-tag>
             <span v-else>-</span>
@@ -55,7 +55,7 @@
             <b-row>
               <b-col span="24">
                 <v-simple-label label="导入状态">
-                  <b-tag :type="statusStyleMap[importDetail.jobStatus]" size="small"
+                  <b-tag :type="statusStyleMap[importDetail.jobStatus]"
                          :tag-style="{borderRadius: '30px'}">
                     {{ statusMap[importDetail.jobStatus] }}
                   </b-tag>
@@ -254,7 +254,7 @@
               })
             }
           } else {
-            this.$message({ type: 'danger', content: res.data.message })
+            this.$notice.danger({ title: '操作错误', desc: res.data.message })
           }
         })
       },

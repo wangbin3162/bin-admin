@@ -3,14 +3,14 @@
     <b-table :columns="columns" :data="list">
       <!--操作栏-->
       <template v-slot:action="scope">
-        <b-button type="text" @click="handleChoose(scope.row)" v-waves>
+        <b-button type="text" @click="handleChoose(scope.row)" >
           选择
         </b-button>
       </template>
     </b-table>
     <div slot="footer" class="t-center">
       <!--下方分页器-->
-      <b-page :total="total" :current.sync="listQuery.page" size="small" @on-change="handleCurrentChange"></b-page>
+      <b-page :total="total" :current.sync="listQuery.page"  @on-change="handleCurrentChange"></b-page>
     </div>
   </b-modal>
 </template>

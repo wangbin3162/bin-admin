@@ -1,7 +1,7 @@
 <template>
   <!--有效值输入框 for ResInfoItems.vue -->
   <div>
-    <b-input v-model="current" readonly clearable style="width: 100px;margin-right: 4px;" size="small"
+    <b-input v-model="current" readonly clearable style="width: 100px;margin-right: 4px;"
              @on-clear="handleClear"></b-input>
     <b-button type="text" disabled v-if="dataType!=='string'">有效值
       <b-icon name="ios-arrow-down"></b-icon>

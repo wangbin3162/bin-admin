@@ -61,7 +61,7 @@
             <span class="text">月度信息归集趋势</span>
             <span class="float-right pr-12">
               <!--保留select下拉选择备份-->
-              <!--<b-select style="width:100px" v-model="monthMsgSelect" size="mini" clearable>-->
+              <!--<b-select style="width:100px" v-model="monthMsgSelect" clearable>-->
               <!--  <b-option v-for="item in monthList" :value="item.value" :key="item.value">{{ item.label }}</b-option>-->
               <!--</b-select>-->
               <!--新添加滑块选择器-->
@@ -79,7 +79,7 @@
             <div class="title">
               <span class="text">资源信息分类统计</span>
               <span class="float-right pr-12">
-                <b-select style="width:100px" v-model="crowdSelect" size="mini" clearable>
+                <b-select style="width:100px" v-model="crowdSelect" clearable>
                   <b-option v-for="item in crowdList" :value="item.value" :key="item.value">{{ item.label }}</b-option>
                 </b-select>
               </span>
@@ -94,14 +94,14 @@
             <div class="title">
               <span class="text">月度部门归集统计</span>
               <span class="float-right pr-12">
-              <b-select style="width:100px" v-model="monthDeptSelect" size="mini" clearable>
+              <b-select style="width:100px" v-model="monthDeptSelect" clearable>
                 <b-option v-for="item in monthList" :value="item.value" :key="item.value">{{ item.label }}</b-option>
               </b-select>
             </span>
             </div>
             <div class="content" flex="main:justify">
               <div class="pt-12" style="width: 400px;">
-                <b-table :columns="monthDepartColumns" :data="monthDepartData" size="small" width="265"></b-table>
+                <b-table :columns="monthDepartColumns" :data="monthDepartData"  width="265"></b-table>
               </div>
             </div>
           </div>
@@ -115,7 +115,7 @@
               </span>
             </div>
             <div class="pd-12">
-              <b-table :columns="departSumColumns" :data="departSumData" size="small" stripe border></b-table>
+              <b-table :columns="departSumColumns" :data="departSumData"  stripe border></b-table>
             </div>
           </div>
         </div>
@@ -154,7 +154,7 @@
           <div class="title" flex="main:justify">
             <span class="text">未填报部门</span>
             <span class="float-right pr-12">
-              <b-select style="width:100px" v-model="monthUnGetSelect" size="mini" clearable>
+              <b-select style="width:100px" v-model="monthUnGetSelect" clearable>
                 <b-option v-for="item in monthList.slice(0,6)" :value="item.value" :key="item.value">{{ item.label }}</b-option>
               </b-select>
             </span>

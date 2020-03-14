@@ -5,19 +5,16 @@
         <!--查询条件-->
         <v-filter-bar>
           <v-filter-item title="角色名称">
-            <b-input v-model.trim="listQuery.name" size="small" placeholder="请输入" clearable></b-input>
+            <b-input v-model.trim="listQuery.name" placeholder="请输入" clearable></b-input>
           </v-filter-item>
           <v-filter-item title="角色编码">
-            <b-input v-model.trim="listQuery.code" size="small" placeholder="请输入" clearable></b-input>
+            <b-input v-model.trim="listQuery.code" placeholder="请输入" clearable></b-input>
           </v-filter-item>
           <v-filter-item @on-search="handleFilter" @on-reset="resetQuery"></v-filter-item>
         </v-filter-bar>
         <!--操作栏-->
         <v-table-tool-bar>
-          <b-button v-if="canCreate" type="primary"
-                    v-waves size="small" icon="ios-add"
-                    @click="handleCreate">新 增
-          </b-button>
+          <b-button v-if="canCreate" type="primary" icon="ios-add-circle-outline" @click="handleCreate">新 增</b-button>
         </v-table-tool-bar>
         <!--中央表格-->
         <b-table :columns="columns" :data="list" :loading="listLoading">
@@ -36,7 +33,7 @@
             <!--是否有删除键-->
             <template v-if="canRemove && scope.row.roleType===ENUM.S">
               <b-divider type="vertical"></b-divider>
-              <b-button type="text" style="color:red;" @click="handleRemove(scope.row)">删除</b-button>
+              <b-button type="text" text-color="danger" @click="handleRemove(scope.row)">删除</b-button>
             </template>
           </template>
         </b-table>
@@ -64,7 +61,7 @@
           <b-row>
             <b-col span="12">
               <b-form-item label="父角色">
-                <div flex>
+                <div flex style="width:100%;">
                   <b-input :value="role.parentName" readonly class="choose-btn"></b-input>
                   <b-button v-if="role.parentId.length===0" slot="suffix" type="primary" plain
                             @click="handleShowDialogChoose" style="flex: 0 0 auto;">
@@ -96,8 +93,8 @@
         </b-form>
         <!--保存提交-->
         <template slot="footer">
-          <b-button type="primary" @click="handleSubmit" :loading="btnLoading">提 交</b-button>
           <b-button @click="handleCancel">取 消</b-button>
+          <b-button type="primary" @click="handleSubmit" :loading="btnLoading">提 交</b-button>
         </template>
       </v-edit-wrap>
     </page-header-wrap>
@@ -230,7 +227,7 @@
                 this.searchList()
               } else {
                 this.$modal.remove()
-                this.$message({ type: 'danger', content: res.data.message })
+                this.$notice.danger({ title: '操作错误', desc: res.data.message })
               }
             })
           }
@@ -248,7 +245,7 @@
                 this.searchList()
               } else {
                 this.submitDone(false)
-                this.$message({ type: 'danger', content: res.data.message })
+                this.$notice.danger({ title: '操作错误', desc: res.data.message })
               }
             })
           }

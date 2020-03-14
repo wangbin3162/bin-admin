@@ -4,13 +4,13 @@
       <v-table-wrap>
         <v-filter-bar>
           <v-filter-item title="资源名称">
-            <b-input v-model="listQuery.resourceName" size="small" placeholder="请输入" clearable></b-input>
+            <b-input v-model="listQuery.resourceName"  placeholder="请输入" clearable></b-input>
           </v-filter-item>
           <v-filter-item title="方案名称">
-            <b-input v-model="listQuery.cfgName" size="small" placeholder="请输入" clearable></b-input>
+            <b-input v-model="listQuery.cfgName"  placeholder="请输入" clearable></b-input>
           </v-filter-item>
           <v-filter-item title="状态">
-            <b-select v-model="listQuery.availableStatus" size="small" clearable placeholder="全部">
+            <b-select v-model="listQuery.availableStatus"  clearable placeholder="全部">
               <b-option v-for="(value,key) in availableStatusMap" :key="key" :value="key">{{ value }}</b-option>
             </b-select>
           </v-filter-item>
@@ -39,15 +39,15 @@
         <v-filter-bar>
           <v-filter-item title="日期">
             <b-date-picker type="daterange" @on-change="dateChange" placement="bottom-start"
-                           size="small" placeholder="选择起止日期" append-to-body></b-date-picker>
+                            placeholder="选择起止日期" append-to-body></b-date-picker>
           </v-filter-item>
           <v-filter-item title="状态">
-            <b-select v-model="dirBatchQuery.jobStatus" clearable placeholder="全部" size="small">
+            <b-select v-model="dirBatchQuery.jobStatus" clearable placeholder="全部" >
               <b-option v-for="(value,key) in jobStatusMap" :key="key" :value="key">{{ value }}</b-option>
             </b-select>
           </v-filter-item>
           <v-filter-item title="状态">
-            <b-select v-model="listQuery.availableStatus" size="small" clearable placeholder="全部">
+            <b-select v-model="listQuery.availableStatus"  clearable placeholder="全部">
               <b-option v-for="(value,key) in availableStatusMap" :key="key" :value="key">{{ value }}</b-option>
             </b-select>
           </v-filter-item>
@@ -58,7 +58,7 @@
         <b-table :columns="dirBatchColumns" :data="dirBatchList" :loading="dirBatchLoading">
           <!--任务状态-->
           <template v-slot:jobStatus="{row}">
-            <b-tag v-if="row.jobStatus" :type="statusStyleMap[row.jobStatus]" size="small">
+            <b-tag v-if="row.jobStatus" :type="statusStyleMap[row.jobStatus]" >
               {{ jobStatusMap[row.jobStatus] }}
             </b-tag>
           </template>
@@ -74,7 +74,7 @@
       <template v-if="batchDetail">
         <div class="status">
           <v-simple-label label="任务状态">
-            <b-tag :type="jobStatusMap[batchDetail.jobStatus]" size="small"
+            <b-tag :type="jobStatusMap[batchDetail.jobStatus]"
                    :tag-style="{borderRadius: '30px'}">
               {{ jobStatusMap[batchDetail.jobStatus] }}
             </b-tag>

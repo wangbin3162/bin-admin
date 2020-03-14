@@ -12,7 +12,7 @@
           <template v-slot:resProperty="scope">{{ resPropertyMap[scope.row.resProperty] }}</template>
           <!--操作-->
           <template v-slot:isSelect="scope">
-            <b-button size="mini" :type="checkRowSelected(scope.row)?'danger':'primary'" plain
+            <b-button :type="checkRowSelected(scope.row)?'danger':'primary'" plain
                       @click="chooseOne(scope.row)">
               {{checkRowSelected(scope.row)?'取消':'选择'}}
             </b-button>
@@ -32,7 +32,7 @@
             @on-close="handleCloseTag(index)">
             {{tag.resName}}
           </b-tag>
-          <b-button type="dashed" size="small" style="width: 100%;margin: 10px 0;"
+          <b-button type="dashed"  style="width: 100%;margin: 10px 0;"
                     v-if="selectedList.length" @click="postSelectedList">
             确定添加
           </b-button>
@@ -236,7 +236,7 @@
                 this.$message({ type: 'success', content: '操作成功' })
                 this.initTree()
               } else {
-                this.$message({ type: 'danger', content: res.data.message })
+                this.$notice.danger({ title: '操作错误', desc: res.data.message })
               }
             })
           }

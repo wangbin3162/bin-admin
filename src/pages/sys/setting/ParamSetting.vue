@@ -8,20 +8,17 @@
         <!--查询条件-->
         <v-filter-bar>
           <v-filter-item title="参数名称">
-            <b-input v-model.trim="listQuery.confName" size="small" placeholder="请输入" clearable></b-input>
+            <b-input v-model.trim="listQuery.confName" placeholder="请输入" clearable></b-input>
           </v-filter-item>
           <v-filter-item title="参数编码">
-            <b-input v-model.trim="listQuery.confCode" size="small" placeholder="请输入" clearable></b-input>
+            <b-input v-model.trim="listQuery.confCode" placeholder="请输入" clearable></b-input>
           </v-filter-item>
           <!--添加查询按钮位置-->
           <v-filter-item @on-search="handleFilter" @on-reset="resetQuery"></v-filter-item>
         </v-filter-bar>
         <!--操作栏-->
         <v-table-tool-bar>
-          <b-button v-if="canCreate" type="primary"
-                    v-waves size="small" icon="ios-add"
-                    @click="handleCreate">新 增
-          </b-button>
+          <b-button v-if="canCreate" type="primary" icon="ios-add-circle-outline" @click="handleCreate">新 增</b-button>
         </v-table-tool-bar>
         <!--中央表格-->
         <b-table :columns="columns" :data="list" :loading="listLoading">
@@ -42,7 +39,7 @@
             <!--是否有删除键-->
             <template v-if="canRemove">
               <b-divider type="vertical"></b-divider>
-              <b-button type="text" style="color:red;" @click="handleRemove(scope.row)">删除</b-button>
+              <b-button type="text" text-color="danger" @click="handleRemove(scope.row)">删除</b-button>
             </template>
           </template>
         </b-table>
@@ -97,31 +94,31 @@
                      { title: '值', slot: 'value' },
                      { title: '操作', slot: 'action', width: 160}]">
               <template v-slot:label="scope">
-                <b-input v-if="scope.row.edit" clearable size="mini"
+                <b-input v-if="scope.row.edit" clearable
                          v-model="conf.bufferValue[scope.index].label" placeholder="显示文本"></b-input>
                 <span v-else>{{scope.row.label}}</span>
               </template>
               <template v-slot:value="scope">
-                <b-input v-if="scope.row.edit" clearable size="mini"
+                <b-input v-if="scope.row.edit" clearable
                          v-model="conf.bufferValue[scope.index].value" placeholder="显示文本"></b-input>
                 <span v-else>{{scope.row.value}}</span>
               </template>
               <template v-slot:action="scope">
                 <!--根据状态显示保存或删除编辑按钮-->
-                <b-button v-if="scope.row.edit" type="success" size="mini"
+                <b-button v-if="scope.row.edit" type="success"
                           @click="saveRow(scope.row,scope.index)" transparent>
                   保存
                 </b-button>
                 <!--根据状态显示保存或删除编辑按钮-->
-                <b-button v-else type="primary" size="mini" transparent
+                <b-button v-else type="primary" transparent
                           @click="conf.bufferValue[scope.index].edit = true">
                   编辑
                 </b-button>
-                <b-button type="danger" size="mini" transparent @click="removeBufferRow(scope.row)">移除</b-button>
+                <b-button type="danger" transparent @click="removeBufferRow(scope.row)">移除</b-button>
               </template>
             </b-table>
             <!--添加按钮-->
-            <b-button type="dashed" size="small" icon="ios-add-circle-outline"
+            <b-button type="dashed" icon="ios-add-circle-outline"
                       style="width: 100%;margin-top: 16px;margin-bottom: 18px;"
                       :disabled="bufferValueIsEdit"
                       @click="addBufferRow">添加参数
@@ -130,8 +127,8 @@
         </b-form>
         <!--保存提交-->
         <template slot="footer">
-          <b-button type="primary" @click="handleSubmit" :loading="btnLoading">提 交</b-button>
           <b-button @click="handleCancel">取 消</b-button>
+          <b-button type="primary" @click="handleSubmit" :loading="btnLoading">提 交</b-button>
         </template>
       </v-edit-wrap>
     </page-header-wrap>
@@ -159,7 +156,7 @@
         <v-simple-label label="参数名称" style="padding: 0;">{{ conf.confName}}</v-simple-label>
         <b-divider dashed style="margin: 10px 0;"></b-divider>
         <v-simple-label label="参数类型" style="padding: 0;">
-          <b-tag :type="conf.valueMode|valueModeStyleFilter" size="small">
+          <b-tag :type="conf.valueMode|valueModeStyleFilter">
             {{ valueModeMap[conf.valueMode]}}
           </b-tag>
         </v-simple-label>
@@ -339,7 +336,7 @@
             this.$message({ type: 'success', content: '操作成功' })
             this.searchList()
           } else {
-            this.$message({ type: 'danger', content: res.data.message })
+            this.$notice.danger({ title: '操作错误', desc: res.data.message })
           }
         })
       },
@@ -358,7 +355,7 @@
                 this.initTree()
               } else {
                 this.$modal.remove()
-                this.$message({ type: 'danger', content: res.data.message })
+                this.$notice.danger({ title: '操作错误', desc: res.data.message })
               }
             })
           }
@@ -391,7 +388,7 @@
                 this.handleFilter()
               } else {
                 this.submitDone(false)
-                this.$message({ type: 'danger', content: res.data.message })
+                this.$notice.danger({ title: '操作错误', desc: res.data.message })
               }
             })
           } else {

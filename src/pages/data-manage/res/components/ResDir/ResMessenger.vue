@@ -6,16 +6,13 @@
     </b-tree>
     <v-filter-bar>
       <v-filter-item title="资源名称">
-        <b-input v-model.trim="listQuery.resourceName" placeholder="资源名称(中文名)" clearable size="small"></b-input>
+        <b-input v-model.trim="listQuery.resourceName" placeholder="资源名称(中文名)" clearable></b-input>
       </v-filter-item>
       <v-filter-item @on-search="handleFilter" @on-reset="handleReset"></v-filter-item>
     </v-filter-bar>
     <!--操作栏-->
     <v-table-tool-bar>
-      <b-button v-if="canCreate" type="primary"
-                v-waves size="small" icon="ios-add"
-                @click="handleCreate">新 增
-      </b-button>
+      <b-button v-if="canCreate" type="primary" icon="ios-add-circle-outline" @click="handleCreate">新 增</b-button>
     </v-table-tool-bar>
     <b-table :columns="resColumns" :data="list" :loading="listLoading">
       <!--操作栏-->

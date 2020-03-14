@@ -8,20 +8,17 @@
         <!--查询条件-->
         <v-filter-bar>
           <v-filter-item title="类目名称">
-            <b-input v-model.trim="listQuery.classifyName" size="small" placeholder="请输入" clearable></b-input>
+            <b-input v-model.trim="listQuery.classifyName" placeholder="请输入" clearable></b-input>
           </v-filter-item>
           <v-filter-item title="类目编码">
-            <b-input v-model.trim="listQuery.classifyCode" size="small" placeholder="请输入" clearable></b-input>
+            <b-input v-model.trim="listQuery.classifyCode" placeholder="请输入" clearable></b-input>
           </v-filter-item>
           <!--添加查询按钮位置-->
           <v-filter-item @on-search="handleFilter" @on-reset="resetQuery"></v-filter-item>
         </v-filter-bar>
         <!--操作栏-->
         <v-table-tool-bar>
-          <b-button v-if="canCreate" type="primary"
-                    v-waves size="small" icon="ios-add"
-                    @click="handleCreate">新 增
-          </b-button>
+          <b-button v-if="canCreate" type="primary" icon="ios-add-circle-outline" @click="handleCreate">新 增</b-button>
         </v-table-tool-bar>
         <!--中央表格-->
         <b-table :columns="columns" :data="list" :loading="listLoading">
@@ -31,7 +28,7 @@
             <!--是否有删除键-->
             <template v-if="canRemove">
               <b-divider type="vertical"></b-divider>
-              <b-button type="text" style="color:red;" @click="handleRemove(scope.row)">删除</b-button>
+              <b-button type="text" text-color="danger" @click="handleRemove(scope.row)">删除</b-button>
             </template>
           </template>
         </b-table>
@@ -44,7 +41,7 @@
     <b-modal v-model="dialogFormVisible" :title="editTitle"
              append-to-body :mask-closable="false">
       <div class="p15">
-        <b-form :model="classify" ref="form" :rules="ruleValidate" :label-width="80">
+        <b-form :model="classify" ref="form" :rules="ruleValidate" :label-width="100">
           <b-form-item label="父级类别">
             <b-alert v-if="currentTreeNode" style="margin: 0;">{{currentTreeNode.title}}</b-alert>
           </b-form-item>
@@ -67,8 +64,8 @@
         </b-form>
       </div>
       <div slot="footer">
-        <b-button type="primary" @click="handleSubmit" :loading="btnLoading">提 交</b-button>
         <b-button @click="handleCancel">取 消</b-button>
+        <b-button type="primary" @click="handleSubmit" :loading="btnLoading">提 交</b-button>
       </div>
     </b-modal>
   </div>
@@ -209,7 +206,7 @@
                 this.initTree()
               } else {
                 this.$modal.remove()
-                this.$message({ type: 'danger', content: res.data.message })
+                this.$notice.danger({ title: '操作错误', desc: res.data.message })
               }
             })
           }
@@ -227,7 +224,7 @@
                 this.initTree()
               } else {
                 this.submitDone(false)
-                this.$message({ type: 'danger', content: res.data.message })
+                this.$notice.danger({ title: '操作错误', desc: res.data.message })
               }
               this.dialogFormVisible = false
             })

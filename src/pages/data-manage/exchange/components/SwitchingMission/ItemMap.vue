@@ -2,15 +2,15 @@
   <!--映射关系，for SwitchingMission.vue -->
   <div>
     <v-title-bar label="映射关系" tip-pos="left" class="mb-20"></v-title-bar>
-    <b-table disabled-hover :data="totalData" size="small" :columns="fieldsColumns">
+    <b-table disabled-hover :data="totalData"  :columns="fieldsColumns">
       <template v-slot:fieldTitle="scope">
-        <b-input v-model="totalData[scope.index].fieldTitle" size="mini" @on-change="emitValue"></b-input>
+        <b-input v-model="totalData[scope.index].fieldTitle" @on-change="emitValue"></b-input>
       </template>
       <template v-slot:fieldName="scope">
-        <b-input v-model="totalData[scope.index].fieldName" size="mini" @on-change="emitValue"></b-input>
+        <b-input v-model="totalData[scope.index].fieldName" @on-change="emitValue"></b-input>
       </template>
       <template v-slot:colNo="scope">
-        <b-input v-model="totalData[scope.index].colNo" size="mini" @on-change="emitValue"></b-input>
+        <b-input v-model="totalData[scope.index].colNo" @on-change="emitValue"></b-input>
       </template>
       <template v-slot:isRequired="scope">
         <b-switch v-model="totalData[scope.index].isRequired"

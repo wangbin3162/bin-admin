@@ -4,20 +4,20 @@
       <v-table-wrap>
         <v-filter-bar>
           <v-filter-item title="方案名称">
-            <b-input v-model="listQuery.cfgName" placeholder="请输入节点名称" clearable size="small"></b-input>
+            <b-input v-model="listQuery.cfgName" placeholder="请输入节点名称" clearable ></b-input>
           </v-filter-item>
           <v-filter-item title="交换类型" :span="5">
-            <b-select v-model="listQuery.changeType" clearable placeholder="全部" size="small">
+            <b-select v-model="listQuery.changeType" clearable placeholder="全部" >
               <b-option v-for="(value,key) in exchangeTypeMap" :key="key" :value="key">{{ value }}</b-option>
             </b-select>
           </v-filter-item>
           <v-filter-item title="信息流向" :span="4">
-            <b-select v-model="listQuery.flowDirection" clearable placeholder="全部" size="small">
+            <b-select v-model="listQuery.flowDirection" clearable placeholder="全部" >
               <b-option v-for="(value,key) in flowDirectionMap" :key="key" :value="key">{{ value }}</b-option>
             </b-select>
           </v-filter-item>
           <v-filter-item title="状态" :span="4">
-            <b-select v-model="listQuery.status" clearable placeholder="全部" size="small">
+            <b-select v-model="listQuery.status" clearable placeholder="全部" >
               <b-option v-for="(value,key) in exchangeStatusMap" :key="key" :value="key">{{ value }}</b-option>
             </b-select>
           </v-filter-item>
@@ -27,7 +27,7 @@
         <!--操作栏-->
         <v-table-tool-bar>
           <b-button type="primary"
-                    v-waves size="small" icon="ios-add"
+                      icon="ios-add-circle-outline"
                     @click="handleCreate">新 增
           </b-button>
         </v-table-tool-bar>
@@ -42,7 +42,7 @@
           <template v-slot:status="scope">
             <b-switch v-model="scope.row.status" true-value="Y" false-value="N"
                       :disabled="scope.row.isDefault"
-                      inactive-color="#ff4949" size="small"
+                      inactive-color="#ff4949"
                       @on-change="handleChangeStatusFlag(scope.row)">
             </b-switch>
           </template>
@@ -54,7 +54,7 @@
             <!--是否有删除键-->
             <template v-if="canRemove && !scope.row.isDefault">
               <b-divider type="vertical"></b-divider>
-              <b-button type="text" style="color:red;" @click="handleRemove(scope.row)">删除</b-button>
+              <b-button type="text" text-color="danger" @click="handleRemove(scope.row)">删除</b-button>
             </template>
           </template>
         </b-table>
@@ -128,8 +128,8 @@
         </b-form>
         <!--保存提交-->
         <template slot="footer">
-          <b-button type="primary" @click="handleSubmit" :loading="btnLoading">提 交</b-button>
           <b-button @click="handleCancel">取 消</b-button>
+          <b-button type="primary" @click="handleSubmit" :loading="btnLoading">提 交</b-button>
         </template>
       </v-edit-wrap>
     </page-header-wrap>
@@ -315,7 +315,7 @@
                 this.handleFilter()
               } else {
                 this.submitDone(true)
-                this.$message({ type: 'danger', content: res.data.message })
+                this.$notice.danger({ title: '操作错误', desc: res.data.message })
               }
             })
           }
@@ -335,7 +335,7 @@
                 this.handleFilter()
               } else {
                 this.$modal.remove()
-                this.$message({ type: 'danger', content: res.data.message })
+                this.$notice.danger({ title: '操作错误', desc: res.data.message })
               }
             })
           }

@@ -4,7 +4,7 @@
     <div flex="box:last">
       <b-input v-model="current" placeholder="选择模板" readonly clearable
                @on-clear="handleClear"></b-input>
-      <b-button type="primary" v-waves @click="handleShowModal"
+      <b-button type="primary"  @click="handleShowModal"
                 style="padding: 10px;margin-left: 0;font-size: 12px;">
         选择模板
       </b-button>

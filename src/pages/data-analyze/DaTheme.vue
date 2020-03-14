@@ -5,10 +5,10 @@
         <!--查询条件-->
         <v-filter-bar>
           <v-filter-item title="主题名称">
-            <b-input v-model.trim="listQuery.name" size="small" placeholder="请输入" clearable></b-input>
+            <b-input v-model.trim="listQuery.name"  placeholder="请输入" clearable></b-input>
           </v-filter-item>
           <v-filter-item title="主题编码">
-            <b-input v-model.trim="listQuery.code" size="small" placeholder="请输入" clearable></b-input>
+            <b-input v-model.trim="listQuery.code"  placeholder="请输入" clearable></b-input>
           </v-filter-item>
           <!--添加查询按钮位置-->
           <v-filter-item @on-search="handleFilter" @on-reset="resetQuery"></v-filter-item>
@@ -16,7 +16,7 @@
         <!--操作栏-->
         <v-table-tool-bar>
           <b-button type="primary"
-                    v-waves size="small" icon="ios-add"
+                      icon="ios-add-circle-outline"
                     @click="handleCreate">新 增
           </b-button>
         </v-table-tool-bar>
@@ -29,7 +29,7 @@
           <template v-slot:action="scope">
             <b-button type="text" @click="handleModify(scope.row)">修改</b-button>
             <b-divider type="vertical"></b-divider>
-            <b-button type="text" style="color:red;" @click="handleRemove(scope.row)">删除</b-button>
+            <b-button type="text" text-color="danger" @click="handleRemove(scope.row)">删除</b-button>
           </template>
         </b-table>
         <!--下方分页器-->
@@ -59,8 +59,8 @@
         </b-form>
       </div>
       <div slot="footer">
-        <b-button type="primary" @click="handleSubmit" :loading="btnLoading">提 交</b-button>
         <b-button @click="handleCancel">取 消</b-button>
+          <b-button type="primary" @click="handleSubmit" :loading="btnLoading">提 交</b-button>
       </div>
     </b-modal>
   </div>
@@ -130,7 +130,7 @@
                 this.handleFilter()
               } else {
                 this.$modal.remove()
-                this.$message({ type: 'danger', content: res.data.message })
+                this.$notice.danger({ title: '操作错误', desc: res.data.message })
               }
             })
           }
@@ -187,7 +187,7 @@
               } else {
                 this.submitDone(false)
                 this.dialogFormVisible = false
-                this.$message({ type: 'danger', content: res.data.message })
+                this.$notice.danger({ title: '操作错误', desc: res.data.message })
               }
             })
           }

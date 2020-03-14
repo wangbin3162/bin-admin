@@ -12,10 +12,10 @@
     <b-modal v-model="dialogFormVisible" title="选择数据源库表" width="860" class="layout-inner" :mask-closable="false">
       <div>
         <!--中央表格-->
-        <b-table :columns="columns" :data="list" :loading="listLoading" size="small" max-height="375">
+        <b-table :columns="columns" :data="list" :loading="listLoading"  max-height="375">
           <!--操作栏-->
           <template v-slot:action="scope">
-            <b-button type="primary" size="mini" plain @click="chooseOne(scope.row)" v-waves>
+            <b-button type="primary" plain @click="chooseOne(scope.row)" >
               选择
             </b-button>
           </template>

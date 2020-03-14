@@ -8,10 +8,10 @@
         <!--查询条件-->
         <v-filter-bar>
           <v-filter-item title="用户名称">
-            <b-input v-model.trim="listQuery.name" size="small" placeholder="请输入部门名称" clearable></b-input>
+            <b-input v-model.trim="listQuery.name"  placeholder="请输入部门名称" clearable></b-input>
           </v-filter-item>
           <v-filter-item title="地址">
-            <b-input v-model.trim="listQuery.address" size="small" placeholder="请输入" clearable></b-input>
+            <b-input v-model.trim="listQuery.address"  placeholder="请输入" clearable></b-input>
           </v-filter-item>
           <template v-if="filterOpened">
             <v-filter-item title="显示禁用">
@@ -22,7 +22,7 @@
               </b-switch>
             </v-filter-item>
             <v-filter-item title="年龄">
-              <b-input v-model.trim="listQuery.age" size="small" placeholder="请输入" clearable></b-input>
+              <b-input v-model.trim="listQuery.age"  placeholder="请输入" clearable></b-input>
             </v-filter-item>
           </template>
           <!--添加查询按钮位置-->
@@ -33,7 +33,7 @@
         <!--操作栏-->
         <v-table-tool-bar>
           <b-button type="primary"
-                    v-waves size="small" icon="ios-add"
+                      icon="ios-add-circle-outline"
                     @click="handleCreate">新 增
           </b-button>
         </v-table-tool-bar>
@@ -47,7 +47,7 @@
             <!--是否有删除键-->
             <template>
               <b-divider type="vertical"></b-divider>
-              <b-button type="text" style="color:red;" @click="handleRemove(scope.row)">删除</b-button>
+              <b-button type="text" text-color="danger" @click="handleRemove(scope.row)">删除</b-button>
             </template>
           </template>
         </b-table>
@@ -99,8 +99,8 @@
         </b-form>
         <!--保存提交-->
         <template slot="footer">
-          <b-button type="primary" @click="handleSubmit" :loading="btnLoading">提 交</b-button>
           <b-button @click="handleCancel">取 消</b-button>
+          <b-button type="primary" @click="handleSubmit" :loading="btnLoading">提 交</b-button>
         </template>
       </v-edit-wrap>
     </page-header-wrap>
@@ -274,7 +274,7 @@
             //     this.initTree()
             //   } else {
             //     this.$modal.remove()
-            //     this.$message({ type: 'danger', content: res.data.message })
+            //     this.$notice.danger({ title: '操作错误', desc: res.data.message })
             //   }
             // })
           }
@@ -297,7 +297,7 @@
             //     this.$message({ type: 'success', content: '操作成功' })
             //     this.initTree()
             //   } else {
-            //     this.$message({ type: 'danger', content: res.data.message })
+            //     this.$notice.danger({ title: '操作错误', desc: res.data.message })
             //   }
             // })
           }
