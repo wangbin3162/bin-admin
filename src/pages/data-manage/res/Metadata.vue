@@ -64,11 +64,15 @@
     </page-header-wrap>
     <page-header-wrap v-show="isEdit" :title="editTitle" show-close @on-close="handleCancel">
       <v-edit-wrap>
-        <b-form :model="metadata" ref="form" :rules="ruleValidate" :label-width="130">
-          <b-row>
+        <b-form :model="metadata" ref="form" :rules="ruleValidate" label-position="top">
+          <b-form-item label="所属类目" class="bin-form-item-required" v-if="currentTreeNode">
+            <b-input :value="currentTreeNode.title" disabled/>
+          </b-form-item>
+          <b-row :gutter="20">
             <b-col span="12">
-              <b-form-item label="所属类目" class="bin-form-item-required">
-                <b-alert v-if="currentTreeNode">{{currentTreeNode.title}}</b-alert>
+              <b-form-item label="名称" prop="tableName">
+                <b-input v-model="metadata.tableName" placeholder="请输入元信息英文名称" clearable
+                         :disabled="dialogStatus==='modify'"></b-input>
               </b-form-item>
             </b-col>
             <b-col span="12">
@@ -78,34 +82,21 @@
               </b-form-item>
             </b-col>
           </b-row>
-          <b-row>
-            <b-col span="12">
-              <b-form-item label="名称" prop="tableName">
-                <b-input v-model="metadata.tableName" placeholder="请输入元信息英文名称" clearable
-                         :disabled="dialogStatus==='modify'"></b-input>
-              </b-form-item>
-            </b-col>
-            <b-col span="12">
-              <b-form-item label="描述" prop="metadataName">
-                <b-input v-model="metadata.metadataName" placeholder="请输入元信息中文名称" clearable></b-input>
-              </b-form-item>
-            </b-col>
-          </b-row>
+          <b-form-item label="描述" prop="metadataName">
+            <b-input v-model="metadata.metadataName" placeholder="请输入元信息中文名称" clearable></b-input>
+          </b-form-item>
           <b-form-item label="摘要" prop="metadataDesc">
             <b-input v-model="metadata.metadataDesc" placeholder="请输入摘要" type="textarea"></b-input>
           </b-form-item>
         </b-form>
         <!--信息项-->
-        <template v-if="metadata.personClass && metadata.fields" slot="full">
-          <div class="p15" flex="main:justify cross:center">
-            <b-tag type="primary">信息项</b-tag>
-            <div>
-              <b-button type="primary" transparent @click="handleAddPerson">添加主体</b-button>
-              <b-button v-if="this.metadata.idsFlag>0" transparent type="danger" @click="handleClearPerson">
-                清空多主体
-              </b-button>
-            </div>
-          </div>
+        <template slot="full" v-if="metadata.personClass && metadata.fields">
+          <v-title-bar label="信息项" class="mt-10 mb-15">
+            <b-button type="primary" transparent @click="handleAddPerson">添加主体</b-button>
+            <b-button v-if="this.metadata.idsFlag>0" transparent type="danger" @click="handleClearPerson">
+              清空多主体
+            </b-button>
+          </v-title-bar>
           <!--信息项表格组件-->
           <meta-fields v-model="metadata.fields"
                        :person-class="metadata.personClass"

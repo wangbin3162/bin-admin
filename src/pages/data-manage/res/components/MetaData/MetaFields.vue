@@ -1,7 +1,7 @@
 <template>
   <!--元信息项编辑 for Metadata.vue -->
   <div>
-    <b-table disabled-hover :data="totalData"  :columns="fieldsColumns" size="small">
+    <b-table disabled-hover :data="totalData" :columns="fieldsColumns" size="small">
       <!--类型-->
       <template v-slot:dataType="scope">{{ dataTypeMap[scope.row.dataType] }}</template>
       <!--排序-->
@@ -21,7 +21,7 @@
         </template>
       </template>
     </b-table>
-    <b-button type="dashed"  icon="ios-add-circle-outline"
+    <b-button type="dashed" icon="ios-add-circle-outline"
               style="width: 100%;margin-top: 16px;margin-bottom: 8px;"
               @click="handleCreateItem">添加信息项
     </b-button>
@@ -131,18 +131,17 @@
           callback()
         }
         if (this.metaItem.fieldName.length > 0 && this.metaItem.dataType.length > 0) {
-            api.checkFieldTypeNotUnique(this.metaItem.fieldName, this.metaItem.dataType).then(response => {
-              if (!response.data.data) {
-                callback()
-              } else {
-                callback(new Error('该信息项已经存在其他数据类型!'))
-              }
-            }).catch(() => {
-              callback(new Error('请求信息项和信息项类型唯一检查出错'))
-            })
+          api.checkFieldTypeNotUnique(this.metaItem.fieldName, this.metaItem.dataType).then(response => {
+            if (!response.data.data) {
+              callback()
+            } else {
+              callback(new Error('该信息项已经存在其他数据类型!'))
+            }
+          }).catch(() => {
+            callback(new Error('请求信息项和信息项类型唯一检查出错'))
+          })
         }
       }
-
       // 信息项名称校验
       const validateFieldName = (rule, value, callback) => {
         if (value.length > 0) {
@@ -196,7 +195,10 @@
         totalData: [],
         metaItem: null,
         ruleValidate: {
-          fieldName: [requiredRule, { validator: validateFieldName, trigger: 'blur' }, { validator: checkFieldTypeNotUnique, trigger: 'blur' }],
+          fieldName: [requiredRule, {
+            validator: validateFieldName,
+            trigger: 'blur'
+          }, { validator: checkFieldTypeNotUnique, trigger: 'blur' }],
           fieldTitle: [requiredRule, { validator: validateFieldTitle, trigger: 'blur' }],
           dataType: [{ required: true, message: '数据类型必选', trigger: 'change' }],
           dataLength: [{ required: true, validator: validateDataLength, trigger: 'blur' }]
@@ -213,7 +215,7 @@
     watch: {
       value: {
         handler(val) {
-          this.totalData = [...val]
+          this.totalData = deepCopy(val)
         },
         immediate: true
       }
