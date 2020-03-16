@@ -43,6 +43,15 @@ export function createMenu(menu) {
   })
 }
 
+/* 获取菜单详情 */
+export function getMenuDetail(id) {
+  return request({
+    url: '/management/function/show',
+    method: 'get',
+    params: { id }
+  })
+}
+
 /* 修改菜单信息 */
 export function modifyMenu(menu) {
   return request({

@@ -134,8 +134,16 @@
               <b-input v-model="menu.permissions[scope.index].url" size="small"></b-input>
             </template>
             <template v-slot:action="scope">
-              <b-button type="danger" transparent size="small"
-                        @click="removeBufferRow(scope.row,scope.index)">删除
+              <template v-if="scope.row.id.length > 0">
+                <b-popover confirm :icon-styles="{color:'#f5222d'}" placement="top-end"
+                           title="确认删除此动作吗？删除后会移除授权关联。" append-to-body
+                           content="删除此行可能会移除授权关联。"
+                           @on-ok="removeBufferRow(scope.row,scope.index)">
+                  <b-button type="danger" transparent size="small">删除</b-button>
+                </b-popover>
+              </template>
+              <b-button v-else type="danger" transparent size="small"
+                        @click="removeBufferRow(scope.row,scope.index)">移除
               </b-button>
             </template>
           </b-table>
@@ -266,14 +274,22 @@
       // 编辑事件
       handleModify(row) {
         this.resetMenu()
-        this.menu = deepCopy({ ...this.menu, ...row })
-        this.openEditPage('modify')
+        api.getMenuDetail(row.id).then(res => {
+          if (res.data.code === '0') {
+            this.menu = res.data.data
+            this.openEditPage('modify')
+          }
+        })
       },
       // 查看按钮事件
       handleCheck(row) {
         this.resetMenu()
-        this.menu = deepCopy({ ...this.menu, ...row })
-        this.openEditPage('check')
+        api.getMenuDetail(row.id).then(res => {
+          if (res.data.code === '0') {
+            this.menu = res.data.data
+            this.openEditPage('check')
+          }
+        })
       },
       // 弹窗提示是否删除
       handleRemove(row) {
@@ -353,22 +369,14 @@
           this.menu.permissions.splice(index, 1)
         } else {
           let menu = { ...item }
-          this.$confirm({
-            title: '确认删除此行吗？',
-            content: '删除此行可能会移除授权关联。',
-            loading: true,
-            okType: 'danger',
-            onOk: () => {
-              api.removeMenu(menu).then(res => {
-                if (res.data.code === '0') {
-                  this.$message({ type: 'success', content: '操作成功' })
-                  this.$modal.remove()
-                  this.menu.permissions.splice(index, 1)
-                } else {
-                  this.$modal.remove()
-                  this.$notice.danger({ title: '操作错误', desc: res.data.message })
-                }
-              })
+          api.removeMenu(menu).then(res => {
+            if (res.data.code === '0') {
+              this.$message({ type: 'success', content: '操作成功' })
+              this.$modal.remove()
+              this.menu.permissions.splice(index, 1)
+            } else {
+              this.$modal.remove()
+              this.$notice.danger({ title: '操作错误', desc: res.data.message })
             }
           })
         }
