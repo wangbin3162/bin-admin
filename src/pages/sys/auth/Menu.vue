@@ -116,6 +116,7 @@
                    :columns="[
                      { title: '动作名称', slot: 'name', width:120 },
                      { title: '前端路径', slot: 'path'},
+                     { title: '动作描述', slot: 'desc'},
                      { title: '菜单路径', slot: 'url' },
                      { title: '操作', slot: 'action', width: 100, align: 'center'}]">
             <template v-slot:name="scope">
@@ -125,6 +126,9 @@
             <template v-slot:path="scope">
               <b-input v-model="menu.permissions[scope.index].path" size="small"
                        :readonly="permissionReadOnly(scope.row.path)"></b-input>
+            </template>
+            <template v-slot:desc="scope">
+              <b-input v-model="menu.permissions[scope.index].desc" size="small"></b-input>
             </template>
             <template v-slot:url="scope">
               <b-input v-model="menu.permissions[scope.index].url" size="small"></b-input>
@@ -165,6 +169,7 @@
                    :columns="[
                      { title: '动作名称', key: 'name', width:120, align: 'center', },
                      { title: '前端路径', key: 'path'},
+                     { title: '动作描述', key: 'desc'},
                      { title: '菜单路径', key: 'url' }]">
           </b-table>
         </template>
@@ -329,9 +334,9 @@
       initPermissions() {
         // 创建时动作缓存初始化3个动作
         this.menu.permissions = [
-          { id: '', name: '新增', path: 'create', url: '', type: this.TYPE.ACT },
-          { id: '', name: '更新', path: 'modify', url: '', type: this.TYPE.ACT },
-          { id: '', name: '删除', path: 'remove', url: '', type: this.TYPE.ACT }
+          { id: '', name: '新增', path: 'create', desc: '新增单条数据', url: '', type: this.TYPE.ACT },
+          { id: '', name: '更新', path: 'modify', desc: '更新单条数据', url: '', type: this.TYPE.ACT },
+          { id: '', name: '删除', path: 'remove', desc: '删除单条数据', url: '', type: this.TYPE.ACT }
         ]
       },
       // 添加一行选项

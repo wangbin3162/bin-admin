@@ -126,6 +126,24 @@
     },
     data() {
       // 信息项名称校验
+      const checkFieldTypeNotUnique = (rule, value, callback) => {
+        if (this.dialogStatus === 'modify') {
+          callback()
+        }
+        if (this.metaItem.fieldName.length > 0 && this.metaItem.dataType.length > 0) {
+            api.checkFieldTypeNotUnique(this.metaItem.fieldName, this.metaItem.dataType).then(response => {
+              if (!response.data.data) {
+                callback()
+              } else {
+                callback(new Error('该信息项已经存在其他数据类型!'))
+              }
+            }).catch(() => {
+              callback(new Error('请求信息项和信息项类型唯一检查出错'))
+            })
+        }
+      }
+
+      // 信息项名称校验
       const validateFieldName = (rule, value, callback) => {
         if (value.length > 0) {
           if (isLetterW(value)) {
@@ -178,7 +196,7 @@
         totalData: [],
         metaItem: null,
         ruleValidate: {
-          fieldName: [requiredRule, { validator: validateFieldName, trigger: 'blur' }],
+          fieldName: [requiredRule, { validator: validateFieldName, trigger: 'blur' }, { validator: checkFieldTypeNotUnique, trigger: 'blur' }],
           fieldTitle: [requiredRule, { validator: validateFieldTitle, trigger: 'blur' }],
           dataType: [{ required: true, message: '数据类型必选', trigger: 'change' }],
           dataLength: [{ required: true, validator: validateDataLength, trigger: 'blur' }]

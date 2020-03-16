@@ -174,3 +174,15 @@ export function publishMetadata(metadata) {
     }
   })
 }
+
+/* 检查信息项全局只能存在同一种数据类型 */
+export function checkFieldTypeNotUnique(fieldName, fieldType) {
+  return request({
+    url: '/api/dir/metadata/field/checkFieldTypeNotUnique',
+    method: 'get',
+    params: {
+      fieldName,
+      fieldType
+    }
+  })
+}

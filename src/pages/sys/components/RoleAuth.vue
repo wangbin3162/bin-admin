@@ -51,6 +51,7 @@
           { type: 'index', width: 50, align: 'center' },
           { title: '权限代码', key: 'path' },
           { title: '权限名称', key: 'name' },
+          { title: '权限描述', key: 'desc' },
           { title: '访问地址', key: 'url' },
           { title: '操作', slot: 'action', width: 120 }
         ],
