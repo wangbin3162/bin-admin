@@ -103,13 +103,13 @@
               </b-form-item>
             </b-col>
           </b-row>
-          <template v-if="menu.permissions.length===0">
+          <template v-if="menu.permissions&&menu.permissions.length===0">
             <b-form-item label="动作菜单">
               <b-button type="primary" plain round @click="initPermissions">初始化</b-button>
             </b-form-item>
           </template>
         </b-form>
-        <template v-if="menu.permissions.length!==0" slot="full">
+        <template v-if="menu.permissions&&menu.permissions.length!==0" slot="full">
           <!--动作列表编辑框-->
           <b-divider align="left">动作列表</b-divider>
           <b-table disabled-hover :data="menu.permissions" size="small"
@@ -276,7 +276,7 @@
         this.resetMenu()
         api.getMenuDetail(row.id).then(res => {
           if (res.data.code === '0') {
-            this.menu = res.data.data
+            this.menu = { ...this.menu, ...res.data.data }
             this.openEditPage('modify')
           }
         })
@@ -286,7 +286,7 @@
         this.resetMenu()
         api.getMenuDetail(row.id).then(res => {
           if (res.data.code === '0') {
-            this.menu = res.data.data
+            this.menu = { ...this.menu, ...res.data.data }
             this.openEditPage('check')
           }
         })
