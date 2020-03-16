@@ -74,19 +74,19 @@ export const constantRouterMap = [
   },
   {
     path: '/401',
-    component: () => import(/* webpackChunkName: "error" */ '../pages/error/401.vue')
+    component: () => import(/* webpackChunkName: "error" */ '../pages/error/Error401.vue')
   },
   {
     path: '/403',
-    component: () => import(/* webpackChunkName: "error" */ '../pages/error/403.vue')
+    component: () => import(/* webpackChunkName: "error" */ '../pages/error/Error403.vue')
   },
   {
     path: '/404',
-    component: () => import(/* webpackChunkName: "error" */ '../pages/error/404.vue')
+    component: () => import(/* webpackChunkName: "error" */ '../pages/error/Error404.vue')
   },
   {
     path: '/500',
-    component: () => import(/* webpackChunkName: "error" */ '../pages/error/500.vue')
+    component: () => import(/* webpackChunkName: "error" */ '../pages/error/Error500.vue')
   }
 ]
 

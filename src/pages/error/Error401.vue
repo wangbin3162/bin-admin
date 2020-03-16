@@ -144,8 +144,8 @@
         </g>
       </svg>
     </div>
-    <div class="bin-result-title">403</div>
-    <div class="bin-result-subtitle">抱歉，登录超时啦！</div>
+    <div class="bin-result-title">401</div>
+    <div class="bin-result-subtitle">抱歉，你无权访问该页面。</div>
     <div class="bin-result-extra">
       <a href="/">
         <b-button type="primary">返回首页</b-button>
