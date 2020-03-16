@@ -70,7 +70,7 @@ export const constantRouterMap = [
   },
   {
     path: '/401',
-    component: () => import(/* webpackChunkName: "error" */ '../pages/error/401.vue')
+    component: () => import(/* webpackChunkName: "error" */ '../pages/error/Error401.vue')
   },
   {
     path: '/403',
