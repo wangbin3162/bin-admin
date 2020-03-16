@@ -169,9 +169,9 @@
         <b-divider dashed style="margin: 10px 0;"></b-divider>
         <v-simple-label label="参数描述" style="padding: 0;">{{ conf.desc}}</v-simple-label>
       </div>
-      <div slot="footer" class="t-right">
-        <b-button type="primary" @click="confSave" :loading="btnLoading">保 存</b-button>
+      <div slot="footer">
         <b-button @click="settingVisible = false">取 消</b-button>
+        <b-button type="primary" @click="confSave" :loading="btnLoading">保 存</b-button>
       </div>
     </b-modal>
   </div>

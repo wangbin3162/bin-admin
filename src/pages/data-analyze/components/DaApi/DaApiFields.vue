@@ -58,8 +58,8 @@
         </b-form>
       </div>
       <div slot="footer">
-        <b-button type="primary" @click="handleSubmit">提 交</b-button>
         <b-button @click="dialogFormVisible = false">取 消</b-button>
+        <b-button type="primary" @click="handleSubmit">提 交</b-button>
       </div>
     </b-modal>
   </div>

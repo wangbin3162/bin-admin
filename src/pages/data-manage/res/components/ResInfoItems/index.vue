@@ -121,9 +121,9 @@
           <b-input v-model="item.fieldDesc" placeholder="请输入提示内容" type="textarea"></b-input>
         </b-form-item>
       </b-form>
-      <div slot="footer" class="t-center">
-        <b-button type="primary" @click="handleSubmit">确 定</b-button>
+      <div slot="footer">
         <b-button @click="dialogFormVisible = false">取 消</b-button>
+        <b-button type="primary" @click="handleSubmit">确 定</b-button>
       </div>
     </b-modal>
     <!--系统字典弹窗-->

@@ -73,8 +73,8 @@
         </div>
       </template>
       <div slot="footer">
-        <b-button type="primary" @click="confSave">确 定</b-button>
         <b-button @click="dialogFormVisible = false">取 消</b-button>
+        <b-button type="primary" @click="confSave">确 定</b-button>
       </div>
     </b-modal>
   </div>

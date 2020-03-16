@@ -36,8 +36,8 @@
       </b-form>
     </div>
     <div slot="footer">
-      <b-button type="primary" @click="handleSubmit">确 定</b-button>
       <b-button @click="chooseDialog = false">取 消</b-button>
+      <b-button type="primary" @click="handleSubmit">确 定</b-button>
     </div>
   </b-modal>
 </template>
