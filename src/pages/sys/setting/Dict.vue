@@ -84,6 +84,15 @@
     components: { DictItem },
     mixins: [commonMixin, permission],
     data() {
+      const validateStrFilter = (rule, value, callback) => {
+        if (value.length > 0) {
+           if (value.indexOf('/') !== -1) {
+             callback(new Error('不能包含/字符'))
+           } else {
+             callback()
+           }
+        }
+      }
       const validateDictGroupCode = (rule, value, callback) => {
         if (value.length > 0) {
           api.oneGroupCode(this.dict).then(response => {
@@ -126,8 +135,8 @@
         ],
         dict: null,
         ruleValidate: {
-          groupCode: [requiredRule, { validator: validateDictGroupCode, trigger: 'blur' }],
-          groupName: [requiredRule, { validator: validateDictGroupName, trigger: 'blur' }]
+          groupCode: [requiredRule, { validator: validateDictGroupCode, trigger: 'blur' }, { validator: validateStrFilter, trigger: 'blur' }],
+          groupName: [requiredRule, { validator: validateDictGroupName, trigger: 'blur' }, { validator: validateStrFilter, trigger: 'blur' }]
         },
         dictTypeMap: { 'SYS': '系统字典', 'EXT': '内部单选' }, // 默认值
         dialogFormVisible: false
