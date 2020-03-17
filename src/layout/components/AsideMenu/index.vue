@@ -77,7 +77,6 @@
         if (index === this.$route.path) {
           return
         }
-        console.log(index)
         this.$router.push({ path: index })
       }
     }
