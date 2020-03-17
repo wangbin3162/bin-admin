@@ -1,8 +1,8 @@
 <template>
   <div id="app" class="my-gather-data">
-    <div class="header">
+    <div class="header mb-20">
       <div class="msg-tips" flex="main:justify">
-        <div class="tip-item" flex="main">
+        <div class="tip-item" flex>
         <span class="icon">
           <img src="" alt="">
         </span>
@@ -11,7 +11,7 @@
           <i class="count">{{counts.totalResource}}</i>
         </span>
         </div>
-        <div class="tip-item" flex="main">
+        <div class="tip-item" flex>
         <span class="icon">
           <img src="" alt="">
         </span>
@@ -20,7 +20,7 @@
           <i class="count">{{counts.totalCount}}</i>
         </span>
         </div>
-        <div class="tip-item" flex="main">
+        <div class="tip-item" flex>
         <span class="icon">
           <img src="" alt="">
         </span>
@@ -29,7 +29,7 @@
           <i class="count">{{counts.monthCount}}</i>
         </span>
         </div>
-        <div class="tip-item" flex="main">
+        <div class="tip-item" flex>
         <span class="icon">
           <img src="" alt="">
         </span>
@@ -38,7 +38,7 @@
           <i class="count">{{counts.zrpCount}}</i>
         </span>
         </div>
-        <div class="tip-item" flex="main">
+        <div class="tip-item" flex>
         <span class="icon">
           <img src="" alt="">
         </span>
@@ -49,142 +49,147 @@
         </div>
       </div>
     </div>
-    <div class="main" flex="main:justify; wrap:wrap">
-      <b-modal v-model="modal" footer-hide>
-        <p>我是弹窗内容...</p>
-        <p>我是弹窗内容...</p>
-        <p>我是弹窗内容...</p>
-      </b-modal>
-      <div class="mr-20 w-percent-70">
-        <div class="area mb-20 pd-10">
-          <div class="title">
-            <span class="text">月度信息归集趋势</span>
-            <span class="float-right pr-12">
+    <div class="main">
+      <b-row :gutter="20">
+        <b-col span="16">
+          <div class="area mb-20">
+            <div class="title">
+              <span class="text">月度信息归集趋势</span>
+              <span class="float-right pr-12">
               <!--保留select下拉选择备份-->
-              <!--<b-select style="width:100px" v-model="monthMsgSelect" clearable>-->
-              <!--  <b-option v-for="item in monthList" :value="item.value" :key="item.value">{{ item.label }}</b-option>-->
-              <!--</b-select>-->
-              <!--新添加滑块选择器-->
+                <!--<b-select style="width:100px" v-model="monthMsgSelect" clearable>-->
+                <!--  <b-option v-for="item in monthList" :value="item.value" :key="item.value">{{ item.label }}</b-option>-->
+                <!--</b-select>-->
+                <!--新添加滑块选择器-->
               <GrooveSelect :year-list="yearList" @choose="choose" :selected="selected"></GrooveSelect>
             </span>
-          </div>
-          <div class="content" flex="main:justify">
-            <div class="trend mg-0-auto">
-              <v-chart ref="chart1" :options="lineSmoothChartOption" :auto-resize="true" style="height: 280px;width: 100%"></v-chart>
+            </div>
+            <div class="content" flex="main:justify">
+              <div class="trend mg-0-auto">
+                <b-chart :options="lineSmoothChartOption" height="280px"></b-chart>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="mb-20" flex>
-          <div class="area mr-20 pd-10" flex-box="1">
-            <div class="title">
-              <span class="text">资源信息分类统计</span>
-              <span class="float-right pr-12">
+          <div class="mb-20" flex="main:justify">
+            <div class="area" style="width: calc(100% - 345px);">
+              <div class="title">
+                <span class="text">资源信息分类统计</span>
+                <span class="float-right pr-12">
                 <b-select style="width:100px" v-model="crowdSelect" clearable>
                   <b-option v-for="item in crowdList" :value="item.value" :key="item.value">{{ item.label }}</b-option>
                 </b-select>
               </span>
-            </div>
-            <div class="content" flex="main:justify">
-              <div class="trend">
-                <v-chart ref="chart2" :options="barChartOption" style="height: 280px;width: 100%"></v-chart>
+              </div>
+              <div class="content" flex="main:justify">
+                <div class="trend">
+                  <b-chart :options="barChartOption" height="280px"></b-chart>
+                </div>
               </div>
             </div>
-          </div>
-          <div class="area pd-10" style="width: 325px;">
-            <div class="title">
-              <span class="text">月度部门归集统计</span>
-              <span class="float-right pr-12">
+            <div class="area" style="width: 325px;">
+              <div class="title">
+                <span class="text">月度部门归集统计</span>
+                <span class="float-right pr-12">
               <b-select style="width:100px" v-model="monthDeptSelect" clearable>
                 <b-option v-for="item in monthList" :value="item.value" :key="item.value">{{ item.label }}</b-option>
               </b-select>
             </span>
-            </div>
-            <div class="content" flex="main:justify">
-              <div class="pt-12" style="width: 400px;">
-                <b-table :columns="monthDepartColumns" :data="monthDepartData"  width="265"></b-table>
+              </div>
+              <div class="content">
+                <b-table :columns="monthDepartColumns" :data="monthDepartData"></b-table>
               </div>
             </div>
           </div>
-        </div>
-        <div class="mb-20">
-          <div class="area pd-10">
-            <div class="title">
-              <span class="text">部门数据归集统计分析</span>
-              <span class="float-right pr-12">
+          <div class="mb-20">
+            <div class="area">
+              <div class="title">
+                <span class="text">部门数据归集统计分析</span>
+                <span class="float-right">
                 <b-button type="text" @click="modal = true">更多>></b-button>
               </span>
-            </div>
-            <div class="pd-12">
-              <b-table :columns="departSumColumns" :data="departSumData"  stripe border></b-table>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="w-percent-30">
-        <div class="area mb-20 pd-10">
-          <div class="title" flex="main:justify">
-            <span class="text">本月数据分析</span>
-          </div>
-          <div class="current-tip pd-12" flex="main:justify; box:mean">
-            <div class="current-tip-item" flex="dir:top">
-              <span class="g-font">数据归集量</span>
-              <span class="b-num">{{counts.gjCount}}</span>
-            </div>
-            <div class="border-right"></div>
-            <div class="current-tip-item" flex="dir:top">
-              <span class="g-font">数据归集量</span>
-              <span class="b-num">{{counts.sbCount}}</span>
-            </div>
-            <div class="border-right"></div>
-            <div class="current-tip-item" flex="dir:top">
-              <span class="g-font">数据归集量</span>
-              <span class="b-num">{{counts.hlCount}}</span>
+              </div>
+              <div class="p15">
+                <b-table :columns="departSumColumns" :data="departSumData" stripe border></b-table>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="area mb-20 pd-10">
-          <div class="title" flex="main:justify">
-            <span class="text">按部门数据归集统计</span>
+        </b-col>
+        <b-col span="8">
+          <div class="area mb-20">
+            <div class="title" flex="main:justify">
+              <span class="text">本月数据分析</span>
+            </div>
+            <div class="current-tip p15" flex="main:justify; box:mean">
+              <div class="current-tip-item" flex="dir:top">
+                <span class="g-font">数据归集量</span>
+                <span class="b-num">{{counts.gjCount}}</span>
+              </div>
+              <div class="border-right"></div>
+              <div class="current-tip-item" flex="dir:top">
+                <span class="g-font">数据归集量</span>
+                <span class="b-num">{{counts.sbCount}}</span>
+              </div>
+              <div class="border-right"></div>
+              <div class="current-tip-item" flex="dir:top">
+                <span class="g-font">数据归集量</span>
+                <span class="b-num">{{counts.hlCount}}</span>
+              </div>
+            </div>
           </div>
-          <div class="trend pd-12">
-            <v-chart ref="chart3" :options="lineChartOption" style="height: 280px;width: 100%"></v-chart>
+          <div class="area mb-20">
+            <div class="title" flex="main:justify">
+              <span class="text">按部门数据归集统计</span>
+            </div>
+            <div class="trend p15">
+              <b-chart height="280px" :options="lineChartOption"/>
+            </div>
           </div>
-        </div>
-        <div class="area mb-20 pd-10">
-          <div class="title" flex="main:justify">
-            <span class="text">未填报部门</span>
-            <span class="float-right pr-12">
+          <div class="area mb-20">
+            <div class="title" flex="main:justify">
+              <span class="text">未填报部门</span>
+              <span class="float-right pr-12">
               <b-select style="width:100px" v-model="monthUnGetSelect" clearable>
-                <b-option v-for="item in monthList.slice(0,6)" :value="item.value" :key="item.value">{{ item.label }}</b-option>
+                <b-option v-for="item in monthList.slice(0,6)" :value="item.value"
+                          :key="item.value">{{ item.label }}</b-option>
               </b-select>
             </span>
+            </div>
+            <div class="resource-list">
+              <p>资源信息</p>
+              <ul class="list">
+                <li class="list-item" v-for="(item, index) in unGetDeparts.slice(0,6)" :key="index">{{ item.departName
+                  }}
+                </li>
+              </ul>
+            </div>
           </div>
-          <div class="resource-list">
-            <p>资源信息</p>
-            <ul class="list">
-              <li class="list-item" v-for="(item, index) in unGetDeparts.slice(0,6)" :key="index">{{ item.departName }}</li>
-            </ul>
+          <div class="area mb-20">
+            <div class="title" flex="main:justify">
+              <span class="text">主体及资源数据分类数据分析</span>
+            </div>
+            <div class="trend p15">
+              <b-chart :options="pieChartOption" height="280px"></b-chart>
+            </div>
           </div>
-        </div>
-        <div class="area mb-20 pd-10">
-          <div class="title" flex="main:justify">
-            <span class="text">主体及资源数据分类数据分析</span>
-          </div>
-          <div class="trend pd-12">
-            <v-chart ref="chart4" id="chart4" :options="pieChartOption" style="height: 280px;width: 100%"></v-chart>
-          </div>
-        </div>
-      </div>
+        </b-col>
+      </b-row>
     </div>
+    <b-modal v-model="modal" footer-hide>
+      <p>我是弹窗内容...</p>
+      <p>我是弹窗内容...</p>
+      <p>我是弹窗内容...</p>
+    </b-modal>
   </div>
 </template>
 
 <script>
   import * as api from '../../../api/data-manage/collect-analysis.api.js'
+  import { BChart, formatDataSet } from '../../../components/BChart'
   import GrooveSelect from './components/Groove/GrooveSelect'
+
   export default {
     name: 'CollectAnalysis',
-    data () {
+    data() {
       return {
         listQuery: {
           departId: '',
@@ -204,7 +209,6 @@
         lineChartOption: {},
         barChartOption: {},
         pieChartOption: {},
-
         monthDepartColumns: [
           { title: '部门', key: 'departName' },
           { title: '归集数量', key: 'value' }
@@ -214,7 +218,8 @@
           { title: '部门', key: 'departName', width: 300 },
           { title: '归集数量', key: 'value' },
           { title: '占比', key: 'percent' },
-          { title: '趋势分析',
+          {
+            title: '趋势分析',
             key: 'trend',
             render: (h, params) => {
               return h('b-button', {
@@ -259,22 +264,14 @@
         modal: false
       }
     },
-
     created() {
-      // this.renderChart( this.lineSmoothChartOption, this.$refs.chart1 )
-      // this.renderChart( this.barChartOption, this.$refs.chart2 )
-      // this.renderChart( this.lineChartOption, this.$refs.chart3 )
-      // this.renderChart( this.pieChartOption, this.$refs.chart4 )
       this.searchList()
       this.createYearList()
       this.listQuery.month = this.newMonth(1)
     },
-
     mounted() {
-      window.addEventListener('resize', this.resizeTheChart)
       this.monthList = this.newMonth(3)
     },
-
     methods: {
       choose(index) {
         this.selected = index
@@ -295,7 +292,7 @@
       createYearList() {
         this.yearList = []
         let arr = [0, 1, 2]
-        var year = new Date().getFullYear()
+        let year = new Date().getFullYear()
         arr.forEach(
           item => this.yearList.push({ label: year - item + '年', value: year - item })
         )
@@ -309,18 +306,16 @@
       },
       // async 获取基础数据
       getBaseData() {
-        var _self = this
         Promise.all([
           api.getClassifyDataCount(),
           api.getClassifyTotalCount(),
           api.getClassifyMonthCount(),
           api.getClassifyZrpCount(),
           api.getClassifyFoCount(),
-          api.getMonthCollectData(_self.newMonth())
-        ]).then(function(res) {
+          api.getMonthCollectData(this.newMonth())
+        ]).then(res => {
           // 顶部数据
-          let obj = {}
-          obj = {
+          this.counts = {
             totalResource: res[0].data.data.totalResource,
             totalCount: res[1].data.data.totalCount,
             monthCount: res[2].data.data.monthCount,
@@ -330,23 +325,22 @@
             sbCount: res[5].data.data.sbCount,
             hlCount: res[5].data.data.hlCount
           }
-          _self.counts = obj
         })
       },
       // async 获取图表数据
       getChartData() {
-        var _self = this
         Promise.all([
           api.getYearCollectData(),
           api.getDeptCollectData(),
           api.getResourceData(),
           api.getSubjectData()
-        ]).then(function(res) {
+        ]).then(res => {
           let monthCollect = res[0].data.data
           // 月度信息归集趋势
           let monthInfos = monthCollect.map(item => item.data)
           let monthSubs = monthCollect.map(item => item.legend)
-          _self.lineSmoothChartOption = {
+          this.lineSmoothChartOption = {
+            tooltip: { trigger: 'axis' },
             color: ['#4065e0', '#35a4ff', '#6fcafa', '#18e5e6', '#1ed1b8'],
             legend: {
               data: monthSubs,
@@ -409,15 +403,13 @@
           }
 
           // 部门数据归集统计
-          let depts = []
-          res[1].data.data.forEach(item => depts.push(item.departName))
-          _self.lineChartOption = {
+          this.lineChartOption = {
+            tooltip: { trigger: 'axis' },
             color: ['#4065e0', '#35a4ff', '#6fcafa', '#18e5e6', '#1ed1b8'],
-              xAxis: {
+            xAxis: {
               type: 'category',
-                data: depts,
-                boundaryGap: false,
-                axisLine: {
+              boundaryGap: false,
+              axisLine: {
                 lineStyle: {
                   color: '#b8b8b8'
                 }
@@ -427,14 +419,14 @@
               },
               splitLine: {
                 show: true,
-                  lineStyle: {
+                lineStyle: {
                   color: '#eee'
                 }
               }
             },
             yAxis: {
               type: 'value',
-                axisLine: {
+              axisLine: {
                 lineStyle: {
                   color: '#b8b8b8'
                 }
@@ -444,27 +436,25 @@
               },
               splitLine: {
                 show: true,
-                  lineStyle: {
+                lineStyle: {
                   color: '#eee'
                 }
               }
             },
             series: {
-              data: res[1].data.data,
-                type: 'line',
-                areaStyle: {},
+              type: 'line',
+              areaStyle: {},
               symbolSize: 8
-            }
+            },
+            dataset: formatDataSet({ xField: 'departName', yField: 'value' }, res[1].data.data)
           }
 
           // 资源信息分类统计
-          let resourceNames = []
-          res[2].data.data.forEach(item => resourceNames.push(item.resourceName))
-          _self.barChartOption = {
+          this.barChartOption = {
             color: '#48c9b0',
             tooltip: {
               trigger: 'axis',
-                axisPointer: {
+              axisPointer: {
                 type: 'shadow'
               }
             },
@@ -476,7 +466,7 @@
             },
             xAxis: {
               type: 'value',
-                axisLine: {
+              axisLine: {
                 lineStyle: {
                   color: '#b8b8b8'
                 }
@@ -487,8 +477,7 @@
             },
             yAxis: {
               type: 'category',
-                data: resourceNames,
-                axisLine: {
+              axisLine: {
                 lineStyle: {
                   color: '#b8b8b8'
                 }
@@ -498,9 +487,9 @@
               }
             },
             series: {
-              type: 'bar',
-              data: res[2].data.data
-            }
+              type: 'bar'
+            },
+            dataset: formatDataSet({ xField: 'resourceName', yField: 'value' }, res[2].data.data)
           }
 
           // 主体及资源数据分析
@@ -510,7 +499,7 @@
           res[3].data.data.forEach(item => item.data.forEach(
             item => subjectItems.push(item))
           )
-          _self.pieChartOption = {
+          this.pieChartOption = {
             tooltip: {
               trigger: 'item',
               formatter: '{a} <br/>{b}: {c} ({d}%)'
@@ -551,22 +540,23 @@
       },
       // async 获取表数据
       getTableData() {
-        var _self = this
         Promise.all([
           api.getDeptCollectData(),
-          api.getMonthDeptCollectData(_self.newMonth())
+          api.getMonthDeptCollectData(this.newMonth())
         ]).then(res => {
           // 按部门数据归集统计
-          _self.departSumData = res[0].data.data
-          var total = 0
-          _self.departSumData.forEach(item => { total += parseInt(item.value) })
-          _self.departSumData.forEach(item => {
+          this.departSumData = res[0].data.data
+          let total = 0
+          this.departSumData.forEach(item => {
+            total += parseInt(item.value)
+          })
+          this.departSumData.forEach(item => {
             item.percent = parseInt(item.value / total * 100) + '%'
           })
           // 月度部门归集统计
-          _self.monthDepartData = res[1].data.data
+          this.monthDepartData = res[1].data.data
           // 未填报部门
-          _self.unGetDeparts = [
+          this.unGetDeparts = [
             { departId: 'aabbcc', departName: '市发改委' },
             { departId: 'aabbcc', departName: '环保办' },
             { departId: 'aabbcc', departName: '市发改委' },
@@ -579,71 +569,39 @@
       // 临时设置departId
       resetListQuery() {
         this.listQuery.departId = this.$store.state.user.info.departId
-      },
-      // 自动重绘图表
-      resizeTheChart() {
-        if (this.$refs && this.$refs.chart1 && this.$refs.chart2 && this.$refs.chart3 && this.$refs.chart4) {
-          this.$refs.chart1.resize()
-          this.$refs.chart2.resize()
-          this.$refs.chart3.resize()
-          this.$refs.chart4.resize()
-        }
       }
-      // 取消resize事件监听
-      // beforeDestroy() {
-      //   window.removeEventListener('resize', this.resizeTheChart)
-      // }
     },
-
-    components: { GrooveSelect }
+    components: { GrooveSelect, BChart }
   }
 </script>
 
 <style scoped lang="stylus">
-  .mr-20
-    margin-right: 20px
-  .mt-20
-    margin-top: 20px
-  .mb-20
-    margin-top: 20px
-  .pr-12
-    padding-right: 12px
-  .pt-12
-    padding-top: 12px
-  .pd-12
-    padding: 12px
-  .pd-10
-    padding: 10px
-  .mg-0-auto
-    margin: 0 auto
-  i{
+  i {
     font-style: normal
   }
-  .my-gather-data{
-    .header{
-      .msg-tips{
-        width: 100%
+  .my-gather-data {
+    .header {
+      .msg-tips {
+        width: 100%;
         .tip-item {
-          width: 19%
-          padding: 20px
-          color #fff
-          -webkit-border-radius: 8px;
-          -moz-border-radius: 8px;
+          display: flex;
+          align-items: center;
+          width: 19%;
+          padding: 20px;
+          color: #fff;
           border-radius: 8px;
-          .icon{
-            background-color: #ffffff44
-            display inline-block
-            width: 50px
-            height: 50px
-            -webkit-border-radius: 50%
-            -moz-border-radius: 50%
-            border-radius: 50%
-            margin-right: 30px
+          .icon {
+            background-color: #ffffff44;
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-right: 30px;
           }
-          .count{
-            padding-top: 10px
-            font-size: 18px
-            font-weight: 700
+          .count {
+            padding-top: 10px;
+            font-size: 26px;
+            font-weight: 700;
           }
           &:nth-child(1) {
             background-color: #4065e0;
@@ -663,62 +621,59 @@
         }
       }
     }
-    .main{
+    .main {
       width: 100%
       height: 100%
-      .area{
-        -webkit-border-radius: 8px
-        -moz-border-radius: 8px
+      .area {
         border-radius: 8px
         background-color: #fff
-        overflow hidden
-        .resource-list{
+        .resource-list {
           padding-left: 20px
           padding-bottom: 20px
-          p{
+          p {
             color #c5c8ce
             font-size: 12px
           }
-          .list-item{
+          .list-item {
             font-size: 14px
             line-height: 26px
             font-weight: 700
           }
         }
-        .title{
+        .title {
           font-size: 18px
           line-height: 40px
-          padding-left: 20px
+          padding: 10px 20px
           font-weight: 700
-          .text{
+          .text {
             padding-top: 5px
           }
-          .my-date-picker{
+          .my-date-picker {
             width 160px
             display inline-block
             padding 4px
             padding-right: 20px
           }
-          .filter-select{
+          .filter-select {
             width: 450px
             margin-right: 20px
             padding-top: 20px
           }
-          .float-right{
+          .float-right {
             float: right
           }
         }
-        .content{
+        .content {
           padding 0 20px 20px
         }
-        .current-tip{
-          .border-right{
+        .current-tip {
+          .border-right {
             position relative
-            &::after{
+            &::after {
               position absolute
               right: 50%
               top: 50%
-              transform translate(-50%,-50%)
+              transform translate(-50%, -50%)
               content ''
               display inline-block
               width: 1px
@@ -726,13 +681,13 @@
               background-color: #9e9e9e
             }
           }
-          .current-tip-item{
+          .current-tip-item {
             text-align center
             width: 100px
-            .g-font{
+            .g-font {
               color #9e9e9e
             }
-            .b-num{
+            .b-num {
               font-size: 26px
               color #0b87ed
               font-weight: 700
@@ -741,22 +696,14 @@
           }
         }
       }
-      .w-percent-70{
-        width: calc( 70% - 20px );
-      }
-      .w-percent-30{
-        width: 30%;
-      }
-      .trend{
+      .trend {
         width: 100%
         position relative
-        .chart-title{
+        .chart-title {
           position absolute
           left 50%
           transform translateX(-50%)
           background-color: #eceffc
-          -webkit-border-radius: 20px
-          -moz-border-radius: 20px
           border-radius: 20px
           line-height: 40px
           width: 180px

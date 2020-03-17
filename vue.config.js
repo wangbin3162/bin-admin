@@ -6,10 +6,6 @@ function resolve(dir) {
 }
 
 module.exports = {
-  transpileDependencies: [
-    'vue-echarts',
-    'resize-detector'
-  ],
   // 配置基础链接地址，根据发布环境添加
   publicPath: process.env.NODE_ENV === 'production'
     ? '/dir'

@@ -23,10 +23,6 @@
       options: {
         type: Object,
         required: true
-      },
-      data: {
-        type: Object,
-        required: true
       }
     },
     data() {
@@ -39,17 +35,6 @@
         return {
           width: this.width,
           height: this.height
-        }
-      },
-      formatDataSet() {
-        let { xField, yField, data } = this.data
-        return {
-          source: [
-            [xField, yField],
-            ...data.map(item => {
-              return [item[xField], item[yField]]
-            })
-          ]
         }
       }
     },
@@ -67,11 +52,10 @@
     methods: {
       initChart() {
         this.chart = echarts.init(this.$el, 'charts-theme')
-        this.setOptions()
+        this.setOptions(this.options)
       },
-      setOptions() {
-        this.options.dataset = this.formatDataSet
-        this.chart.setOption(this.options)
+      setOptions(opts) {
+        this.chart.setOption(opts)
       }
     }
   }

@@ -9,12 +9,6 @@ import VSimpleLabel from '../components/VKeyLabel/Simple'
 import VTitleBar from '../components/VTitleBar'
 import VSortArrow from '../components/VSortArrow'
 import VCascade from '../components/VCascade'
-import ECharts from 'vue-echarts'
-import 'echarts/lib/chart/line'
-import 'echarts/lib/chart/bar'
-import 'echarts/lib/chart/pie'
-import 'echarts/lib/component/legend'
-import 'echarts/lib/component/tooltip'
 
 export default {
   async install(Vue, options) {
@@ -31,7 +25,6 @@ export default {
     Vue.component(VTitleBar.name, VTitleBar)
     Vue.component(VSortArrow.name, VSortArrow)
     Vue.component(VCascade.name, VCascade)
-    Vue.component('v-chart', ECharts)
     // 全局通信
     Vue.prototype.$EventBus = new Vue()
     // 扩展string方法

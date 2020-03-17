@@ -76,7 +76,7 @@
               <div class="trend">
                 <div class="chart-title">月度信息归集趋势</div>
                 <div style="width: 100%;height: 100%;">
-                  <b-chart height="240px" :options="lineChartOption" :data="chart1Data"/>
+                  <b-chart height="240px" :options="lineChartOption"/>
                 </div>
               </div>
             </div>
@@ -110,7 +110,7 @@
               </div>
             </template>
             <div style="width: 100%;height: 100%;">
-              <b-chart height="280px" :options="smoothLineChartOption" :data="chart2Data"/>
+              <b-chart height="280px" :options="smoothLineChartOption"/>
             </div>
           </b-card>
         </div>
@@ -135,7 +135,7 @@
   import commonMixin from '../../common/mixins/mixin'
   import permission from '../../common/mixins/permission'
   import * as api from '../../api/data-analyze/data-analysis.api'
-  import BChart from '../../components/BChart/index'
+  import { BChart, formatDataSet } from '../../components/BChart'
 
   export default {
     name: 'Analyze',
@@ -171,7 +171,23 @@
             areaStyle: {},
             itemStyle: { color: '#c7c7ff' },
             smooth: false
-          }]
+          }],
+          dataset: formatDataSet(
+            { xField: 'month', yField: 'value' },
+            [
+              { month: '1月', value: 220 },
+              { month: '2月', value: 315 },
+              { month: '3月', value: 434 },
+              { month: '4月', value: 386 },
+              { month: '5月', value: 409 },
+              { month: '6月', value: 378 },
+              { month: '7月', value: 533 },
+              { month: '8月', value: 820 },
+              { month: '9月', value: 1290 },
+              { month: '10月', value: 1330 },
+              { month: '11月', value: 901 },
+              { month: '12月', value: 1290 }
+            ])
         },
         smoothLineChartOption: {
           tooltip: { trigger: 'axis' },
@@ -186,43 +202,23 @@
             name: '数量',
             itemStyle: { color: '#1ed1b8' },
             areaStyle: {}
-          }]
-        },
-        chart1Data: {
-          xField: 'month',
-          yField: 'value',
-          data: [
-            { month: '1月', value: 220 },
-            { month: '2月', value: 315 },
-            { month: '3月', value: 434 },
-            { month: '4月', value: 386 },
-            { month: '5月', value: 409 },
-            { month: '6月', value: 378 },
-            { month: '7月', value: 533 },
-            { month: '8月', value: 820 },
-            { month: '9月', value: 1290 },
-            { month: '10月', value: 1330 },
-            { month: '11月', value: 901 },
-            { month: '12月', value: 1290 }
-          ]
-        },
-        chart2Data: {
-          xField: 'month',
-          yField: 'value',
-          data: [
-            { month: '1月', value: 1220 },
-            { month: '2月', value: 1315 },
-            { month: '3月', value: 1434 },
-            { month: '4月', value: 1386 },
-            { month: '5月', value: 1409 },
-            { month: '6月', value: 1378 },
-            { month: '7月', value: 1533 },
-            { month: '8月', value: 1820 },
-            { month: '9月', value: 1290 },
-            { month: '10月', value: 1330 },
-            { month: '11月', value: 901 },
-            { month: '12月', value: 1290 }
-          ]
+          }],
+          dataset: formatDataSet(
+            { xField: 'month', yField: 'value' },
+            [
+              { month: '1月', value: 1220 },
+              { month: '2月', value: 1315 },
+              { month: '3月', value: 1434 },
+              { month: '4月', value: 1386 },
+              { month: '5月', value: 1409 },
+              { month: '6月', value: 1378 },
+              { month: '7月', value: 1533 },
+              { month: '8月', value: 1820 },
+              { month: '9月', value: 1290 },
+              { month: '10月', value: 1330 },
+              { month: '11月', value: 901 },
+              { month: '12月', value: 1290 }
+            ])
         },
         date: new Date(),
         columns: [

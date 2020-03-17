@@ -35,8 +35,6 @@
     width: 240px
     position relative
     background-color: #fff
-    -webkit-border-radius: 15px
-    -moz-border-radius: 15px
     border-radius: 15px
     border: 1px solid rgba(240,239,252,.8)
     .sliding-block
@@ -46,14 +44,10 @@
       left: 0
       width: 80px
       height: 30px
-      z-index 10
-      -webkit-border-radius: 15px
-      -moz-border-radius: 15px
       border-radius: 15px
       transition ease-in-out .2s
     .btn-box
       position relative
-      z-index 20
       .btn
         font-size: 14px
         cursor pointer
