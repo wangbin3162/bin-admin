@@ -37,7 +37,7 @@
   .title {
     display: flex;
     justify-content: space-between;
-    align-items: end;
+    align-items: flex-end;
     width: 100%;
     font-size: 18px;
     border-bottom: 1px solid #f0f0f0;
