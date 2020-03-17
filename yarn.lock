@@ -7943,11 +7943,6 @@ reselect@^3.0.1:
   resolved "https://registry.npmjs.org/reselect/-/reselect-3.0.1.tgz#efdaa98ea7451324d092b2b2163a6a1d7a9a2147"
   integrity sha1-79qpjqdFEyTQkrKyFjpqHXqaIUc=
 
-resize-detector@^0.1.10:
-  version "0.1.10"
-  resolved "https://registry.yarnpkg.com/resize-detector/-/resize-detector-0.1.10.tgz#1da3f961aa5f914ccbcfd3752d52fd45beeb692c"
-  integrity sha512-iLcXC8A6Fb0DfA+TRiywrK/0A22bFqkhntjMJMEzXDA4XkcEkfwpNbv7W8iewUiD0xYIaeiXOfiEehTqGKsUFw==
-
 resize-observer-polyfill@^1.5.1:
   version "1.5.1"
   resolved "https://registry.yarnpkg.com/resize-observer-polyfill/-/resize-observer-polyfill-1.5.1.tgz#0e9020dd3d21024458d4ebd27e23e40269810464"
@@ -9314,15 +9309,6 @@ vm-browserify@^1.0.1:
   version "1.1.0"
   resolved "https://registry.npmjs.org/vm-browserify/-/vm-browserify-1.1.0.tgz#bd76d6a23323e2ca8ffa12028dc04559c75f9019"
   integrity sha512-iq+S7vZJE60yejDYM0ek6zg308+UZsdtPExWP9VZoCFCz1zkJoXFnAX7aZfd/ZwrkidzdUZL0C/ryW+JwAiIGw==
-
-vue-echarts@^5.0.0-beta.0:
-  version "5.0.0-beta.0"
-  resolved "https://registry.yarnpkg.com/vue-echarts/-/vue-echarts-5.0.0-beta.0.tgz#438dd4b0fc5ccea281709c1f7c6321b05352bdf4"
-  integrity sha512-QZFKGXDAYFQo+F20REpzcdLx79nsl4kOorJRpN+08aYq4YiIlmtWss1Lxadm7Fo+NYyWm8nnT+h4xHv3uqWIDQ==
-  dependencies:
-    core-js "^3.4.4"
-    lodash "^4.17.15"
-    resize-detector "^0.1.10"
 
 vue-eslint-parser@^2.0.3:
   version "2.0.3"
