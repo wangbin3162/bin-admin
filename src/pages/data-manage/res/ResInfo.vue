@@ -39,7 +39,11 @@
           <template v-slot:personClass="scope">{{ personClassMap[scope.row.personClass] }}</template>
           <template v-slot:resProperty="scope">{{ resPropertyMap[scope.row.resProperty] }}</template>
           <template v-slot:status="scope">{{ resStatusMap[scope.row.status] }}</template>
-          <template v-slot:availableStatus="scope">{{ availableStatusMap[scope.row.availableStatus] }}</template>
+          <template v-slot:availableStatus="scope">
+            <b-tag v-if="scope.row.availableStatus" :type="availableStatusStyleMap[scope.row.availableStatus]" :title="availableTitle(scope.row)">
+            {{ availableStatusMap[scope.row.availableStatus] }}
+            </b-tag>
+          </template>
           <!--扩展配置-->
           <template v-slot:ext="scope">
             <b-button type="text" @click="handleExt(scope.row)" :disabled="scope.row.status!=='audited'">
@@ -296,6 +300,7 @@
         personClassMap: {}, // 主体类别映射
         personClassOptions: [],
         availableStatusMap: { available: '可用', notavailable: '不可用' }, // 可用状态映射 #static
+        availableStatusStyleMap: { available: 'primary', notavailable: 'warning' },
         resStatusMap: { edit: '草稿', audited: '已发布', closed: '已删除' }, // 资源状态映射 #static
         shareMap: { PUBLIC: '共享', PRIVATE: '不共享', DEPART_RANGE: '有条件共享' }, // 共享属性 #static
         openMap: { '1': '是', '0': '否' }, // 开放属性#static
@@ -328,6 +333,11 @@
     computed: {
       lockTreeSelect() {
         return this.dialogStatus.length > 0
+      },
+      availableTitle() {
+        return function(row) {
+          return row.availableStatus === 'notavailable' ? '资源依赖的元信息发生变更,请及时更新' : this.availableStatusMap[row.availableStatus]
+        }
       }
     },
     methods: {

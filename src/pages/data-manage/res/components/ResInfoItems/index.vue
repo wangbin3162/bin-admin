@@ -167,7 +167,7 @@
     data() {
       return {
         fieldsColumns: [
-          { title: '名称', key: 'fieldName'},
+          { title: '名称', key: 'fieldName' },
           { title: '标题', slot: 'fieldTitle' },
           { title: '信息项类型', slot: 'required', width: 110 },
           { title: '数据类型', slot: 'dataType', width: 90, align: 'center' },
