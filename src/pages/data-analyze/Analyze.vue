@@ -75,7 +75,7 @@
               </div>
               <div class="trend">
                 <div class="chart-title">月度信息归集趋势</div>
-                <div style="width: 100%;height: 100%;">
+                <div id="chart1" style="width: 100%;height: 100%;position: relative;">
                   <b-chart height="240px" :options="lineChartOption"/>
                 </div>
               </div>
@@ -109,7 +109,7 @@
                 <span class="title-text">月度信息归集趋势</span>
               </div>
             </template>
-            <div style="width: 100%;height: 100%;">
+            <div id="chart2" style="width: 100%;height: 100%;position: relative;">
               <b-chart height="280px" :options="smoothLineChartOption"/>
             </div>
           </b-card>
@@ -163,14 +163,14 @@
             top: 20,
             bottom: 20
           },
-          xAxis: { type: 'category' },
+          xAxis: { type: 'category', boundaryGap: false },
           yAxis: { type: 'value', axisLine: { show: false } },
           series: [{
             type: 'line',
             name: '数量',
-            areaStyle: {},
+            areaStyle: { opacity: 0.4 },
             itemStyle: { color: '#c7c7ff' },
-            smooth: false
+            showSymbol: false
           }],
           dataset: formatDataSet(
             { xField: 'month', yField: 'value' },
@@ -195,13 +195,15 @@
             top: 20,
             bottom: 20
           },
-          xAxis: { type: 'category' },
+          xAxis: { type: 'category', boundaryGap: false },
           yAxis: { type: 'value' },
           series: [{
             type: 'line',
             name: '数量',
+            showSymbol: false,
+            smooth: true,
             itemStyle: { color: '#1ed1b8' },
-            areaStyle: {}
+            areaStyle: { opacity: 0.4 }
           }],
           dataset: formatDataSet(
             { xField: 'month', yField: 'value' },
