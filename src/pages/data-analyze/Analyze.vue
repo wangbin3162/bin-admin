@@ -315,13 +315,6 @@
             this.historyList = res.data.data.rows
           }
         })
-      },
-      // 自动重绘表格
-      resizeTheChart() {
-        if (this.$refs && this.$refs.chart1 && this.$refs.chart2) {
-          this.$refs.chart1.resize()
-          this.$refs.chart2.resize()
-        }
       }
     }
   }

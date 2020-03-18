@@ -44,7 +44,7 @@
         "kBorderColor0": "#2ec7c9",
         "kBorderWidth": 1,
         "lineWidth": "2",
-        "symbolSize": "3",
+        "symbolSize": "4",
         "symbol": "emptyCircle",
         "symbolBorderWidth": "1",
         "lineSmooth": false,
@@ -107,7 +107,7 @@
                 "axisLabelColor": "#333",
                 "splitLineShow": true,
                 "splitLineColor": [
-                    "#dddddd"
+                    "#eeeeee"
                 ],
                 "splitAreaShow": false,
                 "splitAreaColor": [

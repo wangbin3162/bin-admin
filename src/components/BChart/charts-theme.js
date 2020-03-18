@@ -64,7 +64,7 @@
           "width": "2"
         }
       },
-      "symbolSize": "3",
+      "symbolSize": "4",
       "symbol": "emptyCircle",
       "smooth": false
     },
@@ -79,7 +79,7 @@
           "width": "2"
         }
       },
-      "symbolSize": "3",
+      "symbolSize": "4",
       "symbol": "emptyCircle",
       "smooth": false
     },
@@ -203,7 +203,7 @@
           "color": "#aaaaaa"
         }
       },
-      "symbolSize": "3",
+      "symbolSize": "4",
       "symbol": "emptyCircle",
       "smooth": false,
       "color": [
@@ -348,7 +348,7 @@
         "show": true,
         "lineStyle": {
           "color": [
-            "#dddddd"
+            "#eeeeee"
           ]
         }
       },

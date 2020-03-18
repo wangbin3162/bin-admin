@@ -184,7 +184,7 @@
 
 <script>
   import * as api from '../../../api/data-manage/collect-analysis.api.js'
-  import { BChart, formatDataSet } from '../../../components/BChart'
+  import { BChart, formatDataSet, formatSeries } from '../../../components/BChart'
   import GrooveSelect from './components/Groove/GrooveSelect'
 
   export default {
@@ -335,77 +335,42 @@
           api.getResourceData(),
           api.getSubjectData()
         ]).then(res => {
-          let monthCollect = res[0].data.data
           // 月度信息归集趋势
-          let monthInfos = monthCollect.map(item => item.data)
-          let monthSubs = monthCollect.map(item => item.legend)
+          const dataset = formatSeries({ xField: 'month', yField: 'value', seriesField: 'legend' }, res[0].data.data)
           this.lineSmoothChartOption = {
             tooltip: { trigger: 'axis' },
             color: ['#4065e0', '#35a4ff', '#6fcafa', '#18e5e6', '#1ed1b8'],
-            legend: {
-              data: monthSubs,
-              icon: 'rect'
-            },
+            legend: {},
             xAxis: {
               type: 'category',
-              data: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
               boundaryGap: false,
-              axisLine: {
-                lineStyle: {
-                  color: '#b8b8b8'
-                }
-              },
-              axisLabel: {
-                color: '#333'
-              },
-              splitLine: {
-                show: true,
-                lineStyle: {
-                  color: '#eee'
-                }
-              }
+              splitLine: { show: true },
+              axisLabel: { formatter: '{value} 月' }
             },
             yAxis: {
               type: 'value',
-              axisLine: {
-                lineStyle: {
-                  color: '#b8b8b8'
-                }
-              },
-              axisLabel: {
-                color: '#333'
-              },
-              splitLine: {
-                show: true,
-                lineStyle: {
-                  color: '#eee'
-                }
-              }
+              splitLine: { show: true }
             },
             series: [
               {
-                name: monthSubs[0],
                 smooth: true,
-                data: monthInfos[0].map(item => item.value),
                 type: 'line',
-                areaStyle: {},
-                symbolSize: 8
+                showSymbol: false,
+                areaStyle: { opacity: 0.45 }
               },
               {
-                name: monthSubs[1],
                 smooth: true,
-                data: monthInfos[1].map(item => item.value),
                 type: 'line',
-                areaStyle: {},
-                symbolSize: 8
+                showSymbol: false,
+                areaStyle: { opacity: 0.45 }
               }
-            ]
+            ],
+            dataset
           }
 
           // 部门数据归集统计
           this.lineChartOption = {
             tooltip: { trigger: 'axis' },
-            color: ['#4065e0', '#35a4ff', '#6fcafa', '#18e5e6', '#1ed1b8'],
             xAxis: {
               type: 'category',
               boundaryGap: false,
@@ -441,11 +406,7 @@
                 }
               }
             },
-            series: {
-              type: 'line',
-              areaStyle: {},
-              symbolSize: 8
-            },
+            series: { type: 'line', areaStyle: { opacity: 0.45 }, color: '#4065e0' },
             dataset: formatDataSet({ xField: 'departName', yField: 'value' }, res[1].data.data)
           }
 
