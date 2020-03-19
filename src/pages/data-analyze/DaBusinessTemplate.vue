@@ -8,10 +8,10 @@
         <!--查询条件-->
         <v-filter-bar>
           <v-filter-item title="模板名称">
-            <b-input v-model.trim="listQuery.tempName"  placeholder="请输入" clearable></b-input>
+            <b-input v-model.trim="listQuery.tempName" placeholder="请输入" clearable></b-input>
           </v-filter-item>
           <v-filter-item title="模板编码">
-            <b-input v-model.trim="listQuery.tempCode"  placeholder="请输入" clearable></b-input>
+            <b-input v-model.trim="listQuery.tempCode" placeholder="请输入" clearable></b-input>
           </v-filter-item>
           <!--添加查询按钮位置-->
           <v-filter-item @on-search="handleFilter" @on-reset="resetQuery"></v-filter-item>
@@ -22,8 +22,8 @@
         </v-table-tool-bar>
         <!--中央表格-->
         <b-table :columns="columns" :data="list" :loading="listLoading">
-          <template v-slot:tempName="scope">
-            <b-button type="text" @click="handleCheck(scope.row)">{{ scope.row.tempName }}</b-button>
+          <template v-slot:config="scope">
+            <b-button type="text" @click="handleConfig(scope.row)">配置</b-button>
           </template>
           <!--操作栏-->
           <template v-slot:action="scope">
@@ -85,27 +85,8 @@
         </template>
       </v-edit-wrap>
     </page-header-wrap>
-    <page-header-wrap v-show="isCheck" :title="editTitle" show-close @on-close="handleCancel">
-      <v-edit-wrap v-if="template&&currentTreeNode">
-        <div slot="full">
-          <v-title-bar label="模板信息" class="mb-15"/>
-          <v-key-label label="模板名称" is-half is-first>{{ template.tempName }}</v-key-label>
-          <v-key-label label="所属类型" is-half>{{ currentTreeNode.title }}</v-key-label>
-          <v-key-label label="模板编码" is-half is-first>{{ template.tempCode }}</v-key-label>
-          <v-key-label label="创建人" is-half>{{ template.createBy }}</v-key-label>
-          <v-key-label label="模板脚本">{{ template.tempSource }}</v-key-label>
-          <v-key-label label="模板描述" is-bottom>{{ template.tempDesc }}</v-key-label>
-          <v-title-bar label="参数信息" class="mt-20 mb-15"/>
-          <!--max-height="432"-->
-          <b-table disabled-hover :data="params" :columns="paramsColumns" size="small"></b-table>
-        </div>
-        <!--保存提交-->
-        <template slot="footer">
-          <b-button @click="handleCancel">返 回</b-button>
-        </template>
-      </v-edit-wrap>
-    </page-header-wrap>
-    <InnerTempChoose ref="innerTempModal" @on-choose="handleChooseTemp"/>
+    <response-config-panel ref="resConfigPanel" @on-close="handleCancel"/>
+    <inner-temp-choose ref="innerTempModal" @on-choose="handleChooseTemp"/>
   </div>
 </template>
 
@@ -115,11 +96,12 @@
   import * as api from '../../api/data-analyze/da-business-temp.api.js'
   import { requiredRule } from '../../common/utils/validate'
   import TempParams from './components/DaInnerTemplate/TempParams'
-  import InnerTempChoose from './components/DaInnerTemplate/InnerTempChoose' // 使用同内置模板模块
+  import InnerTempChoose from './components/DaInnerTemplate/InnerTempChoose'
+  import ResponseConfigPanel from './components/DaBizTemplate/ResponseConfigPanel' // 使用同内置模板模块
 
   export default {
     name: 'DaBusinessTemplate',
-    components: { InnerTempChoose, TempParams },
+    components: { ResponseConfigPanel, InnerTempChoose, TempParams },
     mixins: [commonMixin, permission],
     data() {
       return {
@@ -131,10 +113,11 @@
         },
         columns: [
           { type: 'index', width: 50, align: 'center' },
-          { title: '模板名称', slot: 'tempName' },
+          { title: '模板名称', key: 'tempName' },
           { title: '模板编码', key: 'tempCode' },
           { title: '模板说明', key: 'tempDesc' },
-          { title: '模板操作', slot: 'action', width: 130, align: 'center' }
+          { title: '响应配置', slot: 'config', width: 130, align: 'center' },
+          { title: '模板操作', slot: 'action', width: 130 }
         ],
         treeData: [],
         template: null,
@@ -182,11 +165,12 @@
           tempCode: ''
         }
       },
-      // 查看按钮事件
-      handleCheck(row) {
+      // 查看配置响应信息
+      handleConfig(row) {
         this.template = { ...row }
-        this.getTempFields(() => {
-          this.openEditPage('check')
+        this.getTempFields((template) => {
+          this.dialogStatus = 'config'
+          this.$refs.resConfigPanel && this.$refs.resConfigPanel.open(template)
         })
       },
       // 根据状态或者是资源标识符来获取fields
@@ -194,7 +178,7 @@
         api.getBusinessTempDetail(this.template.id).then(res => {
           this.template = res.data.template
           this.params = res.data.params.map(item => ({ ...item, edit: false }))
-          callBack && callBack()
+          callBack && callBack(this.template)
         })
       },
       // 新增按钮事件

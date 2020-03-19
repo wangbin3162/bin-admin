@@ -26,7 +26,7 @@
     .tree-wrap {
       width: 224px;
       border-right: 1px solid #eee;
-      padding: 20px 5px 20px 10px;
+      padding: 16px 10px;
       overflow-x: auto;
     }
     .table-wrap {

@@ -77,3 +77,63 @@ export function modifyBusinessTemplate(template, params) {
     }
   })
 }
+
+/* 请求响应类型枚举 */
+export function getRespTypeEnum() {
+  return request({
+    url: '/da/enum/respType',
+    method: 'get'
+  })
+}
+
+/* 请求数据类型枚举 */
+export function getDataTypeEnum() {
+  return request({
+    url: '/da/enum/dataType',
+    method: 'get'
+  })
+}
+
+/* 查询响应树信息列表 */
+export function getRespTree(bizId) {
+  return request({
+    url: '/da/bizResp/searchTree',
+    method: 'get',
+    params: {
+      bizId, isAll: false
+    }
+  })
+}
+
+/* 2.7.6分页查询业务响应数据 */
+export function getRespList(id, query) {
+  return request({
+    url: '/da/bizResp/search',
+    method: 'get',
+    params: {
+      parentId: id,
+      bizId: query.bizId,
+      size: query.size,
+      page: query.page - 1
+    }
+  })
+}
+
+/* 添加单条响应 */
+export function addResp(bizId, response) {
+  return request({
+    url: '/da/bizResp/add',
+    method: 'post',
+    params: {
+      bizId,
+      parentId: response.parentId,
+      keyName: response.keyName,
+      kyeAlias: response.kyeAlias,
+      keyPath: response.keyPath,
+      respKind: response.respKind,
+      dataType: response.dataType,
+      memo: response.memo,
+      orderNo: response.orderNo
+    }
+  })
+}

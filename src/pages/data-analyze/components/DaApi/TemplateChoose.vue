@@ -14,7 +14,7 @@
 </template>
 
 <script>
-  import BizTempChoose from '../DaInnerTemplate/BizTempChoose'
+  import BizTempChoose from '../DaBizTemplate/BizTempChoose'
 
   export default {
     name: 'TemplateChoose',

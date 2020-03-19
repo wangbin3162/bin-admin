@@ -44,7 +44,7 @@ export default {
   },
   methods: {
     // 树节点格式化mapper
-    treeMapper(node, parentId, keys = []) {
+    treeMapper(node, parentId, keys = [], titleField = 'text') {
       // 当前id
       const currentId = node.id
       let parents = parentId ? parentId.split(',') : []
@@ -68,7 +68,7 @@ export default {
       })
       return {
         id: node.id,
-        title: node.text,
+        title: node[titleField],
         ...obj,
         parents: parents, // 配合级联展开时使用
         selected: isSelect,

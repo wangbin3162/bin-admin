@@ -115,7 +115,6 @@
   import commonMixin from '../../../../../common/mixins/mixin'
   import permission from '../../../../../common/mixins/permission'
   import * as api from '../../../../../api/data-manage/gather.api'
-  import { downloadExport, queryErrorExcelInfo, queryImportDetails } from '../../../../../api/import-export.api'
   import Util from '../../../../../common/utils/util'
 
   export default {
