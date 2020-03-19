@@ -157,6 +157,17 @@ export function queryExt(resourceKey) {
   })
 }
 
+/* 信息项重置接口 */
+export function itemsReload(resourceKey) {
+  return request({
+    url: '/api/dir/items/reload',
+    method: 'post',
+    params: {
+      resourceKey
+    }
+  })
+}
+
 /* 扩展配置保存 */
 export function saveExt(resourceKey, extInfos) {
   return request({

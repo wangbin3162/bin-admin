@@ -40,8 +40,9 @@
           <template v-slot:resProperty="scope">{{ resPropertyMap[scope.row.resProperty] }}</template>
           <template v-slot:status="scope">{{ resStatusMap[scope.row.status] }}</template>
           <template v-slot:availableStatus="scope">
-            <b-tag v-if="scope.row.availableStatus" :type="availableStatusStyleMap[scope.row.availableStatus]" :title="availableTitle(scope.row)">
-            {{ availableStatusMap[scope.row.availableStatus] }}
+            <b-tag v-if="scope.row.availableStatus" :type="availableStatusStyleMap[scope.row.availableStatus]"
+                   :title="availableTitle(scope.row)">
+              {{ availableStatusMap[scope.row.availableStatus] }}
             </b-tag>
           </template>
           <!--扩展配置-->
@@ -99,11 +100,13 @@
               </b-col>
               <b-col span="6">
                 <b-form-item label="资源代码" prop="resourceCode">
-                  <div flex>
+                  <div flex style="width:100%;">
                     <b-tag type="primary" style="margin: 0;flex:0 0 auto;">
                       210{{ resource.metadataCode }}
                     </b-tag>
-                    <b-input v-model="resource.resourceCode" placeholder="请输入资源代码" clearable></b-input>
+                    <div flex-box="1">
+                      <b-input v-model="resource.resourceCode" placeholder="请输入资源代码" clearable/>
+                    </div>
                   </div>
                 </b-form-item>
               </b-col>
@@ -166,7 +169,9 @@
             </b-form-item>
           </b-form>
           <template v-if="resource.items">
-            <v-title-bar label="信息项" lass="mb-15"></v-title-bar>
+            <v-title-bar label="信息项" lass="mb-15">
+              <b-button v-if="dialogStatus==='modify'" type="primary" transparent @click="handleReload">重载信息项</b-button>
+            </v-title-bar>
             <!--信息项表格组件-->
             <res-info-items v-model="resource.items"
                             :data-type-map="dataTypeMap"
@@ -335,7 +340,7 @@
         return this.dialogStatus.length > 0
       },
       availableTitle() {
-        return function(row) {
+        return function (row) {
           return row.availableStatus === 'notavailable' ? '资源依赖的元信息发生变更,请及时更新' : this.availableStatusMap[row.availableStatus]
         }
       }
@@ -488,7 +493,7 @@
             isEncrypt: '', // 是否加密
             required: 'Y', // 信息项类型，默认核心项
             status: 'use', // 启用状态，默认启用
-            is_tokenizer: '', // 是否分词
+            tokenizer: '', // 是否分词
             // eslint-disable-next-line no-template-curly-in-string
             checkRules: '{"rules":["$required(obj, value, {\\"message\\":\\"${title}不可以为空\\"})"]}'// 校验配置,校验配置默认配置一个必填项
           }
@@ -499,6 +504,64 @@
         this.$refs.form.validateField('personClass')
         this.$refs.form.validateField('resourceName')
         this.$refs.form.validateField('resourceCode')
+      },
+      // 重载信息项，用于编辑时，校验元信息信息项是否有增删，刷新当前信息项使用
+      handleReload() {
+        this.$confirm({
+          title: '确定重载信息项吗？',
+          content: '重载后会移除已删除的信息项、增加新的信息项！',
+          loading: true,
+          onOk: () => {
+            api.itemsReload(this.resource.resourceKey).then(res => {
+              if (res.data.code === '0') {
+                // 当前信息项
+                let currentItemsMap = new Map(this.resource.items.map(i => ([i.fieldName, i])))
+                // 先判断是否有移除的
+                if (res.data.data.deletedFields) {
+                  // 移除的项
+                  const removeItems = res.data.data.deletedFields
+                  // 原信息项移除
+                  removeItems.forEach(item => {
+                    if (currentItemsMap.has(item.fieldName)) {
+                      currentItemsMap.delete(item.fieldName)
+                    }
+                  })
+                }
+                if (res.data.data.addFields) {
+                  // 新增项
+                  const addItems = res.data.data.addFields
+                  addItems.forEach(item => {
+                    if (!currentItemsMap.has(item.fieldName)) {
+                      currentItemsMap.set(
+                        item.fieldName,
+                        {
+                          fieldName: item.fieldName, // 元信息名称（英文）
+                          fieldTitle: item.fieldTitle, // 元信息标题
+                          dataType: item.dataType, // 数据类型
+                          openType: 'PUBLIC', // 信息项公开类型,默认社会公开
+                          controlType: 'TEXT', // 控件类型,默认文本框
+                          fieldDesc: item.fieldDesc, // 提示信息
+                          validValue: '', // 有效值
+                          maskModel: '', // 掩码方式
+                          isEncrypt: '', // 是否加密
+                          required: 'Y', // 信息项类型，默认核心项
+                          status: 'use', // 启用状态，默认启用
+                          tokenizer: '', // 是否分词
+                          // eslint-disable-next-line no-template-curly-in-string
+                          checkRules: '{"rules":["$required(obj, value, {\\"message\\":\\"${title}不可以为空\\"})"]}'// 校验配置,校验配置默认配置一个必填项
+                        })
+                    }
+                  })
+                }
+                this.resource.items = [...currentItemsMap.values()]
+                this.$message({ type: 'success', content: '信息项重载成功' })
+              } else {
+                this.$notice.danger({ title: '操作错误', desc: res.data.message })
+              }
+              this.$modal.remove()
+            })
+          }
+        })
       },
       // 表单提交
       handleSubmit() {
