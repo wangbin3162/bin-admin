@@ -479,7 +479,8 @@
           metadataKey: '', // 资源标识符
           dirClassifyName: '',
           idsFlag: 0, // 多主体标识,默认为0
-          fields: [] // 信息项,不能为空
+          fields: [], // 信息项,不能为空
+          versionNo: ''
         }
       },
       // tree:初始化树结构
