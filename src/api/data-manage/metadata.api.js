@@ -112,6 +112,7 @@ export function createMetadata(metadata) {
       metadataDesc: metadata.metadataDesc,
       metadataKey: metadata.metadataKey,
       idsFlag: metadata.idsFlag,
+      versionNo: metadata.versionNo,
       fields: fields
     }
   })
