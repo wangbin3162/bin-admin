@@ -5,16 +5,21 @@
       <v-table-wrap>
         <div slot="tree">
           <div class="mb-15">
-            <b-button type="primary" plain style="width: 100%;"
-                      icon="ios-add" @click="handleCreateRoot">
-              添加根响应
-            </b-button>
+            <b-tooltip content="新增根节点">
+              <b-button icon="ios-add-circle-outline" @click="handleCreateRoot"/>
+            </b-tooltip>
+            <b-tooltip content="编辑当前节点">
+              <b-button icon="ios-create" @click="handleModify(currentTreeNode)"/>
+            </b-tooltip>
+            <b-tooltip content="移除当前节点">
+              <b-button icon="ios-remove-circle-outline" @click="handleRemove(currentTreeNode)"/>
+            </b-tooltip>
           </div>
-          <b-tree :data="treeData"
-                  @on-select-change="handTreeCurrentChange"/>
+          <b-tree :data="treeData" @on-select-change="handTreeCurrentChange"/>
         </div>
         <v-table-tool-bar>
           <b-button v-if="canCreate" type="primary" icon="ios-add-circle-outline" @click="handleCreate">新 增</b-button>
+          <b-button v-if="canCreate" icon="ios-medkit" @click="handleCreateBatch">批量新增</b-button>
         </v-table-tool-bar>
         <!--中央表格-->
         <b-table :columns="columns" :data="list" :loading="listLoading">
@@ -39,56 +44,89 @@
                 @on-page-size-change="handleSizeChange"></b-page>
       </v-table-wrap>
     </page-header-wrap>
+    <!--新增修改编辑-->
     <b-drawer v-model="drawerVisible" :title="`编辑响应${resp.parentId?'':'根'}节点`"
-              width="720" append-to-body :mask-closable="false">
-      <div>
-        <b-form :model="resp" ref="form" label-position="top">
-          <b-row :gutter="20">
-            <b-col span="12">
-              <b-form-item label="响应类型" prop="respKind">
-                <b-input v-model="resp.respKind" placeholder="响应类型"/>
-              </b-form-item>
-            </b-col>
-            <b-col span="12">
-              <b-form-item label="键名" prop="keyName">
-                <b-input v-model="resp.keyName" placeholder="请输入键名"/>
-              </b-form-item>
-            </b-col>
-          </b-row>
-          <b-row :gutter="20">
-            <b-col span="12">
-              <b-form-item label="别名" prop="keyAlias">
-                <b-input v-model="resp.keyAlias" placeholder="请输入别名"/>
-              </b-form-item>
-            </b-col>
-            <b-col span="12">
-              <b-form-item label="键路径" prop="keyPath">
-                <b-input v-model="resp.keyPath" placeholder="邮箱"/>
-              </b-form-item>
-            </b-col>
-          </b-row>
-          <b-row :gutter="20">
-            <b-col span="12">
-              <b-form-item label="数据类型" prop="dataType">
-                <b-input v-model="resp.dataType" placeholder="请输数据类型"/>
-              </b-form-item>
-            </b-col>
-            <b-col span="12">
-              <b-form-item label="序号" prop="orderNo">
-                <b-input v-model="resp.orderNo" placeholder="序号"/>
-              </b-form-item>
-            </b-col>
-          </b-row>
-          <b-form-item label="说明" prop="memo">
-            <b-input v-model="resp.memo" type="textarea" placeholder="说明"/>
-          </b-form-item>
-        </b-form>
-      </div>
+              width="720" :mask-closable="false">
+      <b-form :model="resp" :rules="ruleValidate" ref="form" label-position="top">
+        <b-row :gutter="20">
+          <b-col span="12">
+            <b-form-item label="响应类型" prop="respKind">
+              <b-select v-model="resp.respKind" placeholder="请选择" clearable>
+                <b-option v-for="(value,key) in respTypeMap" :key="key" :value="key">{{ value }}</b-option>
+              </b-select>
+            </b-form-item>
+          </b-col>
+          <b-col span="12">
+            <b-form-item label="键名" prop="keyName">
+              <b-input v-model="resp.keyName" placeholder="请输入键名" clearable @on-change="keyNameChange"/>
+            </b-form-item>
+          </b-col>
+        </b-row>
+        <b-row :gutter="20">
+          <b-col span="12">
+            <b-form-item label="别名" prop="keyAlias">
+              <b-input v-model="resp.keyAlias" placeholder="别名建议和键名一致" clearable/>
+            </b-form-item>
+          </b-col>
+          <b-col span="12">
+            <b-form-item label="键路径" prop="keyPath">
+              <b-input v-model="resp.keyPath" placeholder="键路径一般是'/键名'" clearable/>
+            </b-form-item>
+          </b-col>
+        </b-row>
+        <b-row :gutter="20">
+          <b-col span="12">
+            <b-form-item label="数据类型" prop="dataType">
+              <b-select v-model="resp.dataType" placeholder="请选择" clearable>
+                <b-option v-for="(value,key) in dataTypeMap" :key="key" :value="key">{{ value }}</b-option>
+              </b-select>
+            </b-form-item>
+          </b-col>
+          <b-col span="12">
+            <b-form-item label="序号" prop="orderNo">
+              <b-input-number :min="1" v-model="resp.orderNo" style="width: 100%;"/>
+            </b-form-item>
+          </b-col>
+        </b-row>
+        <b-form-item label="说明" prop="memo">
+          <b-input v-model="resp.memo" type="textarea" placeholder="请输入响应说明"/>
+        </b-form-item>
+      </b-form>
       <div slot="footer">
         <b-button @click="drawerVisible = false">取 消</b-button>
-        <b-button type="primary" @click="drawerVisible = false">提 交</b-button>
+        <b-button type="primary" @click="handleSubmit" :loading="btnLoading">提 交</b-button>
       </div>
     </b-drawer>
+    <!--批量新增弹窗-->
+    <b-modal v-model="batchDialog" title="批量添加响应" :mask-closable="false" width="1120" :z-index="10">
+      <b-input v-model="batchStr" type="textarea" :rows="4" placeholder="请将复制过来的数据粘贴到此处"/>
+      <div class="p15 t-center">
+        <b-button type="primary" icon="ios-list-box" @click="batchStrChange">转换为添加列表</b-button>
+      </div>
+      <b-table :columns="batchColumns" :data="batchItemList" size="small">
+        <template v-slot:keyName="{row,index}">
+          <b-input v-model="batchItemList[index].keyName" size="mini"/>
+        </template>
+        <template v-slot:keyAlias="{row,index}">
+          <b-input v-model="batchItemList[index].keyAlias" size="mini"/>
+        </template>
+        <template v-slot:keyPath="{row,index}">
+          <b-input v-model="batchItemList[index].keyPath" size="mini"/>
+        </template>
+        <template v-slot:dataType="{row,index}">
+          <b-select v-model="batchItemList[index].dataType" placeholder="请选择" size="mini" append-to-body>
+            <b-option v-for="(value,key) in dataTypeMap" :key="key" :value="key">{{ value }}</b-option>
+          </b-select>
+        </template>
+        <template v-slot:memo="{row,index}">
+          <b-input v-model="batchItemList[index].memo" size="mini"/>
+        </template>
+      </b-table>
+      <div slot="footer">
+        <b-button @click="batchDialog = false">取 消</b-button>
+        <b-button type="primary" @click="handleBatchSubmit" :loading="batchLoading">提 交</b-button>
+      </div>
+    </b-modal>
   </div>
 </template>
 
@@ -96,6 +134,7 @@
   import commonMixin from '../../../../common/mixins/mixin'
   import permission from '../../../../common/mixins/permission'
   import * as api from '../../../../api/data-analyze/da-business-temp.api.js'
+  import { requiredRule } from '../../../../common/utils/validate'
 
   export default {
     name: 'ResponseConfigPanel',
@@ -107,32 +146,26 @@
           bizId: ''
         },
         template: null,
-        params: null,
         resp: null,
-        treeData: [
-          {
-            title: '一级 1',
-            children: [
-              {
-                title: '二级 1-1'
-              },
-              {
-                title: '二级 1-2'
-              }
-            ]
-          },
-          {
-            title: '一级 2',
-            children: [
-              {
-                title: '二级 2-1'
-              },
-              {
-                title: '二级 2-2'
-              }
-            ]
-          }
-        ],
+        ruleValidate: {
+          respKind: [{ required: true, message: '类型必选', trigger: 'change' }],
+          keyName: [requiredRule, {
+            pattern: /^[a-zA-Z][a-zA-Z0-9_]*$/,
+            message: '字母开头(包含字母、数字和下划线)',
+            trigger: 'blur'
+          }],
+          keyAlias: [requiredRule, {
+            pattern: /^[a-zA-Z][a-zA-Z0-9_]*$/,
+            message: '字母开头(包含字母、数字和下划线)',
+            trigger: 'blur'
+          }],
+          keyPath: [requiredRule, {
+            pattern: /^(\/[a-zA-Z0-9_]+)+$/,
+            message: '合法路径以/开头(包含字母、数字和下划线)',
+            trigger: 'blur'
+          }]
+        },
+        treeData: [],
         columns: [
           { type: 'index', width: 50, align: 'center' },
           { title: '键名', key: 'keyName' },
@@ -144,8 +177,19 @@
           { title: '操作', slot: 'action', width: 130 }
         ],
         drawerVisible: false,
+        batchDialog: false,
+        batchLoading: false,
+        batchStr: '',
+        batchItemList: [],
+        batchColumns: [
+          { title: '键名', slot: 'keyName' },
+          { title: '别名', slot: 'keyAlias' },
+          { title: '键路径', slot: 'keyPath' },
+          { title: '数据类型', slot: 'dataType', width: 120 },
+          { title: '说明', slot: 'memo' }
+        ],
         respTypeMap: { QUERY: '查询', METRIC: '度量', BUCKET: '分组', RECORD: '记录' },
-        dataTypeMap: { character: '字符', longed: '整数', doubled: '小数', date: '日期', datetime: '日期时间', bool: '布尔' }
+        dataTypeMap: { string: '字符', long: '整数', double: '小数', date: '日期', datetime: '日期时间', boolean: '布尔' }
       }
     },
     created() {
@@ -189,13 +233,108 @@
         this.openEditPage('create')
         this.drawerVisible = true
       },
+      // 批量新增记录节点
+      handleCreateBatch() {
+        if (!this.currentTreeNode) {
+          this.$message({ type: 'danger', content: '请选择一个响应节点后再新增！' })
+          return
+        }
+        this.batchStr = ''
+        this.batchItemList = []
+        this.batchDialog = true
+      },
+      // 将json转换为item对象
+      batchStrChange() {
+        if (this.batchStr.length === 0) {
+          this.$message({ type: 'danger', content: '没有添加数据无法批量添加！' })
+          return
+        }
+        try {
+          // 转换为标准js对象
+          const passObj = JSON.parse(this.batchStr)
+          let keys = Object.keys(passObj)
+          this.batchItemList = keys.map((key, index) => {
+            return {
+              bizId: this.listQuery.bizId,
+              parentId: this.currentTreeNode.id,
+              respKind: 'RECORD',
+              keyName: key,
+              keyAlias: key,
+              keyPath: `/${key}`,
+              dataType: 'string',
+              orderNo: index + 1
+            }
+          })
+        } catch (e) {
+          this.$message({ type: 'danger', content: '数据源不是标准json，无法批量添加！' })
+        }
+      },
+      handleBatchSubmit() {
+        this.batchLoading = true
+        api.batchAddResp(this.batchItemList).then(res => {
+          this.batchLoading = false // 按钮状态清空
+          if (res.data.code === '0') {
+            this.batchDialog = false
+            this.$message({ type: 'success', content: '操作成功' })
+            this.handleFilter()
+          } else {
+            this.$notice.danger({ title: '操作错误', desc: res.data.message })
+          }
+        })
+      },
       // 弹窗提示是否删除
       handleRemove(row) {
-        console.log(row)
+        let resp = { ...row }
+        this.$confirm({
+          title: '确实要删除当前响应节点吗？',
+          content: '删除后不可恢复。',
+          loading: true,
+          okType: 'danger',
+          onOk: () => {
+            api.removeResp(resp.id).then(res => {
+              if (res.data.code === '0') {
+                this.$message({ type: 'success', content: '操作成功' })
+                this.$modal.remove()
+                this.handleRefresh(resp.respKind)
+              } else {
+                this.$modal.remove()
+                this.$notice.danger({ title: '操作错误', desc: res.data.message })
+              }
+            })
+          }
+        })
       },
       // 编辑事件
       handleModify(row) {
-        console.log(row)
+        this.resetResp(this.currentTreeNode.id)
+        this.resp = { ...row }
+        this.openEditPage('modify')
+        this.drawerVisible = true
+      },
+      // 键名更改时间
+      keyNameChange() {
+        this.resp.keyAlias = this.resp.keyName
+        this.resp.keyPath = '/' + this.resp.keyName
+      },
+      // 表单提交
+      handleSubmit() {
+        this.$refs.form.validate((valid) => {
+          if (valid) {
+            this.btnLoading = true
+            // 需要过滤params新增未保存的
+            console.log(this.resp)
+            let fun = this.dialogStatus === 'create' ? api.addResp : api.modifyResp
+            fun(this.resp).then(res => {
+              if (res.data.code === '0') {
+                this.submitDone(true)
+                this.drawerVisible = false
+                this.handleRefresh(this.resp.respKind)
+              } else {
+                this.$notice.danger({ title: '操作错误', desc: res.data.message })
+              }
+            })
+          }
+        })
       },
       // 重置对象
       resetTemplate() {
@@ -208,6 +347,14 @@
           tempDesc: ''
         }
         this.params = []
+      },
+      // 根据删除新增的类型来判断是否要刷新树
+      handleRefresh(type) {
+        if (type === 'RECORD') {
+          this.handleFilter()
+        } else {
+          this.initTree()
+        }
       },
       // 重置响应对象
       resetResp(parentId) {

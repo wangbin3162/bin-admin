@@ -120,20 +120,60 @@ export function getRespList(id, query) {
 }
 
 /* 添加单条响应 */
-export function addResp(bizId, response) {
+export function addResp(response) {
   return request({
     url: '/da/bizResp/add',
     method: 'post',
     params: {
-      bizId,
+      bizId: response.bizId,
       parentId: response.parentId,
       keyName: response.keyName,
-      kyeAlias: response.kyeAlias,
+      keyAlias: response.keyAlias,
       keyPath: response.keyPath,
       respKind: response.respKind,
       dataType: response.dataType,
       memo: response.memo,
       orderNo: response.orderNo
+    }
+  })
+}
+
+/* 批量添加响应 */
+export function batchAddResp(list) {
+  return request({
+    url: '/da/bizResp/batchAdd',
+    method: 'post',
+    data: list
+  })
+}
+
+/* 修改单条响应 */
+export function modifyResp(response) {
+  return request({
+    url: '/da/bizResp/modify',
+    method: 'post',
+    params: {
+      bizId: response.bizId,
+      id: response.id,
+      parentId: response.parentId,
+      keyName: response.keyName,
+      keyAlias: response.keyAlias,
+      keyPath: response.keyPath,
+      respKind: response.respKind,
+      dataType: response.dataType,
+      memo: response.memo,
+      orderNo: response.orderNo
+    }
+  })
+}
+
+/* 修改单条响应 */
+export function removeResp(id) {
+  return request({
+    url: '/da/bizResp/delete',
+    method: 'post',
+    params: {
+      id
     }
   })
 }

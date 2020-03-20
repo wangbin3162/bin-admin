@@ -234,8 +234,20 @@
             let fun = this.dialogStatus === 'create' ? api.createBusinessTemp : api.modifyBusinessTemplate
             fun(this.template, params).then(res => {
               if (res.data.code === '0') {
-                this.submitDone(true)
-                this.searchList()
+                // 如果新增一个业务模板成功，则进入对应的响应配置
+                if (this.dialogStatus === 'create' && res.data.data) {
+                  api.getBusinessTempDetail(res.data.data).then(r => {
+                    this.template = r.data.template
+                    this.dialogStatus = 'config'
+                    this.btnLoading = false // 按钮状态清空
+                    this.searchList()
+                    this.$refs.resConfigPanel && this.$refs.resConfigPanel.open(this.template)
+                    this.$message({ type: 'success', content: '操作成功' })
+                  })
+                } else {
+                  this.submitDone(true)
+                  this.searchList()
+                }
               } else {
                 this.submitDone(false)
                 this.$notice.danger({ title: '操作错误', desc: res.data.message })

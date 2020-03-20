@@ -1,5 +1,5 @@
 <template>
-  <b-modal v-model="dialogFormVisible" title="选择内置模板" width="1020" class="layout-inner"
+  <b-modal v-model="dialogFormVisible" title="选择内置模板" width="1100" class="layout-inner"
            :body-styles="{padding:0}" :mask-closable="false">
     <v-table-wrap style="padding: 0;">
       <!--树结构-->

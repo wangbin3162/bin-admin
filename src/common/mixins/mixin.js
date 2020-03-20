@@ -52,7 +52,7 @@ export default {
       let child = []
       if (node.children) {
         node.children.forEach(item => {
-          child.push(this.treeMapper(item, parents.join(','), keys))
+          child.push(this.treeMapper(item, parents.join(','), keys, titleField))
         })
       }
       // 是否是选中状态
