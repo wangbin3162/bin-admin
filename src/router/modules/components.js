@@ -11,6 +11,12 @@ export default {
       name: 'JsonEditorDemo',
       component: () => import('../../pages/demo/components/JsonEditorDemo'),
       meta: { title: 'Json编辑器' }
+    },
+    {
+      path: 'chart',
+      name: 'ChartDemo',
+      component: () => import('../../pages/demo/components/ChartDemo'),
+      meta: { title: '图表容器' }
     }
   ]
 }

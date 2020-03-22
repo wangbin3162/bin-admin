@@ -1,6 +1,8 @@
 <template>
   <div class="table-tool-bar">
-    <slot></slot>
+    <div class="left">
+      <slot></slot>
+    </div>
     <div class="right" v-if="$slots.right">
       <slot name="right"></slot>
     </div>
@@ -18,6 +20,6 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 12px 0;
+    padding: 0 0 15px;
   }
 </style>

@@ -4,6 +4,9 @@
       <b-icon :name="icon" v-if="icon"></b-icon>
       <span>{{ label }}</span>
     </div>
+    <div class="right" v-if="$slots.default">
+      <slot></slot>
+    </div>
   </div>
 </template>
 
@@ -32,12 +35,14 @@
 
 <style scoped lang="stylus">
   .title {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
     width: 100%;
     font-size: 18px;
     border-bottom: 1px solid #f0f0f0;
     color: #333333;
     background: #fff;
-
     &.no-border {
       border-bottom: none;
     }
@@ -47,7 +52,6 @@
       display: inline-block;
       vertical-align: middle;
       padding: 10px 12px;
-
       &:after {
         content: '';
         position: absolute;

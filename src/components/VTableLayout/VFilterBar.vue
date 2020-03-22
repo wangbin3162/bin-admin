@@ -1,6 +1,6 @@
 <template>
   <div class="filter-bar">
-    <b-row>
+    <b-row type="flex">
       <slot></slot>
     </b-row>
   </div>

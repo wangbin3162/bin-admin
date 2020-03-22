@@ -3,7 +3,7 @@
     <div class="tree-wrap" v-if="this.$slots.tree">
       <slot name="tree">tree</slot>
     </div>
-    <div class="table-wrap">
+    <div class="table-wrap" :style="{width:$slots.tree?'calc(100% - 224px)':'100%'}">
       <slot></slot>
     </div>
   </div>
@@ -17,9 +17,7 @@
 
 <style lang="stylus">
   .table-layout-wrapper {
-    position: relative;
     width: 100%;
-    overflow: hidden;
     background: #ffffff;
     display: flex;
     flex: auto;
@@ -27,15 +25,11 @@
     border-radius: 2px;
     .tree-wrap {
       width: 224px;
-      flex: 0 0 224px;
       border-right: 1px solid #eee;
-      padding: 20px 5px 20px 10px;
+      padding: 16px 10px;
       overflow-x: auto;
     }
     .table-wrap {
-      position: relative;
-      flex: auto;
-      overflow-x: hidden;
       padding: 16px;
       .table-inner {
         width: 100%;
