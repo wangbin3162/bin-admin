@@ -2,8 +2,9 @@
   <page-header-wrap>
     <v-table-wrap>
       <b-alert>json编辑器现已独立发布为bin-code-editor插件
-        <a href="https://wangbin3162.gitee.io/bin-code-editor" target="_blank">文档地址</a>,
-        具体参考对应插件使用方法
+        <template slot="desc">
+          具体请查看<a href="https://wangbin3162.gitee.io/bin-code-editor" target="_blank">示例文档</a>来获取更多插件使用方法
+        </template>
       </b-alert>
       <b-row>
         <b-col span="12">

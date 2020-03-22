@@ -1834,11 +1834,6 @@ base@^0.11.1:
     mixin-deep "^1.2.0"
     pascalcase "^0.1.1"
 
-batch-processor@1.0.0:
-  version "1.0.0"
-  resolved "https://registry.npmjs.org/batch-processor/-/batch-processor-1.0.0.tgz#75c95c32b748e0850d10c2b168f6bdbe9891ace8"
-  integrity sha1-dclcMrdI4IUNEMKxaPa9vpiRrOg=
-
 batch@0.6.1:
   version "0.6.1"
   resolved "https://registry.npmjs.org/batch/-/batch-0.6.1.tgz#dc34314f4e679318093fc760272525f94bf25c16"
@@ -1871,23 +1866,29 @@ big.js@^5.2.2:
   resolved "https://registry.npmjs.org/big.js/-/big.js-5.2.2.tgz#65f0af382f578bcdc742bd9c281e9cb2d7768328"
   integrity sha512-vyL2OymJxmarO8gxMr0mhChsO9QGwhynfuu4+MHTAW6czfq9humCB7rKpUjDd9YUiDPU4mzpyupFSvOClAwbmQ==
 
-bin-code-editor@^0.3.0:
+bin-charts@^0.3.0:
   version "0.3.0"
-  resolved "https://registry.npmjs.org/bin-code-editor/-/bin-code-editor-0.3.0.tgz#492b378f3feed92403d161978fce6c0f96709fa4"
-  integrity sha512-2PdSfdxxnUOxmwR5nyC3mHpshuvz3gvYNNy0SHoBpTk8xK3PeEqvNBksI/1X95QFF9UrdW66+3fsGou+wTXO5Q==
+  resolved "https://registry.npmjs.org/bin-charts/-/bin-charts-0.3.0.tgz#01fd292dbc12d585793dad6715e3f4897540cbaf"
+  integrity sha512-u8rax32LS5/JWjFR3/OJqBmUlutIZC0LDyxORStF0jcecizaFdU4e+fCRAbd7J7K5spH6I9sM2zceYWTDOXTBg==
+  dependencies:
+    resize-observer-polyfill "^1.5.1"
+
+bin-code-editor@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.npmjs.org/bin-code-editor/-/bin-code-editor-0.4.0.tgz#f0060c77b22b3a991ed399de0e5927b4ba10d434"
+  integrity sha512-DmmU8K3cfGQdfQQE9kYcKwrRHY/cnko1MSIweN0l9Rr49Cwu9G1nQGjwlLpvrRGSiQR8XSUWrMYOJOMVSdA/ZQ==
   dependencies:
     codemirror "^5.52.2"
     codemirror-formatting "^1.0.0"
     jsonlint "^1.6.3"
     script-loader "^0.7.2"
 
-bin-ui@^3.1.0:
-  version "3.1.0"
-  resolved "https://registry.npmjs.org/bin-ui/-/bin-ui-3.1.0.tgz#3196147e2c59bf67249f266386ff181869bc515c"
-  integrity sha512-iVBqtqsBYlZIdDYcMugSsXAtIlnjVX1FlK1mX5bbf8drYgAWH05xQIHyu8CIK+uO9NgMIs90I62JOaby2dCB1g==
+bin-ui@^3.1.1:
+  version "3.1.1"
+  resolved "https://registry.npmjs.org/bin-ui/-/bin-ui-3.1.1.tgz#39703909af9e83370e6df39fac77dbbda5121b03"
+  integrity sha512-msFDIAEwN3sJK7MOVx29mH6CahIB6VWo+YfilVWRd4bYYJxYEXu6jT2EANKNNNj9oXKJ+J8oiM76EvsTpNkZxw==
   dependencies:
     async-validator "^1.11.5"
-    element-resize-detector "^1.2.1"
     js-calendar "^1.2.3"
     popper.js "^1.15.0"
     resize-observer-polyfill "^1.5.1"
@@ -3448,13 +3449,6 @@ elegant-spinner@^1.0.1:
   version "1.0.1"
   resolved "https://registry.npmjs.org/elegant-spinner/-/elegant-spinner-1.0.1.tgz#db043521c95d7e303fd8f345bedc3349cfb0729e"
   integrity sha1-2wQ1IcldfjA/2PNFvtwzSc+wcp4=
-
-element-resize-detector@^1.2.1:
-  version "1.2.1"
-  resolved "https://registry.npmjs.org/element-resize-detector/-/element-resize-detector-1.2.1.tgz#b0305194447a4863155e58f13323a0aef30851d1"
-  integrity sha512-BdFsPepnQr9fznNPF9nF4vQ457U/ZJXQDSNF1zBe7yaga8v9AdZf3/NElYxFdUh7SitSGt040QygiTo6dtatIw==
-  dependencies:
-    batch-processor "1.0.0"
 
 elliptic@^6.0.0:
   version "6.5.1"

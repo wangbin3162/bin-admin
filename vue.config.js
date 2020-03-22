@@ -1,7 +1,7 @@
 // 配置路径别名
 var path = require('path')
 
-function resolve (dir) {
+function resolve(dir) {
   return path.join(__dirname, dir)
 }
 

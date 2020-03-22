@@ -1,18 +1,16 @@
 <template>
   <page-header-wrap>
     <v-table-wrap>
-      <b-alert>图表组件b-chart，依赖于echarts
+      <b-alert>图表组件bin-charts现已独立为插件，依赖echarts
         <template slot="desc">
-          <p class="mt-15 mb-15">封装了默认的样式主题，并借助bin-ui提供的方法来实现监听容器组件大小来达到重绘效果，下面是示例</p>
-          <p class="mt-15 mb-15">默认可以使用原生options来定义配置项，组件封装了两种默认转换格式函数，以辅助转换不同的数据源类型，来达到配置图表的数据</p>
-          <p class="mt-15 mb-15">可以拖拽中线来查看重绘效果，也可以直接修改右侧数据源来动态配置图表数据</p>
+          具体请查看<a href="https://wangbin3162.gitee.io/bin-charts" target="_blank">示例文档</a>来获取更多插件使用方法
         </template>
       </b-alert>
       <div style="width: 100%;height: 425px;border:1px solid #ddd;margin: 20px 0;">
         <b-split :default-percent="50">
           <div slot="left" class="left-container">
             <div id="chart1" style="width: 100%;height: 100%;padding-top:15px;position: relative;">
-              <b-chart height="350px" :options="lineChartOption"/>
+              <b-charts height="350px" :options="lineChartOption"/>
             </div>
           </div>
           <div slot="right" class="right-container">
@@ -26,11 +24,10 @@
 </template>
 
 <script>
-  import { BChart, formatDataSet } from '../../../components/BChart'
+  import { formatDataSet } from 'bin-charts/src/utils/util'
 
   export default {
     name: 'ChartDemo',
-    components: { BChart },
     data() {
       return {
         lineChartOption: {
@@ -38,7 +35,7 @@
           title: { text: '默认折线图' },
           grid: { top: 80, right: 30 },
           xAxis: { type: 'category', boundaryGap: false },
-          yAxis: { type: 'value', axisLine: { show: false } },
+          yAxis: { type: 'value' },
           series: [{
             type: 'line',
             name: '数量',

@@ -8,7 +8,7 @@
             <div class="center">
               <div class="count-to">1212</div>
               <div class="charts">
-                <b-chart height="70px" :options="chartOptions1"/>
+                <b-charts theme="charts-theme" height="70px" :options="chartOptions1"/>
               </div>
             </div>
             <div class="bottom"><span>日注册数</span><span>343</span></div>
@@ -20,7 +20,7 @@
             <div class="center">
               <div class="count-to">10200</div>
               <div class="charts">
-                <b-chart height="70px" :options="chartOptions2"/>
+                <b-charts theme="charts-theme" height="70px" :options="chartOptions2"/>
               </div>
             </div>
             <div class="bottom"><span>日发布文章数</span><span>12</span></div>
@@ -32,7 +32,7 @@
             <div class="center">
               <div class="count-to">12</div>
               <div class="charts">
-                <b-chart height="70px" :options="chartOptions3"/>
+                <b-charts theme="charts-theme" height="70px" :options="chartOptions3"/>
               </div>
             </div>
             <div class="bottom"><span>日户反馈数</span><span>5</span></div>
@@ -44,7 +44,7 @@
             <div class="center">
               <div class="count-to">12121</div>
               <div class="charts">
-                <b-chart height="70px" :options="chartOptions4"/>
+                <b-charts theme="charts-theme" height="70px" :options="chartOptions4"/>
               </div>
             </div>
             <div class="bottom"><span>日访问量</span><span>3242</span></div>
@@ -52,22 +52,22 @@
         </b-col>
       </b-row>
       <div style="background:#fff;margin:24px 0;">
-        <b-chart height="350px" :options="lineOptions"/>
+        <b-charts theme="charts-theme" height="350px" :options="lineOptions"/>
       </div>
       <b-row :gutter="24">
         <b-col span="8">
           <div class="chart-wrapper">
-            <b-chart height="300px" :options="radarOptions"/>
+            <b-charts theme="charts-theme" height="300px" :options="radarOptions"/>
           </div>
         </b-col>
         <b-col span="8">
           <div class="chart-wrapper">
-            <b-chart height="300px" :options="barOptions"/>
+            <b-charts theme="charts-theme" height="300px" :options="barOptions"/>
           </div>
         </b-col>
         <b-col span="8">
           <div class="chart-wrapper">
-            <b-chart height="300px" :options="roseOptions"/>
+            <b-charts theme="charts-theme" height="300px" :options="roseOptions"/>
           </div>
         </b-col>
       </b-row>
@@ -76,12 +76,9 @@
 </template>
 
 <script>
-  import { BChart } from '../components/BChart'
-
-  const animationDuration = 3000
+  require('bin-charts/src/theme/charts-theme')
   export default {
     name: 'index',
-    components: { BChart },
     data() {
       return {
         chartOptions1: {
