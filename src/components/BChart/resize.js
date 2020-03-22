@@ -4,6 +4,10 @@ export default {
   },
   beforeDestroy() {
     this.$resize.removeResizeListener(this.$el, this.resizeChart)
+    if (!this.chart) {
+      return
+    }
+    this.chart.dispose()
     this.chart = null
   },
   methods: {

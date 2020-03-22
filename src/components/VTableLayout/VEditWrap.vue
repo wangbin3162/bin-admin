@@ -49,6 +49,7 @@
       line-height: 56px;
       background: #fff;
       border-top: 1px solid #e8e8e8;
+      border-left 1px solid #e8e8e8;
       box-shadow: 0 -1px 2px rgba(0, 0, 0, .03);
       text-align: right;
     }
