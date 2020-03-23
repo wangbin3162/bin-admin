@@ -66,7 +66,7 @@
             </div>
             <div class="content" flex="main:justify">
               <div class="trend mg-0-auto">
-                <b-chart :options="lineSmoothChartOption" height="280px"></b-chart>
+                <b-charts :options="lineSmoothChartOption" theme="charts-theme" height="280px"></b-charts>
               </div>
             </div>
           </div>
@@ -82,7 +82,7 @@
               </div>
               <div class="content" flex="main:justify">
                 <div class="trend">
-                  <b-chart :options="barChartOption" height="280px"></b-chart>
+                  <b-charts :options="barChartOption" height="280px"></b-charts>
                 </div>
               </div>
             </div>
@@ -141,7 +141,7 @@
               <span class="text">按部门数据归集统计</span>
             </div>
             <div class="trend p15">
-              <b-chart height="280px" :options="lineChartOption"/>
+              <b-charts height="280px" theme="charts-theme" :options="lineChartOption"/>
             </div>
           </div>
           <div class="area mb-20">
@@ -168,7 +168,7 @@
               <span class="text">主体及资源数据分类数据分析</span>
             </div>
             <div class="trend p15">
-              <b-chart :options="pieChartOption" height="280px"></b-chart>
+              <b-charts :options="pieChartOption" height="280px"></b-charts>
             </div>
           </div>
         </b-col>
@@ -184,8 +184,10 @@
 
 <script>
   import * as api from '../../../api/data-manage/collect-analysis.api.js'
-  import { BChart, formatDataSet, formatSeries } from '../../../components/BChart'
   import GrooveSelect from './components/Groove/GrooveSelect'
+  import { formatDataSet, formatSeries } from 'bin-charts/src/utils/util'
+
+  require('bin-charts/src/theme/charts-theme')
 
   export default {
     name: 'CollectAnalysis',
@@ -532,7 +534,7 @@
         this.listQuery.departId = this.$store.state.user.info.departId
       }
     },
-    components: { GrooveSelect, BChart }
+    components: { GrooveSelect }
   }
 </script>
 

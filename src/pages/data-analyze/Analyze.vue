@@ -76,7 +76,7 @@
               <div class="trend">
                 <div class="chart-title">月度信息归集趋势</div>
                 <div id="chart1" style="width: 100%;height: 100%;position: relative;">
-                  <b-chart height="240px" :options="lineChartOption"/>
+                  <b-charts height="240px" theme="charts-theme" :options="lineChartOption"/>
                 </div>
               </div>
             </div>
@@ -110,7 +110,7 @@
               </div>
             </template>
             <div id="chart2" style="width: 100%;height: 100%;position: relative;">
-              <b-chart height="280px" :options="smoothLineChartOption"/>
+              <b-charts height="280px" theme="charts-theme" :options="smoothLineChartOption"/>
             </div>
           </b-card>
         </div>
@@ -135,11 +135,11 @@
   import commonMixin from '../../common/mixins/mixin'
   import permission from '../../common/mixins/permission'
   import * as api from '../../api/data-analyze/data-analysis.api'
-  import { BChart, formatDataSet } from '../../components/BChart'
+  import { formatDataSet } from 'bin-charts/src/utils/util'
 
+  require('bin-charts/src/theme/charts-theme')
   export default {
     name: 'Analyze',
-    components: { BChart },
     mixins: [commonMixin, permission],
     data() {
       return {
