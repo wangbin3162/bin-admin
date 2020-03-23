@@ -44,44 +44,48 @@
     <page-header-wrap v-show="isEdit" :title="editTitle" show-close @on-close="handleCancel">
       <v-edit-wrap>
         <template slot="full">
-          <v-title-bar label="模板信息" class="mb-15"/>
-          <b-row type="flex" justify="end">
-            <b-col span="18">
-              <b-form :model="template" ref="form" :rules="ruleValidate" :label-width="130">
-                <b-row>
-                  <b-col span="12">
-                    <b-form-item label="模板名称" prop="tempName">
-                      <b-input v-model="template.tempName" placeholder="请输入模板名称" clearable></b-input>
+          <b-collapse value="1" simple>
+            <b-collapse-panel title="基础信息" name="1">
+              <b-row type="flex" justify="end">
+                <b-col span="18">
+                  <b-form :model="template" ref="form" :rules="ruleValidate" :label-width="130">
+                    <b-row>
+                      <b-col span="12">
+                        <b-form-item label="模板名称" prop="tempName">
+                          <b-input v-model="template.tempName" placeholder="请输入模板名称" clearable></b-input>
+                        </b-form-item>
+                      </b-col>
+                      <b-col span="12">
+                        <b-form-item label="模板编码" prop="tempCode">
+                          <b-input v-model="template.tempCode" placeholder="编码为biz_开头" clearable
+                                   :disabled="dialogStatus==='modify'"></b-input>
+                        </b-form-item>
+                      </b-col>
+                    </b-row>
+                    <b-form-item v-if="isEdit" label="模板脚本" prop="tempSource">
+                      <b-code-editor v-model="template.tempSource" :lint="false"/>
                     </b-form-item>
-                  </b-col>
-                  <b-col span="12">
-                    <b-form-item label="模板编码" prop="tempCode">
-                      <b-input v-model="template.tempCode" placeholder="编码为biz_开头" clearable
-                               :disabled="dialogStatus==='modify'"></b-input>
+                    <b-form-item label="模板说明" prop="tempDesc">
+                      <b-input v-model="template.tempDesc" placeholder="请输入模板说明" type="textarea" :rows="4"></b-input>
                     </b-form-item>
-                  </b-col>
-                </b-row>
-                <b-form-item label="模板脚本" prop="tempSource">
-                  <b-input v-model="template.tempSource" placeholder="请输入模板脚本" type="textarea" :rows="4"></b-input>
-                </b-form-item>
-                <b-form-item label="模板说明" prop="tempDesc">
-                  <b-input v-model="template.tempDesc" placeholder="请输入模板说明" type="textarea" :rows="4"></b-input>
-                </b-form-item>
-              </b-form>
-            </b-col>
-            <b-col span="4">
-              <div style="padding:58px 0 0 20px;">
-                <b-button @click="handleOpenInner">提取内置模板</b-button>
-              </div>
-            </b-col>
-          </b-row>
+                  </b-form>
+                </b-col>
+                <b-col span="4">
+                  <div style="padding:58px 0 0 20px;">
+                    <b-button @click="handleOpenInner">提取内置模板</b-button>
+                  </div>
+                </b-col>
+              </b-row>
+            </b-collapse-panel>
+          </b-collapse>
           <v-title-bar label="参数信息" class="mt-20 mb-15"/>
           <temp-params v-model="params"/>
         </template>
         <!--保存提交-->
         <template slot="footer">
           <b-button @click="handleCancel">取 消</b-button>
-          <b-button type="primary" @click="handleSubmit" :loading="btnLoading">提 交</b-button>
+          <b-button type="primary" @click="handleSubmit()" :loading="btnLoading">提 交</b-button>
+          <b-button type="primary" @click="handleSubmit(true)" :loading="btnLoading">配置响应</b-button>
         </template>
       </v-edit-wrap>
     </page-header-wrap>
@@ -224,8 +228,8 @@
       handleChooseTemp(temp) {
         this.template.tempSource = temp.tempSource
       },
-      // 表单提交
-      handleSubmit() {
+      // 表单提交// 是否配置响应
+      handleSubmit(cfgFlag) {
         this.$refs.form.validate((valid) => {
           if (valid) {
             this.btnLoading = true
@@ -234,9 +238,9 @@
             let fun = this.dialogStatus === 'create' ? api.createBusinessTemp : api.modifyBusinessTemplate
             fun(this.template, params).then(res => {
               if (res.data.code === '0') {
-                // 如果新增一个业务模板成功，则进入对应的响应配置
-                if (this.dialogStatus === 'create' && res.data.data) {
-                  api.getBusinessTempDetail(res.data.data).then(r => {
+                if (cfgFlag) {
+                  let currentId = res.data.data || this.template.id
+                  api.getBusinessTempDetail(currentId).then(r => {
                     this.template = r.data.template
                     this.dialogStatus = 'config'
                     this.btnLoading = false // 按钮状态清空

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-header-wrap v-show="visible" show-close @on-close="close"
+    <page-header-wrap v-show="visible && !batchDialog" show-close @on-close="close"
                       :title="`[${template.tempName}] 响应信息配置`">
       <v-table-wrap>
         <div slot="tree">
@@ -43,6 +43,44 @@
                 @on-change="handleCurrentChange"
                 @on-page-size-change="handleSizeChange"></b-page>
       </v-table-wrap>
+    </page-header-wrap>
+    <page-header-wrap v-show="batchDialog" :title="`${currentTreeNode?currentTreeNode.title:''}批量添加响应`"
+                      show-close @on-close="batchDialog = false">
+      <v-edit-wrap>
+        <template slot="full">
+          <v-title-bar label="节点批量添加响应" class="mb-15"/>
+          <b-code-editor v-if="batchDialog" v-model="batchStr"/>
+          <div class="p15 t-center">
+            <b-button type="primary" icon="ios-list-box" :disabled="batchStr.length===0"
+                      @click="batchStrChange">转换为添加列表
+            </b-button>
+          </div>
+          <b-table :columns="batchColumns" :data="batchItemList" size="small">
+            <template v-slot:keyName="{row,index}">
+              <b-input v-model="batchItemList[index].keyName" size="mini"/>
+            </template>
+            <template v-slot:keyAlias="{row,index}">
+              <b-input v-model="batchItemList[index].keyAlias" size="mini"/>
+            </template>
+            <template v-slot:keyPath="{row,index}">
+              <b-input v-model="batchItemList[index].keyPath" size="mini"/>
+            </template>
+            <template v-slot:dataType="{row,index}">
+              <b-select v-model="batchItemList[index].dataType" placeholder="请选择" size="mini" append-to-body>
+                <b-option v-for="(value,key) in dataTypeMap" :key="key" :value="key">{{ value }}</b-option>
+              </b-select>
+            </template>
+            <template v-slot:memo="{row,index}">
+              <b-input v-model="batchItemList[index].memo" size="mini"/>
+            </template>
+          </b-table>
+        </template>
+        <!--保存提交-->
+        <div slot="footer">
+          <b-button @click="batchDialog = false">取 消</b-button>
+          <b-button type="primary" @click="handleBatchSubmit" :loading="batchLoading">提 交</b-button>
+        </div>
+      </v-edit-wrap>
     </page-header-wrap>
     <!--新增修改编辑-->
     <b-drawer v-model="drawerVisible" :title="`编辑响应${resp.parentId?'':'根'}节点`"
@@ -97,36 +135,6 @@
         <b-button type="primary" @click="handleSubmit" :loading="btnLoading">提 交</b-button>
       </div>
     </b-drawer>
-    <!--批量新增弹窗-->
-    <b-modal v-model="batchDialog" title="批量添加响应" :mask-closable="false" width="1120" :z-index="10">
-      <b-input v-model="batchStr" type="textarea" :rows="4" placeholder="请将复制过来的数据粘贴到此处"/>
-      <div class="p15 t-center">
-        <b-button type="primary" icon="ios-list-box" @click="batchStrChange">转换为添加列表</b-button>
-      </div>
-      <b-table :columns="batchColumns" :data="batchItemList" size="small">
-        <template v-slot:keyName="{row,index}">
-          <b-input v-model="batchItemList[index].keyName" size="mini"/>
-        </template>
-        <template v-slot:keyAlias="{row,index}">
-          <b-input v-model="batchItemList[index].keyAlias" size="mini"/>
-        </template>
-        <template v-slot:keyPath="{row,index}">
-          <b-input v-model="batchItemList[index].keyPath" size="mini"/>
-        </template>
-        <template v-slot:dataType="{row,index}">
-          <b-select v-model="batchItemList[index].dataType" placeholder="请选择" size="mini" append-to-body>
-            <b-option v-for="(value,key) in dataTypeMap" :key="key" :value="key">{{ value }}</b-option>
-          </b-select>
-        </template>
-        <template v-slot:memo="{row,index}">
-          <b-input v-model="batchItemList[index].memo" size="mini"/>
-        </template>
-      </b-table>
-      <div slot="footer">
-        <b-button @click="batchDialog = false">取 消</b-button>
-        <b-button type="primary" @click="handleBatchSubmit" :loading="batchLoading">提 交</b-button>
-      </div>
-    </b-modal>
   </div>
 </template>
 
@@ -245,10 +253,6 @@
       },
       // 将json转换为item对象
       batchStrChange() {
-        if (this.batchStr.length === 0) {
-          this.$message({ type: 'danger', content: '没有添加数据无法批量添加！' })
-          return
-        }
         try {
           // 转换为标准js对象
           const passObj = JSON.parse(this.batchStr)
@@ -322,7 +326,6 @@
           if (valid) {
             this.btnLoading = true
             // 需要过滤params新增未保存的
-            console.log(this.resp)
             let fun = this.dialogStatus === 'create' ? api.addResp : api.modifyResp
             fun(this.resp).then(res => {
               if (res.data.code === '0') {
