@@ -13,6 +13,7 @@ export function getThemeList(query) {
     }
   })
 }
+
 /* 编码唯一 */
 export function oneCode(item) {
   return request({
@@ -21,22 +22,22 @@ export function oneCode(item) {
   })
 }
 
-/* 新增字典项 */
+/* 新增主题 */
 export function createTheme(item) {
-  const data = {
-    name: item.name,
-    code: item.code,
-    describe: item.describe
-  }
   return request({
     url: '/da/theme/addDaTheme',
     method: 'post',
-    data
+    data: {
+      name: item.name,
+      code: item.code,
+      url: item.url,
+      describe: item.describe
+    }
   })
 }
 
-/* 删除用户信息 */
-export function handleRemove(item) {
+/* 删除主题 */
+export function removeTheme(item) {
   return request({
     url: '/da/theme/removeDaTheme',
     method: 'post',
@@ -46,12 +47,13 @@ export function handleRemove(item) {
   })
 }
 
-/* 修改字典项 */
+/* 修改主题 */
 export function modifyTheme(item) {
   const data = {
     id: item.id,
     name: item.name,
     code: item.code,
+    url: item.url,
     describe: item.describe
   }
   return request({

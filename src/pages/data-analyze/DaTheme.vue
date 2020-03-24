@@ -40,21 +40,24 @@
     </page-header-wrap>
     <b-modal v-model="dialogFormVisible" :title="editTitle" append-to-body :mask-closable="false" width="550px">
       <div class="p15">
-        <b-form :model="current" ref="form" :rules="ruleValidate" :label-width="100">
+        <b-form :model="theme" ref="form" :rules="ruleValidate" :label-width="90">
           <b-row>
             <b-col span="12">
               <b-form-item label="主题名称" prop="name">
-                <b-input v-model="current.name" placeholder="请输入主题名称" clearable></b-input>
+                <b-input v-model="theme.name" placeholder="请输入" clearable></b-input>
               </b-form-item>
             </b-col>
             <b-col span="12">
               <b-form-item label="主题编码" prop="code">
-                <b-input v-model="current.code" placeholder="请输入主题编码" clearable></b-input>
+                <b-input v-model="theme.code" placeholder="请输入" clearable></b-input>
               </b-form-item>
             </b-col>
           </b-row>
+          <b-form-item label="预览地址" prop="url">
+            <b-input v-model="theme.url" placeholder="请输入" clearable></b-input>
+          </b-form-item>
           <b-form-item label="主题描述" prop="describe">
-            <b-input v-model="current.describe" type="textarea" placeholder="请输入主题描述" clearable></b-input>
+            <b-input v-model="theme.describe" type="textarea" placeholder="这里输入描述..." clearable></b-input>
           </b-form-item>
         </b-form>
       </div>
@@ -78,11 +81,11 @@
     data() {
       const validateCode = (rule, value, callback) => {
         if (value.length > 0) {
-          api.oneCode(this.current).then(response => {
+          api.oneCode(this.theme).then(response => {
             if (response.data.code === '0') {
               callback()
             } else {
-              callback(new Error('字典项编码重复'))
+              callback(new Error('编码重复'))
             }
           }).catch(() => {
             callback(new Error('请求验证重复性出错'))
@@ -104,15 +107,16 @@
           { title: '预览', slot: 'url', width: 130, align: 'center' },
           { title: '操作', slot: 'action', width: 130, align: 'center' }
         ],
-        current: null,
+        theme: null,
         ruleValidate: {
+          name: [requiredRule],
           code: [requiredRule, { validator: validateCode, trigger: 'blur' }]
         }
       }
     },
     created() {
       this.searchList()
-      this.resetCurrent()
+      this.resetTheme()
     },
     methods: {
       // 弹窗提示是否删除
@@ -124,7 +128,7 @@
           loading: true,
           okType: 'danger',
           onOk: () => {
-            api.handleRemove(theme).then(res => {
+            api.removeTheme(theme).then(res => {
               if (res.data.code === '0') {
                 this.$message({ type: 'success', content: '操作成功' })
                 this.$modal.remove()
@@ -139,14 +143,14 @@
       },
       // 新增按钮事件
       handleCreate() {
-        this.resetCurrent()
+        this.resetTheme()
         this.dialogFormVisible = true
         this.openEditPage('create')
       },
       // 编辑事件
       handleModify(row) {
-        this.resetCurrent()
-        this.current = { ...this.current, ...row }
+        this.resetTheme()
+        this.theme = { ...this.theme, ...row }
         this.dialogFormVisible = true
         this.openEditPage('modify')
       },
@@ -156,13 +160,13 @@
         this.dialogFormVisible = false
       },
       // 重置
-      resetCurrent() {
-        this.current = {
+      resetTheme() {
+        this.theme = {
           id: '',
           name: '',
           describe: '',
           code: '',
-          createBy: ''
+          url: ''
         }
       },
       // filter-Bar:重置查询条件
@@ -180,7 +184,7 @@
           if (valid) {
             this.btnLoading = true
             let fun = this.dialogStatus === 'create' ? api.createTheme : api.modifyTheme
-            fun(this.current).then(res => {
+            fun(this.theme).then(res => {
               if (res.data.code === '0') {
                 this.submitDone(true)
                 this.dialogFormVisible = false
