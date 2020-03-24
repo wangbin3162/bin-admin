@@ -9,6 +9,22 @@ export function getThemeTree() {
   })
 }
 
+/* 获取内容类型 */
+export function getContentType() {
+  return request({
+    url: '/da/enum/contentType',
+    method: 'get'
+  })
+}
+
+/* 获取内容子类型 */
+export function getChartType() {
+  return request({
+    url: '/da/enum/chartType',
+    method: 'get'
+  })
+}
+
 /* 获取接口列表 */
 export function getApiList() {
   return request({
@@ -34,12 +50,33 @@ export function getContentList(query) {
 
 /* 新增内容信息 */
 export function createContent(content) {
-  return requestPost('/da/content/create', content)
+  return requestPost('/da/content/create', {
+    name: content.name,
+    code: content.code,
+    describe: content.describe,
+    themeCode: content.themeCode,
+    apiId: content.apiId,
+    toggle: content.toggle,
+    data: content.data,
+    category: content.type[0] || '',
+    subCategory: content.type[1] || null
+  })
 }
 
 /* 修改内容信息 */
 export function modifyContent(content) {
-  return requestPost('/da/content/modify', content)
+  return requestPost('/da/content/modify', {
+    id: content.id,
+    name: content.name,
+    code: content.code,
+    describe: content.describe,
+    themeCode: content.themeCode,
+    apiId: content.apiId,
+    toggle: content.toggle,
+    data: content.data,
+    category: content.type[0] || '',
+    subCategory: content.type[1] || null
+  })
 }
 
 export function changeStatus(content) {

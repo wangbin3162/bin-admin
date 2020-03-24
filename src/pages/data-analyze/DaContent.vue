@@ -8,10 +8,10 @@
         <!--查询条件-->
         <v-filter-bar>
           <v-filter-item title="名称">
-            <b-input v-model.trim="listQuery.name"  placeholder="请输入" clearable></b-input>
+            <b-input v-model.trim="listQuery.name" placeholder="请输入" clearable></b-input>
           </v-filter-item>
           <v-filter-item title="编码">
-            <b-input v-model.trim="listQuery.code"  placeholder="请输入" clearable></b-input>
+            <b-input v-model.trim="listQuery.code" placeholder="请输入" clearable></b-input>
           </v-filter-item>
           <!--添加查询按钮位置-->
           <v-filter-item @on-search="handleFilter" @on-reset="resetQuery"></v-filter-item>
@@ -19,7 +19,7 @@
         <!--操作栏-->
         <v-table-tool-bar>
           <b-button type="primary"
-                      icon="ios-add-circle-outline"
+                    icon="ios-add-circle-outline"
                     @click="handleCreate">新 增
           </b-button>
           <template slot="right">
@@ -79,7 +79,7 @@
           <b-row>
             <b-col span="12">
               <b-form-item label="类型" prop="category">
-                <b-input v-model="content.category"></b-input>
+                <b-cascader :data="contentTypeMap" v-model="content.type"/>
               </b-form-item>
             </b-col>
             <b-col span="12">
@@ -129,6 +129,10 @@
         <div class="p20">
           <v-key-label label="名称">{{ content.name }}</v-key-label>
           <v-key-label label="编码">{{ content.code }}</v-key-label>
+          <v-key-label label="类型">{{ typeMap[content.category] +
+            (content.subCategory? ' / '+chartTypeMap[content.subCategory]:'')}}
+          </v-key-label>
+          <v-key-label label="数据来源">{{ content.toggle==='ON'?'动态数据':'静态数据' }}</v-key-label>
           <v-key-label label="所属主题">{{ content.themeCode }}</v-key-label>
           <v-key-label label="接口">{{ content.apiId}}</v-key-label>
           <v-key-label label="静态数据">{{ content.data }}</v-key-label>
@@ -150,7 +154,7 @@
 <script>
   import commonMixin from '../../common/mixins/mixin'
   import permission from '../../common/mixins/permission'
-  import * as conApi from '../../api/data-analyze/da-content.api'
+  import * as api from '../../api/data-analyze/da-content.api'
   import ApiChoose from './components/DaContent/ApiChoose'
   import ThemeChoose from './components/DaContent/ThemeChoose'
   import { requiredRule } from '../../common/utils/validate'
@@ -175,6 +179,9 @@
           { title: '数据来源', slot: 'toggle', align: 'center' },
           { title: '操作', slot: 'action', width: 140 }
         ],
+        contentTypeMap: [],
+        typeMap: {},
+        chartTypeMap: {},
         content: null,
         ruleValidate: {
           name: [requiredRule],
@@ -189,6 +196,25 @@
       }
     },
     created() {
+      Promise.all([api.getContentType(), api.getChartType()]).then(res => {
+        if (res[0].data.code === '0' && res[1].data.code === '0') {
+          this.typeMap = res[0].data.data
+          this.chartTypeMap = res[1].data.data
+          let typeArr = []
+          Object.keys(this.typeMap).forEach(key => {
+            if (key === 'CHART') {
+              let chartArr = []
+              Object.keys(this.chartTypeMap).forEach(cKey => {
+                chartArr.push({ value: cKey, label: this.chartTypeMap[cKey] })
+              })
+              typeArr.push({ value: key, label: this.typeMap[key], children: chartArr })
+            } else {
+              typeArr.push({ value: key, label: this.typeMap[key] })
+            }
+          })
+          this.contentTypeMap = typeArr
+        }
+      })
       this.resetContent()
       this.initTree()
     },
@@ -233,6 +259,10 @@
       handleModify(row) {
         this.resetContent()
         this.content = { ...this.content, ...row }
+        this.content.type = [row.category]
+        if (row.subCategory) {
+          this.content.type.push(row.subCategory)
+        }
         this.openEditPage('modify')
       },
       // 弹窗选择角色
@@ -253,7 +283,7 @@
         this.$refs.form.validate((valid) => {
           if (valid) {
             this.btnLoading = true
-            let fun = this.dialogStatus === 'create' ? conApi.createContent : conApi.modifyContent
+            let fun = this.dialogStatus === 'create' ? api.createContent : api.modifyContent
             fun(tmpContent).then(res => {
               if (res.data.code === '0') {
                 this.submitDone(true)
@@ -271,7 +301,7 @@
       // 单个启用禁用
       handleChangeStatus(row) {
         let content = { ...row }
-        conApi.changeStatus(content).then(res => {
+        api.changeStatus(content).then(res => {
           if (res.data.code === '0') {
             this.$message({ type: 'success', content: '操作成功' })
             // this.handleFilter()
@@ -290,7 +320,7 @@
           loading: true,
           okType: 'danger',
           onOk: () => {
-            conApi.removeContent(content).then(res => {
+            api.removeContent(content).then(res => {
               if (res.data.code === '0') {
                 this.$message({ type: 'success', content: '操作成功' })
                 this.$modal.remove()
@@ -313,14 +343,15 @@
           describe: '',
           data: '',
           apiId: '',
-          toggle: 'OFF'
+          toggle: 'OFF',
+          type: []
         }
       },
       // tree:初始化树结构
       initTree() {
         this.treeData = []
         // 请求响应返回树结构
-        conApi.getThemeTree().then(response => {
+        api.getThemeTree().then(response => {
           const list = response.data.data || []
           let root = {
             code: '',
@@ -350,7 +381,7 @@
       // 查询所有部门列表
       searchList() {
         this.setListData()
-        conApi.getContentList(this.listQuery).then(response => {
+        api.getContentList(this.listQuery).then(response => {
           if (response.status === 200) {
             this.setListData({
               list: response.data.rows,
@@ -358,9 +389,6 @@
             })
           }
         })
-      },
-      handleTest() {
-        // 测试接口
       },
       handleShowApiChoose() {
         this.$refs.apiChoose && this.$refs.apiChoose.open()
@@ -375,7 +403,7 @@
           selections.forEach(function (item) {
             ids.push(item.id)
           })
-          conApi.batchOff(ids).then(res => {
+          api.batchOff(ids).then(res => {
             if (res.data.code === '0') {
               this.$message({ type: 'success', content: '操作成功' })
               this.handleFilter()
@@ -394,7 +422,7 @@
           selections.forEach(function (item) {
             ids.push(item.id)
           })
-          conApi.batchOn(ids).then(res => {
+          api.batchOn(ids).then(res => {
             if (res.data.code === '0') {
               this.$message({ type: 'success', content: '操作成功' })
               this.handleFilter()
