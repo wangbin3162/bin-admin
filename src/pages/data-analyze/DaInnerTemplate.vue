@@ -8,10 +8,10 @@
         <!--查询条件-->
         <v-filter-bar>
           <v-filter-item title="模板名称">
-            <b-input v-model.trim="listQuery.tempName"  placeholder="请输入" clearable></b-input>
+            <b-input v-model.trim="listQuery.tempName" placeholder="请输入" clearable></b-input>
           </v-filter-item>
           <v-filter-item title="模板编码">
-            <b-input v-model.trim="listQuery.tempCode"  placeholder="请输入" clearable></b-input>
+            <b-input v-model.trim="listQuery.tempCode" placeholder="请输入" clearable></b-input>
           </v-filter-item>
           <!--添加查询按钮位置-->
           <v-filter-item @on-search="handleFilter" @on-reset="resetQuery"></v-filter-item>
@@ -61,8 +61,8 @@
                     </b-form-item>
                   </b-col>
                 </b-row>
-                <b-form-item label="模板脚本" prop="tempSource">
-                  <b-code-editor v-model="template.tempSource" :lint="false"/>
+                <b-form-item v-if="isEdit" label="模板脚本" prop="tempSource">
+                  <b-code-editor v-model="template.tempSource" :lint="false" :auto-format="false"/>
                 </b-form-item>
                 <b-form-item label="模板说明" prop="tempDesc">
                   <b-input v-model="template.tempDesc" placeholder="请输入模板说明" type="textarea" :rows="4"></b-input>
@@ -70,7 +70,11 @@
               </b-form>
             </b-col>
           </b-row>
-          <v-title-bar label="参数信息" class="mt-20 mb-15"/>
+          <v-title-bar label="参数信息" class="mt-20 mb-15">
+            <b-button @click="extractParams" type="primary" transparent :disabled="template.tempSource.length===0">
+              提取模板参数
+            </b-button>
+          </v-title-bar>
           <temp-params v-model="params"/>
         </template>
         <!--保存提交-->
@@ -189,6 +193,32 @@
           this.params = res.data.params.map(item => ({ ...item, edit: false }))
           callBack && callBack()
         })
+      },
+      // 提取模板参数
+      extractParams() {
+        const str = this.template.tempSource
+        // eslint-disable-next-line no-useless-escape
+        const reg = /\{\{[\#\/\^]*(\w+)\}\}/g
+        const result = str.match(reg).map(item => item.replace(reg, '$1'))
+        const params = [...new Set(result)]
+        // 当前信息项
+        let currentItemsMap = new Map(this.params.map(i => ([i.paramCode, i])))
+        params.forEach(p => {
+          if (!currentItemsMap.has(p)) {
+            currentItemsMap.set(p, {
+              paramName: '',
+              paramCode: p,
+              paramType: 'string',
+              isRequired: 'Y',
+              defaultVal: '',
+              paramDesc: '',
+              edit: true,
+              newOne: true
+            })
+          }
+        })
+        this.params = [...currentItemsMap.values()]
+        this.$message({ type: 'success', content: '提取成功，重复编码忽略' })
       },
       // 新增按钮事件
       handleCreate() {

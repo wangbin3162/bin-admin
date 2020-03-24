@@ -71,14 +71,18 @@
                   </b-form>
                 </b-col>
                 <b-col span="4">
-                  <div style="padding:58px 0 0 20px;">
+                  <div style="padding:55px 0 0 20px;">
                     <b-button @click="handleOpenInner">提取内置模板</b-button>
                   </div>
                 </b-col>
               </b-row>
             </b-collapse-panel>
           </b-collapse>
-          <v-title-bar label="参数信息" class="mt-20 mb-15"/>
+          <v-title-bar label="参数信息" class="mt-20 mb-15">
+            <b-button @click="extractParams" type="primary" transparent :disabled="template.tempSource.length===0">
+              提取模板参数
+            </b-button>
+          </v-title-bar>
           <temp-params v-model="params"/>
         </template>
         <!--保存提交-->
@@ -191,6 +195,32 @@
         this.resetTemplate()
         this.template.tempCode = 'biz_'
         this.openEditPage('create')
+      },
+      // 提取模板参数
+      extractParams() {
+        const str = this.template.tempSource
+        // eslint-disable-next-line no-useless-escape
+        const reg = /\{\{[\#\/\^]*(\w+)\}\}/g
+        const result = str.match(reg).map(item => item.replace(reg, '$1'))
+        const params = [...new Set(result)]
+        // 当前信息项
+        let currentItemsMap = new Map(this.params.map(i => ([i.paramCode, i])))
+        params.forEach(p => {
+          if (!currentItemsMap.has(p)) {
+            currentItemsMap.set(p, {
+              paramName: '',
+              paramCode: p,
+              paramType: 'string',
+              isRequired: 'Y',
+              defaultVal: '',
+              paramDesc: '',
+              edit: true,
+              newOne: true
+            })
+          }
+        })
+        this.params = [...currentItemsMap.values()]
+        this.$message({ type: 'success', content: '提取成功，重复编码忽略' })
       },
       // 弹窗提示是否删除
       handleRemove(row) {
