@@ -16,7 +16,7 @@
               <b-option v-for="(value,key) in flowDirectionMap" :key="key" :value="key">{{ value }}</b-option>
             </b-select>
           </v-filter-item>
-          <v-filter-item title="有效状态" :span="4">
+          <v-filter-item title="可用状态" :span="4">
             <b-select v-model="listQuery.availableStatus" clearable placeholder="全部" >
               <b-option v-for="(value,key) in availableStatusMap" :key="key" :value="key">{{ value }}</b-option>
             </b-select>
@@ -36,6 +36,13 @@
           <template v-slot:changeType="scope">{{ exchangeTypeMap[scope.row.changeType] }}</template>
           <template v-slot:transmitKind="scope">{{ transmitKindMap[scope.row.transmitKind] }}</template>
           <!--有效状态-->
+          <template v-slot:status="scope">
+            <b-switch
+                      v-model="scope.row.status" :true-value="ENUM.ENABLE" :false-value="ENUM.DISABLE"
+                      inactive-color="#ff4949"
+                      @on-change="handleChangeStatus(scope.row)">
+            </b-switch>
+          </template>
           <template v-slot:availableStatus="scope">
             <span v-if="scope.row.availableStatus==='available'" style="color:#48c9b0;">可用</span>
             <span v-else style="color:#e91e63;">不可用</span>
@@ -214,14 +221,14 @@
         },
         columns: [
           { type: 'index', width: 50, align: 'center' },
-          { title: '资源名称', key: 'resourceName', tooltip: true },
-          { title: '交换方案', key: 'cfgName' },
-          { title: '信息流向', slot: 'flowDirection', align: 'center', width: 90 },
-          { title: '交换类型', slot: 'changeType', align: 'center', width: 90 },
-          { title: '资源标识', key: 'resourceKey' },
-          { title: '元信息标识', key: 'metadataKey' },
-          { title: '有效状态', slot: 'availableStatus', width: 90, align: 'center' },
-          { title: '操作', slot: 'action', width: 150 }
+          { title: '资源名称', key: 'resourceName', tooltip: true, width: 250 },
+          { title: '资源标识', key: 'resourceKey', width: 200 },
+          { title: '所属方案', key: 'cfgName', width: 250 },
+          { title: '信息流向', slot: 'flowDirection', align: 'center', width: 100 },
+          { title: '交换类型', slot: 'changeType', align: 'center', width: 100 },
+          { title: '可用状态', slot: 'availableStatus', width: 150, align: 'center' },
+          { title: '启用/禁用', slot: 'status', align: 'center', width: 200 },
+          { title: '操作', slot: 'action' }
         ],
         mission: null, // 任务
         ruleValidate: {
@@ -239,7 +246,8 @@
         resFields: [], // 资源列表
         flowDirectionMap: { COLLECT: '归集', SUBMIT: '上报', SHARE: '共享' }, // 信息流向
         exchangeTypeMap: { MANUAL: '人工交换', AUTO: '自动交换' }, // 交换类型
-        availableStatusMap: { available: '可用', not_available: '不可用' } // 有效状态
+        availableStatusMap: { available: '可用', not_available: '不可用' }, // 有效状态
+        statusMap: { 'enable': '启用', 'disable': '禁用' }
       }
     },
     created() {
@@ -257,6 +265,9 @@
       },
       twoFields() {
         return this.isCollect ? this.resFields : this.tableFields
+      },
+      ENUM() {
+        return { ENABLE: 'enable', DISABLE: 'disable' } // 常量比对键值对 初始状态不可启用禁用和删除
       }
     },
     methods: {
@@ -454,6 +465,18 @@
         getAvailableStatus().then(res => {
           if (res.status === 200) {
             this.availableStatusMap = res.data.data
+          }
+        })
+      },
+      // 单个启用禁用
+      handleChangeStatus(row) {
+        let user = { ...row }
+        api.changeStatus(user.id, user.status).then(res => {
+          if (res.data.code === '0') {
+            this.$message({ type: 'success', content: '操作成功' })
+            // this.handleFilter()
+          } else {
+            this.$message({ type: 'danger', content: '操作失败' })
           }
         })
       },

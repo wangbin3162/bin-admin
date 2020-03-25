@@ -86,3 +86,15 @@ export function removeMission(id) {
     }
   })
 }
+
+/* 启用禁用任务信息 */
+export function changeStatus(id, status) {
+  return request({
+    url: '/api/dir/exchange/detail/changeStatus',
+    method: 'get',
+    params: {
+      id,
+      status
+    }
+  })
+}
