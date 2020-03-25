@@ -23,8 +23,6 @@
             <b-button type="text" @click="handleModify(scope.row)">修改</b-button>
             <b-divider type="vertical"></b-divider>
             <b-button type="text" text-color="danger" @click="handleRemove(scope.row)">删除</b-button>
-            <b-divider type="vertical"></b-divider>
-            <b-button type="text" style="color:orange;">测试</b-button>
           </template>
         </b-table>
         <!--下方分页器-->
@@ -35,42 +33,48 @@
     </page-header-wrap>
     <page-header-wrap v-show="isEdit" :title="editTitle" show-close @on-close="handleCancel">
       <v-edit-wrap>
-        <b-form :model="current" ref="form" :rules="ruleValidate" :label-width="130">
+        <b-form :model="apiObj" ref="form" :rules="ruleValidate" :label-width="130">
           <b-row>
-            <b-col span="12">
+            <b-col span="8">
               <b-form-item label="接口名称" prop="name">
-                <b-input v-model="current.name" placeholder="请输入接口名称"></b-input>
+                <b-input v-model="apiObj.name" placeholder="请输入接口名称"></b-input>
               </b-form-item>
             </b-col>
-            <b-col span="12">
+            <b-col span="8">
               <b-form-item label="接口类型" prop="type">
-                <b-select v-model="current.type">
+                <b-select v-model="apiObj.type">
                   <b-option v-for="(value,key) in typeMap" :value="key" :key="key">{{ value }}</b-option>
                 </b-select>
               </b-form-item>
             </b-col>
+            <b-col span="8">
+              <b-form-item label="响应类型" prop="recordType">
+                <b-select v-model="apiObj.recordType">
+                  <b-option value="LIST">列表</b-option>
+                  <b-option value="DETAIL">详情</b-option>
+                </b-select>
+              </b-form-item>
+            </b-col>
           </b-row>
-          <b-form-item v-if="current.type === 'SQL'" label="sql语句" prop="sql">
-            <b-input v-model="current.sql" placeholder="请输入sql语句" type="textarea"></b-input>
+          <b-form-item v-if="apiObj.type === 'SQL'" label="sql语句" prop="sql">
+            <b-input v-model="apiObj.sql" placeholder="请输入sql语句" type="textarea"></b-input>
           </b-form-item>
-          <b-form-item v-if="current.type === 'URL'" label="url" prop="url">
-            <b-input v-model="current.url" placeholder="请输入url"></b-input>
+          <b-form-item v-if="apiObj.type === 'URL'" label="url" prop="url">
+            <b-input v-model="apiObj.url" placeholder="请输入url"></b-input>
           </b-form-item>
-          <b-form-item v-if="current.type === 'TEMPLATE'" label="模板" prop="tempId">
-            <template-choose v-model="current.tempId"
+          <b-form-item v-if="apiObj.type === 'TEMPLATE'" label="模板" prop="tempId">
+            <template-choose v-model="apiObj.tempId" @on-fields="handlePushFields"
                              :default-name="tempName"></template-choose>
           </b-form-item>
           <b-form-item label="接口描述" prop="describe">
-            <b-input v-model="current.describe" placeholder="请输入接口描述" type="textarea"></b-input>
+            <b-input v-model="apiObj.describe" placeholder="请输入接口描述" type="textarea"></b-input>
           </b-form-item>
         </b-form>
         <!--信息项-->
         <template slot="full">
-          <div class="p15" flex="main:justify cross:center">
-            <b-tag type="primary">新增参数信息</b-tag>
-          </div>
+          <v-title-bar label="参数信息" class="mb-15"/>
           <!--信息项表格组件-->
-          <da-api-fields v-model="current.daParameters"
+          <da-api-fields v-model="apiObj.daParameters"
                          :data-type-options="dataTypeOptions"
           ></da-api-fields>
         </template>
@@ -92,7 +96,7 @@
   import { DaApiFields } from './components/DaApi'
   import TemplateChoose from './components/DaApi/TemplateChoose'
   import { getApiType } from '../../api/enum.api'
-  import { getInnerTempDetail } from '../../api/data-analyze/da-inner-temp.api.js'
+  import { getInnerTempDetail } from '../../api/data-analyze/da-inner-temp.api'
 
   export default {
     name: 'DaTheme',
@@ -113,9 +117,10 @@
           { title: '接口类型', key: 'type' },
           { title: '创建人', key: 'createName' },
           { title: '操作时间', key: 'createDate' },
-          { title: '操作', slot: 'action', width: 180, align: 'center' }
+          { title: '操作', slot: 'action', width: 150 }
         ],
-        current: null,
+        apiObj: null,
+        daParameters: [],
         typeMap: { '0': 'sql', '1': 'url', '2': '模板' },
         dataTypeOptions: [
           { label: '字符型', value: 'string' },
@@ -146,7 +151,7 @@
         })
       },
       handleChooseTheme(item) {
-        this.current.tempId = item.id
+        this.apiObj.tempId = item.id
       },
       // 弹窗提示是否删除
       handleRemove(row) {
@@ -178,28 +183,50 @@
       // 编辑事件
       handleModify(row) {
         this.resetCurrent()
-        this.current = { ...this.current, ...row }
-        api.getApiDetail(this.current.id).then(response => {
-          this.current.daParameters = response.data.data
-        })
-        if (this.current.type === 'TEMPLATE') {
-          getInnerTempDetail(this.current.tempId).then(response => {
-            this.tempName = response.data.template.tempName
-          })
-        }
+        this.apiObj = { ...this.apiObj, ...row }
+        this.apiObj.daParameters = []
         this.openEditPage('modify')
+        api.getApiDetail(this.apiObj.id).then(res => {
+          this.apiObj.daParameters = res.data.data.map(item => ({ ...item, edit: false }))
+          if (this.apiObj.type === 'TEMPLATE') {
+            getInnerTempDetail(this.apiObj.tempId).then(response => {
+              this.tempName = response.data.template.tempName
+            })
+          }
+        })
       },
       // 重置
       resetCurrent() {
-        this.current = {
+        this.apiObj = {
           id: '',
           name: '',
           describe: '',
           code: '',
           createBy: '',
-          tempId: ''
+          recordType: '',
+          tempId: '',
+          daParameters: []
         }
         this.tempName = ''
+      },
+      // 填充参数列表
+      handlePushFields(fields) {
+        // 当前参数信息
+        let currentItemsMap = new Map(this.apiObj.daParameters.map(i => ([i.fieldName, i])))
+        fields.forEach(field => {
+          if (!currentItemsMap.has(field.paramCode)) {
+            currentItemsMap.set(field.paramCode, {
+              name: field.paramName,
+              fieldName: field.paramCode,
+              defaultValue: field.defaultVal,
+              dataType: field.paramType,
+              describe: field.paramDesc,
+              edit: true,
+              newOne: true
+            })
+          }
+        })
+        this.apiObj.daParameters = [...currentItemsMap.values()]
       },
       // filter-Bar:重置查询条件
       resetQuery() {
@@ -216,7 +243,7 @@
           if (valid) {
             this.btnLoading = true
             let fun = this.dialogStatus === 'create' ? api.createApi : api.modifyApi
-            fun(this.current).then(res => {
+            fun(this.apiObj).then(res => {
               if (res.data.code === '0') {
                 this.submitDone(true)
                 this.searchList()

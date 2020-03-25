@@ -4,7 +4,7 @@
     <div flex="box:last">
       <b-input v-model="current" placeholder="选择模板" readonly clearable
                @on-clear="handleClear"></b-input>
-      <b-button type="primary"  @click="handleShowModal"
+      <b-button type="primary" @click="handleShowModal"
                 style="margin-left: 0;font-size: 12px;">
         选择模板
       </b-button>
@@ -49,6 +49,7 @@
       handleChooseTemp(temp) {
         this.current = temp.tempName
         this.$emit('input', temp.id)
+        this.$emit('on-fields', temp.fields)
       },
       // 清空时触发调用
       handleClear() {

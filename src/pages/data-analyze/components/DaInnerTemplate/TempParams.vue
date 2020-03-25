@@ -47,9 +47,9 @@
           <b-button v-if="row.edit" @click="handleCancel(index)" size="small">取消</b-button>
           <span v-else style="margin-left: 10px;">
             <b-popover
-              confirm append-to-body
-              title="确认删除此项吗?"
-              @on-ok="handleRemove(index)">
+                confirm append-to-body
+                title="确认删除此项吗?"
+                @on-ok="handleRemove(index)">
               <b-button type="danger" size="small" transparent>删除</b-button>
             </b-popover>
           </span>
@@ -65,8 +65,6 @@
 
 <script>
   import { deepCopy } from '../../../../common/utils/assist'
-  // 非空字段提示
-  const requiredRule = { required: true, message: '必填项', trigger: 'blur' }
 
   export default {
     name: 'TempParams',
@@ -91,14 +89,6 @@
           { title: '操作', slot: 'action', width: 150 }
         ],
         totalData: [],
-        beforeEditItem: {
-          paramName: '',
-          paramCode: '',
-          paramType: '',
-          isRequired: '',
-          defaultVal: '',
-          paramDesc: ''
-        },
         isRequiredMap: { N: '否', Y: '是' }
       }
     },

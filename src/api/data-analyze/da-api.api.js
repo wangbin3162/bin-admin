@@ -28,7 +28,35 @@ export function createApi(item) {
   return request({
     url: '/da/api/addDaApi',
     method: 'post',
-    data: item
+    data: {
+      name: item.name,
+      type: item.type,
+      url: item.url,
+      describe: item.describe,
+      tempId: item.tempId,
+      sql: item.sql,
+      recordType: item.recordType,
+      daParameters: item.daParameters
+    }
+  })
+}
+
+/* 修改api */
+export function modifyApi(item) {
+  return request({
+    url: '/da/api/modifyDaApi',
+    method: 'post',
+    data: {
+      id: item.id,
+      name: item.name,
+      type: item.type,
+      url: item.url,
+      describe: item.describe,
+      tempId: item.tempId,
+      sql: item.sql,
+      recordType: item.recordType,
+      daParameters: item.daParameters
+    }
   })
 }
 
@@ -40,14 +68,5 @@ export function removeApi(item) {
     params: {
       id: item.id
     }
-  })
-}
-
-/* 修改api */
-export function modifyApi(item) {
-  return request({
-    url: '/da/api/modifyDaApi',
-    method: 'post',
-    data: item
   })
 }
