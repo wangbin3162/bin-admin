@@ -122,7 +122,7 @@ export function getRespList(id, query) {
 /* 添加单条响应 */
 export function addResp(response) {
   return request({
-    url: '/da/bizResp/add',
+    url: '/da/bizResp/create',
     method: 'post',
     params: {
       bizId: response.bizId,
@@ -170,7 +170,7 @@ export function modifyResp(response) {
 /* 修改单条响应 */
 export function removeResp(id) {
   return request({
-    url: '/da/bizResp/delete',
+    url: '/da/bizResp/remove',
     method: 'post',
     params: {
       id

@@ -1,9 +1,19 @@
 // api管理
 import request from '../request'
 
+// 接口类型枚举
+export function getApiType() {
+  return request.get('/da/enum/interfaceType')
+}
+
+// 接口类型枚举
+export function getRecordType() {
+  return request.get('/da/enum/recordType')
+}
+
 /* 获取所有列表 */
 export function getApiList(query) {
-  return request.get('/da/api/list', {
+  return request.get('/da/api/search', {
     params: {
       size: query.size,
       page: query.page - 1,
@@ -16,7 +26,7 @@ export function getApiList(query) {
 
 /* 获取明细 */
 export function getApiDetail(id) {
-  return request.get('/da/api/daApiDetail', {
+  return request.get('/da/api/detail', {
     params: {
       id: id
     }
@@ -26,7 +36,7 @@ export function getApiDetail(id) {
 /* 新增api */
 export function createApi(item) {
   return request({
-    url: '/da/api/addDaApi',
+    url: '/da/api/create',
     method: 'post',
     data: {
       name: item.name,
@@ -44,7 +54,7 @@ export function createApi(item) {
 /* 修改api */
 export function modifyApi(item) {
   return request({
-    url: '/da/api/modifyDaApi',
+    url: '/da/api/modify',
     method: 'post',
     data: {
       id: item.id,
@@ -63,7 +73,7 @@ export function modifyApi(item) {
 /* 删除api */
 export function removeApi(item) {
   return request({
-    url: '/da/api/removeDaApi',
+    url: '/da/api/remove',
     method: 'post',
     params: {
       id: item.id

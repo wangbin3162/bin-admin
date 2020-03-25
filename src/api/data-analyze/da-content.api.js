@@ -1,14 +1,6 @@
 // 分析内容相关请求
 import request, { requestPost } from '../request'
 
-/* 获取主题列表 */
-export function getThemeTree() {
-  return request({
-    url: '/da/theme/allList',
-    method: 'get'
-  })
-}
-
 /* 获取内容类型 */
 export function getContentType() {
   return request({
@@ -25,26 +17,18 @@ export function getChartType() {
   })
 }
 
-/* 获取接口列表 */
-export function getApiList() {
-  return request({
-    url: '/da/api/list',
-    method: 'get'
-  })
-}
-
 /* 获取所有内容列表 */
 export function getContentList(query) {
-  const data = new URLSearchParams()
-  data.append('size', query.size)
-  data.append('page', query.page - 1)
-  data.append('name', query.name)
-  data.append('code', query.code)
-  data.append('themeCode', query.themeCode)
   return request({
     url: '/da/content/search',
     method: 'get',
-    params: data
+    params: {
+      size: query.size,
+      page: query.page - 1,
+      name: query.name,
+      code: query.code,
+      themeCode: query.themeCode
+    }
   })
 }
 
@@ -79,6 +63,7 @@ export function modifyContent(content) {
   })
 }
 
+/* 改变状态 */
 export function changeStatus(content) {
   let params = {
     id: content.id,

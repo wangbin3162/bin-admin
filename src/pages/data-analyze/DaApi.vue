@@ -18,9 +18,12 @@
         </v-table-tool-bar>
         <!--中央表格-->
         <b-table :columns="columns" :data="list" :loading="listLoading">
+          <template v-slot:type="{row}">{{typeMap[row.type]}}</template>
           <!--操作栏-->
           <template v-slot:action="scope">
             <b-button type="text" @click="handleModify(scope.row)">修改</b-button>
+            <b-divider type="vertical"></b-divider>
+            <b-button type="text" text-color="warning" @click="handleConfig(scope.row)">配置响应</b-button>
             <b-divider type="vertical"></b-divider>
             <b-button type="text" text-color="danger" @click="handleRemove(scope.row)">删除</b-button>
           </template>
@@ -50,8 +53,7 @@
             <b-col span="8">
               <b-form-item label="响应类型" prop="recordType">
                 <b-select v-model="apiObj.recordType">
-                  <b-option value="LIST">列表</b-option>
-                  <b-option value="DETAIL">详情</b-option>
+                  <b-option v-for="(value,key) in recordMap" :value="key" :key="key">{{ value }}</b-option>
                 </b-select>
               </b-form-item>
             </b-col>
@@ -85,6 +87,7 @@
         </template>
       </v-edit-wrap>
     </page-header-wrap>
+    <response-config-panel ref="resConfigPanel" @on-close="handleCancel"/>
   </div>
 </template>
 
@@ -95,13 +98,13 @@
   import { requiredRule } from '../../common/utils/validate'
   import { DaApiFields } from './components/DaApi'
   import TemplateChoose from './components/DaApi/TemplateChoose'
-  import { getApiType } from '../../api/enum.api'
   import { getInnerTempDetail } from '../../api/data-analyze/da-inner-temp.api'
+  import ResponseConfigPanel from './components/DaBizTemplate/ResponseConfigPanel'
 
   export default {
     name: 'DaTheme',
     mixins: [commonMixin, permission],
-    components: { DaApiFields, TemplateChoose },
+    components: { ResponseConfigPanel, DaApiFields, TemplateChoose },
     data() {
       return {
         dialogFormVisible: false,
@@ -114,14 +117,14 @@
         columns: [
           { type: 'index', width: 50, align: 'center' },
           { title: '接口名称', key: 'name' },
-          { title: '接口类型', key: 'type' },
-          { title: '创建人', key: 'createName' },
-          { title: '操作时间', key: 'createDate' },
-          { title: '操作', slot: 'action', width: 150 }
+          { title: '接口类型', slot: 'type' },
+          { title: '接口描述', key: 'describe' },
+          { title: '操作', slot: 'action', width: 190 }
         ],
         apiObj: null,
         daParameters: [],
-        typeMap: { '0': 'sql', '1': 'url', '2': '模板' },
+        typeMap: {},
+        recordMap: {},
         dataTypeOptions: [
           { label: '字符型', value: 'string' },
           { label: '日期型', value: 'date' },
@@ -144,9 +147,14 @@
     },
     methods: {
       init() {
-        getApiType().then(res => {
+        api.getApiType().then(res => {
           if (res.status === 200) {
             this.typeMap = res.data.data
+          }
+        })
+        api.getRecordType().then(res => {
+          if (res.status === 200) {
+            this.recordMap = res.data.data
           }
         })
       },
@@ -194,6 +202,11 @@
             })
           }
         })
+      },
+      // 查看配置响应信息
+      handleConfig(row) {
+        this.dialogStatus = 'config'
+        this.$refs.resConfigPanel && this.$refs.resConfigPanel.open(row.id, row.name)
       },
       // 重置
       resetCurrent() {
@@ -262,7 +275,7 @@
         api.getApiList(this.listQuery).then(response => {
           if (response.status === 200) {
             this.setListData({
-              list: response.data.data,
+              list: response.data.rows,
               total: response.data.total
             })
           }

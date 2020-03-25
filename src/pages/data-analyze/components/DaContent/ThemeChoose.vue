@@ -1,16 +1,16 @@
 <template>
   <b-modal v-model="chooseDialog" title="选择主题" width="500px" min-height="400px">
-    <b-table :columns="columns" :data="list">
+    <b-table :columns="columns" :data="list" size="small">
       <!--操作栏-->
       <template v-slot:action="scope">
-        <b-button type="text" @click="handleChoose(scope.row)" >
+        <b-button type="text" @click="handleChoose(scope.row)">
           选择
         </b-button>
       </template>
     </b-table>
     <div slot="footer" class="t-center">
       <!--下方分页器-->
-      <b-page :total="total" :current.sync="listQuery.page"  @on-change="handleCurrentChange"></b-page>
+      <b-page :total="total" :current.sync="listQuery.page" @on-change="handleCurrentChange"></b-page>
     </div>
   </b-modal>
 </template>
@@ -18,7 +18,7 @@
 <script>
   import commonMixin from '../../../../common/mixins/mixin'
   import permission from '../../../../common/mixins/permission'
-  import * as api from '../../../../api/data-analyze/da-content.api'
+  import { getThemeTree } from '../../../../api/data-analyze/da-theme.api'
 
   export default {
     name: 'ThemeChoose',
@@ -45,7 +45,7 @@
       },
       // 查询所有部门列表
       searchList() {
-        api.getThemeTree().then(response => {
+        getThemeTree().then(response => {
           this.list = response.data.data
         })
       },

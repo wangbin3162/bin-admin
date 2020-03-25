@@ -22,12 +22,11 @@
         </v-table-tool-bar>
         <!--中央表格-->
         <b-table :columns="columns" :data="list" :loading="listLoading">
-          <template v-slot:config="scope">
-            <b-button type="text" @click="handleConfig(scope.row)">配置</b-button>
-          </template>
           <!--操作栏-->
           <template v-slot:action="scope">
             <b-button :disabled="!canModify" type="text" @click="handleModify(scope.row)">修改</b-button>
+            <b-divider type="vertical"></b-divider>
+            <b-button type="text" text-color="warning" @click="handleConfig(scope.row)">配置响应</b-button>
             <!--是否有删除键-->
             <template v-if="canRemove">
               <b-divider type="vertical"></b-divider>
@@ -63,7 +62,7 @@
                       </b-col>
                     </b-row>
                     <b-form-item v-if="isEdit" label="模板脚本" prop="tempSource">
-                      <b-code-editor v-model="template.tempSource" :lint="false"/>
+                      <b-code-editor v-model="template.tempSource" :lint="false" :auto-format="false"/>
                     </b-form-item>
                     <b-form-item label="模板说明" prop="tempDesc">
                       <b-input v-model="template.tempDesc" placeholder="请输入模板说明" type="textarea" :rows="4"></b-input>
@@ -124,8 +123,7 @@
           { title: '模板名称', key: 'tempName' },
           { title: '模板编码', key: 'tempCode' },
           { title: '模板说明', key: 'tempDesc' },
-          { title: '响应配置', slot: 'config', width: 130, align: 'center' },
-          { title: '模板操作', slot: 'action', width: 130 }
+          { title: '模板操作', slot: 'action', width: 200 }
         ],
         treeData: [],
         template: null,
@@ -178,7 +176,7 @@
         this.template = { ...row }
         this.getTempFields((template) => {
           this.dialogStatus = 'config'
-          this.$refs.resConfigPanel && this.$refs.resConfigPanel.open(template)
+          this.$refs.resConfigPanel && this.$refs.resConfigPanel.open(template.id, template.tempName)
         })
       },
       // 根据状态或者是资源标识符来获取fields

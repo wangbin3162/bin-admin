@@ -3,7 +3,7 @@ import request from '../request'
 
 /* 获取所有列表 */
 export function getThemeList(query) {
-  return request.get('/da/theme/searchDaTheme', {
+  return request.get('/da/theme/search', {
     params: {
       size: query.size,
       page: query.page - 1,
@@ -17,15 +17,19 @@ export function getThemeList(query) {
 /* 编码唯一 */
 export function oneCode(item) {
   return request({
-    url: '/da/theme/check/' + item.code + '?id=' + item.id,
-    method: 'get'
+    url: '/da/theme/checkCode',
+    method: 'get',
+    params: {
+      code: item.code,
+      id: item.id
+    }
   })
 }
 
 /* 新增主题 */
 export function createTheme(item) {
   return request({
-    url: '/da/theme/addDaTheme',
+    url: '/da/theme/create',
     method: 'post',
     data: {
       name: item.name,
@@ -39,7 +43,7 @@ export function createTheme(item) {
 /* 删除主题 */
 export function removeTheme(item) {
   return request({
-    url: '/da/theme/removeDaTheme',
+    url: '/da/theme/remove',
     method: 'post',
     params: {
       id: item.id
@@ -49,16 +53,23 @@ export function removeTheme(item) {
 
 /* 修改主题 */
 export function modifyTheme(item) {
-  const data = {
-    id: item.id,
-    name: item.name,
-    code: item.code,
-    url: item.url,
-    describe: item.describe
-  }
   return request({
-    url: '/da/theme/modifyDaTheme',
+    url: '/da/theme/modify',
     method: 'post',
-    data
+    data: {
+      id: item.id,
+      name: item.name,
+      code: item.code,
+      url: item.url,
+      describe: item.describe
+    }
+  })
+}
+
+/* 获取主题列表 */
+export function getThemeTree() {
+  return request({
+    url: '/da/theme/list',
+    method: 'get'
   })
 }

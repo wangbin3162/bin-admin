@@ -1,7 +1,7 @@
 <template>
   <div>
     <page-header-wrap v-show="visible && !batchDialog" show-close @on-close="close"
-                      :title="`[${template.tempName}] 响应信息配置`">
+                      :title="`[${cfgTitle}] 响应信息配置`">
       <v-table-wrap>
         <div slot="tree">
           <div class="mb-15">
@@ -153,7 +153,7 @@
         listQuery: {
           bizId: ''
         },
-        template: null,
+        cfgTitle: '',
         resp: null,
         ruleValidate: {
           respKind: [{ required: true, message: '类型必选', trigger: 'change' }],
@@ -201,14 +201,13 @@
       }
     },
     created() {
-      this.resetTemplate()
       this.resetResp(null)
       this.getEnum()
     },
     methods: {
-      open(template) {
-        this.template = this.$util.deepClone(template)
-        this.listQuery.bizId = this.template.id
+      open(bizId, title) {
+        this.listQuery.bizId = bizId
+        this.cfgTitle = title
         this.visible = true
         this.initTree()
       },
@@ -338,18 +337,6 @@
             })
           }
         })
-      },
-      // 重置对象
-      resetTemplate() {
-        this.template = {
-          id: '',
-          tempName: '',
-          tempCode: '',
-          tempType: '',
-          tempSource: '',
-          tempDesc: ''
-        }
-        this.params = []
       },
       // 根据删除新增的类型来判断是否要刷新树
       handleRefresh(type) {

@@ -155,6 +155,7 @@
   import commonMixin from '../../common/mixins/mixin'
   import permission from '../../common/mixins/permission'
   import * as api from '../../api/data-analyze/da-content.api'
+  import { getThemeTree } from '../../api/data-analyze/da-theme.api'
   import ApiChoose from './components/DaContent/ApiChoose'
   import ThemeChoose from './components/DaContent/ThemeChoose'
   import { requiredRule } from '../../common/utils/validate'
@@ -351,7 +352,7 @@
       initTree() {
         this.treeData = []
         // 请求响应返回树结构
-        api.getThemeTree().then(response => {
+        getThemeTree().then(response => {
           const list = response.data.data || []
           let root = {
             code: '',
