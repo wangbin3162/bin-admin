@@ -78,7 +78,7 @@
           </b-row>
           <b-row>
             <b-col span="12">
-              <b-form-item label="类型" prop="category">
+              <b-form-item label="类型" prop="type">
                 <b-cascader :data="contentTypeMap" v-model="content.type"/>
               </b-form-item>
             </b-col>
@@ -186,7 +186,7 @@
         ruleValidate: {
           name: [requiredRule],
           code: [requiredRule],
-          category: [requiredRule],
+          type: [{ required: true, message: '必填项', trigger: 'change', type: 'array' }],
           toggle: [{ required: true, message: '必填项', trigger: 'change' }],
           themeCode: [{ required: true, message: '必填项', trigger: 'change' }],
           apiId: [{ required: true, message: '必填项', trigger: 'change' }]
