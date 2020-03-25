@@ -243,6 +243,7 @@
           if (valid) {
             this.btnLoading = true
             let fun = this.dialogStatus === 'create' ? api.createApi : api.modifyApi
+            this.apiObj.daParameters = this.apiObj.daParameters.filter(item => !item.newOne)
             fun(this.apiObj).then(res => {
               if (res.data.code === '0') {
                 this.submitDone(true)
