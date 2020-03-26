@@ -49,7 +49,7 @@ export function getBusinessTempDetail(id) {
 /* 新增内置模板 */
 export function createBusinessTemp(template, params) {
   return request({
-    url: '/da/businessTemplate/add',
+    url: '/da/businessTemplate/create',
     method: 'post',
     data: {
       tempName: template.tempName,
@@ -57,6 +57,8 @@ export function createBusinessTemp(template, params) {
       tempType: template.tempType,
       tempSource: template.tempSource,
       tempDesc: template.tempDesc,
+      indices: template.indices,
+      reqType: template.reqType,
       fields: params
     }
   })
@@ -73,8 +75,18 @@ export function modifyBusinessTemplate(template, params) {
       tempType: template.tempType,
       tempSource: template.tempSource,
       tempDesc: template.tempDesc,
+      indices: template.indices,
+      reqType: template.reqType,
       fields: params
     }
+  })
+}
+
+/* 请求类型枚举 */
+export function getReqTypeEnum() {
+  return request({
+    url: '/da/enum/reqType',
+    method: 'get'
   })
 }
 

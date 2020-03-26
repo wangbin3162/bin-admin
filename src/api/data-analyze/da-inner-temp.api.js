@@ -12,17 +12,6 @@ export function getTemplateTree() {
   })
 }
 
-/* 获取模板列表(树) */
-export function getTemplateTreeAll() {
-  return request({
-    url: 'management/confType/templateTree',
-    method: 'get',
-    params: {
-      typeCode: 'inner_template_type:outer_template_type'
-    }
-  })
-}
-
 /* 获取所有列表 */
 export function getInnerTemplateList(query) {
   return request.get('/da/innerTemplate/search', {
@@ -60,7 +49,7 @@ export function getInnerTempDetail(id) {
 /* 新增内置模板 */
 export function createInnerTemp(template, params) {
   return request({
-    url: '/da/innerTemplate/add',
+    url: '/da/innerTemplate/create',
     method: 'post',
     data: {
       tempName: template.tempName,

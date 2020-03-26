@@ -45,9 +45,9 @@
       <v-edit-wrap>
         <template slot="full">
           <v-title-bar label="模板信息" class="mb-15"/>
-          <b-row type="flex" justify="center">
+          <b-row type="flex">
             <b-col span="18">
-              <b-form :model="template" ref="form" :rules="ruleValidate" :label-width="130">
+              <b-form :model="template" ref="form" :rules="ruleValidate" :label-width="100">
                 <b-row>
                   <b-col span="12">
                     <b-form-item label="模板名称" prop="tempName">
@@ -69,12 +69,16 @@
                 </b-form-item>
               </b-form>
             </b-col>
+            <b-col span="4">
+              <div style="padding:55px 0 0 20px;">
+                <b-button @click="extractParams" type="primary"
+                          transparent :disabled="template.tempSource.length===0">
+                  提取模板参数
+                </b-button>
+              </div>
+            </b-col>
           </b-row>
-          <v-title-bar label="参数信息" class="mt-20 mb-15">
-            <b-button @click="extractParams" type="primary" transparent :disabled="template.tempSource.length===0">
-              提取模板参数
-            </b-button>
-          </v-title-bar>
+          <v-title-bar label="参数信息" class="mt-20 mb-15"/>
           <temp-params v-model="params"/>
         </template>
         <!--保存提交-->

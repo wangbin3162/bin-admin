@@ -23,8 +23,6 @@
           <template v-slot:action="scope">
             <b-button type="text" @click="handleModify(scope.row)">修改</b-button>
             <b-divider type="vertical"></b-divider>
-            <b-button type="text" text-color="warning" @click="handleConfig(scope.row)">配置响应</b-button>
-            <b-divider type="vertical"></b-divider>
             <b-button type="text" text-color="danger" @click="handleRemove(scope.row)">删除</b-button>
           </template>
         </b-table>
@@ -87,7 +85,6 @@
         </template>
       </v-edit-wrap>
     </page-header-wrap>
-    <response-config-panel ref="resConfigPanel" @on-close="handleCancel"/>
   </div>
 </template>
 
@@ -99,12 +96,11 @@
   import { DaApiFields } from './components/DaApi'
   import TemplateChoose from './components/DaApi/TemplateChoose'
   import { getInnerTempDetail } from '../../api/data-analyze/da-inner-temp.api'
-  import ResponseConfigPanel from './components/DaBizTemplate/ResponseConfigPanel'
 
   export default {
     name: 'DaTheme',
     mixins: [commonMixin, permission],
-    components: { ResponseConfigPanel, DaApiFields, TemplateChoose },
+    components: { DaApiFields, TemplateChoose },
     data() {
       return {
         dialogFormVisible: false,
@@ -119,7 +115,7 @@
           { title: '接口名称', key: 'name' },
           { title: '接口类型', slot: 'type' },
           { title: '接口描述', key: 'describe' },
-          { title: '操作', slot: 'action', width: 190 }
+          { title: '操作', slot: 'action', width: 150 }
         ],
         apiObj: null,
         daParameters: [],
@@ -202,11 +198,6 @@
             })
           }
         })
-      },
-      // 查看配置响应信息
-      handleConfig(row) {
-        this.dialogStatus = 'config'
-        this.$refs.resConfigPanel && this.$refs.resConfigPanel.open(row.id, row.name)
       },
       // 重置
       resetCurrent() {

@@ -45,9 +45,9 @@
         <template slot="full">
           <b-collapse value="1" simple>
             <b-collapse-panel title="基础信息" name="1">
-              <b-row type="flex" justify="end">
+              <b-row>
                 <b-col span="18">
-                  <b-form :model="template" ref="form" :rules="ruleValidate" :label-width="130">
+                  <b-form :model="template" ref="form" :rules="ruleValidate" :label-width="100">
                     <b-row>
                       <b-col span="12">
                         <b-form-item label="模板名称" prop="tempName">
@@ -61,27 +61,42 @@
                         </b-form-item>
                       </b-col>
                     </b-row>
+                    <b-row>
+                      <b-col span="12">
+                        <b-form-item label="索引" prop="indices">
+                          <b-input v-model="template.indices" placeholder="多个索引以逗号(,)隔开" clearable></b-input>
+                        </b-form-item>
+                      </b-col>
+                      <b-col span="12">
+                        <b-form-item label="请求类型" prop="reqType">
+                          <b-select v-model="template.reqType">
+                            <b-option v-for="(value,key) in reqTypeMap" :value="key" :key="key">{{ value }}</b-option>
+                          </b-select>
+                        </b-form-item>
+                      </b-col>
+                    </b-row>
                     <b-form-item v-if="isEdit" label="模板脚本" prop="tempSource">
                       <b-code-editor v-model="template.tempSource" :lint="false" :auto-format="false"/>
                     </b-form-item>
                     <b-form-item label="模板说明" prop="tempDesc">
-                      <b-input v-model="template.tempDesc" placeholder="请输入模板说明" type="textarea" :rows="4"></b-input>
+                      <b-input v-model="template.tempDesc" placeholder="请输入模板说明" type="textarea" :rows="1"></b-input>
                     </b-form-item>
                   </b-form>
                 </b-col>
                 <b-col span="4">
-                  <div style="padding:55px 0 0 20px;">
+                  <div style="padding:108px 0 0 20px;">
                     <b-button @click="handleOpenInner">提取内置模板</b-button>
+                    <b-button @click="extractParams" type="primary"
+                              transparent :disabled="template.tempSource.length===0"
+                              style="margin: 15px 0 0 0;">
+                      提取模板参数
+                    </b-button>
                   </div>
                 </b-col>
               </b-row>
             </b-collapse-panel>
           </b-collapse>
-          <v-title-bar label="参数信息" class="mt-20 mb-15">
-            <b-button @click="extractParams" type="primary" transparent :disabled="template.tempSource.length===0">
-              提取模板参数
-            </b-button>
-          </v-title-bar>
+          <v-title-bar label="参数信息" class="mt-20 mb-15"/>
           <temp-params v-model="params"/>
         </template>
         <!--保存提交-->
@@ -128,6 +143,7 @@
         treeData: [],
         template: null,
         params: [],
+        reqTypeMap: {},
         paramsColumns: [
           { type: 'index', width: 50, align: 'center' },
           { title: '参数名称', key: 'paramName' },
@@ -140,16 +156,24 @@
         ruleValidate: {
           tempName: [requiredRule],
           tempCode: [requiredRule, {
-            pattern: /^biz_[a-zA-Z0-9_]+ *$/,
+            pattern: /^biz_\w+ *$/,
             message: '内置模板biz_开头(包含字母、数字和下划线)',
             trigger: 'blur'
           }],
           tempType: [requiredRule],
+          indices: [requiredRule, {
+            pattern: /^(\w+[,])*\w+$/,
+            message: '索引不合法，字母数字下划线，中间用(,)连接',
+            trigger: 'blur'
+          }],
           tempSource: [requiredRule]
         }
       }
     },
     created() {
+      api.getReqTypeEnum().then(res => {
+        this.reqTypeMap = res.data.data || {}
+      })
       this.resetTemplate()
       this.initTree()
     },
@@ -320,7 +344,9 @@
           tempCode: '',
           tempType: this.currentTreeNode ? this.currentTreeNode.code : '',
           tempSource: '',
-          tempDesc: ''
+          tempDesc: '',
+          indices: '',
+          reqType: ''
         }
         this.params = []
       },
