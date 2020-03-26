@@ -35,6 +35,21 @@ export default {
     },
     lockTreeSelect() {
       return this.dialogStatus === 'check' || this.dialogStatus === 'modify'
+    },
+    colorPrimary() {
+      return { color: '#1890ff' }
+    },
+    colorSuccess() {
+      return { color: '#52c41a' }
+    },
+    colorWarning() {
+      return { color: '#fa8c16' }
+    },
+    colorDanger() {
+      return { color: '#f5222d' }
+    },
+    colorInfo() {
+      return { color: '#35495e' }
     }
   },
   watch: {

@@ -45,7 +45,7 @@
     </b-table>
     <b-button type="dashed" icon="ios-add-circle-outline"
               style="width: 100%;margin-top: 16px;margin-bottom: 8px;"
-              @click="handleAdd">添加参数
+              @click="handleAdd">添加项
     </b-button>
   </div>
 </template>

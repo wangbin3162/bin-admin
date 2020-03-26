@@ -44,16 +44,22 @@
           </template>
           <!--操作栏-->
           <template v-slot:action="scope">
-            <b-button type="text" @click="handleModify(scope.row)">
-              修改
-            </b-button>
-            <b-divider type="vertical"></b-divider>
-            <b-button type="text" text-color="warning" @click="handleConfig(scope.row)">配置响应</b-button>
-            <!--是否有删除键-->
-            <template>
-              <b-divider type="vertical"></b-divider>
-              <b-button type="text" text-color="danger" @click="handleRemove(scope.row)">删除</b-button>
-            </template>
+            <b-dropdown>
+              <b-button type="text">操作
+                <b-icon name="ios-arrow-down"/>
+              </b-button>
+              <b-dropdown-menu slot="list">
+                <b-dropdown-item :disabled="!canModify" :style="colorPrimary"
+                                 @click.native="handleModify(scope.row)">
+                  修改
+                </b-dropdown-item>
+                <b-dropdown-item :style="colorWarning" @click.native="handleConfig(scope.row)">配置响应</b-dropdown-item>
+                <b-dropdown-item :disabled="!canRemove" divided :style="colorDanger"
+                                 @click.native="handleRemove(scope.row)">
+                  删除
+                </b-dropdown-item>
+              </b-dropdown-menu>
+            </b-dropdown>
           </template>
         </b-table>
         <!--下方分页器-->
@@ -182,7 +188,7 @@
           { title: '编码', key: 'code', align: 'center' },
           { title: '主题', key: 'themeCode', align: 'center', width: 90 },
           { title: '数据来源', slot: 'toggle', align: 'center' },
-          { title: '操作', slot: 'action', width: 200 }
+          { title: '操作', slot: 'action', width: 120 }
         ],
         contentTypeMap: [],
         typeMap: {},
