@@ -63,6 +63,11 @@ export function modifyContent(content) {
   })
 }
 
+/* 内容详情 */
+export function getContentDetail(id) {
+  return request.get('/da/content/detail', { params: { id } })
+}
+
 /* 改变状态 */
 export function changeStatus(content) {
   let params = {

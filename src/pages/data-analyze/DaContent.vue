@@ -96,7 +96,7 @@
             <b-col span="12">
               <b-form-item label="所属主题" prop="themeCode">
                 <div flex style="width:100%;">
-                  <b-input v-model="content.themeCode" disabled></b-input>
+                  <b-input v-model="content.themeName" disabled></b-input>
                   <b-button type="primary" @click="handleShowThemeChoose"
                             style="flex:0 0 auto;margin-left:0;font-size: 12px;">选择主题
                   </b-button>
@@ -106,7 +106,7 @@
             <b-col span="12">
               <b-form-item label="接口" prop="apiId">
                 <div flex style="width:100%;">
-                  <b-input v-model="content.apiId" disabled></b-input>
+                  <b-input v-model="content.apiName" disabled></b-input>
                   <b-button type="primary" @click="handleShowApiChoose"
                             style="flex:0 0 auto;margin-left:0;font-size: 12px;">选择接口
                   </b-button>
@@ -121,7 +121,8 @@
         <!--保存提交-->
         <template slot="footer">
           <b-button @click="handleCancel">取 消</b-button>
-          <b-button type="primary" @click="handleSubmit" :loading="btnLoading">提 交</b-button>
+          <b-button type="primary" @click="handleSubmit()" :loading="btnLoading">提 交</b-button>
+          <b-button type="primary" @click="handleSubmit(true)" :loading="btnLoading">配置响应</b-button>
         </template>
       </v-edit-wrap>
     </page-header-wrap>
@@ -134,8 +135,8 @@
             (content.subCategory? ' / '+chartTypeMap[content.subCategory]:'')}}
           </v-key-label>
           <v-key-label label="数据来源">{{ content.toggle==='ON'?'动态数据':'静态数据' }}</v-key-label>
-          <v-key-label label="所属主题">{{ content.themeCode }}</v-key-label>
-          <v-key-label label="接口">{{ content.apiId}}</v-key-label>
+          <v-key-label label="所属主题">{{ content.themeName }}</v-key-label>
+          <v-key-label label="接口">{{ content.apiName }}</v-key-label>
           <v-key-label label="静态数据">{{ content.data }}</v-key-label>
           <v-key-label label="备注" is-bottom>{{ content.describe }}</v-key-label>
         </div>
@@ -252,11 +253,12 @@
       // 查看按钮事件
       handleCheck(row) {
         this.content = { ...this.content, ...row }
-        this.openEditPage('check')
+        this.getContentDetail(() => {
+          this.openEditPage('check')
+        })
       },
       // 查看配置响应信息
       handleConfig(row) {
-        console.log(row)
         this.dialogStatus = 'config'
         this.$refs.resConfigPanel && this.$refs.resConfigPanel.open(row.id, row.name)
       },
@@ -275,6 +277,15 @@
         }
         this.openEditPage('modify')
       },
+      // 根据状态或者是资源标识符来获取fields
+      getContentDetail(callBack) {
+        api.getContentDetail(this.content.id).then(res => {
+          if (res.data.code === '0') {
+            this.content = res.data.data
+            callBack && callBack()
+          }
+        })
+      },
       // 弹窗选择角色
       handleShowDialogChoose() {
         this.$refs.roleChoose && this.$refs.roleChoose.open()
@@ -282,10 +293,12 @@
       // 选中一个接口
       handleChooseApi(item) {
         this.content.apiId = item.id
+        this.content.apiName = item.name
       },
       // 选中一个主题
       handleChooseTheme(item) {
         this.content.themeCode = item.code
+        this.content.themeName = item.name
       },
       // 表单提交
       handleSubmit(cfgFlag) {
@@ -298,6 +311,14 @@
               if (res.data.code === '0') {
                 if (cfgFlag) {
                   let currentId = res.data.data || tmpContent.id
+                  api.getContentDetail(currentId).then(r => {
+                    this.content = r.data.data
+                    this.dialogStatus = 'config'
+                    this.btnLoading = false // 按钮状态清空
+                    this.searchList()
+                    this.$refs.resConfigPanel.open(this.content.id, this.content.name)
+                    this.$message({ type: 'success', content: '操作成功' })
+                  })
                 } else {
                   this.submitDone(true)
                   this.handleFilter()
@@ -358,7 +379,9 @@
           data: '',
           apiId: '',
           toggle: 'OFF',
-          type: []
+          type: [],
+          apiName: '',
+          themeName: ''
         }
       },
       // tree:初始化树结构
