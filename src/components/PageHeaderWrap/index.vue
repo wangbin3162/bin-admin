@@ -10,7 +10,7 @@
             <span class="page-header-heading-title">
               {{ normalTitle }}
             </span>
-            <b-icon v-if="showClose" name="ios-close" @click.native="$emit('on-close')"></b-icon>
+            <b-icon v-if="showClose" name="close" @click.native="$emit('on-close')"></b-icon>
           </div>
         </div>
       </div>
@@ -96,9 +96,10 @@
           font-size: 20px;
           line-height: 32px;
         }
-        .icon-ios-close {
+        .icon-close {
           cursor: pointer;
           font-size: 24px;
+          margin-right: 6px;
         }
       }
     }
