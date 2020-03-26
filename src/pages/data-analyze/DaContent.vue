@@ -32,7 +32,6 @@
           <template v-slot:name="scope">
             <b-button type="text" @click="handleCheck(scope.row)">{{ scope.row.name }}</b-button>
           </template>
-          <!--状态-->
           <template v-slot:toggle="scope">
             <span v-if="scope.row.toggle=== 'ON'">动态</span>
             <span v-else>静态</span> &nbsp;
@@ -48,6 +47,8 @@
             <b-button type="text" @click="handleModify(scope.row)">
               修改
             </b-button>
+            <b-divider type="vertical"></b-divider>
+            <b-button type="text" text-color="warning" @click="handleConfig(scope.row)">配置响应</b-button>
             <!--是否有删除键-->
             <template>
               <b-divider type="vertical"></b-divider>
@@ -148,6 +149,7 @@
     <api-choose ref="apiChoose" @on-choose="handleChooseApi"></api-choose>
     <!--选择主题弹窗-->
     <theme-choose ref="themeChoose" @on-choose="handleChooseTheme"></theme-choose>
+    <response-config-panel ref="resConfigPanel" @on-close="handleCancel"/>
   </div>
 </template>
 
@@ -159,10 +161,11 @@
   import ApiChoose from './components/DaContent/ApiChoose'
   import ThemeChoose from './components/DaContent/ThemeChoose'
   import { requiredRule } from '../../common/utils/validate'
+  import ResponseConfigPanel from './components/DaBizTemplate/ResponseConfigPanel'
 
   export default {
     name: 'Content',
-    components: { ApiChoose, ThemeChoose },
+    components: { ResponseConfigPanel, ApiChoose, ThemeChoose },
     mixins: [commonMixin, permission],
     data() {
       return {
@@ -178,7 +181,7 @@
           { title: '编码', key: 'code', align: 'center' },
           { title: '主题', key: 'themeCode', align: 'center', width: 90 },
           { title: '数据来源', slot: 'toggle', align: 'center' },
-          { title: '操作', slot: 'action', width: 140 }
+          { title: '操作', slot: 'action', width: 200 }
         ],
         contentTypeMap: [],
         typeMap: {},
@@ -251,6 +254,12 @@
         this.content = { ...this.content, ...row }
         this.openEditPage('check')
       },
+      // 查看配置响应信息
+      handleConfig(row) {
+        console.log(row)
+        this.dialogStatus = 'config'
+        this.$refs.resConfigPanel && this.$refs.resConfigPanel.open(row.id, row.name)
+      },
       // 新增按钮事件
       handleCreate() {
         this.resetContent()
@@ -279,7 +288,7 @@
         this.content.themeCode = item.code
       },
       // 表单提交
-      handleSubmit() {
+      handleSubmit(cfgFlag) {
         let tmpContent = { ...this.content }
         this.$refs.form.validate((valid) => {
           if (valid) {
@@ -287,8 +296,12 @@
             let fun = this.dialogStatus === 'create' ? api.createContent : api.modifyContent
             fun(tmpContent).then(res => {
               if (res.data.code === '0') {
-                this.submitDone(true)
-                this.handleFilter()
+                if (cfgFlag) {
+                  let currentId = res.data.data || tmpContent.id
+                } else {
+                  this.submitDone(true)
+                  this.handleFilter()
+                }
               } else {
                 this.submitDone(false)
                 this.$notice.danger({ title: '操作错误', desc: res.data.message })

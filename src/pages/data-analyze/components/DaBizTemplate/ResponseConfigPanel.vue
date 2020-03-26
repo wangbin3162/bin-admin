@@ -48,32 +48,20 @@
                       show-close @on-close="batchDialog = false">
       <v-edit-wrap>
         <template slot="full">
-          <v-title-bar label="节点批量添加响应" class="mb-15"/>
-          <b-code-editor v-if="batchDialog" v-model="batchStr"/>
+          <b-alert closable>手动输入或复制粘贴json文本至下面编辑框，确保无误后点击转换添加列表。<span slot="close">不再提示</span></b-alert>
+          <b-code-editor v-if="batchDialog" v-model="batchStr" ref="codeEditor"/>
           <div class="p15 t-center">
-            <b-button type="primary" icon="ios-list-box" :disabled="batchStr.length===0"
+            <b-button type="success" plain icon="ios-barcode" @click="formatCode">
+              格式化
+            </b-button>
+            <b-button type="primary" plain icon="ios-list-box" :disabled="batchStr.length===0"
                       @click="batchStrChange">转换为添加列表
             </b-button>
           </div>
-          <b-table :columns="batchColumns" :data="batchItemList" size="small">
-            <template v-slot:keyName="{row,index}">
-              <b-input v-model="batchItemList[index].keyName" size="mini"/>
-            </template>
-            <template v-slot:keyAlias="{row,index}">
-              <b-input v-model="batchItemList[index].keyAlias" size="mini"/>
-            </template>
-            <template v-slot:keyPath="{row,index}">
-              <b-input v-model="batchItemList[index].keyPath" size="mini"/>
-            </template>
-            <template v-slot:dataType="{row,index}">
-              <b-select v-model="batchItemList[index].dataType" placeholder="请选择" size="mini" append-to-body>
-                <b-option v-for="(value,key) in dataTypeMap" :key="key" :value="key">{{ value }}</b-option>
-              </b-select>
-            </template>
-            <template v-slot:memo="{row,index}">
-              <b-input v-model="batchItemList[index].memo" size="mini"/>
-            </template>
-          </b-table>
+          <resp-params v-model="batchItemList" :data-type-map="dataTypeMap"
+                       :biz-id="listQuery.bizId"
+                       :parent-id="currentTreeNode?currentTreeNode.id:''"
+                       resp-kind="RECORD"/>
         </template>
         <!--保存提交-->
         <div slot="footer">
@@ -143,9 +131,11 @@
   import permission from '../../../../common/mixins/permission'
   import * as api from '../../../../api/data-analyze/da-business-temp.api.js'
   import { requiredRule } from '../../../../common/utils/validate'
+  import RespParams from './RespParams'
 
   export default {
     name: 'ResponseConfigPanel',
+    components: { RespParams },
     mixins: [commonMixin, permission],
     data() {
       return {
@@ -189,13 +179,6 @@
         batchLoading: false,
         batchStr: '',
         batchItemList: [],
-        batchColumns: [
-          { title: '键名', slot: 'keyName' },
-          { title: '别名', slot: 'keyAlias' },
-          { title: '键路径', slot: 'keyPath' },
-          { title: '数据类型', slot: 'dataType', width: 120 },
-          { title: '说明', slot: 'memo' }
-        ],
         respTypeMap: { QUERY: '查询', METRIC: '度量', BUCKET: '分组', RECORD: '记录' },
         dataTypeMap: { string: '字符', long: '整数', double: '小数', date: '日期', datetime: '日期时间', boolean: '布尔' }
       }
@@ -250,31 +233,46 @@
         this.batchItemList = []
         this.batchDialog = true
       },
+      // 格式化编辑器
+      formatCode() {
+        this.$refs.codeEditor && this.$refs.codeEditor.formatCode()
+      },
       // 将json转换为item对象
       batchStrChange() {
         try {
           // 转换为标准js对象
           const passObj = JSON.parse(this.batchStr)
           let keys = Object.keys(passObj)
-          this.batchItemList = keys.map((key, index) => {
-            return {
-              bizId: this.listQuery.bizId,
-              parentId: this.currentTreeNode.id,
-              respKind: 'RECORD',
-              keyName: key,
-              keyAlias: key,
-              keyPath: `/${key}`,
-              dataType: 'string',
-              orderNo: index + 1
+          // 当前参数信息
+          let currentItemsMap = new Map(this.batchItemList.map(i => ([i.keyName, i])))
+          keys.forEach(key => {
+            if (!currentItemsMap.has(key)) {
+              currentItemsMap.set(key, {
+                bizId: this.listQuery.bizId,
+                parentId: this.currentTreeNode.id,
+                respKind: 'RECORD',
+                keyName: key,
+                keyAlias: key,
+                keyPath: `/${key}`,
+                dataType: 'string',
+                orderNo: 1,
+                edit: true,
+                newOne: true
+              })
             }
           })
+          this.batchItemList = [...currentItemsMap.values()]
         } catch (e) {
           this.$message({ type: 'danger', content: '数据源不是标准json，无法批量添加！' })
         }
       },
       handleBatchSubmit() {
         this.batchLoading = true
-        api.batchAddResp(this.batchItemList).then(res => {
+
+        // 需要过滤params新增未保存的
+        let params = this.batchItemList.filter(item => !item.newOne)
+        console.log(params)
+        api.batchAddResp(params).then(res => {
           this.batchLoading = false // 按钮状态清空
           if (res.data.code === '0') {
             this.batchDialog = false

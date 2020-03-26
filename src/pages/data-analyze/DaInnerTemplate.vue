@@ -22,9 +22,6 @@
         </v-table-tool-bar>
         <!--中央表格-->
         <b-table :columns="columns" :data="list" :loading="listLoading">
-          <template v-slot:tempName="scope">
-            <b-button type="text" @click="handleCheck(scope.row)">{{ scope.row.tempName }}</b-button>
-          </template>
           <!--操作栏-->
           <template v-slot:action="scope">
             <b-button :disabled="!canModify" type="text" @click="handleModify(scope.row)">修改</b-button>
@@ -88,26 +85,6 @@
         </template>
       </v-edit-wrap>
     </page-header-wrap>
-    <page-header-wrap v-show="isCheck" :title="editTitle" show-close @on-close="handleCancel">
-      <v-edit-wrap v-if="template&&currentTreeNode">
-        <div slot="full">
-          <v-title-bar label="模板信息" class="mb-15"/>
-          <v-key-label label="模板名称" is-half is-first>{{ template.tempName }}</v-key-label>
-          <v-key-label label="所属类型" is-half>{{ currentTreeNode.title }}</v-key-label>
-          <v-key-label label="模板编码" is-half is-first>{{ template.tempCode }}</v-key-label>
-          <v-key-label label="创建人" is-half>{{ template.createBy }}</v-key-label>
-          <v-key-label label="模板脚本">{{ template.tempSource }}</v-key-label>
-          <v-key-label label="模板描述" is-bottom>{{ template.tempDesc }}</v-key-label>
-          <v-title-bar label="参数信息" class="mt-20 mb-15"/>
-          <!--max-height="432"-->
-          <b-table disabled-hover :data="params" :columns="paramsColumns" size="small"></b-table>
-        </div>
-        <!--保存提交-->
-        <template slot="footer">
-          <b-button @click="handleCancel">返 回</b-button>
-        </template>
-      </v-edit-wrap>
-    </page-header-wrap>
   </div>
 </template>
 
@@ -132,23 +109,14 @@
         },
         columns: [
           { type: 'index', width: 50, align: 'center' },
-          { title: '模板名称', slot: 'tempName' },
+          { title: '模板名称', key: 'tempName' },
           { title: '模板编码', key: 'tempCode' },
           { title: '模板说明', key: 'tempDesc' },
-          { title: '模板操作', slot: 'action', width: 130, align: 'center' }
+          { title: '模板操作', slot: 'action', width: 130 }
         ],
         treeData: [],
         template: null,
         params: [],
-        paramsColumns: [
-          { type: 'index', width: 50, align: 'center' },
-          { title: '参数名称', key: 'paramName' },
-          { title: '参数编码', key: 'paramCode' },
-          { title: '参数类型', key: 'paramType' },
-          { title: '是否必填', key: 'isRequired' },
-          { title: '默认', key: 'defaultVal' },
-          { title: '参数说明', key: 'paramDesc' }
-        ],
         ruleValidate: {
           tempName: [requiredRule],
           tempCode: [requiredRule, {
@@ -182,13 +150,6 @@
           tempName: '',
           tempCode: ''
         }
-      },
-      // 查看按钮事件
-      handleCheck(row) {
-        this.template = { ...row }
-        this.getTempFields(() => {
-          this.openEditPage('check')
-        })
       },
       // 根据状态或者是资源标识符来获取fields
       getTempFields(callBack) {

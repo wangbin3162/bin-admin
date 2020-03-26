@@ -297,7 +297,7 @@
                     this.dialogStatus = 'config'
                     this.btnLoading = false // 按钮状态清空
                     this.searchList()
-                    this.$refs.resConfigPanel && this.$refs.resConfigPanel.open(this.template)
+                    this.$refs.resConfigPanel.open(this.template.id, this.template.tempName)
                     this.$message({ type: 'success', content: '操作成功' })
                   })
                 } else {
