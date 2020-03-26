@@ -62,7 +62,7 @@
                   <b-code-editor v-model="template.tempSource" :lint="false" :auto-format="false"/>
                 </b-form-item>
                 <b-form-item label="模板说明" prop="tempDesc">
-                  <b-input v-model="template.tempDesc" placeholder="请输入模板说明" type="textarea" :rows="4"></b-input>
+                  <b-input v-model="template.tempDesc" placeholder="请输入模板说明" type="textarea" :rows="1"></b-input>
                 </b-form-item>
               </b-form>
             </b-col>
