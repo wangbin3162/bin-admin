@@ -7,7 +7,7 @@ export function getTotalResource(query) {
     url: '/da/data/gather/zyxxsl',
     method: 'get',
     params: {
-      departId: query.departId
+      createDept: query.departId
     }
   })
 }
@@ -73,12 +73,9 @@ export function getMonthData(query) {
     url: '/da/data/gather/ydxxgjqs',
     method: 'get',
     params: {
-      departId: query.departId
-      // curMonth: function () {
-      //   var y = new Date().getFullYear()
-      //   var m = new Date().getMonth()
-      //   return  y + '-' + m
-      // }
+      createDept: query.departId,
+      startDate: '2019-01',
+      endDate: '2020-01'
     }
   })
 }

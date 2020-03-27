@@ -16,7 +16,7 @@
             <img src="" alt="">
           </span>
           <span class="info" flex="dir:top">
-            <i>资源信息数量</i>
+            <i>数据归集总量</i>
             <i class="count">{{counts.totalCount}}</i>
           </span>
         </div>
@@ -25,7 +25,7 @@
             <img src="" alt="">
           </span>
           <span class="info" flex="dir:top">
-            <i>资源信息数量</i>
+            <i>本月归集数据量</i>
             <i class="count">{{counts.monthCount}}</i>
           </span>
         </div>
@@ -34,7 +34,7 @@
             <img src="" alt="">
           </span>
           <span class="info" flex="dir:top">
-            <i>资源信息数量</i>
+            <i>上月归集数据量</i>
             <i class="count">{{counts.preMonthCount}}</i>
           </span>
         </div>
@@ -43,7 +43,7 @@
             <img src="" alt="">
           </span>
           <span class="info" flex="dir:top">
-            <i>资源信息数量</i>
+            <i>数据完整率</i>
             <i class="count">{{counts.completeRate}}%</i>
           </span>
         </div>
@@ -189,39 +189,7 @@
               { month: '12月', value: 1290 }
             ])
         },
-        smoothLineChartOption: {
-          tooltip: { trigger: 'axis' },
-          grid: {
-            top: 20,
-            bottom: 20
-          },
-          xAxis: { type: 'category', boundaryGap: false },
-          yAxis: { type: 'value' },
-          series: [{
-            type: 'line',
-            name: '数量',
-            showSymbol: false,
-            smooth: true,
-            itemStyle: { color: '#1ed1b8' },
-            areaStyle: { opacity: 0.4 }
-          }],
-          dataset: formatDataSet(
-            { xField: 'month', yField: 'value' },
-            [
-              { month: '1月', value: 1220 },
-              { month: '2月', value: 1315 },
-              { month: '3月', value: 1434 },
-              { month: '4月', value: 1386 },
-              { month: '5月', value: 1409 },
-              { month: '6月', value: 1378 },
-              { month: '7月', value: 1533 },
-              { month: '8月', value: 1820 },
-              { month: '9月', value: 1290 },
-              { month: '10月', value: 1330 },
-              { month: '11月', value: 901 },
-              { month: '12月', value: 1290 }
-            ])
-        },
+        smoothLineChartOption: {},
         date: new Date(),
         columns: [
           { title: '资源信息', key: 'resourceName', tooltip: true },
@@ -248,13 +216,13 @@
         // 2.4.1 资源信息数量
         api.getTotalResource(this.listQuery).then(res => {
           if (res.data.code === '0') {
-            this.counts.totalResource = res.data.data.totalResource
+            this.counts.totalResource = res.data.data.cnt
           }
         })
         // 2.4.2 数据归集总量
         api.getTotalCount(this.listQuery).then(res => {
           if (res.data.code === '0') {
-            this.counts.totalCount = res.data.data.totalCount
+            this.counts.totalCount = res.data.data.value
           }
         })
         // 2.4.3 本月归集数据量
@@ -283,32 +251,29 @@
           }
         })
         // 2.4.7 月度信息归集趋势
-        /*
         api.getMonthData(this.listQuery).then(res => {
-          let data = res.data.data
-          let x = data.forEach(item => item.month)
-          let y = data.forEach(item => item.value)
-          this.lineChartOption ={
-            xAxis: {
-              type: 'category',
-                data: x,
-                boundaryGap: false
-            },
-            yAxis: {
-              type: 'value'
-            },
-            series: [{
-              data: y,
-              type: 'line',
-              areaStyle: {},
-              itemStyle: {
-                color: '#c7c7ff'
+          if (res.data.code === '0') {
+            let data = res.data.data
+            this.smoothLineChartOption = {
+              tooltip: { trigger: 'axis' },
+              grid: {
+                top: 20,
+                bottom: 20
               },
-              symbolSize: 8
-            }]
+              xAxis: { type: 'category', boundaryGap: false },
+              yAxis: { type: 'value' },
+              series: [{
+                type: 'line',
+                name: '数量',
+                showSymbol: false,
+                smooth: true,
+                itemStyle: { color: '#1ed1b8' },
+                areaStyle: { opacity: 0.4 }
+              }],
+              dataset: formatDataSet({ xField: 'name', yField: 'value' }, data)
+            }
           }
         })
-        */
         // 2.4.10 信息归集历史
         api.getDataHistory(this.listQuery).then(res => {
           if (res.data.code === '0') {
