@@ -82,6 +82,17 @@ export function modifyBusinessTemplate(template, params) {
   })
 }
 
+/* 测试业务模板 */
+export function testBusinessTemplate(id, indexes, params) {
+  return request({
+    url: '/da/businessTemplate/execute',
+    method: 'get',
+    params: {
+      id, indexes, ...params
+    }
+  })
+}
+
 /* 请求类型枚举 */
 export function getReqTypeEnum() {
   return request({
@@ -188,4 +199,9 @@ export function removeResp(id) {
       id
     }
   })
+}
+
+/* 判断当前业务响应信息是否存在 */
+export function hasResp(bizId) {
+  return request.get('/da/bizResp/exists', { params: { bizId } })
 }

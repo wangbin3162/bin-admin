@@ -24,7 +24,7 @@
         <b-table :columns="columns" :data="list" :loading="listLoading">
           <!--操作栏-->
           <template v-slot:action="scope">
-            <b-dropdown>
+            <b-dropdown append-to-body>
               <b-button type="text">操作
                 <b-icon name="ios-arrow-down"/>
               </b-button>
@@ -34,6 +34,7 @@
                   修改
                 </b-dropdown-item>
                 <b-dropdown-item :style="colorWarning" @click.native="handleConfig(scope.row)">配置响应</b-dropdown-item>
+                <b-dropdown-item :style="colorWarning" @click.native="handleTest(scope.row)">测试</b-dropdown-item>
                 <b-dropdown-item :disabled="!canRemove" divided :style="colorDanger"
                                  @click.native="handleRemove(scope.row)">
                   删除
@@ -116,6 +117,7 @@
       </v-edit-wrap>
     </page-header-wrap>
     <response-config-panel ref="resConfigPanel" @on-close="handleCancel"/>
+    <biz-test-panel ref="testPanel" @on-close="handleCancel"/>
     <inner-temp-choose ref="innerTempModal" @on-choose="handleChooseTemp"/>
   </div>
 </template>
@@ -127,11 +129,12 @@
   import { requiredRule } from '../../common/utils/validate'
   import TempParams from './components/DaInnerTemplate/TempParams'
   import InnerTempChoose from './components/DaInnerTemplate/InnerTempChoose'
-  import ResponseConfigPanel from './components/DaBizTemplate/ResponseConfigPanel' // 使用同内置模板模块
+  import ResponseConfigPanel from './components/DaBizTemplate/ResponseConfigPanel'
+  import BizTestPanel from './components/DaBizTemplate/BizTestPanel' // 使用同内置模板模块
 
   export default {
     name: 'DaBusinessTemplate',
-    components: { ResponseConfigPanel, InnerTempChoose, TempParams },
+    components: { BizTestPanel, ResponseConfigPanel, InnerTempChoose, TempParams },
     mixins: [commonMixin, permission],
     data() {
       return {
@@ -209,6 +212,31 @@
         this.getTempFields((template) => {
           this.dialogStatus = 'config'
           this.$refs.resConfigPanel && this.$refs.resConfigPanel.open(template.id, template.tempName)
+        })
+      },
+      // 测试
+      handleTest(row) {
+        api.hasResp(row.id).then(res => {
+          if (res.data.code === '0') {
+            if (res.data.data) {
+              api.getBusinessTempDetail(row.id).then(res => {
+                this.template = res.data.template
+                this.params = res.data.params
+                this.dialogStatus = 'test'
+                this.$refs.testPanel && this.$refs.testPanel.open(this.template, this.params)
+              })
+            } else {
+              this.$confirm({
+                title: '当前模板没有配置响应信息',
+                content: '是否前往配置模板？',
+                loading: true,
+                onOk: () => {
+                  this.$modal.remove()
+                  this.handleConfig(row)
+                }
+              })
+            }
+          }
         })
       },
       // 根据状态或者是资源标识符来获取fields

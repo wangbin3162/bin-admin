@@ -44,7 +44,7 @@
           </template>
           <!--操作栏-->
           <template v-slot:action="scope">
-            <b-dropdown>
+            <b-dropdown append-to-body>
               <b-button type="text">操作
                 <b-icon name="ios-arrow-down"/>
               </b-button>

@@ -1,5 +1,5 @@
 // bin-ui
-import BinUI from 'bin-ui'
+import BinUI from 'bin-ui/src/index'
 import 'bin-ui/lib/styles/index.css'
 // bin-code-editor
 import CodeEditor from 'bin-code-editor'
