@@ -165,6 +165,17 @@ export function getFieldsByID(id) {
   })
 }
 
+/* 根据ID元信息fields */
+export function getLimitFieldsById(id) {
+  return request({
+    url: '/api/dir/metadata/queryLimitFields',
+    method: 'get',
+    params: {
+      id
+    }
+  })
+}
+
 /* 发布元信息 */
 export function publishMetadata(metadata) {
   return request({

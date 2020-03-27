@@ -73,7 +73,7 @@
       },
       // 选中一个角色
       chooseOne(item) {
-        api.getFieldsByID(item.id).then(res => {
+        api.getLimitFieldsById(item.id).then(res => {
           const metadata = res.data.data
           this.chooseDialog = false
           this.$emit('on-choose', {

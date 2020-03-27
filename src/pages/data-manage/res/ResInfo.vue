@@ -547,6 +547,7 @@
                           required: 'Y', // 信息项类型，默认核心项
                           status: 'use', // 启用状态，默认启用
                           tokenizer: '', // 是否分词
+                          directoryId: this.resource.id,
                           // eslint-disable-next-line no-template-curly-in-string
                           checkRules: '{"rules":["$required(obj, value, {\\"message\\":\\"${title}不可以为空\\"})"]}'// 校验配置,校验配置默认配置一个必填项
                         })
