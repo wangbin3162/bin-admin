@@ -37,7 +37,7 @@
     width: 100%;
     background: #ffffff;
     border-radius: 2px;
-    padding: 32px 16px 24px;
+    padding: 24px 16px;
     .edit-form-footer {
       position: fixed;
       right: 0;

@@ -3,7 +3,7 @@ import layout from '../../layout'
 export default {
   path: '/components',
   component: layout,
-  redirect: { name: 'JsonEditor' },
+  redirect: { name: 'JsonEditorDemo' },
   meta: { title: '组件', icon: 'ios-cube' },
   children: [
     {

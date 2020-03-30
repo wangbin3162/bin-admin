@@ -1,6 +1,7 @@
 import layout from '../layout'
 import components from './modules/components'
 import tableDemo from './modules/table-demo'
+import formDemo from './modules/form-demo'
 import errorPage from './modules/error-page'
 import nested from './modules/nested'
 
@@ -18,6 +19,7 @@ import nested from './modules/nested'
 export const asyncRouterMap = [
   components,
   tableDemo,
+  formDemo,
   errorPage,
   nested,
   { path: '*', redirect: '/404', hidden: true }

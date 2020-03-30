@@ -3,7 +3,7 @@ import layout from '../../layout'
 export default {
   path: '/errorPage',
   component: layout,
-  redirect: { name: 'error404' },
+  redirect: { name: 'Error401' },
   meta: { title: '错误页面', icon: 'ios-warning' },
   children: [
     {

@@ -3,8 +3,8 @@ import layout from '../../layout'
 export default {
   path: '/tableDemo',
   component: layout,
-  redirect: { name: 'container' },
-  meta: { title: '表格示例', icon: 'md-grid' },
+  redirect: { name: 'TableDemo' },
+  meta: { title: '表格示例', icon: 'table' },
   children: [
     {
       path: 'tableDemo',
