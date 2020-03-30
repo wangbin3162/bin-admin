@@ -1873,10 +1873,10 @@ bin-charts@^0.4.0:
   dependencies:
     resize-observer-polyfill "^1.5.1"
 
-bin-code-editor@^0.6.0:
-  version "0.6.0"
-  resolved "https://registry.npmjs.org/bin-code-editor/-/bin-code-editor-0.6.0.tgz#41d8881be518640c8ad07cc9ea2a5a95f270c518"
-  integrity sha512-QWVcinEJGPsduzpt97j685i8tpVw0ir6izuzqeUNGAYzr9NnxYH67BE+XAjnGzI7kMmlNEXbwxs1FDvNsIjgGg==
+bin-code-editor@^0.7.0:
+  version "0.7.0"
+  resolved "https://registry.npmjs.org/bin-code-editor/-/bin-code-editor-0.7.0.tgz#bc7a8250d5f5295c6d1e564f736ff93b1687edc1"
+  integrity sha512-lrfI93rNWTOn1cNdvyBIgce5WMkMGn3dG7xT1+tzyYYN0xUPUuwNbDF3B0d0X1JgumN+AAbF/EfTNDtj6gqn3g==
   dependencies:
     codemirror "^5.52.2"
     codemirror-formatting "^1.0.0"
