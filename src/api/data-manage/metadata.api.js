@@ -168,7 +168,7 @@ export function getFieldsByID(id) {
 /* 根据ID元信息fields */
 export function getLimitFieldsById(id) {
   return request({
-    url: '/api/dir/metadata/queryLimitFields',
+    url: '/api/dir/metadata/queryById',
     method: 'get',
     params: {
       id
