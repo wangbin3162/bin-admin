@@ -2,8 +2,8 @@
   <div>
     <page-header-wrap>
       <v-table-wrap>
-          <v-title-bar label="信息项配置"/>
-          <div class="t-right mb-15" style="border-bottom: 1px solid #eee;padding: 10px;">
+        <v-title-bar label="信息项配置" class="mb-20">
+          <div>
             <b-button type="text" @click="openJsonModal">
               <b-icon name="ios-cloud-upload"/>&nbsp;导入json
             </b-button>
@@ -16,13 +16,15 @@
             <b-button type="text">
               <b-icon name="ios-eye"/>&nbsp;预览
             </b-button>&nbsp;&nbsp;
-            Debug：<b-switch v-model="debugJson" size="small"/>
+            Debug：
+            <b-switch v-model="debugJson" size="small"/>
           </div>
-          <fields-cfg/>
-          <!--调试模式-->
-          <b-alert class="mt-15" v-show="debugJson">
-            {{ fields }}
-          </b-alert>
+        </v-title-bar>
+        <fields-cfg v-model="fields"/>
+        <!--调试模式-->
+        <b-alert class="mt-15" v-show="debugJson">
+          {{ fields }}
+        </b-alert>
       </v-table-wrap>
     </page-header-wrap>
     <b-modal v-model="jsonModal" title="导入Json" :z-index="50" width="750px" append-to-body
