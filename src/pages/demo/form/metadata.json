@@ -1,0 +1,34 @@
+[
+  {
+    "fieldName": "name",
+    "fieldTitle": "姓名",
+    "dataType": "string",
+    "dataLength": 64,
+    "controlType": "natPerson",
+    "status": "manage"
+  },
+  {
+    "fieldName": "id_type",
+    "fieldTitle": "证件类型",
+    "dataType": "string",
+    "dataLength": 3,
+    "controlType": "select",
+    "status": "manage"
+  },
+  {
+    "fieldName": "id_code",
+    "fieldTitle": "证件号码",
+    "dataType": "string",
+    "dataLength": 64,
+    "controlType": "text",
+    "status": "manage"
+  },
+  {
+    "id": "c0a86e8f709d1b6281709f2bf72f000e",
+    "metadataId": "c0a86e8f709d1b6281709f2bf71d000d",
+    "fieldName": "test",
+    "fieldTitle": "是否启用",
+    "dataType": "boolean",
+    "fieldSort": 0
+  }
+]
