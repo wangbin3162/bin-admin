@@ -22,9 +22,9 @@
         </v-title-bar>
         <fields-cfg v-model="fields"/>
         <!--调试模式-->
-        <b-alert class="mt-15" v-show="debugJson">
-          {{ fields }}
-        </b-alert>
+        <div class="mt-15" v-show="debugJson">
+          <b-code-editor :value="JSON.stringify(fields,null,2)" readonly/>
+        </div>
       </v-table-wrap>
     </page-header-wrap>
     <b-modal v-model="jsonModal" title="导入Json" :z-index="50" width="750px" append-to-body
