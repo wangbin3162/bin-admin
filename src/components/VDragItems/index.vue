@@ -1,23 +1,20 @@
 <template>
   <div>
     <draggable v-model="totalData"
-               handle=".item"
-               v-bind="{ animation: 200, group: 'item', disabled: false, ghostClass:'item-over' }"
-               @change="onChange">
-      <transition-group name="fade" tag="div" class="item-wrap">
-        <div v-for="(item,index) in totalData" :key="index" class="item"
-             :class="{'is-textarea':item.controlType==='TEXTAREA'}">
-          <!--自定义拖拽实现-->
-          <!--        <div class="item-inner" @click="handleSelect(index)"-->
-          <!--             :class="{'item-selected':currentIndex===index}"-->
-          <!--             draggable="true" @dragstart="onDrag($event,index)" @drop="onDrop($event,index)"-->
-          <!--             @dragenter="onEnter($event)" @dragleave="onLeave($event)" @dragover="allowDrop($event)">-->
-          <div class="item-inner" @click="handleSelect(index)"
-               :class="{'item-selected':currentIndex===index}">
-            {{ item.fieldTitle }}
-          </div>
+               v-bind="{ group: 'item', ghostClass:'item-over', handle: '.item-inner' }"
+               @end="onDragEnd">
+      <div v-for="(item,index) in totalData" :key="index" class="item"
+           :class="{'is-textarea':item.controlType==='TEXTAREA'}">
+        <!--自定义拖拽实现-->
+        <!--        <div class="item-inner" @click="handleSelect(index)"-->
+        <!--             :class="{'item-selected':currentIndex===index}"-->
+        <!--             draggable="true" @dragstart="onDrag($event,index)" @drop="onDrop($event,index)"-->
+        <!--             @dragenter="onEnter($event)" @dragleave="onLeave($event)" @dragover="allowDrop($event)">-->
+        <div class="item-inner" @click="handleSelect(index)"
+             :class="{'item-selected':currentIndex===index}">
+          {{ item.fieldTitle }}
         </div>
-      </transition-group>
+      </div>
     </draggable>
     <b-empty v-if="totalData.length===0">{{noDataText}}</b-empty>
   </div>
@@ -104,12 +101,10 @@
       clearSelect() {
         this.currentIndex = -1
       },
-      onChange(event) {
-        if (event.moved) {
-          let { oldIndex, newIndex } = event.moved
-          if (oldIndex !== newIndex) {
-            this.$emit('on-drag-drop', oldIndex, newIndex)
-          }
+      onDragEnd(event) {
+        let { oldIndex, newIndex } = event
+        if (oldIndex !== newIndex) {
+          this.$emit('on-drag-drop', oldIndex, newIndex)
         }
       }
     }

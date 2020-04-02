@@ -26,14 +26,15 @@
       <!--如果是枚举值类型-->
       <div v-show="isEnum">
         <draggable v-model="arrData"
-                   handle=".move-drag"
-                   v-bind="{ animation: 200,group: 'enum', disabled: false, ghostClass:'ghost' }"
-                   @change="onChange">
+                   v-bind="{ group:'enum', animation: 200, ghostClass:'ghost', handle:'.move-drag' }"
+                   @end="onDragEnd">
           <transition-group name="fade" tag="div" class="enum-list">
             <div v-for="(item,index) in arrData" :key="index" class="enum-item">
               <span class="move-drag"><b-icon name="ios-menu" size="20"/></span>
-              <b-input v-model.trim="arrData[index].code" style="width: 40%;" @on-change="emitValue" placeholder="code"/>&nbsp;
-              <b-input v-model.trim="arrData[index].name" style="width: 40%;" @on-change="emitValue" placeholder="name"/>&nbsp;
+              <b-input v-model.trim="arrData[index].code" style="width: 40%;" @on-change="emitValue"
+                       placeholder="code"/>&nbsp;
+              <b-input v-model.trim="arrData[index].name" style="width: 40%;" @on-change="emitValue"
+                       placeholder="name"/>&nbsp;
               <span class="remove" @click="removeEnumItem(index)">
               <b-icon name="ios-remove-circle-outline" size="22" color="#f5222d"/>
             </span>
@@ -50,7 +51,6 @@
 <script>
   import Draggable from 'vuedraggable'
   import { getValidValue } from './cfg-util'
-  import { deepCopy } from '../../../../../common/utils/assist'
 
   export default {
     name: 'ValidValue',
@@ -94,7 +94,6 @@
             this.dict.name = ''
             this.dict.code = ''
           }
-          console.log(result)
         },
         immediate: true
       }
@@ -127,15 +126,9 @@
         this.arrData.splice(index, 1)
         this.emitValue()
       },
-      onChange(event) {
-        if (event.moved) {
-          let { oldIndex, newIndex } = event.moved
-          // 复制一个data
-          let arr = deepCopy(this.arrData)
-          let temp1 = deepCopy(arr[oldIndex])
-          arr[oldIndex] = deepCopy(arr[newIndex])
-          arr[newIndex] = temp1
-          this.arrData = arr
+      onDragEnd(event) {
+        let { oldIndex, newIndex } = event
+        if (oldIndex !== newIndex) {
           this.emitValue()
         }
       }
@@ -146,9 +139,6 @@
 <style scoped lang="stylus">
   .valid-value-wrap {
     width: 100%;
-  }
-  .enum-list.flip-list-move {
-    transition: transform 1s;
   }
   .enum-item {
     box-sizing: border-box;
