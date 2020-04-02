@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="item-wrap">
     <draggable v-model="totalData"
                v-bind="{ group: 'item', ghostClass:'item-over', handle: '.item-inner' }"
                @end="onDragEnd">

@@ -1,5 +1,9 @@
 <template>
   <div class="valid-value-wrap">
+    <div style="width: 100%;line-height:32px;" flex="main:justify">
+      <span>有效值: </span>
+      <v-toggle-show v-model="showReal" show-text="显示实际值" hide-text="隐藏实际值"/>
+    </div>
     <b-radio-group v-model="normalType">
       <b-radio label="enum">
         <span>枚举</span>
@@ -43,10 +47,13 @@
             </div>
           </transition-group>
         </draggable>
-        <b-button type="text" @click="addNewEnum">添加项</b-button>
+        <b-button type="text" @click="addNewEnum">
+          <b-icon name="ios-add-circle-outline"/>
+          添加项
+        </b-button>
       </div>
     </div>
-    <b-input v-model="validValue" readonly/>
+    <b-input v-show="showReal" v-model="validValue" readonly/>
     <!--字典选择组件-->
     <b-modal v-model="chooseModal" title="选择系统字典" width="860" class="layout-inner" :mask-closable="false">
       <div>
@@ -81,11 +88,12 @@
   import Draggable from 'vuedraggable'
   import { getValidValue } from './cfg-util'
   import commonMixin from '../../../../../common/mixins/mixin'
+  import VToggleShow from '../../../../../components/VToggleShow/index'
 
   export default {
     name: 'ValidValue',
     mixins: [commonMixin],
-    components: { Draggable },
+    components: { VToggleShow, Draggable },
     props: {
       value: {
         type: String
@@ -100,6 +108,7 @@
           code: ''
         },
         arrData: [],
+        showReal: true,
         // 用于选择字典弹窗
         listQuery: {
           groupName: '',
@@ -224,6 +233,7 @@
 <style scoped lang="stylus">
   .valid-value-wrap {
     width: 100%;
+    margin-bottom: 16px;
   }
   .enum-item {
     box-sizing: border-box;

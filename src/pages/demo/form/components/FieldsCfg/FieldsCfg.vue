@@ -2,7 +2,7 @@
   <div class="config-panel" :style="{maxHeight:(maxHeight+2)+'px'}">
     <div class="left-fields">
       <v-title-bar label="信息项" tip-pos="left">
-        <b-tooltip content="可拖动信息项进行布局">
+        <b-tooltip max-width="200" content="点击选中信息项进行配置，也可以拖动元素排序">
           <b-icon name="ios-help-circle" class="pl-10 pr-10"/>
         </b-tooltip>
       </v-title-bar>
@@ -59,13 +59,13 @@
           </b-row>
           <div class="config-line"/>
           <!--有效值-->
-          <b-form-item label="有效值">
-            <valid-value v-model="totalData[currentIndex].validValue" @on-change="emitValue"/>
-          </b-form-item>
+          <valid-value v-model="totalData[currentIndex].validValue" @on-change="emitValue"/>
+          <div class="config-line"/>
           <!--校验-->
-          <b-form-item label="校验">
-            校验字段
-          </b-form-item>
+          <validator v-model="totalData[currentIndex].checkRules"
+                     :control-type="totalData[currentIndex].controlType"
+                     :required="totalData[currentIndex].required"
+                     @on-change="emitValue"/>
           <div class="config-line"/>
           <b-form-item label="启用状态">
             <div style="padding-top: 3px;">
@@ -121,10 +121,11 @@
   import { deepCopy } from '../../../../../common/utils/assist'
   import VDragItems from '../../../../../components/VDragItems/index'
   import ValidValue from './ValidValue'
+  import Validator from './Validator'
 
   export default {
     name: 'FieldsCfg',
-    components: { ValidValue, VDragItems },
+    components: { Validator, ValidValue, VDragItems },
     data() {
       return {
         enumMap: enumObj,
