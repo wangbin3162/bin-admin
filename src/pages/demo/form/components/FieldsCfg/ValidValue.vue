@@ -19,7 +19,7 @@
         </div>
         <div>
           <b-tooltip content="选择字典" theme="light">
-            <b-button icon="ios-play" type="primary" transparent/>
+            <b-button icon="ios-play" type="primary" transparent @click="openDictModal"/>
           </b-tooltip>
         </div>
       </div>
@@ -35,25 +35,56 @@
                        placeholder="code"/>&nbsp;
               <b-input v-model.trim="arrData[index].name" style="width: 40%;" @on-change="emitValue"
                        placeholder="name"/>&nbsp;
-              <span class="remove" @click="removeEnumItem(index)">
-              <b-icon name="ios-remove-circle-outline" size="22" color="#f5222d"/>
-            </span>
+              <b-popover confirm title="确认删除此项吗?" @on-ok="removeEnumItem(index)" width="170">
+                <span class="remove">
+                  <b-icon name="ios-remove-circle-outline" size="22" color="#f5222d"/>
+                </span>
+              </b-popover>
             </div>
           </transition-group>
         </draggable>
         <b-button type="text" @click="addNewEnum">添加项</b-button>
       </div>
     </div>
-    <b-input v-model="total" readonly/>
+    <b-input v-model="validValue" readonly/>
+    <!--字典选择组件-->
+    <b-modal v-model="chooseModal" title="选择系统字典" width="860" class="layout-inner" :mask-closable="false">
+      <div>
+        <!--查询条件-->
+        <v-filter-bar>
+          <v-filter-item title="字典名称">
+            <b-input v-model.trim="listQuery.groupName" placeholder="请输入" clearable size="small"></b-input>
+          </v-filter-item>
+          <v-filter-item title="字典编码" width="230px">
+            <b-input v-model.trim="listQuery.groupCode" placeholder="请输入" clearable size="small"></b-input>
+          </v-filter-item>
+          <!--添加查询按钮位置-->
+          <v-filter-item @on-search="handleFilter" @on-reset="resetQuery"></v-filter-item>
+        </v-filter-bar>
+        <!--中央表格-->
+        <b-table :columns="columns" :data="list" :loading="listLoading" size="small">
+          <!--操作栏-->
+          <template v-slot:action="scope">
+            <b-button type="text" @click="chooseOne(scope.row)">选择</b-button>
+          </template>
+        </b-table>
+      </div>
+      <div slot="footer">
+        <!--下方分页器-->
+        <b-page :total="total" :current.sync="listQuery.page" @on-change="handleCurrentChange"></b-page>
+      </div>
+    </b-modal>
   </div>
 </template>
 
 <script>
   import Draggable from 'vuedraggable'
   import { getValidValue } from './cfg-util'
+  import commonMixin from '../../../../../common/mixins/mixin'
 
   export default {
     name: 'ValidValue',
+    mixins: [commonMixin],
     components: { Draggable },
     props: {
       value: {
@@ -62,13 +93,25 @@
     },
     data() {
       return {
-        total: '',
+        validValue: '',
         normalType: 'enum',
         dict: {
           name: '',
           code: ''
         },
-        arrData: []
+        arrData: [],
+        // 用于选择字典弹窗
+        listQuery: {
+          groupName: '',
+          groupCode: ''
+        },
+        chooseModal: false,
+        columns: [
+          { type: 'index', width: 50, align: 'center' },
+          { title: '字典名称', key: 'groupName' },
+          { title: '字典编码', key: 'groupCode' },
+          { title: '操作', slot: 'action', width: 90, align: 'center' }
+        ]
       }
     },
     computed: {
@@ -82,7 +125,7 @@
     watch: {
       value: {
         handler(val) {
-          this.total = val
+          this.validValue = val
           let result = getValidValue(val)
           this.normalType = result.type // 设置类型
           if (this.isDict) { // 字典值设置字典
@@ -112,6 +155,9 @@
           })
           // 拼接字符串 为[ 1/0;启用/禁用 ]
           result = this.arrData.length === 0 ? '' : (names.join('/') + ';' + codes.join('/'))
+        } else {
+          // 拼接字符串groupName/groupCode
+          result = this.dict.name + '/' + this.dict.code
         }
         this.$emit('input', result)
         this.$emit('on-change', result)
@@ -126,11 +172,50 @@
         this.arrData.splice(index, 1)
         this.emitValue()
       },
+      // 枚举拖拽结束
       onDragEnd(event) {
         let { oldIndex, newIndex } = event
         if (oldIndex !== newIndex) {
           this.emitValue()
         }
+      },
+      // 选择字典模块
+      openDictModal() {
+        this.chooseModal = true
+        this.resetQuery()
+      },
+      // filter-Bar:重置查询条件
+      resetQuery() {
+        this.listQuery = {
+          page: 1,
+          size: 10,
+          groupName: '',
+          groupCode: ''
+        }
+        this.handleFilter()
+      },
+      // 选中一个角色
+      chooseOne(item) {
+        this.dict.name = item.groupName
+        this.dict.code = item.groupCode
+        this.emitValue()
+        this.chooseModal = false
+      },
+      // 查询所有列表
+      searchList() {
+        this.setListData()
+        this.setListData({
+          list: [{ groupName: '自然人证件类型', groupCode: 'natIdType' }, { groupName: '性别', groupCode: 'sex' }],
+          total: 10
+        })
+        // api.getDictGroupList(this.listQuery).then(response => {
+        //   if (response.status === 200) {
+        //     this.setListData({
+        //       list: response.data.rows,
+        //       total: response.data.total
+        //     })
+        //   }
+        // })
       }
     }
   }
