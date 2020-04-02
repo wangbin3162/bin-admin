@@ -25,23 +25,36 @@
       </div>
       <!--如果是枚举值类型-->
       <div v-show="isEnum">
-        <div class="enum-wrap">
-          <div v-for="(item,index) in arrData" :key="index" class="enum-item mb-10">
-            <b-input v-model="arrData[index].code" style="width: 40%;" @on-change="emitValue" placeholder="code"/>
-            <b-input v-model="arrData[index].name" style="width: 40%;" @on-change="emitValue" placeholder="name"/>
-          </div>
-        </div>
+        <draggable v-model="arrData"
+                   handle=".move-drag"
+                   v-bind="{ animation: 200,group: 'enum', disabled: false, ghostClass:'ghost' }"
+                   @change="onChange">
+          <transition-group name="fade" tag="div" class="enum-list">
+            <div v-for="(item,index) in arrData" :key="index" class="enum-item">
+              <span class="move-drag"><b-icon name="ios-menu" size="20"/></span>
+              <b-input v-model.trim="arrData[index].code" style="width: 40%;" @on-change="emitValue" placeholder="code"/>&nbsp;
+              <b-input v-model.trim="arrData[index].name" style="width: 40%;" @on-change="emitValue" placeholder="name"/>&nbsp;
+              <span class="remove" @click="removeEnumItem(index)">
+              <b-icon name="ios-remove-circle-outline" size="22" color="#f5222d"/>
+            </span>
+            </div>
+          </transition-group>
+        </draggable>
+        <b-button type="text" @click="addNewEnum">添加项</b-button>
       </div>
     </div>
-    <b-input v-model="total"/>
+    <b-input v-model="total" readonly/>
   </div>
 </template>
 
 <script>
+  import Draggable from 'vuedraggable'
   import { getValidValue } from './cfg-util'
+  import { deepCopy } from '../../../../../common/utils/assist'
 
   export default {
     name: 'ValidValue',
+    components: { Draggable },
     props: {
       value: {
         type: String
@@ -103,6 +116,28 @@
         }
         this.$emit('input', result)
         this.$emit('on-change', result)
+      },
+      // 添加一项枚举
+      addNewEnum() {
+        this.arrData.push({ code: '', name: '' })
+        this.emitValue()
+      },
+      // 删除一项枚举
+      removeEnumItem(index) {
+        this.arrData.splice(index, 1)
+        this.emitValue()
+      },
+      onChange(event) {
+        if (event.moved) {
+          let { oldIndex, newIndex } = event.moved
+          // 复制一个data
+          let arr = deepCopy(this.arrData)
+          let temp1 = deepCopy(arr[oldIndex])
+          arr[oldIndex] = deepCopy(arr[newIndex])
+          arr[newIndex] = temp1
+          this.arrData = arr
+          this.emitValue()
+        }
       }
     }
   }
@@ -111,5 +146,37 @@
 <style scoped lang="stylus">
   .valid-value-wrap {
     width: 100%;
+  }
+  .enum-list.flip-list-move {
+    transition: transform 1s;
+  }
+  .enum-item {
+    box-sizing: border-box;
+    border: 1px dashed transparent;
+    border-radius: 2px;
+    margin-bottom: 10px;
+    .move-drag {
+      cursor: move;
+      padding: 0 6px 0 2px;
+    }
+    .remove {
+      cursor: pointer;
+    }
+    &.ghost {
+      position: relative;
+      font-size: 0;
+      border: 1px dashed #1089ff;
+      height: 50px;
+      &::after {
+        position: absolute;
+        content: '';
+        background: #fff;
+        display: block;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+      }
+    }
   }
 </style>

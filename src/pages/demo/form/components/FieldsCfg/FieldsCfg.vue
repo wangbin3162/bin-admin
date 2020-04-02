@@ -18,7 +18,7 @@
           <b-row :gutter="15">
             <b-col span="8">
               <b-form-item label="标题" class="bin-form-item-required">
-                <b-input v-model="totalData[currentIndex].fieldTitle" @on-change="emitValue"/>
+                <b-input v-model.trim="totalData[currentIndex].fieldTitle" @on-change="emitValue"/>
               </b-form-item>
             </b-col>
             <b-col span="8">
@@ -106,7 +106,7 @@
           <div class="config-line"/>
           <!--描述-->
           <b-form-item label="信息项描述">
-            <b-input v-model="totalData[currentIndex].fieldDesc"
+            <b-input v-model.trim="totalData[currentIndex].fieldDesc"
                      @on-change="emitValue" placeholder="输入信息项描述" type="textarea"/>
           </b-form-item>
         </b-form>

@@ -1,25 +1,36 @@
 <template>
-  <div class="item-wrap">
-    <div v-for="(item,index) in totalData" :key="index" class="item"
-         :class="{'is-textarea':item.controlType==='TEXTAREA'}"
-    >
-      <div class="item-inner" @click="handleSelect(index)"
-           :class="{'item-selected':currentIndex===index}"
-           draggable="true" @dragstart="onDrag($event,index)" @drop="onDrop($event,index)"
-           @dragenter="onEnter($event)" @dragleave="onLeave($event)" @dragover="allowDrop($event)">
-        {{ item.fieldTitle }}
-      </div>
-    </div>
+  <div>
+    <draggable v-model="totalData"
+               handle=".item"
+               v-bind="{ animation: 200, group: 'item', disabled: false, ghostClass:'item-over' }"
+               @change="onChange">
+      <transition-group name="fade" tag="div" class="item-wrap">
+        <div v-for="(item,index) in totalData" :key="index" class="item"
+             :class="{'is-textarea':item.controlType==='TEXTAREA'}">
+          <!--自定义拖拽实现-->
+          <!--        <div class="item-inner" @click="handleSelect(index)"-->
+          <!--             :class="{'item-selected':currentIndex===index}"-->
+          <!--             draggable="true" @dragstart="onDrag($event,index)" @drop="onDrop($event,index)"-->
+          <!--             @dragenter="onEnter($event)" @dragleave="onLeave($event)" @dragover="allowDrop($event)">-->
+          <div class="item-inner" @click="handleSelect(index)"
+               :class="{'item-selected':currentIndex===index}">
+            {{ item.fieldTitle }}
+          </div>
+        </div>
+      </transition-group>
+    </draggable>
     <b-empty v-if="totalData.length===0">{{noDataText}}</b-empty>
   </div>
 </template>
 
 <script>
+  import Draggable from 'vuedraggable'
   import { addClass, removeClass } from 'bin-ui/src/utils/dom'
   import { deepCopy } from '../../common/utils/assist'
 
   export default {
     name: 'VDragItems',
+    components: { Draggable },
     props: {
       value: {
         type: Array,
@@ -92,6 +103,14 @@
       // 清空选中
       clearSelect() {
         this.currentIndex = -1
+      },
+      onChange(event) {
+        if (event.moved) {
+          let { oldIndex, newIndex } = event.moved
+          if (oldIndex !== newIndex) {
+            this.$emit('on-drag-drop', oldIndex, newIndex)
+          }
+        }
       }
     }
   }
@@ -110,6 +129,7 @@
     &-inner {
       cursor: pointer;
       border: 1px solid #d9d9d9;
+      background: #fff;
       border-radius: 2px;
       line-height: 32px;
       padding: 0 5px;
@@ -122,8 +142,7 @@
       }
     }
     &-over {
-      transition: .2s;
-      border: 1px dashed rgba(16, 137, 255, 0.5);
+      opacity: .5;
       box-shadow: 0 0 20px inset rgba(16, 137, 255, 0.5);
     }
     &-selected {
