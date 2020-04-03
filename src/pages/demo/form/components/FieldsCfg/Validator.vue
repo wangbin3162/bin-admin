@@ -14,7 +14,7 @@
       </div>
     </div>
     <div class="mb-15">
-      <b-checkbox v-model="isRequired">必填项</b-checkbox>&nbsp;&nbsp;
+      <b-checkbox v-model="isRequired" @on-change="requiredChange">必填项</b-checkbox>&nbsp;&nbsp;
     </div>
     <div v-show="showReal">
       <b-input :value="value" readonly/>
@@ -82,7 +82,7 @@
               this.checkRules = new Map(map)
               console.log('=======update value end=======') // 调试，可禁用
               // 再根据是否包含必填校验判断
-              this.isRequired = this.checkRules.has(ruleName.required) || this.required === 'Y'
+              this.isRequired = this.checkRules.has(ruleName.required)
             }
           } catch (e) {
             this.$log.danger('非标准json初始化')
@@ -91,20 +91,11 @@
         },
         immediate: true
       },
-      required(val) {
-        this.isRequired = val === 'Y' // 根据是否是核心项来设置是否是必填
-      },
-      isRequired: {
-        handler(val) {
-          if (val) {
-            console.log('set required')
-            this.setRules(ruleName.required)
-          } else {
-            console.log('remove required')
-            this.removeRules(ruleName.required)
-          }
-        },
-        immediate: true
+      required(val) { // 根据是否是核心项来设置是否是必填
+        if (val === 'Y') {
+          this.isRequired = true
+          this.setRules(ruleName.required)
+        }
       },
       fieldTitle() {
         if (this.checkRules.has(ruleName.required)) {
@@ -137,10 +128,20 @@
         }
         this.emitValue()
       },
+      // 必填项改变操作
+      requiredChange(val) {
+        if (val) {
+          console.log('set required')
+          this.setRules(ruleName.required)
+        } else {
+          console.log('remove required')
+          this.removeRules(ruleName.required)
+        }
+      },
       // 刷新重载rules
       refreshRule() {
         this.checkRules.clear()
-        if (this.isRequired) {
+        if (this.required) {
           this.setRules(ruleName.required)
         } else {
           this.emitEmptyValue()
