@@ -17,8 +17,8 @@
       <b-checkbox v-model="isRequired" @on-change="requiredChange">必填项</b-checkbox>&nbsp;&nbsp;
     </div>
     <div v-show="showReal">
-      <b-input :value="value" readonly/>
-      <!--      <b-code-editor :value="JSON.stringify(rulesObj,null,2)" readonly/>-->
+      <b-alert>{{value}}</b-alert>
+      <!--<b-code-editor :value="JSON.stringify(rulesObj,null,2)" readonly/>-->
     </div>
   </div>
 </template>
