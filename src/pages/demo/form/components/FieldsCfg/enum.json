@@ -2,7 +2,6 @@
   "dataType": {
     "string": "字符型",
     "number": "数值型",
-    "boolean": "逻辑型",
     "date": "日期型",
     "datetime": "日期时间型",
     "text": "备注型"

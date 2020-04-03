@@ -69,7 +69,7 @@
             fieldTitle: item.fieldTitle, // 元信息标题
             dataType: item.dataType, // 数据类型
             openType: 'PUBLIC', // 信息项公开类型,默认社会公开
-            controlType: 'TEXT', // 控件类型,默认文本框
+            controlType: item.dataType === 'number' ? 'NUMBER_TEXT' : 'TEXT', // 控件类型,默认文本框
             fieldDesc: '', // 提示信息
             validValue: '', // 有效值
             maskModel: '', // 掩码方式

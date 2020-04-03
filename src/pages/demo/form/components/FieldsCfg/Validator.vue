@@ -26,6 +26,9 @@
       },
       controlType: { // 控件类型，用于判断trigger 类型，blur or change
         type: String
+      },
+      dataType: { // 数据类型，用于判断校验器的输入类型
+        type: String
       }
     },
     data() {

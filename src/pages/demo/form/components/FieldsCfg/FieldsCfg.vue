@@ -45,7 +45,7 @@
             <b-col span="8">
               <b-form-item label="控件类型" class="bin-form-item-required">
                 <b-select v-model="totalData[currentIndex].controlType" @on-change="emitValue">
-                  <b-option v-for="(value,key) in enumMap.controlType" :key="key" :value="key">{{ value }}</b-option>
+                  <b-option v-for="(value,key) in controlTypeFilter" :key="key" :value="key">{{ value }}</b-option>
                 </b-select>
               </b-form-item>
             </b-col>
@@ -64,6 +64,7 @@
           <!--校验-->
           <validator v-model="totalData[currentIndex].checkRules"
                      :control-type="totalData[currentIndex].controlType"
+                     :data-type="totalData[currentIndex].dataType"
                      :required="totalData[currentIndex].required"
                      @on-change="emitValue"/>
           <div class="config-line"/>
@@ -168,6 +169,65 @@
           return item.dataType !== 'string' || item.validValue.length > 0
         }
         return false
+      },
+      // 根据数据类型选定控件类型
+      controlTypeFilter() {
+        if (this.currentIndex === -1) {
+          return []
+        }
+        // "controlType": {
+        //     "TEXT": "文本框",
+        //     "NUMBER_TEXT": "数值文本框",
+        //     "SELECT": "下拉框",
+        //     "DATE": "日期",
+        //     "DATE_TIME": "日期时间",
+        //     "TEXTAREA": "文本域",
+        //     "NAT_PERSON": "选择自然人",
+        //     "LEG_PERSON": "选择法人",
+        //     "CROP_REP": "选择法人代表",
+        //     "NAT_OR_LEG_PERSON": "选择自然人或法人",
+        //     "FILE_UPLOAD": "文件上传",
+        //     "DEPART": "选择部门"
+        // }
+        const controlType = this.enumMap.controlType
+        const dataType = this.totalData[this.currentIndex].dataType
+        switch (dataType) {
+          case 'number':
+            return {
+              'NUMBER_TEXT': '数值文本框'
+            }
+          case 'date':
+            return {
+              'TEXT': '文本框',
+              'DATE': '日期'
+            }
+          case 'datetime':
+            return {
+              'TEXT': '文本框',
+              'DATE_TIME': '日期时间'
+            }
+          case 'text':
+            return {
+              'TEXT': '文本框',
+              'TEXTAREA': '文本域'
+            }
+          case 'string':
+            return {
+              'TEXT': '文本框',
+              'SELECT': '下拉框',
+              'DATE': '日期',
+              'DATE_TIME': '日期时间',
+              'TEXTAREA': '文本域',
+              'NAT_PERSON': '选择自然人',
+              'LEG_PERSON': '选择法人',
+              'CROP_REP': '选择法人代表',
+              'NAT_OR_LEG_PERSON': '选择自然人或法人',
+              'FILE_UPLOAD': '文件上传',
+              'DEPART': '选择部门'
+            }
+          default:
+            return controlType
+        }
       }
     },
     methods: {
