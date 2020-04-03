@@ -8,7 +8,7 @@
     "dataType": "string",
     "required": "Y",
     "validValue": "",
-    "checkRules": "{\"rules\":[\"$required(obj, value, {\\\"message\\\":\\\"${title}不可以为空\\\"})\"]}",
+    "checkRules": "{\"$required\":{\"required\":true,\"message\":\"姓名必填\",\"trigger\":\"blur\"},\"$length\":{\"max\":6,\"message\":\"长度范围\",\"trigger\":\"blur\"}}",
     "params": null,
     "controlType": "NAT_PERSON",
     "maskModel": "",

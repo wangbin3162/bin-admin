@@ -12,7 +12,7 @@
     </div>
     <div class="right-panel">
       <v-title-bar label="配置项" tip-pos="left"/>
-      <div class="config-item" v-if="currentIndex!==-1">
+      <div class="config-item" v-if="currentIndex>-1">
         <b-form v-model="totalData[currentIndex]" label-position="top">
           <!--标题，字段名，数据类型-->
           <b-row :gutter="15">
@@ -63,6 +63,8 @@
           <div class="config-line"/>
           <!--校验-->
           <validator v-model="totalData[currentIndex].checkRules"
+                     :field-name="totalData[currentIndex].fieldName"
+                     :field-title="totalData[currentIndex].fieldTitle"
                      :control-type="totalData[currentIndex].controlType"
                      :data-type="totalData[currentIndex].dataType"
                      :required="totalData[currentIndex].required"
@@ -154,6 +156,12 @@
     watch: {
       value: {
         handler(val) {
+          if (val.length === 0) {
+            this.currentIndex = -1
+            this.totalData = []
+            this.$refs.dragItems && this.$refs.dragItems.clearSelect()
+            return
+          }
           this.totalData = this.formatItems(val)
         },
         immediate: true

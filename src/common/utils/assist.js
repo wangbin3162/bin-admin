@@ -1,4 +1,4 @@
-function typeOf (obj) {
+export function typeOf(obj) {
   const toString = Object.prototype.toString
   const map = {
     '[object Boolean]': 'boolean',
@@ -16,7 +16,7 @@ function typeOf (obj) {
 }
 
 // deepCopy
-export function deepCopy (data) {
+export function deepCopy(data) {
   const t = typeOf(data)
   let o
 
