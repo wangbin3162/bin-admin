@@ -14,53 +14,56 @@
       <v-title-bar label="配置项" tip-pos="left"/>
       <div class="config-item" v-if="currentIndex>-1">
         <b-form v-model="totalData[currentIndex]" label-position="top">
-          <!--标题，字段名，数据类型-->
-          <b-row :gutter="15">
-            <b-col span="8">
-              <b-form-item label="标题" class="bin-form-item-required">
-                <b-input v-model.trim="totalData[currentIndex].fieldTitle" @on-change="emitValue"/>
-              </b-form-item>
-            </b-col>
-            <b-col span="8">
-              <b-form-item label="字段名" class="bin-form-item-required">
-                <b-input :value="totalData[currentIndex].fieldName" disabled/>
-              </b-form-item>
-            </b-col>
-            <b-col span="8">
-              <b-form-item label="数据类型" class="bin-form-item-required">
-                <b-input :value="enumMap.dataType[totalData[currentIndex].dataType]" disabled/>
-              </b-form-item>
-            </b-col>
-          </b-row>
-          <div class="config-line"/>
-          <!--信息项类型，控件类型，公开类型-->
-          <b-row :gutter="15">
-            <b-col span="8">
-              <b-form-item label="信息项类型" class="bin-form-item-required">
-                <b-select v-model="totalData[currentIndex].required" @on-change="emitValue">
-                  <b-option v-for="(value,key) in enumMap.required" :key="key" :value="key">{{ value }}</b-option>
-                </b-select>
-              </b-form-item>
-            </b-col>
-            <b-col span="8">
-              <b-form-item label="控件类型" class="bin-form-item-required">
-                <b-select v-model="totalData[currentIndex].controlType" @on-change="emitValue">
-                  <b-option v-for="(value,key) in controlTypeFilter" :key="key" :value="key">{{ value }}</b-option>
-                </b-select>
-              </b-form-item>
-            </b-col>
-            <b-col span="8">
-              <b-form-item label="公开类型" class="bin-form-item-required">
-                <b-select v-model="totalData[currentIndex].openType" @on-change="emitValue">
-                  <b-option v-for="(value,key) in enumMap.openType" :key="key" :value="key">{{ value }}</b-option>
-                </b-select>
-              </b-form-item>
-            </b-col>
-          </b-row>
-          <div class="config-line"/>
-          <!--有效值-->
-          <valid-value v-model="totalData[currentIndex].validValue" @on-change="emitValue"/>
-          <div class="config-line"/>
+          <!--仅调试校验时开启-->
+          <template v-if="!onlyValidator">
+            <!--标题，字段名，数据类型-->
+            <b-row :gutter="15">
+              <b-col span="8">
+                <b-form-item label="标题" class="bin-form-item-required">
+                  <b-input v-model.trim="totalData[currentIndex].fieldTitle" @on-change="emitValue"/>
+                </b-form-item>
+              </b-col>
+              <b-col span="8">
+                <b-form-item label="字段名" class="bin-form-item-required">
+                  <b-input :value="totalData[currentIndex].fieldName" disabled/>
+                </b-form-item>
+              </b-col>
+              <b-col span="8">
+                <b-form-item label="数据类型" class="bin-form-item-required">
+                  <b-input :value="enumMap.dataType[totalData[currentIndex].dataType]" disabled/>
+                </b-form-item>
+              </b-col>
+            </b-row>
+            <div class="config-line"/>
+            <!--信息项类型，控件类型，公开类型-->
+            <b-row :gutter="15">
+              <b-col span="8">
+                <b-form-item label="信息项类型" class="bin-form-item-required">
+                  <b-select v-model="totalData[currentIndex].required" @on-change="emitValue">
+                    <b-option v-for="(value,key) in enumMap.required" :key="key" :value="key">{{ value }}</b-option>
+                  </b-select>
+                </b-form-item>
+              </b-col>
+              <b-col span="8">
+                <b-form-item label="控件类型" class="bin-form-item-required">
+                  <b-select v-model="totalData[currentIndex].controlType" @on-change="emitValue">
+                    <b-option v-for="(value,key) in controlTypeFilter" :key="key" :value="key">{{ value }}</b-option>
+                  </b-select>
+                </b-form-item>
+              </b-col>
+              <b-col span="8">
+                <b-form-item label="公开类型" class="bin-form-item-required">
+                  <b-select v-model="totalData[currentIndex].openType" @on-change="emitValue">
+                    <b-option v-for="(value,key) in enumMap.openType" :key="key" :value="key">{{ value }}</b-option>
+                  </b-select>
+                </b-form-item>
+              </b-col>
+            </b-row>
+            <div class="config-line"/>
+            <!--有效值-->
+            <valid-value v-model="totalData[currentIndex].validValue" @on-change="emitValue"/>
+            <div class="config-line"/>
+          </template>
           <!--校验-->
           <validator v-model="totalData[currentIndex].checkRules"
                      :field-name="totalData[currentIndex].fieldName"
@@ -69,49 +72,52 @@
                      :data-type="totalData[currentIndex].dataType"
                      :required="totalData[currentIndex].required"
                      @on-change="emitValue"/>
-          <div class="config-line"/>
-          <b-form-item label="启用状态">
-            <div style="padding-top: 3px;">
-              <b-switch v-model="totalData[currentIndex].status"
-                        true-value="use" false-value="ignore"
-                        @on-change="emitValue"/>&nbsp;&nbsp;
-              <b-tag :type="totalData[currentIndex].status==='use'?'primary':'danger'" no-border font-size="14px">
-                {{ enumMap.status[totalData[currentIndex].status] }}
-              </b-tag>
-            </div>
-          </b-form-item>
-          <div class="config-line"/>
-          <!--分词，加密，掩码-->
-          <b-row :gutter="15">
-            <b-col span="8">
-              <b-form-item label="是否分词">
-                <b-select v-model="totalData[currentIndex].tokenizer" clearable @on-change="emitValue"
-                          :disabled="tokenizerDisabled">
-                  <b-option v-for="(value,key) in enumMap.tokenizer" :key="key" :value="key">{{ value }}</b-option>
-                </b-select>
-              </b-form-item>
-            </b-col>
-            <b-col span="8">
-              <b-form-item label="是否加密">
-                <b-select v-model="totalData[currentIndex].isEncrypt" clearable @on-change="emitValue">
-                  <b-option v-for="(value,key) in enumMap.isEncrypt" :key="key" :value="key">{{ value }}</b-option>
-                </b-select>
-              </b-form-item>
-            </b-col>
-            <b-col span="8">
-              <b-form-item label="掩码方式">
-                <b-select v-model="totalData[currentIndex].maskModel" clearable @on-change="emitValue">
-                  <b-option v-for="(value,key) in enumMap.maskModel" :key="key" :value="key">{{ value }}</b-option>
-                </b-select>
-              </b-form-item>
-            </b-col>
-          </b-row>
-          <div class="config-line"/>
-          <!--描述-->
-          <b-form-item label="信息项描述">
-            <b-input v-model.trim="totalData[currentIndex].fieldDesc"
-                     @on-change="emitValue" placeholder="输入信息项描述" type="textarea"/>
-          </b-form-item>
+          <!--仅调试校验时开启-->
+          <template v-if="!onlyValidator">
+            <div class="config-line"/>
+            <b-form-item label="启用状态">
+              <div style="padding-top: 3px;">
+                <b-switch v-model="totalData[currentIndex].status"
+                          true-value="use" false-value="ignore"
+                          @on-change="emitValue"/>&nbsp;&nbsp;
+                <b-tag :type="totalData[currentIndex].status==='use'?'primary':'danger'" no-border font-size="14px">
+                  {{ enumMap.status[totalData[currentIndex].status] }}
+                </b-tag>
+              </div>
+            </b-form-item>
+            <div class="config-line"/>
+            <!--分词，加密，掩码-->
+            <b-row :gutter="15">
+              <b-col span="8">
+                <b-form-item label="是否分词">
+                  <b-select v-model="totalData[currentIndex].tokenizer" clearable @on-change="emitValue"
+                            :disabled="tokenizerDisabled">
+                    <b-option v-for="(value,key) in enumMap.tokenizer" :key="key" :value="key">{{ value }}</b-option>
+                  </b-select>
+                </b-form-item>
+              </b-col>
+              <b-col span="8">
+                <b-form-item label="是否加密">
+                  <b-select v-model="totalData[currentIndex].isEncrypt" clearable @on-change="emitValue">
+                    <b-option v-for="(value,key) in enumMap.isEncrypt" :key="key" :value="key">{{ value }}</b-option>
+                  </b-select>
+                </b-form-item>
+              </b-col>
+              <b-col span="8">
+                <b-form-item label="掩码方式">
+                  <b-select v-model="totalData[currentIndex].maskModel" clearable @on-change="emitValue">
+                    <b-option v-for="(value,key) in enumMap.maskModel" :key="key" :value="key">{{ value }}</b-option>
+                  </b-select>
+                </b-form-item>
+              </b-col>
+            </b-row>
+            <div class="config-line"/>
+            <!--描述-->
+            <b-form-item label="信息项描述">
+              <b-input v-model.trim="totalData[currentIndex].fieldDesc"
+                       @on-change="emitValue" placeholder="输入信息项描述" type="textarea"/>
+            </b-form-item>
+          </template>
         </b-form>
       </div>
       <b-empty v-else>没有选择信息项</b-empty>
@@ -139,7 +145,8 @@
         ],
         totalData: [],
         currentIndex: -1,
-        editItem: null
+        editItem: null,
+        onlyValidator: true
       }
     },
     props: {

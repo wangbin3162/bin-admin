@@ -13,8 +13,21 @@
         <v-toggle-show v-model="showReal" show-text="显示实际值" hide-text="隐藏实际值"/>
       </div>
     </div>
-    <div class="mb-15">
+    <div class="mb-10">
       <b-checkbox v-model="isRequired" @on-change="requiredChange">必填项</b-checkbox>&nbsp;&nbsp;
+    </div>
+    <!--必填项参数-->
+    <div v-if="rulesObj['$required']">
+      <b-row :gutter="10">
+        <b-col span="12">
+          错误提示信息：
+          <b-input v-model="rulesObj['$required'].message" size="mini" @on-change="emitParamsToValue"/>
+        </b-col>
+        <b-col span="12">
+          触发事件：
+          <b-input v-model="rulesObj['$required'].trigger" size="mini" @on-change="emitParamsToValue"/>
+        </b-col>
+      </b-row>
     </div>
     <div v-show="showReal">
       <b-alert>{{value}}</b-alert>
@@ -25,7 +38,7 @@
 
 <script>
   import VToggleShow from '../../../../../components/VToggleShow/index'
-  import { ruleName } from './validator'
+  import { ruleName } from './validator.cfg'
 
   export default {
     name: 'Validator',
@@ -104,7 +117,7 @@
       }
     },
     methods: {
-      // add rules
+      // 增加校验，即增加默认参数配置
       setRules(ruleType) {
         switch (ruleType) {
           case ruleName.required:
@@ -114,7 +127,7 @@
             break
           case ruleName.length:
             this.checkRules.set(ruleType,
-              { max: 10, message: '长度范围不合法', trigger: this.triggerType }
+              { min: 0, max: 64, message: '长度范围不合法', trigger: this.triggerType }
             )
             break
           default:
@@ -146,6 +159,12 @@
         } else {
           this.emitEmptyValue()
         }
+      },
+      // 更新参数
+      emitParamsToValue() {
+        const rules = JSON.stringify(this.rulesObj)
+        this.$emit('input', rules)
+        this.$emit('on-change', rules)
       },
       // 更新model value
       emitValue() {

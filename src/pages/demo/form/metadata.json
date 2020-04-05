@@ -4,7 +4,7 @@
     "fieldTitle": "姓名",
     "dataType": "string",
     "dataLength": 64,
-    "controlType": "natPerson",
+    "controlType": "text",
     "status": "manage"
   },
   {
