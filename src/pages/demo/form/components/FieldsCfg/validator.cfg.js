@@ -14,13 +14,7 @@ export const validatorBuild = {
   // 长度 opts: { min,max,message,trigger }
   $length: function (opts) {
     return {
-      validator: (rule, value, callback, source, options) => {
-        console.log('===validator===')
-        console.log(rule, value)
-        console.log('===source===')
-        console.log(source)
-        console.log('===options===')
-        console.log(options)
+      validator: (rule, value, callback) => {
         let len = value.length
         if (len <= opts.max) {
           callback()
@@ -33,16 +27,13 @@ export const validatorBuild = {
   },
   // 条件必填 opts: { preField, preFieldValue,message,trigger} obj:form
   $conditionRequired: function (opts, obj) {
-    console.log(obj)
     if (!obj) {
       return null
     }
     return {
       validator: (rule, value, callback) => {
-        console.log(obj)
         let preField = obj[opts.preField]// 前置字段当前值
         let preFieldValue = opts.preFieldValue// 前置字段需要匹配的值
-        console.log(preField, preFieldValue)
         if ((preField == null && typeof preFieldValue === 'undefined') ||
           (preField && (preField === preFieldValue || (preField.length === 0 && typeof preFieldValue === 'undefined')))
         ) {
