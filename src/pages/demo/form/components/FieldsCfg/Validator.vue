@@ -23,6 +23,7 @@
         <b-dropdown-menu slot="list">
           <b-dropdown-item @click.native="setRules(RULE.length)">长度</b-dropdown-item>
           <b-dropdown-item @click.native="setRules(RULE.email)">邮箱</b-dropdown-item>
+          <b-dropdown-item @click.native="setRules(RULE.phone)">手机号码</b-dropdown-item>
         </b-dropdown-menu>
       </b-dropdown>
     </div>
@@ -113,6 +114,31 @@
         </b-popover>
       </div>
     </div>
+    <!--手机号码-->
+    <div class="params" v-if="rulesObj[RULE.phone]">
+      <div class="title">
+        <span class="param-tip">规则名：</span>
+        <b-tag type="primary" no-border :tag-style="{padding:'3px 5px',margin:'0'}">手机号码</b-tag>
+      </div>
+      <div class="info">
+        <span class="param-tip">错误提示：</span>
+        <b-input v-model.trim="rulesObj[RULE.phone].message" size="mini"
+                 @on-change="emitParamsToValue"/>
+      </div>
+      <div class="trigger">
+        <span class="param-tip">触发事件：</span>
+        <b-input v-model.trim="rulesObj[RULE.phone].trigger" size="mini"
+                 @on-change="emitParamsToValue"/>
+      </div>
+      <div class="delete">
+        <b-popover confirm title="确认删除此项吗?" width="170" style="margin-top: 16px;"
+                   @on-ok="removeRules(RULE.phone)">
+          <span class="remove">
+            <b-icon name="ios-remove-circle-outline" size="22" color="#f5222d"/>
+          </span>
+        </b-popover>
+      </div>
+    </div>
     <div v-show="showReal">
       <b-alert>{{value}}</b-alert>
       <!--<b-code-editor :value="JSON.stringify(rulesObj,null,2)" readonly/>-->
@@ -162,6 +188,7 @@
       triggerType() {
         return ['TEXT', 'TEXTAREA'].indexOf(this.controlType) > -1 ? 'blur' : 'change'
       },
+      // 默认配置模块
       normalCfg() {
         return {
           type: this.dataType === 'number' ? 'number' : 'string',
@@ -234,6 +261,12 @@
           case RULE.email:
             this.checkRules.set(ruleType, {
               message: '邮箱格式不正确',
+              ...this.normalCfg
+            })
+            break
+          case RULE.phone:
+            this.checkRules.set(ruleType, {
+              message: '手机号格式不正确',
               ...this.normalCfg
             })
             break

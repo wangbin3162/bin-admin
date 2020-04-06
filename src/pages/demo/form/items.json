@@ -198,7 +198,7 @@
     "dataType": "number",
     "required": "Y",
     "validValue": "",
-    "checkRules": "{\"$required\":{\"required\":true,\"message\":\"姓名必填\",\"type\":\"number\",\"trigger\":\"change\"},\"$length\":{\"min\":0,\"max\":10,\"message\":\"长度范围\",\"trigger\":\"change\"}}",
+    "checkRules": "{\"$required\":{\"required\":true,\"message\":\"姓名必填\",\"type\":\"number\",\"trigger\":\"change\"},\"$length\":{\"min\":0,\"max\":10,\"message\":\"长度范围\",\"type\":\"number\",\"trigger\":\"change\"}}",
     "params": null,
     "controlType": "NUMBER_TEXT",
     "maskModel": "",

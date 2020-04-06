@@ -1,24 +1,29 @@
 export const RULE = {
   required: '$required',
   length: '$length',
-  email: '$email'
+  email: '$email',
+  phone: '$phone'
 }
 
 /**
  * 校验生成器对象根据不同类型的校验返回符合form-item类型的校验对象
  */
 export const validatorBuild = {
-  // 必填字段 opts: { message,trigger }
+  // 必填字段 opts: { message,trigger,type}
   $required: function (opts) {
     return { required: true, message: opts.message, trigger: opts.trigger, type: opts.type }
   },
-  // 长度 opts: { min,max,message,trigger }
+  // 长度 opts: { min,max,message,trigger,type }
   $length: function (opts) {
     return { min: opts.min, max: opts.max, message: opts.message, trigger: opts.trigger, type: opts.type }
   },
   // 邮箱 opts: { message,trigger }
   $email: function (opts) {
     return { type: 'email', message: opts.message, trigger: opts.trigger }
+  },
+  // 手机号 opts: { message,trigger }
+  $phone: function (opts) {
+    return { pattern: /^((0\d{2,3}-\d{7,8})|(1[35874]\d{9}))$/, message: opts.message, trigger: opts.trigger }
   },
   // 条件必填 opts: { preField, preFieldValue,message,trigger} obj:form
   $conditionRequired: function (opts, obj) {
