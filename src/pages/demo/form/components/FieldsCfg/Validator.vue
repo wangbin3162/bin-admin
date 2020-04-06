@@ -14,7 +14,8 @@
       </div>
     </div>
     <div class="mb-10">
-      <b-checkbox v-model="isRequired" @on-change="requiredChange">必填项</b-checkbox>&nbsp;&nbsp;
+      <b-checkbox v-model="isRequired" @on-change="requiredChange">必填项</b-checkbox>
+      <b-divider type="vertical"/>
       <b-dropdown>
         <a href="javascript:void(0)">
           一般规则
@@ -26,6 +27,18 @@
           <b-dropdown-item @click.native="setRules(RULE.phone)">手机号码</b-dropdown-item>
           <b-dropdown-item @click.native="setRules(RULE.idCode)">身份证号</b-dropdown-item>
           <b-dropdown-item @click.native="setRules(RULE.regexp)">正则匹配</b-dropdown-item>
+        </b-dropdown-menu>
+      </b-dropdown>
+      <b-divider type="vertical"/>
+      <b-dropdown>
+        <a href="javascript:void(0)" :style="{ color: '#fa8c16' }">
+          信息项规则
+          <b-icon name="ios-arrow-down"></b-icon>
+        </a>
+        <b-dropdown-menu slot="list">
+          <b-dropdown-item @click.native="setRules(RULE.unifiedCode)">统一社会信用代码</b-dropdown-item>
+          <b-dropdown-item @click.native="setRules(RULE.orgInstCode)">组织机构代码</b-dropdown-item>
+          <b-dropdown-item @click.native="setRules(RULE.regNo)">工商注册号</b-dropdown-item>
         </b-dropdown-menu>
       </b-dropdown>
     </div>
@@ -206,6 +219,96 @@
         </b-popover>
       </div>
     </div>
+    <!--统一社会信用代码-->
+    <div class="params" v-if="rulesObj[RULE.unifiedCode]">
+      <div class="title">
+        <span class="param-tip">规则名：</span>
+        <b-tag type="primary" no-border :tag-style="{padding:'3px 5px',margin:'0'}">统一社会...</b-tag>
+      </div>
+      <div class="info">
+        <span class="param-tip">错误提示：</span>
+        <b-input v-model.trim="rulesObj[RULE.unifiedCode].message" size="mini"
+                 @on-change="emitParamsToValue"/>
+      </div>
+      <div class="number" style="padding-left: 10px;">
+        <span class="param-tip">忽略大小写：</span>
+        <b-switch v-model="rulesObj[RULE.unifiedCode].ignoreCase" size="small"
+                  @on-change="emitParamsToValue"/>
+      </div>
+      <div class="trigger">
+        <span class="param-tip">触发事件：</span>
+        <b-input v-model.trim="rulesObj[RULE.unifiedCode].trigger" size="mini"
+                 @on-change="emitParamsToValue"/>
+      </div>
+      <div class="delete">
+        <b-popover confirm title="确认删除此项吗?" width="170" style="margin-top: 16px;"
+                   @on-ok="removeRules(RULE.unifiedCode)">
+          <span class="remove">
+            <b-icon name="ios-remove-circle-outline" size="22" color="#f5222d"/>
+          </span>
+        </b-popover>
+      </div>
+    </div>
+    <!--组织机构代码-->
+    <div class="params" v-if="rulesObj[RULE.orgInstCode]">
+      <div class="title">
+        <span class="param-tip">规则名：</span>
+        <b-tag type="primary" no-border :tag-style="{padding:'3px 5px',margin:'0'}">组织机构...</b-tag>
+      </div>
+      <div class="info">
+        <span class="param-tip">错误提示：</span>
+        <b-input v-model.trim="rulesObj[RULE.orgInstCode].message" size="mini"
+                 @on-change="emitParamsToValue"/>
+      </div>
+      <div class="number" style="padding-left: 10px;">
+        <span class="param-tip">忽略大小写：</span>
+        <b-switch v-model="rulesObj[RULE.orgInstCode].ignoreCase" size="small"
+                  @on-change="emitParamsToValue"/>
+      </div>
+      <div class="trigger">
+        <span class="param-tip">触发事件：</span>
+        <b-input v-model.trim="rulesObj[RULE.orgInstCode].trigger" size="mini"
+                 @on-change="emitParamsToValue"/>
+      </div>
+      <div class="delete">
+        <b-popover confirm title="确认删除此项吗?" width="170" style="margin-top: 16px;"
+                   @on-ok="removeRules(RULE.orgInstCode)">
+          <span class="remove">
+            <b-icon name="ios-remove-circle-outline" size="22" color="#f5222d"/>
+          </span>
+        </b-popover>
+      </div>
+    </div>
+    <!--工商注册号-->
+    <div class="params" v-if="rulesObj[RULE.regNo]">
+      <div class="title">
+        <span class="param-tip">规则名：</span>
+        <b-tag type="primary" no-border :tag-style="{padding:'3px 5px',margin:'0'}">工商注册号</b-tag>
+      </div>
+      <div class="info">
+        <span class="param-tip">错误提示：</span>
+        <b-input v-model.trim="rulesObj[RULE.regNo].message" size="mini"
+                 @on-change="emitParamsToValue"/>
+      </div>
+      <div class="number" style="padding-left: 10px;">
+        <span class="param-tip">忽略大小写：</span>
+        <b-switch v-model="rulesObj[RULE.regNo].ignoreCase" size="small"
+                  @on-change="emitParamsToValue"/>
+      </div>
+      <div class="trigger">
+        <span class="param-tip">触发事件：</span>
+        <b-input v-model.trim="rulesObj[RULE.regNo].trigger" size="mini"
+                 @on-change="emitParamsToValue"/>
+      </div>
+      <div class="delete">
+        <b-popover confirm title="确认删除此项吗?" width="170" style="margin-top: 16px;"
+                   @on-ok="removeRules(RULE.regNo)">
+          <span class="remove">
+            <b-icon name="ios-remove-circle-outline" size="22" color="#f5222d"/>
+          </span>
+        </b-popover>
+      </div>
+    </div>
     <div v-show="showReal">
       <b-alert>{{value}}</b-alert>
       <!--<b-code-editor :value="JSON.stringify(rulesObj,null,2)" readonly/>-->
@@ -348,6 +451,27 @@
             this.checkRules.set(ruleType, {
               regexp: '',
               message: '正则表达式不匹配',
+              ...this.normalCfg
+            })
+            break
+          case RULE.unifiedCode:
+            this.checkRules.set(ruleType, {
+              ignoreCase: true,
+              message: '统一社会信用代码格式不正确',
+              ...this.normalCfg
+            })
+            break
+          case RULE.orgInstCode:
+            this.checkRules.set(ruleType, {
+              ignoreCase: true,
+              message: '组织机构代码格式不正确',
+              ...this.normalCfg
+            })
+            break
+          case RULE.regNo:
+            this.checkRules.set(ruleType, {
+              ignoreCase: true,
+              message: '工商注册号格式不正确',
               ...this.normalCfg
             })
             break

@@ -1,4 +1,4 @@
-import { checkIdCard } from '../../../../../common/utils/validate'
+import { checkIdCard, verifyOrgNo, verifyRegNo, verifyUnifiedCode } from '../../../../../common/utils/validate'
 
 export const RULE = {
   required: '$required',
@@ -6,7 +6,10 @@ export const RULE = {
   email: '$email',
   phone: '$phone',
   idCode: '$idCode',
-  regexp: '$regexp'
+  regexp: '$regexp',
+  unifiedCode: '$unifiedCode',
+  orgInstCode: '$orgInstCode',
+  regNo: '$regNo'
 }
 
 /**
@@ -44,7 +47,6 @@ export const validatorBuild = {
         let caseValue = opts.ignoreCase ? String(value).toUpperCase() : value
         let result = (value.length === 0 || checkIdCard(caseValue))
         if (!result) callback(new Error(opts.message))
-        if (!result) callback(new Error(opts.message))
         callback()
       },
       trigger: opts.trigger
@@ -53,6 +55,55 @@ export const validatorBuild = {
   // 正则表达式  opts: { regexp,message,trigger }
   $regexp: function (opts) {
     return { pattern: new RegExp(opts.regexp), message: opts.message, trigger: opts.trigger }
+  },
+  /* =========[信息项规则]=============== */
+  // 统一社会信用代码
+  $unifiedCode: function (opts, obj) {
+    if (!obj) {
+      return null
+    }
+    return {
+      validator: (rule, value, callback) => {
+        // 需判断证件类型值，这里要求配置校验规则时区分法人与自然人，统一社会信用代码为1，工商注册号代码为2，组织机构代码为3
+        let caseValue = opts.ignoreCase ? String(value).toUpperCase() : value
+        let result = (value.length === 0 || obj['id_type'] !== '1' || value === '00000000000000000X' || verifyUnifiedCode(caseValue))
+        if (!result) callback(new Error(opts.message))
+        callback()
+      },
+      trigger: opts.trigger
+    }
+  },
+  // 组织机构代码
+  $orgInstCode: function (opts, obj) {
+    if (!obj) {
+      return null
+    }
+    return {
+      validator: (rule, value, callback) => {
+        // 需判断证件类型值，这里要求配置校验规则时区分法人与自然人，统一社会信用代码为1，工商注册号代码为2，组织机构代码为3
+        let caseValue = opts.ignoreCase ? String(value).toUpperCase() : value
+        let result = (value.length === 0 || obj['id_type'] !== '3' || verifyOrgNo(caseValue))
+        if (!result) callback(new Error(opts.message))
+        callback()
+      },
+      trigger: opts.trigger
+    }
+  },
+  // 工商注册号
+  $regNo: function (opts, obj) {
+    if (!obj) {
+      return null
+    }
+    return {
+      validator: (rule, value, callback) => {
+        // 需判断证件类型值，这里要求配置校验规则时区分法人与自然人，统一社会信用代码为1，工商注册号代码为2，组织机构代码为3
+        let caseValue = opts.ignoreCase ? String(value).toUpperCase() : value
+        let result = (value.length === 0 || obj['id_type'] !== '2' || verifyRegNo(caseValue))
+        if (!result) callback(new Error(opts.message))
+        callback()
+      },
+      trigger: opts.trigger
+    }
   },
   // 条件必填 opts: { preField, preFieldValue,message,trigger} obj:form
   $conditionRequired: function (opts, obj) {
