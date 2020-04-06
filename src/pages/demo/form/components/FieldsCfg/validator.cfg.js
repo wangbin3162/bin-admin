@@ -9,7 +9,11 @@ export const RULE = {
   regexp: '$regexp',
   unifiedCode: '$unifiedCode',
   orgInstCode: '$orgInstCode',
-  regNo: '$regNo'
+  regNo: '$regNo',
+  conditionRequired: '$conditionRequired',
+  conditionNotRequired: '$conditionNotRequired',
+  conditionNotBe: '$conditionNotBe',
+  notSame: '$notSame'
 }
 
 /**
@@ -57,7 +61,7 @@ export const validatorBuild = {
     return { pattern: new RegExp(opts.regexp), message: opts.message, trigger: opts.trigger }
   },
   /* =========[信息项规则]=============== */
-  // 统一社会信用代码
+  // 统一社会信用代码 opts: { ignoreCase,message,trigger }
   $unifiedCode: function (opts, obj) {
     if (!obj) {
       return null
@@ -73,7 +77,7 @@ export const validatorBuild = {
       trigger: opts.trigger
     }
   },
-  // 组织机构代码
+  // 组织机构代码 opts: { ignoreCase,message,trigger }
   $orgInstCode: function (opts, obj) {
     if (!obj) {
       return null
@@ -89,7 +93,7 @@ export const validatorBuild = {
       trigger: opts.trigger
     }
   },
-  // 工商注册号
+  // 工商注册号 opts: { ignoreCase,message,trigger }
   $regNo: function (opts, obj) {
     if (!obj) {
       return null
@@ -120,6 +124,62 @@ export const validatorBuild = {
           if (value.length === 0) {
             callback(new Error(opts.message))
           }
+        }
+        callback()
+      },
+      trigger: opts.trigger
+    }
+  },
+  // 条件必不填 opts: { preField, preFieldValue,message,trigger} obj:form
+  $conditionNotRequired: function (opts, obj) {
+    if (!obj) {
+      return null
+    }
+    return {
+      validator: (rule, value, callback) => {
+        let preField = obj[opts.preField]// 前置字段当前值
+        let preFieldValue = opts.preFieldValue// 前置字段需要匹配的值
+        if ((preField == null && typeof preFieldValue === 'undefined') ||
+          (preField && (preField === preFieldValue || (preField.length === 0 && typeof preFieldValue === 'undefined')))
+        ) {
+          if (value.length > 0) {
+            callback(new Error(opts.message))
+          }
+        }
+        callback()
+      },
+      trigger: opts.trigger
+    }
+  },
+  // 条件不能为某值 opts: { preField, preFieldValue,notValue,message,trigger} obj:form
+  $conditionNotBe: function (opts, obj) {
+    if (!obj) {
+      return null
+    }
+    return {
+      validator: (rule, value, callback) => {
+        let preField = obj[opts.preField]// 前置字段当前值
+        let preFieldValue = opts.preFieldValue// 前置字段需要匹配的值
+        if ((preField && (preField === preFieldValue))) {
+          if (value !== null && value === opts.notValue) {
+            callback(new Error(opts.message))
+          }
+        }
+        callback()
+      },
+      trigger: opts.trigger
+    }
+  },
+  // 值不能相同 opts: { preField,message,trigger} obj:form
+  $notSame: function (opts, obj) {
+    if (!obj) {
+      return null
+    }
+    return {
+      validator: (rule, value, callback) => {
+        let preField = obj[opts.preField]// 前置字段当前值
+        if ((preField && (preField === value))) {
+          callback(new Error(opts.message))
         }
         callback()
       },

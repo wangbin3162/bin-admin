@@ -12,7 +12,7 @@
         <span>字典</span>
       </b-radio>
     </b-radio-group>
-    <div style="padding: 10px 0;">
+    <div style="padding: 10px 0 0;">
       <!--如果选项是字典类型-->
       <div v-show="isDict" flex="main:justify cross:center">
         <div>
@@ -53,7 +53,10 @@
         </b-button>
       </div>
     </div>
-    <b-input v-show="showReal" v-model="validValue" readonly/>
+    <div v-show="showReal">
+      <b-tag type="success" size="small">实际存储值</b-tag>
+      <b-input :value="validValue" readonly/>
+    </div>
     <!--字典选择组件-->
     <b-modal v-model="chooseModal" title="选择系统字典" width="860" class="layout-inner" :mask-closable="false">
       <div>

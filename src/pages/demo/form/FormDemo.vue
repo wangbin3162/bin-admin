@@ -23,6 +23,7 @@
         <fields-cfg v-model="fields"/>
         <!--调试模式-->
         <div class="mt-15" v-show="debugJson">
+          <b-tag type="success" size="small">实际存储对象[fields]</b-tag>
           <b-code-editor :value="JSON.stringify(fields,null,2)" readonly/>
         </div>
       </v-table-wrap>
@@ -31,7 +32,7 @@
              @on-opened="$refs.editor.refresh()" @on-ok="importJson">
       <b-code-editor ref="editor" v-model="jsonStr"/>
     </b-modal>
-    <b-modal v-model="previewModal" title="预览表单" width="850px" append-to-body :styles="{top: '20px'}">
+    <b-modal v-model="previewModal" title="预览表单" width="950px" append-to-body :styles="{top: '20px'}">
       <b-form v-if="previewModal" :model="form" :rules="rules" ref="form" label-position="top">
         <!--自定义form-item-->
         <form-item :key="item.id||index" v-for="(item,index) in dynamicForm"
@@ -177,9 +178,9 @@
         // this.$log.primary('----form----')
         // console.log(this.form)
         // this.$log.primary('------------')
-        this.$log.primary('----rules----')
-        console.log(this.rules)
-        this.$log.primary('-------------')
+        // this.$log.primary('----rules----')
+        // console.log(this.rules)
+        // this.$log.primary('-------------')
       }
     }
   }
