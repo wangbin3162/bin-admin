@@ -1,6 +1,7 @@
-export const ruleName = {
+export const RULE = {
   required: '$required',
-  length: '$length'
+  length: '$length',
+  email: '$email'
 }
 
 /**
@@ -9,21 +10,15 @@ export const ruleName = {
 export const validatorBuild = {
   // 必填字段 opts: { message,trigger }
   $required: function (opts) {
-    return { required: true, message: opts.message, trigger: opts.trigger }
+    return { required: true, message: opts.message, trigger: opts.trigger, type: opts.type }
   },
   // 长度 opts: { min,max,message,trigger }
   $length: function (opts) {
-    return {
-      validator: (rule, value, callback) => {
-        let len = value.length
-        if (len <= opts.max) {
-          callback()
-        } else {
-          callback(new Error(opts.message))
-        }
-      },
-      trigger: opts.trigger
-    }
+    return { min: opts.min, max: opts.max, message: opts.message, trigger: opts.trigger, type: opts.type }
+  },
+  // 邮箱 opts: { message,trigger }
+  $email: function (opts) {
+    return { type: 'email', message: opts.message, trigger: opts.trigger }
   },
   // 条件必填 opts: { preField, preFieldValue,message,trigger} obj:form
   $conditionRequired: function (opts, obj) {

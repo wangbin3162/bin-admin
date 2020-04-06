@@ -30,8 +30,7 @@ export default {
       return {
         width: this.controlType === 'TEXTAREA' ? '100%' : '25%',
         display: 'inline-block',
-        padding: '0 5px',
-        marginBottom: '4px'
+        padding: '0 5px'
       }
     }
   }

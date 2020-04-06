@@ -1,5 +1,5 @@
 import { deepCopy } from '../../../../../common/utils/assist'
-import { ruleName, validatorBuild } from './validator.cfg'
+import { RULE, validatorBuild } from './validator.cfg'
 
 /**
  * 根据传入字符判断是字典值还是枚举值

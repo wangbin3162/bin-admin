@@ -15,19 +15,103 @@
     </div>
     <div class="mb-10">
       <b-checkbox v-model="isRequired" @on-change="requiredChange">必填项</b-checkbox>&nbsp;&nbsp;
+      <b-dropdown>
+        <a href="javascript:void(0)">
+          一般规则
+          <b-icon name="ios-arrow-down"></b-icon>
+        </a>
+        <b-dropdown-menu slot="list">
+          <b-dropdown-item @click.native="setRules(RULE.length)">长度</b-dropdown-item>
+          <b-dropdown-item @click.native="setRules(RULE.email)">邮箱</b-dropdown-item>
+        </b-dropdown-menu>
+      </b-dropdown>
     </div>
     <!--必填项参数-->
-    <div v-if="rulesObj['$required']">
-      <b-row :gutter="10">
-        <b-col span="12">
-          错误提示信息：
-          <b-input v-model="rulesObj['$required'].message" size="mini" @on-change="emitParamsToValue"/>
-        </b-col>
-        <b-col span="12">
-          触发事件：
-          <b-input v-model="rulesObj['$required'].trigger" size="mini" @on-change="emitParamsToValue"/>
+    <div class="params" v-if="rulesObj[RULE.required]">
+      <div class="title">
+        <span class="param-tip">规则名：</span>
+        <b-tag type="primary" no-border :tag-style="{padding:'3px 5px',margin:'0'}">必填项</b-tag>
+      </div>
+      <b-row class-name="info" :gutter="10">
+        <b-col span="24">
+          <span class="param-tip">错误提示：</span>
+          <b-input v-model.trim="rulesObj[RULE.required].message" size="mini"
+                   @on-change="emitParamsToValue"/>
         </b-col>
       </b-row>
+      <div class="trigger">
+        <span class="param-tip">触发事件：</span>
+        <b-input v-model.trim="rulesObj[RULE.required].trigger" size="mini"
+                 @on-change="emitParamsToValue"/>
+      </div>
+      <div class="delete">
+        <b-popover confirm title="确认删除此项吗?" width="170" style="margin-top: 16px;"
+                   @on-ok="removeRules(RULE.required)">
+          <span class="remove">
+            <b-icon name="ios-remove-circle-outline" size="22" color="#f5222d"/>
+          </span>
+        </b-popover>
+      </div>
+    </div>
+    <!--长度参数-->
+    <div class="params" v-if="rulesObj[RULE.length]">
+      <div class="title">
+        <span class="param-tip">规则名：</span>
+        <b-tag type="primary" no-border :tag-style="{padding:'3px 5px',margin:'0'}">长度参数</b-tag>
+      </div>
+      <div class="number">
+        <span class="param-tip">最小值：</span>
+        <b-input-number v-model="rulesObj[RULE.length].min" size="mini"
+                        @on-change="emitParamsToValue"/>
+      </div>
+      <div class="number">
+        <span class="param-tip">最大值：</span>
+        <b-input-number v-model="rulesObj[RULE.length].max" size="mini"
+                        @on-change="emitParamsToValue"/>
+      </div>
+      <div class="info">
+        <span class="param-tip">错误提示：</span>
+        <b-input v-model.trim="rulesObj[RULE.length].message" size="mini"
+                 @on-change="emitParamsToValue"/>
+      </div>
+      <div class="trigger">
+        <span class="param-tip">触发事件：</span>
+        <b-input v-model.trim="rulesObj[RULE.length].trigger" size="mini"
+                 @on-change="emitParamsToValue"/>
+      </div>
+      <div class="delete">
+        <b-popover confirm title="确认删除此项吗?" width="170" style="margin-top: 16px;"
+                   @on-ok="removeRules(RULE.length)">
+          <span class="remove">
+            <b-icon name="ios-remove-circle-outline" size="22" color="#f5222d"/>
+          </span>
+        </b-popover>
+      </div>
+    </div>
+    <!--邮箱参数-->
+    <div class="params" v-if="rulesObj[RULE.email]">
+      <div class="title">
+        <span class="param-tip">规则名：</span>
+        <b-tag type="primary" no-border :tag-style="{padding:'3px 5px',margin:'0'}">邮箱参数</b-tag>
+      </div>
+      <div class="info">
+        <span class="param-tip">错误提示：</span>
+        <b-input v-model.trim="rulesObj[RULE.email].message" size="mini"
+                 @on-change="emitParamsToValue"/>
+      </div>
+      <div class="trigger">
+        <span class="param-tip">触发事件：</span>
+        <b-input v-model.trim="rulesObj[RULE.email].trigger" size="mini"
+                 @on-change="emitParamsToValue"/>
+      </div>
+      <div class="delete">
+        <b-popover confirm title="确认删除此项吗?" width="170" style="margin-top: 16px;"
+                   @on-ok="removeRules(RULE.email)">
+          <span class="remove">
+            <b-icon name="ios-remove-circle-outline" size="22" color="#f5222d"/>
+          </span>
+        </b-popover>
+      </div>
     </div>
     <div v-show="showReal">
       <b-alert>{{value}}</b-alert>
@@ -38,7 +122,7 @@
 
 <script>
   import VToggleShow from '../../../../../components/VToggleShow/index'
-  import { ruleName } from './validator.cfg'
+  import { RULE } from './validator.cfg'
 
   export default {
     name: 'Validator',
@@ -72,8 +156,17 @@
       }
     },
     computed: {
+      RULE() {
+        return RULE
+      },
       triggerType() {
         return ['TEXT', 'TEXTAREA'].indexOf(this.controlType) > -1 ? 'blur' : 'change'
+      },
+      normalCfg() {
+        return {
+          type: this.dataType === 'number' ? 'number' : 'string',
+          trigger: this.triggerType
+        }
       }
     },
     watch: {
@@ -95,7 +188,7 @@
               this.checkRules = new Map(map)
               console.log('=======update value end=======') // 调试，可禁用
               // 再根据是否包含必填校验判断
-              this.isRequired = this.checkRules.has(ruleName.required)
+              this.isRequired = this.checkRules.has(RULE.required)
             }
           } catch (e) {
             this.$log.danger('非标准json初始化')
@@ -107,28 +200,42 @@
       required(val) { // 根据是否是核心项来设置是否是必填
         if (val === 'Y') {
           this.isRequired = true
-          this.setRules(ruleName.required)
+          this.setRules(RULE.required)
         }
       },
       fieldTitle() {
-        if (this.checkRules.has(ruleName.required)) {
-          this.setRules(ruleName.required)
+        if (this.checkRules.has(RULE.required)) {
+          this.setRules(RULE.required)
         }
       }
     },
     methods: {
       // 增加校验，即增加默认参数配置
       setRules(ruleType) {
+        if (this.checkRules.has(ruleType) && ruleType !== RULE.required) {
+          this.$message({ type: 'warning', content: '已有同名规则，无需重复添加' })
+          return
+        }
         switch (ruleType) {
-          case ruleName.required:
-            this.checkRules.set(ruleType,
-              { required: true, message: `${this.fieldTitle}必填`, trigger: this.triggerType }
-            )
+          case RULE.required:
+            this.checkRules.set(ruleType, {
+              message: `${this.fieldTitle}必填`,
+              ...this.normalCfg
+            })
             break
-          case ruleName.length:
-            this.checkRules.set(ruleType,
-              { min: 0, max: 64, message: '长度范围不合法', trigger: this.triggerType }
-            )
+          case RULE.length:
+            this.checkRules.set(ruleType, {
+              min: Infinity,
+              max: Infinity,
+              message: '长度必须在指定的范围内',
+              ...this.normalCfg
+            })
+            break
+          case RULE.email:
+            this.checkRules.set(ruleType, {
+              message: '邮箱格式不正确',
+              ...this.normalCfg
+            })
             break
           default:
             break
@@ -145,17 +252,17 @@
       requiredChange(val) {
         if (val) {
           console.log('set required')
-          this.setRules(ruleName.required)
+          this.setRules(RULE.required)
         } else {
           console.log('remove required')
-          this.removeRules(ruleName.required)
+          this.removeRules(RULE.required)
         }
       },
       // 刷新重载rules
       refreshRule() {
         this.checkRules.clear()
         if (this.required) {
-          this.setRules(ruleName.required)
+          this.setRules(RULE.required)
         } else {
           this.emitEmptyValue()
         }
@@ -194,5 +301,41 @@
   .validator-wrap {
     width: 100%;
     margin-bottom: 16px;
+    .params {
+      display: flex;
+      border-radius: 2px;
+      border: 1px solid #eee;
+      margin-bottom: 5px;
+      padding: 4px;
+      .title {
+        flex: 0 0 75px;
+        width: 75px;
+      }
+      .number {
+        flex: 0 0 100px;
+        width: 100px;
+        padding-right: 10px;
+      }
+      .info {
+        flex: auto;
+      }
+      .trigger {
+        flex: 0 0 110px;
+        width: 110px;
+        padding-left: 10px;
+      }
+      .delete {
+        flex: 0 0 30px;
+        width: 30px;
+        text-align: center;
+      }
+    }
+    .param-tip {
+      font-size: 12px;
+      color: rgba(0, 0, 0, 0.65);
+    }
+    .remove {
+      cursor: pointer;
+    }
   }
 </style>
