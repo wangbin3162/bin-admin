@@ -24,6 +24,8 @@
           <b-dropdown-item @click.native="setRules(RULE.length)">长度</b-dropdown-item>
           <b-dropdown-item @click.native="setRules(RULE.email)">邮箱</b-dropdown-item>
           <b-dropdown-item @click.native="setRules(RULE.phone)">手机号码</b-dropdown-item>
+          <b-dropdown-item @click.native="setRules(RULE.idCode)">身份证号</b-dropdown-item>
+          <b-dropdown-item @click.native="setRules(RULE.regexp)">正则匹配</b-dropdown-item>
         </b-dropdown-menu>
       </b-dropdown>
     </div>
@@ -133,6 +135,71 @@
       <div class="delete">
         <b-popover confirm title="确认删除此项吗?" width="170" style="margin-top: 16px;"
                    @on-ok="removeRules(RULE.phone)">
+          <span class="remove">
+            <b-icon name="ios-remove-circle-outline" size="22" color="#f5222d"/>
+          </span>
+        </b-popover>
+      </div>
+    </div>
+    <!--身份证-->
+    <div class="params" v-if="rulesObj[RULE.idCode]">
+      <div class="title">
+        <span class="param-tip">规则名：</span>
+        <b-tag type="primary" no-border :tag-style="{padding:'3px 5px',margin:'0'}">身份证</b-tag>
+      </div>
+      <div class="info">
+        <span class="param-tip">错误提示：</span>
+        <b-input v-model.trim="rulesObj[RULE.idCode].message" size="mini"
+                 @on-change="emitParamsToValue"/>
+      </div>
+      <div class="number" style="padding-left: 10px;">
+        <span class="param-tip">忽略大小写：</span>
+        <b-switch v-model="rulesObj[RULE.idCode].ignoreCase" size="small"
+                  @on-change="emitParamsToValue"/>
+      </div>
+      <div class="trigger">
+        <span class="param-tip">触发事件：</span>
+        <b-input v-model.trim="rulesObj[RULE.idCode].trigger" size="mini"
+                 @on-change="emitParamsToValue"/>
+      </div>
+      <div class="delete">
+        <b-popover confirm title="确认删除此项吗?" width="170" style="margin-top: 16px;"
+                   @on-ok="removeRules(RULE.idCode)">
+          <span class="remove">
+            <b-icon name="ios-remove-circle-outline" size="22" color="#f5222d"/>
+          </span>
+        </b-popover>
+      </div>
+    </div>
+    <!--正则匹配-->
+    <div class="params" v-if="rulesObj[RULE.regexp]">
+      <div class="title">
+        <span class="param-tip">规则名：</span>
+        <b-tag type="primary" no-border :tag-style="{padding:'3px 5px',margin:'0'}">正则匹配</b-tag>
+      </div>
+      <div class="info">
+        <b-row :gutter="10">
+          <b-col span="12">
+            <span class="param-tip">正则规则：</span>
+            <b-input v-model.trim="rulesObj[RULE.regexp].regexp" size="mini"
+                     placeholder="需输入字符格式"
+                     @on-change="emitParamsToValue"/>
+          </b-col>
+          <b-col span="12">
+            <span class="param-tip">错误提示：</span>
+            <b-input v-model.trim="rulesObj[RULE.regexp].message" size="mini"
+                     @on-change="emitParamsToValue"/>
+          </b-col>
+        </b-row>
+      </div>
+      <div class="trigger">
+        <span class="param-tip">触发事件：</span>
+        <b-input v-model.trim="rulesObj[RULE.regexp].trigger" size="mini"
+                 @on-change="emitParamsToValue"/>
+      </div>
+      <div class="delete">
+        <b-popover confirm title="确认删除此项吗?" width="170" style="margin-top: 16px;"
+                   @on-ok="removeRules(RULE.regexp)">
           <span class="remove">
             <b-icon name="ios-remove-circle-outline" size="22" color="#f5222d"/>
           </span>
@@ -267,6 +334,20 @@
           case RULE.phone:
             this.checkRules.set(ruleType, {
               message: '手机号格式不正确',
+              ...this.normalCfg
+            })
+            break
+          case RULE.idCode:
+            this.checkRules.set(ruleType, {
+              ignoreCase: true,
+              message: '身份证格式不正确',
+              ...this.normalCfg
+            })
+            break
+          case RULE.regexp:
+            this.checkRules.set(ruleType, {
+              regexp: '',
+              message: '正则表达式不匹配',
               ...this.normalCfg
             })
             break

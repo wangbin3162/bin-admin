@@ -177,9 +177,9 @@
         // this.$log.primary('----form----')
         // console.log(this.form)
         // this.$log.primary('------------')
-        // this.$log.primary('----rules----')
-        // console.log(this.rules)
-        // this.$log.primary('-------------')
+        this.$log.primary('----rules----')
+        console.log(this.rules)
+        this.$log.primary('-------------')
       }
     }
   }

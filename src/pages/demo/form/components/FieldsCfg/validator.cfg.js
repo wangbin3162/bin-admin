@@ -1,8 +1,12 @@
+import { checkIdCard } from '../../../../../common/utils/validate'
+
 export const RULE = {
   required: '$required',
   length: '$length',
   email: '$email',
-  phone: '$phone'
+  phone: '$phone',
+  idCode: '$idCode',
+  regexp: '$regexp'
 }
 
 /**
@@ -24,6 +28,31 @@ export const validatorBuild = {
   // 手机号 opts: { message,trigger }
   $phone: function (opts) {
     return { pattern: /^((0\d{2,3}-\d{7,8})|(1[35874]\d{9}))$/, message: opts.message, trigger: opts.trigger }
+  },
+  // 居民身份证号码 opts: { ignoreCase,message,trigger }
+  $idCode: function (opts, obj) {
+    if (!obj) {
+      return null
+    }
+    return {
+      validator: (rule, value, callback) => {
+        // 需判断证件类型值，这里要求配置校验规则时区分法人与自然人
+        // 如果是法人类型表，切存在【法定代表人证件类型】字段则类型设置需要比对fddbrzjlx，
+        // 这里也要求设置校验配置时，居民身份证类型需要选择自然人证件类型
+        // let type = obj['fddbrzjlx'] ? obj['fddbrzjlx'] : obj['id_type']
+        // let result = (value.length === 0 || type !== '1' || checkIdCard(caseValue))
+        let caseValue = opts.ignoreCase ? String(value).toUpperCase() : value
+        let result = (value.length === 0 || checkIdCard(caseValue))
+        if (!result) callback(new Error(opts.message))
+        if (!result) callback(new Error(opts.message))
+        callback()
+      },
+      trigger: opts.trigger
+    }
+  },
+  // 正则表达式  opts: { regexp,message,trigger }
+  $regexp: function (opts) {
+    return { pattern: new RegExp(opts.regexp), message: opts.message, trigger: opts.trigger }
   },
   // 条件必填 opts: { preField, preFieldValue,message,trigger} obj:form
   $conditionRequired: function (opts, obj) {
