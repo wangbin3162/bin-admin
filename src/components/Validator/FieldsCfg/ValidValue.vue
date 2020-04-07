@@ -90,8 +90,8 @@
 <script>
   import Draggable from 'vuedraggable'
   import { getValidValue } from './cfg-util'
-  import commonMixin from '../../../../../common/mixins/mixin'
-  import VToggleShow from '../../../../../components/VToggleShow/index'
+  import commonMixin from '../../../common/mixins/mixin'
+  import VToggleShow from '../VToggleShow/index'
 
   export default {
     name: 'ValidValue',
@@ -111,7 +111,7 @@
           code: ''
         },
         arrData: [],
-        showReal: false,
+        showReal: true,
         // 用于选择字典弹窗
         listQuery: {
           groupName: '',

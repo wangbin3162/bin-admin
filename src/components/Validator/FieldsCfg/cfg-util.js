@@ -1,5 +1,5 @@
-import { deepCopy } from '../../../../../common/utils/assist'
-import { checkIdCard, verifyOrgNo, verifyRegNo, verifyUnifiedCode } from '../../../../../common/utils/validate'
+import { deepCopy } from '../../../common/utils/assist'
+import { checkIdCard, verifyOrgNo, verifyRegNo, verifyUnifiedCode } from '../../../common/utils/validate'
 
 /**
  * 校验枚举值

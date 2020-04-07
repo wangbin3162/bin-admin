@@ -23,7 +23,7 @@
 <script>
   import Draggable from 'vuedraggable'
   import { addClass, removeClass } from 'bin-ui/src/utils/dom'
-  import { deepCopy } from '../../common/utils/assist'
+  import { deepCopy } from '../../../common/utils/assist'
 
   export default {
     name: 'VDragItems',

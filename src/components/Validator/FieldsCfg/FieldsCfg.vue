@@ -121,8 +121,8 @@
 
 <script>
   import enumObj from './enum'
-  import { deepCopy } from '../../../../../common/utils/assist'
-  import VDragItems from '../../../../../components/VDragItems/index'
+  import { deepCopy } from '../../../common/utils/assist'
+  import VDragItems from '../VDragItems/index'
   import ValidValue from './ValidValue'
   import Validator from './Validator'
 

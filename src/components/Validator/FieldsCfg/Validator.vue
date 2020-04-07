@@ -459,7 +459,7 @@
 </template>
 
 <script>
-  import VToggleShow from '../../../../../components/VToggleShow/index'
+  import VToggleShow from '../VToggleShow/index'
   import { RULE } from './cfg-util'
 
   export default {
@@ -487,7 +487,7 @@
     },
     data() {
       return {
-        showReal: false,
+        showReal: true,
         isRequired: false,
         rulesObj: null,
         checkRules: new Map() // 最终的格式化rules map 存储校验映射

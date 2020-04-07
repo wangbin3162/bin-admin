@@ -58,12 +58,12 @@
 </template>
 
 <script>
-  import FieldsCfg from './components/FieldsCfg/FieldsCfg'
+  import FieldsCfg from '../../../components/Validator/FieldsCfg/FieldsCfg'
   import metadata from './metadata'
   import items from './items'
-  import { checkRulesToFormRules, initFormList } from './components/FieldsCfg/cfg-util'
-  import FormItem from './components/FormControl/FormItem'
-  import FormControl from './components/FormControl/FormControl'
+  import { checkRulesToFormRules, initFormList } from '../../../components/Validator/FieldsCfg/cfg-util'
+  import FormItem from '../../../components/Validator/FormControl/FormItem'
+  import FormControl from '../../../components/Validator/FormControl/FormControl'
 
   export default {
     name: 'FormDemo',
