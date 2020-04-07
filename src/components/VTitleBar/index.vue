@@ -1,6 +1,6 @@
 <template>
   <div class="title" :class="{'no-border':noBorder}">
-    <div class="label" :class="`tip-${tipPos}`">
+    <div class="label" :class="`tip-${tipPos}`" :style="labelStyle">
       <b-icon :name="icon" v-if="icon"></b-icon>
       <span>{{ label }}</span>
     </div>
@@ -18,6 +18,7 @@
         type: String,
         default: '标题'
       },
+      labelStyle: { type: Object },
       icon: {
         type: String
       },
@@ -37,7 +38,7 @@
   .title {
     display: flex;
     justify-content: space-between;
-    align-items: flex-end;
+    align-items: center;
     width: 100%;
     font-size: 18px;
     border-bottom: 1px solid #f0f0f0;

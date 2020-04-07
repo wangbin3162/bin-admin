@@ -1866,27 +1866,27 @@ big.js@^5.2.2:
   resolved "https://registry.npmjs.org/big.js/-/big.js-5.2.2.tgz#65f0af382f578bcdc742bd9c281e9cb2d7768328"
   integrity sha512-vyL2OymJxmarO8gxMr0mhChsO9QGwhynfuu4+MHTAW6czfq9humCB7rKpUjDd9YUiDPU4mzpyupFSvOClAwbmQ==
 
-bin-charts@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.npmjs.org/bin-charts/-/bin-charts-0.4.0.tgz#30e1daa4a0d2619f643895b22bf691b678467f9b"
-  integrity sha512-aEd0jik3KfktqjojKGTFPysbiN1tWn7/ZRewnCAEB4iRWFkDqSBq5cc8OtgBKzavTrw86BC0CIgLZXhQX++vVQ==
+bin-charts@^0.5.0:
+  version "0.5.0"
+  resolved "https://registry.npmjs.org/bin-charts/-/bin-charts-0.5.0.tgz#15e055f009f2e1cafa2f05bcd114e2315ab251a9"
+  integrity sha512-Z30Ydl0h7DUVBAPDpwrF69z7rUbuKJdUhgZCNdbhXDqvgLyfNFLNJ2qEeLBLdWCgClu/ZrF0ZeWb+5R2NHjtZg==
   dependencies:
     resize-observer-polyfill "^1.5.1"
 
-bin-code-editor@^0.7.0:
-  version "0.7.0"
-  resolved "https://registry.npmjs.org/bin-code-editor/-/bin-code-editor-0.7.0.tgz#bc7a8250d5f5295c6d1e564f736ff93b1687edc1"
-  integrity sha512-lrfI93rNWTOn1cNdvyBIgce5WMkMGn3dG7xT1+tzyYYN0xUPUuwNbDF3B0d0X1JgumN+AAbF/EfTNDtj6gqn3g==
+bin-code-editor@^0.8.0:
+  version "0.8.0"
+  resolved "https://registry.npmjs.org/bin-code-editor/-/bin-code-editor-0.8.0.tgz#80541aaf56b0d5d9c5044023b34010f9e0553eb6"
+  integrity sha512-hPv3LNcCHw9nZcQwqvNldvtaglPisjuNp9n8cvc74d0gI7DObHWJujOC4q72ePCMWbr2OeoZOjq7ej39gTuNuQ==
   dependencies:
     codemirror "^5.52.2"
     codemirror-formatting "^1.0.0"
     jsonlint "^1.6.3"
     script-loader "^0.7.2"
 
-bin-ui@^3.1.3:
-  version "3.1.3"
-  resolved "https://registry.npmjs.org/bin-ui/-/bin-ui-3.1.3.tgz#6eec994f7f6099c8519d92da43a1bf19a81ecea9"
-  integrity sha512-j4+t4fZos7cdHSe3mWb2CvG3JYxaDCz4Vu/ZgPwDXb8JFDtxlCx+gyI9JM0uDdwBsBlk4QbV4kr1/nXC4XLz2w==
+bin-ui@^3.1.8:
+  version "3.1.8"
+  resolved "https://registry.npmjs.org/bin-ui/-/bin-ui-3.1.8.tgz#ab23c9e37a52d178fa77c6d013fff32480132f68"
+  integrity sha512-NgnsOdffZ2LpNv7Fco4gY9heq6wsOV/MzChfQRsLThZlFsPNEN76Ehjers7V3p3Wt42h5atbqau7uGauTFoQ6A==
   dependencies:
     async-validator "^1.11.5"
     js-calendar "^1.2.3"
@@ -8448,6 +8448,11 @@ sort-keys@^2.0.0:
   dependencies:
     is-plain-obj "^1.0.0"
 
+sortablejs@^1.10.1:
+  version "1.10.2"
+  resolved "https://registry.npmjs.org/sortablejs/-/sortablejs-1.10.2.tgz#6e40364d913f98b85a14f6678f92b5c1221f5290"
+  integrity sha512-YkPGufevysvfwn5rfdlGyrGjt7/CRHwvRPogD/lC+TnvcN29jDpCifKP+rBqf+LRldfXSTh+0CGLcSg0VIxq3A==
+
 source-list-map@^2.0.0:
   version "2.0.1"
   resolved "https://registry.npmjs.org/source-list-map/-/source-list-map-2.0.1.tgz#3993bd873bfc48479cca9ea3a547835c7c154b34"
@@ -9478,6 +9483,13 @@ vue@^2.6.10:
   version "2.6.10"
   resolved "https://registry.npmjs.org/vue/-/vue-2.6.10.tgz#a72b1a42a4d82a721ea438d1b6bf55e66195c637"
   integrity sha512-ImThpeNU9HbdZL3utgMCq0oiMzAkt1mcgy3/E6zWC/G6AaQoeuFdsl9nDhTDU3X1R6FK7nsIUuRACVcjI+A2GQ==
+
+vuedraggable@^2.23.2:
+  version "2.23.2"
+  resolved "https://registry.npmjs.org/vuedraggable/-/vuedraggable-2.23.2.tgz#0d95d7fdf4f02f56755a26b3c9dca5c7ca9cfa72"
+  integrity sha512-PgHCjUpxEAEZJq36ys49HfQmXglattf/7ofOzUrW2/rRdG7tu6fK84ir14t1jYv4kdXewTEa2ieKEAhhEMdwkQ==
+  dependencies:
+    sortablejs "^1.10.1"
 
 vuepress-html-webpack-plugin@^3.2.0:
   version "3.2.0"
