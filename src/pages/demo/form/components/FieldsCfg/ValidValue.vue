@@ -33,7 +33,7 @@
                    v-bind="{ group:'enum', animation: 200, ghostClass:'ghost', handle:'.move-drag' }"
                    @end="onDragEnd">
           <transition-group name="fade" tag="div" class="enum-list">
-            <div v-for="(item,index) in arrData" :key="index" class="enum-item">
+            <div v-for="(item,index) in arrData" :key="item.id||index" class="enum-item">
               <span class="move-drag"><b-icon name="ios-menu" size="20"/></span>
               <b-input v-model.trim="arrData[index].code" style="width: 40%;" @on-change="emitValue"
                        placeholder="code"/>&nbsp;

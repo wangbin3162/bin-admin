@@ -460,7 +460,7 @@
 
 <script>
   import VToggleShow from '../../../../../components/VToggleShow/index'
-  import { RULE } from './validator.cfg'
+  import { RULE } from './cfg-util'
 
   export default {
     name: 'Validator',
