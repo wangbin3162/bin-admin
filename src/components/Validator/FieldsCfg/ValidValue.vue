@@ -2,7 +2,13 @@
   <div class="valid-value-wrap">
     <div style="width: 100%;line-height:32px;" flex="main:justify">
       <span>有效值: </span>
-      <v-toggle-show v-model="showReal" show-text="显示实际值" hide-text="隐藏实际值"/>
+      <div>
+        <b-tooltip content="清空有效值">
+          <b-icon name="close" style="vertical-align: -1px;cursor: pointer;"
+                  @click.native="emitEmptyValue"/>
+        </b-tooltip>
+        <v-toggle-show v-model="showReal" show-text="显示实际值" hide-text="隐藏实际值"/>
+      </div>
     </div>
     <b-radio-group v-model="normalType">
       <b-radio label="enum">
@@ -53,7 +59,7 @@
         </b-button>
       </div>
     </div>
-    <div v-show="showReal">
+    <div v-if="showReal">
       <b-tag type="success" size="small">实际存储值</b-tag>
       <b-input :value="validValue" readonly/>
     </div>
@@ -63,10 +69,10 @@
         <!--查询条件-->
         <v-filter-bar>
           <v-filter-item title="字典名称">
-            <b-input v-model.trim="listQuery.groupName" placeholder="请输入" clearable size="small"></b-input>
+            <b-input v-model.trim="listQuery.groupName" placeholder="请输入" clearable></b-input>
           </v-filter-item>
           <v-filter-item title="字典编码" width="230px">
-            <b-input v-model.trim="listQuery.groupCode" placeholder="请输入" clearable size="small"></b-input>
+            <b-input v-model.trim="listQuery.groupCode" placeholder="请输入" clearable></b-input>
           </v-filter-item>
           <!--添加查询按钮位置-->
           <v-filter-item @on-search="handleFilter" @on-reset="resetQuery"></v-filter-item>
@@ -173,6 +179,11 @@
         }
         this.$emit('input', result)
         this.$emit('on-change', result)
+      },
+      // 更新model value
+      emitEmptyValue() {
+        this.$emit('input', '')
+        this.$emit('on-change', '')
       },
       // 添加一项枚举
       addNewEnum() {
