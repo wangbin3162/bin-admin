@@ -83,10 +83,13 @@ export function oneRoleCode(role) {
 }
 
 /* 获取权限树 */
-export function getFuncTree() {
+export function getFuncTree(roleId) {
   return request({
-    url: '/management/function/tree',
-    method: 'get'
+    url: '/management/function/treeAll',
+    method: 'get',
+    params: {
+      roleId
+    }
   })
 }
 
@@ -109,7 +112,7 @@ export function getFuncList(query) {
 /* 批量授权 */
 export function createAuth(roleId, functionIds) {
   return request({
-    url: '/management/role/function/batchCreate',
+    url: '/management/role/function/batchAuthorize',
     method: 'post',
     data: functionIds, // id的数组
     params: {

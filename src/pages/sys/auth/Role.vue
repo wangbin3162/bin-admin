@@ -99,7 +99,7 @@
       </v-edit-wrap>
     </page-header-wrap>
     <!--角色授权模块显示-->
-    <role-auth ref="roleAuth" @on-close="handleCancel"></role-auth>
+    <edit-auth ref="roleAuth" @on-close="handleCancel"></edit-auth>
     <!--角色选择弹窗-->
     <role-choose ref="roleChoose" @on-choose="handleChooseOne" no-admin></role-choose>
   </div>
@@ -111,13 +111,13 @@
   import { getRoleType } from '../../../api/enum.api'
   import * as api from '../../../api/sys/role.api'
   import RoleChoose from '../components/RoleChoose'
-  import RoleAuth from '../components/RoleAuth'
   import { requiredRule } from '../../../common/utils/validate'
   import { mapGetters } from 'vuex'
+  import EditAuth from '../components/EditAuth'
 
   export default {
     name: 'Role',
-    components: { RoleAuth, RoleChoose },
+    components: { EditAuth, RoleChoose },
     mixins: [commonMixin, permission],
     data() {
       const validateName = (rule, value, callback) => {
