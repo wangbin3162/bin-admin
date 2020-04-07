@@ -2,6 +2,7 @@ import layout from '../layout'
 import sys from './modules/sys'
 import dataManage from './modules/data-manage'
 import dataAnalyze from './modules/data-analyze'
+import formDemo from './demo/form-demo'
 
 /**
  * router自定义配置项
@@ -15,7 +16,7 @@ import dataAnalyze from './modules/data-analyze'
   }
  **/
 export const asyncRouterMap = [
-  sys, dataManage, dataAnalyze,
+  sys, dataManage, dataAnalyze, formDemo,
   { path: '*', redirect: '/404', hidden: true }
 ]
 

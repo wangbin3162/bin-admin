@@ -1,0 +1,49 @@
+{
+  "dataType": {
+    "string": "字符型",
+    "number": "数值型",
+    "date": "日期型",
+    "datetime": "日期时间型",
+    "text": "备注型"
+  },
+  "required": {
+    "Y": "核心项",
+    "G": "一般项",
+    "A": "辅助项"
+  },
+  "controlType": {
+    "TEXT": "文本框",
+    "NUMBER_TEXT": "数值文本框",
+    "SELECT": "下拉框",
+    "DATE": "日期",
+    "DATE_TIME": "日期时间",
+    "TEXTAREA": "文本域",
+    "NAT_PERSON": "选择自然人",
+    "LEG_PERSON": "选择法人",
+    "CROP_REP": "选择法人代表",
+    "NAT_OR_LEG_PERSON": "选择自然人或法人",
+    "FILE_UPLOAD": "文件上传",
+    "DEPART": "选择部门"
+  },
+  "openType": {
+    "PUBLIC": "社会公开",
+    "DEPART_RANGE": "授权访问",
+    "PRIVATE": "不公开"
+  },
+  "maskModel": {
+    "ID_CODE": "身份证",
+    "MOBILE_PHONE": "手机号"
+  },
+  "isEncrypt": {
+    "0": "否",
+    "1": "是"
+  },
+  "status": {
+    "use": "选用",
+    "ignore": "不选用"
+  },
+  "tokenizer": {
+    "N": "否",
+    "Y": "是"
+  }
+}

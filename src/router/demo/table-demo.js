@@ -1,4 +1,4 @@
-import layout from '../../layout'
+import layout from '../../layout/index'
 
 export default {
   path: '/tableDemo',

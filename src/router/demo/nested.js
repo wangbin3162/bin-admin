@@ -1,4 +1,4 @@
-import layout from '../../layout'
+import layout from '../../layout/index'
 
 export default {
   path: '/nested',
@@ -15,25 +15,25 @@ export default {
       children: [
         {
           path: 'menu1-1',
-          component: () => import('../../pages/demo/nested/menu1/menu1-1'),
+          component: () => import('../../pages/demo/nested/menu1/menu1-1/index'),
           name: 'menu1-1',
           meta: { title: '菜单1-1' }
         },
         {
           path: 'menu1-2',
-          component: () => import('../../pages/demo/nested/menu1/menu1-2'),
+          component: () => import('../../pages/demo/nested/menu1/menu1-2/index'),
           name: 'menu1-2',
           meta: { title: '菜单1-2' },
           children: [
             {
               path: 'menu1-2-1',
-              component: () => import('../../pages/demo/nested/menu1/menu1-2/menu1-2-1'),
+              component: () => import('../../pages/demo/nested/menu1/menu1-2/menu1-2-1/index'),
               name: 'menu1-2-1',
               meta: { title: '菜单1-2-1' }
             },
             {
               path: 'menu1-2-2',
-              component: () => import('../../pages/demo/nested/menu1/menu1-2/menu1-2-2'),
+              component: () => import('../../pages/demo/nested/menu1/menu1-2/menu1-2-2/index'),
               name: 'menu1-2-2',
               meta: { title: '菜单1-2-2' }
             }
@@ -41,7 +41,7 @@ export default {
         },
         {
           path: 'menu1-3',
-          component: () => import('../../pages/demo/nested/menu1/menu1-3'),
+          component: () => import('../../pages/demo/nested/menu1/menu1-3/index'),
           name: 'menu1-3',
           meta: { title: '菜单1-3' }
         }
