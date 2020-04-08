@@ -2,7 +2,7 @@
   <collapse-transition :appear="appear">
     <ul :class="classes">
       <li>
-        <div class="auth-tree-node">
+        <div :class="nodeClass">
           <span :class="arrowClasses" @click="handleExpand">
           <b-icon v-if="showArrow" name="ios-arrow-forward"></b-icon>
         </span>
@@ -28,6 +28,7 @@
     </ul>
   </collapse-transition>
 </template>
+
 <script>
   import CollapseTransition from 'bin-ui/src/components/base/collapse-transition'
   import Emitter from 'bin-ui/src/mixins/emitter'
@@ -67,6 +68,14 @@
       }
     },
     computed: {
+      nodeClass() {
+        return [
+          `${prefixCls}-node`,
+          {
+            [`${prefixCls}-node-${this.data.nodeType}`]: this.data.nodeType
+          }
+        ]
+      },
       classes() {
         return [
           `${prefixCls}-children`

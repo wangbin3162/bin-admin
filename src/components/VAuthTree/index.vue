@@ -41,7 +41,6 @@
         type: Boolean,
         default: false
       },
-      // 当开启 showCheckbox 时，如果开启 checkDirectly，select 将强制转为 check 事件
       checkDirectly: {
         type: Boolean,
         default: false
@@ -172,44 +171,120 @@
 
 <style lang="stylus">
   .auth-tree {
+    position: relative;
+    border: 1px solid #d6d6d6;
+    border-bottom: none;
     font-size: 14px;
     color: rgba(0, 0, 0, .65);
-    &-wrapper {
-      margin-right: 4px;
-      margin-left: 4px;
+    &:after {
+      content: ''
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 1px;
+      background-color: #d6d6d6;
     }
     ul {
       list-style: none;
       margin: 0;
       padding: 0;
-      &.bin-dropdown-menu {
-        padding: 0;
-      }
       li {
         list-style: none;
         padding: 0;
         outline: none;
         margin: 0;
-        &.bin-dropdown-item {
-          margin: 0;
-          padding: 7px 16px;
-          white-space: nowrap;
-        }
-      }
-    }
-    li {
-      ul {
-        margin: 0;
-        padding: 0 0 0 18px;
       }
     }
 
     &-node {
       display: flex;
       align-items: center;
-      height: 28px;
-      padding: 0 0 4px 0;
+      height: auto;
+      padding: 0 0 0 40px;
+      background: #fafafa;
       white-space: nowrap;
+      &-top {
+        position relative;
+        font-size: 18px;
+        padding: 10px 20px;
+        background: #f3f4f7;
+        &:after {
+          content: ''
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          width: 100%;
+          height: 1px;
+          background-color: #d6d6d6;
+        }
+      }
+      &-node {
+        position relative;
+        font-size: 16px;
+        padding: 10px 20px 10px 40px;
+        background: #fafafa;
+        &:before {
+          content: ''
+          position: absolute;
+          top: -1px;
+          left: 0;
+          width: 100%;
+          height: 1px;
+          background-color: #d6d6d6;
+        }
+        &:after {
+          content: ''
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          width: 100%;
+          height: 1px;
+          background-color: #d6d6d6;
+        }
+        ~ ul {
+          .auth-tree-node {
+            padding: 10px 20px 10px 80px;
+          }
+          .auth-tree-node-second {
+            padding: 10px 20px 10px 120px;
+          }
+          .auth-tree-node-bottom {
+            padding: 10px 20px 10px 120px;
+          }
+        }
+      }
+      &-second {
+        position relative;
+        display: inline-block;
+        vertical-align: top;
+        padding: 10px 20px 10px 120px;
+        .auth-tree-arrow.auth-tree-arrow-open {
+          display: none;
+        }
+        ~ ul {
+          display: inline-block;
+          vertical-align: top;
+          .auth-tree-node {
+            padding: 10px 10px 10px 0;
+          }
+        }
+        &:after {
+          position absolute;
+          top: 12px;
+          right: 15px;
+          content: ':'
+        }
+      }
+      &-bottom {
+        padding: 10px 20px 10px 120px;
+        .auth-tree-arrow {
+          display: none;
+        }
+      }
+      &-second, &-bottom {
+        background: #fff;
+      }
     }
     &-title {
       margin: 0;
@@ -223,13 +298,12 @@
       cursor: pointer;
       width: 14px;
       text-align: center;
-      line-height: 22px;
       margin-right: 6px;
       .icon-ios-arrow-forward {
         position: relative;
         top: -1px;
         transition: transform .2s ease-in-out;
-        font-size: 14px;
+        font-size: 16px;
         vertical-align: middle;
       }
       &-open {
@@ -245,6 +319,12 @@
       margin-right: 1px;
       line-height: 1.5715;
       vertical-align: bottom;
+    }
+    .bin-empty-normal {
+      margin: 18px 0;
+      .bin-empty-description {
+        padding-bottom: 20px;
+      }
     }
   }
 </style>
