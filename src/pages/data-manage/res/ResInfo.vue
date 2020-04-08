@@ -41,7 +41,7 @@
           <template v-slot:status="scope">{{ resStatusMap[scope.row.status] }}</template>
           <template v-slot:availableStatus="scope">
             <b-tag v-if="scope.row.availableStatus" :type="availableStatusStyleMap[scope.row.availableStatus]"
-                   :title="availableTitle(scope.row)">
+                   :title="availableTitle(scope.row)" no-border>
               {{ availableStatusMap[scope.row.availableStatus] }}
             </b-tag>
           </template>

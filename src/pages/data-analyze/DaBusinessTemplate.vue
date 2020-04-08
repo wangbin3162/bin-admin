@@ -320,6 +320,10 @@
       handleSubmit(cfgFlag) {
         this.$refs.form.validate((valid) => {
           if (valid) {
+            if (this.checkNewOne()) {
+              this.$alert.warning({ title: '警告', content: '有未保存的参数信息，请全部保存后提交' })
+              return
+            }
             this.btnLoading = true
             // 需要过滤params新增未保存的
             let params = this.params.filter(item => !item.newOne)
@@ -347,6 +351,10 @@
             })
           }
         })
+      },
+      // 验证是否有未添加的
+      checkNewOne() {
+        return this.params.reduce((total, current) => current.newOne, false)
       },
       // tree:初始化树结构
       initTree() {

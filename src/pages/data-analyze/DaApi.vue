@@ -245,6 +245,10 @@
       handleSubmit() {
         this.$refs.form.validate((valid) => {
           if (valid) {
+            if (this.checkNewOne()) {
+              this.$alert.warning({ title: '警告', content: '有未保存的参数信息，请全部保存后提交' })
+              return
+            }
             this.btnLoading = true
             let fun = this.dialogStatus === 'create' ? api.createApi : api.modifyApi
             this.apiObj.daParameters = this.apiObj.daParameters.filter(item => !item.newOne)
@@ -259,6 +263,9 @@
             })
           }
         })
+      },
+      checkNewOne() {
+        return this.apiObj.daParameters.reduce((total, current) => current.newOne, false)
       },
       // 查询所有列表
       searchList() {
