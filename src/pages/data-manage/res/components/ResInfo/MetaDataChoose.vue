@@ -1,24 +1,22 @@
 <template>
   <!--元信息选择 for ResInfo.vue -->
-  <b-modal v-model="chooseDialog" title="选择元信息" width="860" class="layout-inner" :mask-closable="false">
+  <b-modal v-model="chooseDialog" title="选择元信息" width="860" :mask-closable="false">
     <!--查询条件-->
     <v-filter-bar>
       <v-filter-item title="元信息名称">
-        <b-input v-model.trim="listQuery.tableName"  placeholder="元信息英文名" clearable></b-input>
+        <b-input v-model.trim="listQuery.tableName" placeholder="英文名" clearable></b-input>
       </v-filter-item>
       <v-filter-item title="元信息描述">
-        <b-input v-model.trim="listQuery.metadataName"  placeholder="元信息中文名" clearable></b-input>
+        <b-input v-model.trim="listQuery.metadataName" placeholder="中文名" clearable></b-input>
       </v-filter-item>
       <!--添加查询按钮位置-->
       <v-filter-item @on-search="handleFilter" @on-reset="resetQuery"></v-filter-item>
     </v-filter-bar>
     <!--中央表格-->
-    <b-table :columns="columns" :data="list" :loading="listLoading" >
+    <b-table :columns="columns" :data="list" :loading="listLoading" size="small">
       <!--操作栏-->
       <template v-slot:action="scope">
-        <b-button type="primary" plain @click="chooseOne(scope.row)">
-          选择
-        </b-button>
+        <b-button type="text" @click="chooseOne(scope.row)">选择</b-button>
       </template>
     </b-table>
     <div slot="footer">
