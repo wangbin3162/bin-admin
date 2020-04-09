@@ -4,11 +4,12 @@
     <div flex="box:last">
       <b-input v-model="current" placeholder="选择填充" readonly clearable
                @on-clear="handleClear"></b-input>
-      <b-button type="primary"  @click="handleShowModal">
+      <b-button type="primary" @click="handleShowModal">
         选择
       </b-button>
     </div>
-    <b-modal v-model="dialogFormVisible" title="选择资源" width="1020" class="layout-inner" :mask-closable="false">
+    <b-modal v-model="dialogFormVisible" title="选择资源" width="1020" class="layout-inner" :mask-closable="false"
+             :body-styles="{padding:0}">
       <v-table-wrap style="padding: 0;">
         <!--树结构-->
         <b-tree :data="treeData" slot="tree" :lock-select="lockTreeSelect"
@@ -16,20 +17,18 @@
         <!--查询条件-->
         <v-filter-bar>
           <v-filter-item title="资源名称" :span="12">
-            <b-input v-model.trim="listQuery.resourceName"  placeholder="资源名称(中文名)" clearable></b-input>
+            <b-input v-model.trim="listQuery.resourceName" placeholder="资源名称(中文名)" clearable></b-input>
           </v-filter-item>
           <!--添加查询按钮位置-->
           <v-filter-item @on-search="handleFilter" @on-reset="resetQuery"></v-filter-item>
         </v-filter-bar>
         <!--中央表格-->
-        <b-table :columns="columns" :data="list" :loading="listLoading" >
+        <b-table :columns="columns" :data="list" :loading="listLoading" size="small">
           <template v-slot:sharedType="scope">{{ shareMap[scope.row.sharedType] }}</template>
           <template v-slot:status="scope">{{ resStatusMap[scope.row.status] }}</template>
           <!--操作栏-->
           <template v-slot:action="scope">
-            <b-button type="primary" plain @click="chooseOne(scope.row)">
-              选择
-            </b-button>
+            <b-button type="text" @click="chooseOne(scope.row)">选择</b-button>
           </template>
         </b-table>
       </v-table-wrap>
@@ -88,7 +87,7 @@
           { title: '资源名称', key: 'resourceName' },
           { title: '共享属性', slot: 'sharedType', width: 100, align: 'center' },
           { title: '资源状态', slot: 'status', width: 100, align: 'center' },
-          { title: '操作', slot: 'action', width: 100 }
+          { title: '操作', slot: 'action', width: 100, align: 'center' }
         ],
         current: '',
         resStatusMap: { edit: '草稿', audited: '已发布', closed: '已删除' }, // 资源状态映射 #static
