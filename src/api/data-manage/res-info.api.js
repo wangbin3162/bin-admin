@@ -191,3 +191,38 @@ export function checkResCodeExist(id, code) {
     }
   })
 }
+
+/* 查询数据关联配置枚举 */
+export function queryExtSyncEnum() {
+  let syncType = request.get('/api/enum/dir/ext/syncType')
+  let syncCategory = request.get('/api/enum/dir/ext/syncCategory ')
+  let syncConcatenate = request.get('/api/enum/dir/ext/syncConcatenate')
+  return new Promise((resolve, reject) => {
+    Promise.all([syncType, syncCategory, syncConcatenate]).then(res => {
+      if (res[0].data.code === '0' && res[1].data.code === '0' && res[2].data.code === '0') {
+        resolve({
+          type: res[0].data.data,
+          category: res[1].data.data,
+          concatenate: res[2].data.data
+        })
+      } else {
+        resolve({
+          type: {},
+          category: {},
+          concatenate: {}
+        })
+      }
+    }).catch(error => reject(new Error(error.message || '枚举获取失败')))
+  })
+}
+
+/* 查询数据关联配置 */
+export function queryExtSyncList(resourceKey) {
+  return request({
+    url: '/api/dir/ext/sync/search',
+    method: 'get',
+    params: {
+      resourceKey
+    }
+  })
+}

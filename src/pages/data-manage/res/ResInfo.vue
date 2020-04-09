@@ -6,24 +6,24 @@
         <b-tree :data="treeData" slot="tree" @on-select-change="handTreeCurrentChange"></b-tree>
         <!--查询条件-->
         <v-filter-bar>
-          <v-filter-item title="资源名称">
+          <v-filter-item title="资源名称" :span="5">
             <b-input v-model.trim="listQuery.resourceName" placeholder="资源名称(中文名)" clearable></b-input>
           </v-filter-item>
           <v-filter-item title="资源性质" :span="5">
             <v-cascade :data="resPropertyOptions" v-model="listQuery.resProperty" style="width: 100%;"></v-cascade>
           </v-filter-item>
-          <v-filter-item title="资源状态" :span="4">
+          <v-filter-item title="资源状态" :span="5">
             <b-select v-model="listQuery.status" clearable>
               <b-option v-for="(value,key) in resStatusMap" :key="key" :value="key">{{ value }}</b-option>
             </b-select>
           </v-filter-item>
-          <v-filter-item title="可用状态" :span="4">
+          <v-filter-item title="可用状态" :span="5">
             <b-select v-model="listQuery.availableStatus" clearable>
               <b-option v-for="(value,key) in availableStatusMap" :key="key" :value="key">{{ value }}</b-option>
             </b-select>
           </v-filter-item>
           <!--添加查询按钮位置-->
-          <v-filter-item :span="5" @on-search="handleFilter" @on-reset="resetQuery"></v-filter-item>
+          <v-filter-item :span="4" @on-search="handleFilter" @on-reset="resetQuery"></v-filter-item>
         </v-filter-bar>
         <!--操作栏-->
         <v-table-tool-bar>

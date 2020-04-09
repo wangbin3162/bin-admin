@@ -4,8 +4,9 @@
                       show-close @on-close="handleClose">
       <v-table-wrap>
         <div v-if="visible" class="mb-15">
-          <b-tabs v-model="activeTab" :data="tabs" ref="tabs"></b-tabs>
+          <b-tabs v-model="activeTab" :data="[{ key: 'tab1', title: '信息验证' },{ key: 'tab2', title: '数据关联同步' }]"/>
         </div>
+        <!--信息验证-->
         <div v-if="activeTab==='tab1'" style="padding: 10px;">
           <div class="ext-info">
             <div class="row" flex="box:mean">
@@ -55,6 +56,22 @@
             <b-button type="primary" @click="handleSaveInfo">保存信息验证</b-button>
           </div>
         </div>
+        <!--信息验证-->
+        <div v-if="activeTab==='tab2'">
+          <v-table-tool-bar>
+            <b-button v-if="canCreate" type="primary" icon="ios-add-circle-outline" @click="handleCreate">新 增</b-button>
+          </v-table-tool-bar>
+          <b-table :columns="columns" :data="list" :loading="listLoading">
+            <!--操作栏-->
+            <template v-slot:action="{row}">
+              <b-button type="text" @click="handleModify(row)">
+                修改
+              </b-button>
+              <b-divider type="vertical"></b-divider>
+              <b-button type="text" text-color="danger" @click="handleRemove(row)">删除</b-button>
+            </template>
+          </b-table>
+        </div>
       </v-table-wrap>
     </page-header-wrap>
   </div>
@@ -71,11 +88,8 @@
     mixins: [commonMixin, permission],
     data() {
       return {
-        tabs: [
-          { key: 'tab1', title: '信息验证' },
-          { key: 'tab2', title: '数据关联同步' }
-        ],
-        activeTab: 'tab1',
+        visible: false,
+        activeTab: 'tab2',
         config: {
           appendBaseCfg: '1', // 增补基础信息
           relationBaseCfg: '1', // 关联基础信息
@@ -85,8 +99,24 @@
         resourceName: '',
         items: [],
         checkItems: [],
-        visible: false
+        columns: [
+          { type: 'index', width: 50, align: 'center' },
+          { title: '目标资源信息', key: 'targetResourceKey' },
+          { title: '同步方式', key: 'syncType' },
+          { title: '关联说明', key: 'remark' },
+          { title: '操作', slot: 'action', width: 160 }
+        ],
+        syncEnum: {
+          type: {},
+          category: {},
+          concatenate: {}
+        }
       }
+    },
+    created() {
+      api.queryExtSyncEnum().then(res => {
+        this.syncEnum = res
+      })
     },
     methods: {
       open(obj) {
@@ -97,6 +127,8 @@
         this.resourceName = params.resourceName
         this.items = params.items
         this.checkItems = this.config.repeatedLineCfg ? this.config.repeatedLineCfg.split(',') : []
+        // 查询数据关联同步列表
+        this.handleSearch()
         this.visible = true
       },
       handleClose() {
@@ -117,6 +149,30 @@
             this.$notice.danger({ title: '操作错误', desc: res.data.message })
           }
         })
+      },
+      // 查询数据关联同步列表
+      handleSearch() {
+        this.setListData()
+        api.queryExtSyncList(this.resourceKey).then(res => {
+          if (res.status === 200) {
+            this.setListData({
+              list: res.data.rows,
+              total: res.data.total
+            })
+          }
+        })
+      },
+      // 数据关联同步新增
+      handleCreate() {
+
+      },
+      // 修改关联同步
+      handleModify(row) {
+
+      },
+      // 删除关联同步
+      handleRemove(row) {
+
       }
     }
   }
