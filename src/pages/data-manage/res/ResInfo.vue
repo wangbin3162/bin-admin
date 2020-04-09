@@ -3,8 +3,7 @@
     <page-header-wrap v-show="isNormal">
       <v-table-wrap>
         <!--树结构-->
-        <b-tree :data="treeData" slot="tree" :lock-select="lockTreeSelect"
-                @on-select-change="handTreeCurrentChange"></b-tree>
+        <b-tree :data="treeData" slot="tree" @on-select-change="handTreeCurrentChange"></b-tree>
         <!--查询条件-->
         <v-filter-bar>
           <v-filter-item title="资源名称">
@@ -33,38 +32,45 @@
         <!--中央表格-->
         <b-table :columns="columns" :data="list" :loading="listLoading">
           <!--资源名称-->
-          <template v-slot:resourceName="scope">
-            <b-button type="text" @click="handleCheck(scope.row)">{{ scope.row.resourceName }}</b-button>
+          <template v-slot:resourceName="{row}">
+            <b-button type="text" @click="handleCheck(row)">{{ row.resourceName }}</b-button>
           </template>
-          <template v-slot:personClass="scope">{{ personClassMap[scope.row.personClass] }}</template>
-          <template v-slot:resProperty="scope">{{ resPropertyMap[scope.row.resProperty] }}</template>
-          <template v-slot:status="scope">{{ resStatusMap[scope.row.status] }}</template>
-          <template v-slot:availableStatus="scope">
-            <b-tag v-if="scope.row.availableStatus" :type="availableStatusStyleMap[scope.row.availableStatus]"
-                   :title="availableTitle(scope.row)" no-border>
-              {{ availableStatusMap[scope.row.availableStatus] }}
+          <template v-slot:personClass="{row}">{{ personClassMap[row.personClass] }}</template>
+          <template v-slot:resProperty="{row}">{{ resPropertyMap[row.resProperty] }}</template>
+          <template v-slot:status="{row}">
+            <b-tag no-border font-size="14px" :type="row.status==='audited'?'success':'info'">
+              {{ resStatusMap[row.status] }}
             </b-tag>
           </template>
+          <template v-slot:availableStatus="{row}">
+            <b-tooltip
+              :content="row.availableStatus === 'notavailable' ? '不可用状态，资源依赖的元信息发生变更，请及时更新' : '可用状态'"
+              theme="light" max-width="200" style="padding-top: 3px;">
+              <b-icon
+                :name="row.availableStatus==='available'?'ios-checkmark-circle-outline':'ios-close-circle-outline'"
+                size="20" :color="availableStatusStyleMap[row.availableStatus]"/>
+            </b-tooltip>
+          </template>
           <!--扩展配置-->
-          <template v-slot:ext="scope">
-            <b-button type="text" @click="handleExt(scope.row)" :disabled="scope.row.status!=='audited'">
+          <template v-slot:ext="{row}">
+            <b-button type="text" @click="handleExt(row)" :disabled="row.status!=='audited'">
               配置
             </b-button>
           </template>
           <!--操作栏-->
-          <template v-slot:action="scope">
-            <b-button :disabled="!canModify" type="text" @click="handleModify(scope.row)">
+          <template v-slot:action="{row}">
+            <b-button :disabled="!canModify" type="text" @click="handleModify(row)">
               修改
             </b-button>
             <!--是否有删除键-->
-            <template v-if="canRemove && scope.row.status!=='closed'">
+            <template v-if="canRemove && row.status!=='closed'">
               <b-divider type="vertical"></b-divider>
-              <b-button type="text" text-color="danger" @click="handleRemove(scope.row)">删除</b-button>
+              <b-button type="text" text-color="danger" @click="handleRemove(row)">删除</b-button>
             </template>
             <!--草稿状态有发布按钮-->
-            <template v-if="scope.row.status==='edit'">
+            <template v-if="row.status==='edit'">
               <b-divider type="vertical"></b-divider>
-              <b-button type="text" style="color:green;" @click="handlePublish(scope.row)">发布</b-button>
+              <b-button type="text" text-color="success" @click="handlePublish(row)">发布</b-button>
             </template>
           </template>
         </b-table>
@@ -214,8 +220,8 @@
           </b-row>
           <v-title-bar label="信息项明细" class="mb-15 mt-15"></v-title-bar>
           <b-table disabled-hover :data="resource.items" :columns="checkItemsTableColumns">
-            <template v-slot:dataType="scope">{{ dataTypeMap[scope.row.dataType] }}</template>
-            <template v-slot:status="scope">{{ fieldStatusMap[scope.row.status] }}</template>
+            <template v-slot:dataType="{row}">{{ dataTypeMap[row.dataType] }}</template>
+            <template v-slot:status="{row}">{{ fieldStatusMap[row.status] }}</template>
           </b-table>
         </template>
         <!--保存提交-->
@@ -281,8 +287,8 @@
         columns: [
           { type: 'index', width: 50, align: 'center' },
           { title: '资源名称', slot: 'resourceName' },
-          { title: '主体类别', slot: 'personClass', align: 'center' },
-          { title: '资源性质', slot: 'resProperty', width: 90, align: 'center' },
+          { title: '主体类别', slot: 'personClass' },
+          { title: '资源性质', slot: 'resProperty', width: 120, align: 'center' },
           { title: '资源状态', slot: 'status', width: 90, align: 'center' },
           { title: '可用状态', slot: 'availableStatus', width: 90, align: 'center' },
           { title: '扩展配置', slot: 'ext', width: 90, align: 'center' },
@@ -311,7 +317,7 @@
         personClassMap: {}, // 主体类别映射
         personClassOptions: [],
         availableStatusMap: { available: '可用', notavailable: '不可用' }, // 可用状态映射 #static
-        availableStatusStyleMap: { available: 'primary', notavailable: 'warning' },
+        availableStatusStyleMap: { available: '#52c41a', notavailable: '#f5222d' },
         resStatusMap: { edit: '草稿', audited: '已发布', closed: '已删除' }, // 资源状态映射 #static
         shareMap: { PUBLIC: '共享', PRIVATE: '不共享', DEPART_RANGE: '有条件共享' }, // 共享属性 #static
         openMap: { '1': '是', '0': '否' }, // 开放属性#static
@@ -340,16 +346,6 @@
       this.getEnum()
       this.initTree()
       this.resetResource()
-    },
-    computed: {
-      lockTreeSelect() {
-        return this.dialogStatus.length > 0
-      },
-      availableTitle() {
-        return function (row) {
-          return row.availableStatus === 'notavailable' ? '资源依赖的元信息发生变更,请及时更新' : this.availableStatusMap[row.availableStatus]
-        }
-      }
     },
     methods: {
       /* [事件响应] */
@@ -403,7 +399,7 @@
           title: '确定要删除当前资源信息吗？',
           content: '删除后不可恢复。',
           loading: true,
-          type: 'danger',
+          okType: 'danger',
           onOk: () => {
             api.removeResInfo(res).then(res => {
               if (res.data.code === '0') {
