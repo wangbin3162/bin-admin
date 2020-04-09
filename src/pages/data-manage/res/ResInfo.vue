@@ -220,8 +220,8 @@
     </page-header-wrap>
     <!--选择元信息弹窗-->
     <meta-data-choose ref="metaDataChoose" @on-choose="handleChooseOne"></meta-data-choose>
-    <!--资源扩展弹窗-->
-    <res-ext-edit ref="resExtEdit" @on-save="handleSaveExt"></res-ext-edit>
+    <!--资源扩展-->
+    <res-ext-edit ref="resExtEdit" @on-close="handleCancel"></res-ext-edit>
   </div>
 </template>
 
@@ -440,21 +440,13 @@
           api.queryExt(row.resourceKey).then(res => {
             const obj = {
               resourceKey: resource.resourceKey,
+              resourceName: resource.resourceName,
               items: resource.items,
               cfg: res.data.data
             }
+            this.dialogStatus = 'extEdit'
             this.$refs.resExtEdit.open(obj)
           })
-        })
-      },
-      // 保存配置
-      handleSaveExt(resourceKey, config) {
-        api.saveExt(resourceKey, config).then(res => {
-          if (res.status === 200) {
-            this.$message({ type: 'success', content: '配置成功' })
-          } else {
-            this.$notice.danger({ title: '操作错误', desc: res.data.message })
-          }
         })
       },
       // 共享条件更改联动

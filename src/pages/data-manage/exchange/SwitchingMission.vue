@@ -4,20 +4,20 @@
       <v-table-wrap>
         <v-filter-bar>
           <v-filter-item title="资源名称">
-            <b-input v-model="listQuery.resourceName" placeholder="请输入节点名称" clearable ></b-input>
+            <b-input v-model="listQuery.resourceName" placeholder="请输入节点名称" clearable></b-input>
           </v-filter-item>
           <v-filter-item title="交换类型" :span="5">
-            <b-select v-model="listQuery.changeType" clearable placeholder="全部" >
+            <b-select v-model="listQuery.changeType" clearable placeholder="全部">
               <b-option v-for="(value,key) in exchangeTypeMap" :key="key" :value="key">{{ value }}</b-option>
             </b-select>
           </v-filter-item>
           <v-filter-item title="信息流向" :span="4">
-            <b-select v-model="listQuery.flowDirection" clearable placeholder="全部" >
+            <b-select v-model="listQuery.flowDirection" clearable placeholder="全部">
               <b-option v-for="(value,key) in flowDirectionMap" :key="key" :value="key">{{ value }}</b-option>
             </b-select>
           </v-filter-item>
           <v-filter-item title="可用状态" :span="4">
-            <b-select v-model="listQuery.availableStatus" clearable placeholder="全部" >
+            <b-select v-model="listQuery.availableStatus" clearable placeholder="全部">
               <b-option v-for="(value,key) in availableStatusMap" :key="key" :value="key">{{ value }}</b-option>
             </b-select>
           </v-filter-item>
@@ -27,7 +27,7 @@
         <!--操作栏-->
         <v-table-tool-bar>
           <b-button type="primary"
-                      icon="ios-add-circle-outline"
+                    icon="ios-add-circle-outline"
                     @click="handleCreate">新 增
           </b-button>
         </v-table-tool-bar>
@@ -38,9 +38,9 @@
           <!--有效状态-->
           <template v-slot:status="scope">
             <b-switch
-                      v-model="scope.row.status" :true-value="ENUM.ENABLE" :false-value="ENUM.DISABLE"
-                      inactive-color="#ff4949"
-                      @on-change="handleChangeStatus(scope.row)">
+              v-model="scope.row.status" :true-value="ENUM.ENABLE" :false-value="ENUM.DISABLE"
+              inactive-color="#ff4949"
+              @on-change="handleChangeStatus(scope.row)">
             </b-switch>
           </template>
           <template v-slot:availableStatus="scope">
@@ -221,14 +221,14 @@
         },
         columns: [
           { type: 'index', width: 50, align: 'center' },
-          { title: '资源名称', key: 'resourceName', tooltip: true, width: 250 },
-          { title: '资源标识', key: 'resourceKey', width: 200 },
-          { title: '所属方案', key: 'cfgName', width: 250 },
+          { title: '资源名称', key: 'resourceName', tooltip: true },
+          { title: '资源标识', key: 'resourceKey' },
+          { title: '所属方案', key: 'cfgName' },
           { title: '信息流向', slot: 'flowDirection', align: 'center', width: 100 },
           { title: '交换类型', slot: 'changeType', align: 'center', width: 100 },
-          { title: '可用状态', slot: 'availableStatus', width: 150, align: 'center' },
-          { title: '启用/禁用', slot: 'status', align: 'center', width: 200 },
-          { title: '操作', slot: 'action' }
+          { title: '可用状态', slot: 'availableStatus', width: 100, align: 'center' },
+          { title: '启用/禁用', slot: 'status', align: 'center', width: 100 },
+          { title: '操作', slot: 'action', width: 150 }
         ],
         mission: null, // 任务
         ruleValidate: {
