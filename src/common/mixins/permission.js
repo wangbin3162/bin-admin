@@ -2,6 +2,9 @@ import store from '../../store'
 
 export default {
   computed: {
+    isAdmin() {
+      return store.getters.userInfo.roleCodes === 'ROLE_ADMIN'
+    },
     currentPermission() {
       const permissions = store.getters.userInfo.permissions || null
       if (permissions) {
@@ -21,7 +24,7 @@ export default {
   },
   methods: {
     havePermission(perm) {
-      return this.currentPermission ? this.currentPermission.indexOf(perm) > -1 : false
+      return this.isAdmin ? true : (this.currentPermission ? this.currentPermission.indexOf(perm) > -1 : false)
     }
   }
 }
