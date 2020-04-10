@@ -17,7 +17,7 @@
           <b-option value="string">string</b-option>
           <b-option value="number">number</b-option>
         </b-select>
-        <span v-else>{{ {row,index}.row.paramType }}</span>
+        <span v-else>{{ row.paramType }}</span>
       </template>
       <template v-slot:isRequired="{row,index}">
         <b-switch v-model="totalData[index].isRequired" v-if="row.edit" true-value="Y" false-value="N">

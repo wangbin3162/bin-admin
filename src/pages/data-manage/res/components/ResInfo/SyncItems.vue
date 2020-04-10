@@ -1,0 +1,310 @@
+<template>
+  <div>
+    <div v-if="hasMapList">
+      <v-title-bar label="配置映射" class="mb-15"/>
+      <b-table disabled-hover :data="mapList" :columns="mapColumns" size="small">
+        <template v-slot:targetField="{row,index}">
+          <b-select v-if="row.edit" v-model="mapList[index].targetField" size="small" append-to-body clearable>
+            <b-option v-for="item in targetFields"
+                      :key="item.fieldName" :value="item.fieldName">{{item.fieldName}}
+            </b-option>
+          </b-select>
+          <span v-else>{{ row.targetField }}</span>
+        </template>
+        <template v-slot:sourceField="{row,index}">
+          <b-select v-if="row.edit" v-model="mapList[index].sourceField" size="small" append-to-body clearable>
+            <b-option v-for="item in sourceFields"
+                      :key="item.fieldName" :value="item.fieldName">{{item.fieldName}}
+            </b-option>
+          </b-select>
+          <span v-else>{{ row.sourceField }}</span>
+        </template>
+        <template v-slot:paramName="{row,index}">
+          <b-input v-if="row.edit" v-model="mapList[index].paramName" size="small" clearable/>
+          <span v-else>{{ row.paramName }}</span>
+        </template>
+        <template v-slot:paramValue="{row,index}">
+          <b-input v-if="row.edit" v-model="mapList[index].paramValue" size="small" clearable/>
+          <span v-else>{{ row.paramValue }}</span>
+        </template>
+        <template v-slot:action="{row,index}">
+          <div v-if="row.newOne">
+            <b-button @click="handleSave(row,index,'M')" type="success" size="small" transparent>添加</b-button>
+            <b-button @click="handleCancel(index,'M')" size="small">取消</b-button>
+          </div>
+          <div v-else>
+            <b-button v-if="row.edit" @click="handleSave(row,index,'M')" type="primary" size="small" transparent>保存
+            </b-button>
+            <b-button v-else @click="handleEdit(index,'M')" type="primary" size="small" transparent>编辑</b-button>
+            <b-button v-if="row.edit" @click="handleCancel(index,'M')" size="small">取消</b-button>
+            <span v-else style="margin-left: 10px;">
+            <b-popover
+              confirm append-to-body
+              title="确认删除此项吗?"
+              @on-ok="handleRemove(index,'M')">
+              <b-button type="danger" size="small" transparent>删除</b-button>
+            </b-popover>
+          </span>
+          </div>
+        </template>
+      </b-table>
+      <b-button type="dashed" icon="ios-add-circle-outline"
+                style="width: 100%;margin-top: 16px;margin-bottom: 8px;"
+                @click="handleAdd('M')">添加配置映射
+      </b-button>
+    </div>
+    <div v-if="hasConditionList">
+      <v-title-bar label="关联条件" class="mb-15"/>
+      <b-table disabled-hover :data="conditionList" :columns="conditionColumns" size="small">
+        <template v-slot:targetField="{row,index}">
+          <b-select v-if="row.edit" v-model="conditionList[index].targetField" size="small" append-to-body clearable>
+            <b-option v-for="item in targetFields"
+                      :key="item.fieldName" :value="item.fieldName">{{item.fieldName}}
+            </b-option>
+          </b-select>
+          <span v-else>{{ row.targetField }}</span>
+        </template>
+        <template v-slot:sourceField="{row,index}">
+          <b-select v-if="row.edit" v-model="conditionList[index].sourceField" size="small" append-to-body clearable>
+            <b-option v-for="item in sourceFields"
+                      :key="item.fieldName" :value="item.fieldName">{{item.fieldName}}
+            </b-option>
+          </b-select>
+          <span v-else>{{ row.sourceField }}</span>
+        </template>
+        <template v-slot:paramName="{row,index}">
+          <b-input v-if="row.edit" v-model="conditionList[index].paramName" size="small" clearable/>
+          <span v-else>{{ row.paramName }}</span>
+        </template>
+        <template v-slot:paramValue="{row,index}">
+          <b-input v-if="row.edit" v-model="conditionList[index].paramValue" size="small" clearable/>
+          <span v-else>{{ row.paramValue }}</span>
+        </template>
+        <template v-slot:condition="{row,index}">
+          <b-input v-if="row.edit" v-model="conditionList[index].condition" size="small" clearable/>
+          <span v-else>{{ row.condition }}</span>
+        </template>
+        <template v-slot:concatenate="{row,index}">
+          <b-select v-if="row.edit" v-model="conditionList[index].concatenate" size="small" append-to-body>
+            <b-option v-for="(o,k) in concatenateOptions" :key="k" :value="k">{{ o }}</b-option>
+          </b-select>
+          <span v-else>{{ row.concatenate }}</span>
+        </template>
+        <template v-slot:action="{row,index}">
+          <div v-if="row.newOne">
+            <b-button @click="handleSave(row,index,'C')" type="success" size="small" transparent>添加</b-button>
+            <b-button @click="handleCancel(index,'C')" size="small">取消</b-button>
+          </div>
+          <div v-else>
+            <b-button v-if="row.edit" @click="handleSave(row,index,'C')" type="primary" size="small" transparent>保存
+            </b-button>
+            <b-button v-else @click="handleEdit(index,'C')" type="primary" size="small" transparent>编辑</b-button>
+            <b-button v-if="row.edit" @click="handleCancel(index,'C')" size="small">取消</b-button>
+            <span v-else style="margin-left: 10px;">
+            <b-popover
+              confirm append-to-body
+              title="确认删除此项吗?"
+              @on-ok="handleRemove(index,'C')">
+              <b-button type="danger" size="small" transparent>删除</b-button>
+            </b-popover>
+          </span>
+          </div>
+        </template>
+      </b-table>
+      <b-button type="dashed" icon="ios-add-circle-outline"
+                style="width: 100%;margin-top: 16px;margin-bottom: 8px;"
+                @click="handleAdd('C')">添加关联条件
+      </b-button>
+    </div>
+  </div>
+</template>
+
+<script>
+  import { deepCopy } from '../../../../../common/utils/assist'
+
+  export default {
+    name: 'SyncItems',
+    props: {
+      value: {
+        type: Array,
+        default() {
+          return []
+        }
+      },
+      syncType: { // 同步类型
+        type: String,
+        required: true
+      },
+      targetFields: { // 目标信息项
+        type: Array,
+        default() {
+          return []
+        }
+      },
+      sourceFields: { // 原信息项
+        type: Array,
+        default() {
+          return []
+        }
+      },
+      concatenateOptions: { // 连接方式枚举值
+        type: Object,
+        default() {
+          return {}
+        }
+      }
+    },
+    data() {
+      return {
+        mapColumns: [
+          { type: 'index', width: 50, align: 'center' },
+          { title: '目标信息项', slot: 'targetField', width: 150 },
+          { title: '源信息项', slot: 'sourceField', width: 150 },
+          { title: '参数名称', slot: 'paramName' },
+          { title: '参数值', slot: 'paramValue' },
+          { title: '操作', slot: 'action', width: 150 }
+        ],
+        mapList: [], // 配置映射列表
+        conditionColumns: [
+          { type: 'index', width: 50, align: 'center' },
+          { title: '目标信息项', slot: 'targetField', width: 150 },
+          { title: '源信息项', slot: 'sourceField', width: 150 },
+          { title: '参数名称', slot: 'paramName' },
+          { title: '参数值', slot: 'paramValue' },
+          { title: '条件', slot: 'condition' },
+          { title: '连接方式', slot: 'concatenate', width: 120 },
+          { title: '操作', slot: 'action', width: 150 }
+        ],
+        conditionList: [] // 关联条件列表
+      }
+    },
+    computed: {
+      // 是否有配置映射列表
+      hasMapList() {
+        return this.syncType === 'A' || this.syncType === 'M'
+      },
+      // 是否有关联条件
+      hasConditionList() {
+        return this.syncType === 'M' || this.syncType === 'D'
+      }
+    },
+    watch: {
+      value: {
+        handler(val) {
+          this.mapList = [] // 配置映射列表
+          this.conditionList = [] // 关联条件列表
+          // 初始化两个，映射，条件列表
+          if (val.length > 0) {
+            val.forEach(item => {
+              // 映射
+              if (item.category === 'M') {
+                this.mapList.push(item)
+              }
+              // 关联条件
+              if (item.category === 'C') {
+                this.conditionList.push(item)
+              }
+            })
+            this.mapListCopy = deepCopy(this.mapList)
+            this.conditionListCopy = deepCopy(this.conditionList)
+          }
+        },
+        immediate: true
+      }
+    },
+    methods: {
+      // 添加项
+      handleAdd(type) {
+        let newRow = {
+          targetField: '',
+          sourceField: '',
+          category: type,
+          paramName: '',
+          paramValue: '',
+          edit: false,
+          newOne: true
+        }
+        // 添加映射值
+        if (type === 'M') {
+          this.mapList.push(newRow)
+          this.handleEdit(this.mapList.length - 1, type)
+        } else { // 添加关联条件
+          this.conditionList.push({ ...newRow, condition: '', concatenate: 'AND' })
+          this.handleEdit(this.conditionList.length - 1, type)
+        }
+        this.emitValue()
+      },
+      // 编辑项
+      handleEdit(index, type) {
+        if (type === 'M') {
+          this.mapList[index].edit = true
+        } else {
+          this.conditionList[index].edit = true
+        }
+      },
+      handleCancel(index, type) {
+        if (type === 'M') {
+          if (this.mapList[index].newOne) { // 如果当前是新增未保存的则取消即为移除
+            this.mapList.splice(index, 1)
+            this.emitValue() // 移除后需要更新
+          } else { // 编辑的则设置取消
+            // 从value里获取当前行恢复
+            const { targetField, sourceField, paramName, paramValue } = this.mapListCopy[index]
+            this.mapList[index].targetField = targetField
+            this.mapList[index].sourceField = sourceField
+            this.mapList[index].paramName = paramName
+            this.mapList[index].paramValue = paramValue
+            this.mapList[index].edit = false
+          }
+        } else {
+          if (this.conditionList[index].newOne) { // 如果当前是新增未保存的则取消即为移除
+            this.conditionList.splice(index, 1)
+            this.emitValue() // 移除后需要更新
+          } else { // 编辑的则设置取消
+            // 从value里获取当前行恢复
+            const { targetField, sourceField, paramName, paramValue, condition, concatenate } = this.conditionListCopy[index]
+            this.conditionList[index].targetField = targetField
+            this.conditionList[index].sourceField = sourceField
+            this.conditionList[index].paramName = paramName
+            this.conditionList[index].paramValue = paramValue
+            this.conditionList[index].condition = condition
+            this.conditionList[index].concatenate = concatenate
+            this.conditionList[index].edit = false
+          }
+        }
+      },
+      handleRemove(index, type) {
+        // 清除一个未保存的项
+        if (type === 'M') {
+          this.mapList.splice(index, 1)
+        } else {
+          this.conditionList.splice(index, 1)
+        }
+        this.emitValue()
+      },
+      handleSave(row, index, type) {
+        if (row.targetField.length === 0) {
+          this.$message({ type: 'danger', content: '目标信息项必选' })
+          return
+        }
+        if (type === 'M') {
+          this.mapList[index].edit = false
+          this.mapList[index].newOne = false
+        } else {
+          this.conditionList[index].edit = false
+          this.conditionList[index].newOne = false
+        }
+        this.emitValue()
+      },
+      // 更新model value
+      emitValue() {
+        let totalData = [
+          ...this.mapList.map((map, i) => ({ ...map, sortNum: i })),
+          ...this.conditionList.map((map, i) => ({ ...map, sortNum: i }))
+        ]
+        this.$emit('input', totalData)
+        this.$emit('on-change', totalData)
+      }
+    }
+  }
+</script>

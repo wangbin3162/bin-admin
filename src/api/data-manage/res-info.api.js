@@ -226,3 +226,56 @@ export function queryExtSyncList(resourceKey) {
     }
   })
 }
+
+/* 查询数据关联配置详情 */
+export function queryExtSyncDetail(id) {
+  return request({
+    url: '/api/dir/ext/sync/detail',
+    method: 'get',
+    params: {
+      id
+    }
+  })
+}
+
+/* 新增数据关联配置 */
+export function createSync(resourceKey, sync) {
+  return request({
+    url: '/api/dir/ext/sync/create',
+    method: 'post',
+    data: {
+      resourceKey,
+      syncType: sync.syncType,
+      targetKey: sync.targetKey,
+      targetName: sync.targetName,
+      remark: sync.remark,
+      items: sync.items
+    }
+  })
+}
+
+/* 修改数据关联配置 */
+export function modifySync(resourceKey, sync) {
+  return request({
+    url: '/api/dir/ext/sync/modify',
+    method: 'post',
+    data: {
+      resourceKey,
+      id: sync.id,
+      syncType: sync.syncType,
+      targetKey: sync.targetKey,
+      targetName: sync.targetName,
+      remark: sync.remark,
+      items: sync.items
+    }
+  })
+}
+
+/* 新增数据关联配置 */
+export function removeSync(id) {
+  return request({
+    url: '/api/dir/ext/sync/remove',
+    method: 'post',
+    params: { id }
+  })
+}
