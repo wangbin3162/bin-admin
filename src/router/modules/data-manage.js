@@ -94,7 +94,7 @@ export default {
           path: 'taskTrace',
           name: 'TaskTrace',
           component: () => import(/* webpackChunkName: "collection" */ '../../pages/data-manage/data-exchange/TaskTrace'),
-          meta: { title: '任务跟踪' }
+          meta: { title: '交换监控' }
         },
         {
           path: 'collectAnalysis',

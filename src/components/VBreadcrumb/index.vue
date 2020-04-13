@@ -32,11 +32,11 @@
         }
         let parent = this.getParent(first)
         if (parent) {
-          this.levelList.push(parent)
           let parentP = this.getParent(parent)
           if (parentP) {
             this.levelList.push(parentP)
           }
+          this.levelList.push(parent)
         }
         this.levelList.push(first)
       },
