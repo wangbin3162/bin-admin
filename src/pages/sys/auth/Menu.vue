@@ -350,8 +350,9 @@
       initPermissions() {
         // 创建时动作缓存初始化3个动作
         this.menu.permissions = [
+          { id: '', name: '查询', path: 'search', desc: '列表数据的查找、查看权限', url: '', type: this.TYPE.ACT },
           { id: '', name: '新增', path: 'create', desc: '新增单条数据', url: '', type: this.TYPE.ACT },
-          { id: '', name: '更新', path: 'modify', desc: '更新单条数据', url: '', type: this.TYPE.ACT },
+          { id: '', name: '更新', path: 'modify', desc: '数据的修改权限', url: '', type: this.TYPE.ACT },
           { id: '', name: '删除', path: 'remove', desc: '删除单条数据', url: '', type: this.TYPE.ACT }
         ]
       },
