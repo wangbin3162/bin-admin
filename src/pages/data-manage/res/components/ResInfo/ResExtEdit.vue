@@ -228,6 +228,12 @@
         api.queryExtSyncDetail(row.id).then(res => {
           if (res.data.code === '0') {
             this.sync = res.data.data
+            this.sync.items = this.sync.items.map(item => ({ ...item, newOne: false, edit: false }))
+            if (this.resourceKey.length > 0) {
+              api.getItemsWithId(this.resourceKey).then(res => {
+                this.targetFields = res.data || []
+              })
+            }
             this.openEditPage('modify')
           }
         })

@@ -44,7 +44,7 @@
 <script>
   import commonMixin from '../../../../../common/mixins/mixin'
   import permission from '../../../../../common/mixins/permission'
-  import { getFields, getResInfoList } from '../../../../../api/data-manage/res-info.api'
+  import { getItemsWithId, getResInfoList } from '../../../../../api/data-manage/res-info.api'
   import { getClassifyTree } from '../../../../../api/data-manage/classify.api'
 
   export default {
@@ -121,7 +121,7 @@
       },
       chooseOne(item) {
         // 获取资源信息字段列表
-        getFields(item.resourceKey).then(res => {
+        getItemsWithId(item.resourceKey).then(res => {
           this.$emit('input', item.resourceKey)
           this.$emit('on-change', {
             resourceKey: item.resourceKey,

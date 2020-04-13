@@ -40,6 +40,16 @@ export function getFields(resourceKey) {
     }
   })
 }
+/* 获取资源信息字段列表[修改列表接口] */
+export function getItemsWithId(resourceKey) {
+  return request({
+    url: '/api/dir/itemsWithId',
+    method: 'get',
+    params: {
+      resourceKey
+    }
+  })
+}
 
 /* 查询目录明细 */
 export function getResDetail(id) {
