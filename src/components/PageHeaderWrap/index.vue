@@ -12,6 +12,7 @@
             </span>
             <b-icon v-if="showClose" name="close" @click.native="$emit('on-close')"></b-icon>
           </div>
+          <slot name="desc"></slot>
         </div>
       </div>
     </div>
