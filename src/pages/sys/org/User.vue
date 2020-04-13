@@ -109,11 +109,11 @@
           </b-row>
           <b-form-item label="角色">
             <b-tag :key="role.id" v-for="role in user.roles"
-                   :closable="!isAdmin(user)" @on-close="handleRemoveRole(role)">
+                   :closable="!isAdminRole(user)" @on-close="handleRemoveRole(role)">
               {{ role.name }}
             </b-tag>
             <b-button type="primary" style="vertical-align: middle;" plain
-                      :disabled="isAdmin(user)" @click="handleShowDialogChoose">选择角色
+                      :disabled="isAdminRole(user)" @click="handleShowDialogChoose">选择角色
             </b-button>
           </b-form-item>
           <b-form-item label="备注" prop="remark">
@@ -343,7 +343,7 @@
         this.user.roles.splice(this.user.roles.indexOf(role), 1)
       },
       // 当前用户是否是管理员
-      isAdmin(user) {
+      isAdminRole(user) {
         return user.id ? user.id === 'pre_ncloud_sys_user_10000' : false
       },
       // 表单提交
