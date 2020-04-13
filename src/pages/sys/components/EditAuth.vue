@@ -1,15 +1,11 @@
 <template>
   <!--编辑权限-->
-  <page-header-wrap v-show="visible" show-close @on-close="close" :title="pageTitle">
+  <page-header-wrap v-show="visible" show-close @on-close="close" title="编辑权限">
     <v-edit-wrap>
       <b-alert>
         <div flex="main:justify cross:center">
-          <div style="color:rgba(0,0,0,.85);font-size: 16px;">功能权限分配</div>
-          <div v-if="role&&role.parentName">
-            <span v-if="role&&role.parentName"
-                  style="color:rgba(0,0,0,.65);margin-right:5px;">
-              所属父角色:{{role.parentName}}
-            </span>
+          <div style="color:rgba(0,0,0,.85);font-size: 16px;">{{pageTitle}}</div>
+          <div>
             <b-button type="text" @click="handleClose">全部收起</b-button>
             <b-divider type="vertical"/>
             <b-button type="text" @click="handleExpand">全部展开</b-button>
@@ -44,7 +40,8 @@
     },
     computed: {
       pageTitle() {
-        return `编辑权限 / ${this.role ? this.role.name : ''}`
+        return `[${this.role ? this.role.name : ''}]授权，
+                父角色：[${(this.role && this.role.parentName) ? '有' : '无'}]`
       }
     },
     methods: {
