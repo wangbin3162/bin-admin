@@ -182,7 +182,7 @@
           </b-collapse>
           <template v-if="resource.items">
             <v-title-bar label="信息项" lass="mb-15">
-              <b-button v-if="dialogStatus==='modify'" type="primary" transparent @click="handleReload">重载信息项</b-button>
+              <b-button v-if="dialogStatus==='modify' && resource.availableStatus === 'notavailable'" type="primary" transparent @click="handleReload">重载信息项</b-button>
             </v-title-bar>
             <!--信息项表格组件-->
             <res-info-items v-model="resource.items"
