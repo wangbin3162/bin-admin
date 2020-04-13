@@ -66,19 +66,19 @@
       <v-edit-wrap>
         <b-form :model="metadata" ref="form" :rules="ruleValidate" label-position="top">
           <b-form-item label="所属类目" class="bin-form-item-required" v-if="currentTreeNode">
-            <b-input :value="currentTreeNode.title" disabled/>
+            <b-input :value="currentTreeNode.title" readonly/>
           </b-form-item>
           <b-row :gutter="20">
-            <b-col span="12">
-              <b-form-item label="名称" prop="tableName">
-                <b-input v-model="metadata.tableName" placeholder="请输入元信息英文名称" clearable
-                         :disabled="dialogStatus==='modify'"></b-input>
-              </b-form-item>
-            </b-col>
             <b-col span="12">
               <b-form-item label="主体类别" prop="personClass">
                 <v-cascade :data="personClassOptions" :disabled="dialogStatus==='modify'"
                            v-model="metadata.personClass" @on-change="handlePersonClassChange"></v-cascade>
+              </b-form-item>
+            </b-col>
+            <b-col span="12">
+              <b-form-item label="名称" prop="tableName">
+                <b-input v-model="metadata.tableName" placeholder="请输入元信息英文名称" clearable
+                         :disabled="dialogStatus==='modify'"></b-input>
               </b-form-item>
             </b-col>
           </b-row>
