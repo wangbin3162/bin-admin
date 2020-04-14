@@ -40,6 +40,7 @@ export function getFields(resourceKey) {
     }
   })
 }
+
 /* 获取资源信息字段列表[修改列表接口] */
 export function getItemsWithId(resourceKey) {
   return request({
@@ -289,3 +290,42 @@ export function removeSync(id) {
     params: { id }
   })
 }
+
+/* 新增示例数据 */
+export function addTestData(resourceKey, keyValues) {
+  return request({
+    url: '/api/dir/gather/create',
+    method: 'post',
+    data: {
+      resourceKey,
+      tableName: 'RES_SAMPLE',
+      keyValues
+    }
+  })
+}
+
+/* 修改示例数据 */
+export function modifyTestData(resourceKey, keyValues) {
+  return request({
+    url: '/api/dir/gather/modify',
+    method: 'post',
+    data: {
+      resourceKey,
+      tableName: 'RES_SAMPLE',
+      keyValues
+    }
+  })
+}
+
+/* 查询示例数据 */
+export function searchTestData(resourceKey) {
+  return request({
+    url: '/api/dir/gather/queryOne',
+    method: 'post',
+    data: {
+      resourceKey,
+      tableName: 'RES_SAMPLE'
+    }
+  })
+}
+

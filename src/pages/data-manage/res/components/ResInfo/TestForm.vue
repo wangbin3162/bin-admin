@@ -1,10 +1,10 @@
 <template>
   <div>
-    <page-header-wrap v-show="visible" :title="resource.resourceName"
+    <page-header-wrap v-if="visible" :title="resource.resourceName"
                       show-close @on-close="handleClose">
-      <v-edit-wrap v-if="visible">
+      <v-edit-wrap>
         <template slot="full">
-          <v-title-bar label="示例数据" class="mb-15"/>
+          <v-title-bar :label="hasTestData?'修改示例数据':'新增示例数据'" class="mb-15"/>
           <b-form slot="full" :model="form" ref="form" label-position="top" :rules="rules">
             <form-item :key="item.id" v-for="item in dynamicForm"
                        :label="item.fieldTitle"
@@ -26,8 +26,8 @@
         </template>
         <!--保存提交-->
         <template slot="footer">
-          <b-button @click="handleClose">取 消</b-button>
-          <b-button type="primary" @click="handleSubmit" :loading="btnLoading">提 交</b-button>
+          <b-button @click="handleClose">返 回</b-button>
+          <b-button type="primary" @click="handleSubmit" :loading="btnLoading">{{hasTestData?'修 改':'新 增'}}</b-button>
         </template>
       </v-edit-wrap>
     </page-header-wrap>
@@ -37,10 +37,11 @@
 <script>
   import { deepCopy } from '../../../../../common/utils/assist'
   import { jsonDataToRules } from '../Validator/validate.cfg'
-  import { createGather, getDictItems } from '../../../../../api/data-manage/gather.api'
+  import { default as api, getDictItems } from '../../../../../api/data-manage/gather.api'
   import FormItem from '../../../data-exchange/components/FormControl/FormItem'
   import FormControl from '../../../data-exchange/components/FormControl/FormControl'
-  import { Encode } from '../../../../../common/utils/secret'
+  import { Decode, Encode } from '../../../../../common/utils/secret'
+  import { addTestData, modifyTestData, searchTestData } from '../../../../../api/data-manage/res-info.api'
 
   export default {
     name: 'TestForm',
@@ -54,7 +55,8 @@
         form: {}, // 动态表单
         resetForm: {},
         rules: {}, // 动态校验对象
-        btnLoading: false
+        btnLoading: false,
+        hasTestData: false
       }
     },
     created() {
@@ -68,11 +70,24 @@
         // 获取原始列数组
         this.columns = columns.filter(item => !item.fieldName.includes('_id'))
         // 根据原始列扩展动态表单列表数据
-        this.initFormList().then(res => {
-          this.dynamicForm = res
+        this.initFormList().then(resp => {
+          this.dynamicForm = resp
           this.initDynamicForm(this.dynamicForm) // 根据动态列扩展form，rules和
+          this.visible = true
+          this.$nextTick(() => {
+            this.handleResetForm()
+          })
+          searchTestData(this.resource.resourceKey).then(res => {
+            if (res.data.code === '0' && res.data.data) {
+              const form = this.decodeAndMaskFormat([res.data.data])
+              this.hasTestData = true // 添加过示例数据
+              this.setFormObj(form[0])
+            } else {
+              this.hasTestData = false // 没有添加过示例数据
+              this.resetResource()
+            }
+          })
         })
-        this.visible = true
       },
       handleClose() {
         this.visible = false
@@ -196,6 +211,26 @@
         })
         return tmp
       },
+      // 解码和掩码处理列表
+      decodeAndMaskFormat(arr) {
+        let newArr = []
+        arr.forEach(item => {
+          let tmp = { ...item }
+          this.dynamicForm.forEach(field => {
+            if (field.isEncrypt === '1') { // 解密
+              tmp[field.fieldName] = Decode(item[field.fieldName])
+              // console.log('解码后：' + tmp[field.fieldName])
+            }
+          })
+          newArr.push(tmp)
+        })
+        return newArr
+      },
+      setFormObj(target) {
+        Object.keys(this.form).forEach(key => {
+          this.form[key] = target[key]
+        })
+      },
       // 表单提交
       handleSubmit() {
         if (!this.$refs.form) return
@@ -203,9 +238,10 @@
           if (valid) {
             let tmpForm = this.encodeOneFormat(this.form)
             this.btnLoading = true
-            createGather(this.resource.resourceKey, tmpForm).then(res => {
+            let fun = this.hasTestData ? modifyTestData : addTestData
+            fun(this.resource.resourceKey, tmpForm).then(res => {
               if (res.data.code === '0') {
-                this.$message({ type: 'success', content: '已添加示例数据，请到我的采集对应资源查看' })
+                this.$message({ type: 'success', content: '操作成功' })
                 this.handleClose()
               } else {
                 this.$notice.danger({ title: '操作错误', desc: res.data.message })
@@ -216,6 +252,10 @@
             this.$message({ type: 'danger', content: '表单校验失败,请填写正确后提交!' })
           }
         })
+      },
+      // 表单重置
+      handleResetForm() {
+        this.$refs.form && this.$refs.form.resetFields()
       }
     }
   }
