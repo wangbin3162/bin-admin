@@ -136,7 +136,7 @@
         <b-alert>
           <b-row>
             <b-col span="6">
-              <v-simple-label label="交换方案" style="padding:0;">{{taskName}}</v-simple-label>
+              <v-simple-label label="交换方案" style="padding:0;">{{planName}}</v-simple-label>
             </b-col>
             <b-col span="6">
               <v-simple-label label="定时周期" style="padding:0;">{{cronStr}}</v-simple-label>
@@ -246,7 +246,7 @@
         detailDialog: false,
         batchDetail: null,
         resourceName: '',
-        taskName: '',
+        planName: '', // 方案名称
         cronStr: '', // 定时周期
         availableStatus: '', // 有效状态
         totalCount: '' // 执行次数
@@ -291,7 +291,7 @@
           jobStatus: ''
         }
         this.resourceName = row.resourceName
-        this.taskName = ''
+        this.planName = row.planName
         this.cronStr = row.cronStr
         this.availableStatus = row.availableStatus
         this.totalCount = row.totalCount

@@ -20,16 +20,16 @@ export default {
       meta: { title: '组织管理', icon: 'ios-git-network' },
       children: [
         {
-          path: 'user',
-          name: 'User',
-          component: () => import(/* webpackChunkName: "org" */ '../../pages/sys/org/User'),
-          meta: { title: '用户管理' }
-        },
-        {
           path: 'dept',
           name: 'Dept',
           component: () => import(/* webpackChunkName: "org" */ '../../pages/sys/org/Dept'),
           meta: { title: '部门管理' }
+        },
+        {
+          path: 'user',
+          name: 'User',
+          component: () => import(/* webpackChunkName: "org" */ '../../pages/sys/org/User'),
+          meta: { title: '用户管理' }
         }
       ]
     },
