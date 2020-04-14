@@ -69,7 +69,7 @@
       <v-edit-wrap>
         <b-form :model="depart" ref="form" :rules="ruleValidate" :label-width="130">
           <b-form-item label="上级部门">
-            <b-input v-if="currentTreeNode" :value="currentTreeNode.title" disabled></b-input>
+            <b-input v-if="currentTreeNode" :value="currentTreeNode.title" readonly></b-input>
           </b-form-item>
           <b-row>
             <b-col span="12">

@@ -56,7 +56,7 @@
           <b-row>
             <b-col span="12">
               <b-form-item label="父级类别">
-                <b-input v-if="currentTreeNode" :value="currentTreeNode.title" disabled></b-input>
+                <b-input v-if="currentTreeNode" :value="currentTreeNode.title" readonly></b-input>
               </b-form-item>
             </b-col>
             <b-col span="12">

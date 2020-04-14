@@ -68,7 +68,7 @@
           <b-row>
             <b-col span="12">
               <b-form-item label="上级菜单" class="bin-form-item-required">
-                <b-input v-if="currentTreeNode" :value="currentTreeNode.title" disabled></b-input>
+                <b-input v-if="currentTreeNode" :value="currentTreeNode.title" readonly></b-input>
               </b-form-item>
             </b-col>
             <b-col span="12">
