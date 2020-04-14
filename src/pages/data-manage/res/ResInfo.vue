@@ -65,16 +65,26 @@
             <b-button :disabled="!canModify" type="text" @click="handleModify(row)">
               修改
             </b-button>
-            <!--是否有删除键-->
-            <template v-if="canRemove && row.status!=='closed'">
-              <b-divider type="vertical"></b-divider>
-              <b-button type="text" text-color="danger" @click="handleRemove(row)">删除</b-button>
-            </template>
-            <!--草稿状态有发布按钮-->
-            <template v-if="row.status==='edit'">
-              <b-divider type="vertical"></b-divider>
-              <b-button type="text" text-color="success" @click="handlePublish(row)">发布</b-button>
-            </template>
+            <b-divider type="vertical"/>
+            <b-dropdown trigger="click">
+              <b-button type="text">更多
+                <b-icon name="ios-arrow-down"/>
+              </b-button>
+              <b-dropdown-menu slot="list">
+                <b-dropdown-item v-if="row.status==='edit'" :style="colorSuccess"
+                                 @click.native="handlePublish(row)">
+                  发布
+                </b-dropdown-item>
+                <b-dropdown-item v-if="row.status==='audited'" :style="colorWarning"
+                                 @click.native="handleCheckRes(row)">
+                  示例数据
+                </b-dropdown-item>
+                <b-dropdown-item v-if="canRemove" divided :style="colorDanger"
+                                 @click.native="handleRemove(row)">
+                  删除
+                </b-dropdown-item>
+              </b-dropdown-menu>
+            </b-dropdown>
           </template>
         </b-table>
         <!--下方分页器-->
@@ -236,9 +246,11 @@
       </v-edit-wrap>
     </page-header-wrap>
     <!--选择元信息弹窗-->
-    <meta-data-choose ref="metaDataChoose" @on-choose="handleChooseOne"></meta-data-choose>
+    <meta-data-choose ref="metaDataChoose" @on-choose="handleChooseOne"/>
     <!--资源扩展-->
-    <res-ext-edit ref="resExtEdit" @on-close="handleCancel"></res-ext-edit>
+    <res-ext-edit ref="resExtEdit" @on-close="handleCancel"/>
+    <!--示例数据-->
+    <test-form ref="testForm" @on-close="handleCancel"/>
   </div>
 </template>
 
@@ -252,11 +264,13 @@
   import { MetaDataChoose, ResExtEdit } from './components/ResInfo'
   import ResInfoItems from './components/ResInfoItems'
   import { requiredRule } from '../../../common/utils/validate'
+  import TestForm from './components/ResInfo/TestForm'
+  import { getResourceInfo } from '../../../api/data-manage/gather.api'
 
   // map映射中如 #static 标识: 静态不改变的枚举的暂不调用接口获取
   export default {
     name: 'ResInfo',
-    components: { ResExtEdit, MetaDataChoose, ResInfoItems },
+    components: { TestForm, ResExtEdit, MetaDataChoose, ResInfoItems },
     mixins: [commonMixin, permission],
     data() {
       const validateResourceCode = (rule, value, callback) => {
@@ -297,7 +311,7 @@
           { title: '资源状态', slot: 'status', width: 90, align: 'center' },
           { title: '可用状态', slot: 'availableStatus', width: 90, align: 'center' },
           { title: '扩展配置', slot: 'ext', width: 90, align: 'center' },
-          { title: '操作', slot: 'action', width: 160 }
+          { title: '操作', slot: 'action', width: 150 }
         ],
         checkItemsTableColumns: [
           { title: '名称', key: 'fieldName' },
@@ -581,6 +595,20 @@
                 this.$notice.danger({ title: '操作错误', desc: res.data.message })
               }
             })
+          }
+        })
+      },
+      // 根据resourceKey查看动态渲染列表
+      handleCheckRes(resource) {
+        // 根据resourceKey获取资源信息，并将原始表头信息传入gather-list组件
+        getResourceInfo(resource.resourceKey).then(res => {
+          if (res.status === 200) {
+            let detail = res.data.data
+            if (detail && detail.items) {
+              let columns = detail.items.filter(i => i.id)
+              this.dialogStatus = 'testForm'
+              this.$refs.testForm.open(detail, columns)
+            }
           }
         })
       },
