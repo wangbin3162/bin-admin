@@ -79,14 +79,14 @@
       <v-edit-wrap>
         <b-form :model="user" ref="form" :rules="ruleValidate" :label-width="100">
           <b-form-item label="所属组织">
-            <b-input v-if="currentTreeNode" :value="currentTreeNode.title" disabled></b-input>
+            <b-input v-if="currentTreeNode" :value="currentTreeNode.title" readonly></b-input>
           </b-form-item>
           <b-row>
             <b-col span="12">
               <b-form-item label="登录名称" prop="username">
                 <!--登录名称编辑时不可修改-->
                 <b-input v-model="user.username" placeholder="请输入登录名称" clearable
-                         :disabled="dialogStatus==='modify'"></b-input>
+                         :readonly="dialogStatus==='modify'"></b-input>
               </b-form-item>
             </b-col>
             <b-col span="12">
