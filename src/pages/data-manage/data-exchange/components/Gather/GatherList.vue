@@ -46,16 +46,10 @@
           <!--操作栏-->
           <template v-slot:action="scope">
             <b-button type="text" @click="handleCheck(scope.row)">查看</b-button>
-            <b-divider type="vertical"></b-divider>
             <b-button type="text" @click="handleModify(scope.row)">修改</b-button>
-            <!--是否有删除键v-if="canRemove"-->
-            <template>
-              <b-divider type="vertical"></b-divider>
-              <b-button type="text" text-color="danger" @click="handleRemove(scope.row)">删除</b-button>
-            </template>
+            <b-button type="text" text-color="danger" @click="handleRemove(scope.row)">删除</b-button>
             <template v-if="scope.row.version&&scope.row.version>0">
-              <b-divider type="vertical"></b-divider>
-              <b-button type="text" style="color:#ff6609;" @click="handleHistory(scope.row)">历史</b-button>
+              <b-button type="text" text-color="warning" @click="handleHistory(scope.row)">历史</b-button>
             </template>
           </template>
         </b-table>
