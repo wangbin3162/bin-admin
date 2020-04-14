@@ -13,6 +13,8 @@
         </div>
       </b-alert>
       <v-auth-tree ref="authTree" :data="treeData" show-checkbox/>
+
+      <b-loading fix v-show="treeLoading" show-text="权限加载中..."/>
       <!--保存提交-->
       <template slot="footer">
         <b-button @click="close">取 消</b-button>
@@ -35,13 +37,14 @@
         btnLoading: false,
         treeData: [],
         role: null,
-        checkSet: new Set()
+        checkSet: new Set(),
+        treeLoading: false
       }
     },
     computed: {
       pageTitle() {
         return `[${this.role ? this.role.name : ''}]授权，
-                父角色：[${(this.role && this.role.parentName) ? '有' : '无'}]`
+                父角色：[${(this.role && this.role.parentName) ? this.role.parentName : '无'}]`
       }
     },
     methods: {
@@ -79,11 +82,18 @@
       // tree:初始化树结构
       initTree() {
         this.treeData = []
+        this.treeLoading = true
         // 请求响应返回树结构
         api.getFuncTree(this.role.id).then(response => {
-          const tree = response.data.data || {}
-          let data = this.treeMapper(tree, null)
-          this.treeData.push(data)
+          if (response.data.code === '0') {
+            const tree = response.data.data || {}
+            let data = this.treeMapper(tree, null)
+            this.treeData.push(data)
+            this.$notice.success({ title: '权限加载成功' })
+          } else {
+            this.$notice.success({ title: '权限加载失败', desc: response.data.message || '' })
+          }
+          this.treeLoading = false
           // console.log(this.treeData)
           // console.log([...this.checkSet])
         })
@@ -109,7 +119,7 @@
         }
         return {
           id: node.id,
-          title: node.text,
+          title: nodeType === 'top' ? `${node.text.toUpperCase()} 全部功能权限` : node.text,
           nodeType,
           menuType: node.menuType,
           parents, // 配合级联展开时使用
