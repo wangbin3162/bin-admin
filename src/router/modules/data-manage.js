@@ -85,16 +85,16 @@ export default {
       meta: { title: '数据交换', icon: 'ios-briefcase' },
       children: [
         {
-          path: 'gather',
-          name: 'Gather',
-          component: () => import(/* webpackChunkName: "res" */ '../../pages/data-manage/data-exchange/Gather'),
-          meta: { title: '我的采集' }
-        },
-        {
           path: 'taskTrace',
           name: 'TaskTrace',
           component: () => import(/* webpackChunkName: "collection" */ '../../pages/data-manage/data-exchange/ExchangeMonitor'),
           meta: { title: '交换监控' }
+        },
+        {
+          path: 'gather',
+          name: 'Gather',
+          component: () => import(/* webpackChunkName: "res" */ '../../pages/data-manage/data-exchange/Gather'),
+          meta: { title: '我的采集' }
         },
         {
           path: 'collectAnalysis',
