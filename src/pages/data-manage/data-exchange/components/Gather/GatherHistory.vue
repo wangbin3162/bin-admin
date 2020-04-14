@@ -46,6 +46,7 @@
         api.getHistory(this.listQuery).then(res => {
           if (res.status === 200) {
             this.historyDialog = true
+            this.total = res.data.total
             this.historyList = res.data.rows
           }
         })

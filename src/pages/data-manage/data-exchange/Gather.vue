@@ -16,7 +16,7 @@
             <div class="item">
               <div class="card-header t-ellipsis">{{res.resourceName}}</div>
               <div class="center-box">
-                <p class="f-s-12">最新采集时间:{{res.createDate}}</p>
+                <p class="f-s-12 mb-15">最新采集时间:{{res.createDate}}</p>
               </div>
               <div class="check-box" flex="main:justify cross:center">
                 <span class="check" @click="handleCheckRes(res)">查看数据</span>
