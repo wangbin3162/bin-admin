@@ -85,8 +85,8 @@ export default {
       meta: { title: '数据交换', icon: 'ios-briefcase' },
       children: [
         {
-          path: 'taskTrace',
-          name: 'TaskTrace',
+          path: 'exchangeMonitor',
+          name: 'ExchangeMonitor',
           component: () => import(/* webpackChunkName: "collection" */ '../../pages/data-manage/data-exchange/ExchangeMonitor'),
           meta: { title: '交换监控' }
         },
