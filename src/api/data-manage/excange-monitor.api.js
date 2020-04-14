@@ -20,7 +20,7 @@ export function getExchangeAnalysis(code, id) {
   })
 }
 
-/* 查询自动归集列表 */
+/* 1.1.4分页查询交换任务列表 */
 export function getExchangeList(query) {
   return request({
     url: '/api/dir/exchange/monitor/tasksByPlan',
@@ -35,7 +35,7 @@ export function getExchangeList(query) {
   })
 }
 
-/* 查询执行记录列表列表 */
+/* 1.1.5分页查询作业执行列表 */
 export function getJobsByTask(query) {
   return request({
     url: '/api/dir/exchange/monitor/jobsByTask',
@@ -51,14 +51,13 @@ export function getJobsByTask(query) {
   })
 }
 
-/* 分页查询执行记录详情 */
-export function queryDirBatchInfo(batchInfoId, cfgDetailId) {
+/* 1.1.6获取作业执行明细 */
+export function queryDirBatchInfo(jobId) {
   return request({
-    url: '/api/batch/db/queryDirBatchInfo',
+    url: '/api/dir/exchange/monitor/job',
     method: 'get',
     params: {
-      batchInfoId,
-      cfgDetailId
+      jobId
     }
   })
 }
@@ -70,5 +69,38 @@ export function downloadError(id) {
     method: 'get',
     responseType: 'blob',
     params: { id }
+  })
+}
+
+/* 1.1.7执行作业清理 */
+export function clearJob(jobId) {
+  return request({
+    url: '/api/dir/exchange/monitor/clearJob',
+    method: 'get',
+    params: {
+      jobId
+    }
+  })
+}
+
+/* 1.1.8执行作业重启 */
+export function restartJob(jobId) {
+  return request({
+    url: '/api/dir/exchange/monitor/restartJob',
+    method: 'get',
+    params: {
+      jobId
+    }
+  })
+}
+
+/* 1.1.9执行手动任务启动 */
+export function startTask(taskId) {
+  return request({
+    url: '/api/dir/exchange/monitor/startTask',
+    method: 'get',
+    params: {
+      taskId
+    }
   })
 }

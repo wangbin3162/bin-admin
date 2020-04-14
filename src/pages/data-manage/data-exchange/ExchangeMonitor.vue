@@ -123,7 +123,14 @@
           </template>
           <!--操作栏-->
           <template v-slot:action="{row}">
-            <b-button type="text" @click="handleCheck(row)">查看</b-button>
+            <b-tooltip content="查询作业执行列表" theme="light" max-width="200" style="padding-top: 3px;">
+              <b-icon name="ios-list-box" size="20" :style="{...colorPrimary,cursor:'pointer'}"
+                      @click.native="handleCheck(row)"/>
+            </b-tooltip>&nbsp;
+            <b-tooltip content="手动任务启动" theme="light" max-width="200" style="padding-top: 3px;">
+              <b-icon name="ios-play-circle" size="20" :style="startTaskStyle"
+                      @click.native="handleStartTask(row.id)"/>
+            </b-tooltip>
           </template>
         </b-table>
         <!--下方分页器-->
@@ -173,13 +180,67 @@
             </b-tag>
           </template>
           <template #action="{row}">
-            <b-button type="text" @click="handleCheckDetail(row)">查看</b-button>
+            <b-tooltip content="查询作业执行明细" theme="light" max-width="200" style="padding-top: 3px;">
+              <b-icon name="ios-filing" size="20" :style="{...colorPrimary,cursor:'pointer'}"
+                      @click.native="handleCheckDetail(row)"/>
+            </b-tooltip>&nbsp;
+            <b-tooltip content="清理作业" theme="light" max-width="200" style="padding-top: 3px;">
+              <b-icon name="ios-close-circle" size="20" :style="clearJobStyle"
+                      @click.native="handleClearJob(row.id)"/>
+            </b-tooltip>&nbsp;
+            <b-tooltip content="重启作业" theme="light" max-width="200" style="padding-top: 3px;">
+              <b-icon name="ios-refresh-circle" size="20" :style="restartJobStyle"
+                      @click.native="handleRestartJob(row.id)"/>
+            </b-tooltip>
           </template>
         </b-table>
         <!--下方分页器-->
         <b-page :total="dirBatchTotal" :current.sync="dirBatchQuery.page" @on-change="handleDirPageChange"></b-page>
       </v-table-wrap>
     </page-header-wrap>
+    <b-modal v-model="detailDialog" title="任务执行详情" width="940" :mask-closable="false">
+      <template v-if="batchDetail">
+        <div class="status">
+          <v-simple-label label="任务状态">
+            <b-tag :type="statusStyleMap[batchDetail.jobStatus]"
+                   :tag-style="{borderRadius: '30px'}">
+              {{ jobStatusMap[batchDetail.jobStatus] }}
+            </b-tag>
+          </v-simple-label>
+        </div>
+        <div flex="box:mean">
+          <v-simple-label label="资源名称">{{ batchDetail.resourceName }}</v-simple-label>
+          <v-simple-label label="资源标志">{{ batchDetail.metadataKey }}</v-simple-label>
+          <v-simple-label label="交换方案">{{ batchDetail.cfgName }}</v-simple-label>
+        </div>
+        <div flex="box:mean">
+          <v-simple-label label="原信息标识">{{ batchDetail.metadataKey }}</v-simple-label>
+          <v-simple-label label="定时周期">{{ batchDetail.cronStr }}</v-simple-label>
+          <v-simple-label label="数据总量">{{ batchDetail.totalCount }}</v-simple-label>
+        </div>
+        <div flex="box:mean">
+          <v-simple-label label="起始时间">{{ batchDetail.createDate }}</v-simple-label>
+          <v-simple-label label="结束时间">{{ batchDetail.finishDate }}</v-simple-label>
+          <v-simple-label label="总耗时">{{ batchDetail.duration }}</v-simple-label>
+        </div>
+        <div flex="box:mean">
+          <v-simple-label label="正式数据量">{{ batchDetail.totalCount }}</v-simple-label>
+          <v-simple-label label="错误数量">{{ batchDetail.errorCount }}</v-simple-label>
+          <v-simple-label label="重复数量">{{ batchDetail.repeatCount }}</v-simple-label>
+        </div>
+        <div flex="box:mean">
+          <v-simple-label label="错误报告" v-if="batchDetail.errorCount!=='0'">
+            <span class="link" @click="handleDownloadExport(batchDetail.id)">下载</span>
+          </v-simple-label>
+          <v-simple-label label="重复报告" v-if="batchDetail.repeatCount!=='0'">
+            <span class="link" @click="handleDownloadExport(batchDetail.id)">下载</span>
+          </v-simple-label>
+        </div>
+      </template>
+      <div slot="footer">
+        <b-button @click="detailDialog=false">关闭</b-button>
+      </div>
+    </b-modal>
   </div>
 </template>
 
@@ -209,11 +270,11 @@
           { title: '最近执行时间', key: 'lastRunTime', width: 200 },
           { title: '执行状态', slot: 'lastRunResult', align: 'center', width: 100 },
           { title: '有效状态', slot: 'availableStatus', align: 'center', width: 90 },
-          { title: '操作', slot: 'action', align: 'center', width: 90 }
+          { title: '操作', slot: 'action', width: 120 }
         ],
         availableStatusMap: { available: '有效', notavailable: '无效' }, // 有效状态
-        jobStatusMap: { STARTING: '运行中', COMPLETED: '成功', FAILED: '失败' }, //  任务状态
-        statusStyleMap: { COMPLETED: 'success', STARTED: 'primary', FAILED: 'danger' },
+        jobStatusMap: { STARTING: '运行中', COMPLETED: '成功', FAILED: '失败', REPEATING: '重复验证' }, //  任务状态
+        statusStyleMap: { COMPLETED: 'success', STARTED: 'primary', FAILED: 'danger', REPEATING: 'warning' },
         exchangeTypeMap: { MANUAL: '人工交换', AUTO: '自动交换' },
         flowDirectionMap: { collect: '归集', submit: '上报', share: '共享' },
         analysisMap: {
@@ -240,7 +301,7 @@
           { title: '数据总数', key: 'totalCount', width: 100, align: 'center' },
           { title: '失败条数', key: 'errorCount', width: 100, align: 'center' },
           { title: '重复条数', key: 'repeatCount', width: 100, align: 'center' },
-          { title: '操作', slot: 'action', width: 75 }
+          { title: '操作', slot: 'action', width: 130 }
         ],
         dirBatchLoading: false,
         detailDialog: false,
@@ -258,6 +319,15 @@
     computed: {
       editTitle() {
         return '任务名称：' + this.resourceName
+      },
+      startTaskStyle() {
+        return { ...this.colorSuccess, cursor: 'pointer' }
+      },
+      clearJobStyle() {
+        return { ...this.colorWarning, cursor: 'pointer' }
+      },
+      restartJobStyle() {
+        return { ...this.colorDanger, cursor: 'pointer' }
       }
     },
     methods: {
@@ -299,8 +369,7 @@
       },
       // 查看执行记录详情
       handleCheckDetail(row) {
-        let { id, cfgDetailId } = row
-        api.queryDirBatchInfo(id, cfgDetailId).then(res => {
+        api.queryDirBatchInfo(row.id).then(res => {
           if (res.data.code === '0') {
             this.batchDetail = res.data.data
             this.detailDialog = true
@@ -363,6 +432,7 @@
         this.dirBatchQuery.page = 1
         this.getDirBatchList()
       },
+      // 清空任务查询参数
       resetFilterBatchQuery() {
         this.dirBatchQuery = {
           size: 10,
@@ -398,6 +468,36 @@
           }, 1000)
         }
         this.downloadEvent(id)
+      },
+      // 执行手动任务启动
+      handleStartTask(id) {
+        api.startTask(id).then(res => {
+          if (res.data.code === '0') {
+            this.$notice.success({ title: '任务启动成功' })
+          } else {
+            this.$notice.danger({ title: '任务启动失败', desc: res.data.message || '' })
+          }
+        })
+      },
+      // 作业清理
+      handleClearJob(id) {
+        api.clearJob(id).then(res => {
+          if (res.data.code === '0') {
+            this.$notice.success({ title: '作业清理成功' })
+          } else {
+            this.$notice.danger({ title: '作业清理失败', desc: res.data.message || '' })
+          }
+        })
+      },
+      // 作业重启
+      handleRestartJob(id) {
+        api.restartJob(id).then(res => {
+          if (res.data.code === '0') {
+            this.$notice.success({ title: '作业重启成功' })
+          } else {
+            this.$notice.danger({ title: '作业重启失败', desc: res.data.message || '' })
+          }
+        })
       }
     }
   }
