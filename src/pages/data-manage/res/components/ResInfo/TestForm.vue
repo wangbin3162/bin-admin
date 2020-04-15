@@ -84,7 +84,6 @@
               this.setFormObj(form[0])
             } else {
               this.hasTestData = false // 没有添加过示例数据
-              this.resetResource()
             }
           })
         })

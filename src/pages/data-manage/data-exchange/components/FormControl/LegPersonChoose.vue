@@ -60,7 +60,7 @@
         columns: [
           { title: '名称', key: 'compName' },
           { title: '证件类型', key: 'idTypeName' },
-          { title: '证件类型', key: 'idCode' },
+          { title: '证件号码', key: 'idCode' },
           { title: '操作', slot: 'action', width: 100 }
         ],
         current: ''
