@@ -9,6 +9,7 @@ export function getMissionList(query) {
     params: {
       size: query.size,
       page: query.page - 1,
+      configId: query.configId,
       resourceName: query.resourceName,
       flowDirection: query.flowDirection,
       changeType: query.changeType,

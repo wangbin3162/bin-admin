@@ -2,27 +2,33 @@
   <div>
     <page-header-wrap v-show="isNormal">
       <v-table-wrap>
+        <!--树结构-->
+        <b-tree :data="treeData" slot="tree" :lock-select="lockTreeSelect"
+                @on-select-change="handTreeCurrentChange"></b-tree>
         <v-filter-bar>
-          <v-filter-item title="资源名称">
+          <v-filter-item title="资源名称" :span="8">
             <b-input v-model="listQuery.resourceName" placeholder="请输入节点名称" clearable></b-input>
           </v-filter-item>
-          <v-filter-item title="交换类型" :span="5">
+          <v-filter-item title="交换类型" :span="8">
             <b-select v-model="listQuery.changeType" clearable placeholder="全部">
               <b-option v-for="(value,key) in exchangeTypeMap" :key="key" :value="key">{{ value }}</b-option>
             </b-select>
           </v-filter-item>
-          <v-filter-item title="信息流向" :span="4">
-            <b-select v-model="listQuery.flowDirection" clearable placeholder="全部">
-              <b-option v-for="(value,key) in flowDirectionMap" :key="key" :value="key">{{ value }}</b-option>
-            </b-select>
-          </v-filter-item>
-          <v-filter-item title="可用状态" :span="4">
-            <b-select v-model="listQuery.availableStatus" clearable placeholder="全部">
-              <b-option v-for="(value,key) in availableStatusMap" :key="key" :value="key">{{ value }}</b-option>
-            </b-select>
-          </v-filter-item>
           <!--添加查询按钮位置-->
-          <v-filter-item :span="5" @on-search="handleFilter" @on-reset="resetQuery"></v-filter-item>
+          <v-filter-item :span="8" @on-search="handleFilter" @on-reset="resetQuery"
+                         :show-toggle="true" :is-opened="filterOpened" @on-toggle="filterOpened=!filterOpened"/>
+          <template v-if="filterOpened">
+            <v-filter-item title="信息流向" :span="8">
+              <b-select v-model="listQuery.flowDirection" clearable placeholder="全部">
+                <b-option v-for="(value,key) in flowDirectionMap" :key="key" :value="key">{{ value }}</b-option>
+              </b-select>
+            </v-filter-item>
+            <v-filter-item title="可用状态" :span="8">
+              <b-select v-model="listQuery.availableStatus" clearable placeholder="全部">
+                <b-option v-for="(value,key) in availableStatusMap" :key="key" :value="key">{{ value }}</b-option>
+              </b-select>
+            </v-filter-item>
+          </template>
         </v-filter-bar>
         <!--操作栏-->
         <v-table-tool-bar>
@@ -32,30 +38,31 @@
           </b-button>
         </v-table-tool-bar>
         <b-table :columns="columns" :data="list" :loading="listLoading">
-          <template v-slot:flowDirection="scope">{{ flowDirectionMap[scope.row.flowDirection] }}</template>
-          <template v-slot:changeType="scope">{{ exchangeTypeMap[scope.row.changeType] }}</template>
-          <template v-slot:transmitKind="scope">{{ transmitKindMap[scope.row.transmitKind] }}</template>
+          <template v-slot:cfgName="{row}">
+            <b-button type="text" @click="handleCheck(row)">详情</b-button>
+          </template>
+          <template v-slot:flowDirection="{row}">{{ flowDirectionMap[row.flowDirection] }}</template>
+          <template v-slot:changeType="{row}">{{ exchangeTypeMap[row.changeType] }}</template>
+          <template v-slot:transmitKind="{row}">{{ transmitKindMap[row.transmitKind] }}</template>
+          <template v-slot:availableStatus="{row}">
+            <span v-if="row.availableStatus==='available'" :style="colorSuccess">可用</span>
+            <span v-else :style="colorDanger">不可用</span>
+          </template>
           <!--有效状态-->
-          <template v-slot:status="scope">
+          <template v-slot:status="{row}">
             <b-switch
-              v-model="scope.row.status" :true-value="ENUM.ENABLE" :false-value="ENUM.DISABLE"
+              v-model="row.status" :true-value="ENUM.ENABLE" :false-value="ENUM.DISABLE"
               inactive-color="#ff4949"
-              @on-change="handleChangeStatus(scope.row)">
+              @on-change="handleChangeStatus(row)">
             </b-switch>
           </template>
-          <template v-slot:availableStatus="scope">
-            <span v-if="scope.row.availableStatus==='available'" style="color:#48c9b0;">可用</span>
-            <span v-else style="color:#e91e63;">不可用</span>
-          </template>
           <!--操作栏-->
-          <template v-slot:action="scope">
-            <b-button :disabled="!canModify" type="text" @click="handleModify(scope.row)">
-              修改
-            </b-button>
+          <template v-slot:action="{row}">
+            <b-button :disabled="!canModify" type="text" @click="handleModify(row)">修改</b-button>
             <!--是否有删除键-->
-            <template v-if="canRemove && !scope.row.isDefault">
+            <template v-if="canRemove && !row.isDefault">
               <b-divider type="vertical"></b-divider>
-              <b-button type="text" text-color="danger" @click="handleRemove(scope.row)">删除</b-button>
+              <b-button type="text" text-color="danger" @click="handleRemove(row)">删除</b-button>
             </template>
           </template>
         </b-table>
@@ -146,33 +153,6 @@
                 </b-form-item>
               </b-col>
             </b-row>
-            <b-collapse value="0" simple>
-              <b-collapse-panel title="交换方案名称详情" name="1">
-                <div flex="box:mean" v-if="sourceDataSource && targetDataSource">
-                  <div style="padding-right: 10px;">
-                    <b-tag style="margin-bottom: 15px;">源数据源信息</b-tag>
-                    <v-key-label label="数据源名称">{{ sourceDataSource.dataSourceName }}</v-key-label>
-                    <v-key-label label="数据库名称">{{ sourceDataSource.dbName }}</v-key-label>
-                    <v-key-label label="连接接驱动">{{ sourceDataSource.driverClass }}</v-key-label>
-                    <v-key-label label="用户">{{ sourceDataSource.userName }}</v-key-label>
-                    <v-key-label label="连接类型">{{ sourceDataSource.dbType }}</v-key-label>
-                    <v-key-label label="端口号">{{ sourceDataSource.port }}</v-key-label>
-                    <v-key-label label="主机地址" is-bottom>{{ sourceDataSource.host }}</v-key-label>
-                  </div>
-                  <div style="padding-left: 10px;">
-                    <b-tag style="margin-bottom: 15px;">目标数据源信息</b-tag>
-                    <v-key-label label="数据源名称">{{ targetDataSource.dataSourceName }}</v-key-label>
-                    <v-key-label label="数据库名称">{{ targetDataSource.dbName }}</v-key-label>
-                    <v-key-label label="连接接驱动">{{ targetDataSource.driverClass }}</v-key-label>
-                    <v-key-label label="用户">{{ targetDataSource.userName }}</v-key-label>
-                    <v-key-label label="连接类型">{{ targetDataSource.dbType }}</v-key-label>
-                    <v-key-label label="端口号">{{ targetDataSource.port }}</v-key-label>
-                    <v-key-label label="主机地址" is-bottom>{{ targetDataSource.host }}</v-key-label>
-                  </div>
-                </div>
-                <b-alert v-else type="error">未选择方案</b-alert>
-              </b-collapse-panel>
-            </b-collapse>
             <v-title-bar label="信息项映射" class="mb-15"></v-title-bar>
             <info-item-map :one-list="oneFields" :two-list="twoFields"
                            :value="mission.itemMap" @on-change="handleItemMap">
@@ -186,6 +166,40 @@
         </template>
       </v-edit-wrap>
     </page-header-wrap>
+    <b-drawer v-model="detailVisible" title="交换方案详情" append-to-body width="640">
+      <div v-if="sourceDataSource">
+        <v-title-bar label="源数据源信息" class="mb-15" tip-pos="left"/>
+        <div flex="box:mean">
+          <v-simple-label label="数据源名称">{{ sourceDataSource.dataSourceName }}</v-simple-label>
+          <v-simple-label label="数据库名称">{{ sourceDataSource.dbName }}</v-simple-label>
+        </div>
+        <div flex="box:mean">
+          <v-simple-label label="连接接驱动">{{ sourceDataSource.driverClass }}</v-simple-label>
+          <v-simple-label label="连接类型">{{ sourceDataSource.dbType }}</v-simple-label>
+        </div>
+        <div flex="box:mean">
+          <v-simple-label label="用户">{{ sourceDataSource.userName }}</v-simple-label>
+          <v-simple-label label="端口号">{{ sourceDataSource.port }}</v-simple-label>
+        </div>
+        <v-simple-label label="主机地址" is-bottom>{{ sourceDataSource.host }}</v-simple-label>
+      </div>
+      <div v-if="targetDataSource">
+        <v-title-bar label="目标数据源信息" class="mb-15" tip-pos="left"/>
+        <div flex="box:mean">
+          <v-simple-label label="数据源名称">{{ targetDataSource.dataSourceName }}</v-simple-label>
+          <v-simple-label label="数据库名称">{{ targetDataSource.dbName }}</v-simple-label>
+        </div>
+        <div flex="box:mean">
+          <v-simple-label label="连接接驱动">{{ targetDataSource.driverClass }}</v-simple-label>
+          <v-simple-label label="连接类型">{{ targetDataSource.dbType }}</v-simple-label>
+        </div>
+        <div flex="box:mean">
+          <v-simple-label label="用户">{{ targetDataSource.userName }}</v-simple-label>
+          <v-simple-label label="端口号">{{ targetDataSource.port }}</v-simple-label>
+        </div>
+        <v-simple-label label="主机地址" is-bottom>{{ targetDataSource.host }}</v-simple-label>
+      </div>
+    </b-drawer>
   </div>
 </template>
 
@@ -205,6 +219,7 @@
     DataSourceTableChoose,
     InfoItemMap
   } from './components/SwitchingMission'
+  import { getExchangeTree } from '../../../api/data-manage/switching-scheme.api'
 
   export default {
     name: 'SwitchingMission',
@@ -213,7 +228,9 @@
     data() {
       return {
         moduleName: '交换任务',
+        treeData: [],
         listQuery: {
+          configId: '',
           resourceName: '',
           flowDirection: '',
           changeType: 'AUTO',
@@ -223,10 +240,10 @@
           { type: 'index', width: 50, align: 'center' },
           { title: '资源名称', key: 'resourceName', tooltip: true },
           { title: '资源标识', key: 'resourceKey' },
-          { title: '所属方案', key: 'cfgName' },
-          { title: '信息流向', slot: 'flowDirection', align: 'center', width: 100 },
-          { title: '交换类型', slot: 'changeType', align: 'center', width: 100 },
-          { title: '可用状态', slot: 'availableStatus', width: 100, align: 'center' },
+          { title: '交换方案', slot: 'cfgName', width: 90, align: 'center' },
+          { title: '信息流向', slot: 'flowDirection', align: 'center', width: 90 },
+          { title: '交换类型', slot: 'changeType', align: 'center', width: 90 },
+          { title: '可用状态', slot: 'availableStatus', width: 90, align: 'center' },
           { title: '启用/禁用', slot: 'status', align: 'center', width: 100 },
           { title: '操作', slot: 'action', width: 150 }
         ],
@@ -247,13 +264,14 @@
         flowDirectionMap: { COLLECT: '归集', SUBMIT: '上报', SHARE: '共享' }, // 信息流向
         exchangeTypeMap: { MANUAL: '人工交换', AUTO: '自动交换' }, // 交换类型
         availableStatusMap: { available: '可用', not_available: '不可用' }, // 有效状态
-        statusMap: { 'enable': '启用', 'disable': '禁用' }
+        statusMap: { 'enable': '启用', 'disable': '禁用' },
+        detailVisible: false
       }
     },
     created() {
       this.getEnum()
       this.resetMission()
-      this.searchList()
+      this.initTree()
     },
     computed: {
       //  是否是归集
@@ -271,11 +289,21 @@
       }
     },
     methods: {
+      /* [事件响应] */
+      handTreeCurrentChange(data, node) {
+        if (this.currentTreeNode.id === node.id) {
+          node.selected = true
+        }
+        this.currentTreeNode = node
+        this.listQuery.configId = node.id
+        this.handleFilter()
+      },
       // filter-Bar:重置查询条件
       resetQuery() {
         this.listQuery = {
           page: 1,
           size: 10,
+          configId: this.listQuery.configId || '',
           resourceName: '',
           flowDirection: '',
           changeType: 'AUTO',
@@ -283,10 +311,16 @@
         }
         this.handleFilter()
       },
-      // 查看按钮事件
+      // 查看交换方案详情
       handleCheck(row) {
         this.mission = { ...row }
-        this.openEditPage('check')
+        api.queryDataSourceByCfgId(row.configId).then(resp => {
+          if (resp.data.code === '0') {
+            this.sourceDataSource = resp.data.data.sourceDataSource
+            this.targetDataSource = resp.data.data.targetDataSource
+            this.detailVisible = true
+          }
+        })
       },
       // 新增按钮事件
       handleCreate() {
@@ -447,6 +481,26 @@
         this.canSubmit = !hasRequired
       },
       /* [数据接口] */
+      // tree:初始化树结构
+      initTree() {
+        this.treeData = []
+        // 请求响应返回树结构
+        getExchangeTree().then(response => {
+          const tree = response.data.data
+          // 根据返回的数组格式化为树结构的格式，并追加parents用于级联选择和展开
+          let data = tree ? this.treeMapper(tree, null, ['code']) : {}
+          this.treeData.push(data)
+          if (this.treeData.length > 0) {
+            if (!this.currentTreeNode) {
+              this.currentTreeNode = this.treeData[0]
+              this.$set(this.treeData[0], 'selected', true)
+              this.$set(this.treeData[0], 'expand', true)
+            }
+            this.listQuery.configId = this.currentTreeNode.id
+            this.handleFilter()
+          }
+        })
+      },
       // 通用枚举
       getEnum() {
         // 交换方案信息流向枚举
@@ -470,11 +524,9 @@
       },
       // 单个启用禁用
       handleChangeStatus(row) {
-        let user = { ...row }
-        api.changeStatus(user.id, user.status).then(res => {
+        api.changeStatus(row.id, row.status).then(res => {
           if (res.data.code === '0') {
             this.$message({ type: 'success', content: '操作成功' })
-            // this.handleFilter()
           } else {
             this.$message({ type: 'danger', content: '操作失败' })
           }

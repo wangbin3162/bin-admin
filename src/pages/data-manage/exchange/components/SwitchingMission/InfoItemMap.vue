@@ -4,42 +4,42 @@
     <div class="info-item-map" flex>
       <b-row :gutter="15" style="width:100%;">
         <b-col span="4">
-          <b-tag type="primary" style="margin-bottom: 5px;" >源资源</b-tag>
-          <b-table :columns="columns1" :data="fields1" highlight-row max-height="475"
-                   @on-current-change="handleCurrentChange1" >
+          <b-tag type="primary" style="margin-bottom: 5px;">源资源</b-tag>
+          <b-table :columns="columns1" :data="fields1" highlight-row max-height="475" size="small"
+                   @on-current-change="handleCurrentChange1">
           </b-table>
         </b-col>
         <b-col span="6">
-          <b-tag type="danger" style="margin-bottom: 5px;" >目标资源</b-tag>
-          <b-table :columns="columns2" :data="fields2" highlight-row max-height="475"
-                   @on-current-change="handleCurrentChange2" >
+          <b-tag type="danger" style="margin-bottom: 5px;">目标资源</b-tag>
+          <b-table :columns="columns2" :data="fields2" highlight-row max-height="475" size="small"
+                   @on-current-change="handleCurrentChange2">
           </b-table>
         </b-col>
         <b-col span="2">
           <div flex="dir:top main:center cross:center" style="height: 400px;">
-            <b-button plain  type="primary" style="width: 95%;margin-bottom: 5px;"
+            <b-button plain type="primary" style="width: 95%;margin-bottom: 5px;"
                       @click="autoMap">
               自动映射
             </b-button>
-            <b-button plain  type="primary" style="width: 95%;margin: 0;" @click="handleAdd">
+            <b-button plain type="primary" style="width: 95%;margin: 0;" @click="handleAdd">
               移动
             </b-button>
           </div>
         </b-col>
         <b-col span="12">
-          <b-tag type="success" style="margin-bottom: 5px;" >映射关系</b-tag>
-          <b-table :columns="columns3" :data="itemMaps"  max-height="475">
+          <b-tag type="success" style="margin-bottom: 5px;">映射关系</b-tag>
+          <b-table :columns="columns3" :data="itemMaps" max-height="475" size="small">
             <template v-slot:desc="scope">
-              <b-input v-model="itemMaps[scope.index].desc" @on-change="emitValue"></b-input>
+              <b-input v-model="itemMaps[scope.index].desc" @on-change="emitValue" size="mini"></b-input>
             </template>
             <template v-slot:dict="scope">
-              <b-button type="primary" plain @click="editDict(scope.row)"
+              <b-button type="text" @click="editDict(scope.row)"
                         v-if="itemMaps[scope.index].type === 'SELECT'">
                 添加配置
               </b-button>
             </template>
             <template v-slot:action="scope">
-              <b-button type="primary" plain @click="cancelOneMap(scope.row)" >
+              <b-button type="text" @click="cancelOneMap(scope.row)">
                 取消
               </b-button>
             </template>
@@ -55,18 +55,18 @@
         </div>
         <div flex="box:last" v-for="item in dictMaps" :key="item.sourceKey" class="mb-5">
           <b-input class="mr-10" v-model="item.sourceKey"
-                   placeholder="请输入键" ></b-input>
+                   placeholder="请输入键"></b-input>
           <b-input v-model="item.sourceValue"
-                   placeholder="请输入值" ></b-input>
+                   placeholder="请输入值"></b-input>
           <!--操作栏-->
           <div style="width: 140px;padding:4px 0 0 10px; text-align: center;">
-            <b-button type="danger"  icon="ios-remove-circle" transparent
+            <b-button type="danger" icon="ios-remove-circle" transparent
                       @click="removeBufferRow(item)">移除
             </b-button>
           </div>
         </div>
         <div class="pt-20">
-          <b-button type="primary"  icon="ios-add-circle-outline"
+          <b-button type="primary" icon="ios-add-circle-outline"
                     plain @click="addBufferRow">
             添加配置
           </b-button>
@@ -152,27 +152,24 @@
     data() {
       return {
         columns1: [
-          { type: 'index', width: 50, align: 'center' },
           { title: '信息项', key: 'name', tooltip: true }
         ],
         columns2: [
-          { type: 'index', width: 50, align: 'center' },
           { title: '信息项', key: 'name', tooltip: true },
           {
             title: '是否必填',
             render: (h, params) => {
               return h('span', params.row.required ? '是' : '否')
             },
-            width: 80,
+            width: 88,
             align: 'center'
           }
         ],
         columns3: [
-          { type: 'index', width: 50, align: 'center' },
           { title: '源信息项', key: 'sourceName' },
           { title: '目标信息项', key: 'targetName' },
           { title: '信息项描述', slot: 'desc', tooltip: true },
-          { title: '字典项配置', slot: 'dict', width: 100, align: 'center' },
+          { title: '字典项配置', slot: 'dict', width: 110, align: 'center' },
           { title: '操作', slot: 'action', width: 80, align: 'center' }
         ],
         fields1: [],

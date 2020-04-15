@@ -3,7 +3,7 @@
   <div style="width: 100%;">
     <div flex="box:last">
       <b-input v-model="current" placeholder="选择填充" readonly clearable @on-clear="handleClear"></b-input>
-      <b-button type="primary"  @click="handleShowModal">
+      <b-button type="primary" @click="handleShowModal">
         选择
       </b-button>
     </div>
@@ -12,25 +12,22 @@
         <!--查询条件-->
         <v-filter-bar>
           <v-filter-item title="数据源名称" :span="8">
-            <b-input v-model="listQuery.dataSourceName" placeholder="请输入"  clearable></b-input>
+            <b-input v-model="listQuery.dataSourceName" placeholder="请输入" clearable></b-input>
           </v-filter-item>
           <!--添加查询按钮位置-->
           <v-filter-item @on-search="handleFilter" @on-reset="resetQuery"></v-filter-item>
         </v-filter-bar>
         <!--中央表格-->
-        <b-table :columns="columns" :data="list" :loading="listLoading" >
+        <b-table :columns="columns" :data="list" :loading="listLoading" size="small">
           <!--操作栏-->
           <template v-slot:action="scope">
-            <b-button type="primary" plain @click="chooseOne(scope.row)" >
-              选择
-            </b-button>
+            <b-button type="text" @click="chooseOne(scope.row)">选择</b-button>
           </template>
         </b-table>
       </div>
       <div slot="footer">
         <!--下方分页器-->
-        <b-page :total="total" show-sizer :current.sync="listQuery.page"
-                @on-change="handleCurrentChange" @on-page-size-change="handleSizeChange"></b-page>
+        <b-page :total="total" :current.sync="listQuery.page" @on-change="handleCurrentChange"/>
       </div>
     </b-modal>
   </div>

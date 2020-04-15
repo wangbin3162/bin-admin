@@ -1,6 +1,14 @@
 // 交换方案管理
 import request from '../request'
 
+/* 交换配置方案树 */
+export function getExchangeTree() {
+  return request({
+    url: '/api/dir/exchange/tree',
+    method: 'get'
+  })
+}
+
 /* 查询交换方案列表 */
 export function getSchemeList(query) {
   return request({
