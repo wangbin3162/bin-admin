@@ -37,7 +37,7 @@
 <script>
   import { deepCopy } from '../../../../../common/utils/assist'
   import { jsonDataToRules } from '../Validator/validate.cfg'
-  import { default as api, getDictItems } from '../../../../../api/data-manage/gather.api'
+  import { getDictItems } from '../../../../../api/data-manage/gather.api'
   import FormItem from '../../../data-exchange/components/FormControl/FormItem'
   import FormControl from '../../../data-exchange/components/FormControl/FormControl'
   import { Decode, Encode } from '../../../../../common/utils/secret'
