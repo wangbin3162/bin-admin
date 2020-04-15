@@ -25,6 +25,19 @@
         },
         total: 0,
         columns: [
+          {
+            type: 'expand',
+            width: 50,
+            render: (h, params) => {
+              return h('b-code-editor', {
+                props: {
+                  value: JSON.stringify(JSON.parse(params.row.recordJson), null, 2),
+                  theme: 'duotone-light',
+                  readonly: true
+                }
+              })
+            }
+          },
           { title: '操作类型', key: 'operationType' },
           { title: '操作人', key: 'operatorName' },
           { title: '业务类型', key: 'serviceType' },
