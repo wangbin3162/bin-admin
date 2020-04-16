@@ -1,51 +1,61 @@
 <template>
   <!--信息项映射 for SwitchingMission.vue -->
   <div>
-    <div class="info-item-map" flex>
-      <b-row :gutter="15" style="width:100%;">
-        <b-col span="4">
-          <b-tag type="primary" style="margin-bottom: 5px;">源资源</b-tag>
-          <b-table :columns="columns1" :data="fields1" highlight-row max-height="475" size="small"
-                   @on-current-change="handleCurrentChange1">
-          </b-table>
-        </b-col>
-        <b-col span="6">
-          <b-tag type="danger" style="margin-bottom: 5px;">目标资源</b-tag>
-          <b-table :columns="columns2" :data="fields2" highlight-row max-height="475" size="small"
-                   @on-current-change="handleCurrentChange2">
-          </b-table>
-        </b-col>
-        <b-col span="2">
-          <div flex="dir:top main:center cross:center" style="height: 400px;">
-            <b-button plain type="primary" style="width: 95%;margin-bottom: 5px;"
-                      @click="autoMap">
-              自动映射
-            </b-button>
-            <b-button plain type="primary" style="width: 95%;margin: 0;" @click="handleAdd">
-              移动
-            </b-button>
-          </div>
-        </b-col>
-        <b-col span="12">
-          <b-tag type="success" style="margin-bottom: 5px;">映射关系</b-tag>
-          <b-table :columns="columns3" :data="itemMaps" max-height="475" size="small">
-            <template v-slot:desc="scope">
-              <b-input v-model="itemMaps[scope.index].desc" @on-change="emitValue" size="mini"></b-input>
-            </template>
-            <template v-slot:dict="scope">
-              <b-button type="text" @click="editDict(scope.row)"
-                        v-if="itemMaps[scope.index].type === 'SELECT'">
-                添加配置
-              </b-button>
-            </template>
-            <template v-slot:action="scope">
-              <b-button type="text" @click="cancelOneMap(scope.row)">
-                取消
-              </b-button>
-            </template>
-          </b-table>
-        </b-col>
-      </b-row>
+    <div class="info-item-map">
+      <!--源资源-->
+      <div class="source-res">
+        <b-tag type="primary" style="margin-bottom: 5px;">源资源</b-tag>
+        <b-table :columns="columns1" :data="fields1" highlight-row max-height="475" size="small"
+                 ref="sourceTable"
+                 @on-row-click="handleSourceClick">
+          <template #name="{row}">
+            <span :title="row.desc">{{ row.name }}</span>
+          </template>
+        </b-table>
+        <div>{{currentRow1}}</div>
+      </div>
+      <!--目标资源-->
+      <div class="target-res">
+        <b-tag type="danger" style="margin-bottom: 5px;">目标资源</b-tag>
+        <b-table :columns="columns2" :data="fields2" highlight-row max-height="475" size="small"
+                 @on-current-change="handleCurrentChange2">
+          <template #name="{row}">
+            <span :title="row.desc">{{ row.name }}</span>
+          </template>
+        </b-table>
+        <div>{{currentRow2}}</div>
+      </div>
+      <!--操作-->
+      <div class="ctrl">
+        <b-button plain type="primary" style="width: 95%;margin: 0 0 5px 0;"
+                  @click="autoMap">
+          自动映射
+        </b-button>
+        <b-button plain type="primary" style="width: 95%;margin: 0;" @click="handleAdd">
+          移 动
+          <b-icon name="ios-arrow-round-forward"/>
+        </b-button>
+      </div>
+      <!--映射关系-->
+      <div class="map-res">
+        <b-tag type="success" style="margin-bottom: 5px;">映射关系</b-tag>
+        <b-table :columns="columns3" :data="itemMaps" max-height="475" size="small">
+          <template #targetName="{row}">
+            <span :title="row.desc">{{ row.targetName }}</span>
+          </template>
+          <template v-slot:defaultValue="scope">
+          </template>
+          <template v-slot:action="{row,index}">
+            <b-icon name="ios-remove-circle-outline" size="20" :style="{...colorDanger,cursor:'pointer'}"
+                    @click.native="cancelOneMap(row)"/>&nbsp;
+            <b-tooltip content="字典项" theme="light" style="padding-top: 3px;"
+                       v-if="itemMaps[index].type === 'SELECT'">
+              <b-icon name="ios-options" size="20" :style="{...colorPrimary,cursor:'pointer'}"
+                      @click.native="editDict(row)"/>
+            </b-tooltip>&nbsp;
+          </template>
+        </b-table>
+      </div>
     </div>
     <!--添加字典项配置弹窗-->
     <b-modal v-model="dialogFormVisible" width="800" title="配置映射">
@@ -152,10 +162,10 @@
     data() {
       return {
         columns1: [
-          { title: '信息项', key: 'name', tooltip: true }
+          { title: '信息项', slot: 'name' }
         ],
         columns2: [
-          { title: '信息项', key: 'name', tooltip: true },
+          { title: '信息项', slot: 'name' },
           {
             title: '是否必填',
             render: (h, params) => {
@@ -166,11 +176,10 @@
           }
         ],
         columns3: [
-          { title: '源信息项', key: 'sourceName' },
-          { title: '目标信息项', key: 'targetName' },
-          { title: '信息项描述', slot: 'desc', tooltip: true },
-          { title: '字典项配置', slot: 'dict', width: 110, align: 'center' },
-          { title: '操作', slot: 'action', width: 80, align: 'center' }
+          { title: '源信息项', key: 'sourceName', width: 150 },
+          { title: '目标信息项', slot: 'targetName', width: 150 },
+          { title: '默认值', slot: 'defaultValue' },
+          { title: '操作', slot: 'action', width: 90 }
         ],
         fields1: [],
         fields2: [],
@@ -180,6 +189,7 @@
         ],
         conf: {},
         dialogFormVisible: false, // 编辑页是否显示
+        currentRow1Index: -1, // 第一个表格选中的行索引
         currentRow1: null, // 第一个表格选中的行
         currentRow2: null // 第2个表格选中的行
       }
@@ -221,13 +231,13 @@
       },
       // 添加一个映射
       handleAdd() {
-        if (!this.currentRow1 || !this.currentRow2) {
-          this.$message({ type: 'danger', content: '请分别选择源资源和目标资源' })
+        if (!this.currentRow2) {
+          this.$message({ type: 'danger', content: '目标资源必须选择！' })
           return
         }
         // 拼接一条新数据至映射数组
         this.itemMaps.push({
-          sourceName: this.currentRow1.name,
+          sourceName: this.currentRow1 ? this.currentRow1.name : '',
           targetName: this.currentRow2.name,
           type: this.currentRow2.type,
           desc: this.currentRow2.desc,
@@ -293,13 +303,17 @@
       },
       // 移除两个表格的选中项
       removeTableRow() {
-        let index1 = this.fields1.findIndex(i => i.name === this.currentRow1.name)
-        let index2 = this.fields2.findIndex(i => i.name === this.currentRow2.name)
-        this.fields1.splice(index1, 1)
-        this.fields2.splice(index2, 1)
-        // 清空两个缓存行
-        this.currentRow1 = null
-        this.currentRow2 = null
+        if (this.currentRow1) {
+          let index1 = this.fields1.findIndex(i => i.name === this.currentRow1.name)
+          this.fields1.splice(index1, 1)
+          this.currentRow1 = null
+        }
+        if (this.currentRow2) {
+          let index2 = this.fields2.findIndex(i => i.name === this.currentRow2.name)
+          this.fields2.splice(index2, 1)
+          // 清空两个缓存行
+          this.currentRow2 = null
+        }
       },
       // 取消映射后从顶部恢复两个项
       unshiftTable(sourceName, targetName) {
@@ -313,9 +327,18 @@
           this.fields2.unshift(row2)
         }
       },
-      handleCurrentChange1(currentRow) {
-        this.currentRow1 = currentRow
+      // 源资源行点击触发
+      handleSourceClick(currentRow, index) {
+        if (this.currentRow1Index !== index) {
+          this.currentRow1Index = index
+          this.currentRow1 = currentRow
+          return
+        }
+        this.$refs.sourceTable.clearCurrentRow()
+        this.currentRow1Index = -1
+        this.currentRow1 = null
       },
+      // 目标资源当前行改变
       handleCurrentChange2(currentRow) {
         this.currentRow2 = currentRow
       },
@@ -347,3 +370,23 @@
     }
   }
 </script>
+
+<style lang="stylus" scoped>
+  .info-item-map {
+    display: flex;
+    .source-res {
+      width: 230px;
+      padding-right: 10px;
+    }
+    .target-res {
+      width: 250px;
+    }
+    .ctrl {
+      width: 120px;
+      padding: 100px 10px 0;
+    }
+    .map-res {
+      width: calc(100% - 600px);
+    }
+  }
+</style>

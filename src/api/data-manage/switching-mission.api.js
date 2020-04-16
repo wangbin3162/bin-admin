@@ -53,7 +53,10 @@ export function createMission(mission) {
       nodeTableName: mission.nodeTableName,
       exInfoDesc: mission.exInfoDesc,
       itemMap: mission.itemMap,
-      validValue: mission.validValue
+      validValue: mission.validValue,
+      strategy: mission.strategy, // 交换策略
+      clear_source: mission.clear_source,
+      sql_parameter: mission.sql_parameter
     }
   })
 }
@@ -72,7 +75,10 @@ export function modifyMission(mission) {
       nodeTableName: mission.nodeTableName,
       exInfoDesc: mission.exInfoDesc,
       itemMap: mission.itemMap,
-      validValue: mission.validValue
+      validValue: mission.validValue,
+      strategy: mission.strategy, // 交换策略
+      clear_source: mission.clear_source,
+      sql_parameter: mission.sql_parameter
     }
   })
 }

@@ -32,7 +32,7 @@
         </v-filter-bar>
         <!--操作栏-->
         <v-table-tool-bar>
-          <b-button type="primary"
+          <b-button type="primary" :disabled="plainDisable"
                     icon="ios-add-circle-outline"
                     @click="handleCreate">新 增
           </b-button>
@@ -110,21 +110,39 @@
           <b-form :model="mission" ref="form" :rules="ruleValidate" label-position="top">
             <b-row :gutter="20">
               <b-col span="6">
-                <b-form-item label="方案名称" prop="configId">
-                  <b-input v-if="dialogStatus === 'modify'" v-model="mission.cfgName" disabled></b-input>
-                  <scheme-choose v-else v-model="mission.configId" :default-name="mission.cfgName"
-                                 @on-change="handleConfigChoose"></scheme-choose>
+                <b-form-item label="方案名称" prop="cfgName">
+                  <b-input :value="mission.cfgName" readonly/>
                 </b-form-item>
               </b-col>
               <b-col span="6">
                 <b-form-item label="方案编码" prop="cfgCode">
-                  <b-input v-model="mission.cfgCode" placeholder="选择方案填充" readonly
-                           :disabled="dialogStatus === 'modify'"></b-input>
+                  <b-input :value="mission.cfgCode" readonly/>
                 </b-form-item>
               </b-col>
               <b-col span="6">
+                <b-form-item label="交换策略" prop="strategy">
+                  <b-select v-model="mission.strategy" @on-change="strategyChange" clearable>
+                    <b-option value="increment">增量</b-option>
+                    <b-option value="all">全量</b-option>
+                  </b-select>
+                </b-form-item>
+              </b-col>
+              <b-col span="6">
+                <b-form-item v-if="mission.strategy==='all'" label="是否清除源表" prop="clear_source">
+                  <div style="padding-top: 3px;">
+                    <b-switch v-model="mission.clear_source"
+                              true-value="y" false-value="n">
+                      <span slot="open">是</span>
+                      <span slot="close">否</span>
+                    </b-switch>
+                  </div>
+                </b-form-item>
+              </b-col>
+            </b-row>
+            <b-row :gutter="20">
+              <b-col span="6">
                 <b-form-item v-if="isCollect" label="源资源" prop="nodeTableName">
-                  <b-input v-if="dialogStatus === 'modify'" v-model="mission.nodeTableName" disabled></b-input>
+                  <b-input v-if="dialogStatus === 'modify'" v-model="mission.nodeTableName" disabled/>
                   <data-source-table-choose v-else v-model="mission.nodeTableName"
                                             :ds-id="sourceDataSource?sourceDataSource.id:''"
                                             @on-change="handleTableChoose">
@@ -153,6 +171,9 @@
                 </b-form-item>
               </b-col>
             </b-row>
+            <b-form-item label="交换参数" prop="sql_parameter">
+              <b-input type="textarea" v-model="mission.sql_parameter" placeholder="可输入sql参数..."/>
+            </b-form-item>
             <v-title-bar label="信息项映射" class="mb-15"></v-title-bar>
             <info-item-map :one-list="oneFields" :two-list="twoFields"
                            :value="mission.itemMap" @on-change="handleItemMap">
@@ -166,40 +187,36 @@
         </template>
       </v-edit-wrap>
     </page-header-wrap>
-    <b-drawer v-model="detailVisible" title="交换方案详情" append-to-body width="640">
-      <div v-if="sourceDataSource">
-        <v-title-bar label="源数据源信息" class="mb-15" tip-pos="left"/>
-        <div flex="box:mean">
-          <v-simple-label label="数据源名称">{{ sourceDataSource.dataSourceName }}</v-simple-label>
-          <v-simple-label label="数据库名称">{{ sourceDataSource.dbName }}</v-simple-label>
-        </div>
-        <div flex="box:mean">
-          <v-simple-label label="连接接驱动">{{ sourceDataSource.driverClass }}</v-simple-label>
-          <v-simple-label label="连接类型">{{ sourceDataSource.dbType }}</v-simple-label>
-        </div>
-        <div flex="box:mean">
-          <v-simple-label label="用户">{{ sourceDataSource.userName }}</v-simple-label>
-          <v-simple-label label="端口号">{{ sourceDataSource.port }}</v-simple-label>
-        </div>
-        <v-simple-label label="主机地址" is-bottom>{{ sourceDataSource.host }}</v-simple-label>
-      </div>
-      <div v-if="targetDataSource">
-        <v-title-bar label="目标数据源信息" class="mb-15" tip-pos="left"/>
-        <div flex="box:mean">
-          <v-simple-label label="数据源名称">{{ targetDataSource.dataSourceName }}</v-simple-label>
-          <v-simple-label label="数据库名称">{{ targetDataSource.dbName }}</v-simple-label>
-        </div>
-        <div flex="box:mean">
-          <v-simple-label label="连接接驱动">{{ targetDataSource.driverClass }}</v-simple-label>
-          <v-simple-label label="连接类型">{{ targetDataSource.dbType }}</v-simple-label>
-        </div>
-        <div flex="box:mean">
-          <v-simple-label label="用户">{{ targetDataSource.userName }}</v-simple-label>
-          <v-simple-label label="端口号">{{ targetDataSource.port }}</v-simple-label>
-        </div>
-        <v-simple-label label="主机地址" is-bottom>{{ targetDataSource.host }}</v-simple-label>
-      </div>
-    </b-drawer>
+    <page-header-wrap v-show="isCheck" :title="`${mission.resourceName}/交换方案详情`" show-close @on-close="handleCancel">
+      <v-edit-wrap>
+        <b-row slot="full" :gutter="20">
+          <b-col span="12" v-if="sourceDataSource">
+            <v-title-bar label="源数据源信息" class="mb-15" tip-pos="left"/>
+            <v-key-label label="数据源名称">{{ sourceDataSource.dataSourceName }}</v-key-label>
+            <v-key-label label="数据库名称">{{ sourceDataSource.dbName }}</v-key-label>
+            <v-key-label label="连接接驱动">{{ sourceDataSource.driverClass }}</v-key-label>
+            <v-key-label label="连接类型">{{ sourceDataSource.dbType }}</v-key-label>
+            <v-key-label label="用户">{{ sourceDataSource.userName }}</v-key-label>
+            <v-key-label label="端口号">{{ sourceDataSource.port }}</v-key-label>
+            <v-key-label label="主机地址" is-bottom>{{ sourceDataSource.host }}</v-key-label>
+          </b-col>
+          <b-col span="12" v-if="targetDataSource">
+            <v-title-bar label="目标数据源信息" class="mb-15" tip-pos="left"/>
+            <v-key-label label="数据源名称">{{ targetDataSource.dataSourceName }}</v-key-label>
+            <v-key-label label="数据库名称">{{ targetDataSource.dbName }}</v-key-label>
+            <v-key-label label="连接接驱动">{{ targetDataSource.driverClass }}</v-key-label>
+            <v-key-label label="连接类型">{{ targetDataSource.dbType }}</v-key-label>
+            <v-key-label label="用户">{{ targetDataSource.userName }}</v-key-label>
+            <v-key-label label="端口号">{{ targetDataSource.port }}</v-key-label>
+            <v-key-label label="主机地址" is-bottom>{{ targetDataSource.host }}</v-key-label>
+          </b-col>
+        </b-row>
+        <!--保存提交-->
+        <template slot="footer">
+          <b-button @click="handleCancel">取 消</b-button>
+        </template>
+      </v-edit-wrap>
+    </page-header-wrap>
   </div>
 </template>
 
@@ -223,7 +240,7 @@
 
   export default {
     name: 'SwitchingMission',
-    components: { InfoItemMap, DataSourceTableChoose, ResChoose, SchemeChoose, ItemMap, ExInfoCfg },
+    components: { InfoItemMap, DataSourceTableChoose, ResChoose, ItemMap, ExInfoCfg },
     mixins: [commonMixin, permission],
     data() {
       return {
@@ -249,13 +266,13 @@
         ],
         mission: null, // 任务
         ruleValidate: {
-          configId: [requiredRule],
           cfgName: [requiredRule],
           cfgCode: [requiredRule],
           resourceKey: [requiredRule],
           resourceName: [requiredRule],
           metadataName: [requiredRule],
-          nodeTableName: [requiredRule]
+          nodeTableName: [requiredRule],
+          strategy: [{ required: true, message: '必填项', trigger: 'change' }]
         },
         sourceDataSource: null,
         targetDataSource: null,
@@ -264,8 +281,7 @@
         flowDirectionMap: { COLLECT: '归集', SUBMIT: '上报', SHARE: '共享' }, // 信息流向
         exchangeTypeMap: { MANUAL: '人工交换', AUTO: '自动交换' }, // 交换类型
         availableStatusMap: { available: '可用', not_available: '不可用' }, // 有效状态
-        statusMap: { 'enable': '启用', 'disable': '禁用' },
-        detailVisible: false
+        statusMap: { 'enable': '启用', 'disable': '禁用' }
       }
     },
     created() {
@@ -274,7 +290,7 @@
       this.initTree()
     },
     computed: {
-      //  是否是归集
+      // 是否是归集
       isCollect() {
         return this.mission && this.mission.flowDirection === 'COLLECT'
       },
@@ -286,6 +302,10 @@
       },
       ENUM() {
         return { ENABLE: 'enable', DISABLE: 'disable' } // 常量比对键值对 初始状态不可启用禁用和删除
+      },
+      // 当前树节点是否可以新增任务
+      plainDisable() {
+        return this.currentTreeNode ? this.currentTreeNode.code.indexOf('DB_DB') === -1 : true
       }
     },
     methods: {
@@ -318,21 +338,28 @@
           if (resp.data.code === '0') {
             this.sourceDataSource = resp.data.data.sourceDataSource
             this.targetDataSource = resp.data.data.targetDataSource
-            this.detailVisible = true
+            this.openEditPage('check')
           }
         })
       },
       // 新增按钮事件
       handleCreate() {
         this.resetMission()
-        // 清空已选择的源资源和目标资源
-        this.sourceDataSource = null
-        this.targetDataSource = null
+        this.mission.configId = this.currentTreeNode.id
+        this.mission.cfgName = this.currentTreeNode.title
+        this.mission.cfgCode = this.currentTreeNode.code
+        this.mission.flowDirection = this.currentTreeNode.flowDirection
         // 清空源资源字段和目标字段数组
         this.resFields = []
         this.tableFields = []
         this.canSubmit = false
         this.openEditPage('create')
+        api.queryDataSourceByCfgId(this.mission.configId).then(resp => {
+          if (resp.data.code === '0') {
+            this.sourceDataSource = resp.data.data.sourceDataSource
+            this.targetDataSource = resp.data.data.targetDataSource
+          }
+        })
       },
       // 编辑事件
       handleModify(row) {
@@ -363,7 +390,11 @@
             getTablesFields(dsId, tableName).then(res => {
               if (res.status === 200) {
                 this.tableFields = res.data.map(item => {
-                  return { name: item.name, desc: item.desc, required: item.nullable === 0 }
+                  return {
+                    name: item.name,
+                    desc: item.desc,
+                    required: item.nullable === 0
+                  }
                 })
               }
             })
@@ -447,6 +478,10 @@
           this.targetDataSource = null
         }
       },
+      // 交换策略更改事件
+      strategyChange(val) {
+        this.mission.clear_source = val === 'increment' ? 'n' : this.mission.clear_source
+      },
       // 资源选择（资源信息）
       handleResourceChoose(res) {
         this.mission.resourceKey = res.resourceKey
@@ -488,7 +523,7 @@
         getExchangeTree().then(response => {
           const tree = response.data.data
           // 根据返回的数组格式化为树结构的格式，并追加parents用于级联选择和展开
-          let data = tree ? this.treeMapper(tree, null, ['code']) : {}
+          let data = tree ? this.treeMapper(tree, null, ['code', 'flowDirection']) : {}
           this.treeData.push(data)
           if (this.treeData.length > 0) {
             if (!this.currentTreeNode) {
@@ -545,7 +580,10 @@
           metadataKey: '',
           metadataName: '',
           exInfoDesc: null, // 任务配置明细
-          itemMap: ''
+          itemMap: '',
+          strategy: '', // 交换策略
+          clear_source: 'n',
+          sql_parameter: ''
         }
       },
       // 查询所有列表

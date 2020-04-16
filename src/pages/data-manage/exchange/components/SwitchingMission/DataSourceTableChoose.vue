@@ -11,12 +11,10 @@
     <b-modal v-model="dialogFormVisible" title="选择数据源库表" width="860" class="layout-inner" :mask-closable="false">
       <div>
         <!--中央表格-->
-        <b-table :columns="columns" :data="list" :loading="listLoading" max-height="375">
+        <b-table :columns="columns" :data="list" :loading="listLoading" max-height="375" size="small">
           <!--操作栏-->
           <template v-slot:action="scope">
-            <b-button type="primary" plain @click="chooseOne(scope.row)">
-              选择
-            </b-button>
+            <b-button type="text" @click="chooseOne(scope.row)">选择</b-button>
           </template>
         </b-table>
       </div>
@@ -57,7 +55,7 @@
         dialogFormVisible: false,
         columns: [
           { title: '表名', key: 'name' },
-          { title: '评论', key: 'comment' },
+          { title: '资源名', key: 'comment' },
           { title: '操作', slot: 'action', width: 100, align: 'center' }
         ],
         current: ''
