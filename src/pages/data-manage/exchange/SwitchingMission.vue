@@ -128,9 +128,9 @@
                 </b-form-item>
               </b-col>
               <b-col span="6">
-                <b-form-item v-if="mission.strategy==='all'" label="是否清除源表" prop="clear_source">
+                <b-form-item v-if="mission.strategy==='all'" label="是否清除源表" prop="clearSource">
                   <div style="padding-top: 3px;">
-                    <b-switch v-model="mission.clear_source"
+                    <b-switch v-model="mission.clearSource"
                               true-value="y" false-value="n">
                       <span slot="open">是</span>
                       <span slot="close">否</span>
@@ -171,8 +171,8 @@
                 </b-form-item>
               </b-col>
             </b-row>
-            <b-form-item label="交换参数" prop="sql_parameter">
-              <b-input type="textarea" v-model="mission.sql_parameter" placeholder="可输入sql参数..."/>
+            <b-form-item label="交换参数" prop="sqlParameter">
+              <b-input type="textarea" v-model="mission.sqlParameter" placeholder="可输入sql参数..."/>
             </b-form-item>
             <v-title-bar label="信息项映射" class="mb-15"></v-title-bar>
             <info-item-map :one-list="oneFields" :two-list="twoFields"
@@ -228,14 +228,7 @@
   import { getTablesFields } from '../../../api/data-manage/data-source.api'
   import { getFields } from '../../../api/data-manage/res-info.api'
   import { requiredRule } from '../../../common/utils/validate'
-  import {
-    ExInfoCfg,
-    ItemMap,
-    SchemeChoose,
-    ResChoose,
-    DataSourceTableChoose,
-    InfoItemMap
-  } from './components/SwitchingMission'
+  import { ExInfoCfg, ItemMap, ResChoose, DataSourceTableChoose, InfoItemMap } from './components/SwitchingMission'
   import { getExchangeTree } from '../../../api/data-manage/switching-scheme.api'
 
   export default {
@@ -480,7 +473,7 @@
       },
       // 交换策略更改事件
       strategyChange(val) {
-        this.mission.clear_source = val === 'increment' ? 'n' : this.mission.clear_source
+        this.mission.clearSource = val === 'increment' ? 'n' : this.mission.clearSource
       },
       // 资源选择（资源信息）
       handleResourceChoose(res) {
@@ -582,8 +575,8 @@
           exInfoDesc: null, // 任务配置明细
           itemMap: '',
           strategy: '', // 交换策略
-          clear_source: 'n',
-          sql_parameter: ''
+          clearSource: 'n',
+          sqlParameter: ''
         }
       },
       // 查询所有列表

@@ -55,8 +55,8 @@ export function createMission(mission) {
       itemMap: mission.itemMap,
       validValue: mission.validValue,
       strategy: mission.strategy, // 交换策略
-      clear_source: mission.clear_source,
-      sql_parameter: mission.sql_parameter
+      clearSource: mission.clearSource,
+      sqlParameter: mission.sqlParameter
     }
   })
 }
@@ -77,8 +77,8 @@ export function modifyMission(mission) {
       itemMap: mission.itemMap,
       validValue: mission.validValue,
       strategy: mission.strategy, // 交换策略
-      clear_source: mission.clear_source,
-      sql_parameter: mission.sql_parameter
+      clearSource: mission.clearSource,
+      sqlParameter: mission.sqlParameter
     }
   })
 }

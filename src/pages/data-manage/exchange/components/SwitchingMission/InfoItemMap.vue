@@ -12,7 +12,6 @@
             <span :title="row.desc">{{ row.name }}</span>
           </template>
         </b-table>
-        <div>{{currentRow1}}</div>
       </div>
       <!--目标资源-->
       <div class="target-res">
@@ -23,7 +22,6 @@
             <span :title="row.desc">{{ row.name }}</span>
           </template>
         </b-table>
-        <div>{{currentRow2}}</div>
       </div>
       <!--操作-->
       <div class="ctrl">
@@ -31,19 +29,26 @@
                   @click="autoMap">
           自动映射
         </b-button>
-        <b-button plain type="primary" style="width: 95%;margin: 0;" @click="handleAdd">
+        <b-button plain type="primary" style="width: 95%;margin: 0 0 5px 0;" @click="handleAdd">
           移 动
           <b-icon name="ios-arrow-round-forward"/>
+        </b-button>
+        <b-button plain type="danger" style="width: 95%;margin: 0;" @click="cancelAllMap">
+          <b-icon name="ios-arrow-round-back"/>
+          移 动
         </b-button>
       </div>
       <!--映射关系-->
       <div class="map-res">
         <b-tag type="success" style="margin-bottom: 5px;">映射关系</b-tag>
-        <b-table :columns="columns3" :data="itemMaps" max-height="475" size="small">
+        <b-table :columns="columns3" :data="itemMaps" max-height="475" size="small" disabled-hover>
           <template #targetName="{row}">
             <span :title="row.desc">{{ row.targetName }}</span>
           </template>
-          <template v-slot:defaultValue="scope">
+          <template v-slot:defaultValue="{row,index}">
+            <div v-if="row.sourceName.length === 0">
+              <default-value-input v-model="itemMaps[index].defaultValue" @on-change="emitValue"/>
+            </div>
           </template>
           <template v-slot:action="{row,index}">
             <b-icon name="ios-remove-circle-outline" size="20" :style="{...colorDanger,cursor:'pointer'}"
@@ -57,27 +62,27 @@
         </b-table>
       </div>
     </div>
+    <!--    <div>-->
+    <!--      <b-code-editor :value="JSON.stringify(itemMaps,null,2)" readonly/>-->
+    <!--    </div>-->
     <!--添加字典项配置弹窗-->
     <b-modal v-model="dialogFormVisible" width="800" title="配置映射">
       <template>
         <div style="padding: 0 140px 5px 5px;" flex="box:mean">
           <span class="mr-15">源值</span><span>目标值</span>
         </div>
-        <div flex="box:last" v-for="item in dictMaps" :key="item.sourceKey" class="mb-5">
-          <b-input class="mr-10" v-model="item.sourceKey"
-                   placeholder="请输入键"></b-input>
-          <b-input v-model="item.sourceValue"
-                   placeholder="请输入值"></b-input>
+        <div flex="box:last" v-for="(item,index) in dictMaps" :key="item.sourceKey+'_'+index" class="mb-5">
+          <b-input class="mr-10" v-model="item.sourceKey" placeholder="请输入键"/>
+          <b-input v-model="item.sourceValue" placeholder="请输入值"/>
           <!--操作栏-->
-          <div style="width: 140px;padding:4px 0 0 10px; text-align: center;">
+          <div style="width: 140px;text-align: center;">
             <b-button type="danger" icon="ios-remove-circle" transparent
                       @click="removeBufferRow(item)">移除
             </b-button>
           </div>
         </div>
         <div class="pt-20">
-          <b-button type="primary" icon="ios-add-circle-outline"
-                    plain @click="addBufferRow">
+          <b-button type="dashed" icon="ios-add-circle-outline" @click="addBufferRow">
             添加配置
           </b-button>
         </div>
@@ -92,10 +97,11 @@
 
 <script>
   import commonMixin from '../../../../../common/mixins/mixin'
-  import { deepCopy } from '../../../../../common/utils/assist'
+  import DefaultValueInput from './DefaultValueInput'
 
   export default {
     name: 'InfoItemMap',
+    components: { DefaultValueInput },
     mixins: [commonMixin],
     props: {
       value: {
@@ -196,7 +202,6 @@
     },
     methods: {
       editDict(row) {
-        this.resetDictMaps()
         this.conf = { ...row }
         if (this.itemMaps[this.conf._index].dictMap) {
           this.dictMaps = this.itemMaps[this.conf._index].dictMap
@@ -235,15 +240,27 @@
           this.$message({ type: 'danger', content: '目标资源必须选择！' })
           return
         }
-        // 拼接一条新数据至映射数组
-        this.itemMaps.push({
+        let obj = {
           sourceName: this.currentRow1 ? this.currentRow1.name : '',
           targetName: this.currentRow2.name,
           type: this.currentRow2.type,
           desc: this.currentRow2.desc,
           dictMap: '',
           dict: ''
-        })
+        }
+        // 如果元信息项不存在
+        if (!this.currentRow1) {
+          obj = {
+            ...obj,
+            defaultValue: {
+              type: 'default', // ['dept', 'user', 'default']
+              value: '', // 实际值
+              showValue: '' // 显示值
+            }
+          }
+        }
+        // 拼接一条新数据至映射数组
+        this.itemMaps.push(obj)
         // 移除前两个表格中的对应数据
         this.removeTableRow()
         // 更新响应值
@@ -255,6 +272,16 @@
         this.unshiftTable(row.sourceName, row.targetName)
         // 移除我自己
         this.itemMaps.splice(row._index, 1)
+        // 更新响应值
+        this.emitValue()
+      },
+      // 取消所有映射
+      cancelAllMap() {
+        this.itemMaps.forEach((item, index) => {
+          // 显示恢复至两个表格
+          this.unshiftTable(item.sourceName, item.targetName)
+        })
+        this.itemMaps = []
         // 更新响应值
         this.emitValue()
       },
@@ -342,12 +369,6 @@
       handleCurrentChange2(currentRow) {
         this.currentRow2 = currentRow
       },
-      // 重置对象
-      resetDictMaps() {
-        // this.dictMaps = [],
-        // this.dictMaps.push({ sourceKey: '', sourceValue: '' }),
-        this.conf = {}
-      },
       // 更新响应值
       emitValue() {
         let arr = this.itemMaps.map((item, index) => {
@@ -357,6 +378,7 @@
             type: item.type,
             desc: item.desc,
             dictMap: item.dict,
+            defaultValue: item.defaultValue,
             colNo: index
           }
         })
