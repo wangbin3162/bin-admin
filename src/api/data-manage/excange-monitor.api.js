@@ -30,7 +30,7 @@ export function getExchangeList(query) {
       page: query.page - 1,
       planId: query.planId,
       taskName: query.taskName,
-      availableStatus: query.availableStatus
+      jobStatus: query.jobStatus
     }
   })
 }
