@@ -15,7 +15,7 @@
                     <b-icon name="ios-today" size="30"/>
                   </div>
                   <div>
-                    <p class="title">方案数量</p>
+                    <p class="title">方案总数量</p>
                     <p class="counts">{{analysisMap.totalPlanNum}}</p>
                   </div>
                 </div>
@@ -26,7 +26,7 @@
                     <b-icon name="ios-checkbox-outline" size="30"/>
                   </div>
                   <div>
-                    <p class="title">任务成功数量</p>
+                    <p class="title">方案成功数量</p>
                     <p class="counts">{{analysisMap.successPlanNum}}</p>
                   </div>
                 </div>
@@ -37,7 +37,7 @@
                     <b-icon name="ios-close-circle-outline" size="30"/>
                   </div>
                   <div>
-                    <p class="title">任务失败数量</p>
+                    <p class="title">方案失败数量</p>
                     <p class="counts">{{analysisMap.failedPlanNum}}</p>
                   </div>
                 </div>
@@ -52,8 +52,8 @@
                     <b-icon name="ios-log-out" size="30"/>
                   </div>
                   <div>
-                    <p class="title">任务数量</p>
-                    <p class="counts">{{analysisMap.runningTasksNum}}</p>
+                    <p class="title">任务总数量</p>
+                    <p class="counts">{{analysisMap.totalTasksNum}}</p>
                   </div>
                 </div>
               </b-col>
@@ -86,9 +86,9 @@
           <v-filter-item title="任务名称">
             <b-input v-model="listQuery.taskName" placeholder="请输入" clearable></b-input>
           </v-filter-item>
-          <v-filter-item title="状态">
-            <b-select v-model="listQuery.availableStatus" clearable placeholder="全部">
-              <b-option v-for="(value,key) in availableStatusMap" :key="key" :value="key">{{ value }}</b-option>
+          <v-filter-item title="运行状态">
+            <b-select v-model="listQuery.jobStatus" clearable placeholder="全部">
+              <b-option v-for="(value,key) in jobStatusMap" :key="key" :value="key">{{ value }}</b-option>
             </b-select>
           </v-filter-item>
           <!--添加查询按钮位置-->
@@ -108,13 +108,13 @@
           <!--操作栏-->
           <template v-slot:action="{row}">
             <span>
-              <b-popover trigger="hover" content="查询作业执行列表">
+              <b-popover trigger="hover" content="任务执行记录">
                 <b-icon name="ios-list-box" size="20" :style="{...colorPrimary,cursor:'pointer'}"
                         @click.native="handleCheck(row)"/>
               </b-popover>
             </span>&nbsp;
             <span>
-              <b-tooltip content="手动任务启动" theme="light" max-width="200" style="padding-top: 3px;"
+              <b-tooltip content="任务启动" theme="light" max-width="200" style="padding-top: 3px;"
                          append-to-body>
                 <b-icon name="ios-play-circle" size="20" :style="startTaskStyle"
                         @click.native="handleStartTask(row.id)"/>
@@ -141,15 +141,15 @@
               <v-simple-label label="状态" style="padding:0;">{{availableStatusMap[availableStatus]}}
               </v-simple-label>
             </b-col>
-            <b-col span="6">
+            <!--<b-col span="6">
               <v-simple-label label="执行次数" style="padding:0;">{{totalCount}}</v-simple-label>
-            </b-col>
+            </b-col>-->
           </b-row>
         </b-alert>
         <v-filter-bar>
-          <v-filter-item title="日期">
+          <v-filter-item title="起始日期">
             <b-date-picker type="daterange" @on-change="dateChange" placement="bottom-start"
-                           placeholder="选择起止日期" append-to-body></b-date-picker>
+                           placeholder="选择日期范围" append-to-body></b-date-picker>
           </v-filter-item>
           <v-filter-item title="执行状态">
             <b-select v-model="dirBatchQuery.jobStatus" clearable placeholder="全部">
@@ -169,15 +169,15 @@
             </b-tag>
           </template>
           <template #action="{row}">
-            <b-tooltip content="查询作业执行明细" theme="light" max-width="200" style="padding-top: 3px;">
+            <b-tooltip content="记录明细" theme="light" max-width="200" style="padding-top: 3px;">
               <b-icon name="ios-filing" size="20" :style="{...colorPrimary,cursor:'pointer'}"
                       @click.native="handleCheckDetail(row)"/>
             </b-tooltip>&nbsp;
-            <b-tooltip content="清理作业" theme="light" max-width="200" style="padding-top: 3px;">
+            <b-tooltip content="清理" theme="light" max-width="200" style="padding-top: 3px;">
               <b-icon name="ios-close-circle" size="20" :style="clearJobStyle"
                       @click.native="handleClearJob(row.id)"/>
             </b-tooltip>&nbsp;
-            <b-tooltip content="重启作业" theme="light" max-width="200" style="padding-top: 3px;">
+            <b-tooltip content="重启" theme="light" max-width="200" style="padding-top: 3px;">
               <b-icon name="ios-refresh-circle" size="20" :style="restartJobStyle"
                       @click.native="handleRestartJob(row.id)"/>
             </b-tooltip>
@@ -248,7 +248,7 @@
         listQuery: {
           planId: '',
           taskName: '',
-          availableStatus: 'available'
+          jobStatus: ''
         },
         columns: [
           { type: 'index', width: 50, align: 'center' },
@@ -257,11 +257,11 @@
           { title: '运行周期', key: 'cronStr' },
           { title: '执行次数', key: 'totalCount', align: 'center', width: 90 },
           { title: '最近执行时间', key: 'lastRunTime', width: 200 },
-          { title: '执行状态', slot: 'lastRunResult', align: 'center', width: 100 },
+          { title: '运行状态', slot: 'lastRunResult', align: 'center', width: 100 },
           { title: '操作', slot: 'action', width: 120 }
         ],
         availableStatusMap: { available: '有效', notavailable: '无效' }, // 有效状态
-        jobStatusMap: { STARTING: '运行中', COMPLETED: '成功', FAILED: '失败', REPEATING: '重复验证' }, //  任务状态
+        jobStatusMap: { COMPLETED: '成功', FAILED: '失败', STARTING: '运行中' }, //  任务状态
         statusStyleMap: { COMPLETED: 'success', STARTED: 'primary', FAILED: 'danger', REPEATING: 'warning' },
         exchangeTypeMap: { MANUAL: '人工交换', AUTO: '自动交换' },
         flowDirectionMap: { collect: '归集', submit: '上报', share: '共享' },
@@ -286,9 +286,9 @@
           { title: '结束时间', key: 'finishDate' },
           { title: '耗时', key: 'duration', width: 100 },
           { title: '任务状态', slot: 'jobStatus', width: 100, align: 'center' },
-          { title: '数据总数', key: 'totalCount', width: 100, align: 'center' },
-          { title: '失败条数', key: 'errorCount', width: 100, align: 'center' },
-          { title: '重复条数', key: 'repeatCount', width: 100, align: 'center' },
+          { title: '数据总量', key: 'totalCount', width: 100, align: 'center' },
+          { title: '失败数量', key: 'errorCount', width: 100, align: 'center' },
+          { title: '重复数量', key: 'repeatCount', width: 100, align: 'center' },
           { title: '操作', slot: 'action', width: 130 }
         ],
         dirBatchLoading: false,
@@ -306,7 +306,7 @@
     },
     computed: {
       editTitle() {
-        return '任务名称：' + this.resourceName
+        return '[' + this.resourceName + '] 任务运行监控'
       },
       startTaskStyle() {
         return { ...this.colorSuccess, cursor: 'pointer' }
@@ -462,6 +462,7 @@
         api.startTask(id).then(res => {
           if (res.data.code === '0') {
             this.$notice.success({ title: '任务启动成功' })
+            this.handleFilterBatch()
           } else {
             this.$notice.danger({ title: '任务启动失败', desc: res.data.message || '' })
           }
