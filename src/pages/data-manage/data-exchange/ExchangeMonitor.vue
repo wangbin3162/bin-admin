@@ -107,19 +107,14 @@
           </template>
           <!--操作栏-->
           <template v-slot:action="{row}">
-            <span>
-              <b-popover trigger="hover" content="任务执行记录">
-                <b-icon name="ios-list-box" size="20" :style="{...colorPrimary,cursor:'pointer'}"
-                        @click.native="handleCheck(row)"/>
-              </b-popover>
-            </span>&nbsp;
-            <span>
-              <b-tooltip content="任务启动" theme="light" max-width="200" style="padding-top: 3px;"
-                         append-to-body>
-                <b-icon name="ios-play-circle" size="20" :style="startTaskStyle"
-                        @click.native="handleStartTask(row.id)"/>
-              </b-tooltip>
-            </span>
+            <b-tooltip content="任务执行记录" theme="light" max-width="200" style="padding-top: 3px;">
+              <b-icon name="ios-list-box" size="20" :style="{...colorPrimary,cursor:'pointer'}"
+                      @click.native="handleCheck(row)"/>
+            </b-tooltip>&nbsp;
+            <b-tooltip content="任务启动" theme="light" max-width="200" style="padding-top: 3px;">
+              <b-icon name="ios-play-circle" size="20" :style="startTaskStyle"
+                      @click.native="handleStartTask(row.id)"/>
+            </b-tooltip>
           </template>
         </b-table>
         <!--下方分页器-->
