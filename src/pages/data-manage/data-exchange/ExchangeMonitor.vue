@@ -46,18 +46,18 @@
           </div>
           <div v-else>
             <b-row :gutter="20">
-              <b-col span="6">
+              <b-col span="8">
                 <div class="block b1" flex>
                   <div class="icon">
-                    <b-icon name="ios-today" size="30"/>
+                    <b-icon name="ios-log-out" size="30"/>
                   </div>
                   <div>
-                    <p class="title">方案数量</p>
-                    <p class="counts">{{analysisMap.totalTasksNum}}</p>
+                    <p class="title">任务数量</p>
+                    <p class="counts">{{analysisMap.runningTasksNum}}</p>
                   </div>
                 </div>
               </b-col>
-              <b-col span="6">
+              <b-col span="8">
                 <div class="block b2" flex>
                   <div class="icon">
                     <b-icon name="ios-checkbox-outline" size="30"/>
@@ -68,7 +68,7 @@
                   </div>
                 </div>
               </b-col>
-              <b-col span="6">
+              <b-col span="8">
                 <div class="block b3" flex>
                   <div class="icon">
                     <b-icon name="ios-close-circle-outline" size="30"/>
@@ -76,17 +76,6 @@
                   <div>
                     <p class="title">任务失败数量</p>
                     <p class="counts">{{analysisMap.failedTasksNum}}</p>
-                  </div>
-                </div>
-              </b-col>
-              <b-col span="6">
-                <div class="block b4" flex>
-                  <div class="icon">
-                    <b-icon name="ios-log-out" size="30"/>
-                  </div>
-                  <div>
-                    <p class="title">运行任务数量</p>
-                    <p class="counts">{{analysisMap.runningTasksNum}}</p>
                   </div>
                 </div>
               </b-col>
@@ -111,26 +100,26 @@
           <template v-slot:exchangeType="{row}">{{ exchangeTypeMap[row.exchangeType] }}</template>
           <!--执行状态-->
           <template v-slot:lastRunResult="{row}">
-            <b-tag :type="statusStyleMap[row.lastRunResult]" dot no-border
+            <b-tag v-if="row.lastRunResult" :type="statusStyleMap[row.lastRunResult]" dot no-border
                    :tag-style="{backgroundColor: 'transparent',color:'rgba(0,0,0,.65)',fontSize:'14px'}">
               {{ jobStatusMap[row.lastRunResult] }}
             </b-tag>
           </template>
-          <!--有效状态-->
-          <template v-slot:availableStatus="{row}">
-            <span v-if="row.availableStatus==='available'" :style="colorSuccess">有效</span>
-            <span v-else :style="colorDanger">无效</span>
-          </template>
           <!--操作栏-->
           <template v-slot:action="{row}">
-            <b-tooltip content="查询作业执行列表" theme="light" max-width="200" style="padding-top: 3px;">
-              <b-icon name="ios-list-box" size="20" :style="{...colorPrimary,cursor:'pointer'}"
-                      @click.native="handleCheck(row)"/>
-            </b-tooltip>&nbsp;
-            <b-tooltip content="手动任务启动" theme="light" max-width="200" style="padding-top: 3px;">
-              <b-icon name="ios-play-circle" size="20" :style="startTaskStyle"
-                      @click.native="handleStartTask(row.id)"/>
-            </b-tooltip>
+            <span>
+              <b-popover trigger="hover" content="查询作业执行列表">
+                <b-icon name="ios-list-box" size="20" :style="{...colorPrimary,cursor:'pointer'}"
+                        @click.native="handleCheck(row)"/>
+              </b-popover>
+            </span>&nbsp;
+            <span>
+              <b-tooltip content="手动任务启动" theme="light" max-width="200" style="padding-top: 3px;"
+                         append-to-body>
+                <b-icon name="ios-play-circle" size="20" :style="startTaskStyle"
+                        @click.native="handleStartTask(row.id)"/>
+              </b-tooltip>
+            </span>
           </template>
         </b-table>
         <!--下方分页器-->
@@ -269,7 +258,6 @@
           { title: '执行次数', key: 'totalCount', align: 'center', width: 90 },
           { title: '最近执行时间', key: 'lastRunTime', width: 200 },
           { title: '执行状态', slot: 'lastRunResult', align: 'center', width: 100 },
-          { title: '有效状态', slot: 'availableStatus', align: 'center', width: 90 },
           { title: '操作', slot: 'action', width: 120 }
         ],
         availableStatusMap: { available: '有效', notavailable: '无效' }, // 有效状态
@@ -481,21 +469,39 @@
       },
       // 作业清理
       handleClearJob(id) {
-        api.clearJob(id).then(res => {
-          if (res.data.code === '0') {
-            this.$notice.success({ title: '作业清理成功' })
-          } else {
-            this.$notice.danger({ title: '作业清理失败', desc: res.data.message || '' })
+        this.$confirm({
+          title: '确定清理作业？',
+          content: '清理后不可恢复',
+          loading: true,
+          okType: 'warning',
+          onOk: () => {
+            api.clearJob(id).then(res => {
+              if (res.data.code === '0') {
+                this.$notice.success({ title: '作业清理成功' })
+                this.handleFilterBatch()
+              } else {
+                this.$notice.danger({ title: '作业清理失败', desc: res.data.message || '' })
+              }
+              this.$modal.remove()
+            })
           }
         })
       },
       // 作业重启
       handleRestartJob(id) {
-        api.restartJob(id).then(res => {
-          if (res.data.code === '0') {
-            this.$notice.success({ title: '作业重启成功' })
-          } else {
-            this.$notice.danger({ title: '作业重启失败', desc: res.data.message || '' })
+        this.$confirm({
+          title: '确定重启作业？',
+          loading: true,
+          okType: 'danger',
+          onOk: () => {
+            api.restartJob(id).then(res => {
+              if (res.data.code === '0') {
+                this.$notice.success({ title: '作业重启成功' })
+              } else {
+                this.$notice.danger({ title: '作业重启失败', desc: res.data.message || '' })
+              }
+              this.$modal.remove()
+            })
           }
         })
       }

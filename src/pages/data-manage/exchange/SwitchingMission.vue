@@ -450,27 +450,6 @@
           }
         })
       },
-      // 方案选择事件
-      handleConfigChoose(scheme) {
-        this.mission.configId = scheme.id
-        this.mission.cfgName = scheme.cfgName
-        this.mission.cfgCode = scheme.cfgCode
-        // 信息流向，用于判断源资源和目标资源，分别需要选择哪个源资源id
-        this.mission.flowDirection = scheme.flowDirection
-
-        // 选中后重新触发校验
-        this.$refs.form.validateField('configId')
-        this.$refs.form.validateField('cfgCode')
-        if (scheme.id && scheme.id !== '') {
-          api.queryDataSourceByCfgId(scheme.id).then(res => {
-            this.sourceDataSource = res.data.data.sourceDataSource
-            this.targetDataSource = res.data.data.targetDataSource
-          })
-        } else { // 如果清空了则重置两个展示对象
-          this.sourceDataSource = null
-          this.targetDataSource = null
-        }
-      },
       // 交换策略更改事件
       strategyChange(val) {
         this.mission.clearSource = val === 'increment' ? 'n' : this.mission.clearSource
