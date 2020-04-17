@@ -493,6 +493,7 @@
             api.restartJob(id).then(res => {
               if (res.data.code === '0') {
                 this.$notice.success({ title: '作业重启成功' })
+                this.handleFilterBatch()
               } else {
                 this.$notice.danger({ title: '作业重启失败', desc: res.data.message || '' })
               }
