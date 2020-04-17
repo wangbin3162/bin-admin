@@ -43,7 +43,7 @@
     },
     computed: {
       pageTitle() {
-        return `[${this.role ? this.role.name : ''}]授权，
+        return `[${this.role ? this.role.name : ''}]角色授权，
                 父角色：[${(this.role && this.role.parentName) ? this.role.parentName : '无'}]`
       }
     },
@@ -89,7 +89,6 @@
             const tree = response.data.data || {}
             let data = this.treeMapper(tree, null)
             this.treeData.push(data)
-            this.$notice.success({ title: '权限加载成功' })
           } else {
             this.$notice.success({ title: '权限加载失败', desc: response.data.message || '' })
           }

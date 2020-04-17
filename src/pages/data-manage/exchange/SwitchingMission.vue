@@ -172,7 +172,7 @@
               </b-col>
             </b-row>
             <b-form-item label="交换参数" prop="sqlParameter">
-              <b-input type="textarea" v-model="mission.sqlParameter" placeholder="可输入sql参数..."/>
+              <b-input type="textarea" v-model="mission.sqlParameter" placeholder="交换sql where条件"/>
             </b-form-item>
             <v-title-bar label="信息项映射" class="mb-15"></v-title-bar>
             <info-item-map :one-list="oneFields" :two-list="twoFields"
