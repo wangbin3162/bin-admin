@@ -66,7 +66,7 @@
               修改
             </b-button>
             <b-divider type="vertical"/>
-            <b-dropdown trigger="click">
+            <b-dropdown trigger="click" append-to-body>
               <b-button type="text">更多
                 <b-icon name="ios-arrow-down"/>
               </b-button>
