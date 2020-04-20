@@ -62,10 +62,20 @@ export function queryDirBatchInfo(jobId) {
   })
 }
 
-/* 下载批处理错误数据 */
+/* 下载验证错误数据文件 */
 export function downloadError(id) {
   return request({
-    url: '/api/batch/db/downloadError',
+    url: '/api/dir/exchange/monitor/downloadError',
+    method: 'get',
+    responseType: 'blob',
+    params: { id }
+  })
+}
+
+/* 下载重复性数据文件 */
+export function downloadRepeat(id) {
+  return request({
+    url: '/api/dir/exchange/monitor/downloadRepeat',
     method: 'get',
     responseType: 'blob',
     params: { id }
