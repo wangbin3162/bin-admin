@@ -65,7 +65,7 @@
                 </b-col>
                 <b-col span="12">
                   <b-form-item label="数据精度" prop="dataPrecision" v-if="showDataPrecision">
-                    <b-input-number v-model="metaItem.dataPrecision" :max="4" ></b-input-number>
+                    <b-input-number v-model="metaItem.dataPrecision" :max="4"></b-input-number>
                   </b-form-item>
                 </b-col>
               </b-row>
@@ -140,6 +140,8 @@
           }).catch(() => {
             callback(new Error('请求信息项和信息项类型唯一检查出错'))
           })
+        } else {
+          callback()
         }
       }
       // 信息项名称校验
@@ -153,7 +155,7 @@
                 callback(new Error('字段名不合法或重复!'))
               }
             }).catch(() => {
-              callback(new Error('请求验证重复性出错'))
+              callback(new Error('字段名不合法或重复!'))
             })
           } else {
             callback(new Error('英文字母开头(包括字母、数字和下划线)'))
