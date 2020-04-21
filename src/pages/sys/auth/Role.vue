@@ -34,10 +34,9 @@
             <b-button :disabled="!canModifyImpl" type="text" @click="handleModify(scope.row)">修改
             </b-button>
             <!--是否有删除键-->
-            <template v-if="scope.row.roleType===ENUM.S">
+            <template v-if="canRemove && scope.row.roleType===ENUM.S">
               <b-divider type="vertical"></b-divider>
-              <b-button :disabled="!canRemove" type="text" text-color="danger" @click="handleRemove(scope.row)">删除
-              </b-button>
+              <b-button type="text" text-color="danger" @click="handleRemove(scope.row)">删除</b-button>
             </template>
           </template>
         </b-table>
