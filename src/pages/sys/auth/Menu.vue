@@ -39,7 +39,7 @@
           <template v-slot:delFlag="scope">
             <b-switch v-model="scope.row.delFlag" :true-value="ENUM.N" :false-value="ENUM.Y"
                       inactive-color="#ff4949"
-                      :disabled="isSysOrMenu(scope.row.path)"
+                      :disabled="isSysOrMenu(scope.row.path) || !havePermission('changeStatus')"
                       @on-change="handleChangeDelFlag(scope.row)">
             </b-switch>
           </template>
