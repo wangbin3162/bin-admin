@@ -469,13 +469,15 @@
       handleCheckRes(row) {
         // 根据resourceKey获取资源信息，并将原始表头信息传入gather-list组件
         getResourceInfo(row.resourceKey).then(res => {
-          if (res.status === 200) {
+          if (res.data.code === '0') {
             let detail = res.data.data
             if (detail && detail.items) {
               let columns = detail.items.filter(i => i.id)
               this.dialogStatus = 'testForm'
               this.$refs.testForm.open(detail, columns)
             }
+          } else {
+            this.$notice.danger({ title: '提示', desc: res.data.message })
           }
         })
       },
