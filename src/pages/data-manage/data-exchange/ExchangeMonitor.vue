@@ -88,7 +88,7 @@
           </v-filter-item>
           <v-filter-item title="运行状态">
             <b-select v-model="listQuery.jobStatus" clearable placeholder="全部">
-              <b-option v-for="(value,key) in jobStatusMap" :key="key" :value="key">{{ value }}</b-option>
+              <b-option v-for="(value,key) in lastJobStatusMap" :key="key" :value="key">{{ value }}</b-option>
             </b-select>
           </v-filter-item>
           <!--添加查询按钮位置-->
@@ -102,7 +102,7 @@
           <template v-slot:lastRunResult="{row}">
             <b-tag v-if="row.lastRunResult" :type="statusStyleMap[row.lastRunResult]" dot no-border
                    :tag-style="{backgroundColor: 'transparent',color:'rgba(0,0,0,.65)',fontSize:'14px'}">
-              {{ jobStatusMap[row.lastRunResult] }}
+              {{ lastJobStatusMap[row.lastRunResult] }}
             </b-tag>
           </template>
           <!--操作栏-->
@@ -182,7 +182,7 @@
         <b-page :total="dirBatchTotal" :current.sync="dirBatchQuery.page" @on-change="handleDirPageChange"></b-page>
       </v-table-wrap>
     </page-header-wrap>
-    <b-modal v-model="detailDialog" title="任务执行详情" width="940" :mask-closable="false">
+    <b-modal v-model="detailDialog" title="任务执行记录明细" width="940" :mask-closable="false">
       <template v-if="batchDetail">
         <div class="status">
           <v-simple-label label="任务状态">
@@ -193,31 +193,27 @@
           </v-simple-label>
         </div>
         <div flex="box:mean">
-          <v-simple-label label="资源名称">{{ batchDetail.resourceName }}</v-simple-label>
-          <v-simple-label label="资源标志">{{ batchDetail.metadataKey }}</v-simple-label>
           <v-simple-label label="交换方案">{{ batchDetail.cfgName }}</v-simple-label>
-        </div>
-        <div flex="box:mean">
-          <v-simple-label label="原信息标识">{{ batchDetail.metadataKey }}</v-simple-label>
+          <v-simple-label label="任务名称">{{ batchDetail.resourceName }}</v-simple-label>
           <v-simple-label label="定时周期">{{ batchDetail.cronStr }}</v-simple-label>
-          <v-simple-label label="数据总量">{{ batchDetail.totalCount }}</v-simple-label>
         </div>
         <div flex="box:mean">
-          <v-simple-label label="起始时间">{{ batchDetail.createDate }}</v-simple-label>
-          <v-simple-label label="结束时间">{{ batchDetail.finishDate }}</v-simple-label>
+          <v-simple-label label="起始日期">{{ batchDetail.createDate }}</v-simple-label>
+          <v-simple-label label="结束日期">{{ batchDetail.finishDate }}</v-simple-label>
           <v-simple-label label="总耗时">{{ batchDetail.duration }}</v-simple-label>
         </div>
         <div flex="box:mean">
-          <v-simple-label label="正式数据量">{{ batchDetail.totalCount }}</v-simple-label>
-          <v-simple-label label="错误数量">{{ batchDetail.errorCount }}</v-simple-label>
-          <v-simple-label label="重复数量">{{ batchDetail.repeatCount }}</v-simple-label>
+          <v-simple-label label="交换数据总量">{{ batchDetail.totalCount }}</v-simple-label>
+          <v-simple-label label="入库有效数量">{{ batchDetail.validCount}}</v-simple-label>
+          <v-simple-label label="验证无效数量">{{ batchDetail.errorCount }}</v-simple-label>
+          <v-simple-label label="验证重复数量">{{ batchDetail.repeatCount }}</v-simple-label>
         </div>
         <div flex="box:mean">
-          <v-simple-label label="错误报告" v-if="batchDetail.errorCount!=='0'">
-            <span class="link" @click="handleDownloadExport(batchDetail.id)">下载</span>
+          <v-simple-label label="错误报告" v-if="batchDetail.errorCount!==0">
+            <span class="link" @click="handleDownloadError(batchDetail.id)">下载</span>
           </v-simple-label>
-          <v-simple-label label="重复报告" v-if="batchDetail.repeatCount!=='0'">
-            <span class="link" @click="handleDownloadExport(batchDetail.id)">下载</span>
+          <v-simple-label label="重复报告" v-if="batchDetail.repeatCount!==0">
+            <span class="link" @click="handleDownloadRepeat(batchDetail.id)">下载</span>
           </v-simple-label>
         </div>
       </template>
@@ -252,12 +248,13 @@
           { title: '运行周期', key: 'cronStr' },
           { title: '执行次数', key: 'totalCount', align: 'center', width: 90 },
           { title: '最近执行时间', key: 'lastRunTime', width: 200 },
-          { title: '运行状态', slot: 'lastRunResult', align: 'center', width: 100 },
+          { title: '最近运行状态', slot: 'lastRunResult', align: 'center', width: 150 },
           { title: '操作', slot: 'action', width: 120 }
         ],
         availableStatusMap: { available: '有效', notavailable: '无效' }, // 有效状态
-        jobStatusMap: { COMPLETED: '成功', FAILED: '失败', STARTING: '运行中' }, //  任务状态
-        statusStyleMap: { COMPLETED: 'success', STARTED: 'primary', FAILED: 'danger', REPEATING: 'warning' },
+        lastJobStatusMap: { COMPLETED: '成功', FAILED: '失败', RUNNING: '运行中' },
+        jobStatusMap: { COMPLETED: '完成', FAILED: '失败', STARTED: '运行中', REPEATING: '重复校验' }, //  任务状态
+        statusStyleMap: { COMPLETED: 'success', STARTED: 'primary', FAILED: 'danger', REPEATING: 'warning', RUNNING: 'warning' },
         exchangeTypeMap: { MANUAL: '人工交换', AUTO: '自动交换' },
         flowDirectionMap: { collect: '归集', submit: '上报', share: '共享' },
         analysisMap: {
@@ -438,12 +435,26 @@
           this.dirBatchLoading = false
         })
       },
-      // 下载错误文件
-      handleDownloadExport(id) {
+      // 下载验证错误文件
+      handleDownloadError(id) {
         let fileName = '错误记录.xlsx'
         if (!this.downloadEvent) { // 点击下载事件，需要函数防抖动
           this.downloadEvent = this.$util.debounce((id) => {
             api.downloadError(id).then(res => {
+              if (res.status === 200) {
+                Util.downloadFile(res.data, fileName)
+              }
+            })
+          }, 1000)
+        }
+        this.downloadEvent(id)
+      },
+      // 下载数据重复文件
+      handleDownloadRepeat(id) {
+        let fileName = '重复记录.xlsx'
+        if (!this.downloadEvent) { // 点击下载事件，需要函数防抖动
+          this.downloadEvent = this.$util.debounce((id) => {
+            api.downloadRepeat(id).then(res => {
               if (res.status === 200) {
                 Util.downloadFile(res.data, fileName)
               }
@@ -486,7 +497,7 @@
       // 作业重启
       handleRestartJob(id) {
         this.$confirm({
-          title: '确定重启作业？',
+          title: '确定重启此执行记录？',
           loading: true,
           okType: 'danger',
           onOk: () => {
