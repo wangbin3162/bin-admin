@@ -1,6 +1,6 @@
 <template>
   <collapse-transition :appear="appear">
-    <ul :class="classes">
+    <ul :class="classes" v-if="data.nodeType&&data.nodeType!=='bottom'">
       <li>
         <div :class="nodeClass">
           <span :class="arrowClasses" @click="handleExpand">
@@ -15,14 +15,27 @@
           <span :class="titleClasses">{{ data.title }}</span>
         </div>
         <template v-if="data.expand">
-          <tree-node
-            :appear="appearByClickArrow"
-            v-for="(item, i) in children"
-            :key="i"
-            :data="item"
-            :show-checkbox="showCheckbox"
-            :children-key="childrenKey">
-          </tree-node>
+          <template v-if="children.length>0&&children[0].nodeType!=='bottom'">
+            <tree-node
+              :appear="appearByClickArrow"
+              v-for="(item, i) in children"
+              :key="i"
+              :data="item"
+              :show-checkbox="showCheckbox"
+              :children-key="childrenKey">
+            </tree-node>
+          </template>
+          <div v-else class="auth-tree-bottom-wrap">
+            <div class="auth-tree-node auth-tree-node-bottom" v-for="(item, i) in children" :key="i">
+              <b-checkbox
+                v-if="showCheckbox"
+                :value="item.checked"
+                :indeterminate="item.indeterminate"
+                :disabled="item.disabled || item.disableCheckbox"
+                @click.native.prevent="handleCheck"></b-checkbox>
+              <span :class="titleClasses">{{ item.title }}</span>
+            </div>
+          </div>
         </template>
       </li>
     </ul>

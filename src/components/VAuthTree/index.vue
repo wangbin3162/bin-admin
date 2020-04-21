@@ -327,4 +327,12 @@
       }
     }
   }
+  .auth-tree-bottom-wrap {
+    display: inline-block;
+    width: calc(100% - 250px);
+    > .auth-tree-node.auth-tree-node-bottom {
+      display: inline-block;
+      padding: 10px 0 10px 10px;
+    }
+  }
 </style>
