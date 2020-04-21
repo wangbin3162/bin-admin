@@ -24,7 +24,7 @@
           </template>
           <!--角色授权栏-->
           <template v-slot:auth="scope">
-            <b-button @click="handleRoleAuth(scope.row)" type="text">编辑权限</b-button>
+            <b-button :disabled="!havePermission('authorize')" @click="handleRoleAuth(scope.row)" type="text">编辑权限</b-button>
           </template>
           <!--操作栏-->
           <template v-slot:action="scope">
