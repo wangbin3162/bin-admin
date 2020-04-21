@@ -30,12 +30,12 @@
           自动映射
         </b-button>
         <b-button plain type="primary" style="width: 95%;margin: 0 0 5px 0;" @click="handleAdd">
-          移 动
+          手动映射
           <b-icon name="ios-arrow-round-forward"/>
         </b-button>
-        <b-button plain type="danger" style="width: 95%;margin: 0;" @click="cancelAllMap">
+        <b-button plain type="danger" style="width: 95%;margin: 0 0 5px 0;" @click="cancelAllMap">
           <b-icon name="ios-arrow-round-back"/>
-          移 动
+          全部重置
         </b-button>
       </div>
       <!--映射关系-->
@@ -397,11 +397,11 @@
   .info-item-map {
     display: flex;
     .source-res {
-      width: 230px;
+      width: 250px;
       padding-right: 10px;
     }
     .target-res {
-      width: 250px;
+      width: 300px;
     }
     .ctrl {
       width: 120px;

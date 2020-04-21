@@ -182,7 +182,7 @@
         <b-page :total="dirBatchTotal" :current.sync="dirBatchQuery.page" @on-change="handleDirPageChange"></b-page>
       </v-table-wrap>
     </page-header-wrap>
-    <b-modal v-model="detailDialog" title="任务执行记录明细" width="940" :mask-closable="false">
+    <b-modal v-model="detailDialog" title="执行记录详细" width="940" :mask-closable="false">
       <template v-if="batchDetail">
         <div class="status">
           <v-simple-label label="任务状态">
@@ -247,8 +247,8 @@
           { title: '交换类型', slot: 'exchangeType', align: 'center', width: 90 },
           { title: '运行周期', key: 'cronStr' },
           { title: '执行次数', key: 'totalCount', align: 'center', width: 90 },
-          { title: '最近执行时间', key: 'lastRunTime', width: 200 },
-          { title: '最近运行状态', slot: 'lastRunResult', align: 'center', width: 150 },
+          { title: '执行时间(最近)', key: 'lastRunTime', width: 200 },
+          { title: '运行状态(最近)', slot: 'lastRunResult', align: 'center', width: 150 },
           { title: '操作', slot: 'action', width: 120 }
         ],
         availableStatusMap: { available: '有效', notavailable: '无效' }, // 有效状态
@@ -304,7 +304,7 @@
     },
     computed: {
       editTitle() {
-        return '[' + this.resourceName + '] 任务运行监控'
+        return '[' + this.resourceName + ']任务执行记录'
       }
     },
     methods: {
@@ -465,7 +465,6 @@
         api.startTask(id).then(res => {
           if (res.data.code === '0') {
             this.$notice.success({ title: '任务启动成功' })
-            this.handleFilterBatch()
           } else {
             this.$notice.danger({ title: '任务启动失败', desc: res.data.message || '' })
           }

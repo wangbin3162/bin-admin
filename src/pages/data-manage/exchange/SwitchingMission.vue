@@ -110,37 +110,6 @@
           <b-form :model="mission" ref="form" :rules="ruleValidate" label-position="top">
             <b-row :gutter="20">
               <b-col span="6">
-                <b-form-item label="方案名称" prop="cfgName">
-                  <b-input :value="mission.cfgName" readonly/>
-                </b-form-item>
-              </b-col>
-              <b-col span="6">
-                <b-form-item label="方案编码" prop="cfgCode">
-                  <b-input :value="mission.cfgCode" readonly/>
-                </b-form-item>
-              </b-col>
-              <b-col span="6">
-                <b-form-item label="交换策略" prop="strategy">
-                  <b-select v-model="mission.strategy" @on-change="strategyChange" clearable>
-                    <b-option value="increment">增量</b-option>
-                    <b-option value="all">全量</b-option>
-                  </b-select>
-                </b-form-item>
-              </b-col>
-              <b-col span="6">
-                <b-form-item v-if="mission.strategy==='all'" label="是否清除源表" prop="clearSource">
-                  <div style="padding-top: 3px;">
-                    <b-switch v-model="mission.clearSource"
-                              true-value="y" false-value="n">
-                      <span slot="open">是</span>
-                      <span slot="close">否</span>
-                    </b-switch>
-                  </div>
-                </b-form-item>
-              </b-col>
-            </b-row>
-            <b-row :gutter="20">
-              <b-col span="6">
                 <b-form-item v-if="isCollect" label="源资源" prop="nodeTableName">
                   <b-input v-if="dialogStatus === 'modify'" v-model="mission.nodeTableName" disabled/>
                   <data-source-table-choose v-else v-model="mission.nodeTableName"
@@ -170,10 +139,29 @@
                   </data-source-table-choose>
                 </b-form-item>
               </b-col>
+              <b-col span="6">
+                <b-form-item label="交换策略" prop="strategy">
+                  <b-select v-model="mission.strategy" @on-change="strategyChange" clearable>
+                    <b-option value="increment">增量</b-option>
+                    <b-option value="all">全量</b-option>
+                  </b-select>
+                </b-form-item>
+              </b-col>
+              <b-col span="6">
+                <b-form-item v-if="mission.strategy==='all'" label="是否清除源表" prop="clearSource">
+                  <div style="padding-top: 3px;">
+                    <b-switch v-model="mission.clearSource"
+                              true-value="y" false-value="n">
+                      <span slot="open">是</span>
+                      <span slot="close">否</span>
+                    </b-switch>
+                  </div>
+                </b-form-item>
+              </b-col>
             </b-row>
-            <b-form-item label="交换参数" prop="sqlParameter">
+            <!-- <b-form-item label="交换参数" prop="sqlParameter">
               <b-input type="textarea" v-model="mission.sqlParameter" placeholder="交换sql where条件"/>
-            </b-form-item>
+            </b-form-item> -->
             <v-title-bar label="信息项映射" class="mb-15"></v-title-bar>
             <info-item-map :one-list="oneFields" :two-list="twoFields"
                            :value="mission.itemMap" @on-change="handleItemMap">
