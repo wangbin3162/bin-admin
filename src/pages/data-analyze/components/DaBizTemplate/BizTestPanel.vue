@@ -84,6 +84,7 @@
       },
       close() {
         this.visible = false
+        this.result = null
         this.$emit('on-close')
       },
       reset() {

@@ -93,38 +93,10 @@ export function getFuncTree(roleId) {
   })
 }
 
-/* 分页查询权限列表 */
-export function getFuncList(query) {
-  return request({
-    url: '/management/role/function/queryFunctions',
-    method: 'get',
-    params: {
-      size: query.size,
-      page: query.page - 1,
-      roleId: query.roleId,
-      functionId: query.functionId,
-      name: query.name,
-      sort: 'sortNum'
-    }
-  })
-}
-
 /* 批量授权 */
 export function createAuth(roleId, functionIds) {
   return request({
     url: '/management/role/function/batchAuthorize',
-    method: 'post',
-    data: functionIds, // id的数组
-    params: {
-      roleId: roleId
-    }
-  })
-}
-
-/* 批量取消授权 */
-export function removeAuth(roleId, functionIds) {
-  return request({
-    url: '/management/role/function/batchRemove',
     method: 'post',
     data: functionIds, // id的数组
     params: {
