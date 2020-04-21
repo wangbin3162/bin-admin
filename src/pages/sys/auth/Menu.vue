@@ -39,6 +39,7 @@
           <template v-slot:delFlag="scope">
             <b-switch v-model="scope.row.delFlag" :true-value="ENUM.N" :false-value="ENUM.Y"
                       inactive-color="#ff4949"
+                      :disabled="isSysOrMenu(scope.row.path)"
                       @on-change="handleChangeDelFlag(scope.row)">
             </b-switch>
           </template>
@@ -344,6 +345,10 @@
             this.$message({ type: 'danger', content: '操作失败' })
           }
         })
+      },
+      // 禁用系统管理，授权管理，菜单管理三个状态控制
+      isSysOrMenu(path) {
+        return ['/sys', '/sys/auth', '/sys/auth/menu'].indexOf(path) > -1
       },
       /* [动作菜单操作相关] */
       // 初始化4个基本动作菜单
