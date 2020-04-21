@@ -46,14 +46,14 @@
           <!--操作栏-->
           <template v-slot:action="scope">
             <!--如果可编辑且是禁用（可删除即为禁用）状态下不可编辑-->
-            <b-button :disabled="canModify && scope.row.delFlag===ENUM.Y"
-                      type="text" @click="handleModify(scope.row)">
+            <b-button :disabled="!canModify" type="text" @click="handleModify(scope.row)">
               修改
             </b-button>
             <!--是否有删除键-->
-            <template v-if="canRemove && scope.row.delFlag===ENUM.Y">
+            <template v-if="scope.row.delFlag===ENUM.Y">
               <b-divider type="vertical"></b-divider>
-              <b-button type="text" text-color="danger" @click="handleRemove(scope.row)">删除</b-button>
+              <b-button :disabled="!canRemove" type="text" text-color="danger" @click="handleRemove(scope.row)">删除
+              </b-button>
             </template>
           </template>
         </b-table>

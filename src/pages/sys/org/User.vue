@@ -26,7 +26,9 @@
         <!--操作栏-->
         <v-table-tool-bar>
           <b-button v-if="canCreate" type="primary" icon="ios-add-circle-outline" @click="handleCreate">新 增</b-button>
-          <v-batch-import v-if="havePermission('import')" :module-name="batchType" :current-tree-node="currentTreeNode">批量导入</v-batch-import>
+          <v-batch-import v-if="havePermission('import')" :module-name="batchType" :current-tree-node="currentTreeNode">
+            批量导入
+          </v-batch-import>
           <div slot="right">
             <template v-if="havePermission('download')">
               <v-download-template :module-name="batchType">模板下载</v-download-template>
@@ -46,9 +48,10 @@
           </template>
           <!--操作栏-->
           <template v-slot:reset="scope">
-            <template v-if="canModify">
-              <b-button type="text" @click="handleResetPwd(scope.row)" :disabled="!havePermission('resetPwd')">重置密码</b-button>
-            </template>
+            <b-button type="text" @click="handleResetPwd(scope.row)"
+                      :disabled="!havePermission('resetPwd')">
+              重置密码
+            </b-button>
           </template>
           <!--状态-->
           <template v-slot:status="scope">
@@ -63,14 +66,14 @@
           <!--操作栏-->
           <template v-slot:action="scope">
             <!--如果可编辑且是禁用（可删除即为禁用）状态下不可编辑-->
-            <b-button :disabled="canModify && scope.row.status===ENUM.DISABLE"
-                      type="text" @click="handleModify(scope.row)">
+            <b-button :disabled="!canModify" type="text" @click="handleModify(scope.row)">
               修改
             </b-button>
             <!--是否有删除键-->
-            <template v-if="canRemove && scope.row.status===ENUM.DISABLE">
+            <template v-if="scope.row.status===ENUM.DISABLE">
               <b-divider type="vertical"></b-divider>
-              <b-button type="text" text-color="danger" @click="handleRemove(scope.row)">删除</b-button>
+              <b-button :disabled="!canRemove" type="text" text-color="danger" @click="handleRemove(scope.row)">删除
+              </b-button>
             </template>
           </template>
         </b-table>
@@ -384,7 +387,8 @@
             this.$message({ type: 'success', content: '操作成功' })
             // this.handleFilter()
           } else {
-            this.$message({ type: 'danger', content: '操作失败' })
+            this.$notice.danger({ title: '操作失败', desc: res.data.message })
+            this.handleFilter()
           }
         })
       },
