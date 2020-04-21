@@ -207,14 +207,16 @@ export function checkResCodeExist(id, code) {
 export function queryExtSyncEnum() {
   let syncType = request.get('/api/enum/dir/ext/syncType')
   let syncCategory = request.get('/api/enum/dir/ext/syncCategory ')
-  let syncConcatenate = request.get('/api/enum/dir/ext/syncConcatenate')
+  let syncValType = request.get('/api/enum/dir/ext/syncValType')
+  let syncOp = request.get('/api/enum/dir/ext/syncOp')
   return new Promise((resolve, reject) => {
-    Promise.all([syncType, syncCategory, syncConcatenate]).then(res => {
-      if (res[0].data.code === '0' && res[1].data.code === '0' && res[2].data.code === '0') {
+    Promise.all([syncType, syncCategory, syncValType, syncOp]).then(res => {
+      if (res[0].data.code === '0' && res[1].data.code === '0' && res[2].data.code === '0' && res[3].data.code === '0') {
         resolve({
           type: res[0].data.data,
           category: res[1].data.data,
-          concatenate: res[2].data.data
+          valType: res[2].data.data,
+          condition: res[3].data.data
         })
       } else {
         resolve({

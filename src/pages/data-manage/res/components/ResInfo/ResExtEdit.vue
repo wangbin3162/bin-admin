@@ -103,7 +103,8 @@
                       :sync-type="sync.syncType"
                       :target-fields="targetFields"
                       :source-fields="items"
-                      :concatenate-options="syncEnum.concatenate"/>
+                      :val-type-options="syncEnum.valType"
+                      :condition-options="syncEnum.condition"/>
         </template>
         <!--保存提交-->
         <template slot="footer">
@@ -151,7 +152,8 @@
         syncEnum: {
           type: {},
           category: {},
-          concatenate: {}
+          valType: {},
+          condition: {}
         },
         syncRules: {
           targetName: [{ required: true, message: '目标资源必选', trigger: 'change' }],
@@ -222,6 +224,35 @@
         this.targetFields = item.fields
         this.sync.targetName = item.resourceName
         this.sync.items = []
+
+        let hasMapList = this.sync.syncType === 'A' || this.sync.syncType === 'M'
+        let hasConditionList = this.sync.syncType === 'M' || this.sync.syncType === 'D'
+        // 默认增加一条
+        if (hasMapList) {
+          this.sync.items.push({
+            targetField: '',
+            sourceField: '',
+            category: 'M',
+            valType: 'S',
+            paramName: '',
+            paramValue: '',
+            edit: true,
+            newOne: true
+          })
+        }
+        if (hasConditionList) {
+          this.sync.items.push({
+            targetField: '',
+            sourceField: '',
+            category: 'C',
+            valType: 'S',
+            paramName: '',
+            paramValue: '',
+            condition: '',
+            edit: true,
+            newOne: true
+          })
+        }
       },
       // 修改关联同步
       handleModify(row) {
@@ -293,7 +324,7 @@
       },
       // 验证是否有未添加的
       checkNewOne() {
-        return this.sync.items.reduce((total, current) => current.newOne, false)
+        return this.sync.items.reduce((total, current) => current.newOne || current.edit, false)
       },
       // 重置关联同步对象
       resetSync() {

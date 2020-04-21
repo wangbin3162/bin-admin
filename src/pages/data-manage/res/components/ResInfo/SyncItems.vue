@@ -3,29 +3,44 @@
     <div v-if="hasMapList">
       <v-title-bar label="配置映射" class="mb-15"/>
       <b-table disabled-hover :data="mapList" :columns="mapColumns" size="small">
+        <!--目标信息项-->
         <template v-slot:targetField="{row,index}">
           <b-select v-if="row.edit" v-model="mapList[index].targetField" size="small" append-to-body clearable>
-            <b-option v-for="item in targetFields"
-                      :key="item.fieldName" :value="item.fieldName">{{item.fieldName}}
-            </b-option>
+            <b-option v-for="item in targetFieldsOptions" :key="item" :value="item">{{item}}</b-option>
           </b-select>
           <span v-else>{{ row.targetField }}</span>
         </template>
-        <template v-slot:sourceField="{row,index}">
-          <b-select v-if="row.edit" v-model="mapList[index].sourceField" size="small" append-to-body clearable>
-            <b-option v-for="item in sourceFields"
-                      :key="item.fieldName" :value="item.fieldName">{{item.fieldName}}
-            </b-option>
+        <!--值选项-->
+        <template v-slot:valType="{row,index}">
+          <b-select v-if="row.edit" v-model="mapList[index].valType" size="small" append-to-body>
+            <b-option v-for="(o,k) in valTypeOptions" :key="k" :value="k">{{ o }}</b-option>
           </b-select>
-          <span v-else>{{ row.sourceField }}</span>
+          <span v-else>{{ valTypeOptions[row.valType] }}</span>
         </template>
-        <template v-slot:paramName="{row,index}">
-          <b-input v-if="row.edit" v-model="mapList[index].paramName" size="small" clearable/>
-          <span v-else>{{ row.paramName }}</span>
-        </template>
-        <template v-slot:paramValue="{row,index}">
-          <b-input v-if="row.edit" v-model="mapList[index].paramValue" size="small" clearable/>
-          <span v-else>{{ row.paramValue }}</span>
+        <!--值-->
+        <template v-slot:value="{row,index}">
+          <!--选择源字段-->
+          <template v-if="row.valType==='S'">
+            <b-select v-if="row.edit" v-model="mapList[index].sourceField" size="small"
+                      append-to-body clearable style="width: 200px;">
+              <b-option v-for="item in sourceFieldsOptions" :key="item" :value="item">{{item}}</b-option>
+            </b-select>
+            <span v-else>名称：{{ row.sourceField }}</span>
+          </template>
+          <template v-else>
+            <b-row :gutter="10" v-if="row.edit">
+              <b-col span="10">
+                <b-input v-model="mapList[index].paramName" size="small" clearable placeholder="名称"/>
+              </b-col>
+              <b-col span="14">
+                <b-input v-model="mapList[index].paramValue" size="small" clearable placeholder="常量值"/>
+              </b-col>
+            </b-row>
+            <div v-else>
+              名称：<span>{{ row.paramName }}</span>&nbsp;&nbsp;
+              常量值：<span>{{ row.paramValue }}</span>
+            </div>
+          </template>
         </template>
         <template v-slot:action="{row,index}">
           <div v-if="row.newOne">
@@ -56,39 +71,54 @@
     <div v-if="hasConditionList">
       <v-title-bar label="关联条件" class="mb-15"/>
       <b-table disabled-hover :data="conditionList" :columns="conditionColumns" size="small">
+        <!--目标信息项-->
         <template v-slot:targetField="{row,index}">
           <b-select v-if="row.edit" v-model="conditionList[index].targetField" size="small" append-to-body clearable>
-            <b-option v-for="item in targetFields"
-                      :key="item.fieldName" :value="item.fieldName">{{item.fieldName}}
+            <b-option v-for="(item,index) in targetFields"
+                      :key="item.fieldName+'-'+index" :value="item.fieldName">{{item.fieldName}}
             </b-option>
           </b-select>
           <span v-else>{{ row.targetField }}</span>
         </template>
-        <template v-slot:sourceField="{row,index}">
-          <b-select v-if="row.edit" v-model="conditionList[index].sourceField" size="small" append-to-body clearable>
-            <b-option v-for="item in sourceFields"
-                      :key="item.fieldName" :value="item.fieldName">{{item.fieldName}}
-            </b-option>
+        <!--值选项-->
+        <template v-slot:valType="{row,index}">
+          <b-select v-if="row.edit" v-model="conditionList[index].valType" size="small" append-to-body>
+            <b-option v-for="(o,k) in valTypeOptions" :key="k" :value="k">{{ o }}</b-option>
           </b-select>
-          <span v-else>{{ row.sourceField }}</span>
+          <span v-else>{{ valTypeOptions[row.valType] }}</span>
         </template>
-        <template v-slot:paramName="{row,index}">
-          <b-input v-if="row.edit" v-model="conditionList[index].paramName" size="small" clearable/>
-          <span v-else>{{ row.paramName }}</span>
+        <!--值-->
+        <template v-slot:value="{row,index}">
+          <!--选择源字段-->
+          <template v-if="row.valType==='S'">
+            <b-select v-if="row.edit" v-model="conditionList[index].sourceField" size="small"
+                      append-to-body clearable style="width: 200px;">
+              <b-option v-for="item in sourceFieldsOptions" :key="item" :value="item">{{item}}</b-option>
+            </b-select>
+            <span v-else>名称：{{ row.sourceField }}</span>
+          </template>
+          <template v-else>
+            <b-row :gutter="10" v-if="row.edit">
+              <b-col span="10">
+                <b-input v-model="conditionList[index].paramName" size="small" clearable placeholder="名称"/>
+              </b-col>
+              <b-col span="14">
+                <b-input v-model="conditionList[index].paramValue" size="small" clearable placeholder="常量值"/>
+              </b-col>
+            </b-row>
+            <div v-else>
+              名称：<span>{{ row.paramName }}</span>&nbsp;&nbsp;
+              常量值：<span>{{ row.paramValue }}</span>
+            </div>
+          </template>
         </template>
-        <template v-slot:paramValue="{row,index}">
-          <b-input v-if="row.edit" v-model="conditionList[index].paramValue" size="small" clearable/>
-          <span v-else>{{ row.paramValue }}</span>
-        </template>
+        <!--条件-->
         <template v-slot:condition="{row,index}">
-          <b-input v-if="row.edit" v-model="conditionList[index].condition" size="small" clearable/>
-          <span v-else>{{ row.condition }}</span>
-        </template>
-        <template v-slot:concatenate="{row,index}">
-          <b-select v-if="row.edit" v-model="conditionList[index].concatenate" size="small" append-to-body>
-            <b-option v-for="(o,k) in concatenateOptions" :key="k" :value="k">{{ o }}</b-option>
+          <b-select v-if="row.edit" v-model="conditionList[index].condition" size="small"
+                    append-to-body clearable>
+            <b-option v-for="(value,k) in conditionOptions" :key="k" :value="k">{{value}}</b-option>
           </b-select>
-          <span v-else>{{ row.concatenate }}</span>
+          <span v-else>{{ conditionOptions[row.condition] }}</span>
         </template>
         <template v-slot:action="{row,index}">
           <div v-if="row.newOne">
@@ -147,7 +177,13 @@
           return []
         }
       },
-      concatenateOptions: { // 连接方式枚举值
+      valTypeOptions: {
+        type: Object,
+        default() {
+          return {}
+        }
+      },
+      conditionOptions: { // 条件枚举
         type: Object,
         default() {
           return {}
@@ -159,20 +195,17 @@
         mapColumns: [
           { type: 'index', width: 50, align: 'center' },
           { title: '目标信息项', slot: 'targetField', width: 150 },
-          { title: '源信息项', slot: 'sourceField', width: 150 },
-          { title: '参数名称', slot: 'paramName' },
-          { title: '参数值', slot: 'paramValue' },
+          { title: '值选项', slot: 'valType', width: 150 },
+          { title: '值', slot: 'value' },
           { title: '操作', slot: 'action', width: 150 }
         ],
         mapList: [], // 配置映射列表
         conditionColumns: [
           { type: 'index', width: 50, align: 'center' },
           { title: '目标信息项', slot: 'targetField', width: 150 },
-          { title: '源信息项', slot: 'sourceField', width: 150 },
-          { title: '参数名称', slot: 'paramName' },
-          { title: '参数值', slot: 'paramValue' },
-          { title: '条件', slot: 'condition' },
-          { title: '连接方式', slot: 'concatenate', width: 120 },
+          { title: '值选项', slot: 'valType', width: 150 },
+          { title: '值', slot: 'value' },
+          { title: '条件', slot: 'condition', width: 150 },
           { title: '操作', slot: 'action', width: 150 }
         ],
         conditionList: [] // 关联条件列表
@@ -186,6 +219,13 @@
       // 是否有关联条件
       hasConditionList() {
         return this.syncType === 'M' || this.syncType === 'D'
+      },
+      // 数组去重
+      targetFieldsOptions() {
+        return [...new Set(this.targetFields.map(i => i.fieldName))]
+      },
+      sourceFieldsOptions() {
+        return [...new Set(this.sourceFields.map(i => i.fieldName))]
       }
     },
     watch: {
@@ -219,6 +259,7 @@
           targetField: '',
           sourceField: '',
           category: type,
+          valType: 'S',
           paramName: '',
           paramValue: '',
           edit: false,
@@ -229,7 +270,7 @@
           this.mapList.push(newRow)
           this.handleEdit(this.mapList.length - 1, type)
         } else { // 添加关联条件
-          this.conditionList.push({ ...newRow, condition: '', concatenate: 'AND' })
+          this.conditionList.push({ ...newRow, condition: '' })
           this.handleEdit(this.conditionList.length - 1, type)
         }
         this.emitValue()
@@ -243,6 +284,14 @@
         }
       },
       handleCancel(index, type) {
+        if (this.mapList.length === 1) {
+          this.$message({ type: 'danger', content: '[配置映射]至少需要配置一条数据' })
+          return
+        }
+        if (this.conditionList.length === 1) {
+          this.$message({ type: 'danger', content: '[关联条件]至少需要配置一条数据' })
+          return
+        }
         if (type === 'M') {
           if (this.mapList[index].newOne) { // 如果当前是新增未保存的则取消即为移除
             this.mapList.splice(index, 1)
@@ -262,18 +311,25 @@
             this.emitValue() // 移除后需要更新
           } else { // 编辑的则设置取消
             // 从value里获取当前行恢复
-            const { targetField, sourceField, paramName, paramValue, condition, concatenate } = this.conditionListCopy[index]
+            const { targetField, sourceField, paramName, paramValue, condition } = this.conditionListCopy[index]
             this.conditionList[index].targetField = targetField
             this.conditionList[index].sourceField = sourceField
             this.conditionList[index].paramName = paramName
             this.conditionList[index].paramValue = paramValue
             this.conditionList[index].condition = condition
-            this.conditionList[index].concatenate = concatenate
             this.conditionList[index].edit = false
           }
         }
       },
       handleRemove(index, type) {
+        if (this.mapList.length === 1) {
+          this.$message({ type: 'danger', content: '[配置映射]至少需要配置一条数据' })
+          return
+        }
+        if (this.conditionList.length === 1) {
+          this.$message({ type: 'danger', content: '[关联条件]至少需要配置一条数据' })
+          return
+        }
         // 清除一个未保存的项
         if (type === 'M') {
           this.mapList.splice(index, 1)
@@ -283,10 +339,24 @@
         this.emitValue()
       },
       handleSave(row, index, type) {
+        // 判断校验条件
         if (row.targetField.length === 0) {
           this.$message({ type: 'danger', content: '目标信息项必选' })
           return
         }
+        if (row.valType === 'S' && row.sourceField.length === 0) {
+          this.$message({ type: 'danger', content: '源信息值必选' })
+          return
+        }
+        if (row.valType === 'N' && (row.paramName.length === 0 || row.paramValue.length === 0)) {
+          this.$message({ type: 'danger', content: '常量名称和值必填' })
+          return
+        }
+        if (type === 'C' && row.condition.length === 0) {
+          this.$message({ type: 'danger', content: '关联条件必选' })
+          return
+        }
+        // 判断条件结束，更新状态
         if (type === 'M') {
           this.mapList[index].edit = false
           this.mapList[index].newOne = false
@@ -299,11 +369,20 @@
       // 更新model value
       emitValue() {
         let totalData = [
-          ...this.mapList.map((map, i) => ({ ...map, sortNum: i })),
-          ...this.conditionList.map((map, i) => ({ ...map, sortNum: i }))
+          ...this.mapList.map(this.valueMap),
+          ...this.conditionList.map(this.valueMap)
         ]
         this.$emit('input', totalData)
         this.$emit('on-change', totalData)
+      },
+      valueMap(item, index) {
+        let obj = { ...item }
+        if (obj.valType === 'S') {
+          obj.paramName = obj.paramValue = ''
+        } else {
+          obj.sourceField = ''
+        }
+        return { ...obj, sortNum: index }
       }
     }
   }
