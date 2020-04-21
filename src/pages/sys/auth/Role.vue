@@ -28,7 +28,9 @@
           </template>
           <!--操作栏-->
           <template v-slot:action="scope">
-            <b-button :disabled="!canModify || !isAdmin" type="text" @click="handleModify(scope.row)">修改
+            <!-- <b-button :disabled="!canModify || !isAdmin" type="text" @click="handleModify(scope.row)">修改
+            </b-button> -->
+            <b-button :disabled="!canModifyImpl" type="text" @click="handleModify(scope.row)">修改
             </b-button>
             <!--是否有删除键-->
             <template v-if="canRemove && scope.row.roleType===ENUM.S">
@@ -172,6 +174,15 @@
     },
     computed: {
       ...mapGetters(['roles']),
+      canModifyImpl () {
+        let res = false;
+        if (this.isAdmin) {
+          res = true
+        } else if (this.canModify) {
+          res = true
+        }
+        return res
+      },
       isAdmin() {
         return this.roles.includes('ROLE_ADMIN')
       },
