@@ -26,13 +26,17 @@
         <!--操作栏-->
         <v-table-tool-bar>
           <b-button v-if="canCreate" type="primary" icon="ios-add-circle-outline" @click="handleCreate">新 增</b-button>
-          <v-batch-import :module-name="batchType" :current-tree-node="currentTreeNode">批量导入</v-batch-import>
+          <v-batch-import v-if="havePermission('import')" :module-name="batchType" :current-tree-node="currentTreeNode">批量导入</v-batch-import>
           <div slot="right">
-            <v-download-template :module-name="batchType">模板下载</v-download-template>
-            <b-divider type="vertical"></b-divider>
-            <v-batch-export :module-name="batchType" :current-tree-node="currentTreeNode">导出</v-batch-export>
-            <b-divider type="vertical"></b-divider>
-            <b-button type="text" @click="handleOpenRecordDialog">导入/导出记录</b-button>
+            <template v-if="havePermission('download')">
+              <v-download-template :module-name="batchType">模板下载</v-download-template>
+              <b-divider type="vertical"></b-divider>
+            </template>
+            <template v-if="havePermission('export')">
+              <v-batch-export :module-name="batchType" :current-tree-node="currentTreeNode">导出</v-batch-export>
+              <b-divider type="vertical"></b-divider>
+            </template>
+            <b-button v-if="havePermission('records')" type="text" @click="handleOpenRecordDialog">导入/导出记录</b-button>
           </div>
         </v-table-tool-bar>
         <!--中央表格-->
@@ -43,7 +47,7 @@
           <!--操作栏-->
           <template v-slot:reset="scope">
             <template v-if="canModify">
-              <b-button type="text" @click="handleResetPwd(scope.row)">重置密码</b-button>
+              <b-button type="text" @click="handleResetPwd(scope.row)" :disabled="!havePermission('resetPwd')">重置密码</b-button>
             </template>
           </template>
           <!--状态-->
@@ -52,7 +56,8 @@
             <b-switch v-else
                       v-model="scope.row.status" :true-value="ENUM.ENABLE" :false-value="ENUM.DISABLE"
                       inactive-color="#ff4949"
-                      @on-change="handleChangeStatus(scope.row)">
+                      @on-change="handleChangeStatus(scope.row)"
+                      :disabled="!havePermission('changeStatus')">
             </b-switch>
           </template>
           <!--操作栏-->
