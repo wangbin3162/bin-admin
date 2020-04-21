@@ -66,21 +66,18 @@
               修改
             </b-button>
             <b-divider type="vertical"/>
-            <b-dropdown trigger="click" append-to-body>
+            <b-dropdown append-to-body @on-click="(name)=>{handleCommand(name,row)}">
               <b-button type="text">更多
                 <b-icon name="ios-arrow-down"/>
               </b-button>
               <b-dropdown-menu slot="list">
-                <b-dropdown-item v-if="row.status==='edit'" :style="colorSuccess"
-                                 @click.native="handlePublish(row)">
+                <b-dropdown-item v-if="row.status==='edit'" :style="colorSuccess" name="publish">
                   发布
                 </b-dropdown-item>
-                <b-dropdown-item v-if="row.status==='audited'" :style="colorWarning"
-                                 @click.native="handleCheckRes(row)">
+                <b-dropdown-item v-if="row.status==='audited'" :style="colorWarning" name="test">
                   示例数据
                 </b-dropdown-item>
-                <b-dropdown-item v-if="canRemove" divided :style="colorDanger"
-                                 @click.native="handleRemove(row)">
+                <b-dropdown-item :disabled="!canRemove" :style="colorDanger" name="remove">
                   删除
                 </b-dropdown-item>
               </b-dropdown-menu>
@@ -411,6 +408,20 @@
           this.openEditPage('modify')
         })
       },
+      // 更多操作点击事件
+      handleCommand(name, row) {
+        switch (name) {
+          case 'publish':
+            this.handlePublish(row)
+            break
+          case 'test':
+            this.handleCheckRes(row)
+            break
+          case 'remove':
+            this.handleRemove(row)
+            break
+        }
+      },
       // 弹窗提示是否删除
       handleRemove(row) {
         let res = { ...row }
@@ -451,6 +462,20 @@
                 this.$notice.danger({ title: '操作错误', desc: res.data.message })
               }
             })
+          }
+        })
+      },
+      // 根据resourceKey查看动态渲染列表
+      handleCheckRes(row) {
+        // 根据resourceKey获取资源信息，并将原始表头信息传入gather-list组件
+        getResourceInfo(row.resourceKey).then(res => {
+          if (res.status === 200) {
+            let detail = res.data.data
+            if (detail && detail.items) {
+              let columns = detail.items.filter(i => i.id)
+              this.dialogStatus = 'testForm'
+              this.$refs.testForm.open(detail, columns)
+            }
           }
         })
       },
@@ -595,20 +620,6 @@
                 this.$notice.danger({ title: '操作错误', desc: res.data.message })
               }
             })
-          }
-        })
-      },
-      // 根据resourceKey查看动态渲染列表
-      handleCheckRes(resource) {
-        // 根据resourceKey获取资源信息，并将原始表头信息传入gather-list组件
-        getResourceInfo(resource.resourceKey).then(res => {
-          if (res.status === 200) {
-            let detail = res.data.data
-            if (detail && detail.items) {
-              let columns = detail.items.filter(i => i.id)
-              this.dialogStatus = 'testForm'
-              this.$refs.testForm.open(detail, columns)
-            }
           }
         })
       },

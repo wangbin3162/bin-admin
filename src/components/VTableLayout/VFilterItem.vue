@@ -79,6 +79,7 @@
     font-size: 14px;
     font-variant: tabular-nums;
     line-height: 39.9999px;
+    height: 40px;
     list-style: none;
     font-feature-settings: "tnum";
     margin: 0 0 15px;

@@ -108,12 +108,12 @@
           <!--操作栏-->
           <template v-slot:action="{row}">
             <b-tooltip content="任务执行记录" theme="light" max-width="200" style="padding-top: 3px;">
-              <b-icon name="ios-list-box" size="20" :style="{...colorPrimary,cursor:'pointer'}"
-                      @click.native="handleCheck(row)"/>
+              <b-button type="text" icon="ios-list-box"
+                        :icon-style="{fontSize:'20px'}" @click="handleCheck(row)"/>
             </b-tooltip>&nbsp;
             <b-tooltip content="任务启动" theme="light" max-width="200" style="padding-top: 3px;">
-              <b-icon name="ios-play-circle" size="20" :style="startTaskStyle"
-                      @click.native="handleStartTask(row.id)"/>
+              <b-button text-color="success" type="text" icon="ios-play-circle"
+                        :icon-style="{fontSize:'20px'}" @click="handleStartTask(row.id)"/>
             </b-tooltip>
           </template>
         </b-table>
@@ -165,16 +165,16 @@
           </template>
           <template #action="{row}">
             <b-tooltip content="记录明细" theme="light" max-width="200" style="padding-top: 3px;">
-              <b-icon name="ios-filing" size="20" :style="{...colorPrimary,cursor:'pointer'}"
-                      @click.native="handleCheckDetail(row)"/>
+              <b-button type="text" icon="ios-filing"
+                        :icon-style="{fontSize:'20px'}" @click="handleCheckDetail(row.id)"/>
             </b-tooltip>&nbsp;
             <b-tooltip content="清理" theme="light" max-width="200" style="padding-top: 3px;">
-              <b-icon name="ios-close-circle" size="20" :style="clearJobStyle"
-                      @click.native="handleClearJob(row.id)"/>
+              <b-button type="text" icon="ios-close-circle" text-color="warning"
+                        :icon-style="{fontSize:'20px'}" @click="handleClearJob(row.id)"/>
             </b-tooltip>&nbsp;
             <b-tooltip content="重启" theme="light" max-width="200" style="padding-top: 3px;">
-              <b-icon name="ios-refresh-circle" size="20" :style="restartJobStyle"
-                      @click.native="handleRestartJob(row.id)"/>
+              <b-button type="text" icon="ios-refresh-circle" text-color="danger"
+                        :icon-style="{fontSize:'20px'}" @click="handleRestartJob(row.id)"/>
             </b-tooltip>
           </template>
         </b-table>
@@ -254,7 +254,13 @@
         availableStatusMap: { available: '有效', notavailable: '无效' }, // 有效状态
         lastJobStatusMap: { COMPLETED: '成功', FAILED: '失败', RUNNING: '运行中' },
         jobStatusMap: { COMPLETED: '完成', FAILED: '失败', STARTED: '运行中', REPEATING: '重复校验' }, //  任务状态
-        statusStyleMap: { COMPLETED: 'success', STARTED: 'primary', FAILED: 'danger', REPEATING: 'warning', RUNNING: 'warning' },
+        statusStyleMap: {
+          COMPLETED: 'success',
+          STARTED: 'primary',
+          FAILED: 'danger',
+          REPEATING: 'warning',
+          RUNNING: 'warning'
+        },
         exchangeTypeMap: { MANUAL: '人工交换', AUTO: '自动交换' },
         flowDirectionMap: { collect: '归集', submit: '上报', share: '共享' },
         analysisMap: {
@@ -299,15 +305,6 @@
     computed: {
       editTitle() {
         return '[' + this.resourceName + '] 任务运行监控'
-      },
-      startTaskStyle() {
-        return { ...this.colorSuccess, cursor: 'pointer' }
-      },
-      clearJobStyle() {
-        return { ...this.colorWarning, cursor: 'pointer' }
-      },
-      restartJobStyle() {
-        return { ...this.colorDanger, cursor: 'pointer' }
       }
     },
     methods: {

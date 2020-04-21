@@ -35,7 +35,7 @@
                   </b-checkbox>
                 </b-checkbox-group>
                 <div class="t-right p5">
-                  <b-button @click="visible=false">关闭</b-button>
+                  <b-button @click="visible=false" type="primary" size="mini">关闭</b-button>
                 </div>
               </b-dropdown-menu>
             </b-dropdown>

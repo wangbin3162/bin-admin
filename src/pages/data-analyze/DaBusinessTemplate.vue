@@ -23,20 +23,23 @@
         <!--中央表格-->
         <b-table :columns="columns" :data="list" :loading="listLoading">
           <!--操作栏-->
-          <template v-slot:action="scope">
-            <b-dropdown append-to-body>
-              <b-button type="text">操作
+          <template v-slot:action="{row}">
+            <b-button :disabled="!canModify" type="text" @click="handleModify(row)">
+              修改
+            </b-button>
+            <b-divider type="vertical"/>
+            <b-dropdown append-to-body @on-click="(name)=>{handleCommand(name,row)}">
+              <b-button type="text">更多
                 <b-icon name="ios-arrow-down"/>
               </b-button>
               <b-dropdown-menu slot="list">
-                <b-dropdown-item :disabled="!canModify" :style="colorPrimary"
-                                 @click.native="handleModify(scope.row)">
-                  修改
+                <b-dropdown-item :style="colorSuccess" name="cfg">
+                  配置响应
                 </b-dropdown-item>
-                <b-dropdown-item :style="colorWarning" @click.native="handleConfig(scope.row)">配置响应</b-dropdown-item>
-                <b-dropdown-item :style="colorWarning" @click.native="handleTest(scope.row)">测试</b-dropdown-item>
-                <b-dropdown-item :disabled="!canRemove" divided :style="colorDanger"
-                                 @click.native="handleRemove(scope.row)">
+                <b-dropdown-item :style="colorWarning" name="test">
+                  测试
+                </b-dropdown-item>
+                <b-dropdown-item :disabled="!canRemove" :style="colorDanger" name="remove">
                   删除
                 </b-dropdown-item>
               </b-dropdown-menu>
@@ -204,6 +207,20 @@
           size: 10,
           tempName: '',
           tempCode: ''
+        }
+      },
+      // 更多操作点击事件
+      handleCommand(name, row) {
+        switch (name) {
+          case 'cfg':
+            this.handleConfig(row)
+            break
+          case 'test':
+            this.handleTest(row)
+            break
+          case 'remove':
+            this.handleRemove(row)
+            break
         }
       },
       // 查看配置响应信息

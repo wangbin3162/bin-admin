@@ -7,7 +7,8 @@
           <b-row :gutter="20">
             <b-col span="12">
               <v-title-bar label="基础参数" class="mb-20"/>
-              <b-form :model="form" ref="form" :label-width="100">
+              <b-empty v-if="params.length===0">没有配置参数</b-empty>
+              <b-form v-else :model="form" ref="form" :label-width="100">
                 <b-form-item v-for="item in params" :key="item.paramCode"
                              :label="item.paramName" :prop="item.paramCode"
                              :rules="{ required: true, message: `${item.paramName}不能为空`, trigger: 'blur' }">
