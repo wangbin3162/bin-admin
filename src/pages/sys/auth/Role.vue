@@ -175,7 +175,7 @@
     computed: {
       ...mapGetters(['roles']),
       canModifyImpl () {
-        let res = false;
+        let res = false
         if (this.isAdmin) {
           res = true
         } else if (this.canModify) {
