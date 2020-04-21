@@ -15,15 +15,15 @@
         </v-filter-bar>
         <!--操作栏-->
         <v-table-tool-bar>
-          <b-button v-if="canCreate" type="primary" icon="ios-add-circle-outline" @click="handleCreate">新 增</b-button>
+          <b-button v-if="havePermission('dictItemCreate')" type="primary" icon="ios-add-circle-outline" @click="handleCreate">新 增</b-button>
         </v-table-tool-bar>
         <!--中央表格-->
         <b-table :columns="columns" :data="list" :loading="listLoading">
           <!--操作栏-->
           <template v-slot:action="scope">
-            <b-button :disabled="!canModify" type="text" @click="handleModify(scope.row)">修改</b-button>
+            <b-button :disabled="!havePermission('dictItemModify')" type="text" @click="handleModify(scope.row)">修改</b-button>
             <!--是否有删除键-->
-            <template v-if="canRemove">
+            <template v-if="havePermission('dictItemRemove')">
               <b-divider type="vertical"></b-divider>
               <b-button type="text" text-color="danger" @click="handleRemove(scope.row)">删除</b-button>
             </template>

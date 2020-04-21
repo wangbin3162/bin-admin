@@ -23,7 +23,7 @@
           <template v-slot:dictType="scope">{{ dictTypeMap[scope.row.dictType] }}</template>
           <!--操作栏-->
           <template v-slot:item="scope">
-            <b-button :disabled="!canModify" type="text" @click="handleDictItem(scope.row)">字典项</b-button>
+            <b-button :disabled="!havePermission('dictItem')" type="text" @click="handleDictItem(scope.row)">字典项</b-button>
           </template>
           <!--操作栏-->
           <template v-slot:action="scope">
