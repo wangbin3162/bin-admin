@@ -35,7 +35,7 @@
           <template v-slot:action="scope">
             <b-button :disabled="!canModify" type="text" @click="handleModify(scope.row)">修改</b-button>
             <b-divider type="vertical"></b-divider>
-            <b-button :disabled="!canModify" type="text" @click="handleSet(scope.row)">设置</b-button>
+            <b-button :disabled="!havePermission('config')" type="text" @click="handleSet(scope.row)">设置</b-button>
             <!--是否有删除键-->
             <template v-if="canRemove">
               <b-divider type="vertical"></b-divider>
