@@ -25,15 +25,17 @@
       </div>
       <!--操作-->
       <div class="ctrl">
-        <b-button plain type="primary" style="width: 95%;margin: 0 0 5px 0;"
+        <b-button plain type="primary" style="width: 100px;margin: 0 0 5px 0;"
                   @click="autoMap">
           自动映射
         </b-button>
-        <b-button plain type="primary" style="width: 95%;margin: 0 0 5px 0;" @click="handleAdd">
+        <b-button plain type="primary" style="width: 100px;margin: 0 0 5px 0;padding: 4px;"
+                  @click="handleAdd">
           手动映射
           <b-icon name="ios-arrow-round-forward"/>
         </b-button>
-        <b-button plain type="danger" style="width: 95%;margin: 0 0 5px 0;" @click="cancelAllMap">
+        <b-button plain type="danger" style="width: 100px;margin: 0 0 5px 0;padding: 4px;"
+                  @click="cancelAllMap">
           <b-icon name="ios-arrow-round-back"/>
           全部重置
         </b-button>
@@ -56,7 +58,7 @@
             <b-tooltip content="字典项" theme="light" style="padding-top: 3px;"
                        v-if="itemMaps[index].type === 'SELECT'">
               <b-icon name="ios-options" size="20" :style="{...colorPrimary,cursor:'pointer'}"
-                      @click.native="editDict(row)"/>
+                      @click.native="editDict(row,index)"/>
             </b-tooltip>&nbsp;
           </template>
         </b-table>
@@ -71,7 +73,7 @@
         <div style="padding: 0 140px 5px 5px;" flex="box:mean">
           <span class="mr-15">源值</span><span>目标值</span>
         </div>
-        <div flex="box:last" v-for="(item,index) in dictMaps" :key="item.sourceKey+'_'+index" class="mb-5">
+        <div flex="box:last" v-for="(item,index) in dictMaps" :key="index" class="mb-5">
           <b-input class="mr-10" v-model="item.sourceKey" placeholder="请输入键"/>
           <b-input v-model="item.sourceValue" placeholder="请输入值"/>
           <!--操作栏-->
@@ -98,6 +100,7 @@
 <script>
   import commonMixin from '../../../../../common/mixins/mixin'
   import DefaultValueInput from './DefaultValueInput'
+  import { deepCopy } from '../../../../../common/utils/assist'
 
   export default {
     name: 'InfoItemMap',
@@ -182,8 +185,8 @@
           }
         ],
         columns3: [
-          { title: '源信息项', key: 'sourceName', width: 150 },
-          { title: '目标信息项', slot: 'targetName', width: 150 },
+          { title: '源信息项', key: 'sourceName', width: 140 },
+          { title: '目标信息项', slot: 'targetName', width: 140 },
           { title: '默认值', slot: 'defaultValue' },
           { title: '操作', slot: 'action', width: 90 }
         ],
@@ -201,17 +204,14 @@
       }
     },
     methods: {
-      editDict(row) {
+      editDict(row, index) {
         this.conf = { ...row }
-        if (this.itemMaps[this.conf._index].dictMap) {
-          this.dictMaps = this.itemMaps[this.conf._index].dictMap
+        if (this.itemMaps[index].dictMap) {
+          this.dictMaps = deepCopy(this.itemMaps[index].dictMap)
+        } else {
+          this.dictMaps = [{ sourceKey: '', sourceValue: '' }]
         }
-        this.openDialog('create')
-      },
-      // 打开窗口
-      openDialog(status) {
         this.dialogFormVisible = true
-        this.dialogStatus = status
       },
       // 添加一行选项
       addBufferRow() {
@@ -224,15 +224,10 @@
       },
       // 保存配置
       confSave() {
-        let arr = this.dictMaps.map((item) => {
-          return {
-            sourceKey: item.sourceKey,
-            sourceValue: item.sourceValue
-          }
-        })
-        this.itemMaps[this.conf._index].dictMap = this.dictMaps
-        this.itemMaps[this.conf._index].dict = arr
+        this.itemMaps[this.conf._index].dictMap = deepCopy(this.dictMaps)
         this.dialogFormVisible = false
+        // 更新响应值
+        this.emitValue()
       },
       // 添加一个映射
       handleAdd() {
@@ -377,7 +372,7 @@
             targetName: item.targetName,
             type: item.type,
             desc: item.desc,
-            dictMap: item.dict,
+            dictMap: item.dictMap,
             defaultValue: item.defaultValue,
             colNo: index
           }
@@ -401,14 +396,14 @@
       padding-right: 10px;
     }
     .target-res {
-      width: 300px;
+      width: 270px;
     }
     .ctrl {
       width: 120px;
       padding: 100px 10px 0;
     }
     .map-res {
-      width: calc(100% - 600px);
+      width: calc(100% - 640px);
     }
   }
 </style>

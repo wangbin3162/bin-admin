@@ -1,7 +1,7 @@
 <template>
   <div>
     <div flex>
-      <div style="width: 85px;">
+      <div style="width: 80px;">
         <b-tag size="small" style="width: 100%;margin: 0;">
           <b-dropdown trigger="click" append-to-body>
             <div style="width: 65px;cursor:pointer;" flex="main:justify cross:center">
@@ -18,9 +18,9 @@
           </b-dropdown>
         </b-tag>
       </div>
-      <div style="width: calc(100% - 85px);">
-        <b-input v-if="value.type==='default'" v-model="inputValue.value" size="small"
-                 clearable placeholder="输入默认值" @on-change="emitValue"/>
+      <div style="width: calc(100% - 80px);">
+        <b-input v-if="value.type==='default'" v-model="inputValue.value" size="small" placeholder="输入默认值"
+                 @on-change="emitValue"/>
         <b-input v-else :value="inputValue.showValue" size="small" readonly/>
       </div>
     </div>
