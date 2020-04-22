@@ -259,6 +259,7 @@
         display: inline-block;
         vertical-align: top;
         padding: 10px 20px 10px 120px;
+        width: 250px;
         .auth-tree-arrow.auth-tree-arrow-open {
           display: none;
         }
