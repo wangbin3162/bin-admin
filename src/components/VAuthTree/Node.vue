@@ -32,7 +32,7 @@
                 :value="item.checked"
                 :indeterminate="item.indeterminate"
                 :disabled="item.disabled || item.disableCheckbox"
-                @click.native.prevent="handleCheck"></b-checkbox>
+                @click.native.prevent="handleCheckBottom(item)"></b-checkbox>
               <span :class="titleClasses">{{ item.title }}</span>
             </div>
           </div>
@@ -140,6 +140,14 @@
         const changes = {
           checked: !this.data.checked && !this.data.indeterminate,
           nodeKey: this.data.nodeKey
+        }
+        this.dispatch('VAuthTree', 'on-check', changes)
+      },
+      handleCheckBottom(item) {
+        if (item.disabled) return
+        const changes = {
+          checked: !item.checked && !item.indeterminate,
+          nodeKey: item.nodeKey
         }
         this.dispatch('VAuthTree', 'on-check', changes)
       }
