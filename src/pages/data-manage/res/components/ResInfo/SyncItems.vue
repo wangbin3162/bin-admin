@@ -80,6 +80,14 @@
           </b-select>
           <span v-else>{{ row.targetField }}</span>
         </template>
+        <!--条件-->
+        <template v-slot:condition="{row,index}">
+          <b-select v-if="row.edit" v-model="conditionList[index].condition" size="small"
+                    append-to-body clearable>
+            <b-option v-for="(value,k) in conditionOptions" :key="k" :value="k">{{value}}</b-option>
+          </b-select>
+          <span v-else>{{ conditionOptions[row.condition] }}</span>
+        </template>
         <!--值选项-->
         <template v-slot:valType="{row,index}">
           <b-select v-if="row.edit" v-model="conditionList[index].valType" size="small" append-to-body>
@@ -111,14 +119,6 @@
               常量值：<span>{{ row.paramValue }}</span>
             </div>
           </template>
-        </template>
-        <!--条件-->
-        <template v-slot:condition="{row,index}">
-          <b-select v-if="row.edit" v-model="conditionList[index].condition" size="small"
-                    append-to-body clearable>
-            <b-option v-for="(value,k) in conditionOptions" :key="k" :value="k">{{value}}</b-option>
-          </b-select>
-          <span v-else>{{ conditionOptions[row.condition] }}</span>
         </template>
         <template v-slot:action="{row,index}">
           <div v-if="row.newOne">
@@ -203,9 +203,9 @@
         conditionColumns: [
           { type: 'index', width: 50, align: 'center' },
           { title: '目标信息项', slot: 'targetField', width: 150 },
+          { title: '条件', slot: 'condition', width: 150 },
           { title: '值选项', slot: 'valType', width: 150 },
           { title: '值', slot: 'value' },
-          { title: '条件', slot: 'condition', width: 150 },
           { title: '操作', slot: 'action', width: 150 }
         ],
         conditionList: [] // 关联条件列表
