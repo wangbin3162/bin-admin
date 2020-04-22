@@ -6,80 +6,33 @@
         <b-tree :data="treeData" slot="tree" :lock-select="lockTreeSelect"
                 @on-select-change="handTreeCurrentChange"></b-tree>
         <!--任务概览-->
-        <div class="task-pane">
-          <div v-if="analysisMap.type==='all'">
-            <b-row :gutter="20">
-              <b-col span="8">
-                <div class="block b1" flex>
-                  <div class="icon">
-                    <b-icon name="ios-today" size="30"/>
-                  </div>
-                  <div>
-                    <p class="title">方案总数量</p>
-                    <p class="counts">{{analysisMap.totalPlanNum}}</p>
-                  </div>
-                </div>
-              </b-col>
-              <b-col span="8">
-                <div class="block b2" flex>
-                  <div class="icon">
-                    <b-icon name="ios-checkbox-outline" size="30"/>
-                  </div>
-                  <div>
-                    <p class="title">方案成功数量</p>
-                    <p class="counts">{{analysisMap.successPlanNum}}</p>
-                  </div>
-                </div>
-              </b-col>
-              <b-col span="8">
-                <div class="block b3" flex>
-                  <div class="icon">
-                    <b-icon name="ios-close-circle-outline" size="30"/>
-                  </div>
-                  <div>
-                    <p class="title">方案失败数量</p>
-                    <p class="counts">{{analysisMap.failedPlanNum}}</p>
-                  </div>
-                </div>
-              </b-col>
-            </b-row>
+        <div class="task-pane" flex="box:mean">
+          <div class="block b1" flex>
+            <div class="icon">
+              <img src="../../../assets/images/case.svg" alt="">
+            </div>
+            <div>
+              <p class="title">{{ `${analysisMap.type==='all'?'方案':'任务'}总数量` }}</p>
+              <p class="counts">{{ analysisMap[analysisMap.type==='all'?'totalPlanNum':'totalTasksNum']}}</p>
+            </div>
           </div>
-          <div v-else>
-            <b-row :gutter="20">
-              <b-col span="8">
-                <div class="block b1" flex>
-                  <div class="icon">
-                    <b-icon name="ios-log-out" size="30"/>
-                  </div>
-                  <div>
-                    <p class="title">任务总数量</p>
-                    <p class="counts">{{analysisMap.totalTasksNum}}</p>
-                  </div>
-                </div>
-              </b-col>
-              <b-col span="8">
-                <div class="block b2" flex>
-                  <div class="icon">
-                    <b-icon name="ios-checkbox-outline" size="30"/>
-                  </div>
-                  <div>
-                    <p class="title">任务成功数量</p>
-                    <p class="counts">{{analysisMap.successTasksNum}}</p>
-                  </div>
-                </div>
-              </b-col>
-              <b-col span="8">
-                <div class="block b3" flex>
-                  <div class="icon">
-                    <b-icon name="ios-close-circle-outline" size="30"/>
-                  </div>
-                  <div>
-                    <p class="title">任务失败数量</p>
-                    <p class="counts">{{analysisMap.failedTasksNum}}</p>
-                  </div>
-                </div>
-              </b-col>
-            </b-row>
+          <div class="block b2" flex>
+            <div class="icon">
+              <img src="../../../assets/images/success.svg" alt="">
+            </div>
+            <div>
+              <p class="title">{{ `${analysisMap.type==='all'?'方案':'任务'}成功数量` }}</p>
+              <p class="counts">{{ analysisMap[analysisMap.type==='all'?'successPlanNum':'successTasksNum']}}</p>
+            </div>
+          </div>
+          <div class="block b3" flex>
+            <div class="icon">
+              <img src="../../../assets/images/failed.svg" alt="">
+            </div>
+            <div>
+              <p class="title">{{ `${analysisMap.type==='all'?'方案':'任务'}失败数量` }}</p>
+              <p class="counts">{{ analysisMap[analysisMap.type==='all'?'failedPlanNum':'failedTasksNum']}}</p>
+            </div>
           </div>
         </div>
         <v-filter-bar>
@@ -516,25 +469,21 @@
 <style lang="stylus" scoped>
   .task-pane {
     margin-bottom: 16px;
+    padding: 20px;
+    background: #fafafa;
     .block {
-      background-color #0b87ed;
-      padding: 16px 24px;
-      border-radius: 15px;
-      color: #fff;
+      padding: 0 24px;
       &.b1 {
-        background-color #314BD8;
+        border-right: 2px solid #eee;
       }
       &.b2 {
-        background-color #2D90FF;
-      }
-      &.b3 {
-        background-color #23E1DF;
-      }
-      &.b4 {
-        background-color #39cb4c;
+        border-right: 2px solid #eee;
       }
       .icon {
-        padding: 2px 10px 0 0;
+        padding: 2px 30px 2px 20px;
+        img {
+          width: 50px;
+        }
       }
       .counts {
         font-size: 24px;
