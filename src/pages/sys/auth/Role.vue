@@ -24,14 +24,15 @@
           </template>
           <!--角色授权栏-->
           <template v-slot:auth="scope">
-            <b-button :disabled="!havePermission('authorize')" @click="handleRoleAuth(scope.row)" type="text">编辑权限
+            <b-button :disabled="!havePermission('authorize') || isNormalInner(scope.row)"
+                      @click="handleRoleAuth(scope.row)" type="text">编辑权限
             </b-button>
           </template>
           <!--操作栏-->
           <template v-slot:action="scope">
-            <!-- <b-button :disabled="!canModify || !isAdmin" type="text" @click="handleModify(scope.row)">修改
-            </b-button> -->
-            <b-button :disabled="!canModifyImpl" type="text" @click="handleModify(scope.row)">修改
+            <b-button :disabled="!canModify || isNormalInner(scope.row)"
+                      type="text" @click="handleModify(scope.row)">
+              修改
             </b-button>
             <!--是否有删除键-->
             <template v-if="canRemove && scope.row.roleType===ENUM.S">
@@ -115,7 +116,6 @@
   import * as api from '../../../api/sys/role.api'
   import RoleChoose from '../components/RoleChoose'
   import { requiredRule } from '../../../common/utils/validate'
-  import { mapGetters } from 'vuex'
   import EditAuth from '../components/EditAuth'
 
   export default {
@@ -174,19 +174,6 @@
       }
     },
     computed: {
-      ...mapGetters(['roles']),
-      canModifyImpl() {
-        let res = false
-        if (this.isAdmin) {
-          res = true
-        } else if (this.canModify) {
-          res = true
-        }
-        return res
-      },
-      isAdmin() {
-        return this.roles.includes('ROLE_ADMIN')
-      },
       roleTypeOptions() {
         let ret = []
         Object.keys(this.roleTypeMap).forEach(key => {
@@ -204,6 +191,10 @@
       this.searchList()
     },
     methods: {
+      // 是否是内置角色
+      isNormalInner(row) {
+        return ['ROLE_LOGIN', 'ROLE_ADMIN'].indexOf(row.code) > -1
+      },
       // filter-Bar:重置查询条件
       resetQuery() {
         this.listQuery = {
