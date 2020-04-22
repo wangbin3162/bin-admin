@@ -120,7 +120,7 @@
         }
         return {
           id: node.id,
-          title: nodeType === 'top' ? `${node.text.toUpperCase()} 全部功能权限` : node.text,
+          title: node.text,
           nodeType,
           menuType: node.menuType,
           parents, // 配合级联展开时使用
