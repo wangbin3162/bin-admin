@@ -115,10 +115,11 @@
           <b-divider align="left">动作列表</b-divider>
           <b-table disabled-hover :data="menu.permissions" size="small"
                    :columns="[
-                     { title: '动作名称', slot: 'name', width:120 },
+                     { title: '动作名称', slot: 'name', width:200 },
                      { title: '前端路径', slot: 'path'},
                      { title: '动作描述', slot: 'desc'},
                      { title: '菜单路径', slot: 'url' },
+                     { title: '排序', slot: 'sort', width: 80 , align:'center' },
                      { title: '操作', slot: 'action', width: 100, align: 'center'}]">
             <template v-slot:name="scope">
               <b-input v-model="menu.permissions[scope.index].name" size="small"
@@ -133,6 +134,9 @@
             </template>
             <template v-slot:url="scope">
               <b-input v-model="menu.permissions[scope.index].url" size="small"></b-input>
+            </template>
+            <template v-slot:sort="scope">
+              <v-sort-arrow @on-up="handleSort('up',scope.index)" @on-down="handleSort('down',scope.index)"/>
             </template>
             <template v-slot:action="scope">
               <template v-if="scope.row.id.length > 0">
@@ -176,10 +180,11 @@
           <b-divider align="left">动作列表</b-divider>
           <b-table disabled-hover :data="menu.permissions" size="small"
                    :columns="[
-                     { title: '动作名称', key: 'name', width:120, align: 'center', },
+                     { title: '动作名称', key: 'name', width:200},
                      { title: '前端路径', key: 'path'},
                      { title: '动作描述', key: 'desc'},
-                     { title: '菜单路径', key: 'url' }]">
+                     { title: '菜单路径', key: 'url' },
+                     { title: '排序编号', key: 'sortNum', width:100}]">
           </b-table>
         </template>
         <!--保存提交-->
@@ -198,6 +203,7 @@
   import { getYn, getMenuType } from '../../../api/enum.api'
   import { validateRoutePath, requiredRule } from '../../../common/utils/validate'
   import { deepCopy } from '../../../common/utils/assist'
+  import { downGo, upGo } from '../../../common/utils/arr-utils'
 
   export default {
     name: 'Menu',
@@ -319,7 +325,9 @@
         this.$refs.form.validate((valid) => {
           if (valid) {
             this.btnLoading = true
-            let tmp = this.menu.permissions.filter(i => i.name.length > 0 && i.path.length > 0)
+            let tmp = this.menu.permissions
+              .filter(i => i.name.length > 0 && i.path.length > 0)
+              .map((item, index) => ({ ...item, sortNum: index }))
             this.menu.permissions = deepCopy(tmp)
             let fun = this.dialogStatus === 'create' ? api.createMenu : api.modifyMenu
             fun(this.menu).then(res => {
@@ -394,6 +402,22 @@
       // 是否是只读的动作
       permissionReadOnly(per) {
         return ['create', 'modify', 'search', 'remove'].includes(per)
+      },
+      // 菜单动作排序
+      handleSort(type, index) {
+        // 复制一个data
+        let arr = deepCopy(this.menu.permissions)
+        if (type === 'up') { // 上移操作
+          if (index > 0) {
+            let newArr = upGo(arr, index)
+            this.menu.permissions = deepCopy(newArr)
+          }
+        } else if (type === 'down') { // 下移一层操作
+          if (index !== arr.length - 1) {
+            let newArr = downGo(arr, index)
+            this.menu.permissions = deepCopy(newArr)
+          }
+        }
       },
       /* [数据接口] */
       // 重置对象
