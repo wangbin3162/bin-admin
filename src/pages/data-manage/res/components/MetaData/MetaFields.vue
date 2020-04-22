@@ -33,13 +33,13 @@
           <b-row>
             <b-col span="12">
               <b-form-item label="名称" prop="fieldName">
-                <b-input v-model="metaItem.fieldName" placeholder="请输入名称" clearable :maxlength="30"
+                <b-input v-model.trim="metaItem.fieldName" placeholder="请输入名称" clearable :maxlength="30"
                          :disabled="dialogStatus === 'modify' && !!metaItem.id"></b-input>
               </b-form-item>
             </b-col>
             <b-col span="12">
               <b-form-item label="标题" prop="fieldTitle">
-                <b-input v-model="metaItem.fieldTitle" placeholder="请输入标题" clearable :maxlength="64"></b-input>
+                <b-input v-model.trim="metaItem.fieldTitle" placeholder="请输入标题" clearable :maxlength="64"></b-input>
               </b-form-item>
             </b-col>
           </b-row>
@@ -126,40 +126,26 @@
     },
     data() {
       // 信息项名称校验
-      const checkFieldTypeNotUnique = (rule, value, callback) => {
-        if (this.dialogStatus === 'modify') {
-          callback()
-        }
-        if (this.metaItem.fieldName.length > 0 && this.metaItem.dataType.length > 0) {
-          api.checkFieldTypeNotUnique(this.metaItem.fieldName, this.metaItem.dataType).then(response => {
+      const validateFieldName = (rule, value, callback) => {
+        if (isLetterW(value)) {
+          let hasSame = this.totalData.findIndex(item => item.fieldName === value) > -1
+          if (hasSame) {
+            callback(new Error('已存在相同名称的信息项!'))
+            return
+          }
+          // 校验是否和现有字段有重复的
+          api.checkFieldName(this.personClass, this.metaItem.fieldName).then(response => {
             if (!response.data.data) {
               callback()
             } else {
-              callback(new Error('该信息项已经存在其他数据类型!'))
+              callback(new Error('字段名不合法!'))
             }
           }).catch(() => {
-            callback(new Error('请求信息项和信息项类型唯一检查出错'))
+            callback(new Error('验证合法性出错!'))
           })
-        } else {
           callback()
-        }
-      }
-      // 信息项名称校验
-      const validateFieldName = (rule, value, callback) => {
-        if (value.length > 0) {
-          if (isLetterW(value)) {
-            api.checkFieldName(this.personClass, this.metaItem.fieldName).then(response => {
-              if (!response.data.data) {
-                callback()
-              } else {
-                callback(new Error('字段名不合法或重复!'))
-              }
-            }).catch(() => {
-              callback(new Error('字段名不合法或重复!'))
-            })
-          } else {
-            callback(new Error('英文字母开头(包括字母、数字和下划线)'))
-          }
+        } else {
+          callback(new Error('英文字母开头(包括字母、数字和下划线)'))
         }
       }
       // 信息项标题校验
@@ -197,10 +183,7 @@
         totalData: [],
         metaItem: null,
         ruleValidate: {
-          fieldName: [requiredRule, {
-            validator: validateFieldName,
-            trigger: 'blur'
-          }, { validator: checkFieldTypeNotUnique, trigger: 'blur' }],
+          fieldName: [requiredRule, { validator: validateFieldName, trigger: 'blur' }],
           fieldTitle: [requiredRule, { validator: validateFieldTitle, trigger: 'blur' }],
           dataType: [{ required: true, message: '数据类型必选', trigger: 'change' }],
           dataLength: [{ required: true, validator: validateDataLength, trigger: 'blur' }]
