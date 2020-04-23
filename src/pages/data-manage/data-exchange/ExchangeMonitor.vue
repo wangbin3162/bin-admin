@@ -61,11 +61,11 @@
           <!--操作栏-->
           <template v-slot:action="{row}">
             <b-tooltip content="任务执行记录" theme="light" max-width="200" style="padding-top: 3px;">
-              <b-button type="text" icon="ios-list-box"
+              <b-button type="text" icon="ios-list-box" :disabled="!havePermission('recordList')"
                         :icon-style="{fontSize:'20px'}" @click="handleCheck(row)"/>
             </b-tooltip>&nbsp;
             <b-tooltip content="任务启动" theme="light" max-width="200" style="padding-top: 3px;">
-              <b-button text-color="success" type="text" icon="ios-play-circle"
+              <b-button text-color="success" type="text" icon="ios-play-circle" :disabled="!havePermission('startTask')"
                         :icon-style="{fontSize:'20px'}" @click="handleStartTask(row.id)"/>
             </b-tooltip>
           </template>
@@ -118,15 +118,17 @@
           </template>
           <template #action="{row}">
             <b-tooltip content="记录明细" theme="light" max-width="200" style="padding-top: 3px;">
-              <b-button type="text" icon="ios-filing"
+              <b-button type="text" icon="ios-filing" :disabled="!havePermission('taskDetail')"
                         :icon-style="{fontSize:'20px'}" @click="handleCheckDetail(row.id)"/>
             </b-tooltip>&nbsp;
             <b-tooltip content="清理" theme="light" max-width="200" style="padding-top: 3px;">
               <b-button type="text" icon="ios-close-circle" text-color="warning"
+                        :disabled="!havePermission('clearJob')"
                         :icon-style="{fontSize:'20px'}" @click="handleClearJob(row.id)"/>
             </b-tooltip>&nbsp;
             <b-tooltip content="重启" theme="light" max-width="200" style="padding-top: 3px;">
               <b-button type="text" icon="ios-refresh-circle" text-color="danger"
+                        :disabled="!havePermission('restartJob')"
                         :icon-style="{fontSize:'20px'}" @click="handleRestartJob(row.id)"/>
             </b-tooltip>
           </template>

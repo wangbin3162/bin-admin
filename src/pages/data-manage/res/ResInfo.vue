@@ -56,7 +56,8 @@
           </template>
           <!--扩展配置-->
           <template v-slot:ext="{row}">
-            <b-button type="text" @click="handleExt(row)" :disabled="row.status!=='audited'">
+            <b-button type="text" @click="handleExt(row)"
+                      :disabled="!havePermission('extSync')||row.status!=='audited'">
               配置
             </b-button>
           </template>
@@ -71,10 +72,13 @@
                 <b-icon name="ios-arrow-down"/>
               </b-button>
               <b-dropdown-menu slot="list">
-                <b-dropdown-item v-if="row.status==='edit'" :style="colorSuccess" name="publish">
+                <b-dropdown-item v-if="row.status==='edit'"
+                                 :disabled="!havePermission('publish')" :style="colorSuccess"
+                                 name="publish">
                   发布
                 </b-dropdown-item>
-                <b-dropdown-item v-if="row.status==='audited'" :style="colorWarning" name="test">
+                <b-dropdown-item v-if="row.status==='audited'" :disabled="!havePermission('sampleData')"
+                                 :style="colorWarning" name="test">
                   示例数据
                 </b-dropdown-item>
                 <b-dropdown-item :disabled="!canRemove" :style="colorDanger" name="remove">

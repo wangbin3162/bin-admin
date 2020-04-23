@@ -46,10 +46,12 @@
           <!--操作栏-->
           <template v-slot:action="scope">
             <b-button type="text" :disabled="!canModify" @click="handleModify(scope.row)">修改</b-button>
-            <b-divider type="vertical"/>
-            <b-button type="text" :disabled="!havePermission('respCfg')" text-color="warning"
-                      @click="handleConfig(scope.row)">配置响应
-            </b-button>
+            <template v-if="havePermission('respCfg')">
+              <b-divider type="vertical"/>
+              <b-button type="text" text-color="warning"
+                        @click="handleConfig(scope.row)">配置响应
+              </b-button>
+            </template>
             <b-divider type="vertical"/>
             <b-button type="text" text-color="danger"
                       :disabled="!canRemove" @click="handleRemove(scope.row)">删除

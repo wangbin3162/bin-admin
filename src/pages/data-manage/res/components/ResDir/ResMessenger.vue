@@ -17,7 +17,7 @@
     <b-table :columns="resColumns" :data="list" :loading="listLoading">
       <!--操作栏-->
       <template v-slot:relate="scope">
-        <b-button type="text" @click="cancelRelate(scope.row)">取消关联</b-button>
+        <b-button :disabled="!havePermission('cancelRes')" type="text" @click="cancelRelate(scope.row)">取消关联</b-button>
       </template>
     </b-table>
     <!--下方分页器-->

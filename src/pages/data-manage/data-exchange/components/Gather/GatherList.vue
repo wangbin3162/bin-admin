@@ -14,13 +14,17 @@
         <!--操作栏-->
         <v-table-tool-bar>
           <b-button v-if="canCreate" type="primary" icon="ios-add-circle-outline" @click="handleCreate">新 增</b-button>
-          <b-button icon="ios-exit" @click="handleBatchImport">批量导入</b-button>
+          <b-button v-if="havePermission('import')" icon="ios-exit" @click="handleBatchImport">批量导入</b-button>
           <div slot="right">
-            <b-button type="text" @click="handleDownloadTemplate">模板下载</b-button>
-            <b-divider type="vertical"></b-divider>
-            <b-button type="text" @click="handleExport">导出</b-button>
-            <b-divider type="vertical"></b-divider>
-            <b-button type="text" @click="handleOpenRecordDialog">导入/导出记录</b-button>
+            <b-button v-if="havePermission('download')" type="text" @click="handleDownloadTemplate">模板下载</b-button>
+            <template v-if="havePermission('export')">
+              <b-divider type="vertical"></b-divider>
+              <b-button type="text" @click="handleExport">导出</b-button>
+            </template>
+            <template v-if="havePermission('records')">
+              <b-divider type="vertical"></b-divider>
+              <b-button type="text" @click="handleOpenRecordDialog">导入/导出记录</b-button>
+            </template>
             <b-divider type="vertical"></b-divider>
             <b-dropdown trigger="custom" :visible="visible" placement="bottom-end" append-to-body>
               <b-button type="text" @click="visible=true">
@@ -46,10 +50,14 @@
           <!--操作栏-->
           <template v-slot:action="scope">
             <b-button type="text" @click="handleCheck(scope.row)">查看</b-button>
-            <b-button type="text" @click="handleModify(scope.row)">修改</b-button>
-            <b-button type="text" text-color="danger" @click="handleRemove(scope.row)">删除</b-button>
+            <b-button type="text" @click="handleModify(scope.row)" :disabled="!canModify">修改</b-button>
+            <b-button type="text" text-color="danger" @click="handleRemove(scope.row)" :disabled="!canModify">
+              删除
+            </b-button>
             <template v-if="scope.row.version&&scope.row.version>0">
-              <b-button type="text" text-color="warning" @click="handleHistory(scope.row)">历史</b-button>
+              <b-button type="text" text-color="warning"
+                        :disabled="!havePermission('history')" @click="handleHistory(scope.row)">历史
+              </b-button>
             </template>
           </template>
         </b-table>

@@ -9,7 +9,7 @@
         <!--查询条件-->
         <v-filter-bar>
           <v-filter-item title="资源名称">
-            <b-input v-model.trim="listQuery.resourceName" placeholder="资源名称(中文名)" clearable ></b-input>
+            <b-input v-model.trim="listQuery.resourceName" placeholder="资源名称(中文名)" clearable></b-input>
           </v-filter-item>
           <v-filter-item @on-search="handleFilter" @on-reset="handleReset"></v-filter-item>
         </v-filter-bar>
@@ -21,7 +21,7 @@
           <template v-slot:updatePeriod="scope">{{ updateMap[scope.row.updatePeriod] }}</template>
           <!--操作栏-->
           <template v-slot:action="scope">
-            <b-button type="text" @click="handleDivideDept(scope.row)">
+            <b-button type="text" @click="handleDivideDept(scope.row)" :disabled="!havePermission('divideDept')">
               分配部门
             </b-button>
           </template>

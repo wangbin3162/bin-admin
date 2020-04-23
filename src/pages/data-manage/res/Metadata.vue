@@ -38,20 +38,22 @@
           <!--状态-->
           <template v-slot:status="scope">{{ statusMap[scope.row.status] }}</template>
           <!--操作栏-->
-          <template v-slot:action="scope">
-            <template v-if="scope.row.status==='edit'||scope.row.status==='audited'">
-              <b-button :disabled="!canModify" type="text" @click="handleModify(scope.row)">
+          <template v-slot:action="{row}">
+            <template v-if="row.status==='edit'||row.status==='audited'">
+              <b-button :disabled="!canModify" type="text" @click="handleModify(row)">
                 修改
               </b-button>
               <!--是否有删除键-->
-              <template v-if="canRemove">
-                <b-divider type="vertical"></b-divider>
-                <b-button type="text" text-color="danger" @click="handleRemove(scope.row)">删除</b-button>
-              </template>
+              <b-divider type="vertical"></b-divider>
+              <b-button type="text" :disabled="!canRemove" text-color="danger"
+                        @click="handleRemove(row)">删除
+              </b-button>
               <!--草稿状态有发布按钮-->
-              <template v-if="scope.row.status==='edit'">
+              <template v-if="row.status==='edit'">
                 <b-divider type="vertical"></b-divider>
-                <b-button type="text" style="color:green;" @click="handlePublish(scope.row)">发布</b-button>
+                <b-button type="text" :disabled="!havePermission('publish')" text-color="success"
+                          @click="handlePublish(row)">发布
+                </b-button>
               </template>
             </template>
           </template>
@@ -74,7 +76,8 @@
                 <v-cascade :data="personClassOptions" v-if="dialogStatus !=='modify'"
                            v-model="metadata.personClass" @on-change="handlePersonClassChange">
                 </v-cascade>
-                <b-input v-else v-model="personClassMap[metadata.personClass]" placeholder="请输入元信息英文名称" :readonly="dialogStatus==='modify'"></b-input>
+                <b-input v-else v-model="personClassMap[metadata.personClass]" placeholder="请输入元信息英文名称"
+                         :readonly="dialogStatus==='modify'"></b-input>
               </b-form-item>
             </b-col>
             <b-col span="12">

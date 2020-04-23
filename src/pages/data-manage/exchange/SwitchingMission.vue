@@ -32,7 +32,7 @@
         </v-filter-bar>
         <!--操作栏-->
         <v-table-tool-bar>
-          <b-button type="primary" :disabled="plainDisable"
+          <b-button type="primary" v-if="canCreate" :disabled="plainDisable"
                     icon="ios-add-circle-outline"
                     @click="handleCreate">新 增
           </b-button>
@@ -52,6 +52,7 @@
           <template v-slot:status="{row}">
             <b-switch
               v-model="row.status" :true-value="ENUM.ENABLE" :false-value="ENUM.DISABLE"
+              :disabled="!havePermission('changeStatus')"
               inactive-color="#ff4949"
               @on-change="handleChangeStatus(row)">
             </b-switch>
@@ -59,11 +60,10 @@
           <!--操作栏-->
           <template v-slot:action="{row}">
             <b-button :disabled="!canModify" type="text" @click="handleModify(row)">修改</b-button>
-            <!--是否有删除键-->
-            <template v-if="canRemove && !row.isDefault">
-              <b-divider type="vertical"></b-divider>
-              <b-button type="text" text-color="danger" @click="handleRemove(row)">删除</b-button>
-            </template>
+            <b-divider type="vertical"></b-divider>
+            <b-button type="text" :disabled="!canRemove || row.isDefault"
+                      text-color="danger" @click="handleRemove(row)">删除
+            </b-button>
           </template>
         </b-table>
         <!--下方分页器-->

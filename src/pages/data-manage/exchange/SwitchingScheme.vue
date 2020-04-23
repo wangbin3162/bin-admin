@@ -4,20 +4,20 @@
       <v-table-wrap>
         <v-filter-bar>
           <v-filter-item title="方案名称">
-            <b-input v-model="listQuery.cfgName" placeholder="请输入节点名称" clearable ></b-input>
+            <b-input v-model="listQuery.cfgName" placeholder="请输入节点名称" clearable></b-input>
           </v-filter-item>
           <v-filter-item title="交换类型" :span="5">
-            <b-select v-model="listQuery.changeType" clearable placeholder="全部" >
+            <b-select v-model="listQuery.changeType" clearable placeholder="全部">
               <b-option v-for="(value,key) in exchangeTypeMap" :key="key" :value="key">{{ value }}</b-option>
             </b-select>
           </v-filter-item>
           <v-filter-item title="信息流向" :span="4">
-            <b-select v-model="listQuery.flowDirection" clearable placeholder="全部" >
+            <b-select v-model="listQuery.flowDirection" clearable placeholder="全部">
               <b-option v-for="(value,key) in flowDirectionMap" :key="key" :value="key">{{ value }}</b-option>
             </b-select>
           </v-filter-item>
           <v-filter-item title="状态" :span="4">
-            <b-select v-model="listQuery.status" clearable placeholder="全部" >
+            <b-select v-model="listQuery.status" clearable placeholder="全部">
               <b-option v-for="(value,key) in exchangeStatusMap" :key="key" :value="key">{{ value }}</b-option>
             </b-select>
           </v-filter-item>
@@ -26,8 +26,8 @@
         </v-filter-bar>
         <!--操作栏-->
         <v-table-tool-bar>
-          <b-button type="primary"
-                      icon="ios-add-circle-outline"
+          <b-button type="primary" v-if="canCreate"
+                    icon="ios-add-circle-outline"
                     @click="handleCreate">新 增
           </b-button>
         </v-table-tool-bar>
@@ -41,7 +41,7 @@
           <!--状态-->
           <template v-slot:status="scope">
             <b-switch v-model="scope.row.status" true-value="Y" false-value="N"
-                      :disabled="scope.row.isDefault"
+                      :disabled="!havePermission('changeStatus')||scope.row.isDefault"
                       inactive-color="#ff4949"
                       @on-change="handleChangeStatusFlag(scope.row)">
             </b-switch>
@@ -52,10 +52,10 @@
               修改
             </b-button>
             <!--是否有删除键-->
-            <template v-if="canRemove && !scope.row.isDefault">
-              <b-divider type="vertical"></b-divider>
-              <b-button type="text" text-color="danger" @click="handleRemove(scope.row)">删除</b-button>
-            </template>
+            <b-divider type="vertical"></b-divider>
+            <b-button type="text" :disabled="!canRemove || scope.row.isDefault"
+                      text-color="danger" @click="handleRemove(scope.row)">删除
+            </b-button>
           </template>
         </b-table>
         <!--下方分页器-->

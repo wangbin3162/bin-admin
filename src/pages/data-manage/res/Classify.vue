@@ -25,11 +25,10 @@
           <!--操作栏-->
           <template v-slot:action="scope">
             <b-button :disabled="!canModify" type="text" @click="handleModify(scope.row)">修改</b-button>
-            <!--是否有删除键-->
-            <template v-if="canRemove">
-              <b-divider type="vertical"></b-divider>
-              <b-button type="text" text-color="danger" @click="handleRemove(scope.row)">删除</b-button>
-            </template>
+            <b-divider type="vertical"></b-divider>
+            <b-button type="text" :disabled="!canRemove" text-color="danger"
+                      @click="handleRemove(scope.row)">删除
+            </b-button>
           </template>
         </b-table>
         <!--下方分页器-->
