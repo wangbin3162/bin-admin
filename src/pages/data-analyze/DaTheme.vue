@@ -24,7 +24,7 @@
         <b-table :columns="columns" :data="list" :loading="listLoading">
           <template v-slot:url="scope">
             <b-button type="text" @click="handlePreview(scope.row.url)"
-                      :disabled="!havePermission('preview')">预览
+                      :disabled="!havePermission('preview') || scope.row.url.length===0">预览
             </b-button>
           </template>
           <!--操作栏-->
