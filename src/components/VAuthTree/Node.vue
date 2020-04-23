@@ -12,7 +12,7 @@
             :indeterminate="data.indeterminate"
             :disabled="data.disabled || data.disableCheckbox"
             @click.native.prevent="handleCheck"></b-checkbox>
-          <span :class="titleClasses">{{ data.title }}</span>
+          <span :class="titleClasses" @click.prevent="handleCheck">{{ data.title }}</span>
         </div>
         <template v-if="data.expand">
           <template v-if="children.length>0&&children[0].nodeType!=='bottom'">
@@ -33,7 +33,7 @@
                 :indeterminate="item.indeterminate"
                 :disabled="item.disabled || item.disableCheckbox"
                 @click.native.prevent="handleCheckBottom(item)"></b-checkbox>
-              <span :class="titleClasses">{{ item.title }}</span>
+              <span :class="titleClasses" @click.prevent="handleCheckBottom(item)">{{ item.title }}</span>
             </div>
           </div>
         </template>
