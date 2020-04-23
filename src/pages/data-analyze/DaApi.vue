@@ -14,16 +14,19 @@
         </v-filter-bar>
         <!--操作栏-->
         <v-table-tool-bar>
-          <b-button type="primary" icon="ios-add-circle-outline" @click="handleCreate">新 增</b-button>
+          <b-button type="primary" v-if="canCreate" icon="ios-add-circle-outline" @click="handleCreate">新 增</b-button>
         </v-table-tool-bar>
         <!--中央表格-->
         <b-table :columns="columns" :data="list" :loading="listLoading">
           <template v-slot:type="{row}">{{typeMap[row.type]}}</template>
           <!--操作栏-->
           <template v-slot:action="scope">
-            <b-button type="text" @click="handleModify(scope.row)">修改</b-button>
+            <b-button type="text" :disabled="!canModify" @click="handleModify(scope.row)">修改</b-button>
             <b-divider type="vertical"></b-divider>
-            <b-button type="text" text-color="danger" @click="handleRemove(scope.row)">删除</b-button>
+            <b-button type="text" :disabled="!canRemove"
+                      text-color="danger" @click="handleRemove(scope.row)">
+              删除
+            </b-button>
           </template>
         </b-table>
         <!--下方分页器-->

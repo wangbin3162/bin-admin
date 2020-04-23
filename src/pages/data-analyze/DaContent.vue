@@ -18,17 +18,17 @@
         </v-filter-bar>
         <!--操作栏-->
         <v-table-tool-bar>
-          <b-button type="primary"
+          <b-button type="primary" v-if="canCreate"
                     icon="ios-add-circle-outline"
                     @click="handleCreate">新 增
           </b-button>
-          <template slot="right">
+          <template slot="right" v-if="hasBatchOperate">
             <b-button type="text" @click="handleBatchOff">批量静态数据</b-button>
             <b-divider type="vertical"></b-divider>
             <b-button type="text" @click="handleBatchOn">批量动态数据</b-button>
           </template>
         </v-table-tool-bar>
-        <b-table :columns="columns" :data="list" :loading="listLoading" ref="table">
+        <b-table :columns="syncColumns" :data="list" :loading="listLoading" ref="table">
           <template v-slot:name="scope">
             <b-button type="text" @click="handleCheck(scope.row)">{{ scope.row.name }}</b-button>
           </template>
@@ -36,6 +36,7 @@
             <span v-if="scope.row.toggle=== 'ON'">动态</span>
             <span v-else>静态</span> &nbsp;
             <b-switch
+              :disabled="!havePermission('changeToggle')"
               v-model="scope.row.toggle" :true-value="'ON'" :false-value="'OFF'"
               @on-change="handleChangeStatus(scope.row)">
               <span slot="open">开</span>
@@ -45,9 +46,13 @@
           <!--操作栏-->
           <template v-slot:action="scope">
             <b-button type="text" :disabled="!canModify" @click="handleModify(scope.row)">修改</b-button>
-            <b-button type="text" text-color="warning" @click="handleConfig(scope.row)">配置响应</b-button>
+            <b-divider type="vertical"/>
+            <b-button type="text" :disabled="!havePermission('respCfg')" text-color="warning"
+                      @click="handleConfig(scope.row)">配置响应
+            </b-button>
+            <b-divider type="vertical"/>
             <b-button type="text" text-color="danger"
-                      :disabled="!canModify" @click="handleRemove(scope.row)">删除
+                      :disabled="!canRemove" @click="handleRemove(scope.row)">删除
             </b-button>
           </template>
         </b-table>
@@ -172,12 +177,11 @@
         },
         treeData: [],
         columns: [
-          { type: 'selection', width: 50, align: 'center' },
           { title: '名称', slot: 'name' },
           { title: '编码', key: 'code', align: 'center' },
           { title: '主题', key: 'themeCode', align: 'center', width: 90 },
           { title: '数据来源', slot: 'toggle', align: 'center' },
-          { title: '操作', slot: 'action', width: 180 }
+          { title: '操作', slot: 'action', width: 190 }
         ],
         contentTypeMap: [],
         typeMap: {},
@@ -217,6 +221,22 @@
       })
       this.resetContent()
       this.initTree()
+    },
+    computed: {
+      // 是否有批量操作权限
+      hasBatchOperate() {
+        return this.havePermission('batchToggle')
+      },
+      // 根据是否有批量操作权限获取是否有前面批量勾选列
+      syncColumns() {
+        if (this.hasBatchOperate) {
+          return [
+            { type: 'selection', width: 50, align: 'center' },
+            ...this.columns
+          ]
+        }
+        return this.columns
+      }
     },
     methods: {
       /* [事件响应] */

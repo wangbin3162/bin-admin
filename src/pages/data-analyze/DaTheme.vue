@@ -15,7 +15,7 @@
         </v-filter-bar>
         <!--操作栏-->
         <v-table-tool-bar>
-          <b-button type="primary"
+          <b-button type="primary" v-if="canCreate"
                     icon="ios-add-circle-outline"
                     @click="handleCreate">新 增
           </b-button>
@@ -23,13 +23,17 @@
         <!--中央表格-->
         <b-table :columns="columns" :data="list" :loading="listLoading">
           <template v-slot:url="scope">
-            <router-link :to="scope.row.url" tag="a">预览</router-link>
+            <b-button type="text" @click="handlePreview(scope.row.url)"
+                      :disabled="!havePermission('preview')">预览
+            </b-button>
           </template>
           <!--操作栏-->
           <template v-slot:action="scope">
-            <b-button type="text" @click="handleModify(scope.row)">修改</b-button>
+            <b-button type="text" @click="handleModify(scope.row)" :disabled="!canModify">修改</b-button>
             <b-divider type="vertical"></b-divider>
-            <b-button type="text" text-color="danger" @click="handleRemove(scope.row)">删除</b-button>
+            <b-button type="text" text-color="danger" :disabled="!canRemove"
+                      @click="handleRemove(scope.row)">删除
+            </b-button>
           </template>
         </b-table>
         <!--下方分页器-->
@@ -197,6 +201,10 @@
             })
           }
         })
+      },
+      // 预览事件
+      handlePreview(path) {
+        this.$router.push(path)
       },
       // 查询所有列表
       searchList() {

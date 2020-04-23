@@ -33,10 +33,10 @@
                 <b-icon name="ios-arrow-down"/>
               </b-button>
               <b-dropdown-menu slot="list">
-                <b-dropdown-item :style="colorSuccess" name="cfg">
+                <b-dropdown-item :disabled="!havePermission('respCfg')" :style="colorSuccess" name="cfg">
                   配置响应
                 </b-dropdown-item>
-                <b-dropdown-item :style="colorWarning" name="test">
+                <b-dropdown-item :disabled="!havePermission('test')" :style="colorWarning" name="test">
                   测试
                 </b-dropdown-item>
                 <b-dropdown-item :disabled="!canRemove" :style="colorDanger" name="remove">
