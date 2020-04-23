@@ -27,9 +27,9 @@
             </template>
             <b-divider type="vertical"></b-divider>
             <b-dropdown trigger="custom" :visible="visible" placement="bottom-end" append-to-body>
-              <b-button type="text" @click="visible=true">
+              <b-button type="text" @click="visible=!visible">
                 字段选择
-                <b-icon name="ios-arrow-down"></b-icon>
+                <b-icon :name="visible?'ios-arrow-up':'ios-arrow-down'"></b-icon>
               </b-button>
               <b-dropdown-menu slot="list" style="padding-left: 5px;width: auto;">
                 <b-checkbox-group v-model="showFields">
@@ -38,9 +38,6 @@
                     <span>{{col.fieldTitle}}</span>
                   </b-checkbox>
                 </b-checkbox-group>
-                <div class="t-right p5">
-                  <b-button @click="visible=false" type="primary" size="mini">关闭</b-button>
-                </div>
               </b-dropdown-menu>
             </b-dropdown>
           </div>
