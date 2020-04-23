@@ -16,25 +16,29 @@
             <v-title-bar label="基本设置" class="mb-15"></v-title-bar>
             <div class="pl-15">
               <p>
-                行号：<b-switch v-model="showNumber"/>
-                只读：<b-switch v-model="readonly"/>
-                检查：<b-switch v-model="lint"/>
+                行号：
+                <b-switch v-model="showNumber"/>
+                只读：
+                <b-switch v-model="readonly"/>
+                检查：
+                <b-switch v-model="lint"/>
               </p>
               <p>皮肤：
                 <b-radio-group v-model="theme">
-                  <b-radio label="idea"><span>idea</span></b-radio>
-                  <b-radio label="eclipse"><span>eclipse</span></b-radio>
-                  <b-radio label="rubyblue"><span>rubyblue</span></b-radio>
-                  <b-radio label="duotone-light"><span>duotone-light</span></b-radio>
-                  <b-radio label="monokai"><span>monokai</span></b-radio>
-                  <b-radio label="elegant"><span>elegant</span></b-radio>
-                  <b-radio label="mdn-like"><span>mdn-like</span></b-radio>
-                  <b-radio label="xq-light"><span>xq-light</span></b-radio>
-                  <b-radio label="neo"><span>neo</span></b-radio>
-                  <b-radio label="dracula"><span>dracula</span></b-radio>
-                  <b-radio label="material"><span>material</span></b-radio>
-                  <b-radio label="material-ocean"><span>material-ocean</span></b-radio>
-                  <b-radio label="material-darker"><span>material-darker</span></b-radio>
+                  <div>
+                    <b-radio label="idea"><span>idea</span></b-radio>
+                    <b-radio label="eclipse"><span>eclipse</span></b-radio>
+                    <b-radio label="duotone-light"><span>duotone-light</span></b-radio>
+                    <b-radio label="mdn-like"><span>mdn-like</span></b-radio>
+                    <b-radio label="xq-light"><span>xq-light</span></b-radio>
+                  </div>
+                  <div>
+                    <b-radio label="dracula"><span>dracula</span></b-radio>
+                    <b-radio label="rubyblue"><span>rubyblue</span></b-radio>
+                    <b-radio label="monokai"><span>monokai</span></b-radio>
+                    <b-radio label="material"><span>material</span></b-radio>
+                    <b-radio label="material-darker"><span>material-darker</span></b-radio>
+                  </div>
                 </b-radio-group>
               </p>
             </div>

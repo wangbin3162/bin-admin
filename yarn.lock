@@ -1883,10 +1883,10 @@ bin-code-editor@^0.8.0:
     jsonlint "^1.6.3"
     script-loader "^0.7.2"
 
-bin-ui@^3.1.8:
-  version "3.1.8"
-  resolved "https://registry.npmjs.org/bin-ui/-/bin-ui-3.1.8.tgz#ab23c9e37a52d178fa77c6d013fff32480132f68"
-  integrity sha512-NgnsOdffZ2LpNv7Fco4gY9heq6wsOV/MzChfQRsLThZlFsPNEN76Ehjers7V3p3Wt42h5atbqau7uGauTFoQ6A==
+bin-ui@^3.2.0:
+  version "3.2.0"
+  resolved "https://registry.npmjs.org/bin-ui/-/bin-ui-3.2.0.tgz#916f7bc6448472857aa7784e802cba0f93e07e3e"
+  integrity sha512-LBojFg5z8MaCt2oxvLp2z/GbBZlUJh/scYaMYcMDjPuK6OY5PvwG64ggQfSYNAfKPS4VxF23bsQP/11izXHHQQ==
   dependencies:
     async-validator "^1.11.5"
     js-calendar "^1.2.3"
@@ -2476,9 +2476,9 @@ codemirror-formatting@^1.0.0:
   integrity sha1-h5zB/dkBg0PB1VEXac5TYNcF6/I=
 
 codemirror@^5.52.2:
-  version "5.52.2"
-  resolved "https://registry.npmjs.org/codemirror/-/codemirror-5.52.2.tgz#c29e1f7179f85eb0dd17c0586fa810e4838ff584"
-  integrity sha512-WCGCixNUck2HGvY8/ZNI1jYfxPG5cRHv0VjmWuNzbtCLz8qYA5d+je4QhSSCtCaagyeOwMi/HmmPTjBgiTm2lQ==
+  version "5.53.2"
+  resolved "https://registry.npmjs.org/codemirror/-/codemirror-5.53.2.tgz#9799121cf8c50809cca487304e9de3a74d33f428"
+  integrity sha512-wvSQKS4E+P8Fxn/AQ+tQtJnF1qH5UOlxtugFLpubEZ5jcdH2iXTVinb+Xc/4QjshuOxRm4fUsU2QPF1JJKiyXA==
 
 collection-visit@^1.0.0:
   version "1.0.0"
