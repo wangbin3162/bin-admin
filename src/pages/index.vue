@@ -20,9 +20,9 @@
 </template>
 
 <script>
-  import BaseList from '../../components/BaseList/index'
+  import BaseList from '../components/BaseList/index'
   import { mapGetters } from 'vuex'
-  import { getSearchList } from '../../api/search.api'
+  import { getSearchList } from '../api/search.api'
 
   export default {
     name: 'index',
@@ -138,9 +138,9 @@
 <style scoped lang="stylus">
   .main-wrap {
     height: 100%;
-    background: url("../../assets/images/banner-bg0.png") no-repeat 0 0;
+    background: url("../assets/images/banner-bg0.png") no-repeat 0 0;
     &.mini-wrap {
-      background: url("../../assets/images/banner-bg.png") no-repeat 0 -370px;
+      background: url("../assets/images/banner-bg.png") no-repeat 0 -370px;
       animation: bg .4s ease-in-out forwards;
     }
 

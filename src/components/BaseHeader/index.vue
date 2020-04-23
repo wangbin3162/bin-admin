@@ -67,7 +67,7 @@
         return this.$store.state.user.roles
       },
       userName() {
-        return this.$store.state.user.info.roleNames
+        return this.$store.state.user.info.realName
       }
     },
     methods: {

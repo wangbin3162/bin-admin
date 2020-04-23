@@ -1,0 +1,58 @@
+.bin-result {
+  padding: 48px 32px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.bin-result-icon {
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.bin-result-image {
+  width: 250px;
+  height: 295px;
+}
+.bin-result-title {
+  color: rgba(0, 0, 0, .85);
+  font-size: 30px;
+  line-height: 1.8;
+  text-align: center;
+  opacity: 0;
+  animation-name: slideUp;
+  animation-duration: 0.5s;
+  animation-fill-mode: forwards;
+}
+.bin-result-subtitle {
+  color: rgba(0, 0, 0, .45);
+  font-size: 18px;
+  line-height: 1.6;
+  text-align: center;
+  opacity: 0;
+  animation-name: slideUp;
+  animation-duration: 0.5s;
+  animation-delay: 0.1s;
+  animation-fill-mode: forwards;
+}
+.bin-result-extra {
+  margin-top: 26px;
+  text-align: center;
+  opacity: 0;
+  animation-name: slideUp;
+  animation-duration: 0.5s;
+  animation-delay: 0.3s;
+  animation-fill-mode: forwards;
+}
+
+@keyframes slideUp {
+  0% {
+    transform: translateY(60px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}

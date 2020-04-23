@@ -32,8 +32,8 @@
               <template v-else>
                 <h2 class="title-name" flex="cross:center">
                   <span class="mr-20">{{ current.name }}</span>
-                  <img v-if="current.xb==='男'" src="../../assets/images/man.png" height="38" width="38" alt="xb"/>
-                  <img v-else src="../../assets/images/women.png" height="38" width="38" alt="xb"/>
+                  <img v-if="current.xb==='男'" src="../assets/images/man.png" height="38" width="38" alt="xb"/>
+                  <img v-else src="../assets/images/women.png" height="38" width="38" alt="xb"/>
                 </h2>
                 <p flex="box:mean">
                   <span class="icon icon-7">身份证号码：{{ current.id_sfz | valueFilter }}</span>
@@ -64,10 +64,10 @@
 
 <script>
   import { mapGetters } from 'vuex'
-  import TitleHeader from '../../components/TitleHeader/index'
-  import Keywords from '../../components/Keywords/index'
-  import { deepCopy } from '../../common/utils/assist'
-  import TablePage from '../../components/TablePage/index'
+  import TitleHeader from '../components/TitleHeader/index'
+  import Keywords from '../components/Keywords/index'
+  import { deepCopy } from '../common/utils/assist'
+  import TablePage from '../components/TablePage/index'
 
   export default {
     name: 'DetailPn',
@@ -180,10 +180,10 @@
       padding: 30px 42px;
       border-bottom: 1px solid #eeeeee;
       &.faren {
-        background: #fff url("../../assets/images/faren-bg.png") no-repeat 0 0;
+        background: #fff url("../assets/images/faren-bg.png") no-repeat 0 0;
       }
       &.ziranren {
-        background: #fff url("../../assets/images/ziranren-bg.png") no-repeat 0 0;
+        background: #fff url("../assets/images/ziranren-bg.png") no-repeat 0 0;
       }
       .right {
         padding: 0 40px;
@@ -192,30 +192,30 @@
           background-repeat: no-repeat;
           background-position: 0 0;
           line-height: 24px;
-          background-image: url("../../assets/images/icon-1.png")
+          background-image: url("../assets/images/icon-1.png")
           &.icon-1 {
-            background-image: url("../../assets/images/icon-1.png")
+            background-image: url("../assets/images/icon-1.png")
           }
           &.icon-2 {
-            background-image: url("../../assets/images/icon-2.png")
+            background-image: url("../assets/images/icon-2.png")
           }
           &.icon-3 {
-            background-image: url("../../assets/images/icon-3.png")
+            background-image: url("../assets/images/icon-3.png")
           }
           &.icon-4 {
-            background-image: url("../../assets/images/icon-4.png")
+            background-image: url("../assets/images/icon-4.png")
           }
           &.icon-5 {
-            background-image: url("../../assets/images/icon-5.png")
+            background-image: url("../assets/images/icon-5.png")
           }
           &.icon-6 {
-            background-image: url("../../assets/images/icon-6.png")
+            background-image: url("../assets/images/icon-6.png")
           }
           &.icon-7 {
-            background-image: url("../../assets/images/icon-7.png")
+            background-image: url("../assets/images/icon-7.png")
           }
           &.icon-8 {
-            background-image: url("../../assets/images/icon-8.png")
+            background-image: url("../assets/images/icon-8.png")
           }
         }
       }
@@ -238,7 +238,7 @@
         }
       }
       .search-count {
-        background: #f3f6fc url("../../assets/images/query-bg.png") no-repeat center 5px;
+        background: #f3f6fc url("../assets/images/query-bg.png") no-repeat center 5px;
         padding: 30px 10px 10px;
         border-radius: 5px;
         font-size: 12px;

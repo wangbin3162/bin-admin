@@ -1694,7 +1694,7 @@ async-limiter@~1.0.0:
 
 async-validator@^1.11.5:
   version "1.12.2"
-  resolved "https://registry.yarnpkg.com/async-validator/-/async-validator-1.12.2.tgz#beae671e7174d2938b7b4b69d2fb7e722b7fd72c"
+  resolved "https://registry.npmjs.org/async-validator/-/async-validator-1.12.2.tgz#beae671e7174d2938b7b4b69d2fb7e722b7fd72c"
   integrity sha512-57EETfCPFiB7M4QscvQzWSGNsmtkjjzZv318SK1CBlstk+hycV72ocjriMOOM48HjvmoAoJGpJNjC7Z76RlnZA==
 
 async@^2.6.2:
@@ -1871,10 +1871,10 @@ bin-animation@^1.1.1:
   dependencies:
     babel-runtime "^6.26.0"
 
-bin-ui@^2.7.11:
-  version "2.7.11"
-  resolved "https://registry.yarnpkg.com/bin-ui/-/bin-ui-2.7.11.tgz#3a49fa565004f8231a1cedd2e39841b415cf3366"
-  integrity sha512-9rw6VaTO4qtPP9PG0LUm0JYxQRs8jVqXxfatcgMwnmYDMUQPQtGdUowrn51DtVf5yPorhPRtX1ZQhpdP+GiWbw==
+bin-ui@^3.2.0:
+  version "3.2.0"
+  resolved "https://registry.npmjs.org/bin-ui/-/bin-ui-3.2.0.tgz#916f7bc6448472857aa7784e802cba0f93e07e3e"
+  integrity sha512-LBojFg5z8MaCt2oxvLp2z/GbBZlUJh/scYaMYcMDjPuK6OY5PvwG64ggQfSYNAfKPS4VxF23bsQP/11izXHHQQ==
   dependencies:
     async-validator "^1.11.5"
     js-calendar "^1.2.3"
@@ -5365,7 +5365,7 @@ javascript-stringify@^1.6.0:
 
 js-calendar@^1.2.3:
   version "1.2.3"
-  resolved "https://registry.yarnpkg.com/js-calendar/-/js-calendar-1.2.3.tgz#a583b0644b4e695ba394f344d103dbcc7a7a7d3e"
+  resolved "https://registry.npmjs.org/js-calendar/-/js-calendar-1.2.3.tgz#a583b0644b4e695ba394f344d103dbcc7a7a7d3e"
   integrity sha512-dAA1/Zbp4+c5E+ARCVTIuKepXsNLzSYfzvOimiYD4S5eeP9QuplSHLcdhfqFSwyM1o1u6ku6RRRCyaZ0YAjiBw==
 
 js-cookie@^2.2.0:
@@ -7024,7 +7024,7 @@ pluralize@^7.0.0:
 
 popper.js@^1.15.0:
   version "1.16.1"
-  resolved "https://registry.yarnpkg.com/popper.js/-/popper.js-1.16.1.tgz#2a223cb3dc7b6213d740e40372be40de43e65b1b"
+  resolved "https://registry.npmjs.org/popper.js/-/popper.js-1.16.1.tgz#2a223cb3dc7b6213d740e40372be40de43e65b1b"
   integrity sha512-Wb4p1J4zyFTbM+u6WuO4XstYx4Ky9Cewe4DWrel7B0w6VVICvPwdOpotjzcf6eD8TsckVnIMNONQyPIUFOUbCQ==
 
 portfinder@^1.0.13, portfinder@^1.0.20, portfinder@^1.0.25:
@@ -7941,7 +7941,7 @@ reselect@^3.0.1:
 
 resize-observer-polyfill@^1.5.1:
   version "1.5.1"
-  resolved "https://registry.yarnpkg.com/resize-observer-polyfill/-/resize-observer-polyfill-1.5.1.tgz#0e9020dd3d21024458d4ebd27e23e40269810464"
+  resolved "https://registry.npmjs.org/resize-observer-polyfill/-/resize-observer-polyfill-1.5.1.tgz#0e9020dd3d21024458d4ebd27e23e40269810464"
   integrity sha512-LwZrotdHOo12nQuZlHEmtuXdqGoOD0OhaxopaNFxWzInpEgaLWoVuAMbTzixuosCx2nEG58ngzW3vxdWoxIgdg==
 
 resolve-cwd@^2.0.0:
@@ -8944,7 +8944,7 @@ tiny-emitter@^2.0.0:
 
 tinycolor2@^1.4.1:
   version "1.4.1"
-  resolved "https://registry.yarnpkg.com/tinycolor2/-/tinycolor2-1.4.1.tgz#f4fad333447bc0b07d4dc8e9209d8f39a8ac77e8"
+  resolved "https://registry.npmjs.org/tinycolor2/-/tinycolor2-1.4.1.tgz#f4fad333447bc0b07d4dc8e9209d8f39a8ac77e8"
   integrity sha1-9PrTM0R7wLB9TcjpIJ2POaisd+g=
 
 tmp@^0.0.33:

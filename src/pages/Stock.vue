@@ -5,7 +5,7 @@
       <!--水印图,后续替换掉-->
       <defs>
         <pattern id="watermark" patternUnits="userSpaceOnUse" width="330" height="180" x="0" y="0">
-          <image width="298" height="164" x="0" y="0" xlink:href="../../assets/images/shuiyin.png"></image>
+          <image width="298" height="164" x="0" y="0" xlink:href="../assets/images/shuiyin.png"></image>
         </pattern>
       </defs>
       <rect :width="width" id="bg" :height="height" fill="url(#watermark)"></rect>
@@ -122,8 +122,8 @@
 <script>
   import { mapGetters } from 'vuex'
   import { on, off } from 'bin-ui/src/utils/dom'
-  import { SvgTitle, SvgArrow, SvgNode, SvgLeaf } from '../../components/SvgNode'
-  import { getCompList, getStockRightStat } from '../../api/search.api'
+  import { SvgTitle, SvgArrow, SvgNode, SvgLeaf } from '../components/SvgNode'
+  import { getCompList, getStockRightStat } from '../api/search.api'
 
   export default {
     name: 'Stock',

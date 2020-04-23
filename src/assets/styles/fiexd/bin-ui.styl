@@ -20,7 +20,13 @@
   }
   .bin-form-item-error .bin-input {
     box-shadow: none;
-    border-bottom: 1px solid #ed4014;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    &:focus {
+      box-shadow: none;
+      border-bottom: 1px solid #f5222d;
+    }
   }
   .bin-input-with-prefix {
     padding-left: 58px;
