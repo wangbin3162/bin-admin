@@ -300,8 +300,8 @@
         this.getDirBatchList()
       },
       // 查看执行记录详情
-      handleCheckDetail(row) {
-        api.queryDirBatchInfo(row.id).then(res => {
+      handleCheckDetail(id) {
+        api.queryDirBatchInfo(id).then(res => {
           if (res.data.code === '0') {
             this.batchDetail = res.data.data
             this.detailDialog = true
