@@ -7,7 +7,7 @@
             <b-input v-model="listQuery.cfgName" placeholder="请输入节点名称" clearable></b-input>
           </v-filter-item>
           <v-filter-item title="交换类型" :span="5">
-            <b-select v-model="listQuery.changeType" clearable placeholder="全部">
+            <b-select v-model="listQuery.exchangeType" clearable placeholder="全部">
               <b-option v-for="(value,key) in exchangeTypeMap" :key="key" :value="key">{{ value }}</b-option>
             </b-select>
           </v-filter-item>
@@ -36,7 +36,7 @@
             <b-button type="text" @click="handleCheck(scope.row)">{{ scope.row.cfgName }}</b-button>
           </template>
           <template v-slot:flowDirection="scope">{{ flowDirectionMap[scope.row.flowDirection] }}</template>
-          <template v-slot:changeType="scope">{{ exchangeTypeMap[scope.row.changeType] }}</template>
+          <template v-slot:exchangeType="scope">{{ exchangeTypeMap[scope.row.exchangeType] }}</template>
           <template v-slot:transmitKind="scope">{{ transmitKindMap[scope.row.transmitKind] }}</template>
           <!--状态-->
           <template v-slot:status="scope">
@@ -91,8 +91,8 @@
             <b-divider dashed></b-divider>
             <b-row>
               <b-col span="12">
-                <b-form-item label="交换类型" prop="changeType">
-                  <b-select v-model="scheme.changeType"
+                <b-form-item label="交换类型" prop="exchangeType">
+                  <b-select v-model="scheme.exchangeType"
                             @on-change="changeTypeChange" :disabled="changeTypeDisable">
                     <b-option v-for="(value,key) in exchangeTypeMap" :key="key" :value="key">{{ value }}</b-option>
                   </b-select>
@@ -101,7 +101,7 @@
               <b-col span="12">
                 <b-form-item label="传输方式" prop="transmitKind">
                   <b-select v-model="scheme.transmitKind"
-                            :disabled="scheme.changeType==='AUTO'"
+                            :disabled="scheme.exchangeType==='AUTO'"
                             @on-change="transmitKindChange">
                     <b-option v-for="(value,key) in transmitKindMap" :key="key" :value="key">{{ value }}</b-option>
                   </b-select>
@@ -145,7 +145,7 @@
         </b-row>
         <b-row>
           <b-col span="12">
-            <v-simple-label label="交换类型">{{ exchangeTypeMap[scheme.changeType] }}</v-simple-label>
+            <v-simple-label label="交换类型">{{ exchangeTypeMap[scheme.exchangeType] }}</v-simple-label>
           </b-col>
           <b-col span="12">
             <v-simple-label label="信息流向">{{ flowDirectionMap[scheme.flowDirection] }}</v-simple-label>
@@ -203,14 +203,14 @@
         listQuery: {
           cfgName: '',
           flowDirection: '',
-          changeType: '',
+          exchangeType: '',
           status: ''
         },
         columns: [
           { type: 'index', width: 50, align: 'center' },
           { title: '交换方案名称', slot: 'cfgName' },
           { title: '信息流向', slot: 'flowDirection', align: 'center', width: 120 },
-          { title: '交换类型', slot: 'changeType', align: 'center', width: 120 },
+          { title: '交换类型', slot: 'exchangeType', align: 'center', width: 120 },
           { title: '传输方式', slot: 'transmitKind', align: 'center', width: 120 },
           { title: '信息源', key: 'nameSource' },
           { title: '目标系统', key: 'nameTarget' },
@@ -222,7 +222,7 @@
           cfgName: [requiredRule],
           flowDirection: [{ required: true, message: '必填项', trigger: 'change' }],
           cronStr: [requiredRule],
-          changeType: [{ required: true, message: '必填项', trigger: 'change' }],
+          exchangeType: [{ required: true, message: '必填项', trigger: 'change' }],
           transmitKind: [{ required: true, message: '必填项', trigger: 'change' }],
           source: [{ required: true, message: '必填项', trigger: 'change' }],
           target: [{ required: true, message: '必填项', trigger: 'change' }]
@@ -248,7 +248,7 @@
         return this.scheme && this.scheme.flowDirection !== 'COLLECT'
       },
       sourceNodeType() {
-        return this.scheme && this.scheme.changeType === 'MANUAL' &&
+        return this.scheme && this.scheme.exchangeType === 'MANUAL' &&
         (this.scheme.transmitKind === 'FILE' || this.scheme.transmitKind === 'FTP')
           ? 'FILE' : 'RDBMS'
       },
@@ -269,7 +269,7 @@
           size: 10,
           cfgName: '',
           flowDirection: '',
-          changeType: '',
+          exchangeType: '',
           status: ''
         }
         this.handleFilter()
@@ -347,7 +347,7 @@
         // 如果是归集
         if (value === 'COLLECT') {
           // 则默认交换类型为人工交换
-          this.scheme.changeType = 'MANUAL'
+          this.scheme.exchangeType = 'MANUAL'
           // 传输方式为文件
           this.scheme.transmitKind = 'FILE'
           // 源节点默认为文件
@@ -358,7 +358,7 @@
           this.scheme.nameTarget = this.defaultNode.name
         } else { // 如果是上报和共享
           // 则默认交换类型为自动交换
-          this.scheme.changeType = 'AUTO'
+          this.scheme.exchangeType = 'AUTO'
           // 传输方式为库对库
           this.scheme.transmitKind = 'DB_DB'
           // 原节点设置为默认
@@ -454,7 +454,7 @@
           cfgName: '',
           cfgCode: '',
           flowDirection: 'COLLECT',
-          changeType: '',
+          exchangeType: '',
           transmitKind: '',
           source: '',
           target: '',
