@@ -427,16 +427,9 @@
         // 请求响应返回树结构
         api.getDeptTree().then(response => {
           const tree = response.data.data || []
-          let mapper = node => {
-            return {
-              id: node.id,
-              title: node.text,
-              children: (node.children && node.children.map(mapper)) || []
-            }
-          }
-          let data = tree[0] ? mapper(tree[0]) : []
+          let data = tree[0] ? this.treeMapper(tree[0], null) : {}
           this.treeData.push(data)
-          if (this.treeData.length > 0) {
+          if (this.treeData.length > 0 && !this.currentTreeNode) {
             this.currentTreeNode = this.treeData[0]
             this.listQuery.parentId = this.currentTreeNode.id
             // 这里要注意，扩展响应式属性需要这么写

@@ -250,6 +250,38 @@
           }
         },
         immediate: true
+      },
+      syncType(type) {
+        let hasMapList = type === 'A' || type === 'M'
+        let hasConditionList = type === 'M' || type === 'D'
+
+        // 默认增加一条
+        if (hasMapList && this.mapList.length === 0) {
+          this.mapList.push({
+            targetField: '',
+            sourceField: '',
+            category: 'M',
+            valType: 'S',
+            paramName: '',
+            paramValue: '',
+            edit: true,
+            newOne: true
+          })
+        }
+        if (hasConditionList && this.conditionList.length === 0) {
+          this.conditionList.push({
+            targetField: '',
+            sourceField: '',
+            category: 'C',
+            valType: 'S',
+            paramName: '',
+            paramValue: '',
+            condition: '',
+            edit: true,
+            newOne: true
+          })
+        }
+        this.emitValue()
       }
     },
     methods: {
@@ -284,16 +316,12 @@
         }
       },
       handleCancel(index, type) {
-        if (this.mapList.length === 1) {
-          this.$message({ type: 'danger', content: '[配置映射]至少需要配置一条数据' })
-          return
-        }
-        if (this.conditionList.length === 1) {
-          this.$message({ type: 'danger', content: '[关联条件]至少需要配置一条数据' })
-          return
-        }
         if (type === 'M') {
           if (this.mapList[index].newOne) { // 如果当前是新增未保存的则取消即为移除
+            if (this.mapList.length === 1) {
+              this.$message({ type: 'danger', content: '[配置映射]至少需要配置一条数据' })
+              return
+            }
             this.mapList.splice(index, 1)
             this.emitValue() // 移除后需要更新
           } else { // 编辑的则设置取消
@@ -307,6 +335,10 @@
           }
         } else {
           if (this.conditionList[index].newOne) { // 如果当前是新增未保存的则取消即为移除
+            if (this.conditionList.length === 1) {
+              this.$message({ type: 'danger', content: '[关联条件]至少需要配置一条数据' })
+              return
+            }
             this.conditionList.splice(index, 1)
             this.emitValue() // 移除后需要更新
           } else { // 编辑的则设置取消
@@ -322,18 +354,18 @@
         }
       },
       handleRemove(index, type) {
-        if (this.mapList.length === 1) {
-          this.$message({ type: 'danger', content: '[配置映射]至少需要配置一条数据' })
-          return
-        }
-        if (this.conditionList.length === 1) {
-          this.$message({ type: 'danger', content: '[关联条件]至少需要配置一条数据' })
-          return
-        }
         // 清除一个未保存的项
         if (type === 'M') {
+          if (this.mapList.length === 1) {
+            this.$message({ type: 'danger', content: '[配置映射]至少需要配置一条数据' })
+            return
+          }
           this.mapList.splice(index, 1)
         } else {
+          if (this.conditionList.length === 1) {
+            this.$message({ type: 'danger', content: '[关联条件]至少需要配置一条数据' })
+            return
+          }
           this.conditionList.splice(index, 1)
         }
         this.emitValue()

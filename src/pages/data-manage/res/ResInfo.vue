@@ -57,7 +57,7 @@
           <!--扩展配置-->
           <template v-slot:ext="{row}">
             <b-button type="text" @click="handleExt(row)"
-                      :disabled="!havePermission('extSync')||row.status!=='audited'">
+                      :disabled="!havePermission('extSync')||row.status!=='audited'||row.availableStatus === 'notavailable' ">
               配置
             </b-button>
           </template>
@@ -453,7 +453,7 @@
         let res = { ...row }
         this.$confirm({
           title: '确定要发布本条资源信息？',
-          content: '发布后原数据会变为历史。',
+          content: '关联的资源信息不可用。',
           loading: true,
           onOk: () => {
             api.publishResInfo(res).then(res => {

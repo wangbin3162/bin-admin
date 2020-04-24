@@ -374,9 +374,8 @@
               if (res.data.code === '0') {
                 this.submitDone(true)
                 this.searchList()
-                // this.initTree()
               } else {
-                this.submitDone(false)
+                this.btnLoading = false
                 this.$notice.danger({ title: '操作错误', desc: res.data.message })
               }
             })

@@ -128,9 +128,13 @@
       // 信息项名称校验
       const validateFieldName = (rule, value, callback) => {
         if (isLetterW(value)) {
+          if (this.dialogStatus === 'modify' && value === this.totalData[this.currentIndex].fieldName) {
+            callback()
+            return
+          }
           let hasSame = this.totalData.findIndex(item => item.fieldName === value) > -1
           if (hasSame) {
-            callback(new Error('已存在相同名称的信息项!'))
+            callback(new Error('已存在相同信息项名称!'))
             return
           }
           // 校验是否和现有字段有重复的
@@ -150,12 +154,19 @@
       }
       // 信息项标题校验
       const validateFieldTitle = (rule, value, callback) => {
-        if (value.length > 0) {
-          if (isTitleNotStartNum(value)) { // 中文、字母、数字、()、（）、/和下划线，且数字不能出现在首位的字符串
+        if (isTitleNotStartNum(value)) { // 中文、字母、数字、()、（）、/和下划线，且数字不能出现在首位的字符串
+          if (this.dialogStatus === 'modify' && value === this.totalData[this.currentIndex].fieldTitle) {
             callback()
-          } else {
-            callback(new Error('非数字开头(中文、字母、数字、中英文括号、/和_)'))
+            return
           }
+          let hasSame = this.totalData.findIndex(item => item.fieldTitle === value) > -1
+          if (hasSame) {
+            callback(new Error('已存在相同信息项标题!'))
+            return
+          }
+          callback()
+        } else {
+          callback(new Error('非数字开头(中文、字母、数字、中英文括号、/和_)'))
         }
       }
       // 信息项数据长度校验

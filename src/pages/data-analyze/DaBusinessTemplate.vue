@@ -97,12 +97,16 @@
                 </b-col>
                 <b-col span="4">
                   <div style="padding:108px 0 0 20px;">
-                    <b-button @click="handleOpenInner">提取内置模板</b-button>
-                    <b-button @click="extractParams" type="primary"
-                              transparent :disabled="template.tempSource.length===0"
-                              style="margin: 15px 0 0 0;">
-                      提取模板参数
-                    </b-button>
+                    <p>
+                      <b-button @click="handleOpenInner">提取内置模板</b-button>
+                    </p>
+                    <p>
+                      <b-button @click="extractParams" type="primary"
+                                transparent :disabled="template.tempSource.length===0"
+                                style="margin: 15px 0 0 0;">
+                        提取模板参数
+                      </b-button>
+                    </p>
                   </div>
                 </b-col>
               </b-row>

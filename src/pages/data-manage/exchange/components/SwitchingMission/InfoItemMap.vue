@@ -180,7 +180,7 @@
             render: (h, params) => {
               return h('span', params.row.required ? '是' : '否')
             },
-            width: 88,
+            width: 95,
             align: 'center'
           }
         ],

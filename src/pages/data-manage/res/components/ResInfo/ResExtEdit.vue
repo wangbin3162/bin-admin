@@ -176,7 +176,9 @@
         this.config = params.cfg
         this.resourceKey = params.resourceKey
         this.resourceName = params.resourceName
-        this.items = params.items
+        api.getItemsWithId(this.resourceKey).then(res => {
+          this.items = res.data || []
+        })
         this.targetFields = []
         this.checkItems = this.config.repeatedLineCfg ? this.config.repeatedLineCfg.split(',') : []
         // 查询数据关联同步列表
@@ -260,8 +262,8 @@
           if (res.data.code === '0') {
             this.sync = res.data.data
             this.sync.items = this.sync.items.map(item => ({ ...item, newOne: false, edit: false }))
-            if (this.resourceKey.length > 0) {
-              api.getItemsWithId(this.resourceKey).then(res => {
+            if (this.sync.targetKey.length > 0) {
+              api.getItemsWithId(this.sync.targetKey).then(res => {
                 this.targetFields = res.data || []
               })
             }
@@ -294,10 +296,6 @@
       handleSubmit() {
         this.$refs.form.validate((valid) => {
           if (valid) {
-            if (this.checkNewOne()) {
-              this.$alert.warning({ title: '警告', content: '有未保存的关联同步项，请全部保存后提交' })
-              return
-            }
             // 根据同步方式来判断过滤那种字段
             this.sync.items = this.sync.items.filter(item => {
               if (this.sync.syncType === 'A') {
@@ -308,6 +306,11 @@
                 return item
               }
             })
+            // 先过滤，再判断是否有没保存的
+            if (this.checkNewOne()) {
+              this.$alert.warning({ title: '警告', content: '有未保存的关联同步项，请全部保存后提交' })
+              return
+            }
             this.btnLoading = true
             let fun = this.dialogStatus === 'create' ? api.createSync : api.modifySync
             fun(this.resourceKey, this.sync).then(res => {
