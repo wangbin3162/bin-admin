@@ -548,7 +548,7 @@
           metadataKey: '',
           metadataName: '',
           exInfoDesc: null, // 任务配置明细
-          itemMap: '',
+          itemMap: [],
           strategy: '', // 交换策略
           clearSource: 'n',
           sqlParameter: ''

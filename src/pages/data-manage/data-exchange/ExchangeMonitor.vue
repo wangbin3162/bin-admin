@@ -420,6 +420,7 @@
         api.startTask(id).then(res => {
           if (res.data.code === '0') {
             this.$notice.success({ title: '任务启动成功' })
+            this.handleFilter()
           } else {
             this.$notice.danger({ title: '任务启动失败', desc: res.data.message || '' })
           }
