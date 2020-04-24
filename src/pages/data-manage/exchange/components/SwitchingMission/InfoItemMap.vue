@@ -56,7 +56,7 @@
             <b-icon name="ios-remove-circle-outline" size="20" :style="{...colorDanger,cursor:'pointer'}"
                     @click.native="cancelOneMap(row)"/>&nbsp;
             <b-tooltip content="字典项" theme="light" style="padding-top: 3px;"
-                       v-if="itemMaps[index].type === 'SELECT'">
+                       v-if="row.sourceName.length !==0 && itemMaps[index].type === 'SELECT'">
               <b-icon name="ios-options" size="20" :style="{...colorPrimary,cursor:'pointer'}"
                       @click.native="editDict(row,index)"/>
             </b-tooltip>&nbsp;

@@ -161,8 +161,8 @@
               }
             },
             { title: '文件名', key: 'fileName' },
+            { title: '导入用户', key: 'createUserName' },
             { title: '导入时间', key: 'uploadDate' },
-            { title: '导入组织', key: 'createDeptName' },
             { title: '导入状态', slot: 'jobStatus', width: 170, align: 'center' },
             { title: '操作', slot: 'action', width: 180, align: 'center' }
           ]
@@ -178,8 +178,8 @@
             }
           },
           { title: '任务名称', key: 'jobName' },
-          { title: '创建时间', key: 'createDate' },
-          { title: '导出组织', key: 'createDeptName' },
+          { title: '导出用户', key: 'createUserName' },
+          { title: '导出时间', key: 'createDate' },
           { title: '导出状态', slot: 'jobStatus', width: 150, align: 'center' },
           { title: '数据总量', key: 'totalCount', width: 150, align: 'center' },
           { title: '任务下载', slot: 'action', width: 180, align: 'center' }

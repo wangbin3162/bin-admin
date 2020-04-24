@@ -287,6 +287,9 @@
       // 当前树节点是否可以新增任务
       plainDisable() {
         return this.currentTreeNode ? this.currentTreeNode.code.indexOf('DB_DB') === -1 : true
+      },
+      hasCreateDate() {
+        return this.tableFields.map(item => item.name).join().indexOf('create_date') > 0
       }
     },
     methods: {
@@ -403,6 +406,11 @@
               this.$alert({ type: 'danger', title: '错误', content: '目标资源还有必填字段没有配置映射！' })
               return
             }
+            if (this.mission.strategy === 'increment' && !this.hasCreateDate) {
+              this.$alert({ type: 'danger', title: '错误', content: '交换策略不能配置为自增,因为源资源中不存在create_date字段' })
+              return
+            }
+
             this.btnLoading = true
             let fun = this.dialogStatus === 'create' ? api.createMission : api.modifyMission
             fun(this.mission).then(res => {
@@ -540,7 +548,7 @@
           metadataKey: '',
           metadataName: '',
           exInfoDesc: null, // 任务配置明细
-          itemMap: '',
+          itemMap: [],
           strategy: '', // 交换策略
           clearSource: 'n',
           sqlParameter: ''
