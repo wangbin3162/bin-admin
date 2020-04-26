@@ -9,29 +9,32 @@
         <div class="task-pane" flex="box:mean">
           <div class="block b1" flex>
             <div class="icon">
-              <img src="../../../assets/images/case.svg" alt="">
+              <img src="../../../assets/images/case.svg" alt="" @click="filterByGroupType()">
             </div>
             <div>
               <p class="title">{{ `${analysisMap.type==='all'?'方案':'任务'}总数量` }}</p>
-              <p class="counts"><a style="text-decoration:underline" @click="filterByGroupType()">{{ analysisMap[analysisMap.type==='all'?'totalPlanNum':'totalTasksNum']}}</a></p>
+              <p class="counts"><a @click="filterByGroupType()">{{
+                analysisMap[analysisMap.type==='all'?'totalPlanNum':'totalTasksNum']}}</a></p>
             </div>
           </div>
           <div class="block b2" flex>
             <div class="icon">
-              <img src="../../../assets/images/success.svg" alt="">
+              <img src="../../../assets/images/success.svg" alt="" @click="filterByGroupType('COMPLETED')">
             </div>
             <div>
               <p class="title">{{ `${analysisMap.type==='all'?'方案':'任务'}成功数量` }}</p>
-              <p class="counts"><a style="text-decoration:underline" @click="filterByGroupType('COMPLETED')">{{ analysisMap[analysisMap.type==='all'?'successPlanNum':'successTasksNum']}}</a></p>
+              <p class="counts"><a @click="filterByGroupType('COMPLETED')">{{
+                analysisMap[analysisMap.type==='all'?'successPlanNum':'successTasksNum']}}</a></p>
             </div>
           </div>
           <div class="block b3" flex>
             <div class="icon">
-              <img src="../../../assets/images/failed.svg" alt="">
+              <img src="../../../assets/images/failed.svg" alt="" @click="filterByGroupType('FAILED')">
             </div>
             <div>
               <p class="title">{{ `${analysisMap.type==='all'?'方案':'任务'}失败数量` }}</p>
-              <p class="counts"><a style="text-decoration:underline" @click="filterByGroupType('FAILED')">{{ analysisMap[analysisMap.type==='all'?'failedPlanNum':'failedTasksNum']}}</a></p>
+              <p class="counts"><a @click="filterByGroupType('FAILED')">{{
+                analysisMap[analysisMap.type==='all'?'failedPlanNum':'failedTasksNum']}}</a></p>
             </div>
           </div>
         </div>
@@ -501,11 +504,15 @@
         padding: 2px 30px 2px 20px;
         img {
           width: 50px;
+          cursor: pointer;
         }
       }
       .counts {
         font-size: 24px;
         padding-top: 10px;
+        a {
+          color: rgba(0, 0, 0, .65);
+        }
       }
     }
   }
