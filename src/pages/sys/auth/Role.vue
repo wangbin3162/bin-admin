@@ -92,7 +92,7 @@
             <b-col span="12"></b-col>
           </b-row>
           <b-form-item label="描述" prop="desc">
-            <b-input v-model="role.desc" placeholder="请输入描述" type="textarea"></b-input>
+            <b-input v-model="role.desc" placeholder="请输入描述" type="textarea" :maxlength="100"></b-input>
           </b-form-item>
         </b-form>
         <!--保存提交-->

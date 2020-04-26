@@ -31,7 +31,8 @@
                 字段选择
                 <b-icon :name="visible?'ios-arrow-up':'ios-arrow-down'"></b-icon>
               </b-button>
-              <b-dropdown-menu slot="list" style="padding-left: 5px;width: auto;">
+              <b-dropdown-menu slot="list" v-click-out-side="clickOutSide"
+                               style="padding-left: 5px;width: auto;">
                 <b-checkbox-group v-model="showFields">
                   <b-checkbox v-for="col in columns" :key="col.id" :label="col.fieldName"
                               style="display: block;margin-right: 0;">
@@ -188,6 +189,11 @@
       }
     },
     methods: {
+      clickOutSide() {
+        if (this.visible) {
+          this.visible = false
+        }
+      },
       // filter-Bar:重置查询条件
       resetQuery() {
         this.listQuery = {

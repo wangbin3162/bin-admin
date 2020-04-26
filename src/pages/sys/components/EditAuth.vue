@@ -13,9 +13,11 @@
             </div>
           </div>
         </b-alert>
-        <v-auth-tree ref="authTree" :data="treeData" show-checkbox/>
+        <div style="position: relative;">
+          <v-auth-tree ref="authTree" :data="treeData" show-checkbox/>
 
-        <b-loading fix v-show="treeLoading" show-text="权限加载中..."/>
+          <b-loading fix v-show="treeLoading" show-text="权限加载中..."/>
+        </div>
       </template>
       <!--保存提交-->
       <template slot="footer">
