@@ -13,7 +13,7 @@
             </div>
             <div>
               <p class="title">{{ `${analysisMap.type==='all'?'方案':'任务'}总数量` }}</p>
-              <p class="counts">{{ analysisMap[analysisMap.type==='all'?'totalPlanNum':'totalTasksNum']}}</p>
+              <p class="counts"><a style="text-decoration:underline" @click="filterByGroupType()">{{ analysisMap[analysisMap.type==='all'?'totalPlanNum':'totalTasksNum']}}</a></p>
             </div>
           </div>
           <div class="block b2" flex>
@@ -22,7 +22,7 @@
             </div>
             <div>
               <p class="title">{{ `${analysisMap.type==='all'?'方案':'任务'}成功数量` }}</p>
-              <p class="counts">{{ analysisMap[analysisMap.type==='all'?'successPlanNum':'successTasksNum']}}</p>
+              <p class="counts"><a style="text-decoration:underline" @click="filterByGroupType('COMPLETED')">{{ analysisMap[analysisMap.type==='all'?'successPlanNum':'successTasksNum']}}</a></p>
             </div>
           </div>
           <div class="block b3" flex>
@@ -31,7 +31,7 @@
             </div>
             <div>
               <p class="title">{{ `${analysisMap.type==='all'?'方案':'任务'}失败数量` }}</p>
-              <p class="counts">{{ analysisMap[analysisMap.type==='all'?'failedPlanNum':'failedTasksNum']}}</p>
+              <p class="counts"><a style="text-decoration:underline" @click="filterByGroupType('FAILED')">{{ analysisMap[analysisMap.type==='all'?'failedPlanNum':'failedTasksNum']}}</a></p>
             </div>
           </div>
         </div>
@@ -471,6 +471,14 @@
             })
           }
         })
+      },
+      filterByGroupType(type) {
+        if (typeof type === 'undefined') {
+          this.listQuery.jobStatus = null
+        } else {
+          this.listQuery.jobStatus = type
+        }
+        this.handleFilter()
       }
     }
   }
