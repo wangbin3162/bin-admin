@@ -25,7 +25,7 @@
         <!--中央表格-->
         <b-table :columns="columns" :data="list" :loading="listLoading">
           <template v-slot:jobStatus="{row}">
-            <b-tag v-if="row.jobStatus" :type="statusStyleMap[row.jobStatus]" >
+            <b-tag v-if="row.jobStatus" :type="statusStyleMap[row.jobStatus]">
               {{ statusMap[row.jobStatus] }}
             </b-tag>
             <span v-else>-</span>
@@ -37,7 +37,7 @@
               查看
             </b-button>
             <b-button v-else class="link" type="text" :disabled="row.jobStatus!=='COMPLETED'"
-                      @click="handleDownloadExport(row.id)">
+                      @click="handleDownloadExport(row.id,row.createDate,'导出记录')">
               下载
             </b-button>
           </template>
@@ -90,7 +90,8 @@
                 <v-simple-label label="错误数据量">
                   {{ importDetail.validationCount }}
                   <b-button type="text" v-if="importDetail.validationCount>0"
-                            @click="handleDownloadExport(importDetail.batchInfoId)">下载：错误数据
+                            @click="handleDownloadExport(importDetail.batchInfoId,importDetail.uploadDate,'导入记录-错误报告')">
+                    下载：错误数据
                   </b-button>
                 </v-simple-label>
               </b-col>
@@ -275,8 +276,10 @@
         return arr
       },
       // 下载导出文件
-      handleDownloadExport(id) {
-        let fileName = `${this.typeFrom === 'user' ? '用户' : '部门'}.xlsx`
+      handleDownloadExport(id, time, title = '') {
+        const type = this.typeFrom === 'user' ? '用户' : '部门'
+        const parseTime = this.$util.parseTime(time, '{y}{m}{d}')
+        const fileName = `${type}${title}${parseTime}.xlsx`
         if (!this.downloadEvent) { // 点击下载事件，需要函数防抖动
           this.downloadEvent = this.$util.debounce((id) => {
             downloadExport(id).then(res => {
