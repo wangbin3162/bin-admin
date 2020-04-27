@@ -308,7 +308,7 @@
         let metadata = { ...row }
         this.$confirm({
           title: '确实要删除当前元信息吗？',
-          content: '引用的资源信息将不可用!',
+          content: metadata.hasResDepend ? '引用的资源信息将不可用!' : '',
           loading: true,
           okType: 'danger',
           onOk: () => {
@@ -330,7 +330,7 @@
         let metadata = { ...row }
         this.$confirm({
           title: '确定要发布本条元信息？',
-          content: '引用的资源信息将不可用!',
+          content: metadata.hasResDepend ? '引用的资源信息将不可用!' : '',
           loading: true,
           okType: 'danger',
           onOk: () => {

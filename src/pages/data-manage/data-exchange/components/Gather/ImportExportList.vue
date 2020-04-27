@@ -75,16 +75,8 @@
             </b-row>
             <b-row>
               <b-col span="8">
-                <v-simple-label label="原文件名">{{ importDetail.fileName }}</v-simple-label>
-              </b-col>
-              <b-col span="8">
-                <v-simple-label label="文件大小">{{ importDetail.fileLength }}</v-simple-label>
-              </b-col>
-              <b-col span="8">
                 <v-simple-label label="数据总量">{{ importDetail.totalCount }}</v-simple-label>
               </b-col>
-            </b-row>
-            <b-row>
               <b-col span="8">
                 <v-simple-label label="错误数据量">
                   {{ importDetail.validationCount }}

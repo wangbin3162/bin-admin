@@ -222,6 +222,7 @@
             <b-col span="18">
               <v-key-label label="资源名称" is-half is-first>{{ resource.resourceName }}</v-key-label>
               <v-key-label label="所属类目" is-half>{{ resource.dirClassifyName }}</v-key-label>
+              <v-key-label label="资源代码">{{ resource.resourceCode }}</v-key-label>
               <v-key-label label="资源摘要">{{ resource.resourceDesc }}</v-key-label>
               <v-key-label label="主体类别" is-half is-first>{{ personClassMap[resource.personClass] }}</v-key-label>
               <v-key-label label="共享属性" is-half>{{ shareMap[resource.sharedType] }}</v-key-label>
