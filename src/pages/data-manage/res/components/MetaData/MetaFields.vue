@@ -30,19 +30,13 @@
              :title="dialogTitle" :mask-closable="false">
       <div class="p10">
         <b-form :model="metaItem" ref="form" :rules="ruleValidate" :label-width="100">
-          <b-row>
-            <b-col span="12">
-              <b-form-item label="名称" prop="fieldName">
-                <b-input v-model.trim="metaItem.fieldName" placeholder="请输入名称" clearable :maxlength="30"
-                         :disabled="dialogStatus === 'modify' && !!metaItem.id"></b-input>
-              </b-form-item>
-            </b-col>
-            <b-col span="12">
-              <b-form-item label="标题" prop="fieldTitle">
-                <b-input v-model.trim="metaItem.fieldTitle" placeholder="请输入标题" clearable :maxlength="64"></b-input>
-              </b-form-item>
-            </b-col>
-          </b-row>
+          <b-form-item label="名称" prop="fieldName">
+            <b-input v-model.trim="metaItem.fieldName" placeholder="请输入名称" clearable :maxlength="30"
+                     :disabled="dialogStatus === 'modify' && !!metaItem.id"></b-input>
+          </b-form-item>
+          <b-form-item label="标题" prop="fieldTitle">
+            <b-input v-model.trim="metaItem.fieldTitle" placeholder="请输入标题" clearable :maxlength="64"></b-input>
+          </b-form-item>
           <b-row>
             <b-col span="12">
               <b-form-item label="数据类型" prop="dataType">
