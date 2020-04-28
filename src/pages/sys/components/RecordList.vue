@@ -273,7 +273,7 @@
         const parseTime = this.$util.parseTime(time, '{y}{m}{d}')
         const fileName = `${type}${title}${parseTime}.xlsx`
         if (!this.downloadEvent) { // 点击下载事件，需要函数防抖动
-          this.downloadEvent = this.$util.debounce((id) => {
+          this.downloadEvent = this.$util.debounce((id, fileName) => {
             downloadExport(id).then(res => {
               if (res.status === 200) {
                 Util.downloadFile(res.data, fileName)
@@ -281,7 +281,7 @@
             })
           }, 1000)
         }
-        this.downloadEvent(id)
+        this.downloadEvent(id, fileName)
       }
     }
   }
