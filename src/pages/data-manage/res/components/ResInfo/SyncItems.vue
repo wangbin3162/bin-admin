@@ -5,7 +5,7 @@
       <b-table disabled-hover :data="mapList" :columns="mapColumns" size="small">
         <!--目标信息项-->
         <template v-slot:targetField="{row,index}">
-          <b-select v-if="row.edit" v-model="mapList[index].targetField" size="small" append-to-body clearable>
+          <b-select v-if="row.edit" v-model="mapList[index].targetField" size="small" append-to-body>
             <b-option v-for="item in targetFieldsOptions" :key="item" :value="item">{{item}}</b-option>
           </b-select>
           <span v-else>{{ row.targetField }}</span>
@@ -22,7 +22,7 @@
           <!--选择源字段-->
           <template v-if="row.valType==='S'">
             <b-select v-if="row.edit" v-model="mapList[index].sourceField" size="small"
-                      append-to-body clearable style="width: 200px;">
+                      append-to-body style="width: 200px;">
               <b-option v-for="item in sourceFieldsOptions" :key="item" :value="item">{{item}}</b-option>
             </b-select>
             <span v-else>名称：{{ row.sourceField }}</span>
@@ -73,7 +73,7 @@
       <b-table disabled-hover :data="conditionList" :columns="conditionColumns" size="small">
         <!--目标信息项-->
         <template v-slot:targetField="{row,index}">
-          <b-select v-if="row.edit" v-model="conditionList[index].targetField" size="small" append-to-body clearable>
+          <b-select v-if="row.edit" v-model="conditionList[index].targetField" size="small" append-to-body>
             <b-option v-for="(item,index) in targetFields"
                       :key="item.fieldName+'-'+index" :value="item.fieldName">{{item.fieldName}}
             </b-option>
@@ -82,8 +82,7 @@
         </template>
         <!--条件-->
         <template v-slot:condition="{row,index}">
-          <b-select v-if="row.edit" v-model="conditionList[index].condition" size="small"
-                    append-to-body clearable>
+          <b-select v-if="row.edit" v-model="conditionList[index].condition" size="small" append-to-body>
             <b-option v-for="(value,k) in conditionOptions" :key="k" :value="k">{{value}}</b-option>
           </b-select>
           <span v-else>{{ conditionOptions[row.condition] }}</span>
@@ -100,7 +99,7 @@
           <!--选择源字段-->
           <template v-if="row.valType==='S'">
             <b-select v-if="row.edit" v-model="conditionList[index].sourceField" size="small"
-                      append-to-body clearable style="width: 200px;">
+                      append-to-body style="width: 200px;">
               <b-option v-for="item in sourceFieldsOptions" :key="item" :value="item">{{item}}</b-option>
             </b-select>
             <span v-else>名称：{{ row.sourceField }}</span>
@@ -371,21 +370,22 @@
         this.emitValue()
       },
       handleSave(row, index, type) {
+        let currentRow = type === 'M' ? this.mapList[index] : this.conditionList[index]
         // 判断校验条件
-        if (row.targetField.length === 0) {
+        if (currentRow.targetField.length === 0) {
           this.$message({ type: 'danger', content: '目标信息项必选' })
           return
         }
-        if (row.valType === 'S' && row.sourceField.length === 0) {
+        if (type === 'C' && currentRow.condition.length === 0) {
+          this.$message({ type: 'danger', content: '关联条件必选' })
+          return
+        }
+        if (currentRow.valType === 'S' && currentRow.sourceField.length === 0) {
           this.$message({ type: 'danger', content: '源信息值必选' })
           return
         }
-        if (row.valType === 'N' && (row.paramName.length === 0 || row.paramValue.length === 0)) {
+        if (currentRow.valType === 'N' && (currentRow.paramName.length === 0 || currentRow.paramValue.length === 0)) {
           this.$message({ type: 'danger', content: '常量名称和值必填' })
-          return
-        }
-        if (type === 'C' && row.condition.length === 0) {
-          this.$message({ type: 'danger', content: '关联条件必选' })
           return
         }
         // 判断条件结束，更新状态
