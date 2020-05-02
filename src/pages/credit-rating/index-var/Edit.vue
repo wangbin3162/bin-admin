@@ -69,10 +69,15 @@
           <b-button type="primary" @click="handleSubmit" :loading="btnLoading">提 交</b-button>
         </template>
       </v-edit-wrap>
+
+      <v-edit-wrap>
+
+      </v-edit-wrap>
     </page-header-wrap>
 
     <EditBelongType :open="openBelongType" @close="openBelongType = false"></EditBelongType>
     <EditSelectVar :open="openSelectVar" @close="openSelectVar = false"></EditSelectVar>
+    <EditParamManage></EditParamManage>
   </div>
 </template>
 
@@ -81,6 +86,7 @@
   import permission from '../../../common/mixins/permission'
   import EditBelongType from '@/pages/credit-rating/index-var/EditBelongType'
   import EditSelectVar from '@/pages/credit-rating/index-var/EditSelectVar'
+  import EditParamManage from '@/pages/credit-rating/index-var/EditParamManage'
 
   export default {
     name: 'IndexVarEdit',
@@ -88,7 +94,8 @@
     props: [],
     components: {
       EditBelongType,
-      EditSelectVar
+      EditSelectVar,
+      EditParamManage
     },
     data () {
       return {
