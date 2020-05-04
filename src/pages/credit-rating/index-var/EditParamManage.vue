@@ -1,6 +1,7 @@
 <template>
   <div class="edit-param-manage">
     <v-table-wrap>
+      <h3 style="margin: 20px 0;">参数管理</h3>
       <b-table :columns="columns" :data="list">
         <template v-slot:name="scope">
           <b-input v-model="scope.row.name"></b-input>

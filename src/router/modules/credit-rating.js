@@ -17,6 +17,14 @@ export default {
       meta: {
         title: '指标变量'
       }
+    },
+    {
+      path: 'indexManage',
+      name: 'IndexManage',
+      component: () => import(/* webpackChunkName: "IndexManage" */ '../../pages/credit-rating/index-manage'),
+      meta: {
+        title: '指标管理'
+      }
     }
   ]
 }

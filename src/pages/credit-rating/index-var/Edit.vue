@@ -2,7 +2,7 @@
   <div>
     <page-header-wrap :title="title" show-close @on-close="$emit('close')">
       <v-edit-wrap>
-        <b-form :model="form" ref="form" :rules="rulus" :label-width="100">
+        <b-form :model="form" ref="form" :rules="rules" :label-width="100">
           <b-row>
             <b-col span="12">
               <b-form-item label="变量名称" prop="">
@@ -70,14 +70,11 @@
         </template>
       </v-edit-wrap>
 
-      <v-edit-wrap>
-
-      </v-edit-wrap>
+      <EditParamManage></EditParamManage>
     </page-header-wrap>
 
     <EditBelongType :open="openBelongType" @close="openBelongType = false"></EditBelongType>
     <EditSelectVar :open="openSelectVar" @close="openSelectVar = false"></EditSelectVar>
-    <EditParamManage></EditParamManage>
   </div>
 </template>
 
@@ -102,7 +99,7 @@
         cache: '',
         selected: 1,
         form: {},
-        rulus: {},
+        rules: {},
         openBelongType: false,
         openSelectVar: false
       }
