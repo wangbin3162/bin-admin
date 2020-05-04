@@ -12,7 +12,8 @@
           </b-select>
         </template>
         <template v-slot:sort>
-          <b-button type="text">↑↓</b-button>
+          <b-button type="text">↑</b-button>
+          <b-button type="text">↓</b-button>
         </template>
         <template v-slot:action>
           <b-button type="text">删除</b-button>

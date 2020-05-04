@@ -42,7 +42,9 @@
       </v-table-wrap>
     </page-header-wrap>
     <!-- 编辑组件 -->
-    <Edit v-show="isEdit" @close="handleCancel"></Edit>
+    <Edit v-show="isEdit" :title="editTitle" @close="handleCancel"></Edit>
+    <!-- 详情组件 -->
+    <Detail v-show="isCheck" :title="editTitle" @close="handleCancel"></Detail>
   </div>
 </template>
 
@@ -50,15 +52,18 @@
   import commonMixin from '../../../common/mixins/mixin'
   import permission from '../../../common/mixins/permission'
   import Edit from './Edit'
+  import Detail from '@/pages/credit-rating/index-var/Detail'
 
   export default {
     name: 'IndexVar',
     mixins: [commonMixin, permission],
     components: {
-      Edit
+      Edit,
+      Detail
     },
     data () {
       return {
+        moduleName: '变量',
         cache: '',
         list: [
           {
@@ -96,10 +101,10 @@
         this.openEditPage('create')
       },
       handleCheck () {
-
+        this.openEditPage('check')
       },
       handleModify () {
-
+        this.openEditPage('modify')
       },
       handleRemove () {
 

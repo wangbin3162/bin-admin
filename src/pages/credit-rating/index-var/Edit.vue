@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-header-wrap show-close @on-close="$emit('close')">
+    <page-header-wrap :title="title" show-close @on-close="$emit('close')">
       <v-edit-wrap>
         <b-form :model="form" ref="form" :rules="rulus" :label-width="100">
           <b-row>
@@ -91,7 +91,7 @@
   export default {
     name: 'IndexVarEdit',
     mixins: [commonMixin, permission],
-    props: [],
+    props: ['title'],
     components: {
       EditBelongType,
       EditSelectVar,
