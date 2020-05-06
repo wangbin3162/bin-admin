@@ -18,7 +18,7 @@
       </div>
 
       <div slot="footer">
-        <b-button @click="showDialog = false">取 消</b-button>
+        <b-button @click="showDialog = false ">取 消</b-button>
         <b-button type="primary" @click="submitHandler" :loading="btnLoading">提 交</b-button>
       </div>
     </b-modal>
@@ -26,7 +26,7 @@
 </template>
 
 <script>
-  import { createLevelStandard, updateLevelStandard } from '@/api/credit-rating/level-standard.api'
+  import { createLevelStandard } from '@/api/credit-rating/level-standard.api'
 
   export default {
     name: 'levelStandardEdit',
@@ -66,7 +66,7 @@
       }
     },
     watch: {
-      editData: {
+      editData: { // 观察dai'bian'ji
         handler (newVal, oldVal) {
           this.init(newVal)
         },
@@ -79,8 +79,8 @@
           return this.openEdit
         },
         set (val) {
-          // 通过setter hack 弹框的v-model
-          this.$emit('close') // 发送关闭弹框的事件
+          // 通过setter捕获模态框组件的v-model设置，然后发送关闭事件。
+          if (val === false) this.$emit('close')
         }
       }
     },
@@ -91,7 +91,7 @@
       init () {
         // editData为null表示新增反则表示编辑
         if (this.editData) {
-          this.form = JSON.parse(JSON.stringify(this.editData))
+          this.form = this.editData
         } else {
           this.form = {
             ratingName: '',
@@ -101,22 +101,15 @@
           }
         }
       },
-      // 关闭弹框时还原form，并发送close事件
+      // 关闭弹框时还原form
       closeHandler () {
-        this.$refs.form.resetFields()
-        this.$emit('closed') // 发送关闭弹框动画结束的事件
+        // this.$refs.form.resetFields()
       },
       // 提交表单
       submitHandler () {
-        this.$refs.form.validate().then(async valid => {
+        this.$refs.form.validate().then(valid => {
           if (valid) {
-            this.btnLoading = true
-            if (this.editData === null) { // 创建
-              await this.createLevelStandard(this.form)
-            } else { // 编辑
-              await this.updateLevelStandard(this.form)
-            }
-            this.btnLoading = false
+            this.createLevelStandard(this.form)
           }
         })
       },
@@ -124,22 +117,6 @@
       async createLevelStandard (params) {
         try {
           const [success, errorMsg] = await createLevelStandard(params)
-          if (success) {
-            this.$message({ type: 'success', content: '操作成功' })
-            this.$emit('success') // 发送成功事件
-            this.showDialog = false // 关闭编辑框
-          } else {
-            this.$notice.danger({ title: '操作错误', desc: errorMsg })
-          }
-        } catch (error) {
-          this.$notice.danger({ title: '操作错误', desc: error })
-          console.log(error)
-        }
-      },
-      // 编辑等级标准
-      async updateLevelStandard (params) {
-        try {
-          const [success, errorMsg] = await updateLevelStandard(params)
           if (success) {
             this.$message({ type: 'success', content: '操作成功' })
             this.$emit('success') // 发送成功事件
