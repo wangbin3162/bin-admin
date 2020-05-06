@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-header-wrap>
+    <page-header-wrap v-show="isNormal || isEdit">
       <v-table-wrap>
         <v-filter-bar>
           <v-filter-item title="名称">
@@ -10,8 +10,8 @@
         </v-filter-bar>
 
         <v-table-tool-bar>
-            <b-button type="primary" icon="ios-add-circle-outline" @click="handleCreate">新 增</b-button>
-          </v-table-tool-bar>
+          <b-button type="primary" icon="ios-add-circle-outline" @click="handleCreate">新 增</b-button>
+        </v-table-tool-bar>
 
         <b-table :columns="columns" :data="list" :loading="listLoading">
           <template v-slot:ratingName="scope">
@@ -39,6 +39,9 @@
       </v-table-wrap>
     </page-header-wrap>
 
+    <Detail v-if="isCheck" :title="editTitle"
+      :detailData="detailData" @close="handleCancel"></Detail>
+
     <Edit :openEdit="openEdit" :editData="editData"
       :title="editTitle" @close="handleClose" @closed="handleClosed"
       @success="searchList"></Edit>
@@ -49,13 +52,15 @@
   import commonMixin from '../../../common/mixins/mixin'
   import permission from '../../../common/mixins/permission'
   import Edit from '@/pages/credit-rating/level-standard/Edit'
+  import Detail from '@/pages/credit-rating/level-standard/Detail'
   import { getLevelStandardList, deleteLevelStandard } from '@/api/credit-rating/level-standard.api'
 
   export default {
     name: 'LevelStandard',
     mixins: [commonMixin, permission],
     components: {
-      Edit
+      Edit,
+      Detail
     },
     data () {
       return {
@@ -70,6 +75,7 @@
           { title: '等级明细', slot: 'levelDetails' },
           { title: '操作', slot: 'action', width: 120 }
         ],
+        detailData: {},
         editData: null, // 需要编辑的数据，新增时设为null
         openEdit: false
       }
@@ -92,7 +98,8 @@
         this.openEdit = true
       },
       handleCheck (row) {
-        console.log(row)
+        this.detailData = row
+        this.openEditPage('check')
       },
       handleLevelStandard () {
 
