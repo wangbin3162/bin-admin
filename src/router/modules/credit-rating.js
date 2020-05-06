@@ -25,6 +25,14 @@ export default {
       meta: {
         title: '指标管理'
       }
+    },
+    {
+      path: 'levelStandard',
+      name: 'LevelStanDard',
+      component: () => import(/* webpackChunkName: "LevelStanDard" */ '../../pages/credit-rating/level-standard'),
+      meta: {
+        title: '等级标准'
+      }
     }
   ]
 }
