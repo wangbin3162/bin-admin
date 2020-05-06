@@ -11,7 +11,7 @@
         <b-input v-model="scope.row.score"></b-input>
       </template>
       <template v-slot:sort>
-        ↑ ↓
+        <v-sort-arrow></v-sort-arrow>
       </template>
       <template v-slot:action>
         <b-button type="text">
@@ -34,7 +34,7 @@
         <b-input v-model="scope.row.score"></b-input>
       </template>
       <template v-slot:sort>
-        ↑ ↓
+        <v-sort-arrow></v-sort-arrow>
       </template>
       <template v-slot:action>
         <b-button type="text">
