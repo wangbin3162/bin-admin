@@ -29,6 +29,31 @@ export async function getLevelStandardList (query) {
 
 /**
  * @author haodongdong
+ * @description 根据id获取详情
+ * @param {*} ratingId
+ * @returns Promise
+ */
+export async function getDetailByRatingId(ratingId) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/api/eval/rating/detail',
+        method: 'get',
+        params: { id: ratingId }
+      })
+      if (res.data.successful) {
+        resolve(res.data.data)
+      } else {
+        reject(new Error(res.data.message))
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
  * @description 创建等级标准
  * @param {*} params 新增form数据
  * @returns Promise

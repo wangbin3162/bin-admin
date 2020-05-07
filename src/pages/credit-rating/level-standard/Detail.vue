@@ -12,7 +12,7 @@
         </template>
 
         <div class="table">
-          <b-table :columns="columns" :data="list"></b-table>
+          <b-table :columns="columns" :data="detailData.items"></b-table>
         </div>
       </v-edit-wrap>
     </page-header-wrap>
@@ -20,26 +20,36 @@
 </template>
 
 <script>
+  import { getDetailByRatingId } from '../../../api/credit-rating/level-standard.api'
+
   export default {
     name: 'levelStandardDetail',
-    props: ['id', 'title', 'detailData'],
+    props: ['id', 'title', 'ratingId'],
     data () {
       return {
-        list: this.detailData.items || [],
+        detailData: {},
         columns: [
           { type: 'index', width: 50, align: 'center' },
           { title: '等级', key: 'levelName' },
           { title: '上限值', key: 'upScore' },
           { title: '下限值', key: 'dnScore' },
-          { title: '描述', key: 'levelDesc' }
+          { title: '描述', key: 'levelDesc', ellipsis: true, tooltip: true }
         ]
       }
     },
     created () {
-
+      this.getDetailByRatingId()
     },
     methods: {
-
+      async getDetailByRatingId () {
+        try {
+          const res = await getDetailByRatingId(this.ratingId)
+          this.detailData = res
+        } catch (error) {
+          console.error(error)
+          this.$notice.danger({ title: '读取错误', desc: error })
+        }
+      }
     }
   }
 </script>

@@ -42,7 +42,7 @@
     <SetScore v-if="dialogStatus === 'setScore'" :ratingId="ratingId" @close="handleCancel"></SetScore>
 
     <Detail v-if="isCheck" :title="editTitle"
-      :detailData="detailData" @close="handleCancel"></Detail>
+      :ratingId="ratingId" @close="handleCancel"></Detail>
 
     <Edit :openEdit="openEdit" :editData="editData"
       :title="editTitle" @close="handleClose" @closed="handleClosed"
@@ -79,7 +79,6 @@
           { title: '等级明细', slot: 'levelDetails' },
           { title: '操作', slot: 'action', width: 120 }
         ],
-        detailData: {},
         editData: null, // 需要编辑的数据，新增时设为null
         openEdit: false,
         ratingId: null
@@ -103,7 +102,7 @@
         this.openEdit = true
       },
       handleCheck (row) {
-        this.detailData = row
+        this.ratingId = row.id
         this.openEditPage('check')
       },
       handleLevelStandard (id) {
