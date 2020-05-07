@@ -1,7 +1,7 @@
 <template>
   <div class="level-standard-edit">
     <b-modal v-model="showDialog" :title="title" width="500"
-      @on-ok="submitHandler" @on-hidden="closeHandler">
+      @on-ok="submitHandler" @on-hidden="closeHandler" @on-visible-change="handleVisibleChange">
       <div class="form-con">
         <b-form :model="form" ref="form" :rules="rules"
           label-position="top" :label-width="100">
@@ -65,14 +65,14 @@
         btnLoading: false
       }
     },
-    watch: {
-      editData: {
-        handler (newVal, oldVal) {
-          this.init(newVal)
-        },
-        immediate: true
-      }
-    },
+    // watch: {
+    //   editData: {
+    //     handler (newVal, oldVal) {
+    //       this.init(newVal)
+    //     },
+    //     immediate: true
+    //   }
+    // },
     computed: {
       showDialog: {
         get () {
@@ -105,6 +105,12 @@
       closeHandler () {
         this.$refs.form.resetFields()
         this.$emit('closed') // 发送关闭弹框动画结束的事件
+      },
+      // 模态框可见状态回调，用于打开时初始化编辑数据
+      handleVisibleChange (visible) {
+        if (visible) {
+          this.init(this.editData)
+        }
       },
       // 提交表单
       submitHandler () {
