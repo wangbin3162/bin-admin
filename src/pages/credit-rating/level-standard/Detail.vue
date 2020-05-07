@@ -2,6 +2,7 @@
   <div class="level-standard-detail">
     <page-header-wrap :title="title" show-close @on-close="$emit('close')">
       <v-edit-wrap>
+        <b-loading fix show-text="loading" v-if="loading"></b-loading>
         <div>
           <v-key-label label="名称">{{ detailData.ratingName }}</v-key-label>
           <v-key-label label="编码">{{ detailData.ratingCode }}</v-key-label>
@@ -23,10 +24,11 @@
   import { getDetailByRatingId } from '../../../api/credit-rating/level-standard.api'
 
   export default {
-    name: 'levelStandardDetail',
+    name: 'LevelStandardDetail',
     props: ['id', 'title', 'ratingId'],
     data () {
       return {
+        loading: false,
         detailData: {},
         columns: [
           { type: 'index', width: 50, align: 'center' },
@@ -42,6 +44,7 @@
     },
     methods: {
       async getDetailByRatingId () {
+        this.loading = true
         try {
           const res = await getDetailByRatingId(this.ratingId)
           this.detailData = res
@@ -49,6 +52,7 @@
           console.error(error)
           this.$notice.danger({ title: '读取错误', desc: error })
         }
+        this.loading = false
       }
     }
   }

@@ -26,10 +26,10 @@
 </template>
 
 <script>
-  import { createLevelStandard, updateLevelStandard } from '@/api/credit-rating/level-standard.api'
+  import { createLevelStandard, updateLevelStandard } from '../../../api/credit-rating/level-standard.api'
 
   export default {
-    name: 'levelStandardEdit',
+    name: 'LevelStandardEdit',
     props: {
       title: {
         type: String

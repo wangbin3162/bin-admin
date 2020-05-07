@@ -39,24 +39,24 @@
       </v-table-wrap>
     </page-header-wrap>
 
-    <SetScore v-if="dialogStatus === 'setScore'" :ratingId="ratingId" @close="handleCancel"></SetScore>
+    <set-score v-if="dialogStatus === 'setScore'" :ratingId="ratingId" @close="handleCancel"></set-score>
 
-    <Detail v-if="isCheck" :title="editTitle"
-      :ratingId="ratingId" @close="handleCancel"></Detail>
+    <detail v-if="isCheck" :title="editTitle"
+      :ratingId="ratingId" @close="handleCancel"></detail>
 
-    <Edit :openEdit="openEdit" :editData="editData"
+    <edit :openEdit="openEdit" :editData="editData"
       :title="editTitle" @close="handleClose" @closed="handleClosed"
-      @success="searchList"></Edit>
+      @success="searchList"></edit>
   </div>
 </template>
 
 <script>
   import commonMixin from '../../../common/mixins/mixin'
   import permission from '../../../common/mixins/permission'
-  import Edit from '@/pages/credit-rating/level-standard/Edit'
-  import Detail from '@/pages/credit-rating/level-standard/Detail'
-  import SetScore from '@/pages/credit-rating/level-standard/SetScore'
-  import { getLevelStandardList, deleteLevelStandard } from '@/api/credit-rating/level-standard.api'
+  import Edit from './Edit'
+  import Detail from './Detail'
+  import SetScore from './SetScore'
+  import { getLevelStandardList, deleteLevelStandard } from '../../../api/credit-rating/level-standard.api'
 
   export default {
     name: 'LevelStandard',
