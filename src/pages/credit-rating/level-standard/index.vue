@@ -18,7 +18,7 @@
             <b-button type="text" @click="handleCheck(scope.row)">{{ scope.row.ratingName }}</b-button>
           </template>
           <template v-slot:levelDetails="scope">
-            <b-button type="text" @click="handleLevelStandard(scope.row)">设置评分标准</b-button>
+            <b-button type="text" @click="handleLevelStandard(scope.row.id)">设置评分标准</b-button>
           </template>
           <!-- 操作栏 -->
           <template v-slot:action="scope">
@@ -39,6 +39,8 @@
       </v-table-wrap>
     </page-header-wrap>
 
+    <SetScore v-if="dialogStatus === 'setScore'" :ratingId="ratingId" @close="handleCancel"></SetScore>
+
     <Detail v-if="isCheck" :title="editTitle"
       :detailData="detailData" @close="handleCancel"></Detail>
 
@@ -53,6 +55,7 @@
   import permission from '../../../common/mixins/permission'
   import Edit from '@/pages/credit-rating/level-standard/Edit'
   import Detail from '@/pages/credit-rating/level-standard/Detail'
+  import SetScore from '@/pages/credit-rating/level-standard/SetScore'
   import { getLevelStandardList, deleteLevelStandard } from '@/api/credit-rating/level-standard.api'
 
   export default {
@@ -60,7 +63,8 @@
     mixins: [commonMixin, permission],
     components: {
       Edit,
-      Detail
+      Detail,
+      SetScore
     },
     data () {
       return {
@@ -77,7 +81,8 @@
         ],
         detailData: {},
         editData: null, // 需要编辑的数据，新增时设为null
-        openEdit: false
+        openEdit: false,
+        ratingId: null
       }
     },
     created () {
@@ -101,8 +106,9 @@
         this.detailData = row
         this.openEditPage('check')
       },
-      handleLevelStandard () {
-
+      handleLevelStandard (id) {
+        this.ratingId = id
+        this.dialogStatus = 'setScore'
       },
       handleModify (row) {
         this.openEditPage('modify')
