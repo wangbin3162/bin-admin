@@ -2,7 +2,7 @@
   <div class="level-standard-set-score">
     <page-header-wrap title="评分标准" show-close @on-close="$emit('close')">
       <v-edit-wrap>
-        <div class="table-con">
+        <div class="table-con" slot="full">
           <b-table :columns="columns" :data="list" :loading="loading">
             <template v-slot:levelCode="{ index }">
               <b-input v-model="list[index].levelCode" :class="{ error: list[index].levelCodeError }"
@@ -31,8 +31,10 @@
               <b-button type="text" @click="remove(row.orderNo)">移除</b-button>
             </template>
           </b-table>
+
+          <b-button style="margin-top: 15px; width: 100%;" type="primary" plain @click="addLast()">+ 添加</b-button>
+          <p class="tip">标度，符合统计区间按 [最低值下限，最高值上限] 进行计算</p>
         </div>
-        <b-button style="width: 100%;" type="primary" plain @click="addLast()">+ 添加</b-button>
 
         <template slot="footer">
           <b-button @click="$emit('close')">取 消</b-button>
@@ -309,7 +311,12 @@
 <style lang="stylus" scoped>
 .level-standard-set-score {
   .table-con {
-    margin-bottom: 15px;
+
+    .tip {
+      margin-top: 15px;
+      padding: 10px;
+      background-color: #fafafa;
+    }
   }
 }
 </style>
