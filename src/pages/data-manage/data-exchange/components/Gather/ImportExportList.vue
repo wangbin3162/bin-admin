@@ -74,10 +74,10 @@
               </b-col>
             </b-row>
             <b-row>
-              <b-col span="8">
+              <b-col span="6">
                 <v-simple-label label="数据总量">{{ importDetail.totalCount }}</v-simple-label>
               </b-col>
-              <b-col span="8">
+              <b-col span="6">
                 <v-simple-label label="错误数据量">
                   {{ importDetail.validationCount }}
                   <b-button type="text" v-if="importDetail.validationCount>0"
@@ -85,8 +85,11 @@
                   </b-button>
                 </v-simple-label>
               </b-col>
-              <b-col span="8">
-                <v-simple-label label="成功数据量">{{ importDetail.cachedCount }}</v-simple-label>
+              <b-col span="6">
+                <v-simple-label label="重复数据量">{{ importDetail.repeatCount }}</v-simple-label>
+              </b-col>
+              <b-col span="6">
+                <v-simple-label label="入库数据量">{{ importDetail.cachedCount }}</v-simple-label>
               </b-col>
             </b-row>
           </div>
