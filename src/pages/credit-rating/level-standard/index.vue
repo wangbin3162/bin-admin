@@ -75,7 +75,7 @@
           { type: 'index', width: 50, align: 'center' },
           { title: '名称', slot: 'ratingName' },
           { title: '编码', key: 'ratingCode' },
-          { title: '描述', key: 'ratingDesc' },
+          { title: '描述', key: 'ratingDesc', ellipsis: true, tooltip: true },
           { title: '等级明细', slot: 'levelDetails' },
           { title: '操作', slot: 'action', width: 120 }
         ],
