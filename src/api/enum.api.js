@@ -131,3 +131,125 @@ export function getTransmitKind() {
 export function getExchangeStatus() {
   return request.get('/api/enum/dir/cfg/status')
 }
+
+// 以下为信用评级指标管理内枚举值
+
+/**
+ * @author haodongdong
+ * @description 3.1.1.1 变量类型枚举
+ * @returns Promise
+ */
+export async function getEvalVarType () {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request.get('/api/enum/eval/varType')
+      if (res.data.successful) {
+        resolve(res.data.data)
+      } else {
+        reject(new Error(res.data.message))
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
+ * @description 变量参数类型枚举
+ * @returns Promise
+ */
+export async function getEvalParamType () {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request.get('/api/enum/eval/paramType')
+      if (res.data.successful) {
+        resolve(res.data.data)
+      } else {
+        reject(new Error(res.data.message))
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
+ * @description 数据类型枚举
+ * @returns Promise
+ */
+export async function getEvalDataType () {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request.get('/api/enum/eval/dataType')
+      if (res.data.successful) {
+        resolve(res.data.data)
+      } else {
+        reject(new Error(res.data.message))
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
+ * @description 指标性质枚举
+ * @returns Promise
+ */
+export async function getEvalNature () {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request.get('/api/enum/eval/evalNature')
+      if (res.data.successful) {
+        resolve(res.data.data)
+      } else {
+        reject(new Error(res.data.message))
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
+ * @description 计算类型枚举
+ * @returns Promise
+ */
+export async function getEvalCalcType () {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request.get('/api/enum/eval/calcType')
+      if (res.data.successful) {
+        resolve(res.data.data)
+      } else {
+        reject(new Error(res.data.message))
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
+ * @description 标度枚举
+ * @returns Promise
+ */
+export async function getEvalScale () {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request.get('/api/enum/eval/evalScale')
+      if (res.data.successful) {
+        resolve(res.data.data)
+      } else {
+        reject(new Error(res.data.message))
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
