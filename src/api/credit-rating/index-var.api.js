@@ -31,3 +31,28 @@
     }
   })
 }
+
+/**
+ * @author haodongdong
+ * @description 创建指标变量
+ * @param {*} params
+ * @returns Promise
+ */
+export async function createIndexVar (params) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/api/eval/var/create',
+          method: 'post',
+          data: params
+      })
+      if (res.data.successful) {
+        resolve([true, undefined])
+      } else {
+        resolve([false, res.data.message])
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
