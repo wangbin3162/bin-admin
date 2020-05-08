@@ -264,6 +264,7 @@
           try {
             const [success, errorMsg] = await batchSave(obj)
             if (success) {
+              this.$emit('close')
               this.$message({ type: 'success', content: '操作成功' })
             } else {
               this.$notice.danger({ title: '操作错误', desc: errorMsg })
