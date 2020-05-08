@@ -1,4 +1,8 @@
-// 用户管理相关请求
+/**
+ * @author haodongdong
+ * @description 信用评级下等级标准相关请求
+ */
+
 import request from '../request'
 
 /**

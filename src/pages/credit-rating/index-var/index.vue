@@ -53,6 +53,7 @@
   import permission from '../../../common/mixins/permission'
   import Edit from './Edit'
   import Detail from '@/pages/credit-rating/index-var/Detail'
+  import { getIndexVarList } from '../../../api/credit-rating/index-var.api'
 
   export default {
     name: 'IndexVar',
@@ -64,17 +65,10 @@
     data () {
       return {
         moduleName: '变量',
-        cache: '',
-        list: [
-          {
-            name: '名称',
-            desc: '描述',
-            code: '编码',
-            varType: '变量类型',
-            dataType: '数据类型',
-            tempType: '模板类型'
-          }
-        ],
+        listQuery: {
+          varName: '',
+          varType: ''
+        },
         columns: [
           { type: 'index', width: 50, align: 'center' },
           { title: '名称', slot: 'name' },
@@ -88,14 +82,17 @@
       }
     },
     created () {
-
+      this.searchList()
     },
     methods: {
-      handleFilter () {
-
-      },
       resetQuery () {
-
+        this.listQuery = {
+          page: 1,
+          size: 10,
+          varName: '',
+          varType: ''
+        }
+        this.searchList()
       },
       handleCreate () {
         this.openEditPage('create')
@@ -108,6 +105,19 @@
       },
       handleRemove () {
 
+      },
+      async searchList () {
+        this.listLoading = true
+        try {
+          const res = await getIndexVarList(this.listQuery)
+          this.setListData({
+            list: res.rows,
+            total: res.total
+          })
+        } catch (error) {
+          console.log(error)
+        }
+        this.listLoading = false
       }
     }
   }
