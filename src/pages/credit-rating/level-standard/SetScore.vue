@@ -9,13 +9,13 @@
                 @on-blur="handleLevelCodeBlur(list[index], 'levelCode')"></b-input>
             </template>
             <template v-slot:upScore="{ index }">
-              <b-input v-model="list[index].upScore" type="number" :class="{ error: list[index].upScoreError }"
-                @on-blur="handleCommonBlur(list[index], 'upScore');"
-                @on-focus="autoFillUpScore(index)"></b-input>
+              <b-input-number v-model="list[index].upScore" :class="{ error: list[index].upScoreError }"
+                @on-blur="handleCommonBlur(list[index], 'upScore')"
+                @on-focus="autoFillUpScore(index)"></b-input-number>
             </template>
             <template v-slot:dnScore="{ index }">
-              <b-input v-model="list[index].dnScore" type="number" :class="{ error: list[index].dnScoreError }"
-                @on-blur="handleCommonBlur(list[index], 'dnScore');"></b-input>
+              <b-input-number v-model="list[index].dnScore" :class="{ error: list[index].dnScoreError }"
+                @on-blur="handleCommonBlur(list[index], 'dnScore')"></b-input-number>
             </template>
             <template v-slot:levelDesc="{ index }">
               <b-input v-model="list[index].levelDesc" type="textarea" :rows="1"
@@ -302,6 +302,9 @@
 .level-standard-set-score {
   .table-con {
     .error .bin-input {
+      border: 1px solid #f5222d!important;
+    }
+    .error.bin-input-number {
       border: 1px solid #f5222d!important;
     }
   }
