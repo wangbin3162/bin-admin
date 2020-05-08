@@ -57,9 +57,6 @@
           ],
           ratingCode: [
             { required: true, message: '编码不能为空', trigger: 'blur' }
-          ],
-          ratingDesc: [
-            { required: true, message: '描述不能为空', trigger: 'blur' }
           ]
         },
         btnLoading: false

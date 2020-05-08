@@ -18,9 +18,7 @@
                 @on-blur="handleCommonBlur(list[index], 'dnScore')"></b-input-number>
             </template>
             <template v-slot:levelDesc="{ index }">
-              <b-input v-model="list[index].levelDesc" type="textarea" :rows="1"
-                :class="{ error: list[index].levelDescError }"
-                @on-blur="handleCommonBlur(list[index], 'levelDesc')"></b-input>
+              <b-input v-model="list[index].levelDesc" type="textarea" :rows="1"></b-input>
             </template>
             <template v-slot:orderNo="{ row }">
               <v-sort-arrow @on-up="sortUp(row.orderNo)" @on-down="sortDn(row.orderNo)">
@@ -194,7 +192,7 @@
       // 非空验证，接收当前行对象row，与当前字段key
       isRequired (row, key) {
         return new Promise((resolve, reject) => {
-          if (row[key] === '') {
+          if (row[key] === '' || row[key] === null) {
             this.$set(row, key + 'Error', true)
             this.$message({
               type: 'warning',
@@ -218,6 +216,7 @@
       },
       // 通用的blur回调，验证非空 、 上下限
       async handleCommonBlur (row, key) {
+        console.log(row)
         try {
           await this.isRequired(row, key)
           if (key === 'upScore' || key === 'dnScore') {
@@ -234,7 +233,7 @@
             for (const item of this.list) {
               for (const key in item) {
                 if (item.hasOwnProperty(key)) {
-                  await this.isRequired(item, key)
+                  if (key !== 'levelDesc') await this.isRequired(item, key)
                   if (key === 'levelCode') {
                     await this.isUnique(item, key)
                   } else if (key === 'upScore' || key === 'dnScore') {
