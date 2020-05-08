@@ -34,6 +34,32 @@
 
 /**
  * @author haodongdong
+ * @description 获取指标变量详情
+ * @param {*} id
+ * @returns Promise
+ */
+export async function getIndexVarDetail (id) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/api/eval/var/detail',
+        method: 'get',
+        params: { id }
+      })
+      console.log(res)
+      if (res.data.successful) {
+        resolve(res.data.data)
+      } else {
+        reject(new Error(res.data.message))
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
  * @description 创建指标变量
  * @param {*} params
  * @returns Promise

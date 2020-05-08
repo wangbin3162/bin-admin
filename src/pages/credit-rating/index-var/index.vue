@@ -21,7 +21,7 @@
         </v-table-tool-bar>
         <b-table :columns="columns" :data="list" :loading="listLoading">
           <template v-slot:varName="{ row }">
-            <b-button type="text" @click="handleCheck(row)">{{ row.varName }}</b-button>
+            <b-button type="text" @click="handleCheck(row.id)">{{ row.varName }}</b-button>
           </template>
           <template v-slot:varType="{ row }">
             {{ varTypeKeyValue[row.varType] }}
@@ -53,7 +53,7 @@
       :paramTypeEnum="paramTypeEnum" @close="handleCancel"
       @success="searchList"></Edit>
     <!-- 详情组件 -->
-    <Detail v-if="isCheck" :title="editTitle" @close="handleCancel"></Detail>
+    <Detail v-if="isCheck" :title="editTitle" :id="id" @close="handleCancel"></Detail>
   </div>
 </template>
 
@@ -75,6 +75,7 @@
     data () {
       return {
         moduleName: '变量',
+        id: '', // 查看详情的id
         statusOptions: [],
         listQuery: {
           varName: '',
@@ -120,7 +121,8 @@
       handleCreate () {
         this.openEditPage('create')
       },
-      handleCheck () {
+      handleCheck (id) {
+        this.id = id
         this.openEditPage('check')
       },
       handleModify () {
