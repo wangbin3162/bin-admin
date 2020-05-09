@@ -55,6 +55,7 @@
   import commonMixin from '../../../common/mixins/mixin'
   import permission from '../../../common/mixins/permission'
   import Edit from '@/pages/credit-rating/index-manage/Edit'
+  import { getIndexManageTree, getIndexManageList } from '../../../api/credit-rating/index-manage.api'
 
   export default {
     name: 'IndexManage',
@@ -67,18 +68,9 @@
         moduleName: '指标',
         treeData: [],
         listQuery: {
-          name: '',
-          nature: ''
+          indexName: '',
+          bizType: ''
         },
-        list: [
-          {
-            code: '编码',
-            name: '名称',
-            nature: '指标性质',
-            scale: '标度',
-            timeLimit: '有效期限'
-          }
-        ],
         columns: [
           { type: 'index', width: 50, align: 'center' },
           { title: '编码', key: 'code' },
@@ -91,14 +83,24 @@
       }
     },
     created () {
-
+      this.initTree()
     },
     methods: {
-      handTreeCurrentChange () {
-
+      handTreeCurrentChange (data, node) {
+        if (this.currentTreeNode.id === node.id) {
+          node.selected = true
+        }
+        this.currentTreeNode = node
+        this.listQuery.bizType = node.id
+        this.handleFilter()
       },
       resetQuery () {
-
+        this.listQuery = {
+          page: 1,
+          size: 10,
+          indexName: '',
+          bizType: this.currentTreeNode ? this.currentTreeNode.id : ''
+        }
       },
       handleCreate () {
         this.openEditPage('create')
@@ -114,6 +116,44 @@
       },
       handleRemove () {
 
+      },
+      // tree:初始化树结构
+      initTree() {
+        this.treeData = []
+        // 请求响应返回树结构
+        getIndexManageTree().then(response => {
+          const tree = response.data
+          // 根据返回的数组格式化为树结构的格式，并追加parents用于级联选择和展开
+          let data = tree ? this.treeMapper(tree, null, ['code']) : {}
+          this.treeData.push(data)
+          if (this.treeData.length > 0) {
+            // 如果没有当前选中节点则初始化为第一个选中
+            if (!this.currentTreeNode) {
+              this.currentTreeNode = this.treeData[0]
+              // 这里要注意，扩展响应式属性需要这么写
+              this.$set(this.treeData[0], 'selected', true)
+              this.$set(this.treeData[0], 'expand', true)
+            }
+            this.listQuery.bizType = this.currentTreeNode.id
+            this.handleFilter()
+          }
+        })
+      },
+      async searchList() {
+        this.listLoading = true
+        try {
+          const res = await getIndexManageList(this.listQuery).then(response => {
+          if (res.status === 200) {
+            this.setListData({
+              list: res.rows,
+              total: res.total
+            })
+          }
+        })
+        } catch (error) {
+          console.log(error)
+        }
+        this.listLoading = false
       }
     }
   }

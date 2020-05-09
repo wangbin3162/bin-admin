@@ -34,11 +34,11 @@ export async function getIndexManageList(query) {
   return new Promise(async (resolve, reject) => {
     try {
       const res = await request({
-        url: '/api/dir/classify/tree',
+        url: '/api/eval/index/search',
         method: 'get',
         params: {
-          varName: query.indexName,
-          varType: query.bizType,
+          indexName: query.indexName,
+          bizType: query.bizType,
           size: query.size,
           page: query.page - 1,
           sort: 'createDate,desc'
