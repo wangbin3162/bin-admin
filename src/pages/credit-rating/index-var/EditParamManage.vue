@@ -4,21 +4,30 @@
       <h3 style="margin: 20px 0;">参数管理</h3>
       <b-table :columns="columns" :data="list">
         <template v-slot:paraName="{ index }">
-          <b-input v-model="list[index].paraName" :disabled="list[index].disabled"
-            :class="{ error: list[index].paraNameError }"
-            @on-blur="handleValidate(list[index], 'paraName')"></b-input>
+          <b-tooltip :content="list[index].paraNameMsg" max-width="200"
+            :disabled="!list[index].paraNameError" :always="list[index].paraNameError">
+            <b-input v-model="list[index].paraName" :disabled="list[index].disabled"
+              :class="{ error: list[index].paraNameError }"
+              @on-blur="handleValidate(list[index], 'paraName')"></b-input>
+          </b-tooltip>
         </template>
         <template v-slot:paraCode="{ index }">
-          <b-input v-model="list[index].paraCode" :disabled="list[index].disabled"
-            :class="{ error: list[index].paraCodeError }"
-            @on-blur="handleValidate(list[index], 'paraCode')"></b-input>
+          <b-tooltip :content="list[index].paraCodeMsg" max-width="200"
+            :disabled="!list[index].paraCodeError" :always="list[index].paraCodeError">
+            <b-input v-model="list[index].paraCode" :disabled="list[index].disabled"
+              :class="{ error: list[index].paraCodeError }"
+              @on-blur="handleValidate(list[index], 'paraCode')"></b-input>
+          </b-tooltip>
         </template>
         <template v-slot:paraType="{ index }">
-          <b-select v-model="list[index].paraType" append-to-body
-            :class="{ error: list[index].paraTypeError }">
-            <b-option v-for="item in paramTypeOptions" :key="item.value"
-              :value="item.value">{{ item.label }}</b-option>
-          </b-select>
+          <b-tooltip :content="list[index].paraTypeMsg" max-width="200" style="width: 100%;"
+            :disabled="!list[index].paraTypeError" :always="list[index].paraTypeError">
+            <b-select v-model="list[index].paraType" append-to-body
+              :class="{ error: list[index].paraTypeError }">
+              <b-option v-for="item in paramTypeOptions" :key="item.value"
+                :value="item.value">{{ item.label }}</b-option>
+            </b-select>
+          </b-tooltip>
         </template>
         <template v-slot:paraDesc="{ index }">
           <b-input v-model="list[index].paraDesc" :disabled="list[index].disabled"></b-input>
@@ -43,9 +52,12 @@
       paramTypeOptions: {
         type: Array
       },
-       params: {
-         type: Array
-       }
+      params: {
+        type: Array
+      },
+      tempVarCodeList: {
+        type: Array
+      }
     },
     data () {
       return {
@@ -139,14 +151,30 @@
           return Number(pre.orderNo) - Number(next.orderNo)
         })
       },
-      // 名称与编码的blur回调，验证非空、唯一
+      // 名称与编码的blur回调，验证非空、唯一、 不在变量列表中
       async handleValidate (row, key) {
+        console.log(this.list)
         try {
           await this.isRequired(row, key)
           await this.isUnique(row, key)
+          if (key === 'paraCode') await this.notInclude(row, key)
         } catch (error) {
           console.warn(error)
         }
+      },
+      // 非空验证，接收当前行对象row，与当前字段key
+      isRequired (row, key) {
+        return new Promise((resolve, reject) => {
+          if (row[key] === '' || row[key] === null) {
+            this.$set(row, key + 'Error', true)
+            this.$set(row, key + 'Msg', `请不要为空`)
+            reject(new Error('字段为空'))
+          } else {
+            this.$delete(row, key + 'Error')
+            this.$delete(row, key + 'Msg')
+            resolve()
+          }
+        })
       },
       // 判断唯一值
       isUnique(row, key) {
@@ -160,29 +188,28 @@
           })
           if (!unique) {
             this.$set(row, key + 'Error', true)
-            this.$message({
-              type: 'warning',
-              content: `值 ${row[key]} 已存在，请重新填写`
-            })
+            this.$set(row, key + 'Msg', `值 ${row[key]} 已存在，请重新填写`)
             reject(new Error(`值 ${row[key]} 已存在`))
           } else {
             this.$delete(row, key + 'Error')
+            this.$delete(row, key + 'Msg')
             resolve()
           }
         })
       },
-      // 非空验证，接收当前行对象row，与当前字段key
-      isRequired (row, key) {
+      // 判断是否存在于已选变量列表中 tempVarCodeList
+      notInclude (row, key) {
         return new Promise((resolve, reject) => {
-          if (row[key] === '' || row[key] === null) {
+          const unique = !this.tempVarCodeList.some(item => {
+            return item === row[key]
+          })
+          if (!unique) {
             this.$set(row, key + 'Error', true)
-            this.$message({
-              type: 'warning',
-              content: '请不要为空'
-            })
-            reject(new Error('字段为空'))
+            this.$set(row, key + 'Msg', `值 ${row[key]} 已存在于【已选变量】中，请重新填写`)
+            reject(new Error(`值 ${row[key]} 已存在于已选变量中`))
           } else {
             this.$delete(row, key + 'Error')
+            this.$delete(row, key + 'Msg')
             resolve()
           }
         })
@@ -196,6 +223,7 @@
                 if (item.hasOwnProperty(key)) {
                   if (key !== 'paraDesc') await this.isRequired(item, key)
                   if (key === 'paraName' || key === 'paraCode') await this.isUnique(item, key)
+                  if (key === 'paraCode') await this.notInclude(item, key)
                 }
               }
             }
