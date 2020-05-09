@@ -6,31 +6,31 @@
         <b-tree :data="treeData" slot="tree" :lock-select="lockTreeSelect"
           @on-select-change="handTreeCurrentChange"></b-tree>
 
-        <div class="table">
-          <!--查询条件-->
-          <v-filter-bar>
-            <v-filter-item title="模板名称" style="max-width: 35%">
-              <b-input v-model.trim="listQuery.tempName" placeholder="请输入" clearable></b-input>
-            </v-filter-item>
-            <v-filter-item title="模板编码" style="max-width: 35%">
-              <b-input v-model.trim="listQuery.tempCode" placeholder="请输入" clearable></b-input>
-            </v-filter-item>
-            <!--添加查询按钮位置-->
-            <v-filter-item @on-search="handleFilter" @on-reset="resetQuery"></v-filter-item>
-          </v-filter-bar>
+        <!--查询条件-->
+        <v-filter-bar>
+          <v-filter-item title="模板名称" style="max-width: 35%">
+            <b-input v-model.trim="listQuery.tempName" placeholder="请输入" clearable></b-input>
+          </v-filter-item>
+          <v-filter-item title="模板编码" style="max-width: 35%">
+            <b-input v-model.trim="listQuery.tempCode" placeholder="请输入" clearable></b-input>
+          </v-filter-item>
+          <!--添加查询按钮位置-->
+          <v-filter-item @on-search="handleFilter" @on-reset="resetQuery"></v-filter-item>
+        </v-filter-bar>
 
+        <div class="table">
           <!--中央表格-->
-        <b-table :columns="columns" :data="list" :loading="listLoading">
-          <!--操作栏-->
-          <template v-slot:action="{ row }">
-            <b-button type="text" @click="handleSelect(row)">选择</b-button>
-          </template>
-        </b-table>
+          <b-table :columns="columns" :data="list" :loading="listLoading">
+            <!--操作栏-->
+            <template v-slot:action="{ row }">
+              <b-button type="text" @click="handleSelect(row)">选择</b-button>
+            </template>
+          </b-table>
+        </div>
         <!--下方分页器-->
         <b-page :total="total" show-sizer :current.sync="listQuery.page"
           @on-change="handleCurrentChange"
           @on-page-size-change="handleSizeChange"></b-page>
-        </div>
       </v-table-wrap>
     </b-modal>
   </div>
@@ -123,6 +123,7 @@
             disabled: true // 扩展字段，使其传递给参数管理组件可用于disabled
           }
         })
+        // 构建对象，可直接赋值给编辑组件的form
         const tempObj = {
           tplId: row.id,
           tplContent: row.tempName,
@@ -180,6 +181,9 @@
 
 <style lang="stylus" scoped>
 .edit-belong-type {
-
+  .table {
+    max-height: 400px;
+    overflow-y: auto;
+  }
 }
 </style>

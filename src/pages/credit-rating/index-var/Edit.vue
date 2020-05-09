@@ -53,7 +53,7 @@
             <b-col span="24">
               <b-form-item label="已选变量" v-if="tempVarCodeList.length > 0">
                 <b-tag color="#409EFF" dot closable
-                  v-for="(item, index) in tempVarCodeList" :key="index"
+                  v-for="(item, index) in tempVarCodeList" :key="item"
                   @on-close="handleTagClose(index)">
                   {{ item }}
                 </b-tag>
@@ -181,13 +181,17 @@
       },
       // 变量选择组件选中回调
       handleVarSelected (tempVarCodeList) {
-        this.tempVarCodeList = [...this.tempVarCodeList, ...tempVarCodeList]
+        // 业务相同的变量只允许选择一次，所以这里做个去重处理
+        this.tempVarCodeList = [...new Set([...this.tempVarCodeList, ...tempVarCodeList])]
       },
       // tag关闭回调
       handleTagClose (index) {
         this.tempVarCodeList.splice(index, 1)
       },
       async handleSubmit () {
+        if (this.form.varType === 'Complex') {
+          this.form.tplId = this.tempVarCodeList.join()
+        }
         // paramManage.validateAll()用于验证参数管理
         const [valid1, valid2] = await Promise.all([this.$refs.form.validate(), this.$refs.paramManage.validateAll()])
         if (valid1 && valid2) {
@@ -204,7 +208,12 @@
       initEditData () {
         if (this.editData) {
           this.form = { ...this.editData }
+          // 把form.params放入params，params用于向管理参数组件传递参数
           this.params = this.form.params
+          if (this.form.varType === 'Complex') {
+            // 如果是符合变量那么需要把tplId还原成数组用于渲染已选变量tag
+            this.tempVarCodeList = this.form.tplId.length > 0 ? this.form.tplId.split(',') : []
+          }
         }
       }
     }

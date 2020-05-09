@@ -94,7 +94,7 @@
           { title: '变量编码', key: 'varCode' },
           { title: '变量类型', slot: 'varType' },
           { title: '数据类型', slot: 'dataType' },
-          { title: '模板内容', key: 'tplContent' },
+          { title: '模板内容', key: 'tplContent', ellipsis: true, tooltip: true },
           { title: '描述', key: 'varDesc', ellipsis: true, tooltip: true },
           { title: '操作', slot: 'action', width: 120 }
         ],
