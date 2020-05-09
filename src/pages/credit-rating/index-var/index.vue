@@ -51,10 +51,11 @@
       </v-table-wrap>
     </page-header-wrap>
     <!-- 编辑组件 -->
-    <Edit v-if="isEdit" :title="editTitle"
-      :varTypeOptions="varTypeOptions" :dataTypeOptions="dataTypeOptions"
-      :paramTypeOptions="paramTypeOptions" @close="handleCancel"
-      @success="searchList"></Edit>
+    <Edit v-if="isEdit" :title="editTitle" :editData="editData"
+      :varTypeOptions="varTypeOptions"
+      :dataTypeOptions="dataTypeOptions"
+      :paramTypeOptions="paramTypeOptions"
+      @close="handleClose" @success="searchList"></Edit>
     <!-- 详情组件 -->
     <Detail v-if="isCheck" @close="handleCancel"
       :title="editTitle" :id="id"
@@ -82,6 +83,7 @@
       return {
         moduleName: '变量',
         id: '', // 查看详情的id
+        editData: null, // 编辑操作使用的数据
         listQuery: {
           varName: '',
           varType: ''
@@ -125,7 +127,8 @@
         this.id = id
         this.openEditPage('check')
       },
-      handleModify () {
+      handleModify (row) {
+        this.editData = { ...row }
         this.openEditPage('modify')
       },
       handleRemove (id) {
@@ -149,6 +152,12 @@
             this.$modal.remove()
           }
         })
+      },
+      // 处理编辑框关闭事件
+      handleClose () {
+        // 清空可能存在的待编辑数据
+        this.editData = null
+        this.handleCancel()
       },
       async searchList () {
         this.listLoading = true

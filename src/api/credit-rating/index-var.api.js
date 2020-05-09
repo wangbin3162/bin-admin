@@ -95,7 +95,7 @@ export async function deleteIndexVar (id) {
       const res = await request({
         url: '/api/eval/var/remove',
         method: 'post',
-        data: { id }
+        params: { id }
       })
       if (res.data.successful) {
         resolve([true])

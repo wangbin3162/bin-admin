@@ -102,7 +102,8 @@
       'title',
       'varTypeOptions',
       'dataTypeOptions',
-      'paramTypeOptions'
+      'paramTypeOptions',
+      'editData'
     ],
     components: {
       EditSelectBizTemplate,
