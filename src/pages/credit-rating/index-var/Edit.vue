@@ -83,7 +83,8 @@
     <edit-select-biz-template :open="openBelongType" @close="openBelongType = false"
       @selected="handleSelectedTemp"></edit-select-biz-template>
     <!-- 返回的参数：变量编码 -->
-    <edit-select-var :open="openSelectVar" @close="openSelectVar = false"></edit-select-var>
+    <edit-select-var :open="openSelectVar" @close="openSelectVar = false"
+      @selected="handleVarSelected"></edit-select-var>
   </div>
 </template>
 
@@ -156,6 +157,9 @@
       handleSelectedTemp (tempObj) {
         this.form = { ...this.form, ...tempObj }
         this.params = tempObj.params
+      },
+      handleVarSelected (varCodeList) {
+        console.log(varCodeList)
       },
       async handleSubmit () {
         // paramManage.validateAll()用于验证参数管理
