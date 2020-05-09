@@ -26,7 +26,7 @@
         <b-divider align="left">
           <h4>参数项</h4>
         </b-divider>
-        <b-table :columns="columns" :data="detail.params">
+        <b-table :columns="columns" :data="detail.params" size="small">
           <template v-slot:paraType="{ row }">
             {{ paramTypeEnum[row.paraType] }}
           </template>

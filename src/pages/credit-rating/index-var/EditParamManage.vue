@@ -2,30 +2,32 @@
   <div class="edit-param-manage">
     <v-table-wrap>
       <h3 style="margin: 20px 0;">参数管理</h3>
-      <b-table :columns="columns" :data="list">
+      <b-table :columns="columns" :data="list" size="small">
         <template v-slot:paraName="{ index }">
           <b-tooltip :content="list[index].paraNameMsg" max-width="200"
-            :disabled="!list[index].paraNameError" :always="list[index].paraNameError">
+                     :disabled="!list[index].paraNameError" :always="list[index].paraNameError">
             <b-input v-model="list[index].paraName" :disabled="list[index].disabled"
-              :class="{ error: list[index].paraNameError }"
-              @on-blur="handleValidate(list[index], 'paraName')"></b-input>
+                     :class="{ error: list[index].paraNameError }"
+                     @on-blur="handleValidate(list[index], 'paraName')"></b-input>
           </b-tooltip>
         </template>
         <template v-slot:paraCode="{ index }">
           <b-tooltip :content="list[index].paraCodeMsg" max-width="200"
-            :disabled="!list[index].paraCodeError" :always="list[index].paraCodeError">
+                     :disabled="!list[index].paraCodeError" :always="list[index].paraCodeError">
             <b-input v-model="list[index].paraCode" :disabled="list[index].disabled"
-              :class="{ error: list[index].paraCodeError }"
-              @on-blur="handleValidate(list[index], 'paraCode')"></b-input>
+                     :class="{ error: list[index].paraCodeError }"
+                     @on-blur="handleValidate(list[index], 'paraCode')"></b-input>
           </b-tooltip>
         </template>
         <template v-slot:paraType="{ index }">
           <b-tooltip :content="list[index].paraTypeMsg" max-width="200" style="width: 100%;"
-            :disabled="!list[index].paraTypeError" :always="list[index].paraTypeError">
+                     :disabled="!list[index].paraTypeError" :always="list[index].paraTypeError">
             <b-select v-model="list[index].paraType" append-to-body
-              :class="{ error: list[index].paraTypeError }">
+                      :class="{ error: list[index].paraTypeError }"
+                      @on-change="handleValidate(list[index], 'paraType')">
               <b-option v-for="item in paramTypeOptions" :key="item.value"
-                :value="item.value">{{ item.label }}</b-option>
+                        :value="item.value">{{ item.label }}
+              </b-option>
             </b-select>
           </b-tooltip>
         </template>
@@ -40,7 +42,8 @@
         </template>
       </b-table>
       <b-button style="width: 100%; margin-top: 10px;" type="primary" plain
-        @click="add">+ 添加</b-button>
+                @click="add">+ 添加
+      </b-button>
     </v-table-wrap>
   </div>
 </template>
@@ -59,7 +62,7 @@
         type: Array
       }
     },
-    data () {
+    data() {
       return {
         localList: [],
         list: [],
@@ -76,7 +79,7 @@
     },
     watch: {
       params: {
-        handler (newVal, oldVal) { // 观察params变化维护list状态
+        handler(newVal, oldVal) { // 观察params变化维护list状态
           const list = [...newVal]
           for (let i = 0; i < list.length; i++) { // 给传递过来的参数添加初始排序字段
             const item = list[i]
@@ -87,7 +90,7 @@
         immediate: true
       },
       list: { // 观察list，有变化则发送携带新值的事件
-        handler (newVal, oldVal) {
+        handler(newVal, oldVal) {
           this.$emit('params-change', newVal)
         },
         deep: true
@@ -95,7 +98,7 @@
     },
     methods: {
       // 上升一行
-      sortUp (orderNo) {
+      sortUp(orderNo) {
         const curIndex = this.list.findIndex(item => {
           return item.orderNo === orderNo
         })
@@ -110,7 +113,7 @@
         }
       },
       // 下降一行
-      sortDn (orderNo) {
+      sortDn(orderNo) {
         const curIndex = this.list.findIndex(item => {
           return item.orderNo === orderNo
         })
@@ -125,7 +128,7 @@
         }
       },
       // 添加一行
-      add () {
+      add() {
         this.list.push({
           paraName: '',
           paraCode: '',
@@ -135,7 +138,7 @@
         })
       },
       // 移除一行
-      remove (orderNo) {
+      remove(orderNo) {
         // 大于当前orderNo的其他元素的orderNo - 1
         for (const item of this.list) { // 防止addLast()插入元素的orderNo小于之前的元素
           if (item.orderNo > orderNo) item.orderNo -= 1
@@ -146,13 +149,13 @@
         this.list.splice(index, 1)
       },
       // 按照orderNo升序排序
-      sort (list) {
+      sort(list) {
         return list.sort((pre, next) => {
           return Number(pre.orderNo) - Number(next.orderNo)
         })
       },
       // 名称与编码的blur回调，验证非空、唯一、 不在变量列表中
-      async handleValidate (row, key) {
+      async handleValidate(row, key) {
         console.log(this.list)
         try {
           await this.isRequired(row, key)
@@ -163,7 +166,7 @@
         }
       },
       // 非空验证，接收当前行对象row，与当前字段key
-      isRequired (row, key) {
+      isRequired(row, key) {
         return new Promise((resolve, reject) => {
           if (row[key] === '' || row[key] === null) {
             this.$set(row, key + 'Error', true)
@@ -198,7 +201,7 @@
         })
       },
       // 判断是否存在于已选变量列表中 tempVarCodeList
-      notInclude (row, key) {
+      notInclude(row, key) {
         return new Promise((resolve, reject) => {
           const unique = !this.tempVarCodeList.some(item => {
             return item === row[key]
@@ -215,7 +218,7 @@
         })
       },
       // 验证全部字段项, 提供给组件外提交表单前使用
-      validateAll () {
+      validateAll() {
         return new Promise(async (resolve, reject) => {
           try {
             for (const item of this.list) {
@@ -238,12 +241,12 @@
 </script>
 
 <style lang="stylus">
-.edit-param-manage {
-  .error .bin-input {
-    border: 1px solid #f5222d!important;
+  .edit-param-manage {
+    .error .bin-input {
+      border: 1px solid #f5222d !important;
+    }
+    .error .bin-select-selection {
+      border: 1px solid #f5222d !important;
+    }
   }
-  .error .bin-select-selection {
-    border: 1px solid #f5222d!important;
-  }
-}
 </style>

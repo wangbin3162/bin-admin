@@ -1,7 +1,7 @@
 <template>
   <div class="select-var">
-    <b-modal v-model="showDialog" title="选择变量"
-      width="70%" @on-visible-change="handleVisibleChange">
+    <b-modal v-model="showDialog" title="选择变量" :body-styles="{padding:0}"
+             width="70%" @on-visible-change="handleVisibleChange">
       <v-table-wrap class="con">
         <v-filter-bar>
           <v-filter-item title="变量名" style="width: 35%">
@@ -10,15 +10,16 @@
           <v-filter-item title="变量类型">
             <b-select v-model="listQuery.varType">
               <b-option v-for="item in varTypeOptions" :key="item.value"
-                :value="item.value">{{ item.label }}</b-option>
+                        :value="item.value">{{ item.label }}
+              </b-option>
             </b-select>
           </v-filter-item>
           <v-filter-item @on-search="handleFilter" @on-reset="resetQuery"></v-filter-item>
         </v-filter-bar>
 
         <div class="table">
-          <b-table :columns="columns" :data="list" :loading="listLoading"
-            @on-selection-change="handleSelectionChange">
+          <b-table :columns="columns" :data="list" :loading="listLoading" size="small"
+                   @on-selection-change="handleSelectionChange">
             <template v-slot:varType="{ row }">
               {{ varTypeEnum[row.varType] }}
             </template>
@@ -28,13 +29,11 @@
           </b-table>
         </div>
         <!-- 分页器 -->
-        <b-page :total="total" show-sizer :current.sync="listQuery.page"
-          @on-change="handleCurrentChange"
-          @on-page-size-change="handleSizeChange"></b-page>
+        <b-page :total="total" :current.sync="listQuery.page" @on-change="handleCurrentChange"/>
       </v-table-wrap>
 
       <div slot="footer">
-        <b-button type="primary"  @click="handleOk" >确定</b-button>
+        <b-button type="primary" @click="handleOk">确定</b-button>
       </div>
     </b-modal>
   </div>
@@ -50,7 +49,7 @@
     name: 'IndexVarEditSelectVar',
     props: ['open'],
     mixins: [commonMixin, permission],
-    data () {
+    data() {
       return {
         varCodeList: [],
         listQuery: {
@@ -74,25 +73,25 @@
     },
     computed: {
       showDialog: {
-        get () {
+        get() {
           return this.open
         },
-        set (val) {
+        set(val) {
           // 设置一个空的setter函数，用于处理弹框组件关闭时设置绑定的数据的行为
           this.$emit('close')
         }
       }
     },
-    created () {
+    created() {
       this.getEnum()
     },
     methods: {
-      handleVisibleChange (visible) {
+      handleVisibleChange(visible) {
         if (visible) {
           this.searchList()
         }
       },
-      handleSelectionChange (selection) {
+      handleSelectionChange(selection) {
         const list = []
         for (const item of selection) {
           list.push(item.varCode)
@@ -100,11 +99,11 @@
         this.varCodeList = list
       },
       // 发送选中的数据
-      handleOk () {
+      handleOk() {
         this.$emit('selected', this.varCodeList)
         this.showDialog = false
       },
-      resetQuery () {
+      resetQuery() {
         this.listQuery = {
           page: 1,
           size: 10,
@@ -113,7 +112,7 @@
         }
         this.searchList()
       },
-      async searchList () {
+      async searchList() {
         this.listLoading = true
         try {
           const res = await getIndexVarList(this.listQuery)
@@ -127,7 +126,7 @@
         this.listLoading = false
       },
       // 或许所需的枚举值
-      async getEnum () {
+      async getEnum() {
         try {
           const [varType, dataType] = await Promise.all([
             getEvalVarType(), getEvalDataType()
@@ -140,17 +139,17 @@
         }
       },
       // 构建所需枚举类型下拉框的option
-      initOptions () {
+      initOptions() {
         // 变量类型下拉框option使用的枚举值
-          for (const key in this.varTypeEnum) {
-            if (this.varTypeEnum.hasOwnProperty(key)) {
-              const element = this.varTypeEnum[key]
-              this.varTypeOptions.push({
-                label: element,
-                value: key
-              })
-            }
+        for (const key in this.varTypeEnum) {
+          if (this.varTypeEnum.hasOwnProperty(key)) {
+            const element = this.varTypeEnum[key]
+            this.varTypeOptions.push({
+              label: element,
+              value: key
+            })
           }
+        }
         // 数据类型下拉框option使用的枚举值
         for (const key in this.dataTypeEnum) {
           if (this.dataTypeEnum.hasOwnProperty(key)) {
@@ -166,20 +165,11 @@
   }
 </script>
 
-<style lang="stylus">
-  // 覆盖bin-ui弹框组件样式
+<style lang="stylus" scoped>
   .select-var {
-    .bin-modal-body {
-      padding: 0!important;
+    .table {
+      max-height: 400px;
+      overflow-y: auto;
     }
   }
-</style>
-
-<style lang="stylus" scoped>
-.select-var {
-  .table {
-    max-height: 400px;
-    overflow-y: auto;
-  }
-}
 </style>

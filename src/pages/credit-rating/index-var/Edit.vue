@@ -64,7 +64,7 @@
                   <b-input v-model="form.tplContent" style="max-width: 93%;"
                     type="textarea" placeholder="请输入el表达式"
                     @input.native="handleElInput"></b-input>
-                  <b-button type="primary" plain style="margin-letf: 5px;"
+                  <b-button type="primary" plain style="margin-left: 5px;"
                     @click="openSelectVarHandler">
                     选择
                   </b-button>

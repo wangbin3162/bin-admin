@@ -15,7 +15,7 @@
         <b-divider align="left">
           <h4>评分标准</h4>
         </b-divider>
-        <b-table :columns="columns" :data="detailData.items"></b-table>
+        <b-table :columns="columns" :data="detailData.items" size="small"></b-table>
       </v-edit-wrap>
     </page-header-wrap>
   </div>

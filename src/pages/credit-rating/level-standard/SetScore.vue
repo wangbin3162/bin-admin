@@ -3,26 +3,26 @@
     <page-header-wrap title="评分标准" show-close @on-close="$emit('close')">
       <v-edit-wrap>
         <div class="table-con" slot="full">
-          <b-table :columns="columns" :data="list" :loading="loading">
+          <b-table :columns="columns" :data="list" :loading="loading" size="small">
             <template v-slot:levelCode="{ index }">
               <b-input v-model="list[index].levelCode" :class="{ error: list[index].levelCodeError }"
-                @on-blur="handleLevelCodeBlur(list[index], 'levelCode')"></b-input>
+                       @on-blur="handleLevelCodeBlur(list[index], 'levelCode')"></b-input>
             </template>
             <template v-slot:upScore="{ index }">
               <b-input-number v-model="list[index].upScore" :class="{ error: list[index].upScoreError }"
-                @on-blur="handleCommonBlur(list[index], 'upScore')"
-                @on-focus="autoFillUpScore(index)"></b-input-number>
+                              style="width: 100%;"
+                              @on-change="handleCommonBlur(list[index], 'upScore')"></b-input-number>
             </template>
             <template v-slot:dnScore="{ index }">
               <b-input-number v-model="list[index].dnScore" :class="{ error: list[index].dnScoreError }"
-                @on-blur="handleCommonBlur(list[index], 'dnScore')"></b-input-number>
+                              style="width: 100%;"
+                              @on-change="handleCommonBlur(list[index], 'dnScore')"></b-input-number>
             </template>
             <template v-slot:levelDesc="{ index }">
-              <b-input v-model="list[index].levelDesc" type="textarea" :rows="1"></b-input>
+              <b-input v-model="list[index].levelDesc"/>
             </template>
             <template v-slot:orderNo="{ row }">
-              <v-sort-arrow @on-up="sortUp(row.orderNo)" @on-down="sortDn(row.orderNo)">
-              </v-sort-arrow>
+              <v-sort-arrow @on-up="sortUp(row.orderNo)" @on-down="sortDn(row.orderNo)"/>
             </template>
             <template v-slot:action="{ row }">
               <b-button type="text" @click="addNext(row.orderNo)">添加</b-button>
@@ -49,27 +49,27 @@
   export default {
     name: 'LevelStandardSetScore',
     props: ['ratingId'],
-    data () {
+    data() {
       return {
         loading: false,
         list: [],
         columns: [
           { type: 'index', width: 50, align: 'center' },
-          { title: '等级', slot: 'levelCode' },
-          { title: '上限值', slot: 'upScore' },
-          { title: '下限值', slot: 'dnScore' },
+          { title: '等级', slot: 'levelCode', width: 200 },
+          { title: '上限值', slot: 'upScore', width: 120 },
+          { title: '下限值', slot: 'dnScore', width: 120 },
           { title: '描述', slot: 'levelDesc' },
-          { title: '排序', slot: 'orderNo', width: 120 },
+          { title: '排序', slot: 'orderNo', width: 120, align: 'center' },
           { title: '操作', slot: 'action', width: 120 }
         ]
       }
     },
-    created () {
+    created() {
       this.getScoreListById()
     },
     methods: {
       // 插入下一行
-      addNext (orderNo) {
+      addNext(orderNo) {
         // 大于当前orderNo的其他元素的orderNo + 1
         for (const item of this.list) {
           if (item.orderNo > orderNo) item.orderNo += 1
@@ -86,17 +86,17 @@
         this.sort(this.list)
       },
       // 插入最后一行
-      addLast () {
+      addLast() {
         this.list.push({
           levelCode: '',
-          upScore: '',
-          dnScore: '',
+          upScore: 1,
+          dnScore: 0,
           levelDesc: '',
           orderNo: this.list.length + 1
         })
       },
       // 移除一行
-      remove (orderNo) {
+      remove(orderNo) {
         // 大于当前orderNo的其他元素的orderNo - 1
         for (const item of this.list) { // 防止addLast()插入元素的orderNo小于之前的元素
           if (item.orderNo > orderNo) item.orderNo -= 1
@@ -107,7 +107,7 @@
         this.list.splice(index, 1)
       },
       // 上升一行
-      sortUp (orderNo) {
+      sortUp(orderNo) {
         const curIndex = this.list.findIndex(item => {
           return item.orderNo === orderNo
         })
@@ -122,7 +122,7 @@
         }
       },
       // 下降一行
-      sortDn (orderNo) {
+      sortDn(orderNo) {
         const curIndex = this.list.findIndex(item => {
           return item.orderNo === orderNo
         })
@@ -137,7 +137,7 @@
         }
       },
       // 自动填充上限，考虑到上下限的升降序填写的可能性，暂时不使用自动填充。
-      autoFillUpScore (index) {
+      autoFillUpScore(index) {
         // if (index > 0) { // 排除第一个元素
         //   const curEl = this.list[index]
         //   const preEl = this.list[index - 1]
@@ -147,7 +147,7 @@
         // }
       },
       // 验证上下限
-      upLoValidate (row, key) {
+      upLoValidate(row, key) {
         return new Promise((resolve, reject) => {
           if (row.upScore !== '' && row.dnScore !== '') {
             if (Number(row.upScore) <= Number(row.dnScore)) {
@@ -190,7 +190,7 @@
         })
       },
       // 非空验证，接收当前行对象row，与当前字段key
-      isRequired (row, key) {
+      isRequired(row, key) {
         return new Promise((resolve, reject) => {
           if (row[key] === '' || row[key] === null) {
             this.$set(row, key + 'Error', true)
@@ -206,7 +206,7 @@
         })
       },
       // 等级框blur回调，验证非空、唯一
-      async handleLevelCodeBlur (row, key) {
+      async handleLevelCodeBlur(row, key) {
         try {
           await this.isRequired(row, key)
           await this.isUnique(row, key)
@@ -215,8 +215,8 @@
         }
       },
       // 通用的blur回调，验证非空 、 上下限
-      async handleCommonBlur (row, key) {
-        console.log(row)
+      async handleCommonBlur(row, key) {
+        // console.log(row)
         try {
           await this.isRequired(row, key)
           if (key === 'upScore' || key === 'dnScore') {
@@ -227,7 +227,7 @@
         }
       },
       // 验证全部字段项
-      validateAll (list) {
+      validateAll(list) {
         return new Promise(async (resolve, reject) => {
           try {
             for (const item of this.list) {
@@ -249,7 +249,7 @@
         })
       },
       // 提交
-      async submit () {
+      async submit() {
         try {
           await this.validateAll(this.list)
           for (const item of this.list) { // 保留两位小数
@@ -277,7 +277,7 @@
         }
       },
       // 获取初始评分标准列表
-      async getScoreListById () {
+      async getScoreListById() {
         this.loading = true
         try {
           const res = await queryByRankId(this.ratingId)
@@ -289,7 +289,7 @@
         this.loading = false
       },
       // 按照orderNo升序排序
-      sort (list) {
+      sort(list) {
         list.sort((pre, next) => {
           return Number(pre.orderNo) - Number(next.orderNo)
         })
@@ -299,27 +299,27 @@
 </script>
 
 <style lang="stylus">
-.level-standard-set-score {
-  .table-con {
-    .error .bin-input {
-      border: 1px solid #f5222d!important;
-    }
-    .error.bin-input-number {
-      border: 1px solid #f5222d!important;
+  .level-standard-set-score {
+    .table-con {
+      .error .bin-input {
+        border: 1px solid #f5222d !important;
+      }
+      .error.bin-input-number {
+        border: 1px solid #f5222d !important;
+      }
     }
   }
-}
 </style>
 
 <style lang="stylus" scoped>
-.level-standard-set-score {
-  .table-con {
+  .level-standard-set-score {
+    .table-con {
 
-    .tip {
-      margin-top: 15px;
-      padding: 10px;
-      background-color: #fafafa;
+      .tip {
+        margin-top: 15px;
+        padding: 10px;
+        background-color: #fafafa;
+      }
     }
   }
-}
 </style>
