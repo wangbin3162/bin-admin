@@ -12,9 +12,10 @@
           <b-button @click="$emit('close')">返 回</b-button>
         </template>
 
-        <div class="table">
-          <b-table :columns="columns" :data="detailData.items"></b-table>
-        </div>
+        <b-divider align="left">
+          <h4>评分标准</h4>
+        </b-divider>
+        <b-table :columns="columns" :data="detailData.items"></b-table>
       </v-edit-wrap>
     </page-header-wrap>
   </div>
@@ -62,6 +63,9 @@
 .level-standard-detail {
   .table {
     margin-top: 40px;
+    h4 {
+      margin-bottom: 30px;
+    }
   }
 }
 </style>

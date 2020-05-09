@@ -23,7 +23,9 @@
             {{ detail.varName }}
           </v-key-label>
         </div>
-        <b-divider align="left">参数项</b-divider>
+        <b-divider align="left">
+          <h4>参数项</h4>
+        </b-divider>
         <b-table :columns="columns" :data="detail.params">
           <template v-slot:paraType="{ row }">
             {{ paramTypeEnum[row.paraType] }}
