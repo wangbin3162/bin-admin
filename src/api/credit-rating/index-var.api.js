@@ -46,7 +46,6 @@ export async function getIndexVarDetail (id) {
         method: 'get',
         params: { id }
       })
-      console.log(res)
       if (res.data.successful) {
         resolve(res.data.data)
       } else {
