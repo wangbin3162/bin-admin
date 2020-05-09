@@ -93,7 +93,7 @@
   import EditSelectBizTemplate from './EditSelectBizTemplate'
   import EditSelectVar from './EditSelectVar'
   import EditParamManage from './EditParamManage'
-  import { createIndexVar } from '../../../api/credit-rating/index-var.api'
+  import { createIndexVar, updateIndexVar } from '../../../api/credit-rating/index-var.api'
 
   export default {
     name: 'IndexVarEdit',
@@ -144,7 +144,7 @@
       }
     },
     created () {
-
+      this.initEditData()
     },
     methods: {
       openBelongTypeHandler () {
@@ -161,7 +161,7 @@
         // paramManage.validateAll()用于验证参数管理
         const [valid1, valid2] = await Promise.all([this.$refs.form.validate(), this.$refs.paramManage.validateAll()])
         if (valid1 && valid2) {
-          const [success, errorMsg] = await createIndexVar(this.form)
+          const [success, errorMsg] = this.editData ? await updateIndexVar(this.form) : await createIndexVar(this.form)
           if (success) {
             this.$message({ type: 'success', content: '操作成功' })
             this.$emit('success') // 发送成功事件
@@ -169,6 +169,12 @@
           } else {
             this.$notice.danger({ title: '操作错误', desc: errorMsg })
           }
+        }
+      },
+      initEditData () {
+        if (this.editData) {
+          this.form = { ...this.editData }
+          this.params = this.form.params
         }
       }
     }

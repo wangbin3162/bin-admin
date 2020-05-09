@@ -128,7 +128,7 @@
         this.openEditPage('check')
       },
       handleModify (row) {
-        this.editData = { ...row }
+        this.editData = row
         this.openEditPage('modify')
       },
       handleRemove (id) {

@@ -107,3 +107,28 @@ export async function deleteIndexVar (id) {
     }
   })
 }
+
+/**
+ * @author haodongdong
+ * @description 修改指标变量
+ * @param {*} params
+ * @returns Promise
+ */
+export async function updateIndexVar (params) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/api/eval/var/modify',
+        method: 'post',
+        data: params
+      })
+      if (res.data.successful) {
+        resolve([true])
+      } else {
+        resolve([false, res.data.message])
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}

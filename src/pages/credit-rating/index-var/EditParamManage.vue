@@ -65,17 +65,14 @@
     watch: {
       params: {
         handler (newVal, oldVal) { // 观察params变化维护list状态
-          const list = [...newVal, ...this.localList]
-          for (let i = 0; i < list.length; i++) { // 主要用于给传递过来的参数添加初始排序字段
+          const list = [...newVal]
+          for (let i = 0; i < list.length; i++) { // 给传递过来的参数添加初始排序字段
             const item = list[i]
             item.orderNo = i + 1
           }
           this.list = this.sort(list)
         },
         immediate: true
-      },
-      localList (newVal, oldVal) { // 观察locaList变化维护list状态
-        this.list = this.sort([...this.params, ...newVal])
       },
       list: { // 观察list，有变化则发送携带新值的事件
         handler (newVal, oldVal) {
@@ -115,9 +112,9 @@
           this.sort(this.list)
         }
       },
-      // 添加一行，由localList的watcher维护整个列表的状态
+      // 添加一行
       add () {
-        this.localList.push({
+        this.list.push({
           paraName: '',
           paraCode: '',
           paraDesc: '',
@@ -131,11 +128,10 @@
         for (const item of this.list) { // 防止addLast()插入元素的orderNo小于之前的元素
           if (item.orderNo > orderNo) item.orderNo -= 1
         }
-        // 只有本地添加的列表可以删除，删除后交由localList的watcher维护list状态
-        const index = this.localList.findIndex(item => {
+        const index = this.list.findIndex(item => {
           return item.orderNo === orderNo
         })
-        this.localList.splice(index, 1)
+        this.list.splice(index, 1)
       },
       // 按照orderNo升序排序
       sort (list) {
