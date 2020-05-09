@@ -16,8 +16,8 @@
         <template v-slot:paraType="{ index }">
           <b-select v-model="list[index].paraType" append-to-body
             :class="{ error: list[index].paraTypeError }">
-            <b-option :value="paramTypeEnum.S">资源信息</b-option>
-            <b-option :value="paramTypeEnum.I">信息项</b-option>
+            <b-option v-for="item in paramTypeOptions" :key="item.value"
+              :value="item.value">{{ item.label }}</b-option>
           </b-select>
         </template>
         <template v-slot:paraDesc="{ index }">
@@ -40,8 +40,8 @@
   export default {
     name: 'IndexVarEditParamManage',
     props: {
-      paramTypeEnum: {
-        type: Object
+      paramTypeOptions: {
+        type: Array
       },
        params: {
          type: Array

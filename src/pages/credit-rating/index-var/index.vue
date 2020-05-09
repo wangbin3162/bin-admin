@@ -9,7 +9,7 @@
           </v-filter-item>
            <v-filter-item title="变量类型">
             <b-select v-model="listQuery.varType">
-              <b-option v-for="item in statusOptions" :key="item.value"
+              <b-option v-for="item in varTypeOptions" :key="item.value"
                 :value="item.value">{{ item.label }}</b-option>
             </b-select>
           </v-filter-item>
@@ -23,21 +23,24 @@
           <template v-slot:varName="{ row }">
             <b-button type="text" @click="handleCheck(row.id)">{{ row.varName }}</b-button>
           </template>
+
           <template v-slot:varType="{ row }">
-            {{ varTypeKeyValue[row.varType] }}
+            {{ varTypeEnum[row.varType] }}
           </template>
+
           <template v-slot:dataType="{ row }">
-            {{ dataTypeKeyValue[row.dataType] }}
+            {{ dataTypeEnum[row.dataType] }}
           </template>
-          <!-- 操作栏 -->
+
           <template v-slot:action="scope">
             <b-button type="text" @click="handleModify(scope.row)">
               修改
             </b-button>
-            <!-- 是否有删除键 -->
             <template>
               <b-divider type="vertical"></b-divider>
-              <b-button type="text" text-color="danger" @click="handleRemove(scope.row)">删除</b-button>
+              <b-button type="text" text-color="danger" @click="handleRemove(scope.row)">
+                删除
+              </b-button>
             </template>
           </template>
         </b-table>
@@ -49,8 +52,8 @@
     </page-header-wrap>
     <!-- 编辑组件 -->
     <Edit v-if="isEdit" :title="editTitle"
-      :varTypeEnum="varTypeEnum" :dataTypeEnum="dataTypeEnum"
-      :paramTypeEnum="paramTypeEnum" @close="handleCancel"
+      :varTypeOptions="varTypeOptions" :dataTypeOptions="dataTypeOptions"
+      :paramTypeOptions="paramTypeOptions" @close="handleCancel"
       @success="searchList"></Edit>
     <!-- 详情组件 -->
     <Detail v-if="isCheck" :title="editTitle" :id="id" @close="handleCancel"></Detail>
@@ -76,7 +79,6 @@
       return {
         moduleName: '变量',
         id: '', // 查看详情的id
-        statusOptions: [],
         listQuery: {
           varName: '',
           varType: ''
@@ -94,14 +96,9 @@
         varTypeEnum: {},
         dataTypeEnum: {},
         paramTypeEnum: {},
-        varTypeKeyValue: {
-          Common: '一般变量',
-          Complex: '复合变量'
-        },
-        dataTypeKeyValue: {
-          N: '数值',
-          S: '字符串'
-        }
+        varTypeOptions: [], // 变量类型下拉框 用于父子组件
+        dataTypeOptions: [], // 数据类型下拉框 用于子组件
+        paramTypeOptions: [] // 参数类型下拉框  用于子组件
       }
     },
     created () {
@@ -153,13 +150,42 @@
           this.varTypeEnum = varType
           this.dataTypeEnum = dataType
           this.paramTypeEnum = paramType
-          // 后续需要优化枚举处理
-          this.statusOptions = [
-            { label: '一般变量', value: 'Common' },
-            { label: '复合变量', value: 'Complex' }
-          ]
+          this.initOptions()
         } catch (error) {
           console.log(error)
+        }
+      },
+      // 构建所需枚举类型下拉框的option
+      initOptions () {
+        // 变量类型下拉框option使用的枚举值
+          for (const key in this.varTypeEnum) {
+            if (this.varTypeEnum.hasOwnProperty(key)) {
+              const element = this.varTypeEnum[key]
+              this.varTypeOptions.push({
+                label: element,
+                value: key
+              })
+            }
+          }
+        // 数据类型下拉框option使用的枚举值
+        for (const key in this.dataTypeEnum) {
+          if (this.dataTypeEnum.hasOwnProperty(key)) {
+            const element = this.dataTypeEnum[key]
+            this.dataTypeOptions.push({
+              label: element,
+              value: key
+            })
+          }
+        }
+        // 参数类型下拉框option使用的枚举值
+        for (const key in this.paramTypeEnum) {
+          if (this.paramTypeEnum.hasOwnProperty(key)) {
+            const element = this.paramTypeEnum[key]
+            this.paramTypeOptions.push({
+              label: element,
+              value: key
+            })
+          }
         }
       }
     }

@@ -19,21 +19,21 @@
             <b-col span="12">
               <b-form-item label="变量类型" prop="varType">
                 <b-select v-model="form.varType">
-                  <b-option :value="varTypeEnum.Complex">复合变量</b-option>
-                  <b-option :value="varTypeEnum.Common">一般变量</b-option>
+                  <b-option v-for="item in varTypeOptions" :key="item.value"
+                    :value="item.value">{{ item.label }}</b-option>
                 </b-select>
               </b-form-item>
             </b-col>
             <b-col span="12">
               <b-form-item label="数据类型" prop="dataType">
                 <b-select v-model="form.dataType">
-                  <b-option :value="dataTypeEnum.N">数值类型</b-option>
-                  <b-option :value="dataTypeEnum.S">字符串类型</b-option>
+                  <b-option v-for="item in dataTypeOptions" :key="item.value"
+                    :value="item.value">{{ item.label }}</b-option>
                 </b-select>
               </b-form-item>
             </b-col>
           </b-row>
-          <b-row v-if="form.varType === varTypeEnum.Common" :key="form.varType">
+          <b-row v-if="form.varType === 'Common'" :key="form.varType">
             <b-col span="12">
               <b-form-item label="业务模板" prop="tplContent"
                 :rules=" { required: true, message: '请选择业务模板', trigger: 'change' }">
@@ -75,7 +75,7 @@
 
       <!-- 一般变量时，选择模板带过来的参数不可改动与删除 -->
       <!-- 复合变量时，新增的参数不可再选择变量带过来的参数中 -->
-      <edit-param-manage ref="paramManage" :paramTypeEnum="paramTypeEnum"
+      <edit-param-manage ref="paramManage" :paramTypeOptions="paramTypeOptions"
         :params="params" @params-change="params => form.params = params"></edit-param-manage>
     </page-header-wrap>
 
@@ -100,9 +100,9 @@
     mixins: [commonMixin, permission],
     props: [
       'title',
-      'varTypeEnum',
-      'dataTypeEnum',
-      'paramTypeEnum'
+      'varTypeOptions',
+      'dataTypeOptions',
+      'paramTypeOptions'
     ],
     components: {
       EditSelectBizTemplate,
@@ -111,10 +111,10 @@
     },
     data () {
       return {
-        params: [], // 存储业务模板组件选中的参数列表params
+        params: [], // 缓存业务模板组件选中的参数列表params
         form: {
           varName: '',
-          varType: this.varTypeEnum.Common,
+          varType: 'Common', // 变量类型默认选择一般变量
           varDesc: '',
           dataType: '',
           tplId: '', // 业务模板id | el表达式选择的变量编码
