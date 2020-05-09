@@ -18,7 +18,7 @@
           <b-row>
             <b-col span="12">
               <b-form-item label="变量类型" prop="varType">
-                <b-select v-model="form.varType">
+                <b-select v-model="form.varType" @on-change="handleVarTypeChange">
                   <b-option v-for="item in varTypeOptions" :key="item.value"
                     :value="item.value">{{ item.label }}</b-option>
                 </b-select>
@@ -50,17 +50,26 @@
             <b-col span="12"></b-col>
           </b-row>
           <b-row v-else>
-            <b-col span="22">
+            <b-col span="24">
+              <b-form-item label="已选变量" v-if="tempVarCodeList.length > 0">
+                <b-tag color="#409EFF" dot closable
+                  v-for="(item, index) in tempVarCodeList" :key="index"
+                  @on-close="handleTagClose(index)">
+                  {{ item }}
+                </b-tag>
+              </b-form-item>
               <b-form-item label="表达式" prop="tplContent"
                 :rules=" { required: true, message: '请输入el表达式', trigger: 'blur' }">
-                <b-input v-model="form.tplContent" type="textarea" placeholder="请输入el表达式"></b-input>
+                <div flex="main:justify" style="width: 100%;">
+                  <b-input v-model="form.tplContent" style="max-width: 93%;"
+                    type="textarea" placeholder="请输入el表达式"
+                    @input.native="handleElInput"></b-input>
+                  <b-button type="primary" plain style="margin-letf: 5px;"
+                    @click="openSelectVarHandler">
+                    选择
+                  </b-button>
+                </div>
               </b-form-item>
-            </b-col>
-            <b-col span="2" style="text-align: center">
-              <b-button type="primary" plain
-                @click="openSelectVarHandler">
-                选择
-              </b-button>
             </b-col>
           </b-row>
           <b-form-item label="描述" prop="varDesc">
@@ -68,7 +77,7 @@
           </b-form-item>
         </b-form>
         <template slot="footer">
-          <b-button @click="handleCancel">取 消</b-button>
+          <b-button @click="$emit('close')">取 消</b-button>
           <b-button type="primary" @click="handleSubmit" :loading="btnLoading">提 交</b-button>
         </template>
       </v-edit-wrap>
@@ -76,7 +85,8 @@
       <!-- 一般变量时，选择模板带过来的参数不可改动与删除 -->
       <!-- 复合变量时，新增的参数不可再选择变量带过来的参数中 -->
       <edit-param-manage ref="paramManage" :paramTypeOptions="paramTypeOptions"
-        :params="params" @params-change="params => form.params = params"></edit-param-manage>
+        :params="params" :tempVarCodeList="tempVarCodeList"
+        @params-change="params => form.params = params"></edit-param-manage>
     </page-header-wrap>
 
     <!-- 返回的参数：模板id、模板名称、fields字段[paramName、paramCode、paraDesc] 不可删除，描述 -->
@@ -113,7 +123,7 @@
     },
     data () {
       return {
-        params: [], // 缓存业务模板组件选中的参数列表params
+        timer: null,
         form: {
           varName: '',
           varType: 'Common', // 变量类型默认选择一般变量
@@ -141,7 +151,9 @@
           ]
         },
         openBelongType: false,
-        openSelectVar: false
+        openSelectVar: false,
+        params: [], // 存储模板选择组件选中的参数列表params
+        tempVarCodeList: [] // 存储变量选择组件选中的变量
       }
     },
     created () {
@@ -154,12 +166,26 @@
       openSelectVarHandler () {
         this.openSelectVar = true
       },
+      // 变量类型select change回调，改变时清空对应数据
+      handleVarTypeChange () {
+        this.form.tplId = ''
+        this.form.tplContent = ''
+        this.form.params = []
+        this.params = []
+        this.tempVarCodeList = []
+      },
+      // 模板选择组件选中回调
       handleSelectedTemp (tempObj) {
         this.form = { ...this.form, ...tempObj }
         this.params = tempObj.params
       },
-      handleVarSelected (varCodeList) {
-        console.log(varCodeList)
+      // 变量选择组件选中回调
+      handleVarSelected (tempVarCodeList) {
+        this.tempVarCodeList = [...this.tempVarCodeList, ...tempVarCodeList]
+      },
+      // tag关闭回调
+      handleTagClose (index) {
+        this.tempVarCodeList.splice(index, 1)
       },
       async handleSubmit () {
         // paramManage.validateAll()用于验证参数管理
