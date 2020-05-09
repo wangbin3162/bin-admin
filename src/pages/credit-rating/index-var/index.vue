@@ -56,7 +56,10 @@
       :paramTypeOptions="paramTypeOptions" @close="handleCancel"
       @success="searchList"></Edit>
     <!-- 详情组件 -->
-    <Detail v-if="isCheck" :title="editTitle" :id="id" @close="handleCancel"></Detail>
+    <Detail v-if="isCheck" @close="handleCancel"
+      :title="editTitle" :id="id"
+      :varTypeEnum="varTypeEnum" :dataTypeEnum="dataTypeEnum"
+      :paramTypeEnum="paramTypeEnum"></Detail>
   </div>
 </template>
 
@@ -89,7 +92,7 @@
           { title: '变量编码', key: 'varCode' },
           { title: '变量类型', slot: 'varType' },
           { title: '数据类型', slot: 'dataType' },
-          { title: '模板名称', key: 'tplContent' },
+          { title: '模板内容', key: 'tplContent' },
           { title: '描述', key: 'varDesc', ellipsis: true, tooltip: true },
           { title: '操作', slot: 'action', width: 120 }
         ],

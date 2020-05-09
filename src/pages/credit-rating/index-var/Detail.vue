@@ -2,19 +2,33 @@
   <div>
     <page-header-wrap :title="title" show-close @on-close="$emit('close')">
       <v-edit-wrap>
+        <b-loading fix sho w-text="loading" v-if="loading"></b-loading>
         <div>
-          <v-key-label label="变量名称" is-half is-first></v-key-label>
-          <v-key-label label="变量编码" is-half></v-key-label>
-          <v-key-label label="变量类型" is-half is-first></v-key-label>
-          <v-key-label label="数据类型" is-half></v-key-label>
-          <v-key-label label="变量模板" is-half is-first></v-key-label>
-          <v-key-label label="状态" is-half></v-key-label>
-          <v-key-label label="摘要" is-bottom></v-key-label>
+          <v-key-label label="变量名称" is-half is-first>
+            {{ detail.varName }}
+          </v-key-label>
+          <v-key-label label="变量编码" is-half>
+            {{ detail.varCode }}
+          </v-key-label>
+          <v-key-label label="变量类型" is-half is-first>
+            {{ varTypeEnum[detail.varType] }}
+          </v-key-label>
+          <v-key-label label="数据类型" is-half>
+            {{ dataTypeEnum[detail.dataType] }}
+          </v-key-label>
+          <v-key-label label="模板内容">
+            {{ detail.tplContent }}
+          </v-key-label>
+          <v-key-label label="描述" is-bottom>
+            {{ detail.varName }}
+          </v-key-label>
         </div>
-        <template slot="full">
-          <b-divider align="left">参数项</b-divider>
-          <b-table :columns="columns" :data="detail.params"></b-table>
-        </template>
+        <b-divider align="left">参数项</b-divider>
+        <b-table :columns="columns" :data="detail.params">
+          <template v-slot:paraType="{ row }">
+            {{ paramTypeEnum[row.paraType] }}
+          </template>
+        </b-table>
         <template slot="footer">
           <b-button @click="$emit('close')">返 回</b-button>
         </template>
@@ -28,15 +42,22 @@
 
   export default {
     name: 'IndexVarDetail',
-    props: ['title', 'id'],
+    props: [
+      'title',
+      'id',
+      'varTypeEnum',
+      'dataTypeEnum',
+      'paramTypeEnum'
+    ],
     data () {
       return {
+        loading: false,
         detail: {},
         columns: [
           { type: 'index', width: 50, align: 'center' },
           { title: '参数名称', key: 'paraName' },
           { title: '参数编码', key: 'paraCode' },
-          { title: '参数类型', key: 'paraType' },
+          { title: '参数类型', slot: 'paraType' },
           { title: '描述', key: 'paraDesc' }
         ]
       }
@@ -46,12 +67,14 @@
     },
     methods: {
       async getIndexVarDetail () {
+        this.loading = true
         try {
           const res = await getIndexVarDetail(this.id)
           this.detail = res
         } catch (error) {
           console.log(error)
         }
+        this.loading = false
       }
     }
   }
