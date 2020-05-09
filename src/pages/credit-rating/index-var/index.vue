@@ -32,13 +32,13 @@
             {{ dataTypeEnum[row.dataType] }}
           </template>
 
-          <template v-slot:action="scope">
-            <b-button type="text" @click="handleModify(scope.row)">
+          <template v-slot:action="{ row }">
+            <b-button type="text" @click="handleModify(row)">
               修改
             </b-button>
             <template>
               <b-divider type="vertical"></b-divider>
-              <b-button type="text" text-color="danger" @click="handleRemove(scope.row)">
+              <b-button type="text" text-color="danger" @click="handleRemove(row.id)">
                 删除
               </b-button>
             </template>
@@ -69,7 +69,7 @@
   import Edit from './Edit'
   import Detail from '@/pages/credit-rating/index-var/Detail'
   import { getEvalVarType, getEvalDataType, getEvalParamType } from '../../../api/enum.api'
-  import { getIndexVarList } from '../../../api/credit-rating/index-var.api'
+  import { getIndexVarList, deleteIndexVar } from '../../../api/credit-rating/index-var.api'
 
   export default {
     name: 'IndexVar',
@@ -128,8 +128,27 @@
       handleModify () {
         this.openEditPage('modify')
       },
-      handleRemove () {
-
+      handleRemove (id) {
+        this.$confirm({
+          title: '删除',
+          content: '确定要删除当前指标变量吗？',
+          loading: true,
+          okType: 'danger',
+          onOk: async () => {
+            try {
+              const [success, errorMsg] = await deleteIndexVar(id)
+              if (success) {
+                this.$message({ type: 'success', content: '操作成功' })
+                this.searchList()
+              } else {
+                this.$notice.danger({ title: '操作错误', desc: errorMsg })
+              }
+            } catch (error) {
+              this.$notice.danger({ title: '操作错误', desc: error })
+            }
+            this.$modal.remove()
+          }
+        })
       },
       async searchList () {
         this.listLoading = true
