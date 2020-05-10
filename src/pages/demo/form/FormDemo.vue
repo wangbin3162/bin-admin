@@ -32,8 +32,9 @@
              @on-opened="$refs.editor.refresh()" @on-ok="importJson">
       <b-code-editor ref="editor" v-model="jsonStr"/>
     </b-modal>
-    <b-modal v-model="previewModal" title="预览表单" width="950px" append-to-body :styles="{top: '20px'}">
-      <b-form v-if="previewModal" :model="form" :rules="rules" ref="form" label-position="top">
+    <b-modal v-model="previewModal" title="预览表单" width="950px" append-to-body :styles="{top: '20px'}"
+             @on-hidden="previewModalForm=false">
+      <b-form v-if="previewModalForm" :model="form" :rules="rules" ref="form" label-position="top">
         <!--自定义form-item-->
         <form-item :key="item.id||index" v-for="(item,index) in dynamicForm"
                    :label="item.fieldTitle"
@@ -73,6 +74,7 @@
         debugJson: true,
         jsonModal: false,
         previewModal: false,
+        previewModalForm: false,
         jsonStr: '',
         fields: [], // 实际信息项,
         dynamicForm: [], // 动态form，用于遍历form表单使用
@@ -135,6 +137,7 @@
         // 根据原始列扩展动态表单列表数据
         initFormList(this.fields).then(res => {
           this.previewModal = true
+          this.previewModalForm = true
           this.handleReset()
           this.dynamicForm = res
           this.initDynamicForm(res) // 根据动态列扩展form，rules和

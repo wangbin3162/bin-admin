@@ -40,7 +40,7 @@ export const validatorBuild = {
   $phone: function (opts) {
     return { pattern: /^((0\d{2,3}-\d{7,8})|(1[35874]\d{9}))$/, message: opts.message, trigger: opts.trigger }
   },
-  // 居民身份证号码 opts: { ignoreCase,message,trigger }
+  // 居民身份证号码 opts: { preField,ignoreCase,message,trigger }
   $idCode: function (opts, obj) {
     if (!obj) {
       return null
@@ -52,8 +52,11 @@ export const validatorBuild = {
         // 这里也要求设置校验配置时，居民身份证类型需要选择自然人证件类型
         // let type = obj['fddbrzjlx'] ? obj['fddbrzjlx'] : obj['id_type']
         // let result = (value.length === 0 || type !== '1' || checkIdCard(caseValue))
+
+        let preField = obj[opts.preField]// 前置字段当前值
+        let preFieldRule = opts.preField.length > 0 && !(preField && (preField === '1' || preField.length === 0))
         let caseValue = opts.ignoreCase ? String(value).toUpperCase() : value
-        let result = (value.length === 0 || checkIdCard(caseValue))
+        let result = (value.length === 0 || preFieldRule || checkIdCard(caseValue))
         if (!result) callback(new Error(opts.message))
         callback()
       },
@@ -65,48 +68,54 @@ export const validatorBuild = {
     return { pattern: new RegExp(opts.regexp), message: opts.message, trigger: opts.trigger }
   },
   /* =========[信息项规则]=============== */
-  // 统一社会信用代码 opts: { ignoreCase,message,trigger }
+  // 统一社会信用代码 opts: { preField,ignoreCase,message,trigger }
   $unifiedCode: function (opts, obj) {
     if (!obj) {
       return null
     }
     return {
       validator: (rule, value, callback) => {
-        // 需判断证件类型值，这里要求配置校验规则时区分法人与自然人，统一社会信用代码为1，工商注册号代码为2，组织机构代码为3
+        let preField = obj[opts.preField] // 前置字段当前值
+        let preFieldRule = opts.preField.length > 0 && !(preField && (preField === '1' || preField.length === 0))
+        // 需判是否需要级联判断id_type，统一社会信用代码为1，工商注册号代码为2，组织机构代码为3
         let caseValue = opts.ignoreCase ? String(value).toUpperCase() : value
-        let result = (value.length === 0 || obj['id_type'] !== '1' || value === '00000000000000000X' || verifyUnifiedCode(caseValue))
+        let result = (value.length === 0 || preFieldRule || value === '00000000000000000X' || verifyUnifiedCode(caseValue))
         if (!result) callback(new Error(opts.message))
         callback()
       },
       trigger: opts.trigger
     }
   },
-  // 组织机构代码 opts: { ignoreCase,message,trigger }
+  // 组织机构代码 opts: { preField,ignoreCase,message,trigger }
   $orgInstCode: function (opts, obj) {
     if (!obj) {
       return null
     }
     return {
       validator: (rule, value, callback) => {
-        // 需判断证件类型值，这里要求配置校验规则时区分法人与自然人，统一社会信用代码为1，工商注册号代码为2，组织机构代码为3
+        let preField = obj[opts.preField] // 前置字段当前值
+        let preFieldRule = opts.preField.length > 0 && !(preField && (preField === '3' || preField.length === 0))
+        // 需判是否需要级联判断id_type，统一社会信用代码为1，工商注册号代码为2，组织机构代码为3
         let caseValue = opts.ignoreCase ? String(value).toUpperCase() : value
-        let result = (value.length === 0 || obj['id_type'] !== '3' || verifyOrgNo(caseValue))
+        let result = (value.length === 0 || preFieldRule || verifyOrgNo(caseValue))
         if (!result) callback(new Error(opts.message))
         callback()
       },
       trigger: opts.trigger
     }
   },
-  // 工商注册号 opts: { ignoreCase,message,trigger }
+  // 工商注册号 opts: { preField, ignoreCase,message,trigger }
   $regNo: function (opts, obj) {
     if (!obj) {
       return null
     }
     return {
       validator: (rule, value, callback) => {
-        // 需判断证件类型值，这里要求配置校验规则时区分法人与自然人，统一社会信用代码为1，工商注册号代码为2，组织机构代码为3
+        let preField = obj[opts.preField] // 前置字段当前值
+        let preFieldRule = opts.preField.length > 0 && !(preField && (preField === '2' || preField.length === 0))
+        // 需判是否需要级联判断id_type，统一社会信用代码为1，工商注册号代码为2，组织机构代码为3
         let caseValue = opts.ignoreCase ? String(value).toUpperCase() : value
-        let result = (value.length === 0 || obj['id_type'] !== '2' || verifyRegNo(caseValue))
+        let result = (value.length === 0 || preFieldRule || verifyRegNo(caseValue))
         if (!result) callback(new Error(opts.message))
         callback()
       },
