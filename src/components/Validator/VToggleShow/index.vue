@@ -1,7 +1,7 @@
 <template>
   <span v-if="!toggle" style="margin: 0 10px; cursor: pointer" @click="emitValue(true)">
     <b-tooltip :content="showText">
-      <b-icon name="ios-eye-off" color="#666" size="18" style="vertical-align: -1px;"/>
+      <b-icon name="ios-eye-off" color="#666" size="20" style="vertical-align: -2px;"/>
     </b-tooltip>
   </span>
   <span v-else style="margin: 0 10px; cursor: pointer" @click="emitValue(false)">

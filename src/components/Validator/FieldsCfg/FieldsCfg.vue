@@ -44,7 +44,7 @@
             </b-col>
             <b-col span="8">
               <b-form-item label="控件类型" class="bin-form-item-required">
-                <b-select v-model="totalData[currentIndex].controlType" @on-change="emitValue">
+                <b-select v-model="totalData[currentIndex].controlType" @on-change="controlTypeChange">
                   <b-option v-for="(value,key) in controlTypeFilter" :key="key" :value="key">{{ value }}</b-option>
                 </b-select>
               </b-form-item>
@@ -271,6 +271,20 @@
         arr[index2] = temp1
         this.totalData = arr
         this.resetHandle('重排成功')
+      },
+      // 控件类型改变事件
+      controlTypeChange(type) {
+        const trigger = (type === 'TEXT' || type === 'TEXTAREA') ? 'blur' : 'change'
+        try {
+          let checkRules = JSON.parse(this.totalData[this.currentIndex].checkRules)
+          Object.keys(checkRules).forEach(key => {
+            checkRules[key]['trigger'] = trigger
+          })
+          this.totalData[this.currentIndex].checkRules = JSON.stringify(checkRules)
+        } catch (e) {
+          console.warn('校验字符串格式化失败')
+        }
+        this.emitValue()
       },
       // 重置操作和更新model
       resetHandle(message) {
