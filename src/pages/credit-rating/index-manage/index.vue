@@ -73,7 +73,7 @@
         },
         columns: [
           { type: 'index', width: 50, align: 'center' },
-          { title: '编码', key: 'id' },
+          { title: '编码', key: 'indexCode' },
           { title: '名称', slot: 'indexName' },
           { title: '指标性质', key: 'indexKind' },
           // { title: '描述', slot: 'indexDesc' },
