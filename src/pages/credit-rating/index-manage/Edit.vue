@@ -5,7 +5,9 @@
         <template slot="full">
           <b-collapse v-model="collapseValue" simple>
             <b-collapse-panel title="基本信息" name="index">
-              <EditBaseInfo></EditBaseInfo>
+              <EditBaseInfo ref="baseInfo" @data-update="handleUpdateBaseInfo"
+                :natureOptions="natureOptions" :dataTypeOptions="dataTypeOptions"
+                :calcTypeOptions="calcTypeOptions" :scaleOptions="scaleOptions"></EditBaseInfo>
             </b-collapse-panel>
 
             <b-collapse-panel title="指标配置规则" name="rules">
@@ -34,7 +36,13 @@
 
   export default {
     name: 'IndexManageEdit',
-    props: ['title'],
+    props: [
+      'title',
+      'natureOptions',
+      'dataTypeOptions',
+      'calcTypeOptions',
+      'scaleOptions'
+    ],
     components: {
       EditBaseInfo,
       EditIndexRule,
@@ -55,7 +63,12 @@
     },
     methods: {
       handleSubmit () {
-
+        // 验证子组件内的form
+        this.$refs.baseInfo.$refs.form.validate()
+      },
+      // 处理EditBaseInfo组件数据更新事件
+      handleUpdateBaseInfo (data) {
+        console.log(JSON.stringify(data))
       }
     }
   }

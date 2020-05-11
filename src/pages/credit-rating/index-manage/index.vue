@@ -12,10 +12,9 @@
           </v-filter-item>
           <v-filter-item title="指标性质">
             <b-select v-model="listQuery.nature" clearable>
-              <b-option :value="1">优先指标</b-option>
-              <b-option :value="2">普通指标</b-option>
-              <b-option :value="3">降级指标</b-option>
-              <b-option :value="4">关联降级指标</b-option>
+              <b-option v-for="item in natureOptions" :key="item.value" :value="item.value">
+                {{ item.label }}
+              </b-option>
             </b-select>
           </v-filter-item>
           <!-- 添加查询按钮位置 -->
@@ -47,7 +46,9 @@
       </v-table-wrap>
     </page-header-wrap>
     <!-- 编辑 -->
-    <Edit v-show="isEdit" :title="editTitle" @close="handleCancel"></Edit>
+    <Edit v-show="isEdit" :title="editTitle" @close="handleCancel"
+      :natureOptions="natureOptions" :dataTypeOptions="dataTypeOptions"
+      :calcTypeOptions="calcTypeOptions" :scaleOptions="scaleOptions"></Edit>
   </div>
 </template>
 
@@ -56,6 +57,8 @@
   import permission from '../../../common/mixins/permission'
   import Edit from '@/pages/credit-rating/index-manage/Edit'
   import { getIndexManageTree, getIndexManageList } from '../../../api/credit-rating/index-manage.api'
+  import { getEvalNature, getEvalDataType, getEvalCalcType, getEvalScale } from '../../../api/enum.api'
+  import { enumToOptions } from '../../../common/utils/util'
 
   export default {
     name: 'IndexManage',
@@ -81,10 +84,19 @@
           { title: '标度', key: 'scale' },
           { title: '有效期限', key: 'validMonth' },
           { title: '操作', slot: 'action', width: 120 }
-        ]
+        ],
+        natureEnum: {}, // 指标性质枚举
+        dataTypeEnum: {}, // 数据类型枚举
+        calcTypeEnum: {}, // 计算类型枚举
+        scaleEnum: {}, // 标度枚举
+        natureOptions: [],
+        dataTypeOptions: [],
+        calcTypeOptions: [],
+        scaleOptions: []
       }
     },
     created () {
+      this.getEnum()
       this.initTree()
     },
     methods: {
@@ -153,6 +165,20 @@
           this.$log.pretty('searchList Error', error, 'danger')
         }
         this.listLoading = false
+      },
+      // 获取所需枚举值
+      async getEnum () {
+        try {
+          const [natureEnum, dataTypeEnum, calcTypeEnum, scaleEnum] = await Promise.all([
+            getEvalNature(), getEvalDataType(), getEvalCalcType(), getEvalScale()
+          ])
+          this.natureOptions = enumToOptions(natureEnum)
+          this.dataTypeOptions = enumToOptions(dataTypeEnum)
+          this.calcTypeOptions = enumToOptions(calcTypeEnum)
+          this.scaleOptions = enumToOptions(scaleEnum)
+        } catch (error) {
+          this.$log.pretty('getEnum Error', error, 'danger')
+        }
       }
     }
   }

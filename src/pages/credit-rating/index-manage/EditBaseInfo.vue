@@ -17,8 +17,9 @@
         <b-col span="12">
           <b-form-item label="指标性质" prop="indexKind">
             <b-select v-model="form.indexKind">
-              <b-option :value="0">定量</b-option>
-              <b-option :value="1">定性</b-option>
+              <b-option v-for="item in natureOptions" :key="item.value" :value="item.value">
+                {{ item.label }}
+              </b-option>
             </b-select>
           </b-form-item>
         </b-col>
@@ -30,21 +31,20 @@
       </b-row>
       <b-row>
         <b-col span="12">
-          <b-form-item label="数据类型" prop="">
-            <b-select v-model="form.indexName">
-              <b-option :value="0">数值类型</b-option>
-              <b-option :value="1">字符串类型</b-option>
-              <b-option :value="2">布尔类型</b-option>
+          <b-form-item label="数据类型" prop="dataType">
+            <b-select v-model="form.dataType">
+              <b-option v-for="item in dataTypeOptions" :key="item.value" :value="item.value">
+                {{ item.label }}
+              </b-option>
             </b-select>
           </b-form-item>
         </b-col>
         <b-col span="12">
           <b-form-item label="计算类型" prop="calClass">
             <b-select v-model="form.calClass">
-              <b-option :value="0">优先指标</b-option>
-              <b-option :value="1">普通指标</b-option>
-              <b-option :value="2">降级指标</b-option>
-              <b-option :value="3">关联降级指标</b-option>
+               <b-option v-for="item in calcTypeOptions" :key="item.value" :value="item.value">
+                {{ item.label }}
+              </b-option>
             </b-select>
           </b-form-item>
         </b-col>
@@ -53,7 +53,8 @@
         <b-col span="12">
           <b-form-item label="变量" prop="varId">
             <div flex style="width:100%;">
-              <b-input :value="form.varId" readonly class="choose-btn"></b-input>
+              <b-input :value="form.varId" placeholder="请选择变量" class="choose-btn"
+                readonly disabled></b-input>
               <b-button slot="suffix" type="primary" plain
                 @click="openSelectVarHandler" style="flex: 0 0 auto;">
                 选择
@@ -64,8 +65,9 @@
         <b-col span="12">
           <b-form-item label="标度" prop="scale">
             <b-select v-model="form.scale">
-              <b-option :value="0">5分</b-option>
-              <b-option :value="1">10分</b-option>
+              <b-option v-for="item in scaleOptions" :key="item.value" :value="item.value">
+                {{ item.label }}
+              </b-option>
             </b-select>
           </b-form-item>
         </b-col>
@@ -94,7 +96,12 @@
 <script>
   export default {
     name: 'IndexManageEditBaseInfo',
-    props: [],
+    props: [
+      'natureOptions',
+      'dataTypeOptions',
+      'calcTypeOptions',
+      'scaleOptions'
+    ],
     components: {},
     data () {
       return {
@@ -107,9 +114,10 @@
           bizType: '', // 类别编码[类别数据为树形结构]
           indexKind: '', // 指标性质
           calClass: '', // 计算类型
+          dataType: '', // 数据类型
           validParamName: '', // 有效期参数名
           validMonth: 1, // 有效期 单位：月
-          scale: '5', // 标度
+          scale: 'F', // 标度
           varId: '' // 引用变量id
         },
         roles: {
@@ -124,6 +132,9 @@
           ],
           indexKind: [
             { required: true, message: '指标性质不能为空', trigger: 'blur' }
+          ],
+          dataType: [
+            { required: true, message: '数据类型不能为空', trigger: 'blur' }
           ],
           calClass: [
             { required: true, message: '计算类型不能为空', trigger: 'blur' }
@@ -141,6 +152,15 @@
             { required: true, message: '变量不能为空', trigger: 'blur' }
           ]
         }
+      }
+    },
+    watch: {
+      form: {
+        handler (newVal, oldVal) {
+          // 数据有变化就发送新的数据给上级组件
+          this.$emit('data-update', newVal)
+        },
+        deep: true
       }
     },
     created () {
