@@ -5,14 +5,18 @@
         <template slot="full">
           <b-collapse v-model="collapseValue" simple>
             <b-collapse-panel title="基本信息" name="index">
-              <EditBaseInfo ref="baseInfo" @data-update="handleUpdateBaseInfo"
-                :natureOptions="natureOptions" :dataTypeOptions="dataTypeOptions"
-                :calcTypeOptions="calcTypeOptions" :scaleOptions="scaleOptions"
-                :treeData="treeData"></EditBaseInfo>
+              <EditBaseInfo ref="baseInfo"
+                @data-update="handleUpdateBaseInfo"
+                :natureOptions="natureOptions"
+                :dataTypeOptions="dataTypeOptions"
+                :calcTypeOptions="calcTypeOptions"
+                :scaleOptions="scaleOptions"
+                :treeData="treeData"
+                :formData="form.index"></EditBaseInfo>
             </b-collapse-panel>
 
             <b-collapse-panel title="指标配置规则" name="rules">
-              <EditIndexRule></EditIndexRule>
+              <EditIndexRule :scale="form.index.indexScale" :rules="form.rules"></EditIndexRule>
             </b-collapse-panel>
 
             <b-collapse-panel title="信息资源配置" name="resources">
@@ -34,7 +38,7 @@
   import EditBaseInfo from './EditBaseInfo'
   import EditIndexRule from './EditIndexRule'
   import EditSourceInfo from './EditSourceInfo'
-  import { saveAndUpdate } from '../../../api/credit-rating/index-manage.api'
+  import { saveAndUpdate, getIndeManageDetail } from '../../../api/credit-rating/index-manage.api'
 
   export default {
     name: 'IndexManageEdit',
@@ -71,9 +75,12 @@
         const status = await this.$refs.baseInfo.$refs.form.validate()
         if (status) {
           try {
+            // 这里需要直接从子组件取值，深度观察子组件的form会卡死浏览器进程
+            this.form.index = this.$refs.baseInfo.form
             const [success, errorMsg] = await saveAndUpdate(this.form)
             if (success) {
               this.$message({ type: 'success', content: '操作成功' })
+              this.$emit('success')
               this.$emit('close')
             } else {
               this.$notice.danger({ title: '操作失败', desc: errorMsg })
@@ -89,9 +96,14 @@
         this.form.index = data
       },
       // 初始化编辑数据
-      init () {
+      async init () {
         if (this.editData) {
-          this.form = { ...this.editData }
+          try {
+            const res = await getIndeManageDetail(this.editData.id)
+            this.form = res
+          } catch (error) {
+            this.$log.pretty('searchList Error', error, 'danger')
+          }
         }
       }
     }

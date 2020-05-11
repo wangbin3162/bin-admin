@@ -64,8 +64,8 @@
           </b-form-item>
         </b-col>
         <b-col span="12">
-          <b-form-item label="标度" prop="scale">
-            <b-select v-model="form.scale">
+          <b-form-item label="标度" prop="indexScale">
+            <b-select v-model="form.indexScale">
               <b-option v-for="item in scaleOptions" :key="item.value" :value="item.value">
                 {{ item.label }}
               </b-option>
@@ -105,7 +105,8 @@
       'dataTypeOptions',
       'calcTypeOptions',
       'scaleOptions',
-      'treeData'
+      'treeData',
+      'formData'
     ],
     components: {
       EditSelectVar
@@ -125,7 +126,7 @@
           dataType: '', // 数据类型
           validParamName: '', // 有效期参数名
           validMonth: 1, // 有效期 单位：月
-          scale: 'F', // 标度
+          indexScale: 'F', // 标度
           varId: '' // 引用变量id
         },
         roles: {
@@ -153,7 +154,7 @@
           validMonth: [
             { type: 'integer', required: true, message: '必须为1-12的整数', trigger: 'blur' }
           ],
-          scale: [
+          indexScale: [
             { required: true, message: '请选择标度', trigger: 'change' }
           ],
           varId: [
@@ -163,13 +164,18 @@
       }
     },
     watch: {
-      form: {
-        handler (newVal, oldVal) {
-          // 数据有变化就发送新的数据给上级组件
-          this.$emit('data-update', newVal)
-        },
-        deep: true
+      formData (newVal, oldVal) {
+        this.form = { ...newVal } // 用于初始化编辑数据
+        // 编辑的时候缺少变量名称字段，无法显示变量名称
       }
+      // form: { // 此form的观察者与formData观察者中的form赋值冲突，会卡死浏览器进程
+      //   handler (newVal, oldVal) {
+      //     // 数据有变化就发送新的数据给上级组件
+      //     this.$emit('data-update', newVal)
+      //   },
+      //   immediate: true,
+      //   deep: true
+      // }
     },
     created () {
       this.cascadeData = this.treeToCascade(this.treeData[0].children)
@@ -197,7 +203,7 @@
         for (const item of tree) {
           const obj = {
             label: item.title,
-            value: item.id,
+            value: item.code,
             children: []
           }
           if (item.children && item.children.length > 0) {

@@ -26,8 +26,14 @@
         </v-table-tool-bar>
         <!-- 中央表格 -->
         <b-table :columns="columns" :data="list" :loading="listLoading">
-          <template v-slot:name="{ row }">
-            <b-button type="text" @click="handleCheck(row)">{{ row.name }}</b-button>
+          <template v-slot:indexName="{ row }">
+            <b-button type="text" @click="handleCheck(row.id)">{{ row.indexName }}</b-button>
+          </template>
+          <template v-slot:indexKind="{ row }">
+            {{ natureEnum[row.indexKind] }}
+          </template>
+          <template v-slot:indexScale="{ row }">
+            {{ scaleEnum[row.indexScale] }}
           </template>
           <!-- 操作栏 -->
           <template v-slot:action="{ row }">
@@ -47,7 +53,7 @@
       </v-table-wrap>
     </page-header-wrap>
     <!-- 编辑 -->
-    <Edit v-if="isEdit" :title="editTitle" @close="handleClose"
+    <Edit v-if="isEdit" :title="editTitle" @close="handleClose" @success="searchList"
       :natureOptions="natureOptions" :dataTypeOptions="dataTypeOptions"
       :calcTypeOptions="calcTypeOptions" :scaleOptions="scaleOptions"
       :treeData="treeData" :editData="editData"></Edit>
@@ -80,10 +86,10 @@
           { type: 'index', width: 50, align: 'center' },
           { title: '编码', key: 'indexCode' },
           { title: '名称', slot: 'indexName' },
-          { title: '指标性质', key: 'indexKind' },
+          { title: '指标性质', slot: 'indexKind' },
           // { title: '描述', slot: 'indexDesc' },
           // { title: '指标分类', slot: 'bizType' },
-          { title: '标度', key: 'scale' },
+          { title: '标度', slot: 'indexScale' },
           { title: '有效期限', key: 'validMonth' },
           { title: '操作', slot: 'action', width: 120 }
         ],
@@ -108,7 +114,7 @@
           node.selected = true
         }
         this.currentTreeNode = node
-        this.listQuery.bizType = node.id
+        this.listQuery.bizType = node.code
         this.handleFilter()
       },
       resetQuery () {
@@ -148,6 +154,9 @@
           }
         })
       },
+      handleCheck (id) {
+
+      },
       handleClose () {
         this.editData = null // 关闭编辑框的时候情况编辑数据
         this.handleCancel()
@@ -171,6 +180,10 @@
           const [natureEnum, dataTypeEnum, calcTypeEnum, scaleEnum] = await Promise.all([
             getEvalNature(), getEvalDataType(), getEvalCalcType(), getEvalScale()
           ])
+          this.natureEnum = natureEnum
+          this.dataTypeEnum = dataTypeEnum
+          this.calcTypeEnum = calcTypeEnum
+          this.scaleEnum = scaleEnum
           this.natureOptions = enumToOptions(natureEnum)
           this.dataTypeOptions = enumToOptions(dataTypeEnum)
           this.calcTypeOptions = enumToOptions(calcTypeEnum)
@@ -196,7 +209,7 @@
               this.$set(this.treeData[0], 'selected', true)
               this.$set(this.treeData[0], 'expand', true)
             }
-            this.listQuery.bizType = this.currentTreeNode.id
+            this.listQuery.bizType = this.currentTreeNode.code
             this.handleFilter()
           }
         })
