@@ -73,11 +73,13 @@
         },
         columns: [
           { type: 'index', width: 50, align: 'center' },
-          { title: '编码', key: 'code' },
-          { title: '名称', slot: 'name' },
-          { title: '指标性质', key: 'nature' },
+          { title: '编码', key: 'id' },
+          { title: '名称', slot: 'indexName' },
+          { title: '指标性质', key: 'indexKind' },
+          // { title: '描述', slot: 'indexDesc' },
+          // { title: '指标分类', slot: 'bizType' },
           { title: '标度', key: 'scale' },
-          { title: '有效期限', key: 'timeLimit' },
+          { title: '有效期限', key: 'validMonth' },
           { title: '操作', slot: 'action', width: 120 }
         ]
       }
@@ -142,16 +144,13 @@
       async searchList() {
         this.listLoading = true
         try {
-          const res = await getIndexManageList(this.listQuery).then(response => {
-          if (res.status === 200) {
-            this.setListData({
-              list: res.rows,
-              total: res.total
-            })
-          }
-        })
+          const res = await getIndexManageList(this.listQuery)
+          this.setListData({
+            list: res.rows,
+            total: res.total
+          })
         } catch (error) {
-          console.log(error)
+          this.$log.pretty('searchList Error', error, 'danger')
         }
         this.listLoading = false
       }
