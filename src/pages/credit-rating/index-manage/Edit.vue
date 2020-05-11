@@ -7,7 +7,8 @@
             <b-collapse-panel title="基本信息" name="index">
               <EditBaseInfo ref="baseInfo" @data-update="handleUpdateBaseInfo"
                 :natureOptions="natureOptions" :dataTypeOptions="dataTypeOptions"
-                :calcTypeOptions="calcTypeOptions" :scaleOptions="scaleOptions"></EditBaseInfo>
+                :calcTypeOptions="calcTypeOptions" :scaleOptions="scaleOptions"
+                :treeData="treeData"></EditBaseInfo>
             </b-collapse-panel>
 
             <b-collapse-panel title="指标配置规则" name="rules">
@@ -30,9 +31,10 @@
 </template>
 
 <script>
-  import EditBaseInfo from '@/pages/credit-rating/index-manage/EditBaseInfo'
-  import EditIndexRule from '@/pages/credit-rating/index-manage/EditIndexRule'
-  import EditSourceInfo from '@/pages/credit-rating/index-manage/EditSourceInfo'
+  import EditBaseInfo from './EditBaseInfo'
+  import EditIndexRule from './EditIndexRule'
+  import EditSourceInfo from './EditSourceInfo'
+  import { saveAndUpdate } from '../../../api/credit-rating/index-manage.api'
 
   export default {
     name: 'IndexManageEdit',
@@ -41,7 +43,8 @@
       'natureOptions',
       'dataTypeOptions',
       'calcTypeOptions',
-      'scaleOptions'
+      'scaleOptions',
+      'treeData'
     ],
     components: {
       EditBaseInfo,
@@ -62,13 +65,18 @@
 
     },
     methods: {
-      handleSubmit () {
+      async handleSubmit () {
         // 验证子组件内的form
-        this.$refs.baseInfo.$refs.form.validate()
+        const status = await this.$refs.baseInfo.$refs.form.validate()
+        if (status) {
+          const res = await saveAndUpdate(this.form)
+          console.log(res)
+        }
       },
       // 处理EditBaseInfo组件数据更新事件
       handleUpdateBaseInfo (data) {
         console.log(JSON.stringify(data))
+        this.form.index = data
       }
     }
   }

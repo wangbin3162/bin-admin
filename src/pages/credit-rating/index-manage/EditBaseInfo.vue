@@ -25,7 +25,9 @@
         </b-col>
         <b-col span="12">
           <b-form-item label="指标类型" prop="bizType">
-            <b-input v-model="form.bizType" placeholder="请选择指标类型" disabled></b-input>
+            <!-- <b-input v-model="form.bizType" placeholder="请选择指标类型" disabled></b-input> -->
+            <b-cascader :data="cascadeData" placeholder="请选择指标类型"
+              change-on-select @on-change="handleCascadeChange"></b-cascader>
           </b-form-item>
         </b-col>
       </b-row>
@@ -87,7 +89,7 @@
         </b-col>
       </b-row>
       <b-form-item label="描述" prop="desc">
-        <b-input v-model="form.indexName" placeholder="请输入描述" type="textarea" :maxlength="100"></b-input>
+        <b-input v-model="form.desc" placeholder="请输入描述" type="textarea" :maxlength="100"></b-input>
       </b-form-item>
     </b-form>
   </div>
@@ -100,18 +102,18 @@
       'natureOptions',
       'dataTypeOptions',
       'calcTypeOptions',
-      'scaleOptions'
+      'scaleOptions',
+      'treeData'
     ],
     components: {},
     data () {
       return {
-        selected: '',
-        cache: '',
+        cascadeData: [], // 指标类型级联数据
         form: {
           indexName: '',
           indexCode: '',
           indexDesc: '',
-          bizType: '', // 类别编码[类别数据为树形结构]
+          bizType: '', // 指标类型[类别编码[类别数据为树形结构]]
           indexKind: '', // 指标性质
           calClass: '', // 计算类型
           dataType: '', // 数据类型
@@ -128,25 +130,25 @@
             { required: true, message: '编码不能为空', trigger: 'blur' }
           ],
           bizType: [
-            { required: true, message: '指标类型不能为空', trigger: 'blur' }
+            { required: true, message: '请选择指标类型', trigger: 'change' }
           ],
           indexKind: [
-            { required: true, message: '指标性质不能为空', trigger: 'blur' }
+            { required: true, message: '请选择指标性质', trigger: 'change' }
           ],
           dataType: [
-            { required: true, message: '数据类型不能为空', trigger: 'blur' }
+            { required: true, message: '请选择数据类型', trigger: 'change' }
           ],
           calClass: [
-            { required: true, message: '计算类型不能为空', trigger: 'blur' }
+            { required: true, message: '请选择计算类型', trigger: 'change' }
           ],
           validParamName: [
-            { required: true, message: '请不要为空', trigger: 'blur' }
+            { required: true, message: '有效期字段不能为空', trigger: 'blur' }
           ],
           validMonth: [
             { type: 'integer', required: true, message: '必须为1-12的整数', trigger: 'blur' }
           ],
           scale: [
-            { required: true, message: '标度不能为空', trigger: 'blur' }
+            { required: true, message: '请选择标度', trigger: 'change' }
           ],
           varId: [
             { required: true, message: '变量不能为空', trigger: 'blur' }
@@ -164,11 +166,34 @@
       }
     },
     created () {
-
+      this.cascadeData = this.treeToCascade(this.treeData[0].children)
     },
     methods: {
       openSelectVarHandler () {
 
+      },
+      handleCascadeChange (val) {
+       if (val.length > 0) {
+         this.form.bizType = val[0]
+       } else {
+         this.form.bizType = ''
+       }
+      },
+      // 把类目的树形数据转换为级联选择框可用的树形结构
+      treeToCascade (tree) {
+        const list = []
+        for (const item of tree) {
+          const obj = {
+            label: item.title,
+            value: item.id,
+            children: []
+          }
+          if (item.children && item.children.length > 0) {
+            obj.children = this.treeToCascade(item.children)
+          }
+          list.push(obj)
+        }
+        return list
       }
     }
   }

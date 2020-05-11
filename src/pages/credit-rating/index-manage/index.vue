@@ -46,9 +46,10 @@
       </v-table-wrap>
     </page-header-wrap>
     <!-- 编辑 -->
-    <Edit v-show="isEdit" :title="editTitle" @close="handleCancel"
+    <Edit v-if="isEdit" :title="editTitle" @close="handleCancel"
       :natureOptions="natureOptions" :dataTypeOptions="dataTypeOptions"
-      :calcTypeOptions="calcTypeOptions" :scaleOptions="scaleOptions"></Edit>
+      :calcTypeOptions="calcTypeOptions" :scaleOptions="scaleOptions"
+      :treeData="treeData"></Edit>
   </div>
 </template>
 
