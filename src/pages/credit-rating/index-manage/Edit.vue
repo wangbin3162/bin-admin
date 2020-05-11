@@ -40,6 +40,7 @@
     name: 'IndexManageEdit',
     props: [
       'title',
+      'editData',
       'natureOptions',
       'dataTypeOptions',
       'calcTypeOptions',
@@ -62,7 +63,7 @@
       }
     },
     created () {
-
+      this.init()
     },
     methods: {
       async handleSubmit () {
@@ -86,6 +87,12 @@
       // 处理EditBaseInfo组件数据更新事件
       handleUpdateBaseInfo (data) {
         this.form.index = data
+      },
+      // 初始化编辑数据
+      init () {
+        if (this.editData) {
+          this.form = { ...this.editData }
+        }
       }
     }
   }

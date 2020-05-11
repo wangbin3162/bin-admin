@@ -76,3 +76,29 @@ export async function saveAndUpdate(params) {
     }
   })
 }
+
+/**
+ * @author haodongdong
+ * @description 删除指标
+ * @param {*} params
+ * @returns Promise
+ */
+export async function deleteIndexManage(id) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/api/eval/index/remove',
+        method: 'post',
+        params: { id }
+      })
+      console.log(res)
+      if (res.data.successful) {
+        resolve([true])
+      } else {
+        resolve([false, res.data.message])
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}

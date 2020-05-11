@@ -26,16 +26,17 @@
         </v-table-tool-bar>
         <!-- 中央表格 -->
         <b-table :columns="columns" :data="list" :loading="listLoading">
-          <template v-slot:name="scope">
-            <b-button type="text" @click="handleCheck(scope.row)">{{ scope.row.name }}</b-button>
+          <template v-slot:name="{ row }">
+            <b-button type="text" @click="handleCheck(row)">{{ row.name }}</b-button>
           </template>
           <!-- 操作栏 -->
-          <template v-slot:action="scope">
-            <b-button type="text" @click="handleModify(scope.row)">
+          <template v-slot:action="{ row }">
+            <b-button type="text" @click="handleModify(row)">
               编辑
             </b-button>
             <b-divider type="vertical"></b-divider>
-            <b-button type="text" text-color="danger" @click="handleRemove(scope.row)">删除
+            <b-button type="text" text-color="danger" @click="handleRemove(row.id)">
+                删除
             </b-button>
           </template>
         </b-table>
@@ -46,10 +47,10 @@
       </v-table-wrap>
     </page-header-wrap>
     <!-- 编辑 -->
-    <Edit v-if="isEdit" :title="editTitle" @close="handleCancel"
+    <Edit v-if="isEdit" :title="editTitle" @close="handleClose"
       :natureOptions="natureOptions" :dataTypeOptions="dataTypeOptions"
       :calcTypeOptions="calcTypeOptions" :scaleOptions="scaleOptions"
-      :treeData="treeData"></Edit>
+      :treeData="treeData" :editData="editData"></Edit>
   </div>
 </template>
 
@@ -57,7 +58,7 @@
   import commonMixin from '../../../common/mixins/mixin'
   import permission from '../../../common/mixins/permission'
   import Edit from '@/pages/credit-rating/index-manage/Edit'
-  import { getIndexManageTree, getIndexManageList } from '../../../api/credit-rating/index-manage.api'
+  import { getIndexManageTree, getIndexManageList, deleteIndexManage } from '../../../api/credit-rating/index-manage.api'
   import { getEvalNature, getEvalDataType, getEvalCalcType, getEvalScale } from '../../../api/enum.api'
   import { enumToOptions } from '../../../common/utils/util'
 
@@ -86,6 +87,7 @@
           { title: '有效期限', key: 'validMonth' },
           { title: '操作', slot: 'action', width: 120 }
         ],
+        editData: null, // 待编辑数据
         natureEnum: {}, // 指标性质枚举
         dataTypeEnum: {}, // 数据类型枚举
         calcTypeEnum: {}, // 计算类型枚举
@@ -120,39 +122,35 @@
       handleCreate () {
         this.openEditPage('create')
       },
-      handleCurrentChange () {
-
-      },
-      handleSizeChange () {
-
-      },
-      handleModify () {
+      handleModify (row) {
+        this.editData = row
         this.openEditPage('modify')
       },
-      handleRemove () {
-
-      },
-      // tree:初始化树结构
-      initTree() {
-        this.treeData = []
-        // 请求响应返回树结构
-        getIndexManageTree().then(response => {
-          const tree = response.data
-          // 根据返回的数组格式化为树结构的格式，并追加parents用于级联选择和展开
-          let data = tree ? this.treeMapper(tree, null, ['code']) : {}
-          this.treeData.push(data)
-          if (this.treeData.length > 0) {
-            // 如果没有当前选中节点则初始化为第一个选中
-            if (!this.currentTreeNode) {
-              this.currentTreeNode = this.treeData[0]
-              // 这里要注意，扩展响应式属性需要这么写
-              this.$set(this.treeData[0], 'selected', true)
-              this.$set(this.treeData[0], 'expand', true)
+      handleRemove (id) {
+        this.$confirm({
+          title: '删除',
+          content: '确定要删除当前指标吗？',
+          loading: true,
+          okType: 'danger',
+          onOk: async () => {
+            try {
+              const [success, errorMsg] = await deleteIndexManage(id)
+              if (success) {
+                this.$message({ type: 'success', content: '操作成功' })
+                this.searchList()
+              } else {
+                this.$notice.danger({ title: '操作错误', desc: errorMsg })
+              }
+            } catch (error) {
+              this.$notice.danger({ title: '操作错误', desc: error })
             }
-            this.listQuery.bizType = this.currentTreeNode.id
-            this.handleFilter()
+            this.$modal.remove()
           }
         })
+      },
+      handleClose () {
+        this.editData = null // 关闭编辑框的时候情况编辑数据
+        this.handleCancel()
       },
       async searchList() {
         this.listLoading = true
@@ -180,6 +178,28 @@
         } catch (error) {
           this.$log.pretty('getEnum Error', error, 'danger')
         }
+      },
+      // tree:初始化树结构
+      initTree() {
+        this.treeData = []
+        // 请求响应返回树结构
+        getIndexManageTree().then(response => {
+          const tree = response.data
+          // 根据返回的数组格式化为树结构的格式，并追加parents用于级联选择和展开
+          let data = tree ? this.treeMapper(tree, null, ['code']) : {}
+          this.treeData.push(data)
+          if (this.treeData.length > 0) {
+            // 如果没有当前选中节点则初始化为第一个选中
+            if (!this.currentTreeNode) {
+              this.currentTreeNode = this.treeData[0]
+              // 这里要注意，扩展响应式属性需要这么写
+              this.$set(this.treeData[0], 'selected', true)
+              this.$set(this.treeData[0], 'expand', true)
+            }
+            this.listQuery.bizType = this.currentTreeNode.id
+            this.handleFilter()
+          }
+        })
       }
     }
   }
