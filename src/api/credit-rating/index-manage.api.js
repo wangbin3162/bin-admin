@@ -50,3 +50,25 @@ export async function getIndexManageList(query) {
     }
   })
 }
+
+/**
+ * @author haodongdong
+ * @description 创建或更新指标管理
+ * @param {*} params
+ * @returns Promise
+ */
+export async function saveAndUpdate(params) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/api/eval/index/search',
+        method: 'get',
+        data: params
+      })
+      console.log(res)
+      resolve(res.data)
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
