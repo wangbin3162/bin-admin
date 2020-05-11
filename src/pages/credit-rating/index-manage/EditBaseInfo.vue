@@ -25,7 +25,6 @@
         </b-col>
         <b-col span="12">
           <b-form-item label="指标类型" prop="bizType">
-            <!-- <b-input v-model="form.bizType" placeholder="请选择指标类型" disabled></b-input> -->
             <b-cascader :data="cascadeData" placeholder="请选择指标类型"
               change-on-select @on-change="handleCascadeChange"></b-cascader>
           </b-form-item>
@@ -55,7 +54,7 @@
         <b-col span="12">
           <b-form-item label="变量" prop="varId">
             <div flex style="width:100%;">
-              <b-input :value="form.varId" placeholder="请选择变量" class="choose-btn"
+              <b-input :value="varName" placeholder="请选择变量" class="choose-btn"
                 readonly disabled></b-input>
               <b-button slot="suffix" type="primary" plain
                 @click="openSelectVarHandler" style="flex: 0 0 auto;">
@@ -92,10 +91,13 @@
         <b-input v-model="form.desc" placeholder="请输入描述" type="textarea" :maxlength="100"></b-input>
       </b-form-item>
     </b-form>
+
+    <edit-select-var :open="open" :radio="true" @close="open = false" @selected="handleVarChange"></edit-select-var>
   </div>
 </template>
 
 <script>
+  import EditSelectVar from '../index-var/EditSelectVar'
   export default {
     name: 'IndexManageEditBaseInfo',
     props: [
@@ -105,10 +107,14 @@
       'scaleOptions',
       'treeData'
     ],
-    components: {},
+    components: {
+      EditSelectVar
+    },
     data () {
       return {
+        open: false,
         cascadeData: [], // 指标类型级联数据
+        varName: '', // 变量名称 用于显示
         form: {
           indexName: '',
           indexCode: '',
@@ -170,14 +176,20 @@
     },
     methods: {
       openSelectVarHandler () {
-
+        this.open = true
       },
+      // 级联选择回调
       handleCascadeChange (val) {
        if (val.length > 0) {
          this.form.bizType = val[0]
        } else {
          this.form.bizType = ''
        }
+      },
+      // 选择变量组件已选回调
+      handleVarChange (val) {
+        this.varName = val.varName
+        this.form.varId = val.id
       },
       // 把类目的树形数据转换为级联选择框可用的树形结构
       treeToCascade (tree) {

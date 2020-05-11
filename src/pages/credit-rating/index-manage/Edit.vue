@@ -69,13 +69,22 @@
         // 验证子组件内的form
         const status = await this.$refs.baseInfo.$refs.form.validate()
         if (status) {
-          const res = await saveAndUpdate(this.form)
-          console.log(res)
+          try {
+            const [success, errorMsg] = await saveAndUpdate(this.form)
+            if (success) {
+              this.$message({ type: 'success', content: '操作成功' })
+              this.$emit('close')
+            } else {
+              this.$notice.danger({ title: '操作失败', desc: errorMsg })
+            }
+          } catch (error) {
+            this.$log.pretty('searchList Error', error, 'danger')
+            this.$notice.danger({ title: '操作失败', desc: error })
+          }
         }
       },
       // 处理EditBaseInfo组件数据更新事件
       handleUpdateBaseInfo (data) {
-        console.log(JSON.stringify(data))
         this.form.index = data
       }
     }
