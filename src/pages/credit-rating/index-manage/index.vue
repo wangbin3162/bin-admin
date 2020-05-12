@@ -53,17 +53,29 @@
       </v-table-wrap>
     </page-header-wrap>
     <!-- 编辑 -->
-    <Edit v-if="isEdit" :title="editTitle" @close="handleClose" @success="searchList"
-      :natureOptions="natureOptions" :dataTypeOptions="dataTypeOptions"
-      :calcTypeOptions="calcTypeOptions" :scaleOptions="scaleOptions"
-      :treeData="treeData" :editData="editData"></Edit>
+    <edit v-if="isEdit" @close="handleClose" @success="searchList"
+      :title="editTitle"
+      :natureOptions="natureOptions"
+      :dataTypeOptions="dataTypeOptions"
+      :calcTypeOptions="calcTypeOptions"
+      :scaleOptions="scaleOptions"
+      :treeData="treeData"
+      :editData="editData"></edit>
+      <!-- 详情 -->
+    <detail v-if="isCheck" @close="handleCancel"
+      :title="editTitle" :id="id"
+      :natureEnum="natureEnum"
+      :dataTypeEnum="dataTypeEnum"
+      :calcTypeEnum="calcTypeEnum"
+      :scaleEnum="scaleEnum"></detail>
   </div>
 </template>
 
 <script>
   import commonMixin from '../../../common/mixins/mixin'
   import permission from '../../../common/mixins/permission'
-  import Edit from '@/pages/credit-rating/index-manage/Edit'
+  import Edit from './Edit'
+  import Detail from './Detail'
   import { getIndexManageTree, getIndexManageList, deleteIndexManage } from '../../../api/credit-rating/index-manage.api'
   import { getEvalNature, getEvalDataType, getEvalCalcType, getEvalScale } from '../../../api/enum.api'
   import { enumToOptions } from '../../../common/utils/util'
@@ -72,7 +84,8 @@
     name: 'IndexManage',
     mixins: [commonMixin, permission],
     components: {
-      Edit
+      Edit,
+      Detail
     },
     data () {
       return {
@@ -93,6 +106,7 @@
           { title: '有效期限', key: 'validMonth' },
           { title: '操作', slot: 'action', width: 120 }
         ],
+        id: null, // 详情组件使用的获取详情的id
         editData: null, // 待编辑数据
         natureEnum: {}, // 指标性质枚举
         dataTypeEnum: {}, // 数据类型枚举
@@ -155,7 +169,8 @@
         })
       },
       handleCheck (id) {
-
+        this.id = id
+        this.openEditPage('check')
       },
       handleClose () {
         this.editData = null // 关闭编辑框的时候情况编辑数据
