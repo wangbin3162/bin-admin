@@ -15,6 +15,7 @@
     "TEXT": "文本框",
     "NUMBER_TEXT": "数值文本框",
     "SELECT": "下拉框",
+    "MULTIPLE_SELECT": "多选下拉框",
     "DATE": "日期",
     "DATE_TIME": "日期时间",
     "TEXTAREA": "文本域",

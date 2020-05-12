@@ -15,7 +15,7 @@ export default {
   },
   props: {
     value: {
-      type: [String, Number],
+      type: [String, Number, Array],
       default: ''
     },
     controlType: {
@@ -120,6 +120,24 @@ export default {
           })
         )
         break
+      case 'MULTIPLE_SELECT':
+        node = h('b-select', {
+            props: {
+              value: this.currentValue.split(','),
+              placeholder: `${this.fieldDesc ? this.fieldDesc : '请选择' + this.fieldTitle}`,
+              disabled: readonly,
+              clearable: !readonly,
+              appendToBody: true,
+              multiple: true,
+              maxTagCount: 2
+            },
+            on: { 'on-change': this.handleInputMultiple }
+          },
+          this.options.map((item) => {
+            return h('b-option', { props: { value: item.code } }, [item.name])
+          })
+        )
+        break
       case 'LEG_PERSON':
         node = h('leg-person-choose', {
           props: {
@@ -160,6 +178,11 @@ export default {
     // 触发emit input函数
     handleInput(value) {
       this.currentValue = value
+      this.$emit('input', this.currentValue)
+    },
+    // 触发多选input函数
+    handleInputMultiple(value) {
+      this.currentValue = value.join(',')
       this.$emit('input', this.currentValue)
     },
     // 法人选择事件,从法人控件中监听并继续向上层抛出

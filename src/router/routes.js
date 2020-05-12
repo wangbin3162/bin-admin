@@ -17,7 +17,7 @@ import creditRating from './modules/credit-rating'
   }
  **/
 export const asyncRouterMap = [
-  sys, dataManage, dataAnalyze, formDemo, creditRating,
+  sys, dataManage, dataAnalyze, creditRating, formDemo,
   { path: '*', redirect: '/404', hidden: true }
 ]
 

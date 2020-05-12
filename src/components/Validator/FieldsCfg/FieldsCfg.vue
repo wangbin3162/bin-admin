@@ -93,7 +93,8 @@
             </b-col>
             <b-col span="8">
               <b-form-item label="是否加密">
-                <b-select v-model="totalData[currentIndex].isEncrypt" clearable @on-change="emitValue">
+                <b-select v-model="totalData[currentIndex].isEncrypt" clearable @on-change="emitValue"
+                          :disabled="encryptDisabled">
                   <b-option v-for="(value,key) in enumMap.isEncrypt" :key="key" :value="key">{{ value }}</b-option>
                 </b-select>
               </b-form-item>
@@ -174,6 +175,12 @@
         }
         return false
       },
+      encryptDisabled() {
+        if (this.currentIndex !== -1) {
+          return this.totalData[this.currentIndex].dataType !== 'string'
+        }
+        return false
+      },
       // 根据数据类型选定控件类型
       controlTypeFilter() {
         if (this.currentIndex === -1) {
@@ -219,6 +226,7 @@
             return {
               'TEXT': '文本框',
               'SELECT': '下拉框',
+              'MULTIPLE_SELECT': '多选下拉框',
               'DATE': '日期',
               'DATE_TIME': '日期时间',
               'TEXTAREA': '文本域',
