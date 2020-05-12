@@ -35,6 +35,9 @@
           <template v-slot:indexScale="{ row }">
             {{ scaleEnum[row.indexScale] }}
           </template>
+          <template v-slot:validMonth="{ row }">
+            {{ row.validMonth }} 月
+          </template>
           <!-- 操作栏 -->
           <template v-slot:action="{ row }">
             <b-button type="text" @click="handleModify(row)">
@@ -97,14 +100,14 @@
         },
         columns: [
           { type: 'index', width: 50, align: 'center' },
-          { title: '编码', key: 'indexCode' },
-          { title: '名称', slot: 'indexName' },
-          { title: '指标性质', slot: 'indexKind' },
+          { title: '编码', key: 'indexCode', align: 'center' },
+          { title: '名称', slot: 'indexName', align: 'center' },
+          { title: '指标性质', slot: 'indexKind', align: 'center' },
           // { title: '描述', slot: 'indexDesc' },
           // { title: '指标分类', slot: 'bizType' },
-          { title: '标度', slot: 'indexScale' },
-          { title: '有效期限', key: 'validMonth' },
-          { title: '操作', slot: 'action', width: 120 }
+          { title: '标度', slot: 'indexScale', align: 'center' },
+          { title: '有效期限', slot: 'validMonth', align: 'center' },
+          { title: '操作', slot: 'action', width: 120, align: 'center' }
         ],
         id: null, // 详情组件使用的获取详情的id
         editData: null, // 待编辑数据

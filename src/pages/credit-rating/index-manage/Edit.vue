@@ -39,7 +39,7 @@
                   </b-col>
                   <b-col span="12">
                     <b-form-item label="指标类型" prop="bizType">
-                      <b-cascader :data="cascadeData" placeholder="请选择指标类型"
+                      <b-cascader :data="cascadeData" v-model="cascadeModel" placeholder="请选择指标类型"
                         change-on-select @on-change="handleCascadeChange"></b-cascader>
                     </b-form-item>
                   </b-col>
@@ -102,7 +102,7 @@
                   </b-col>
                 </b-row>
                 <b-form-item label="描述" prop="desc">
-                  <b-input v-model="form.index.desc" placeholder="请输入描述" type="textarea" :maxlength="100"></b-input>
+                  <b-input v-model="form.index.indexDesc" placeholder="请输入描述" type="textarea" :maxlength="100"></b-input>
                 </b-form-item>
               </b-form>
 
@@ -155,6 +155,7 @@
         collapseValue: ['index'], // 控制手风琴展开
         open: false,
         cascadeData: [], // 指标类型级联数据
+        cascadeModel: [], // 用于级联绑定
         varName: '', // 变量名称 用于显示
         form: {
           index: {
@@ -162,6 +163,7 @@
             indexCode: '',
             indexDesc: '',
             bizType: '', // 指标类型[类别编码[类别数据为树形结构]]
+            bizTypeArray: '', // 存储级联选择关系的数组类型的json字符串
             indexKind: '', // 指标性质
             calClass: '', // 计算类型
             dataType: '', // 数据类型
@@ -215,7 +217,7 @@
       // 级联选择回调
       handleCascadeChange (val) {
         if (val.length > 0) {
-          this.form.index.bizType = val[0]
+          this.form.index.bizType = val[val.length - 1]
         } else {
           this.form.index.bizType = ''
         }
@@ -233,6 +235,8 @@
         const status = await this.$refs.form.validate()
         if (status) {
           try {
+            this.form.index.bizTypeArray = JSON.stringify(this.cascadeModel) // 该字是json字符串
+
             const [success, errorMsg] = await saveAndUpdate(this.form)
             if (success) {
               this.$message({ type: 'success', content: '操作成功' })
@@ -247,16 +251,14 @@
           }
         }
       },
-      // 处理EditBaseInfo组件数据更新事件
-      // handleUpdateBaseInfo (data) {
-      //   this.form.index = data
-      // },
       // 初始化编辑数据
       async init () {
         if (this.editData) {
           try {
             const res = await getIndeManageDetail(this.editData.id)
             this.form = res
+            this.cascadeModel = JSON.parse(this.form.index.bizTypeArray) // json字符串转为数组
+            this.varName = res.index.varName // 处理变量回显
           } catch (error) {
             this.$log.pretty('searchList Error', error, 'danger')
           }

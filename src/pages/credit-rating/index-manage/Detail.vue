@@ -14,7 +14,7 @@
             {{ natureEnum[detail.indexKind] }}
           </v-key-label>
           <v-key-label label="指标类型" is-half>
-            {{ detail.bizType }}
+            {{ detail.bizTypeName }}
           </v-key-label>
           <v-key-label label="数据类型" is-half is-first>
             {{ dataTypeEnum[detail.dataType] }}
@@ -23,7 +23,7 @@
             {{ calcTypeEnum[detail.calClass] }}
           </v-key-label>
           <v-key-label label="变量" is-half is-first>
-            {{ detail.varId }}
+            {{ detail.varName }}
           </v-key-label>
           <v-key-label label="标度" is-half>
             {{ scaleEnum[detail.indexScale] }}
@@ -35,17 +35,20 @@
             {{ detail.validMonth }} 月
           </v-key-label>
           <v-key-label label="描述" is-bottom>
-            {{ detail.varName }}
+            {{ detail.indexDesc }}
           </v-key-label>
         </div>
         <b-divider align="left">
-          <h4>参数项</h4>
+          <h4>指标配置</h4>
         </b-divider>
         <!-- <b-table :columns="columns" :data="detail.params" size="small">
           <template v-slot:paraType="{ row }">
             {{ paramTypeEnum[row.paraType] }}
           </template>
         </b-table> -->
+        <b-divider align="left">
+          <h4>资源信息</h4>
+        </b-divider>
         <template slot="footer">
           <b-button @click="$emit('close')">返 回</b-button>
         </template>
