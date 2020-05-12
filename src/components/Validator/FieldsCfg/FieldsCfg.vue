@@ -59,8 +59,10 @@
           </b-row>
           <div class="config-line"/>
           <!--有效值-->
-          <valid-value v-model="totalData[currentIndex].validValue" @on-change="emitValue"/>
-          <div class="config-line"/>
+          <template v-if="totalData[currentIndex].dataType==='string'">
+            <valid-value v-model="totalData[currentIndex].validValue" @on-change="emitValue"/>
+            <div class="config-line"/>
+          </template>
           <!--校验-->
           <validator v-model="totalData[currentIndex].checkRules"
                      :field-name="totalData[currentIndex].fieldName"
