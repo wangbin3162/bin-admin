@@ -156,7 +156,6 @@
       },
       // 名称与编码的blur回调，验证非空、唯一、 不在变量列表中
       async handleValidate(row, key) {
-        console.log(this.list)
         try {
           await this.isRequired(row, key)
           await this.isUnique(row, key)
