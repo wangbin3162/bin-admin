@@ -110,7 +110,10 @@
             </b-collapse-panel>
 
             <b-collapse-panel title="指标配置规则" name="rules">
-              <EditIndexRule :scale="form.index.indexScale" :rules="form.rules"></EditIndexRule>
+              <EditIndexRule
+                :nature="form.index.indexKind"
+                :scale="form.index.indexScale"
+                :rules="form.rules"></EditIndexRule>
             </b-collapse-panel>
 
             <b-collapse-panel title="信息资源配置" name="resources">
@@ -152,7 +155,7 @@
     },
     data () {
       return {
-        collapseValue: ['index'], // 控制手风琴展开
+        collapseValue: ['index', 'rules'], // 控制手风琴展开
         open: false,
         cascadeData: [], // 指标类型级联数据
         cascadeModel: [], // 用于级联绑定
@@ -164,7 +167,7 @@
             indexDesc: '',
             bizType: '', // 指标类型[类别编码[类别数据为树形结构]]
             bizTypeArray: '', // 存储级联选择关系的数组类型的json字符串
-            indexKind: '', // 指标性质
+            indexKind: 'R', // 指标性质，默认为定量
             calClass: '', // 计算类型
             dataType: '', // 数据类型
             validParamName: '', // 有效期参数名
