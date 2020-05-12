@@ -30,7 +30,7 @@
                 <b-row>
                   <b-col span="12">
                     <b-form-item label="指标性质" prop="indexKind">
-                      <b-select v-model="form.index.indexKind" @on-change="handleIndexRules">
+                      <b-select v-model="form.index.indexKind">
                         <b-option v-for="item in natureOptions" :key="item.value" :value="item.value">
                           {{ item.label }}
                         </b-option>
@@ -47,7 +47,7 @@
                 <b-row>
                   <b-col span="12">
                     <b-form-item label="数据类型" prop="dataType">
-                      <b-select v-model="form.index.dataType">
+                      <b-select v-model="form.index.dataType" @on-change="handleIndexRules">
                         <b-option v-for="item in dataTypeOptions" :key="item.value" :value="item.value">
                           {{ item.label }}
                         </b-option>
@@ -112,7 +112,7 @@
             <b-collapse-panel title="指标配置规则" name="rules">
               <edit-index-rule ref="indexRule"
                 @data-change="handleIndexRulsChange"
-                :nature="form.index.indexKind"
+                :dataType="form.index.dataType"
                 :scale="form.index.indexScale"
                 :rules="indexRules"></edit-index-rule>
             </b-collapse-panel>
@@ -169,9 +169,9 @@
             indexDesc: '',
             bizType: '', // 指标类型[类别编码[类别数据为树形结构]]
             bizTypeArray: '', // 存储级联选择关系的数组类型的json字符串
-            indexKind: 'R', // 指标性质，默认为定量R
+            indexKind: '', // 指标性质
             calClass: '', // 计算类型
-            dataType: '', // 数据类型
+            dataType: 'N', // 数据类型， 默认数值N
             validParamName: '', // 有效期参数名
             validMonth: 1, // 有效期 单位：月
             indexScale: 'F', // 标度
@@ -241,9 +241,9 @@
       handleIndexRulsChange (list) {
         this.form.rules = list
       },
-      // 指标性质与标度下拉框的change回调，用于创建对应的指标规则
+      // 数据类型与标度下拉框的change回调，用于创建对应的指标规则
       handleIndexRules () {
-        this.$refs.indexRule.initArr(this.form.index.indexKind, this.form.index.indexScale)
+        this.$refs.indexRule.initArr(this.form.index.dataType, this.form.index.indexScale)
       },
       async handleSubmit () {
         // 验证组件内的form

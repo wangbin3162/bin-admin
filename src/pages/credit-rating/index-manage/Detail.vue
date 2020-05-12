@@ -76,13 +76,13 @@
         detail: {},
         rules: [],
         columns: [],
-        columnsQ: [
+        columnsS: [
           { type: 'index', width: 50 },
           { title: '指标值', key: 'itemValue', align: 'center' },
           { title: '指标描述', key: 'itemDesc', align: 'center' },
           { title: '得分', key: 'score', align: 'center' }
         ],
-        columnsR: [
+        columnsN: [
           { type: 'index', width: 50 },
           { title: '上限值', key: 'upValue', align: 'center' },
           { title: '下限值', key: 'dnValue', align: 'center' },
@@ -100,20 +100,20 @@
           const { index, resources, rules } = await getIndeManageDetail(this.id)
           this.detail = index
           this.rules = rules
-          this.initColumns(index.indexKind)
+          this.initColumns(index.dataType)
         } catch (error) {
           console.error(error)
           this.$log.pretty('searchList Error', error, 'danger')
         }
         this.loading = false
       },
-      // 根据指标性质初始化不同columns
+      // 根据数据类型初始化不同columns
       initColumns (nature) {
-        // Q 定性 R 定量
-        if (nature === 'Q') {
-          this.columns = this.columnsQ
+        // S 字符串 N 数值
+        if (nature === 'S') {
+          this.columns = this.columnsS
         } else {
-          this.columns = this.columnsR
+          this.columns = this.columnsN
         }
       }
     }

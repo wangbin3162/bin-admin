@@ -1,7 +1,7 @@
 <template>
   <div class="index-manage-index-rule">
     <b-code-editor :value="JSON.stringify(this.list)"></b-code-editor>
-    <b-table v-if="natureType" :columns="columnsQ" :data="list">
+    <b-table v-if="isStringType" :columns="columnsS" :data="list">
       <template v-slot:itemValue="{ index }">
         <b-tooltip
           max-width="200" placement="right"
@@ -48,9 +48,8 @@
       </template>
     </b-table>
 
-    <b-table v-else :columns="columnsR" :data="list">
+    <b-table v-else :columns="columnsN" :data="list">
       <template v-slot:upValue="{ index }">
-        <!-- <b-input-number v-model="list[index].upValue"></b-input-number> -->
         <b-tooltip
           max-width="200" placement="right"
           :content="list[index].upValueMsg"
@@ -62,7 +61,6 @@
         </b-tooltip>
       </template>
       <template v-slot:dnValue="{ index }">
-        <!-- <b-input-number v-model="list[index].dnValue"></b-input-number> -->
         <b-tooltip
           max-width="200" placement="right"
           :content="list[index].dnValueMsg"
@@ -74,7 +72,6 @@
         </b-tooltip>
       </template>
       <template v-slot:score="{ index }">
-        <!-- <b-input-number v-model="list[index].score"></b-input-number> -->
         <b-tooltip
           max-width="200" placement="right"
           :content="list[index].scoreMsg"
@@ -104,7 +101,7 @@
   export default {
     name: 'IndexManageEditIndexRule',
     props: {
-      nature: { // 性质 Q: 定性 R: 定量
+      dataType: { // 数据类型 N: 数值 S: 字符串
         required: true
       },
       scale: { // 标度 F: 5分 T: 10分
@@ -119,7 +116,7 @@
       return {
         editDataInitFlag: false,
         list: [],
-        columnsQ: [
+        columnsS: [
           { type: 'index', width: 50 },
           { title: '指标值', slot: 'itemValue', align: 'center' },
           { title: '指标描述', slot: 'itemDesc', align: 'center' },
@@ -127,7 +124,7 @@
           { title: '排序', slot: 'sort', align: 'center' },
           { title: '操作', slot: 'action', align: 'center' }
         ],
-        columnsR: [
+        columnsN: [
           { type: 'index', width: 50 },
           { title: '上限值', slot: 'upValue', align: 'center' },
           { title: '下限值', slot: 'dnValue', align: 'center' },
@@ -138,30 +135,17 @@
       }
     },
     computed: {
-      natureType () {
-        return this.nature === 'Q' // 默认显示定量
+      isStringType () {
+        return this.dataType === 'S'
       }
     },
     watch: {
       rules: {
         handler () {
-          this.initArr(this.nature, this.scale)
+          this.initArr(this.dataType, this.scale)
         },
         immediate: true
       },
-      // 暂先注释，改由父组件在下拉框change事件内调用当前组件的initArr创建对应数组
-      // nature: {
-      //   handler (newVal, oldVal) {
-      //     this.initArr(newVal, this.scale)
-      //   },
-      //   immediate: true
-      // },
-      // scale: {
-      //   handler (newVal, oldVal) {
-      //     this.initArr(this.nature, newVal)
-      //   },
-      //   immediate: true
-      // },
       list: {
         handler (newVal, oldVal) {
           this.$emit('data-change', newVal)
@@ -174,14 +158,11 @@
 
     },
     methods: {
-      init () {
-        // 初始化标度数组，主要用于编辑时的数据初始化
-      },
       // 插入下一行
       addNext(index) {
         const curScaleLength = this.scale === 'F' ? 5 : 10
         if (this.list.length < curScaleLength) { // 数组长度小于当前标度长度才允许添加
-          const obj = this.initObj(this.nature)
+          const obj = this.initObj(this.dataType)
           this.list.splice(index + 1, 0, obj)
           this.resetOrderNo(this.list)
         }
@@ -229,14 +210,7 @@
             for (const item of this.list) {
               for (const key in item) {
                 if (item.hasOwnProperty(key)) {
-                  if (key !== 'itemDesc') { // 不校验描述
-                    // 由于后端返回数据不会过滤掉不需要的字段，为了处理校验，不同指标性质下需忽略不需校验的字段
-                    if (this.nature === 'R') { // 定量
-                      if (key !== 'itemValue') await this.isRequired(item, key)
-                    } else { // 定性
-                      if (key !== 'upValue' && key !== 'dnValue') await this.isRequired(item, key)
-                    }
-                  }
+                  await this.isRequired(item, key)
                 }
               }
             }
@@ -247,11 +221,11 @@
         })
       },
       // 根据指标性质、标度初始化数组
-      initArr (nature, scale) {
+      initArr (dataType, scale) {
         let list = []
         const num = scale === 'F' ? 5 : 10 // 判断标度确定数组构建数量
         for (let i = 0; i < num; i++) {
-          const obj = this.initObj(nature) // 根据性质返回对应数据结构
+          const obj = this.initObj(dataType) // 根据性质返回对应数据结构
           obj.orderNo = i // 添加排序字段
           list.push(obj)
         }
@@ -263,22 +237,22 @@
         this.list = list
       },
       // 根据指标性质返回对应的数据结构
-      initObj (nature) {
-        // 定性结构
-        const objQ = {
+      initObj (dataType) {
+        // 字符串使用的结构
+        const objS = {
           orderNo: 0,
           itemValue: '', // 指标值
           itemDesc: '', // 指标描述
           score: null
         }
-        // 定量结构
-        const objR = {
+        // 数值使用的结构
+        const objN = {
           orderNo: 0,
           upValue: null, // 上限
           dnValue: null, // 下限
           score: null
         }
-        const obj = nature === 'Q' ? objQ : objR // 判断定量或定性
+        const obj = dataType === 'S' ? objS : objN // 判断是数值还是字符串
         return obj
       },
       // 重新设置orderNo， 使其等于当前下标
