@@ -246,8 +246,9 @@
       },
       async handleSubmit () {
         // 验证组件内的form
-        const status = await this.$refs.form.validate()
-        if (status) {
+        const [valid1, valid2] = await Promise.all([this.$refs.form.validate(), this.$refs.indexRule.validateAll()])
+
+        if (valid1 && valid2) {
           try {
             this.form.index.bizTypeArray = JSON.stringify(this.cascadeModel) // 该字是json字符串
 

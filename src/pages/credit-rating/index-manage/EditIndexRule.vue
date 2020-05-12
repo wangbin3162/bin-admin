@@ -3,22 +3,37 @@
     <b-code-editor :value="JSON.stringify(this.list)"></b-code-editor>
     <b-table v-if="natureType" :columns="columnsQ" :data="list">
       <template v-slot:itemValue="{ index }">
-        <b-input v-model="list[index].itemValue"></b-input>
-        <!-- <b-tooltip
-          max-width="200"
-          :content="list[index].paraNameMsg"
-          :disabled="!list[index].paraNameError"
-          :always="list[index].paraNameError">
+        <b-tooltip
+          max-width="200" placement="right"
+          :content="list[index].itemValueMsg"
+          :disabled="!list[index].itemValueError"
+          :always="list[index].itemValueError">
           <b-input v-model="list[index].itemValue"
-            :class="{ error: list[index].paraNameError }"
-            @on-blur="handleValidate(list[index], 'paraName')"></b-input>
-        </b-tooltip> -->
+            :class="{ error: list[index].itemValueError }"
+            @on-blur="handleValidate(list[index], 'itemValue')"></b-input>
+        </b-tooltip>
       </template>
       <template v-slot:itemDesc="{ index }">
-        <b-input v-model="list[index].itemDesc"></b-input>
+        <b-tooltip
+          max-width="200" placement="right"
+          :content="list[index].itemDescMsg"
+          :disabled="!list[index].itemDescError"
+          :always="list[index].itemDescError">
+          <b-input v-model="list[index].itemDesc"
+            :class="{ error: list[index].itemDescError }"
+            @on-blur="handleValidate(list[index], 'itemDesc')"></b-input>
+        </b-tooltip>
       </template>
       <template v-slot:score="{ index }">
-        <b-input-number v-model="list[index].score"></b-input-number>
+        <b-tooltip
+          max-width="200" placement="right"
+          :content="list[index].scoreMsg"
+          :disabled="!list[index].scoreError"
+          :always="list[index].scoreError">
+          <b-input-number v-model="list[index].score"
+            :class="{ error: list[index].scoreError }"
+            @on-blur="handleValidate(list[index], 'score')"></b-input-number>
+        </b-tooltip>
       </template>
       <template v-slot:sort>
         <v-sort-arrow></v-sort-arrow>
@@ -35,13 +50,40 @@
 
     <b-table v-else :columns="columnsR" :data="list">
       <template v-slot:upValue="{ index }">
-        <b-input-number v-model="list[index].upValue"></b-input-number>
+        <!-- <b-input-number v-model="list[index].upValue"></b-input-number> -->
+        <b-tooltip
+          max-width="200" placement="right"
+          :content="list[index].upValueMsg"
+          :disabled="!list[index].upValueError"
+          :always="list[index].upValueError">
+          <b-input-number v-model="list[index].upValue"
+            :class="{ error: list[index].upValueError }"
+            @on-blur="handleValidate(list[index], 'upValue')"></b-input-number>
+        </b-tooltip>
       </template>
       <template v-slot:dnValue="{ index }">
-        <b-input-number v-model="list[index].dnValue"></b-input-number>
+        <!-- <b-input-number v-model="list[index].dnValue"></b-input-number> -->
+        <b-tooltip
+          max-width="200" placement="right"
+          :content="list[index].dnValueMsg"
+          :disabled="!list[index].dnValueError"
+          :always="list[index].dnValueError">
+          <b-input-number v-model="list[index].dnValue"
+            :class="{ error: list[index].dnValueError }"
+            @on-blur="handleValidate(list[index], 'dnValue')"></b-input-number>
+        </b-tooltip>
       </template>
       <template v-slot:score="{ index }">
-        <b-input-number v-model="list[index].score"></b-input-number>
+        <!-- <b-input-number v-model="list[index].score"></b-input-number> -->
+        <b-tooltip
+          max-width="200" placement="right"
+          :content="list[index].scoreMsg"
+          :disabled="!list[index].scoreError"
+          :always="list[index].scoreError">
+          <b-input-number v-model="list[index].score"
+            :class="{ error: list[index].scoreError }"
+            @on-blur="handleValidate(list[index], 'score')"></b-input-number>
+        </b-tooltip>
       </template>
       <template v-slot:sort="{ index }">
         <v-sort-arrow @on-up="up(index)" @on-down="dn(index)"></v-sort-arrow>
@@ -163,13 +205,11 @@
         return new Promise((resolve, reject) => {
           if (row[key] === '' || row[key] === null) {
             this.$set(row, key + 'Error', true)
-            this.$message({
-              type: 'warning',
-              content: '请不要为空'
-            })
+            this.$set(row, key + 'Msg', `请不要为空`)
             reject(new Error('字段为空'))
           } else {
             this.$delete(row, key + 'Error')
+            this.$delete(row, key + 'Msg')
             resolve()
           }
         })
@@ -182,21 +222,38 @@
           this.$log.pretty('验证失败', error, 'warning')
         }
       },
+      // 验证所有
+      validateAll() {
+        return new Promise(async (resolve, reject) => {
+          try {
+            for (const item of this.list) {
+              for (const key in item) {
+                if (item.hasOwnProperty(key)) {
+                  if (key !== 'itemDesc') await this.isRequired(item, key)
+                }
+              }
+            }
+            resolve(true)
+          } catch (error) {
+            resolve(false)
+          }
+        })
+      },
       // 根据指标性质返回对应的数据结构
       initObj (nature) {
         // 定性结构
         const objQ = {
           orderNo: 0,
-          score: null,
           itemValue: '', // 指标值
-          itemDesc: '' // 指标描述
+          itemDesc: '', // 指标描述
+          score: null
         }
         // 定量结构
         const objR = {
           orderNo: 0,
-          score: null,
           upValue: null, // 上限
-          dnValue: null // 下限
+          dnValue: null, // 下限
+          score: null
         }
         const obj = nature === 'Q' ? objQ : objR // 判断定量或定性
         return obj
