@@ -12,10 +12,9 @@
           </v-filter-item>
           <v-filter-item title="指标性质">
             <b-select v-model="listQuery.nature" clearable>
-              <b-option :value="1">优先指标</b-option>
-              <b-option :value="2">普通指标</b-option>
-              <b-option :value="3">降级指标</b-option>
-              <b-option :value="4">关联降级指标</b-option>
+              <b-option v-for="item in natureOptions" :key="item.value" :value="item.value">
+                {{ item.label }}
+              </b-option>
             </b-select>
           </v-filter-item>
           <!-- 添加查询按钮位置 -->
@@ -27,16 +26,23 @@
         </v-table-tool-bar>
         <!-- 中央表格 -->
         <b-table :columns="columns" :data="list" :loading="listLoading">
-          <template v-slot:name="scope">
-            <b-button type="text" @click="handleCheck(scope.row)">{{ scope.row.name }}</b-button>
+          <template v-slot:indexName="{ row }">
+            <b-button type="text" @click="handleCheck(row.id)">{{ row.indexName }}</b-button>
+          </template>
+          <template v-slot:indexKind="{ row }">
+            {{ natureEnum[row.indexKind] }}
+          </template>
+          <template v-slot:indexScale="{ row }">
+            {{ scaleEnum[row.indexScale] }}
           </template>
           <!-- 操作栏 -->
-          <template v-slot:action="scope">
-            <b-button type="text" @click="handleModify(scope.row)">
+          <template v-slot:action="{ row }">
+            <b-button type="text" @click="handleModify(row)">
               编辑
             </b-button>
             <b-divider type="vertical"></b-divider>
-            <b-button type="text" text-color="danger" @click="handleRemove(scope.row)">删除
+            <b-button type="text" text-color="danger" @click="handleRemove(row.id)">
+                删除
             </b-button>
           </template>
         </b-table>
@@ -47,7 +53,10 @@
       </v-table-wrap>
     </page-header-wrap>
     <!-- 编辑 -->
-    <Edit v-show="isEdit" :title="editTitle" @close="handleCancel"></Edit>
+    <Edit v-if="isEdit" :title="editTitle" @close="handleClose" @success="searchList"
+      :natureOptions="natureOptions" :dataTypeOptions="dataTypeOptions"
+      :calcTypeOptions="calcTypeOptions" :scaleOptions="scaleOptions"
+      :treeData="treeData" :editData="editData"></Edit>
   </div>
 </template>
 
@@ -55,7 +64,9 @@
   import commonMixin from '../../../common/mixins/mixin'
   import permission from '../../../common/mixins/permission'
   import Edit from '@/pages/credit-rating/index-manage/Edit'
-  import { getIndexManageTree, getIndexManageList } from '../../../api/credit-rating/index-manage.api'
+  import { getIndexManageTree, getIndexManageList, deleteIndexManage } from '../../../api/credit-rating/index-manage.api'
+  import { getEvalNature, getEvalDataType, getEvalCalcType, getEvalScale } from '../../../api/enum.api'
+  import { enumToOptions } from '../../../common/utils/util'
 
   export default {
     name: 'IndexManage',
@@ -73,16 +84,28 @@
         },
         columns: [
           { type: 'index', width: 50, align: 'center' },
-          { title: '编码', key: 'code' },
-          { title: '名称', slot: 'name' },
-          { title: '指标性质', key: 'nature' },
-          { title: '标度', key: 'scale' },
-          { title: '有效期限', key: 'timeLimit' },
+          { title: '编码', key: 'indexCode' },
+          { title: '名称', slot: 'indexName' },
+          { title: '指标性质', slot: 'indexKind' },
+          // { title: '描述', slot: 'indexDesc' },
+          // { title: '指标分类', slot: 'bizType' },
+          { title: '标度', slot: 'indexScale' },
+          { title: '有效期限', key: 'validMonth' },
           { title: '操作', slot: 'action', width: 120 }
-        ]
+        ],
+        editData: null, // 待编辑数据
+        natureEnum: {}, // 指标性质枚举
+        dataTypeEnum: {}, // 数据类型枚举
+        calcTypeEnum: {}, // 计算类型枚举
+        scaleEnum: {}, // 标度枚举
+        natureOptions: [],
+        dataTypeOptions: [],
+        calcTypeOptions: [],
+        scaleOptions: []
       }
     },
     created () {
+      this.getEnum()
       this.initTree()
     },
     methods: {
@@ -91,7 +114,7 @@
           node.selected = true
         }
         this.currentTreeNode = node
-        this.listQuery.bizType = node.id
+        this.listQuery.bizType = node.code
         this.handleFilter()
       },
       resetQuery () {
@@ -105,17 +128,69 @@
       handleCreate () {
         this.openEditPage('create')
       },
-      handleCurrentChange () {
-
-      },
-      handleSizeChange () {
-
-      },
-      handleModify () {
+      handleModify (row) {
+        this.editData = row
         this.openEditPage('modify')
       },
-      handleRemove () {
+      handleRemove (id) {
+        this.$confirm({
+          title: '删除',
+          content: '确定要删除当前指标吗？',
+          loading: true,
+          okType: 'danger',
+          onOk: async () => {
+            try {
+              const [success, errorMsg] = await deleteIndexManage(id)
+              if (success) {
+                this.$message({ type: 'success', content: '操作成功' })
+                this.searchList()
+              } else {
+                this.$notice.danger({ title: '操作错误', desc: errorMsg })
+              }
+            } catch (error) {
+              this.$notice.danger({ title: '操作错误', desc: error })
+            }
+            this.$modal.remove()
+          }
+        })
+      },
+      handleCheck (id) {
 
+      },
+      handleClose () {
+        this.editData = null // 关闭编辑框的时候情况编辑数据
+        this.handleCancel()
+      },
+      async searchList() {
+        this.listLoading = true
+        try {
+          const res = await getIndexManageList(this.listQuery)
+          this.setListData({
+            list: res.rows,
+            total: res.total
+          })
+        } catch (error) {
+          this.$log.pretty('searchList Error', error, 'danger')
+        }
+        this.listLoading = false
+      },
+      // 获取所需枚举值
+      async getEnum () {
+        try {
+          const [natureEnum, dataTypeEnum, calcTypeEnum, scaleEnum] = await Promise.all([
+            getEvalNature(), getEvalDataType(), getEvalCalcType(), getEvalScale()
+          ])
+          this.natureEnum = natureEnum
+          this.dataTypeEnum = dataTypeEnum
+          this.calcTypeEnum = calcTypeEnum
+          this.scaleEnum = scaleEnum
+          this.natureOptions = enumToOptions(natureEnum)
+          this.dataTypeOptions = enumToOptions(dataTypeEnum)
+          this.calcTypeOptions = enumToOptions(calcTypeEnum)
+          this.scaleOptions = enumToOptions(scaleEnum)
+        } catch (error) {
+          this.$log.pretty('getEnum Error', error, 'danger')
+        }
       },
       // tree:初始化树结构
       initTree() {
@@ -134,26 +209,10 @@
               this.$set(this.treeData[0], 'selected', true)
               this.$set(this.treeData[0], 'expand', true)
             }
-            this.listQuery.bizType = this.currentTreeNode.id
+            this.listQuery.bizType = this.currentTreeNode.code
             this.handleFilter()
           }
         })
-      },
-      async searchList() {
-        this.listLoading = true
-        try {
-          const res = await getIndexManageList(this.listQuery).then(response => {
-          if (res.status === 200) {
-            this.setListData({
-              list: res.rows,
-              total: res.total
-            })
-          }
-        })
-        } catch (error) {
-          console.log(error)
-        }
-        this.listLoading = false
       }
     }
   }

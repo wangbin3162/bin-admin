@@ -19,7 +19,8 @@
 
         <div class="table">
           <b-table :columns="columns" :data="list" :loading="listLoading" size="small"
-                   @on-selection-change="handleSelectionChange">
+                   @on-selection-change="handleSelectionChange"
+                   :highlight-row="radio" @on-current-change="handleRadio">
             <template v-slot:varType="{ row }">
               {{ varTypeEnum[row.varType] }}
             </template>
@@ -29,11 +30,14 @@
           </b-table>
         </div>
         <!-- 分页器 -->
-        <b-page :total="total" :current.sync="listQuery.page" @on-change="handleCurrentChange"/>
+        <div flex="main:justify cross:center">
+          <div class="tip">{{ tip }}</div>
+          <b-page :total="total" :current.sync="listQuery.page" @on-change="handleCurrentChange"/>
+        </div>
       </v-table-wrap>
 
       <div slot="footer">
-        <b-button type="primary" @click="handleOk">确定</b-button>
+        <b-button v-if="!radio" type="primary" @click="handleOk">确定</b-button>
       </div>
     </b-modal>
   </div>
@@ -44,13 +48,23 @@
   import permission from '../../../common/mixins/permission'
   import { getEvalVarType, getEvalDataType, getEvalParamType } from '../../../api/enum.api'
   import { getIndexVarList, deleteIndexVar } from '../../../api/credit-rating/index-var.api'
+  import { enumToOptions } from '../../../common/utils/util'
 
   export default {
     name: 'IndexVarEditSelectVar',
-    props: ['open'],
+    props: {
+      open: {
+        type: Boolean
+      },
+      radio: {
+        type: Boolean,
+        default: false
+      }
+    },
     mixins: [commonMixin, permission],
     data() {
       return {
+        tip: '', // 在指标管理新增组件中使用时提示
         varCodeList: [],
         listQuery: {
           varName: '',
@@ -67,8 +81,7 @@
         ],
         varTypeEnum: {},
         dataTypeEnum: {},
-        varTypeOptions: [], // 变量类型下拉框
-        dataTypeOptions: [] // 数据类型下拉框
+        varTypeOptions: [] // 变量类型下拉框
       }
     },
     computed: {
@@ -83,6 +96,7 @@
       }
     },
     created() {
+      this.init()
       this.getEnum()
     },
     methods: {
@@ -91,12 +105,18 @@
           this.searchList()
         }
       },
+      // 多选的回调
       handleSelectionChange(selection) {
         const list = []
         for (const item of selection) {
           list.push(item.varCode)
         }
         this.varCodeList = list
+      },
+      // 单选的回调
+      handleRadio (curRow) {
+        this.$emit('selected', curRow)
+        this.showDialog = false
       },
       // 发送选中的数据
       handleOk() {
@@ -133,32 +153,25 @@
           ])
           this.varTypeEnum = varType
           this.dataTypeEnum = dataType
-          this.initOptions()
+          // 构建所需枚举类型下拉框的option
+          this.varTypeOptions = enumToOptions(this.varTypeEnum)
         } catch (error) {
-          console.log(error)
+          this.$log.pretty('searchList Error', error, 'danger')
         }
       },
-      // 构建所需枚举类型下拉框的option
-      initOptions() {
-        // 变量类型下拉框option使用的枚举值
-        for (const key in this.varTypeEnum) {
-          if (this.varTypeEnum.hasOwnProperty(key)) {
-            const element = this.varTypeEnum[key]
-            this.varTypeOptions.push({
-              label: element,
-              value: key
-            })
-          }
-        }
-        // 数据类型下拉框option使用的枚举值
-        for (const key in this.dataTypeEnum) {
-          if (this.dataTypeEnum.hasOwnProperty(key)) {
-            const element = this.dataTypeEnum[key]
-            this.dataTypeOptions.push({
-              label: element,
-              value: key
-            })
-          }
+      // 判断组件是单选还是多选，用于处理不同组件的不同行为
+      init () {
+        if (this.radio) { // 指标管理使用则是单选形式
+          this.tip = '提示：点击表格行选择变量'
+          this.columns = [
+            { type: 'index', width: 50, align: 'center' },
+            { title: '变量名称', key: 'varName' },
+            { title: '变量编码', key: 'varCode' },
+            { title: '变量类型', slot: 'varType' },
+            { title: '数据类型', slot: 'dataType' },
+            { title: '模板内容', key: 'tplContent', ellipsis: true, tooltip: true },
+            { title: '描述', key: 'varDesc', ellipsis: true, tooltip: true }
+          ]
         }
       }
     }
@@ -170,6 +183,9 @@
     .table {
       max-height: 400px;
       overflow-y: auto;
+    }
+    .tip {
+      color: #909399;
     }
   }
 </style>

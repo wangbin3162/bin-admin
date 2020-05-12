@@ -2,7 +2,7 @@
   <div>
     <page-header-wrap :title="title" show-close @on-close="$emit('close')">
       <v-edit-wrap>
-        <b-loading fix sho w-text="loading" v-if="loading"></b-loading>
+        <b-loading fix show-text="loading" v-if="loading"></b-loading>
         <div>
           <v-key-label label="变量名称" is-half is-first>
             {{ detail.varName }}

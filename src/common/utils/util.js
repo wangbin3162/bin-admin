@@ -47,3 +47,23 @@ util.downloadFile = function (content, fileName) {
 }
 
 export default util
+
+/**
+ * @author haodongdong
+ * @description 枚举类型的key value对象转换为可用于渲染option标签的数组
+ * @param {*} enumData
+ * @returns [{label, value}]
+ */
+export function enumToOptions (enumData) {
+  const options = []
+  for (const key in enumData) {
+    if (enumData.hasOwnProperty(key)) {
+      const element = enumData[key]
+      options.push({
+        label: enumData[key],
+        value: key
+      })
+    }
+  }
+  return options
+}

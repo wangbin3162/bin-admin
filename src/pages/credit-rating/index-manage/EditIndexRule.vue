@@ -53,13 +53,17 @@
     name: 'IndexManageEditIndexRule',
     props: {
       scale: {
-        default: 5
+        required: true
+      },
+      rules: {
+        type: Array,
+        required: true
       }
     },
     components: {},
     computed: {
       scaleType () {
-        return this.scale === 5
+        return this.scale === 'F'
       }
     },
     data () {
@@ -96,11 +100,21 @@
         ]
       }
     },
+    watch: {
+      scale: {
+        handler (newVal, oldVal) {
+          // console.log(newVal)
+        },
+        immediate: true
+      }
+    },
     created () {
 
     },
     methods: {
-
+      init () {
+        // 初始化标度数组，主要用于编辑时的数据初始化
+      }
     }
   }
 </script>
