@@ -125,7 +125,7 @@
 
         <template slot="footer">
           <b-button @click="$emit('close')">取 消</b-button>
-          <b-button type="primary" @click="handleSubmit">提 交</b-button>
+          <b-button type="primary" @click="handleSubmit" :loading="btnLoading">提 交</b-button>
         </template>
       </v-edit-wrap>
     </page-header-wrap>
@@ -156,6 +156,7 @@
     },
     data () {
       return {
+        btnLoading: false,
         collapseValue: ['index', 'rules'], // 控制手风琴展开
         open: false,
         cascadeData: [], // 指标类型级联数据
@@ -250,6 +251,8 @@
 
         if (valid1 && valid2) {
           try {
+            this.btnLoading = true
+
             this.form.index.bizTypeArray = JSON.stringify(this.cascadeModel) // 该字是json字符串
 
             const [success, errorMsg] = await saveAndUpdate(this.form)
@@ -264,6 +267,7 @@
             this.$log.pretty('searchList Error', error, 'danger')
             this.$notice.danger({ title: '操作失败', desc: error })
           }
+          this.btnLoading = false
         }
       },
       // 初始化编辑数据

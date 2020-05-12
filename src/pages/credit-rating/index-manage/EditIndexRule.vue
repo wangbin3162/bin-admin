@@ -229,7 +229,14 @@
             for (const item of this.list) {
               for (const key in item) {
                 if (item.hasOwnProperty(key)) {
-                  if (key !== 'itemDesc') await this.isRequired(item, key)
+                  if (key !== 'itemDesc') { // 不校验描述
+                    // 由于后端返回数据不会过滤掉不需要的字段，为了处理校验，不同指标性质下需忽略不需校验的字段
+                    if (this.nature === 'R') { // 定量
+                      if (key !== 'itemValue') await this.isRequired(item, key)
+                    } else { // 定性
+                      if (key !== 'upValue' && key !== 'dnValue') await this.isRequired(item, key)
+                    }
+                  }
                 }
               }
             }
@@ -238,6 +245,22 @@
             resolve(false)
           }
         })
+      },
+      // 根据指标性质、标度初始化数组
+      initArr (nature, scale) {
+        let list = []
+        const num = scale === 'F' ? 5 : 10 // 判断标度确定数组构建数量
+        for (let i = 0; i < num; i++) {
+          const obj = this.initObj(nature) // 根据性质返回对应数据结构
+          obj.orderNo = i // 添加排序字段
+          list.push(obj)
+        }
+        if (this.rules.length > 0 && this.editDataInitFlag === false) {
+          // 此段if只用在编辑的时候于取一次可能存在的rules用作初始化
+          list = JSON.parse(JSON.stringify(this.rules))
+          this.editDataInitFlag = true
+        }
+        this.list = list
       },
       // 根据指标性质返回对应的数据结构
       initObj (nature) {
@@ -257,22 +280,6 @@
         }
         const obj = nature === 'Q' ? objQ : objR // 判断定量或定性
         return obj
-      },
-      // 根据指标性质、标度初始化数组
-      initArr (nature, scale) {
-        let list = []
-        const num = scale === 'F' ? 5 : 10 // 判断标度确定数组构建数量
-        for (let i = 0; i < num; i++) {
-          const obj = this.initObj(nature) // 根据性质返回对应数据结构
-          obj.orderNo = i // 添加排序字段
-          list.push(obj)
-        }
-        if (this.rules.length > 0 && this.editDataInitFlag === false) {
-          // 此段if只用在编辑的时候于取一次可能存在的rules用作初始化
-          list = [...this.rules]
-          this.editDataInitFlag = true
-        }
-        this.list = list
       },
       // 重新设置orderNo， 使其等于当前下标
       resetOrderNo (list) {
