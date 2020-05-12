@@ -1,15 +1,24 @@
 <template>
-  <div>
+  <div class="index-manage-index-rule">
     <b-code-editor :value="JSON.stringify(this.list)"></b-code-editor>
     <b-table v-if="natureType" :columns="columnsQ" :data="list">
       <template v-slot:itemValue="{ index }">
         <b-input v-model="list[index].itemValue"></b-input>
+        <!-- <b-tooltip
+          max-width="200"
+          :content="list[index].paraNameMsg"
+          :disabled="!list[index].paraNameError"
+          :always="list[index].paraNameError">
+          <b-input v-model="list[index].itemValue"
+            :class="{ error: list[index].paraNameError }"
+            @on-blur="handleValidate(list[index], 'paraName')"></b-input>
+        </b-tooltip> -->
       </template>
       <template v-slot:itemDesc="{ index }">
         <b-input v-model="list[index].itemDesc"></b-input>
       </template>
       <template v-slot:score="{ index }">
-        <b-input v-model="list[index].score"></b-input>
+        <b-input-number v-model="list[index].score"></b-input-number>
       </template>
       <template v-slot:sort>
         <v-sort-arrow></v-sort-arrow>
@@ -26,13 +35,13 @@
 
     <b-table v-else :columns="columnsR" :data="list">
       <template v-slot:upValue="{ index }">
-        <b-input v-model="list[index].upValue"></b-input>
+        <b-input-number v-model="list[index].upValue"></b-input-number>
       </template>
       <template v-slot:dnValue="{ index }">
-        <b-input v-model="list[index].dnValue"></b-input>
+        <b-input-number v-model="list[index].dnValue"></b-input-number>
       </template>
       <template v-slot:score="{ index }">
-        <b-input v-model="list[index].score"></b-input>
+        <b-input-number v-model="list[index].score"></b-input-number>
       </template>
       <template v-slot:sort="{ index }">
         <v-sort-arrow @on-up="up(index)" @on-down="dn(index)"></v-sort-arrow>
@@ -66,20 +75,21 @@
     },
     data () {
       return {
+        editDataInitFlag: false,
         list: [],
         columnsQ: [
           { type: 'index', width: 50 },
-          { title: '指标值', slot: 'itemValue' },
-          { title: '指标描述', slot: 'itemDesc' },
-          { title: '得分', slot: 'score' },
+          { title: '指标值', slot: 'itemValue', align: 'center' },
+          { title: '指标描述', slot: 'itemDesc', align: 'center' },
+          { title: '得分', slot: 'score', align: 'center' },
           { title: '排序', slot: 'sort', align: 'center' },
           { title: '操作', slot: 'action', align: 'center' }
         ],
         columnsR: [
           { type: 'index', width: 50 },
-          { title: '上限值', slot: 'upValue' },
-          { title: '下限值', slot: 'dnValue' },
-          { title: '得分', slot: 'score' },
+          { title: '上限值', slot: 'upValue', align: 'center' },
+          { title: '下限值', slot: 'dnValue', align: 'center' },
+          { title: '得分', slot: 'score', align: 'center' },
           { title: '排序', slot: 'sort', align: 'center' },
           { title: '操作', slot: 'action', align: 'center' }
         ]
@@ -91,17 +101,31 @@
       }
     },
     watch: {
-      nature: {
-        handler (newVal, oldVal) {
-          this.initArr(newVal, this.scale)
+      rules: {
+        handler () {
+          this.initArr(this.nature, this.scale)
         },
         immediate: true
       },
-      scale: {
+      // 暂先注释，改由父组件在下拉框change事件内调用当前组件的initArr创建对应数组
+      // nature: {
+      //   handler (newVal, oldVal) {
+      //     this.initArr(newVal, this.scale)
+      //   },
+      //   immediate: true
+      // },
+      // scale: {
+      //   handler (newVal, oldVal) {
+      //     this.initArr(this.nature, newVal)
+      //   },
+      //   immediate: true
+      // },
+      list: {
         handler (newVal, oldVal) {
-          this.initArr(this.nature, newVal)
+          this.$emit('data-change', newVal)
         },
-        immediate: true
+        immediate: true,
+        deep: true
       }
     },
     created () {
@@ -114,7 +138,6 @@
       // 插入下一行
       addNext(index) {
         const curScaleLength = this.scale === 'F' ? 5 : 10
-        console.log(this.list.length, curScaleLength)
         if (this.list.length < curScaleLength) { // 数组长度小于当前标度长度才允许添加
           const obj = this.initObj(this.nature)
           this.list.splice(index + 1, 0, obj)
@@ -135,33 +158,62 @@
         this.list.splice(index + 1, 0, curEl)
         this.resetOrderNo(this.list)
       },
+      // 非空验证，接收当前行对象row，与当前字段key
+      isRequired(row, key) {
+        return new Promise((resolve, reject) => {
+          if (row[key] === '' || row[key] === null) {
+            this.$set(row, key + 'Error', true)
+            this.$message({
+              type: 'warning',
+              content: '请不要为空'
+            })
+            reject(new Error('字段为空'))
+          } else {
+            this.$delete(row, key + 'Error')
+            resolve()
+          }
+        })
+      },
+      // 输入框blur回调
+      async handleValidate(row, key) {
+        try {
+          await this.isRequired(row, key)
+        } catch (error) {
+          this.$log.pretty('验证失败', error, 'warning')
+        }
+      },
       // 根据指标性质返回对应的数据结构
       initObj (nature) {
         // 定性结构
         const objQ = {
           orderNo: 0,
-          score: '',
+          score: null,
           itemValue: '', // 指标值
           itemDesc: '' // 指标描述
         }
         // 定量结构
         const objR = {
           orderNo: 0,
-          score: '',
-          upValue: '', // 上限
-          dnValue: '' // 下限
+          score: null,
+          upValue: null, // 上限
+          dnValue: null // 下限
         }
         const obj = nature === 'Q' ? objQ : objR // 判断定量或定性
         return obj
       },
       // 根据指标性质、标度初始化数组
       initArr (nature, scale) {
-        const list = []
+        let list = []
         const num = scale === 'F' ? 5 : 10 // 判断标度确定数组构建数量
         for (let i = 0; i < num; i++) {
           const obj = this.initObj(nature) // 根据性质返回对应数据结构
           obj.orderNo = i // 添加排序字段
           list.push(obj)
+        }
+        if (this.rules.length > 0 && this.editDataInitFlag === false) {
+          // 此段if只用在编辑的时候于取一次可能存在的rules用作初始化
+          list = [...this.rules]
+          this.editDataInitFlag = true
         }
         this.list = list
       },
@@ -174,3 +226,14 @@
     }
   }
 </script>
+
+<style lang="stylus">
+  .index-manage-index-rule {
+    .error .bin-input {
+      border: 1px solid #f5222d !important;
+    }
+    .error.bin-input-number {
+      border: 1px solid #f5222d !important;
+    }
+  }
+</style>

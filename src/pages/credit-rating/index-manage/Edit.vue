@@ -30,7 +30,7 @@
                 <b-row>
                   <b-col span="12">
                     <b-form-item label="指标性质" prop="indexKind">
-                      <b-select v-model="form.index.indexKind">
+                      <b-select v-model="form.index.indexKind" @on-change="handleIndexRules">
                         <b-option v-for="item in natureOptions" :key="item.value" :value="item.value">
                           {{ item.label }}
                         </b-option>
@@ -79,7 +79,7 @@
                   </b-col>
                   <b-col span="12">
                     <b-form-item label="标度" prop="indexScale">
-                      <b-select v-model="form.index.indexScale">
+                      <b-select v-model="form.index.indexScale" @on-change="handleIndexRules">
                         <b-option v-for="item in scaleOptions" :key="item.value" :value="item.value">
                           {{ item.label }}
                         </b-option>
@@ -110,10 +110,11 @@
             </b-collapse-panel>
 
             <b-collapse-panel title="指标配置规则" name="rules">
-              <EditIndexRule
+              <edit-index-rule ref="indexRule"
+                @data-change="handleIndexRulsChange"
                 :nature="form.index.indexKind"
                 :scale="form.index.indexScale"
-                :rules="form.rules"></EditIndexRule>
+                :rules="indexRules"></edit-index-rule>
             </b-collapse-panel>
 
             <b-collapse-panel title="信息资源配置" name="resources">
@@ -167,7 +168,7 @@
             indexDesc: '',
             bizType: '', // 指标类型[类别编码[类别数据为树形结构]]
             bizTypeArray: '', // 存储级联选择关系的数组类型的json字符串
-            indexKind: 'R', // 指标性质，默认为定量
+            indexKind: 'R', // 指标性质，默认为定量R
             calClass: '', // 计算类型
             dataType: '', // 数据类型
             validParamName: '', // 有效期参数名
@@ -209,7 +210,8 @@
           varId: [
             { required: true, message: '变量不能为空', trigger: 'blur' }
           ]
-        }
+        },
+        indexRules: [] // 用于存储form.rules并传递给EditIndexRule组件的rules
       }
     },
     created () {
@@ -230,8 +232,17 @@
         this.varName = val.varName
         this.form.index.varId = val.id
       },
+      // 打开变量选择弹框
       openSelectVarHandler () {
         this.open = true
+      },
+      // 指标规则组件内数据变化事件
+      handleIndexRulsChange (list) {
+        this.form.rules = list
+      },
+      // 指标性质与标度下拉框的change回调，用于创建对应的指标规则
+      handleIndexRules () {
+        this.$refs.indexRule.initArr(this.form.index.indexKind, this.form.index.indexScale)
       },
       async handleSubmit () {
         // 验证组件内的form
@@ -262,6 +273,7 @@
             this.form = res
             this.cascadeModel = JSON.parse(this.form.index.bizTypeArray) // json字符串转为数组
             this.varName = res.index.varName // 处理变量回显
+            this.indexRules = res.rules
           } catch (error) {
             this.$log.pretty('searchList Error', error, 'danger')
           }
