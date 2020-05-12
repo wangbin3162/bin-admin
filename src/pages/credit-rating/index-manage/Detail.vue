@@ -41,11 +41,11 @@
         <b-divider align="left">
           <h4>指标配置</h4>
         </b-divider>
-        <!-- <b-table :columns="columns" :data="detail.params" size="small">
+        <b-table :columns="columns" :data="rules" size="small">
           <template v-slot:paraType="{ row }">
             {{ paramTypeEnum[row.paraType] }}
           </template>
-        </b-table> -->
+        </b-table>
         <b-divider align="left">
           <h4>资源信息</h4>
         </b-divider>
@@ -73,14 +73,21 @@
     data () {
       return {
         loading: false,
-        detail: {}
-        // columns: [
-        //   { type: 'index', width: 50, align: 'center' },
-        //   { title: '参数名称', key: 'paraName' },
-        //   { title: '参数编码', key: 'paraCode' },
-        //   { title: '参数类型', slot: 'paraType' },
-        //   { title: '描述', key: 'paraDesc' }
-        // ]
+        detail: {},
+        rules: [],
+        columns: [],
+        columnsQ: [
+          { type: 'index', width: 50 },
+          { title: '指标值', key: 'itemValue', align: 'center' },
+          { title: '指标描述', key: 'itemDesc', align: 'center' },
+          { title: '得分', key: 'score', align: 'center' }
+        ],
+        columnsR: [
+          { type: 'index', width: 50 },
+          { title: '上限值', key: 'upValue', align: 'center' },
+          { title: '下限值', key: 'dnValue', align: 'center' },
+          { title: '得分', key: 'score', align: 'center' }
+        ]
       }
     },
     created () {
@@ -92,11 +99,22 @@
         try {
           const { index, resources, rules } = await getIndeManageDetail(this.id)
           this.detail = index
+          this.rules = rules
+          this.initColumns(index.indexKind)
         } catch (error) {
           console.error(error)
           this.$log.pretty('searchList Error', error, 'danger')
         }
         this.loading = false
+      },
+      // 根据指标性质初始化不同columns
+      initColumns (nature) {
+        // Q 定性 R 定量
+        if (nature === 'Q') {
+          this.columns = this.columnsQ
+        } else {
+          this.columns = this.columnsR
+        }
       }
     }
   }
