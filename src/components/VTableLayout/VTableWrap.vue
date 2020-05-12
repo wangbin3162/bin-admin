@@ -27,7 +27,8 @@
       width: 224px;
       border-right: 1px solid #eee;
       padding: 16px 10px;
-      overflow-x: auto;
+      overflow: auto;
+      max-height: 648px;
     }
     .table-wrap {
       padding: 16px;

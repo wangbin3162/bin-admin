@@ -435,8 +435,8 @@
             // 这里要注意，扩展响应式属性需要这么写
             this.$set(this.treeData[0], 'selected', true)
             this.$set(this.treeData[0], 'expand', true)
-            this.resetQuery()
           }
+          this.resetQuery()
         })
       },
       // 查询所有部门列表
