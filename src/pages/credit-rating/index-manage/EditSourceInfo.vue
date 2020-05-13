@@ -9,14 +9,18 @@
         <b-input v-model="list[index].defaultValue"></b-input>
       </template>
 
-      <template v-slot:action>
-        <b-button type="text">配置资源</b-button>
+      <template v-slot:action="{ row }">
+        <b-button type="text" @click="openSourceInfoSelect(row)">+ 配置资源</b-button>
       </template>
     </b-table>
+
     <b-button @click="open = true">click</b-button>
+
+    <!-- 资源配置弹框 -->
     <edit-source-info-select
+      @close="open = false"
       :open="open"
-      @close="open = false">
+      :paraType="paraType">
     </edit-source-info-select>
   </div>
 </template>
@@ -37,8 +41,8 @@
     },
     data () {
       return {
-        open: false,
-        paramTypeEnum: {},
+        open: false, // 配置资源弹框
+        paramTypeEnum: {}, // 参数类型枚举
         list: [],
         columns: [
           {
@@ -58,7 +62,8 @@
           { title: '参数描述', key: 'paraDesc', align: 'center', ellipsis: true, tooltip: true },
           { title: '缺省值', slot: 'defaultValue', align: 'center' },
           { title: '参数名称', slot: 'action', align: 'center' }
-        ]
+        ],
+        paraType: null // 配置资源弹框组件使用，参数类型
       }
     },
     watch: {
@@ -73,6 +78,11 @@
       this.getEvalParamType()
     },
     methods: {
+      // 配置资源按钮回调
+      openSourceInfoSelect (row) {
+        this.paraType = row.paraType
+        this.open = true
+      },
       // 获取所需枚举值
       async getEvalParamType () {
         try {
@@ -95,9 +105,6 @@
           }
         }
         return list
-      },
-      input (value) {
-        this.cache = value
       }
     }
   }
