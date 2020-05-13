@@ -185,8 +185,8 @@
     components: { RoleChoose, RecordList, VBatchExport, VDownloadTemplate, VBatchImport },
     data() {
       const validateUsername = (rule, value, callback) => {
-        if (value.length <= 3) {
-          callback(new Error('登录名必须大于3个字符'))
+        if (value.length <= 3  || value.length >128) {
+          callback(new Error('登录名必须大于3个字符且小于128个字符'))
         } else {
           if (isLetterW(value)) {
             api.oneUsername(this.user).then(response => {

@@ -63,21 +63,24 @@
               </b-col>
             </b-row>
             <b-row>
-              <b-col span="8">
-                <v-simple-label label="导入用户">{{ importDetail.createName }}</v-simple-label>
+              <b-col span="6">
+                <v-simple-label label="创建用户">{{ importDetail.createName }}</v-simple-label>
               </b-col>
-              <b-col span="8">
-                <v-simple-label label="导入时间">{{ importDetail.uploadDate }}</v-simple-label>
+              <b-col span="6">
+                <v-simple-label label="创建部门">{{ importDetail.createDeptName }}</v-simple-label>
               </b-col>
-              <b-col span="8">
-                <v-simple-label label="导入组织">{{ importDetail.createDeptName }}</v-simple-label>
+              <b-col span="6">
+                <v-simple-label label="导入时间">{{ importDetail.createDate }}</v-simple-label>
+              </b-col>
+              <b-col span="6">
+                <v-simple-label label="完成时间">{{ importDetail.finishDate }}</v-simple-label>
               </b-col>
             </b-row>
             <b-row>
-              <b-col span="8">
+              <b-col span="6">
                 <v-simple-label label="数据总量">{{ importDetail.totalCount }}</v-simple-label>
               </b-col>
-              <b-col span="8">
+              <b-col span="6">
                 <v-simple-label label="错误数据量">
                   {{ importDetail.validationCount }}
                   <b-button type="text" v-if="importDetail.validationCount>0"
@@ -85,8 +88,11 @@
                   </b-button>
                 </v-simple-label>
               </b-col>
-              <b-col span="8">
-                <v-simple-label label="成功数据量">{{ importDetail.cachedCount }}</v-simple-label>
+              <b-col span="6">
+                <v-simple-label label="重复数据量">{{ importDetail.repeatCount }}</v-simple-label>
+              </b-col>
+              <b-col span="6">
+                <v-simple-label label="入库数据量">{{ importDetail.cachedCount }}</v-simple-label>
               </b-col>
             </b-row>
           </div>
@@ -144,7 +150,8 @@
               }
             },
             { title: '文件名', key: 'fileName' },
-            { title: '导入时间', key: 'uploadDate' },
+            { title: '导入时间', key: 'createDate' },
+            { title: '完成时间', key: 'finishDate' },
             { title: '导入组织', key: 'createDeptName' },
             { title: '导入状态', slot: 'jobStatus', width: 100, align: 'center' },
             { title: '操作', slot: 'action', width: 100, align: 'center' }
