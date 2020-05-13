@@ -65,6 +65,7 @@
     .val {
       padding: 0 10px;
       word-wrap: break-word;
+      user-select: text;
     }
   }
 </style>

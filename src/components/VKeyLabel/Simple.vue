@@ -44,6 +44,7 @@
       color: rgba(0, 0, 0, .65);
       font-size: 14px;
       line-height: 1.5;
+      user-select: text;
     }
   }
 </style>
