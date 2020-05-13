@@ -63,14 +63,17 @@
               </b-col>
             </b-row>
             <b-row>
-              <b-col span="8">
-                <v-simple-label label="导入用户">{{ importDetail.createName }}</v-simple-label>
+              <b-col span="6">
+                <v-simple-label label="创建用户">{{ importDetail.createName }}</v-simple-label>
               </b-col>
-              <b-col span="8">
-                <v-simple-label label="导入时间">{{ importDetail.uploadDate }}</v-simple-label>
+              <b-col span="6">
+                <v-simple-label label="创建部门">{{ importDetail.createDeptName }}</v-simple-label>
               </b-col>
-              <b-col span="8">
-                <v-simple-label label="导入组织">{{ importDetail.createDeptName }}</v-simple-label>
+              <b-col span="6">
+                <v-simple-label label="导入时间">{{ importDetail.createDate }}</v-simple-label>
+              </b-col>
+              <b-col span="6">
+                <v-simple-label label="完成时间">{{ importDetail.finishDate }}</v-simple-label>
               </b-col>
             </b-row>
             <b-row>
@@ -147,7 +150,8 @@
               }
             },
             { title: '文件名', key: 'fileName' },
-            { title: '导入时间', key: 'uploadDate' },
+            { title: '导入时间', key: 'createDate' },
+            { title: '完成时间', key: 'finishDate' },
             { title: '导入组织', key: 'createDeptName' },
             { title: '导入状态', slot: 'jobStatus', width: 100, align: 'center' },
             { title: '操作', slot: 'action', width: 100, align: 'center' }
