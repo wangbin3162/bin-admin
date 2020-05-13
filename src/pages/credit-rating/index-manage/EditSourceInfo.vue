@@ -50,8 +50,15 @@
             width: 50,
             render: () => {
               return (
-                <div class="test">
-                  <b-input value={this.cache} onInput={this.input}></b-input>
+                <div class="expandRow">
+                  <div>
+                    所选资源 清空 新增
+                  </div>
+                  <div class="table-con">
+                    <template>
+                      ssss
+                    </template>
+                  </div>
                 </div>
               )
             }
@@ -111,7 +118,7 @@
 </script>
 
 <style lang="stylus" scoped>
-.test {
-  width: 40%;
+.expandRow {
+  // width: 40%;
 }
 </style>
