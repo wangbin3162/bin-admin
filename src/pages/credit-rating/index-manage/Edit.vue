@@ -226,7 +226,6 @@
       },
       // 选择变量组件已选回调
       handleVarChange (val) {
-        console.log(val)
         this.varName = val.varName
         this.form.index.varId = val.id
         this.params = val.params
@@ -243,6 +242,7 @@
       handleIndexRules () {
         this.$refs.indexRule.initArr(this.form.index.dataType, this.form.index.indexScale)
       },
+      // 提交按钮回调
       async handleSubmit () {
         // 验证组件内的form
         const [valid1, valid2] = await Promise.all([this.$refs.form.validate(), this.$refs.indexRule.validateAll()])
