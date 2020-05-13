@@ -110,7 +110,9 @@
             </b-collapse-panel>
 
             <b-collapse-panel title="信息资源配置" name="resources">
-              <EditSourceInfo></EditSourceInfo>
+              <edit-source-info
+                :params="params">
+              </edit-source-info>
             </b-collapse-panel>
           </b-collapse>
         </template>
@@ -150,11 +152,12 @@
     data () {
       return {
         btnLoading: false,
-        collapseValue: ['index', 'rules'], // 控制手风琴展开
+        collapseValue: ['index', 'resources'], // 控制手风琴展开
         open: false,
         cascadeData: [], // 指标类型级联数据
         cascadeModel: [], // 用于级联绑定
         varName: '', // 变量名称 用于显示
+        params: [], // 用于传递给资源信息组件
         form: {
           index: {
             indexName: '',
@@ -223,8 +226,10 @@
       },
       // 选择变量组件已选回调
       handleVarChange (val) {
+        console.log(val)
         this.varName = val.varName
         this.form.index.varId = val.id
+        this.params = val.params
       },
       // 打开变量选择弹框
       openSelectVarHandler () {
