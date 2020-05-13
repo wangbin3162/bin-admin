@@ -94,7 +94,7 @@
                 @on-page-size-change="handleSizeChange"></b-page>
       </v-table-wrap>
     </page-header-wrap>
-    <page-header-wrap v-show="isEdit" :title="editTitle" show-close @on-close="handleCancel">
+    <page-header-wrap v-if="isEdit" :title="editTitle" show-close @on-close="handleCancel">
       <v-edit-wrap>
         <template slot="full">
           <b-collapse value="1" simple>
@@ -195,7 +195,7 @@
             </b-collapse-panel>
           </b-collapse>
           <template v-if="resource.items">
-            <v-title-bar label="信息项配置" lass="mb-20">
+            <v-title-bar label="信息项配置" class="mb-20">
               <div>
                 <b-button type="text" @click="previewForm">
                   <b-icon name="ios-eye"/>&nbsp;预览
@@ -208,12 +208,9 @@
                 <b-switch v-model="debugJson" size="small"/>
               </div>
             </v-title-bar>
-            <!--信息项表格组件-->
-            <res-info-items v-model="resource.items"
-                            :data-type-map="dataTypeMap"
-                            :field-ctrl-map="fieldCtrlMap">
-            </res-info-items>
             <fields-cfg v-model="resource.items"/>
+            <!--信息项表格组件-->
+            <res-info-items v-model="resource.items" :data-type-map="dataTypeMap" :field-ctrl-map="fieldCtrlMap"/>
             <!--调试模式-->
             <div class="mt-15" v-if="debugJson">
               <b-tag type="success" size="small">实际存储对象[fields]</b-tag>
@@ -267,6 +264,31 @@
     <res-ext-edit ref="resExtEdit" @on-close="handleCancel"/>
     <!--示例数据-->
     <test-form ref="testForm" @on-close="handleCancel"/>
+    <!--预览表单-->
+    <b-modal v-model="previewModal" title="预览表单"
+             fullscreen @on-hidden="previewModalForm=false"
+             :body-styles="{overflowY:'auto',top:'55px'}">
+      <b-form v-if="previewModalForm" :model="form" :rules="rules" ref="form" label-position="top">
+        <!--自定义form-item-->
+        <form-item :key="item.id||index" v-for="(item,index) in dynamicForm"
+                   :label="item.fieldTitle"
+                   :prop="item.fieldName"
+                   :control-type="item.controlType">
+          <!--动态控件-->
+          <form-control v-model="form[item.fieldName]"
+                        :control-type="item.controlType"
+                        :field-name="item.fieldName"
+                        :field-desc="item.fieldDesc"
+                        :field-title="item.fieldTitle"
+                        :options="item.validOptions">
+          </form-control>
+        </form-item>
+      </b-form>
+      <div slot="footer">
+        <b-button type="primary" @click="handlePreviewSubmit">提 交</b-button>
+        <b-button @click="handlePreviewReset">重 置</b-button>
+      </div>
+    </b-modal>
   </div>
 </template>
 
@@ -284,11 +306,14 @@
   import { getResourceInfo } from '../../../api/data-manage/gather.api'
   import { checkRulesToFormRules, initFormList } from '../../../components/Validator/FieldsCfg/cfg-util'
   import FieldsCfg from '../../../components/Validator/FieldsCfg/FieldsCfg'
+  import FormItem from '../../../components/Validator/FormControl/FormItem'
+  import FormControl from '../../../components/Validator/FormControl/FormControl'
 
+  const requireRuleStr = '{\"$required\":{\"message\":\"必填项\",\"type\":\"string\",\"trigger\":\"blur\"}}'
   // map映射中如 #static 标识: 静态不改变的枚举的暂不调用接口获取
   export default {
     name: 'ResInfo',
-    components: { FieldsCfg, TestForm, ResExtEdit, MetaDataChoose, ResInfoItems },
+    components: { FormControl, FormItem, FieldsCfg, TestForm, ResExtEdit, MetaDataChoose, ResInfoItems },
     mixins: [commonMixin, permission],
     data() {
       const validateResourceCode = (rule, value, callback) => {
@@ -312,7 +337,7 @@
         }
       }
       return {
-        debugJson: false,
+        debugJson: true,
         moduleName: '资源信息',
         listQuery: {
           resourceCode: '', // 所属分类
@@ -377,7 +402,13 @@
           datetime: '日期时间型',
           text: '备注型'
         },
-        fieldStatusMap: { use: '选用', ignore: '不选用' } // 资源信息项状态#static
+        fieldStatusMap: { use: '选用', ignore: '不选用' }, // 资源信息项状态#static
+
+        previewModal: false,
+        previewModalForm: false,
+        dynamicForm: [], // 动态form，用于遍历form表单使用
+        form: {},
+        rules: {}
       }
     },
     created() {
@@ -423,11 +454,11 @@
       // 编辑事件
       handleModify(row) {
         api.getResDetail(row.id).then(res => {
+          this.openEditPage('modify')
           this.resource = res.data.data
           // 分隔类目编码,并显示后四位 210,C0204,1234
           this.resource.metadataCode = this.resource.resourceCode.slice(3, 8)
           this.resource.resourceCode = this.resource.resourceCode.slice(-4)
-          this.openEditPage('modify')
         })
       },
       // 更多操作点击事件
@@ -556,11 +587,9 @@
             required: 'Y', // 信息项类型，默认核心项
             status: 'use', // 启用状态，默认启用
             tokenizer: '', // 是否分词
-            // eslint-disable-next-line no-template-curly-in-string
-            checkRules: '{"rules":["$required(obj, value, {\\"message\\":\\"${title}不可以为空\\"})"]}'// 校验配置,校验配置默认配置一个必填项
+            checkRules: requireRuleStr
           }
         })
-
         // 选中后重新触发校验
         this.$refs.form.validateField('tableName')
         this.$refs.form.validateField('personClass')
@@ -610,8 +639,7 @@
                           status: 'use', // 启用状态，默认启用
                           tokenizer: '', // 是否分词
                           directoryId: this.resource.id,
-                          // eslint-disable-next-line no-template-curly-in-string
-                          checkRules: '{"rules":["$required(obj, value, {\\"message\\":\\"${title}不可以为空\\"})"]}'// 校验配置,校验配置默认配置一个必填项
+                          checkRules: requireRuleStr
                         })
                     }
                   })
@@ -783,15 +811,15 @@
       },
       // 预览form
       previewForm() {
-        if (this.fields.length === 0) {
+        if (this.resource.items.length === 0) {
           this.$message({ type: 'danger', content: '没有配置信息项，请配置后预览' })
           return
         }
         // 根据原始列扩展动态表单列表数据
-        initFormList(this.fields).then(res => {
+        initFormList(this.resource.items).then(res => {
           this.previewModal = true
           this.previewModalForm = true
-          this.handleReset()
+          this.handlePreviewReset()
           this.dynamicForm = res
           this.initDynamicForm(res) // 根据动态列扩展form，rules和
         })

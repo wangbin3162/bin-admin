@@ -10,10 +10,11 @@
         <!--             :class="{'item-selected':currentIndex===index}"-->
         <!--             draggable="true" @dragstart="onDrag($event,index)" @drop="onDrop($event,index)"-->
         <!--             @dragenter="onEnter($event)" @dragleave="onLeave($event)" @dragover="allowDrop($event)">-->
-        <div class="item-inner" @click="handleSelect(index)"
-             :class="{'item-selected':currentIndex===index}">
+        <div class="item-inner" @click="handleSelect(index)" :class="{'item-selected':currentIndex===index}">
           {{ item.fieldTitle }}
         </div>
+        <span class="item-field">{{ item.fieldName }}</span>
+        <span class="item-required" v-if="item.required==='Y'">核</span>
       </div>
     </draggable>
     <b-empty v-if="totalData.length===0">{{noDataText}}</b-empty>
@@ -113,6 +114,7 @@
 
 <style scoped lang="stylus">
   .item {
+    position: relative;
     box-sizing: border-box;
     display: inline-block;
     width: 25%;
@@ -123,18 +125,33 @@
     }
     &-inner {
       cursor: pointer;
-      border: 1px solid #d9d9d9;
+      border: 1px dashed #d9d9d9;
       background: #fff;
       border-radius: 2px;
-      line-height: 32px;
-      padding: 0 5px;
+      line-height: 45px;
+      padding: 0 8px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
       transition: .2s;
+      color: rgba(0, 0, 0, .65);
       &:hover {
-        border-color: #1089ff;
+        border: 1px solid #1089ff;
       }
+    }
+    &-field {
+      position: absolute;
+      top: 5px;
+      right: 7px;
+      color: #52c41a;
+      font-size: 10px;
+    }
+    &-required {
+      position: absolute;
+      bottom: 5px;
+      right: 7px;
+      color: #1089ff;
+      font-size: 10px;
     }
     &-over {
       opacity: .5;
@@ -142,7 +159,7 @@
     }
     &-selected {
       transition: .2s;
-      border-color: rgba(16, 137, 255, 0.5);
+      border: 1px solid #1089ff;
       animation: selectAnim 3s infinite ease-in-out;
     }
     &.is-textarea {

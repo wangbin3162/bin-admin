@@ -32,8 +32,9 @@
              @on-opened="$refs.editor.refresh()" @on-ok="importJson">
       <b-code-editor ref="editor" v-model="jsonStr"/>
     </b-modal>
-    <b-modal v-model="previewModal" title="预览表单" width="90%" append-to-body :styles="{top: '20px'}"
-             @on-hidden="previewModalForm=false">
+    <b-modal v-model="previewModal" title="预览表单"
+             fullscreen @on-hidden="previewModalForm=false"
+             :body-styles="{overflowY:'auto',top:'55px'}">
       <b-form v-if="previewModalForm" :model="form" :rules="rules" ref="form" label-position="top">
         <!--自定义form-item-->
         <form-item :key="item.id||index" v-for="(item,index) in dynamicForm"
