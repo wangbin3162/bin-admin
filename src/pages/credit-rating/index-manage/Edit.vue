@@ -5,15 +5,6 @@
         <template slot="full">
           <b-collapse v-model="collapseValue" simple>
             <b-collapse-panel title="基本信息" name="index">
-              <!-- <EditBaseInfo ref="baseInfo"
-                @data-update="handleUpdateBaseInfo"
-                :natureOptions="natureOptions"
-                :dataTypeOptions="dataTypeOptions"
-                :calcTypeOptions="calcTypeOptions"
-                :scaleOptions="scaleOptions"
-                :treeData="treeData"
-                :formData="form.index"></EditBaseInfo> -->
-
               <b-form :model="form.index" ref="form" :rules="roles" :label-width="100">
                 <b-row>
                   <b-col span="12">
@@ -114,6 +105,7 @@
                 @data-change="handleIndexRulsChange"
                 :dataType="form.index.dataType"
                 :scale="form.index.indexScale"
+                :scaleEnum="scaleEnum"
                 :rules="indexRules"></edit-index-rule>
             </b-collapse-panel>
 
@@ -147,6 +139,7 @@
       'dataTypeOptions',
       'calcTypeOptions',
       'scaleOptions',
+      'scaleEnum',
       'treeData'
     ],
     components: {

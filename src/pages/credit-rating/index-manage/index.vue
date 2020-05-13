@@ -62,6 +62,7 @@
       :dataTypeOptions="dataTypeOptions"
       :calcTypeOptions="calcTypeOptions"
       :scaleOptions="scaleOptions"
+      :scaleEnum="scaleEnum"
       :treeData="treeData"
       :editData="editData"></edit>
       <!-- 详情 -->

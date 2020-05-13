@@ -1,6 +1,9 @@
 <template>
   <div class="index-manage-index-rule">
-    <b-code-editor :value="JSON.stringify(this.list)"></b-code-editor>
+    <!-- <b-code-editor :value="JSON.stringify(this.list)"></b-code-editor> -->
+    <b-alert >
+      标度为{{ scaleEnum[scale] }}
+    </b-alert>
     <b-table v-if="isStringType" :columns="columnsS" :data="list">
       <template v-slot:itemValue="{ index }">
         <b-tooltip
@@ -107,6 +110,9 @@
       scale: { // 标度 F: 5分 T: 10分
         required: true
       },
+      scaleEnum: { // 标度枚举对象
+        type: Object
+      },
       rules: { // 已有的指标规则数组，可以为空数组
         type: Array,
         required: true
@@ -168,8 +174,10 @@
         }
       },
       remove (index) {
-        this.list.splice(index, 1)
-        this.resetOrderNo(this.list)
+        if (this.list.length > 1) { // 保留最后一行
+          this.list.splice(index, 1)
+          this.resetOrderNo(this.list)
+        }
       },
       up (index) {
         const curEl = this.list.splice(index, 1)[0]
