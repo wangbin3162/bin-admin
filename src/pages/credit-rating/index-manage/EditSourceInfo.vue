@@ -1,6 +1,6 @@
 <template>
   <div class="edit-source-info">
-    <b-table :columns="columns" :data="list" @on-expand="handleExpand">
+    <b-table id="customTable" :columns="columns" :data="list" @on-expand="handleExpand">
       <template v-slot:paraType="{ row }">
         {{ paramTypeEnum[row.paraType] }}
       </template>
@@ -9,8 +9,8 @@
         <b-input v-model="list[index].defaultValue"></b-input>
       </template>
 
-      <template v-slot:action="{ row }">
-        <b-button type="text" @click="openSourceInfoSelect(row)">+ 配置资源</b-button>
+      <template v-slot:action="{ row, index }">
+        <b-button type="text" @click="openSourceInfoSelect(row, index)">+ 配置资源</b-button>
       </template>
     </b-table>
 
@@ -51,6 +51,7 @@
           {
             type: 'expand',
             width: 50,
+            className: 'expand-custom-column', // 用于查找需要点击的列的自定义class
             render: (h, { row }) => {
               // 这里渲染函数如果添加参数，则jsx内的class会脱离于当前样式作用域 <style lang="stylus" scoped>
               // 需要去除scoped样式才生效
@@ -73,7 +74,7 @@
                               <b-col span={5}>资源性质</b-col>
                               <b-col span={5}>描述</b-col>
                               <b-col span={4} style="text-align: right">
-                                <b-button type="text" size="mini" onClick={this.remove}>移除</b-button>
+                                <b-button type="text" size="mini" onClick={() => this.remove()}>移除</b-button>
                               </b-col>
                             </b-row>
                           )
@@ -100,7 +101,7 @@
                             <b-col span={5}>数据类型</b-col>
                             <b-col span={5}>所属资源</b-col>
                             <b-col span={4} style="text-align: right">
-                              <b-button type="text" size="mini" onClick={this.remove}>移除</b-button>
+                              <b-button type="text" size="mini" onClick={() => this.remove()}>移除</b-button>
                             </b-col>
                           </b-row>
                         )
@@ -130,7 +131,9 @@
           { title: '参数名称', slot: 'action', align: 'center' }
         ],
         paraType: null, // 配置资源弹框组件使用，参数类型
-        rowId: null // 存储点击配置资源行的id
+        rowId: null, // 存储点击配置资源行的id
+        rowIndex: 0, // 当前行index
+        domList: [] // 存储获取的用于点击的可展开列的dom集合
       }
     },
     watch: {
@@ -139,6 +142,10 @@
           this.list = this.initList(newVal)
           console.log(newVal)
           console.log(this.map)
+          this.$nextTick(() => { // 数据变动后获取需要点击的dom元素，并默认展开第1行
+            this.getExpandColumn()
+            this.hackClick(0)
+          })
         },
         immediate: true
       }
@@ -148,17 +155,18 @@
     },
     methods: {
       // 行展开状态回调
-        handleExpand (row, status) {
-        console.log(row)
-        console.log(status)
-        if (status) {
-          // 获取当前展开行的resourceKey
-          const resKeys = this.map.get(row.id)
-          console.log('resKeys', resKeys)
-        }
+      handleExpand (row, status) {
+        // console.log(row)
+        // console.log(status)
+        // if (status) {
+        //   // 获取当前展开行的resourceKey
+        //   const resKeys = this.map.get(row.id)
+        //   console.log('resKeys', resKeys)
+        // }
       },
       // 配置资源按钮回调
-      openSourceInfoSelect (row) {
+      openSourceInfoSelect (row, index) {
+        this.rowIndex = index // 保存点击行的index
         this.rowId = row.id // 当前行唯一参数编码
         this.paraType = row.paraType
         this.open = true
@@ -171,12 +179,14 @@
           resKeyList.push(item.resourceKey)
         }
         this.map.set(this.rowId, resKeyList) // 保存每一行所获取的resourceKey
+        this.hackClick(this.rowIndex) // 回调后展开对应行
       },
       // 资源组件 单选回调
       handleChooseSin ({ fieldName, fieldTitle, dataType, resourceName, resourceKey }) {
         console.log('单选回调', { fieldName, fieldTitle, dataType, resourceName, resourceKey })
         // 保存每一行所获取的fieldName:resourceKey，信息项只有一条资源数据
         this.map.set(this.rowId, [{ fieldName, fieldTitle, dataType, resourceName, resourceKey }])
+        this.hackClick(this.rowIndex) // 回调后展开对应行
       },
       // 获取所需枚举值
       async getEvalParamType () {
@@ -207,6 +217,30 @@
       },
       remove () {
         console.log('remove')
+      },
+      // 获取用于点击的可展开列的dom元素集合
+      getExpandColumn () {
+        this.domList = []
+        const table = document.getElementById('customTable')
+        const expandColumnList = table.getElementsByClassName('expand-custom-column')
+        for (const item of expandColumnList) {
+          const el = item.getElementsByTagName('div')[0].getElementsByTagName('div')[0]
+          this.domList.push(el)
+        }
+        this.domList.shift() // 去除标题中的列
+      },
+      // hack的方式，使用原生js的click()主动触发对应行的展开操作
+      hackClick (index) {
+        if (this.domList.length > 0) {
+          // 阻止bin-ui自身的报错，猜测可能是bin-in的dom渲染没有结束
+          // 或者是任务队列没执行完触发click导致没获取的需要的数据而json报错
+          setTimeout(() => {
+            const el = this.domList[index]
+            const str = el.className
+            // 已展开则不点击
+            if (!str.includes('bin-table-cell-expand-expanded')) el.click()
+          }, 0)
+        }
       },
       test () {
 
