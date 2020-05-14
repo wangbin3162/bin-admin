@@ -55,7 +55,7 @@
                 v-for="(tag,index) in selectedList"
                 closable
                 @on-close="handleCloseTag(index)">
-                {{tag.resName}}
+                {{tag.resourceName}}
               </b-tag>
               <b-button type="dashed" style="width: 100%;margin: 10px 0;"
                 v-if="selectedList.length"
@@ -227,9 +227,10 @@
         })
         if (index === -1) {
           this.selectedList.push({
-            resName: row.resourceName,
-            personClass: this.personClassMap[row.personClass], // 直接封装中文名丢出去显示
-            resProperty: this.resPropertyMap[row.resProperty], // 直接封装中文名丢出去显示
+            resourceName: row.resourceName,
+            resourceDesc: row.resourceDesc,
+            personClass: row.personClass,
+            resProperty: row.resProperty,
             resourceKey: row.resourceKey
           })
         } else {

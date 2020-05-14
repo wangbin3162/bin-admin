@@ -44,6 +44,7 @@
     },
     data () {
       return {
+        testZ: 'test',
         personClassMap: {},
         resPropertyMap: {},
         dataTypeMap: {
@@ -81,10 +82,12 @@
                         Object.keys(this.list[index].source).map(key => {
                           return (
                             <b-row>
-                              <b-col span={5}>{ this.list[index].source[key].resourceName }</b-col>
+                              <b-col span={5}>{ this.list[index].source[key].resourceName + '    ' + this.testZ }</b-col>
                               <b-col span={5}>{ this.personClassMap[this.list[index].source[key].personClass] }</b-col>
                               <b-col span={5}>{ this.resPropertyMap[this.list[index].source[key].resProperty] }</b-col>
-                              <b-col span={5}>{ this.list[index].source[key].resourceDesc }</b-col>
+                              <b-col span={5}>
+                                { this.list[index].source[key].resourceDesc === '' ? '暂无描述' : this.list[index].source[key].resourceDesc}
+                              </b-col>
                               <b-col span={4} style="text-align: right">
                                 <b-button type="text" size="mini" onClick={() => this.remove()}>移除</b-button>
                               </b-col>
@@ -197,18 +200,23 @@
         for (const item of arr) {
           resKeyList.push(item.resourceKey)
         }
-        // this.map.set(this.rowId, resKeyList) // 保存每一行所获取的resourceKey
+        const row = this.list[this.rowIndex]
         // 把数据填充到对应row的字段中
-        this.list[this.rowIndex].paraValue = resKeyList.join(',')
+        row.paraValue = resKeyList.join(',')
+
+        for (const item of arr) {
+          this.$delete(row.source, item.resourceKey) // 删除可能存在的原有key
+          this.$set(row.source, item.resourceKey, item) // 设置新数据
+        }
         this.hackClick(this.rowIndex) // 回调后展开对应行
       },
       // 资源组件 单选回调
       handleChooseSin ({ fieldName, fieldTitle, dataType, resourceName, resourceKey }) {
         console.log('单选回调', { fieldName, fieldTitle, dataType, resourceName, resourceKey })
-        // this.map.set(this.rowId, [{ fieldName, fieldTitle, dataType, resourceName, resourceKey }])
         // 把数据填充到对应row的字段中
         const obj = this.list[this.rowIndex]
-        if (obj.paraValue !== '') this.$delete(obj.info, obj.paraValue) // 用于更新显示
+        // 用于更新显示，不为空的时候删除原有字段，用于设置新字段
+        if (obj.paraValue !== '') this.$delete(obj.info, obj.paraValue)
         obj.paraValue = `${fieldName}:${resourceKey}` // 更新提交的字段
         this.$set(obj.info, obj.paraValue, { fieldName, fieldTitle, dataType, resourceName }) // 更新显示信息
         this.hackClick(this.rowIndex) // 回调后展开对应行
@@ -249,11 +257,12 @@
             }
             // 转换级联菜单格式
             let data = tree ? mapper(tree) : {}
-            // this.personClassOptions = data.children || []
             // 转换类型映射值（扁平化）
+            const keyValue = {}
             personClasses.forEach(item => {
-              this.personClassMap[item.key] = item.value
+              keyValue[item.key] = item.value
             })
+            this.personClassMap = keyValue
           }
         })
         // 资源性质树信息 code=B
@@ -282,9 +291,11 @@
             // 转换级联菜单格式
             let data = tree ? mapper(tree) : {}
             // 转换类型映射值（扁平化）
+            const keyValue = {}
             temp.forEach(item => {
-              this.resPropertyMap[item.key] = item.value
+              keyValue[item.key] = item.value
             })
+            this.resPropertyMap = keyValue
           }
         })
       },
