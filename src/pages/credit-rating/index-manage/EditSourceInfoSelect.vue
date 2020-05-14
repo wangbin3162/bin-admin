@@ -134,7 +134,8 @@
           datetime: '日期时间型',
           text: '备注型'
         },
-        selectedList: [] // 已选择的数组
+        selectedList: [], // 已选择的数组
+        curRowResourceKey: null // 存储当前行的resourceKey
       }
     },
     computed: {
@@ -185,6 +186,7 @@
       },
       // table当前行单选回调
       handleCurrentRowChange (row) {
+        this.curRowResourceKey = row.resourceKey
         this.infoTableLoading = true
         getResDetail(row.id).then(res => {
           this.infoItemList = res.data.data.items
@@ -197,31 +199,32 @@
       },
       // 确认选择按钮回调，向外发送处理后的数据，多选
       postSelectedList () {
-        console.log('choose-mul', this.selectedList)
         this.$emit('choose-mul', this.selectedList)
         this.showDialog = false // 关闭弹框
       },
       // 信息项选择按钮回调，单选
       handleRaiod (row) {
-        console.log('choose-sin', row)
-        this.$emit('choose-sin', row)
+        this.$emit('choose-sin', {
+          fieldName: row.fieldName,
+          resourceKey: this.curRowResourceKey
+        })
         this.showDialog = false // 关闭弹框
       },
       // 用于检查是否选中
       checkRowSelected(row) {
         const dept = this.selectedList.find(item => {
-          return item.resId === row.resourceKey
+          return item.resourceKey === row.resourceKey
         })
         return !!dept
       },
       // 选择按钮的回调
       chooseOne(row) {
         let index = this.selectedList.findIndex(item => {
-          return item.resId === row.resourceKey
+          return item.resourceKey === row.resourceKey
         })
         if (index === -1) {
           this.selectedList.push({
-            resId: row.resourceKey,
+            resourceKey: row.resourceKey,
             resName: row.resourceName
           })
         } else {
