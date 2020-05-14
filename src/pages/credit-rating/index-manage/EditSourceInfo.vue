@@ -1,6 +1,6 @@
 <template>
   <div class="edit-source-info">
-    <b-table id="customTable" :columns="columns" :data="list" @on-expand="handleExpand">
+    <b-table id="customTable" :columns="columns" :data="listCopy" @on-expand="handleExpand">
       <template v-slot:paraType="{ row }">
         {{ paramTypeEnum[row.paraType] }}
       </template>
@@ -59,6 +59,7 @@
         open: false, // 配置资源弹框
         paramTypeEnum: {}, // 参数类型枚举
         list: [], // 渲染table的list
+        listCopy: [],
         columns: [
           {
             type: 'expand',
@@ -156,6 +157,7 @@
       resources: { // 观察变量选择带来的参数变动
         handler (newVal, oldVal) {
           this.list = this.initList(newVal)
+          this.listCopy = JSON.parse(JSON.stringify(this.list))
           console.log('resources', this.list)
           this.$nextTick(() => { // 数据变动后获取需要点击的dom元素，并默认展开第1行
             this.getExpandColumn()
@@ -332,7 +334,10 @@
         console.log('remove', resourceKey)
         const row = this.list[this.rowIndex]
         this.$delete(row.source, resourceKey) // 删除对应显示数据
-        this.hackClick(this.rowIndex)
+        const resourceKeyList = row.paraValue.split(',')
+        const index = resourceKeyList.indexOf(resourceKey)
+        if (index > -1) resourceKeyList.splice(index, 1)
+        row.paraValue = resourceKeyList.join(',')
       },
       // 获取用于点击的可展开列的dom元素集合
       getExpandColumn () {
