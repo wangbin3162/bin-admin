@@ -209,8 +209,6 @@
               </div>
             </v-title-bar>
             <fields-cfg v-model="resource.items"/>
-            <!--信息项表格组件-->
-            <res-info-items v-model="resource.items" :data-type-map="dataTypeMap" :field-ctrl-map="fieldCtrlMap"/>
             <!--调试模式-->
             <div class="mt-15" v-if="debugJson">
               <b-tag type="success" size="small">实际存储对象[fields]</b-tag>
@@ -268,7 +266,7 @@
     <b-modal v-model="previewModal" title="预览表单"
              fullscreen @on-hidden="previewModalForm=false"
              :body-styles="{overflowY:'auto',top:'55px'}">
-      <b-form v-if="previewModalForm" :model="form" :rules="rules" ref="form" label-position="top">
+      <b-form v-if="previewModalForm" :model="form" :rules="rules" ref="dynamicFormRef" label-position="top">
         <!--自定义form-item-->
         <form-item :key="item.id||index" v-for="(item,index) in dynamicForm"
                    :label="item.fieldTitle"
@@ -280,13 +278,19 @@
                         :field-name="item.fieldName"
                         :field-desc="item.fieldDesc"
                         :field-title="item.fieldTitle"
-                        :options="item.validOptions">
+                        :data-length="item.dataLength"
+                        :data-precision="item.dataPrecision"
+                        :options="item.validOptions"
+                        :table-name="resource.tableName"
+                        @on-select-leg="handleSelectLeg"
+                        @on-select-nat="handleSelectNat">
           </form-control>
         </form-item>
       </b-form>
       <div slot="footer">
-        <b-button type="primary" @click="handlePreviewSubmit">提 交</b-button>
-        <b-button @click="handlePreviewReset">重 置</b-button>
+        <b-button @click="previewModal=false">取 消</b-button>
+        <b-button @click="handleDynamicFormReset">重 置</b-button>
+        <b-button type="primary" @click="handleDynamicFormSubmit">提 交</b-button>
       </div>
     </b-modal>
   </div>
@@ -295,26 +299,25 @@
 <script>
   import commonMixin from '../../../common/mixins/mixin'
   import permission from '../../../common/mixins/permission'
+  import dynamicForm from '../../../common/mixins/dynamic-form'
   import { getClassifyTree } from '../../../api/data-manage/classify.api'
   import { getPersonClassTree } from '../../../api/data-manage/metadata.api'
   import { getFieldCtrl } from '../../../api/enum.api'
   import * as api from '../../../api/data-manage/res-info.api'
   import { MetaDataChoose, ResExtEdit } from './components/ResInfo'
-  import ResInfoItems from './components/ResInfoItems'
   import { requiredRule } from '../../../common/utils/validate'
   import TestForm from './components/ResInfo/TestForm'
   import { getResourceInfo } from '../../../api/data-manage/gather.api'
-  import { checkRulesToFormRules, initFormList } from '../../../components/Validator/FieldsCfg/cfg-util'
+  import { initFormList } from '../../../components/Validator/FieldsCfg/cfg-util'
   import FieldsCfg from '../../../components/Validator/FieldsCfg/FieldsCfg'
   import FormItem from '../../../components/Validator/FormControl/FormItem'
   import FormControl from '../../../components/Validator/FormControl/FormControl'
 
-  const requireRuleStr = '{\"$required\":{\"message\":\"必填项\",\"type\":\"string\",\"trigger\":\"blur\"}}'
   // map映射中如 #static 标识: 静态不改变的枚举的暂不调用接口获取
   export default {
     name: 'ResInfo',
-    components: { FormControl, FormItem, FieldsCfg, TestForm, ResExtEdit, MetaDataChoose, ResInfoItems },
-    mixins: [commonMixin, permission],
+    components: { FormControl, FormItem, FieldsCfg, TestForm, ResExtEdit, MetaDataChoose },
+    mixins: [commonMixin, permission, dynamicForm],
     data() {
       const validateResourceCode = (rule, value, callback) => {
         if (!/^[0-9]{4}$/.test(value)) {
@@ -403,12 +406,8 @@
           text: '备注型'
         },
         fieldStatusMap: { use: '选用', ignore: '不选用' }, // 资源信息项状态#static
-
         previewModal: false,
-        previewModalForm: false,
-        dynamicForm: [], // 动态form，用于遍历form表单使用
-        form: {},
-        rules: {}
+        previewModalForm: false
       }
     },
     created() {
@@ -573,23 +572,7 @@
         this.resource.metadataCode = item.metadataCode // 元信息所属类目code
         this.resource.metadataKey = item.metadataKey // 资源标识符带入
         // 格式化items
-        this.resource.items = item.fields.map(item => {
-          return {
-            fieldName: item.fieldName, // 元信息名称（英文）
-            fieldTitle: item.fieldTitle, // 元信息标题
-            dataType: item.dataType, // 数据类型
-            openType: 'PUBLIC', // 信息项公开类型,默认社会公开
-            controlType: 'TEXT', // 控件类型,默认文本框
-            fieldDesc: '', // 提示信息
-            validValue: '', // 有效值
-            maskModel: '', // 掩码方式
-            isEncrypt: '', // 是否加密
-            required: 'Y', // 信息项类型，默认核心项
-            status: 'use', // 启用状态，默认启用
-            tokenizer: '', // 是否分词
-            checkRules: requireRuleStr
-          }
-        })
+        this.resource.items = item.fields.map(this.fieldsToInfoItem).filter(item => item.fieldName.indexOf('_id') === -1)
         // 选中后重新触发校验
         this.$refs.form.validateField('tableName')
         this.$refs.form.validateField('personClass')
@@ -622,25 +605,11 @@
                   // 新增项
                   const addItems = res.data.data.addFields
                   addItems.forEach(item => {
-                    if (!currentItemsMap.has(item.fieldName)) {
-                      currentItemsMap.set(
-                        item.fieldName,
-                        {
-                          fieldName: item.fieldName, // 元信息名称（英文）
-                          fieldTitle: item.fieldTitle, // 元信息标题
-                          dataType: item.dataType, // 数据类型
-                          openType: 'PUBLIC', // 信息项公开类型,默认社会公开
-                          controlType: 'TEXT', // 控件类型,默认文本框
-                          fieldDesc: item.fieldDesc, // 提示信息
-                          validValue: '', // 有效值
-                          maskModel: '', // 掩码方式
-                          isEncrypt: '', // 是否加密
-                          required: 'Y', // 信息项类型，默认核心项
-                          status: 'use', // 启用状态，默认启用
-                          tokenizer: '', // 是否分词
-                          directoryId: this.resource.id,
-                          checkRules: requireRuleStr
-                        })
+                    if (!currentItemsMap.has(item.fieldName) && item.fieldName.indexOf('_id') === -1) {
+                      currentItemsMap.set(item.fieldName, {
+                        ...this.fieldsToInfoItem(item),
+                        directoryId: this.resource.id
+                      })
                     }
                   })
                 }
@@ -815,59 +784,16 @@
           this.$message({ type: 'danger', content: '没有配置信息项，请配置后预览' })
           return
         }
+        // 过滤person_id
+        let fields = this.resource.items.filter(item => item.fieldName.indexOf('_id') === -1)
         // 根据原始列扩展动态表单列表数据
-        initFormList(this.resource.items).then(res => {
+        initFormList(fields).then(res => {
           this.previewModal = true
           this.previewModalForm = true
-          this.handlePreviewReset()
+          this.handleDynamicFormReset()
           this.dynamicForm = res
           this.initDynamicForm(res) // 根据动态列扩展form，rules和
         })
-      },
-      // 表单提交
-      handlePreviewSubmit() {
-        console.log(this.form)
-        this.$refs.form.validate((valid) => {
-          if (valid) {
-            this.$message({ type: 'success', content: '表单校验成功' })
-            this.$log.primary('表单校验成功')
-          } else {
-            this.$message({ type: 'danger', content: '表单校验失败' })
-            this.$log.danger('表单校验失败')
-          }
-        })
-      },
-      // 表单重置
-      handlePreviewReset() {
-        this.$refs.form && this.$refs.form.resetFields()
-      },
-      // =======init form and rules========/
-      // 初始化form集合，扩展form对象和rules校验对象
-      initDynamicForm(dynamicForm) {
-        this.form = {}
-        this.rules = {}
-        // // 额外扩展id和person_id字段
-        this.$set(this.form, 'id', '')
-        // if (!['leg_base_info', 'nat_base_info', 'leg_id_info', 'nat_id_info'].includes(this.resource.tableName)) {
-        //   this.$set(this.form, 'person_id', '')
-        // }
-
-        dynamicForm.forEach(item => {
-          // 1、先根据filedName扩展form对象
-          this.$set(this.form, item.fieldName, item.dataType === 'number' ? 0 : '')
-          // 2、根据每个item，执行校验函数并返回校验数组
-          // 根据checkRules参数获取实际校验对象
-          let rules = checkRulesToFormRules(item.checkRules, this.form)
-          if (rules.length > 0) {
-            this.$set(this.rules, item.fieldName, rules)
-          }
-        })
-        // this.$log.primary('----form----')
-        // console.log(this.form)
-        // this.$log.primary('------------')
-        // this.$log.primary('----rules----')
-        // console.log(this.rules)
-        // this.$log.primary('-------------')
       }
     }
   }
