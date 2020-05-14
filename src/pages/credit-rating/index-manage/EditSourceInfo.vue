@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="edit-source-info">
     <b-table :columns="columns" :data="list" @on-expand="handleExpand">
       <template v-slot:paraType="{ row }">
         {{ paramTypeEnum[row.paraType] }}
@@ -42,6 +42,7 @@
     },
     data () {
       return {
+        arr: [1, 2, 3],
         map: new Map(),
         open: false, // 配置资源弹框
         paramTypeEnum: {}, // 参数类型枚举
@@ -50,17 +51,73 @@
           {
             type: 'expand',
             width: 50,
-            render: () => {
+            render: (h, { row }) => {
+              // 这里渲染函数如果添加参数，则jsx内的class会脱离于当前样式作用域 <style lang="stylus" scoped>
+              // 需要去除scoped样式才生效
+              let sourceInfoTemplate = <div class="table-con">
+                    <b-row class="title">
+                      <b-col span={5}>资源名称</b-col>
+                      <b-col span={5}>主题类别</b-col>
+                      <b-col span={5}>资源性质</b-col>
+                      <b-col span={5}>描述</b-col>
+                      <b-col span={4}></b-col>
+                    </b-row>
+
+                    <div class="row">
+                      {
+                        this.arr.map(item => {
+                          return (
+                            <b-row>
+                              <b-col span={5}>资源名称</b-col>
+                              <b-col span={5}>主题类别</b-col>
+                              <b-col span={5}>资源性质</b-col>
+                              <b-col span={5}>描述</b-col>
+                              <b-col span={4} style="text-align: right">
+                                <b-button type="text" size="mini" onClick={this.remove}>移除</b-button>
+                              </b-col>
+                            </b-row>
+                          )
+                        })
+                      }
+                    </div>
+                  </div>
+              let infoItemTempLate = <div class="table-con">
+                  <b-row class="title">
+                    <b-col span={5}>信息项名称</b-col>
+                    <b-col span={5}>标题</b-col>
+                    <b-col span={5}>数据类型</b-col>
+                    <b-col span={5}>所属资源</b-col>
+                    <b-col span={4}></b-col>
+                  </b-row>
+
+                  <div class="row">
+                    {
+                      this.arr.map(item => {
+                        return (
+                          <b-row>
+                            <b-col span={5}>信息项名称</b-col>
+                            <b-col span={5}>标题</b-col>
+                            <b-col span={5}>数据类型</b-col>
+                            <b-col span={5}>所属资源</b-col>
+                            <b-col span={4} style="text-align: right">
+                              <b-button type="text" size="mini" onClick={this.remove}>移除</b-button>
+                            </b-col>
+                          </b-row>
+                        )
+                      })
+                    }
+                  </div>
+                </div>
+              const template = row.paraType === 'S' ? sourceInfoTemplate : infoItemTempLate
               return (
                 <div class="expandRow">
-                  <div>
-                    所选资源 清空 新增
+                  <div class="header" flex="main:justify">
+                    <h4>
+                      { row.paraType === 'S' ? '所选资源信息' : '所选信息项'}
+                    </h4>
+                    <span onClick={this.clearAll}><b-icon name="ios-trash"></b-icon> 清空</span>
                   </div>
-                  <div class="table-con">
-                    <template>
-                      ssss
-                    </template>
-                  </div>
+                  { template }
                 </div>
               )
             }
@@ -91,7 +148,7 @@
     },
     methods: {
       // 行展开状态回调
-      handleExpand (row, status) {
+        handleExpand (row, status) {
         console.log(row)
         console.log(status)
         if (status) {
@@ -116,10 +173,10 @@
         this.map.set(this.rowId, resKeyList) // 保存每一行所获取的resourceKey
       },
       // 资源组件 单选回调
-      handleChooseSin ({ fieldName, fieldTitle, dataType, resourceKey }) {
-        console.log('单选回调', { fieldName, fieldTitle, dataType, resourceKey })
+      handleChooseSin ({ fieldName, fieldTitle, dataType, resourceName, resourceKey }) {
+        console.log('单选回调', { fieldName, fieldTitle, dataType, resourceName, resourceKey })
         // 保存每一行所获取的fieldName:resourceKey，信息项只有一条资源数据
-        this.map.set(this.rowId, [{ fieldName, fieldTitle, dataType, resourceKey }])
+        this.map.set(this.rowId, [{ fieldName, fieldTitle, dataType, resourceName, resourceKey }])
       },
       // 获取所需枚举值
       async getEvalParamType () {
@@ -145,6 +202,12 @@
         }
         return list
       },
+      clearAll () {
+        console.log('clearAll')
+      },
+      remove () {
+        console.log('remove')
+      },
       test () {
 
       }
@@ -152,8 +215,27 @@
   }
 </script>
 
-<style lang="stylus" scoped>
-.expandRow {
-  // width: 40%;
+<style lang="stylus">
+.edit-source-info {
+  .expandRow {
+    .header {
+      font-size: 13.5px;
+      span {
+        cursor: pointer;
+      }
+    }
+    .table-con {
+      margin-top: 10px;
+      font-size: 13px;
+
+      .title {
+        color: #909399;
+        // text-align: center;
+      }
+      .row {
+        margin-top: 10px;
+      }
+    }
+  }
 }
 </style>
