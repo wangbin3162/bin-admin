@@ -62,6 +62,7 @@
       :dataTypeOptions="dataTypeOptions"
       :calcTypeOptions="calcTypeOptions"
       :scaleOptions="scaleOptions"
+      :scaleEnum="scaleEnum"
       :treeData="treeData"
       :editData="editData"></edit>
       <!-- 详情 -->
@@ -126,6 +127,7 @@
       this.initTree()
     },
     methods: {
+      // 树节点选择改变回调
       handTreeCurrentChange (data, node) {
         if (this.currentTreeNode.id === node.id) {
           node.selected = true
@@ -134,6 +136,7 @@
         this.listQuery.bizType = node.code
         this.handleFilter()
       },
+      // 重置查询
       resetQuery () {
         this.listQuery = {
           page: 1,
@@ -142,13 +145,16 @@
           bizType: this.currentTreeNode ? this.currentTreeNode.id : ''
         }
       },
+      // 新增按钮回调
       handleCreate () {
         this.openEditPage('create')
       },
+      // 修改按钮回调
       handleModify (row) {
         this.editData = row
         this.openEditPage('modify')
       },
+      // 删除按钮回调
       handleRemove (id) {
         this.$confirm({
           title: '删除',
@@ -171,14 +177,17 @@
           }
         })
       },
+      // 查看详情回调
       handleCheck (id) {
         this.id = id
         this.openEditPage('check')
       },
+      // 编辑组件关闭回调
       handleClose () {
         this.editData = null // 关闭编辑框的时候情况编辑数据
         this.handleCancel()
       },
+      // 获取列表
       async searchList() {
         this.listLoading = true
         try {

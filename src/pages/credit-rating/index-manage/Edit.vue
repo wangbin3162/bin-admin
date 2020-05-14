@@ -5,15 +5,6 @@
         <template slot="full">
           <b-collapse v-model="collapseValue" simple>
             <b-collapse-panel title="基本信息" name="index">
-              <!-- <EditBaseInfo ref="baseInfo"
-                @data-update="handleUpdateBaseInfo"
-                :natureOptions="natureOptions"
-                :dataTypeOptions="dataTypeOptions"
-                :calcTypeOptions="calcTypeOptions"
-                :scaleOptions="scaleOptions"
-                :treeData="treeData"
-                :formData="form.index"></EditBaseInfo> -->
-
               <b-form :model="form.index" ref="form" :rules="roles" :label-width="100">
                 <b-row>
                   <b-col span="12">
@@ -114,11 +105,14 @@
                 @data-change="handleIndexRulsChange"
                 :dataType="form.index.dataType"
                 :scale="form.index.indexScale"
+                :scaleEnum="scaleEnum"
                 :rules="indexRules"></edit-index-rule>
             </b-collapse-panel>
 
             <b-collapse-panel title="信息资源配置" name="resources">
-              <EditSourceInfo></EditSourceInfo>
+              <edit-source-info
+                :params="params">
+              </edit-source-info>
             </b-collapse-panel>
           </b-collapse>
         </template>
@@ -147,6 +141,7 @@
       'dataTypeOptions',
       'calcTypeOptions',
       'scaleOptions',
+      'scaleEnum',
       'treeData'
     ],
     components: {
@@ -157,11 +152,12 @@
     data () {
       return {
         btnLoading: false,
-        collapseValue: ['index', 'rules'], // 控制手风琴展开
+        collapseValue: ['index', 'resources'], // 控制手风琴展开
         open: false,
         cascadeData: [], // 指标类型级联数据
         cascadeModel: [], // 用于级联绑定
         varName: '', // 变量名称 用于显示
+        params: [], // 用于传递给资源信息组件
         form: {
           index: {
             indexName: '',
@@ -232,6 +228,7 @@
       handleVarChange (val) {
         this.varName = val.varName
         this.form.index.varId = val.id
+        this.params = val.params
       },
       // 打开变量选择弹框
       openSelectVarHandler () {
@@ -245,6 +242,7 @@
       handleIndexRules () {
         this.$refs.indexRule.initArr(this.form.index.dataType, this.form.index.indexScale)
       },
+      // 提交按钮回调
       async handleSubmit () {
         // 验证组件内的form
         const [valid1, valid2] = await Promise.all([this.$refs.form.validate(), this.$refs.indexRule.validateAll()])
