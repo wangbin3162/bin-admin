@@ -28,6 +28,8 @@
 
 <script>
   import { getEvalParamType } from '../../../api/enum.api'
+  import { getPersonClassTree } from '../../../api/data-manage/metadata.api'
+  import { getResPropertyTree } from '../../../api/data-manage/res-info.api'
   import EditSourceInfoSelect from './EditSourceInfoSelect'
 
   export default {
@@ -42,7 +44,8 @@
     },
     data () {
       return {
-        arr: [1, 2, 3],
+        personClassMap: {},
+        resPropertyMap: {},
         dataTypeMap: {
           string: '字符型',
           number: '数值型',
@@ -67,7 +70,7 @@
               let sourceInfoTemplate = <div class="table-con">
                     <b-row class="title">
                       <b-col span={5}>资源名称</b-col>
-                      <b-col span={5}>主题类别</b-col>
+                      <b-col span={5}>主体类别</b-col>
                       <b-col span={5}>资源性质</b-col>
                       <b-col span={5}>描述</b-col>
                       <b-col span={4}></b-col>
@@ -75,13 +78,13 @@
 
                     <div class="row">
                       {
-                        this.arr.map(item => {
+                        Object.keys(this.list[index].source).map(key => {
                           return (
                             <b-row>
-                              <b-col span={5}>资源名称</b-col>
-                              <b-col span={5}>主题类别</b-col>
-                              <b-col span={5}>资源性质</b-col>
-                              <b-col span={5}>描述</b-col>
+                              <b-col span={5}>{ this.list[index].source[key].resourceName }</b-col>
+                              <b-col span={5}>{ this.personClassMap[this.list[index].source[key].personClass] }</b-col>
+                              <b-col span={5}>{ this.resPropertyMap[this.list[index].source[key].resProperty] }</b-col>
+                              <b-col span={5}>{ this.list[index].source[key].resourceDesc }</b-col>
                               <b-col span={4} style="text-align: right">
                                 <b-button type="text" size="mini" onClick={() => this.remove()}>移除</b-button>
                               </b-col>
@@ -167,6 +170,7 @@
     },
     created () {
       this.getEvalParamType()
+      this.getEnum()
     },
     methods: {
       // 行展开状态回调
@@ -193,7 +197,7 @@
         for (const item of arr) {
           resKeyList.push(item.resourceKey)
         }
-        this.map.set(this.rowId, resKeyList) // 保存每一行所获取的resourceKey
+        // this.map.set(this.rowId, resKeyList) // 保存每一行所获取的resourceKey
         // 把数据填充到对应row的字段中
         this.list[this.rowIndex].paraValue = resKeyList.join(',')
         this.hackClick(this.rowIndex) // 回调后展开对应行
@@ -217,6 +221,72 @@
         } catch (error) {
 
         }
+      },
+      // 通用枚举
+      getEnum() {
+        // 主体类别树信息 code=A
+        getPersonClassTree().then(res => {
+          if (res.status === 200) {
+            // 返回的树形需要格式化成级联菜单的结构，并需要扁平化一次
+            let tree = res.data.data
+            let personClasses = []
+            let mapper = (node, parentCode) => {
+              personClasses.push({ key: node.code, value: node.text })
+              let parents = parentCode ? parentCode.split(',') : []
+              parents.push(node.code)
+              let child = []
+              if (node.children) {
+                node.children.forEach(item => {
+                  child.push(mapper(item, parents.join(',')))
+                })
+              }
+              return {
+                value: node.code,
+                label: node.text,
+                choose: parents, // 配合级联展开时使用
+                children: child
+              }
+            }
+            // 转换级联菜单格式
+            let data = tree ? mapper(tree) : {}
+            // this.personClassOptions = data.children || []
+            // 转换类型映射值（扁平化）
+            personClasses.forEach(item => {
+              this.personClassMap[item.key] = item.value
+            })
+          }
+        })
+        // 资源性质树信息 code=B
+        getResPropertyTree().then(res => {
+          if (res.status === 200) {
+            // 返回的树形需要格式化成级联菜单的结构，并需要扁平化一次
+            let tree = res.data.data
+            let temp = []
+            let mapper = (node, parentCode) => {
+              temp.push({ key: node.code, value: node.text })
+              let parents = parentCode ? parentCode.split(',') : []
+              parents.push(node.code)
+              let child = []
+              if (node.children) {
+                node.children.forEach(item => {
+                  child.push(mapper(item, parents.join(',')))
+                })
+              }
+              return {
+                value: node.code,
+                label: node.text,
+                choose: parents, // 配合级联展开时使用
+                children: child
+              }
+            }
+            // 转换级联菜单格式
+            let data = tree ? mapper(tree) : {}
+            // 转换类型映射值（扁平化）
+            temp.forEach(item => {
+              this.resPropertyMap[item.key] = item.value
+            })
+          }
+        })
       },
       // 初始化需要的数据结构
       initList (resources) {

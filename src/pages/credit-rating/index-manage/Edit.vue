@@ -111,7 +111,8 @@
 
             <b-collapse-panel title="信息资源配置" name="resources">
               <edit-source-info
-                :params="params">
+                @data-change="handleSourceChange"
+                :resources="resources">
               </edit-source-info>
             </b-collapse-panel>
           </b-collapse>
@@ -157,7 +158,6 @@
         cascadeData: [], // 指标类型级联数据
         cascadeModel: [], // 用于级联绑定
         varName: '', // 变量名称 用于显示
-        params: [], // 用于传递给资源信息组件
         form: {
           index: {
             indexName: '',
@@ -208,7 +208,8 @@
             { required: true, message: '变量不能为空', trigger: 'blur' }
           ]
         },
-        indexRules: [] // 用于存储form.rules并传递给EditIndexRule组件的rules
+        indexRules: [], // 用于存储form.rules并传递给EditIndexRule组件的rules
+        resources: [] // 用于存储form.resources并传递给资源信息组件
       }
     },
     created () {
@@ -228,7 +229,7 @@
       handleVarChange (val) {
         this.varName = val.varName
         this.form.index.varId = val.id
-        this.params = val.params
+        this.resources = val.params
       },
       // 打开变量选择弹框
       openSelectVarHandler () {
@@ -241,6 +242,11 @@
       // 数据类型与标度下拉框的change回调，用于创建对应的指标规则
       handleIndexRules () {
         this.$refs.indexRule.initArr(this.form.index.dataType, this.form.index.indexScale)
+      },
+      // 资源信息组件的数据回调
+      handleSourceChange (resources) {
+        this.form.resources = resources
+        console.log(resources)
       },
       // 提交按钮回调
       async handleSubmit () {
@@ -277,6 +283,7 @@
             this.cascadeModel = JSON.parse(this.form.index.bizTypeArray) // json字符串转为数组
             this.varName = res.index.varName // 处理变量回显
             this.indexRules = res.rules
+            this.resources = res.resources
           } catch (error) {
             this.$log.pretty('searchList Error', error, 'danger')
           }
