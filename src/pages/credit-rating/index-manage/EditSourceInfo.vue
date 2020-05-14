@@ -44,7 +44,6 @@
     },
     data () {
       return {
-        testZ: 'test',
         personClassMap: {},
         resPropertyMap: {},
         dataTypeMap: {
@@ -82,14 +81,14 @@
                         Object.keys(this.list[index].source).map(key => {
                           return (
                             <b-row>
-                              <b-col span={5}>{ this.list[index].source[key].resourceName + '    ' + this.testZ }</b-col>
+                              <b-col span={5}>{ this.list[index].source[key].resourceName }</b-col>
                               <b-col span={5}>{ this.personClassMap[this.list[index].source[key].personClass] }</b-col>
                               <b-col span={5}>{ this.resPropertyMap[this.list[index].source[key].resProperty] }</b-col>
                               <b-col span={5}>
                                 { this.list[index].source[key].resourceDesc === '' ? '暂无描述' : this.list[index].source[key].resourceDesc}
                               </b-col>
                               <b-col span={4} style="text-align: right">
-                                <b-button type="text" size="mini" onClick={() => this.remove()}>移除</b-button>
+                                <b-button type="text" size="mini" onClick={() => this.remove(key)}>移除</b-button>
                               </b-col>
                             </b-row>
                           )
@@ -131,7 +130,9 @@
                     <h4>
                       { row.paraType === 'S' ? '所选资源信息' : '所选信息项'}
                     </h4>
-                    <span onClick={this.clearAll}><b-icon name="ios-trash"></b-icon> 清空</span>
+                    <span onClick={this.clearAll} class={
+                      row.paraType === 'S' ? '' : 'not-clear'
+                    }><b-icon name="ios-trash"></b-icon> 清空</span>
                   </div>
                   { template }
                 </div>
@@ -196,14 +197,14 @@
       // 资源组件 多选回调
       handleChooseMul (arr) {
         console.log('多选回调', arr)
-        const resKeyList = []
+        const row = this.list[this.rowIndex]
+        const resourceKeyList = row.paraValue.split(',') // 取出原有的resourceKey
+        const resKeyList = [] // 存放选择的resourceKey
         for (const item of arr) {
           resKeyList.push(item.resourceKey)
         }
-        const row = this.list[this.rowIndex]
-        // 把数据填充到对应row的字段中
-        row.paraValue = resKeyList.join(',')
-
+        // 去重后把数据填充到对应row的字段中
+        row.paraValue = [...new Set([...resourceKeyList, ...resKeyList])].join(',')
         for (const item of arr) {
           this.$delete(row.source, item.resourceKey) // 删除可能存在的原有key
           this.$set(row.source, item.resourceKey, item) // 设置新数据
@@ -327,8 +328,11 @@
       clearAll () {
         console.log('clearAll')
       },
-      remove () {
-        console.log('remove')
+      remove (resourceKey) {
+        console.log('remove', resourceKey)
+        const row = this.list[this.rowIndex]
+        this.$delete(row.source, resourceKey) // 删除对应显示数据
+        this.hackClick(this.rowIndex)
       },
       // 获取用于点击的可展开列的dom元素集合
       getExpandColumn () {
@@ -368,6 +372,10 @@
       font-size: 13.5px;
       span {
         cursor: pointer;
+      }
+      .not-clear {
+        cursor: not-allowed;
+        color: #C0C4CC;
       }
     }
     .table-con {
