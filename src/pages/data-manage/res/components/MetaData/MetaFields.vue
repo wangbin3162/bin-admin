@@ -43,9 +43,9 @@
                 <b-select v-model="metaItem.dataType" placeholder="请选择类型"
                           :disabled="dialogStatus === 'modify' && !!metaItem.id"
                           clearable @on-change="handleTypeChange">
-                  <b-option v-for="item in dataTypeOptions" :value="item.value" :key="item.value" :label="item.label">
-                    <span>{{ item.label }}</span>
-                    <span style="float:right;color:#ccc">{{ item.value }}</span>
+                  <b-option v-for="(value,key) in dataTypeMap" :value="key" :key="key" :label="value">
+                    <span>{{ value }}</span>
+                    <span style="float:right;color:#ccc">{{ key }}</span>
                   </b-option>
                 </b-select>
               </b-form-item>
@@ -98,9 +98,6 @@
       },
       dataTypeMap: {
         type: Object
-      },
-      dataTypeOptions: {
-        type: Array
       }
     },
     computed: {
@@ -178,7 +175,7 @@
         fieldsColumns: [
           { title: '名称', key: 'fieldName' },
           { title: '标题', key: 'fieldTitle', tooltip: true },
-          { title: '类型', slot: 'dataType', width: 100, align: 'center' },
+          { title: '类型', slot: 'dataType', width: 150, align: 'center' },
           { title: '数据长度', key: 'dataLength', width: 100, align: 'center' },
           { title: '数据精度', key: 'dataPrecision', width: 100, align: 'center' },
           { title: '备注', key: 'fieldDesc' },

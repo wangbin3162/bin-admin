@@ -106,7 +106,6 @@
           <meta-fields v-model="metadata.fields"
                        :person-class="metadata.personClass"
                        :data-type-map="dataTypeMap"
-                       :data-type-options="dataTypeOptions"
                        @on-add-person="handleAddPerson"></meta-fields>
         </template>
         <!--保存提交-->
@@ -150,6 +149,7 @@
   import { getMetadataStatus, getDataType } from '../../../api/enum.api'
   import { MetaFields } from './components/MetaData'
   import { ischina2, requiredRule } from '../../../common/utils/validate'
+  import enumObj from '../../../components/Validator/FieldsCfg/enum.json'
 
   export default {
     name: 'MetaData',
@@ -228,8 +228,7 @@
         },
         statusMap: { 'edit': '草稿', 'audited': '发布', 'closed': '关闭' },
         statusOptions: [],
-        dataTypeMap: {},
-        dataTypeOptions: [],
+        dataTypeMap: enumObj.dataType,
         personClassMap: {},
         personClassOptions: [] // 主体类型级联菜单
       }
@@ -332,7 +331,6 @@
           title: '确定要发布本条元信息？',
           content: metadata.hasResDepend ? '引用的资源信息将不可用!' : '',
           loading: true,
-          okType: 'danger',
           onOk: () => {
             api.publishMetadata(metadata).then(res => {
               if (res.data.code === '0') {
@@ -432,12 +430,11 @@
           }
         })
         // 类型枚举
-        getDataType().then(res => {
-          if (res.status === 200) {
-            this.dataTypeMap = res.data.data
-            this.dataTypeOptions = this.formatOptions(res.data.data)
-          }
-        })
+        // getDataType().then(res => {
+        //   if (res.status === 200) {
+        //     this.dataTypeMap = res.data.data
+        //   }
+        // })
         // 主体类别树信息
         api.getPersonClassTree().then(res => {
           if (res.status === 200) {
