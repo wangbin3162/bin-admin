@@ -1,5 +1,6 @@
 import { deepCopy } from '../../../common/utils/assist'
 import { checkIdCard, verifyOrgNo, verifyRegNo, verifyUnifiedCode } from '../../../common/utils/validate'
+import { getDictItems } from '../../../api/data-manage/gather.api'
 
 /**
  * 校验枚举值
@@ -51,8 +52,6 @@ export const validatorBuild = {
         // 如果是法人类型表，切存在【法定代表人证件类型】字段则类型设置需要比对fddbrzjlx，
         // 这里也要求设置校验配置时，居民身份证类型需要选择自然人证件类型
         // let type = obj['fddbrzjlx'] ? obj['fddbrzjlx'] : obj['id_type']
-        // let result = (value.length === 0 || type !== '1' || checkIdCard(caseValue))
-
         let preField = obj[opts.preField]// 前置字段当前值
         let preFieldRule = opts.preField.length > 0 && !(preField && (preField === '1' || preField.length === 0))
         let caseValue = opts.ignoreCase ? String(value).toUpperCase() : value
@@ -266,11 +265,11 @@ export async function initItemsByValidValue(valid) {
     ret = optionsObj.data
   } else if (optionsObj.type === 'dict') {
     // 根据code查询字典项 先注释掉返回空
-    // await getDictItems(optionsObj.code).then(res => {
-    //   if (res.data.code === '0') {
-    //     ret = res.data.data
-    //   }
-    // })
+    await getDictItems(optionsObj.code).then(res => {
+      if (res.data.code === '0') {
+        ret = res.data.data
+      }
+    })
   }
   return ret
 }

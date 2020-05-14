@@ -1,11 +1,11 @@
 // form-control 根据控件类型返回不同的控件
-// import LegPersonChoose from './LegPersonChoose'
-// import NatPersonChoose from './NatPersonChoose'
+import LegPersonChoose from './LegPersonChoose'
+import NatPersonChoose from './NatPersonChoose'
+import { oneOf } from 'bin-ui/src/utils/util'
 
-const READONLY = ['id_code', 'id_type']
 export default {
   name: 'FormControl',
-  // components: { LegPersonChoose, NatPersonChoose },
+  components: { LegPersonChoose, NatPersonChoose },
   data() {
     return {
       currentValue: '',
@@ -15,7 +15,7 @@ export default {
   },
   props: {
     value: {
-      type: [String, Number, Array],
+      type: [String, Number],
       default: ''
     },
     controlType: {
@@ -34,6 +34,12 @@ export default {
       type: String,
       default: ''
     },
+    dataLength: {
+      type: Number
+    },
+    dataPrecision: {
+      type: Number
+    },
     options: {
       type: Array,
       default() {
@@ -46,7 +52,7 @@ export default {
     }
   },
   render(h) {
-    const readonly = READONLY.includes(this.fieldName) &&
+    const readonly = (this.fieldName.indexOf('id_code') === 0 || this.fieldName.indexOf('id_type') === 0) &&
       (this.tableName !== 'leg_base_info' && this.tableName !== 'nat_base_info')
     let node
     switch (this.controlType) {
@@ -54,6 +60,7 @@ export default {
         node = h('b-input', {
           props: {
             value: this.currentValue,
+            maxlength: this.dataLength,
             placeholder: `${this.fieldDesc ? this.fieldDesc : '请输入' + this.fieldTitle}`,
             disabled: readonly,
             clearable: !readonly
@@ -65,6 +72,7 @@ export default {
         node = h('b-input-number', {
           props: {
             value: this.currentValue,
+            precision: this.dataPrecision,
             disabled: readonly,
             clearable: !readonly
           },
@@ -76,8 +84,9 @@ export default {
         node = h('b-input', {
           props: {
             value: this.currentValue,
+            maxlength: this.dataLength,
             placeholder: `${this.fieldDesc ? this.fieldDesc : '请输入' + this.fieldTitle}`,
-            rows: 1,
+            autosize: { minRows: 1, maxRows: 4 },
             type: 'textarea'
           },
           on: { 'input': this.handleInput }
@@ -142,8 +151,8 @@ export default {
         node = h('leg-person-choose', {
           props: {
             value: this.currentValue,
-            placeholder: `选择法人填充${this.fieldDesc}等字段`,
-            readonly: readonly,
+            placeholder: `选择法人`,
+            disabled: readonly,
             clearable: !readonly
           },
           on: { 'on-select-leg': this.handleSelectLeg }
@@ -153,8 +162,8 @@ export default {
         node = h('nat-person-choose', {
           props: {
             value: this.currentValue,
-            placeholder: `选择自然人填充${this.fieldDesc}等字段`,
-            readonly: readonly,
+            placeholder: `选择自然人`,
+            disabled: readonly,
             clearable: !readonly
           },
           on: { 'on-select-nat': this.handleSelectNat }
@@ -187,11 +196,37 @@ export default {
     },
     // 法人选择事件,从法人控件中监听并继续向上层抛出
     handleSelectLeg(leg) {
-      this.$emit('on-select-leg', leg)
+      let index = oneOf(this.fieldName, ['name', 'comp_name']) ? '' : this.fieldName.slice('id_name'.length)
+      // 填充字段名称，需要根据多主体索引来判断
+      let fillField = [
+        `person_id${index}`,
+        this.fieldName,
+        `id_type${index}`,
+        `id_code${index}`
+      ]
+      this.$emit('on-select-leg', fillField, {
+        id: leg.id,
+        name: leg.compName,
+        idType: leg.idType,
+        idCode: leg.idCode
+      })
     },
     // 自然人选择事件,从自然人控件中监听并继续向上层抛出
     handleSelectNat(nat) {
-      this.$emit('on-select-nat', nat)
+      let index = oneOf(this.fieldName, ['name', 'comp_name']) ? '' : this.fieldName.slice('id_name'.length)
+      // 填充字段名称，需要根据多主体索引来判断
+      let fillField = [
+        `person_id${index}`,
+        this.fieldName,
+        `id_type${index}`,
+        `id_code${index}`
+      ]
+      this.$emit('on-select-nat', fillField, {
+        id: nat.id,
+        name: nat.name,
+        idType: nat.idType,
+        idCode: nat.idCode
+      })
     }
   }
 }

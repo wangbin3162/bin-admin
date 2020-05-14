@@ -59,7 +59,7 @@
           </b-row>
           <div class="config-line"/>
           <!--有效值-->
-          <template v-if="totalData[currentIndex].dataType==='string'">
+          <template v-if="showValidValue">
             <valid-value v-model="totalData[currentIndex].validValue" @on-change="emitValue"/>
             <div class="config-line"/>
           </template>
@@ -170,6 +170,7 @@
       }
     },
     computed: {
+      // 是否分词禁用条件
       tokenizerDisabled() {
         if (this.currentIndex !== -1) {
           let item = this.totalData[this.currentIndex]
@@ -177,9 +178,18 @@
         }
         return false
       },
+      // 是否加密禁用条件
       encryptDisabled() {
         if (this.currentIndex !== -1) {
           return this.totalData[this.currentIndex].dataType !== 'string'
+        }
+        return false
+      },
+      // 是否显示有效值配置
+      showValidValue() {
+        if (this.currentIndex !== -1) {
+          let current = this.totalData[this.currentIndex]
+          return current.dataType === 'string' && ['SELECT', 'MULTIPLE_SELECT'].indexOf(current.controlType) > -1
         }
         return false
       },
@@ -188,20 +198,6 @@
         if (this.currentIndex === -1) {
           return []
         }
-        // "controlType": {
-        //     "TEXT": "文本框",
-        //     "NUMBER_TEXT": "数值文本框",
-        //     "SELECT": "下拉框",
-        //     "DATE": "日期",
-        //     "DATE_TIME": "日期时间",
-        //     "TEXTAREA": "文本域",
-        //     "NAT_PERSON": "选择自然人",
-        //     "LEG_PERSON": "选择法人",
-        //     "CROP_REP": "选择法人代表",
-        //     "NAT_OR_LEG_PERSON": "选择自然人或法人",
-        //     "FILE_UPLOAD": "文件上传",
-        //     "DEPART": "选择部门"
-        // }
         const controlType = this.enumMap.controlType
         const dataType = this.totalData[this.currentIndex].dataType
         switch (dataType) {
@@ -284,6 +280,11 @@
       },
       // 控件类型改变事件
       controlTypeChange(type) {
+        // 1.根据选择的控件类型，如不是多选和下拉多选，则都需要清空有效值
+        if (['SELECT', 'MULTIPLE_SELECT'].indexOf(type) === -1) {
+          this.totalData[this.currentIndex].validValue = ''
+        }
+        // 2.根据选择的控件类型，批量设置校验格式触发条件
         const trigger = (type === 'TEXT' || type === 'TEXTAREA') ? 'blur' : 'change'
         try {
           let checkRules = JSON.parse(this.totalData[this.currentIndex].checkRules)

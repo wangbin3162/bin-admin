@@ -419,7 +419,7 @@
         </b-popover>
       </div>
     </div>
-    <div v-show="showReal">
+    <div v-if="showReal">
       <b-tag type="success" size="small">实际存储对象</b-tag>
       <b-code-editor :value="JSON.stringify(rulesObj,null,2)" readonly/>
     </div>
@@ -455,7 +455,7 @@
     },
     data() {
       return {
-        showReal: true,
+        showReal: false,
         isRequired: false,
         rulesObj: null,
         checkRulesArr: [], // 校验二维数组，用于push校验数据

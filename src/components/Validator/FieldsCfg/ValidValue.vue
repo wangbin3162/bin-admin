@@ -118,7 +118,7 @@
           code: ''
         },
         arrData: [],
-        showReal: true,
+        showReal: false,
         // 用于选择字典弹窗
         listQuery: {
           groupName: '',
