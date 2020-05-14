@@ -33,7 +33,7 @@
   export default {
     name: 'IndexManageSourceInfo',
     props: {
-      params: {
+      resources: {
         type: Array
       }
     },
@@ -43,16 +43,25 @@
     data () {
       return {
         arr: [1, 2, 3],
+        dataTypeMap: {
+          string: '字符型',
+          number: '数值型',
+          money: '货币型',
+          boolean: '逻辑型',
+          date: '日期型',
+          datetime: '日期时间型',
+          text: '备注型'
+        },
         map: new Map(),
         open: false, // 配置资源弹框
         paramTypeEnum: {}, // 参数类型枚举
-        list: [],
+        list: [], // 渲染table的list
         columns: [
           {
             type: 'expand',
             width: 50,
             className: 'expand-custom-column', // 用于查找需要点击的列的自定义class
-            render: (h, { row }) => {
+            render: (h, { row, index }) => {
               // 这里渲染函数如果添加参数，则jsx内的class会脱离于当前样式作用域 <style lang="stylus" scoped>
               // 需要去除scoped样式才生效
               let sourceInfoTemplate = <div class="table-con">
@@ -93,15 +102,15 @@
 
                   <div class="row">
                     {
-                      this.arr.map(item => {
+                      Object.keys(this.list[index].info).map(key => {
                         return (
                           <b-row>
-                            <b-col span={5}>信息项名称</b-col>
-                            <b-col span={5}>标题</b-col>
-                            <b-col span={5}>数据类型</b-col>
-                            <b-col span={5}>所属资源</b-col>
+                            <b-col span={5}>{this.list[index].info[key].fieldName}</b-col>
+                            <b-col span={5}>{this.list[index].info[key].fieldTitle}</b-col>
+                            <b-col span={5}>{this.dataTypeMap[this.list[index].info[key].dataType]}</b-col>
+                            <b-col span={5}>{this.list[index].info[key].resourceName}</b-col>
                             <b-col span={4} style="text-align: right">
-                              <b-button type="text" size="mini" onClick={() => this.remove()}>移除</b-button>
+                              <b-button type="text" disabled size="mini" onClick={() => this.remove()}>移除</b-button>
                             </b-col>
                           </b-row>
                         )
@@ -137,17 +146,23 @@
       }
     },
     watch: {
-      params: { // 观察变量选择带来的参数变动
+      resources: { // 观察变量选择带来的参数变动
         handler (newVal, oldVal) {
           this.list = this.initList(newVal)
-          console.log(newVal)
-          console.log(this.map)
+          console.log('resources', this.list)
           this.$nextTick(() => { // 数据变动后获取需要点击的dom元素，并默认展开第1行
             this.getExpandColumn()
             this.hackClick(0)
           })
         },
         immediate: true
+      },
+      list: {
+        handler (newVal) {
+          this.$emit('data-change', this.list)
+        },
+        immediate: true,
+        deep: true
       }
     },
     created () {
@@ -179,13 +194,23 @@
           resKeyList.push(item.resourceKey)
         }
         this.map.set(this.rowId, resKeyList) // 保存每一行所获取的resourceKey
+        // 把数据填充到对应row的字段中
+        this.list[this.rowIndex].paraValue = resKeyList.join(',')
         this.hackClick(this.rowIndex) // 回调后展开对应行
       },
       // 资源组件 单选回调
       handleChooseSin ({ fieldName, fieldTitle, dataType, resourceName, resourceKey }) {
         console.log('单选回调', { fieldName, fieldTitle, dataType, resourceName, resourceKey })
-        // 保存每一行所获取的fieldName:resourceKey，信息项只有一条资源数据
-        this.map.set(this.rowId, [{ fieldName, fieldTitle, dataType, resourceName, resourceKey }])
+        // this.map.set(this.rowId, [{ fieldName, fieldTitle, dataType, resourceName, resourceKey }])
+        // 把数据填充到对应row的字段中
+        const obj = this.list[this.rowIndex]
+        console.log('info', obj.info)
+        obj.paraValue = `${fieldName}:${resourceKey}` // 更新提交的字段
+        for (const key in obj.info) { // 更新显示信息
+          if (obj.info.hasOwnProperty(key)) {
+            obj.info[key] = { fieldName, fieldTitle, dataType, resourceName }
+          }
+        }
         this.hackClick(this.rowIndex) // 回调后展开对应行
       },
       // 获取所需枚举值
@@ -198,8 +223,8 @@
         }
       },
       // 初始化需要的数据结构
-      initList (paramList) {
-        const list = [...paramList]
+      initList (resources) {
+        const list = JSON.parse(JSON.stringify(resources))
         for (const item of list) {
           // 扩展所需提交的字段
           if (item.paraValue === undefined) {
@@ -208,7 +233,17 @@
           if (item.defaultValue === undefined) {
             item.defaultValue = ''
           }
-          this.map.set(item.id, []) // 构建map，用于保存对应行所获取的resourceKey
+          if (item.source === undefined) {
+            item.source = {}
+          }
+          if (item.info === undefined) {
+            item.info = {}
+          }
+          if (item.paraType === 'I') {
+            this.map.set(item.id, item.info) // 构建map，用于保存对应行所获取的resourceKey
+          } else {
+            this.map.set(item.id, item.source) // 构建map，用于保存对应行所获取的resourceKey
+          }
         }
         return list
       },
@@ -267,7 +302,7 @@
         // text-align: center;
       }
       .row {
-        margin-top: 10px;
+        margin-top: 7px;
       }
     }
   }
