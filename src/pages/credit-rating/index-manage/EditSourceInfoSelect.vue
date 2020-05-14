@@ -208,6 +208,7 @@
           fieldName: row.fieldName,
           fieldTitle: row.fieldTitle,
           dataType: this.dataTypeMap[row.dataType], // 直接封装为中文名丢出去
+          resourceName: this.curRow.resourceName, // 直接封装为中文名丢出去
           resourceKey: this.curRow.resourceKey
         })
         this.showDialog = false // 关闭弹框
