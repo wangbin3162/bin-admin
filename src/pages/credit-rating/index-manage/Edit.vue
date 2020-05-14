@@ -285,7 +285,7 @@
             this.indexRules = res.rules
             this.resources = res.resources
           } catch (error) {
-            this.$log.pretty('searchList Error', error, 'danger')
+            console.error(error)
           }
         }
       },

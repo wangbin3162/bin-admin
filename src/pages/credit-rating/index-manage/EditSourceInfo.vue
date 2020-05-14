@@ -1,6 +1,6 @@
 <template>
   <div class="edit-source-info">
-    <b-table id="customTable" :columns="columns" :data="listCopy" @on-expand="handleExpand">
+    <b-table id="customTable" :columns="columns" :data="listCopy">
       <template v-slot:paraType="{ row }">
         {{ paramTypeEnum[row.paraType] }}
       </template>
@@ -131,7 +131,7 @@
                     <h4>
                       { row.paraType === 'S' ? '所选资源信息' : '所选信息项'}
                     </h4>
-                    <span onClick={this.clearAll} class={
+                    <span onClick={() => this.clearAll(index)} class={
                       row.paraType === 'S' ? '' : 'not-clear'
                     }><b-icon name="ios-trash"></b-icon> 清空</span>
                   </div>
@@ -179,16 +179,6 @@
       this.getEnum()
     },
     methods: {
-      // 行展开状态回调
-      handleExpand (row, status) {
-        // console.log(row)
-        // console.log(status)
-        // if (status) {
-        //   // 获取当前展开行的resourceKey
-        //   const resKeys = this.map.get(row.id)
-        //   console.log('resKeys', resKeys)
-        // }
-      },
       // 配置资源按钮回调
       openSourceInfoSelect (row, index) {
         this.rowIndex = index // 保存点击行的index
@@ -198,10 +188,12 @@
       },
       // 资源组件 多选回调
       handleChooseMul (arr) {
-        console.log('多选回调', arr)
         const row = this.list[this.rowIndex]
-        const resourceKeyList = row.paraValue.split(',') // 取出原有的resourceKey
-        const resKeyList = [] // 存放选择的resourceKey
+        let resourceKeyList = []
+        if (row.paraValue.length > 0) { // 字符串不为空的话则还原resourceKey数组
+          resourceKeyList = row.paraValue.split(',') // 取出原有的resourceKey
+        }
+        const resKeyList = [] // 存放已选择的resourceKey
         for (const item of arr) {
           resKeyList.push(item.resourceKey)
         }
@@ -215,7 +207,6 @@
       },
       // 资源组件 单选回调
       handleChooseSin ({ fieldName, fieldTitle, dataType, resourceName, resourceKey }) {
-        console.log('单选回调', { fieldName, fieldTitle, dataType, resourceName, resourceKey })
         // 把数据填充到对应row的字段中
         const obj = this.list[this.rowIndex]
         // 用于更新显示，不为空的时候删除原有字段，用于设置新字段
@@ -327,8 +318,12 @@
         }
         return list
       },
-      clearAll () {
-        console.log('clearAll')
+      clearAll (index) {
+        const row = this.list[index]
+        if (row.paraType === 'S') {
+          row.paraValue = ''
+          row.source = {}
+        }
       },
       remove (resourceKey) {
         console.log('remove', resourceKey)
