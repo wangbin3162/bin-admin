@@ -207,7 +207,7 @@
         this.$emit('choose-sin', {
           fieldName: row.fieldName,
           fieldTitle: row.fieldTitle,
-          dataType: this.dataTypeMap[row.dataType], // 直接封装为中文名丢出去
+          dataType: row.dataType,
           resourceName: this.curRow.resourceName, // 直接封装为中文名丢出去
           resourceKey: this.curRow.resourceKey
         })
