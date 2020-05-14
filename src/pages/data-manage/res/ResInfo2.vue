@@ -282,8 +282,8 @@
                         :data-precision="item.dataPrecision"
                         :options="item.validOptions"
                         :table-name="resource.tableName"
-                        @on-select-leg="handleSelectLeg"
-                        @on-select-nat="handleSelectNat">
+                        @on-select-leg="handleSelectLegNat"
+                        @on-select-nat="handleSelectLegNat">
           </form-control>
         </form-item>
       </b-form>
@@ -572,7 +572,9 @@
         this.resource.metadataCode = item.metadataCode // 元信息所属类目code
         this.resource.metadataKey = item.metadataKey // 资源标识符带入
         // 格式化items
-        this.resource.items = item.fields.map(this.fieldsToInfoItem).filter(item => item.fieldName.indexOf('_id') === -1)
+        this.resource.items = item.fields.map(field => {
+          return this.fieldsToInfoItem(field, this.resource.id)
+        }).filter(item => item.fieldName.indexOf('_id') === -1)
         // 选中后重新触发校验
         this.$refs.form.validateField('tableName')
         this.$refs.form.validateField('personClass')
@@ -606,10 +608,7 @@
                   const addItems = res.data.data.addFields
                   addItems.forEach(item => {
                     if (!currentItemsMap.has(item.fieldName) && item.fieldName.indexOf('_id') === -1) {
-                      currentItemsMap.set(item.fieldName, {
-                        ...this.fieldsToInfoItem(item),
-                        directoryId: this.resource.id
-                      })
+                      currentItemsMap.set(item.fieldName, this.fieldsToInfoItem(item, this.resource.id))
                     }
                   })
                 }

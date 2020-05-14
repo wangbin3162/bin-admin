@@ -17,7 +17,7 @@ export default {
   },
   methods: {
     // 根据元信息字段项转换成信息项对象
-    fieldsToInfoItem(field) {
+    fieldsToInfoItem(field, directoryId) {
       // 数据类型映射控件类型
       const dateTypeMapCtrl = {
         string: 'TEXT',
@@ -43,6 +43,7 @@ export default {
       // eslint-disable-next-line no-useless-escape
       const requireRuleStr = `{\"$required\":{\"message\":\"${field.fieldTitle}必填\",\"type\":\"${typeMap}\",\"trigger\":\"${triggerMap}\"}}`
       return {
+        directoryId,
         fieldName: field.fieldName, // 元信息名称（英文）
         fieldTitle: field.fieldTitle, // 元信息标题
         dataType: field.dataType, // 数据类型
@@ -60,27 +61,17 @@ export default {
         checkRules: requireRuleStr
       }
     },
-    // 选择法人事件
-    handleSelectLeg(leg) {
-      this.form['person_id'] = leg.id
-      this.form['comp_name'] = leg.compName
-      this.form['id_type'] = leg.idType
-      this.form['id_code'] = leg.idCode
+    // 选择法人,自然人事件
+    handleSelectLegNat(fillField, nat) {
+      let [field0, field1, field2, field3] = fillField
+      this.form[field0] = nat.id
+      this.form[field1] = nat.name
+      this.form[field2] = nat.idType
+      this.form[field3] = nat.idCode
       // 选中后重新触发校验
-      this.$refs.dynamicFormRef.validateField('comp_name')
-      this.$refs.dynamicFormRef.validateField('id_type')
-      this.$refs.dynamicFormRef.validateField('id_code')
-    },
-    // 选择自然人事件
-    handleSelectNat(nat) {
-      this.form['person_id'] = nat.id
-      this.form['name'] = nat.name
-      this.form['id_type'] = nat.idType
-      this.form['id_code'] = nat.idCode
-      // 选中后重新触发校验
-      this.$refs.dynamicFormRef.validateField('name')
-      this.$refs.dynamicFormRef.validateField('id_type')
-      this.$refs.dynamicFormRef.validateField('id_code')
+      this.$refs.dynamicFormRef.validateField(field1)
+      this.$refs.dynamicFormRef.validateField(field2)
+      this.$refs.dynamicFormRef.validateField(field3)
     },
     // 表单提交
     handleDynamicFormSubmit() {
@@ -112,7 +103,12 @@ export default {
       dynamicForm.forEach(item => {
         // 1、先根据filedName扩展form对象
         this.$set(this.form, item.fieldName, item.dataType === 'number' ? 0 : '')
-        // 2、根据每个item，执行校验函数并返回校验数组
+        // 2、如果当前字段名称为多主体id_name1 id_name 后为索引，则需要额外添加person_id[index]
+        if (item.fieldName.indexOf('id_name') === 0) {
+          let index = item.fieldName.slice(7)
+          this.$set(this.form, `person_id${index}`, '')
+        }
+        // 3、根据每个item，执行校验函数并返回校验数组
         // 根据checkRules参数获取实际校验对象
         let rules = checkRulesToFormRules(item.checkRules, this.form)
         if (rules.length > 0) {
