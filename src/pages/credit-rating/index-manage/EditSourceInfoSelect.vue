@@ -135,7 +135,7 @@
           text: '备注型'
         },
         selectedList: [], // 已选择的数组
-        curRowResourceKey: null // 存储当前行的resourceKey
+        curRow: null // 存储当前行
       }
     },
     computed: {
@@ -186,7 +186,7 @@
       },
       // table当前行单选回调
       handleCurrentRowChange (row) {
-        this.curRowResourceKey = row.resourceKey
+        this.curRow = row // 缓存资源信息当前行
         this.infoTableLoading = true
         getResDetail(row.id).then(res => {
           this.infoItemList = res.data.data.items
@@ -206,7 +206,9 @@
       handleRaiod (row) {
         this.$emit('choose-sin', {
           fieldName: row.fieldName,
-          resourceKey: this.curRowResourceKey
+          fieldTitle: row.fieldTitle,
+          dataType: this.dataTypeMap[row.dataType], // 直接封装为中文名丢出去
+          resourceKey: this.curRow.resourceKey
         })
         this.showDialog = false // 关闭弹框
       },
@@ -224,8 +226,10 @@
         })
         if (index === -1) {
           this.selectedList.push({
-            resourceKey: row.resourceKey,
-            resName: row.resourceName
+            resName: row.resourceName,
+            personClass: this.personClassMap[row.personClass], // 直接封装中文名丢出去显示
+            resProperty: this.resPropertyMap[row.resProperty], // 直接封装中文名丢出去显示
+            resourceKey: row.resourceKey
           })
         } else {
           this.selectedList.splice(index, 1)
