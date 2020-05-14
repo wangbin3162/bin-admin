@@ -204,13 +204,9 @@
         // this.map.set(this.rowId, [{ fieldName, fieldTitle, dataType, resourceName, resourceKey }])
         // 把数据填充到对应row的字段中
         const obj = this.list[this.rowIndex]
-        console.log('info', obj.info)
+        if (obj.paraValue !== '') this.$delete(obj.info, obj.paraValue) // 用于更新显示
         obj.paraValue = `${fieldName}:${resourceKey}` // 更新提交的字段
-        for (const key in obj.info) { // 更新显示信息
-          if (obj.info.hasOwnProperty(key)) {
-            obj.info[key] = { fieldName, fieldTitle, dataType, resourceName }
-          }
-        }
+        this.$set(obj.info, obj.paraValue, { fieldName, fieldTitle, dataType, resourceName }) // 更新显示信息
         this.hackClick(this.rowIndex) // 回调后展开对应行
       },
       // 获取所需枚举值
