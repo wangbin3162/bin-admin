@@ -196,16 +196,19 @@
           </b-collapse>
           <template v-if="resource.items">
             <v-title-bar label="信息项配置" class="mb-20">
-              <div>
-                <b-button type="text" @click="previewForm">
-                  <b-icon name="ios-eye"/>&nbsp;预览
-                </b-button>&nbsp;&nbsp;
+              <div class="pr-20">
+                <b-button type="text" icon="ios-eye" @click="previewForm">预览</b-button>&nbsp;&nbsp;
                 <b-button v-if="dialogStatus==='modify' && resource.availableStatus === 'notavailable'"
-                          type="text" @click="handleReload">
-                  <b-icon name="ios-refresh"/>&nbsp;重载信息项
+                          type="text" @click="handleReload" icon="ios-refresh">
+                  重载信息项
                 </b-button>
-                Debug：
-                <b-switch v-model="debugJson" size="small"/>
+                <b-tooltip content="调试模式查看信息项" placement="top-end">
+                  <b-button type="text" icon="ios-bug"
+                            @click.native="debugJson=!debugJson"
+                            :text-color="debugJson?'danger':'primary'">
+                    debug
+                  </b-button>
+                </b-tooltip>
               </div>
             </v-title-bar>
             <fields-cfg v-model="resource.items"/>
@@ -340,7 +343,7 @@
         }
       }
       return {
-        debugJson: true,
+        debugJson: false,
         moduleName: '资源信息',
         listQuery: {
           resourceCode: '', // 所属分类
