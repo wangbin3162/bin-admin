@@ -153,7 +153,7 @@
     data () {
       return {
         btnLoading: false,
-        collapseValue: ['index', 'resources'], // 控制手风琴展开
+        collapseValue: ['index', 'rules', 'resources'], // 控制手风琴展开
         open: false,
         cascadeData: [], // 指标类型级联数据
         cascadeModel: [], // 用于级联绑定
@@ -246,7 +246,6 @@
       // 资源信息组件的数据回调
       handleSourceChange (resources) {
         this.form.resources = resources
-        console.log(resources)
       },
       // 提交按钮回调
       async handleSubmit () {

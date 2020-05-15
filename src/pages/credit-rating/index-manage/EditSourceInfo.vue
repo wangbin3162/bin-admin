@@ -14,7 +14,6 @@
       </template>
     </b-table>
 
-    <b-button @click="test">click</b-button>
     <!-- 资源配置弹框 -->
     <edit-source-info-select
       @close="open = false"
@@ -158,7 +157,6 @@
         handler (newVal, oldVal) {
           this.list = this.initList(newVal)
           this.listCopy = JSON.parse(JSON.stringify(this.list))
-          console.log('resources', this.list)
           this.$nextTick(() => { // 数据变动后获取需要点击的dom元素，并默认展开第1行
             this.getExpandColumn()
             this.hackClick(0)
@@ -326,7 +324,6 @@
         }
       },
       remove (resourceKey) {
-        console.log('remove', resourceKey)
         const row = this.list[this.rowIndex]
         this.$delete(row.source, resourceKey) // 删除对应显示数据
         const resourceKeyList = row.paraValue.split(',')
@@ -357,9 +354,6 @@
             if (!str.includes('bin-table-cell-expand-expanded')) el.click()
           }, 0)
         }
-      },
-      test () {
-
       }
     }
   }
