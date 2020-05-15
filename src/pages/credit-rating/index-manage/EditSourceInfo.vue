@@ -163,6 +163,7 @@
     watch: {
       resources: { // 观察变量选择带来的参数变动
         handler (newVal, oldVal) {
+          console.log('resource', newVal)
           this.list = this.initList(newVal)
           // table的展示绑定listCopy，内部的数据交互绑定list，避免响应式操作重新渲染table
           this.listCopy = JSON.parse(JSON.stringify(this.list))
@@ -223,7 +224,7 @@
       },
       // 初始化需要的数据结构
       initList (resources) {
-        const list = JSON.parse(JSON.stringify(resources))
+        let list = JSON.parse(JSON.stringify(resources))
         for (const item of list) {
           // 扩展所需提交的字段
           if (item.paraValue === undefined) {
@@ -244,6 +245,7 @@
             this.map.set(item.id, item.source) // 构建map，用于保存对应行所获取的resourceKey
           }
         }
+        list = list.filter(item => item.paraCode !== 'person_id') // 过滤掉paraCode为person_id的数据
         return list
       },
       clearAll (index) {
