@@ -2,20 +2,26 @@
   <div class="level-standard-detail">
     <page-header-wrap :title="title" show-close @on-close="$emit('close')">
       <v-edit-wrap>
-        <b-loading fix show-text="loading" v-if="loading"></b-loading>
-        <div>
-          <v-key-label label="名称">{{ detailData.ratingName }}</v-key-label>
-          <v-key-label label="编码">{{ detailData.ratingCode }}</v-key-label>
-          <v-key-label label="描述" is-bottom>{{ detailData.ratingDesc }}</v-key-label>
+        <div slot="full" style="position: relative;">
+          <b-loading fix show-text="loading" v-if="loading"></b-loading>
+          <v-title-bar label="等级详情" class="mb-15"></v-title-bar>
+          <b-row type="flex" justify="center">
+            <b-col span="18">
+              <div>
+                <v-key-label label="名称">{{ detailData.ratingName }}</v-key-label>
+                <v-key-label label="编码">{{ detailData.ratingCode }}</v-key-label>
+                <v-key-label label="描述" is-bottom>{{ detailData.ratingDesc }}</v-key-label>
+              </div>
+            </b-col>
+          </b-row>
+
+          <v-title-bar label="评分标准" class="mb-15"></v-title-bar>
+          <b-table :columns="columns" :data="detailData.items" size="small"></b-table>
         </div>
+
         <template slot="footer">
           <b-button @click="$emit('close')">返 回</b-button>
         </template>
-
-        <b-divider align="left">
-          <h4>评分标准</h4>
-        </b-divider>
-        <b-table :columns="columns" :data="detailData.items" size="small"></b-table>
       </v-edit-wrap>
     </page-header-wrap>
   </div>

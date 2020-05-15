@@ -2,35 +2,42 @@
   <div>
     <page-header-wrap :title="title" show-close @on-close="$emit('close')">
       <v-edit-wrap>
-        <b-loading fix show-text="loading" v-if="loading"></b-loading>
-        <div>
-          <v-key-label label="变量名称" is-half is-first>
-            {{ detail.varName }}
-          </v-key-label>
-          <v-key-label label="变量编码" is-half>
-            {{ detail.varCode }}
-          </v-key-label>
-          <v-key-label label="变量类型" is-half is-first>
-            {{ varTypeEnum[detail.varType] }}
-          </v-key-label>
-          <v-key-label label="数据类型" is-half>
-            {{ dataTypeEnum[detail.dataType] }}
-          </v-key-label>
-          <v-key-label label="模板内容">
-            {{ detail.tplContent }}
-          </v-key-label>
-          <v-key-label label="描述" is-bottom>
-            {{ detail.varName }}
-          </v-key-label>
+        <div slot="full" style="position: relative;">
+          <b-loading fix show-text="loading" v-if="loading"></b-loading>
+          <v-title-bar label="变量详情" class="mb-15"></v-title-bar>
+          <b-row type="flex" justify="center">
+            <b-col span="18">
+              <div>
+                <v-key-label label="变量名称" is-half is-first>
+                  {{ detail.varName }}
+                </v-key-label>
+                <v-key-label label="变量编码" is-half>
+                  {{ detail.varCode }}
+                </v-key-label>
+                <v-key-label label="变量类型" is-half is-first>
+                  {{ varTypeEnum[detail.varType] }}
+                </v-key-label>
+                <v-key-label label="数据类型" is-half>
+                  {{ dataTypeEnum[detail.dataType] }}
+                </v-key-label>
+                <v-key-label label="模板内容">
+                  {{ detail.tplContent }}
+                </v-key-label>
+                <v-key-label label="描述" is-bottom>
+                  {{ detail.varName }}
+                </v-key-label>
+              </div>
+            </b-col>
+          </b-row>
+
+          <v-title-bar label="参数项" class="mb-15"></v-title-bar>
+          <b-table :columns="columns" :data="detail.params" size="small">
+            <template v-slot:paraType="{ row }">
+              {{ paramTypeEnum[row.paraType] }}
+            </template>
+          </b-table>
         </div>
-        <b-divider align="left">
-          <h4>参数项</h4>
-        </b-divider>
-        <b-table :columns="columns" :data="detail.params" size="small">
-          <template v-slot:paraType="{ row }">
-            {{ paramTypeEnum[row.paraType] }}
-          </template>
-        </b-table>
+
         <template slot="footer">
           <b-button @click="$emit('close')">返 回</b-button>
         </template>
