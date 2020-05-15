@@ -1,5 +1,6 @@
 <template>
   <div class="edit-source-info">
+    <b-alert v-if="valid" type="warning">有暂未配置的资源，请配置后提交。</b-alert>
     <b-table id="customTable" :columns="columns" :data="listCopy">
       <template v-slot:paraType="{ row }">
         {{ paramTypeEnum[row.paraType] }}
@@ -52,6 +53,7 @@
     },
     data () {
       return {
+        valid: false,
         dataTypeCustomEnum: {
           string: '字符型',
           number: '数值型',
@@ -162,6 +164,7 @@
       resources: { // 观察变量选择带来的参数变动
         handler (newVal, oldVal) {
           this.list = this.initList(newVal)
+          // table的展示绑定listCopy，内部的数据交互绑定list，避免响应式操作重新渲染table
           this.listCopy = JSON.parse(JSON.stringify(this.list))
           this.$nextTick(() => { // 数据变动后获取需要点击的dom元素，并默认展开第1行
             this.getExpandColumn()
@@ -281,6 +284,22 @@
             if (!str.includes('bin-table-cell-expand-expanded')) el.click()
           }, 0)
         }
+      },
+      // 用于给父级组件验证是否配置资源
+      validate () {
+        return new Promise((resolve, reject) => {
+          this.valid = false
+          for (const item of this.list) {
+            if (item.paraValue === '') {
+              this.valid = true
+              this.$notice.warning({
+                title: '有未配置的资源，请配置后提交。'
+              })
+              resolve(false)
+            }
+          }
+          resolve(true)
+        })
       }
     }
   }

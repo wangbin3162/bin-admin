@@ -115,7 +115,7 @@
             <div class="line"></div>
 
             <b-collapse-panel title="信息资源配置" name="resources">
-              <edit-source-info
+              <edit-source-info ref="sourceInfo"
                 @data-change="handleSourceChange"
                 :resources="resources"
                 :personClassEnum="personClassEnum"
@@ -262,9 +262,13 @@
       // 提交按钮回调
       async handleSubmit () {
         // 验证组件内的form
-        const [valid1, valid2] = await Promise.all([this.$refs.form.validate(), this.$refs.indexRule.validateAll()])
+        const [valid1, valid2, valid3] = await Promise.all([
+          this.$refs.form.validate(),
+          this.$refs.indexRule.validateAll(),
+          this.$refs.sourceInfo.validate()
+        ])
 
-        if (valid1 && valid2) {
+        if (valid1 && valid2 && valid3) {
           try {
             this.btnLoading = true
 
