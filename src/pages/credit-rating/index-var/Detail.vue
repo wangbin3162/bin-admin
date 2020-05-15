@@ -31,7 +31,7 @@
           </b-row>
 
           <v-title-bar label="参数项" class="mb-15"></v-title-bar>
-          <b-table :columns="columns" :data="detail.params" size="small">
+          <b-table :columns="columns" :data="params" size="small">
             <template v-slot:paraType="{ row }">
               {{ paramTypeEnum[row.paraType] }}
             </template>
@@ -62,6 +62,7 @@
       return {
         loading: false,
         detail: {},
+        params: [],
         columns: [
           { type: 'index', width: 50, align: 'center' },
           { title: '参数名称', key: 'paraName' },
@@ -80,6 +81,9 @@
         try {
           const res = await getIndexVarDetail(this.id)
           this.detail = res
+          this.params = this.detail.params.filter(item => {
+            return item.paraCode !== 'person_id' // 过滤person_id，不显示在table中
+          })
         } catch (error) {
           console.log(error)
         }
