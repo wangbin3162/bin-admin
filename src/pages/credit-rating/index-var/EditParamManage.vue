@@ -158,7 +158,7 @@
       async handleValidate(row, key) {
         try {
           await this.isRequired(row, key)
-          await this.isUnique(row, key)
+          if (key !== 'paraType') await this.isUnique(row, key)
           if (key === 'paraCode') await this.notInclude(row, key)
         } catch (error) {
           console.warn(error)
