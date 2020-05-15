@@ -2,7 +2,8 @@
   <div class="index-manage-edit">
     <page-header-wrap :title="title" show-close @on-close="$emit('close')">
       <v-edit-wrap>
-        <template slot="full">
+        <div slot="full" style="position: relative;">
+          <b-loading fix show-text="loading" v-if="editLoading"></b-loading>
           <b-collapse v-model="collapseValue" simple>
             <b-collapse-panel title="基本信息" name="index">
               <b-form :model="form.index" ref="form" :rules="roles" :label-width="100">
@@ -123,7 +124,7 @@
               </edit-source-info>
             </b-collapse-panel>
           </b-collapse>
-        </template>
+        </div>
 
         <template slot="footer">
           <b-button @click="$emit('close')">取 消</b-button>
@@ -163,6 +164,7 @@
     data () {
       return {
         btnLoading: false,
+        editLoading: false,
         collapseValue: ['index', 'rules', 'resources'], // 控制手风琴展开
         open: false,
         cascadeData: [], // 指标类型级联数据
@@ -286,6 +288,8 @@
       // 初始化编辑数据
       async init () {
         if (this.editData) {
+          this.editLoading = true
+          this.collapseValue = ['index']
           try {
             const res = await getIndeManageDetail(this.editData.id)
             this.form = res
@@ -296,6 +300,8 @@
           } catch (error) {
             console.error(error)
           }
+          this.editLoading = false
+          this.collapseValue = ['index', 'rules', 'resources']
         }
       },
       // 把类目的树形数据转换为级联选择框可用的树形结构
