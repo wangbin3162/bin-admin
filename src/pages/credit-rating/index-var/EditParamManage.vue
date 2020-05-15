@@ -174,7 +174,10 @@
         try {
           await this.isRequired(row, key)
           if (key !== 'paraType') await this.isUnique(row, key)
-          if (key === 'paraCode') await this.notInclude(row, key)
+          if (key === 'paraCode') {
+            await this.notPersonId(row, key)
+            await this.notInclude(row, key)
+          }
         } catch (error) {
           console.warn(error)
         }
@@ -231,6 +234,20 @@
           }
         })
       },
+      // 不允许添加paraCode为person_id
+      notPersonId(row, key) {
+        return new Promise((resolve, reject) => {
+          if (row[key] === 'person_id') {
+            this.$set(row, key + 'Error', true)
+            this.$set(row, key + 'Msg', `不允许添加person_id`)
+            reject(new Error('不允许添加person_id'))
+          } else {
+            this.$delete(row, key + 'Error')
+            this.$delete(row, key + 'Msg')
+            resolve()
+          }
+        })
+      },
       // 验证全部字段项, 提供给组件外提交表单前使用
       validateAll() {
         return new Promise(async (resolve, reject) => {
@@ -240,7 +257,10 @@
                 if (item.hasOwnProperty(key)) {
                   if (key !== 'paraDesc') await this.isRequired(item, key)
                   if (key === 'paraName' || key === 'paraCode') await this.isUnique(item, key)
-                  if (key === 'paraCode') await this.notInclude(item, key)
+                  if (key === 'paraCode') {
+                    await this.notPersonId(item, key)
+                    await this.notInclude(item, key)
+                  }
                 }
               }
             }
