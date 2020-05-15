@@ -160,9 +160,11 @@
       this.initEditData()
     },
     methods: {
+      // 打开摸板选择组件
       openBelongTypeHandler () {
         this.openBelongType = true
       },
+      // 打开变量选择组件
       openSelectVarHandler () {
         this.openSelectVar = true
       },
