@@ -63,6 +63,9 @@
       :calcTypeOptions="calcTypeOptions"
       :scaleOptions="scaleOptions"
       :scaleEnum="scaleEnum"
+      :personClassEnum="personClassEnum"
+      :resPropertyEnum="resPropertyEnum"
+      :paramTypeEnum="paramTypeEnum"
       :treeData="treeData"
       :editData="editData"></edit>
       <!-- 详情 -->
@@ -71,7 +74,10 @@
       :natureEnum="natureEnum"
       :dataTypeEnum="dataTypeEnum"
       :calcTypeEnum="calcTypeEnum"
-      :scaleEnum="scaleEnum"></detail>
+      :scaleEnum="scaleEnum"
+      :personClassEnum="personClassEnum"
+      :resPropertyEnum="resPropertyEnum"
+      :paramTypeEnum="paramTypeEnum"></detail>
   </div>
 </template>
 
@@ -81,7 +87,9 @@
   import Edit from './Edit'
   import Detail from './Detail'
   import { getIndexManageTree, getIndexManageList, deleteIndexManage } from '../../../api/credit-rating/index-manage.api'
-  import { getEvalNature, getEvalDataType, getEvalCalcType, getEvalScale } from '../../../api/enum.api'
+  import { getEvalNature, getEvalDataType, getEvalCalcType, getEvalScale, getEvalParamType } from '../../../api/enum.api'
+  import { getPersonClassTree } from '../../../api/data-manage/metadata.api'
+  import { getResPropertyTree } from '../../../api/data-manage/res-info.api'
   import { enumToOptions } from '../../../common/utils/util'
 
   export default {
@@ -116,6 +124,9 @@
         dataTypeEnum: {}, // 数据类型枚举
         calcTypeEnum: {}, // 计算类型枚举
         scaleEnum: {}, // 标度枚举
+        personClassEnum: {}, // 主体类别枚举
+        resPropertyEnum: {}, // 资源性质枚举
+        paramTypeEnum: {}, // 参数类型枚举
         natureOptions: [],
         dataTypeOptions: [],
         calcTypeOptions: [],
@@ -187,6 +198,82 @@
         this.editData = null // 关闭编辑框的时候情况编辑数据
         this.handleCancel()
       },
+      // 获取主体类别枚举
+      async getPersonClassEnum() {
+        return new Promise(async (resolve, reject) => {
+          try {
+            const res = await getPersonClassTree()
+            // 返回的树形需要格式化成级联菜单的结构，并需要扁平化一次
+            let tree = res.data.data
+            let personClasses = []
+            let mapper = (node, parentCode) => {
+              personClasses.push({ key: node.code, value: node.text })
+              let parents = parentCode ? parentCode.split(',') : []
+              parents.push(node.code)
+              let child = []
+              if (node.children) {
+                node.children.forEach(item => {
+                  child.push(mapper(item, parents.join(',')))
+                })
+              }
+              return {
+                value: node.code,
+                label: node.text,
+                choose: parents, // 配合级联展开时使用
+                children: child
+              }
+            }
+            // 转换级联菜单格式
+            let data = tree ? mapper(tree) : {}
+            // 转换类型映射值（扁平化）
+            const keyValue = {}
+            personClasses.forEach(item => {
+              keyValue[item.key] = item.value
+            })
+            resolve(keyValue)
+          } catch (error) {
+            reject(error)
+          }
+        })
+      },
+      // 获取资源性质枚举
+      async getResPropertyEnum () {
+        return new Promise(async (resolve, reject) => {
+          try {
+            const res = await getResPropertyTree()
+            // 返回的树形需要格式化成级联菜单的结构，并需要扁平化一次
+            let tree = res.data.data
+            let temp = []
+            let mapper = (node, parentCode) => {
+              temp.push({ key: node.code, value: node.text })
+              let parents = parentCode ? parentCode.split(',') : []
+              parents.push(node.code)
+              let child = []
+              if (node.children) {
+                node.children.forEach(item => {
+                  child.push(mapper(item, parents.join(',')))
+                })
+              }
+              return {
+                value: node.code,
+                label: node.text,
+                choose: parents, // 配合级联展开时使用
+                children: child
+              }
+            }
+            // 转换级联菜单格式
+            let data = tree ? mapper(tree) : {}
+            // 转换类型映射值（扁平化）
+            const keyValue = {}
+            temp.forEach(item => {
+              keyValue[item.key] = item.value
+            })
+            resolve(keyValue)
+          } catch (error) {
+            reject(error)
+          }
+        })
+      },
       // 获取列表
       async searchList() {
         this.listLoading = true
@@ -204,19 +291,27 @@
       // 获取所需枚举值
       async getEnum () {
         try {
-          const [natureEnum, dataTypeEnum, calcTypeEnum, scaleEnum] = await Promise.all([
-            getEvalNature(), getEvalDataType(), getEvalCalcType(), getEvalScale()
+          const [
+            natureEnum, dataTypeEnum, calcTypeEnum, scaleEnum,
+            paramTypeEnum, personClassEnum, resPropertyEnum
+          ] = await Promise.all([
+            getEvalNature(), getEvalDataType(), getEvalCalcType(), getEvalScale(),
+            getEvalParamType(), this.getPersonClassEnum(), this.getResPropertyEnum()
           ])
           this.natureEnum = natureEnum
           this.dataTypeEnum = dataTypeEnum
           this.calcTypeEnum = calcTypeEnum
           this.scaleEnum = scaleEnum
+          this.paramTypeEnum = paramTypeEnum
+          this.personClassEnum = personClassEnum
+          this.resPropertyEnum = resPropertyEnum
+          // 后续改成直接v-for对象
           this.natureOptions = enumToOptions(natureEnum)
           this.dataTypeOptions = enumToOptions(dataTypeEnum)
           this.calcTypeOptions = enumToOptions(calcTypeEnum)
           this.scaleOptions = enumToOptions(scaleEnum)
         } catch (error) {
-          this.$log.pretty('getEnum Error', error, 'danger')
+          console.error(error)
         }
       },
       // tree:初始化树结构

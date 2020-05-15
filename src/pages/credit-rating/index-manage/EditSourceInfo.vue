@@ -36,6 +36,15 @@
     props: {
       resources: {
         type: Array
+      },
+      personClassEnum: {
+        type: Object
+      },
+      resPropertyEnum: {
+        type: Object
+      },
+      paramTypeEnum: {
+        type: Object
       }
     },
     components: {
@@ -43,9 +52,7 @@
     },
     data () {
       return {
-        personClassMap: {},
-        resPropertyMap: {},
-        dataTypeMap: {
+        dataTypeCustomEnum: {
           string: '字符型',
           number: '数值型',
           money: '货币型',
@@ -56,7 +63,6 @@
         },
         map: new Map(),
         open: false, // 配置资源弹框
-        paramTypeEnum: {}, // 参数类型枚举
         list: [], // 渲染table的list
         listCopy: [],
         columns: [
@@ -82,8 +88,8 @@
                           return (
                             <b-row>
                               <b-col span={5}>{ this.list[index].source[key].resourceName }</b-col>
-                              <b-col span={5}>{ this.personClassMap[this.list[index].source[key].personClass] }</b-col>
-                              <b-col span={5}>{ this.resPropertyMap[this.list[index].source[key].resProperty] }</b-col>
+                              <b-col span={5}>{ this.personClassEnum[this.list[index].source[key].personClass] }</b-col>
+                              <b-col span={5}>{ this.resPropertyEnum[this.list[index].source[key].resProperty] }</b-col>
                               <b-col span={5}>
                                 { this.list[index].source[key].resourceDesc === '' ? '暂无描述' : this.list[index].source[key].resourceDesc}
                               </b-col>
@@ -112,7 +118,7 @@
                           <b-row>
                             <b-col span={5}>{this.list[index].info[key].fieldName}</b-col>
                             <b-col span={5}>{this.list[index].info[key].fieldTitle}</b-col>
-                            <b-col span={5}>{this.dataTypeMap[this.list[index].info[key].dataType]}</b-col>
+                            <b-col span={5}>{this.dataTypeCustomEnum[this.list[index].info[key].dataType]}</b-col>
                             <b-col span={5}>{this.list[index].info[key].resourceName}</b-col>
                             <b-col span={4} style="text-align: right">
                               <b-button type="text" disabled size="mini" onClick={() => this.remove()}>移除</b-button>
@@ -144,7 +150,7 @@
           { title: '参数类型', slot: 'paraType', align: 'center' },
           { title: '参数描述', key: 'paraDesc', align: 'center', ellipsis: true, tooltip: true },
           { title: '缺省值', slot: 'defaultValue', align: 'center' },
-          { title: '参数名称', slot: 'action', align: 'center' }
+          { title: '配置', slot: 'action', align: 'center' }
         ],
         paraType: null, // 配置资源弹框组件使用，参数类型
         rowId: null, // 存储点击配置资源行的id
@@ -173,8 +179,7 @@
       }
     },
     created () {
-      this.getEvalParamType()
-      this.getEnum()
+
     },
     methods: {
       // 配置资源按钮回调
@@ -212,84 +217,6 @@
         obj.paraValue = `${fieldName}:${resourceKey}` // 更新提交的字段
         this.$set(obj.info, obj.paraValue, { fieldName, fieldTitle, dataType, resourceName }) // 更新显示信息
         this.hackClick(this.rowIndex) // 回调后展开对应行
-      },
-      // 获取所需枚举值
-      async getEvalParamType () {
-        try {
-          const res = await getEvalParamType()
-          this.paramTypeEnum = res
-        } catch (error) {
-
-        }
-      },
-      // 通用枚举
-      getEnum() {
-        // 主体类别树信息 code=A
-        getPersonClassTree().then(res => {
-          if (res.status === 200) {
-            // 返回的树形需要格式化成级联菜单的结构，并需要扁平化一次
-            let tree = res.data.data
-            let personClasses = []
-            let mapper = (node, parentCode) => {
-              personClasses.push({ key: node.code, value: node.text })
-              let parents = parentCode ? parentCode.split(',') : []
-              parents.push(node.code)
-              let child = []
-              if (node.children) {
-                node.children.forEach(item => {
-                  child.push(mapper(item, parents.join(',')))
-                })
-              }
-              return {
-                value: node.code,
-                label: node.text,
-                choose: parents, // 配合级联展开时使用
-                children: child
-              }
-            }
-            // 转换级联菜单格式
-            let data = tree ? mapper(tree) : {}
-            // 转换类型映射值（扁平化）
-            const keyValue = {}
-            personClasses.forEach(item => {
-              keyValue[item.key] = item.value
-            })
-            this.personClassMap = keyValue
-          }
-        })
-        // 资源性质树信息 code=B
-        getResPropertyTree().then(res => {
-          if (res.status === 200) {
-            // 返回的树形需要格式化成级联菜单的结构，并需要扁平化一次
-            let tree = res.data.data
-            let temp = []
-            let mapper = (node, parentCode) => {
-              temp.push({ key: node.code, value: node.text })
-              let parents = parentCode ? parentCode.split(',') : []
-              parents.push(node.code)
-              let child = []
-              if (node.children) {
-                node.children.forEach(item => {
-                  child.push(mapper(item, parents.join(',')))
-                })
-              }
-              return {
-                value: node.code,
-                label: node.text,
-                choose: parents, // 配合级联展开时使用
-                children: child
-              }
-            }
-            // 转换级联菜单格式
-            let data = tree ? mapper(tree) : {}
-            // 转换类型映射值（扁平化）
-            const keyValue = {}
-            temp.forEach(item => {
-              keyValue[item.key] = item.value
-            })
-            this.resPropertyMap = keyValue
-          }
-        })
       },
       // 初始化需要的数据结构
       initList (resources) {

@@ -112,7 +112,10 @@
             <b-collapse-panel title="信息资源配置" name="resources">
               <edit-source-info
                 @data-change="handleSourceChange"
-                :resources="resources">
+                :resources="resources"
+                :personClassEnum="personClassEnum"
+                :resPropertyEnum="resPropertyEnum"
+                :paramTypeEnum="paramTypeEnum">
               </edit-source-info>
             </b-collapse-panel>
           </b-collapse>
@@ -143,6 +146,9 @@
       'calcTypeOptions',
       'scaleOptions',
       'scaleEnum',
+      'personClassEnum',
+      'resPropertyEnum',
+      'paramTypeEnum',
       'treeData'
     ],
     components: {
