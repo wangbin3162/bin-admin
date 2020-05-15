@@ -44,11 +44,17 @@
         this.$refs.modal && this.$refs.modal.open()
       },
       handleChooseOne(nat) {
-        this.$emit('on-select-nat', nat)
+        let result = {
+          id: nat.id,
+          name: nat.name,
+          idType: nat.idType,
+          idCode: nat.idCode
+        }
+        this.$emit('on-select', result)
       },
       // 清空时触发调用
       handleClear() {
-        this.$emit('on-select-nat', {
+        this.$emit('on-select', {
           id: '',
           name: '',
           idType: '',

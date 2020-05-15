@@ -44,13 +44,19 @@
         this.$refs.modal && this.$refs.modal.open()
       },
       handleChooseOne(leg) {
-        this.$emit('on-select-leg', leg)
+        let result = {
+          id: leg.id,
+          name: leg.compName,
+          idType: leg.idType,
+          idCode: leg.idCode
+        }
+        this.$emit('on-select', result)
       },
       // 清空时触发调用
       handleClear() {
-        this.$emit('on-select-leg', {
+        this.$emit('on-select', {
           id: '',
-          compName: '',
+          name: '',
           idType: '',
           idCode: ''
         })

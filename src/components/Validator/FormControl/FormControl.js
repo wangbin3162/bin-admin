@@ -1,11 +1,12 @@
 // form-control 根据控件类型返回不同的控件
 import SelectLegInput from './SelectLegInput'
 import SelectNatInput from './SelectNatInput'
+import SelectNatOrLeg from './SelectNatOrLeg'
 import { oneOf } from 'bin-ui/src/utils/util'
 
 export default {
   name: 'FormControl',
-  components: { SelectLegInput, SelectNatInput },
+  components: { SelectLegInput, SelectNatInput, SelectNatOrLeg },
   data() {
     return {
       currentValue: '',
@@ -54,6 +55,7 @@ export default {
   render(h) {
     const readonly = (this.fieldName.indexOf('id_code') === 0 || this.fieldName.indexOf('id_type') === 0) &&
       (this.tableName !== 'leg_base_info' && this.tableName !== 'nat_base_info')
+    // const readonly = false
     let node
     switch (this.controlType) {
       case 'TEXT':
@@ -153,7 +155,7 @@ export default {
             value: this.currentValue,
             placeholder: `选择法人`
           },
-          on: { 'on-select-leg': this.handleSelectLeg }
+          on: { 'on-select': this.handleSelectNatOrLeg }
         })
         break
       case 'NAT_PERSON':
@@ -162,7 +164,16 @@ export default {
             value: this.currentValue,
             placeholder: `选择自然人`
           },
-          on: { 'on-select-nat': this.handleSelectNat }
+          on: { 'on-select': this.handleSelectNatOrLeg }
+        })
+        break
+      case 'NAT_OR_LEG_PERSON':
+        node = h('select-nat-or-leg', {
+          props: {
+            value: this.currentValue,
+            placeholder: `选择自然人或法人`
+          },
+          on: { 'on-select': this.handleSelectNatOrLeg }
         })
         break
       default:
@@ -190,8 +201,8 @@ export default {
       this.currentValue = value.join(',')
       this.$emit('input', this.currentValue)
     },
-    // 法人选择事件,从法人控件中监听并继续向上层抛出
-    handleSelectLeg(leg) {
+    // 选择自然人或法人事件
+    handleSelectNatOrLeg(item) {
       let index = oneOf(this.fieldName, ['name', 'comp_name']) ? '' : this.fieldName.slice('id_name'.length)
       // 填充字段名称，需要根据多主体索引来判断
       let fillField = [
@@ -200,29 +211,7 @@ export default {
         `id_type${index}`,
         `id_code${index}`
       ]
-      this.$emit('on-select-leg', fillField, {
-        id: leg.id,
-        name: leg.compName,
-        idType: leg.idType,
-        idCode: leg.idCode
-      })
-    },
-    // 自然人选择事件,从自然人控件中监听并继续向上层抛出
-    handleSelectNat(nat) {
-      let index = oneOf(this.fieldName, ['name', 'comp_name']) ? '' : this.fieldName.slice('id_name'.length)
-      // 填充字段名称，需要根据多主体索引来判断
-      let fillField = [
-        `person_id${index}`,
-        this.fieldName,
-        `id_type${index}`,
-        `id_code${index}`
-      ]
-      this.$emit('on-select-nat', fillField, {
-        id: nat.id,
-        name: nat.name,
-        idType: nat.idType,
-        idCode: nat.idCode
-      })
+      this.$emit('on-select', fillField, item)
     }
   }
 }

@@ -285,8 +285,7 @@
                         :data-precision="item.dataPrecision"
                         :options="item.validOptions"
                         :table-name="resource.tableName"
-                        @on-select-leg="handleSelectLegNat"
-                        @on-select-nat="handleSelectLegNat">
+                        @on-select="handleSelectNatLeg">
           </form-control>
         </form-item>
       </b-form>

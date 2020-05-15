@@ -62,7 +62,7 @@ export default {
       }
     },
     // 选择法人,自然人事件
-    handleSelectLegNat(fillField, nat) {
+    handleSelectNatLeg(fillField, nat) {
       let [field0, field1, field2, field3] = fillField
       this.form[field0] = nat.id
       this.form[field1] = nat.name
