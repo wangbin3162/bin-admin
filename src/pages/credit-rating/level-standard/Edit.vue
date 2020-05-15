@@ -11,6 +11,11 @@
           <b-form-item label="编码" prop="ratingCode">
             <b-input v-model="form.ratingCode" placeholder="请输入等级标准编码" clearable></b-input>
           </b-form-item>
+          <b-form-item label="分制" prop="points">
+            <b-select v-model="form.points">
+              <b-option v-for="(value, key) in pointsTypeEnum" :value="key" :key="key">{{ value }}</b-option>
+            </b-select>
+          </b-form-item>
           <b-form-item label="描述" prop="ratingDesc">
             <b-input v-model="form.ratingDesc" placeholder="请输入描述" type="textarea"></b-input>
           </b-form-item>
@@ -41,6 +46,9 @@
       editData: { // 需要编辑的数据，null为新增
         type: Object,
         default: null
+      },
+      pointsTypeEnum: {
+        type: Object
       }
     },
     data () {
@@ -49,6 +57,7 @@
           ratingName: '',
           ratingCode: '',
           ratingDesc: '',
+          points: '',
           items: null
         },
         rules: {
@@ -57,19 +66,14 @@
           ],
           ratingCode: [
             { required: true, message: '编码不能为空', trigger: 'blur' }
+          ],
+          points: [
+            { required: true, message: '分制不能为空', trigger: 'change' }
           ]
         },
         btnLoading: false
       }
     },
-    // watch: {
-    //   editData: {
-    //     handler (newVal, oldVal) {
-    //       this.init(newVal)
-    //     },
-    //     immediate: true
-    //   }
-    // },
     computed: {
       showDialog: {
         get () {
@@ -89,11 +93,13 @@
         // editData为null表示新增反则表示编辑
         if (this.editData) {
           this.form = JSON.parse(JSON.stringify(this.editData))
+          this.form.points = String(this.form.points)
         } else {
           this.form = {
             ratingName: '',
             ratingCode: '',
             ratingDesc: '',
+            points: '',
             items: null
           }
         }

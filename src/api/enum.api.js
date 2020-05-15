@@ -253,3 +253,23 @@ export async function getEvalScale () {
     }
   })
 }
+
+/**
+ * @author haodongdong
+ * @description 等级分制标度
+ * @returns Promise
+ */
+export async function getPointsType() {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request.get('/api/enum/eval/pointsType')
+      if (res.data.successful) {
+        resolve(res.data.data)
+      } else {
+        reject(new Error(res.data.message))
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}

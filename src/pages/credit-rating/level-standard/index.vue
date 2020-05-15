@@ -41,12 +41,19 @@
 
     <set-score v-if="dialogStatus === 'setScore'" :ratingId="ratingId" @close="handleCancel"></set-score>
 
-    <detail v-if="isCheck" :title="editTitle"
-      :ratingId="ratingId" @close="handleCancel"></detail>
+    <detail v-if="isCheck"
+      @close="handleCancel"
+      :title="editTitle"
+      :ratingId="ratingId"
+      :pointsTypeEnum="pointsTypeEnum"></detail>
 
-    <edit :openEdit="openEdit" :editData="editData"
-      :title="editTitle" @close="handleClose" @closed="handleClosed"
-      @success="searchList"></edit>
+    <edit :openEdit="openEdit"
+      @close="handleClose"
+      @closed="handleClosed"
+      @success="searchList"
+      :title="editTitle"
+      :editData="editData"
+      :pointsTypeEnum="pointsTypeEnum"></edit>
   </div>
 </template>
 
@@ -57,6 +64,7 @@
   import Detail from './Detail'
   import SetScore from './SetScore'
   import { getLevelStandardList, deleteLevelStandard } from '../../../api/credit-rating/level-standard.api'
+  import { getPointsType } from '../../../api/enum.api'
 
   export default {
     name: 'LevelStandard',
@@ -68,6 +76,7 @@
     },
     data () {
       return {
+        pointsTypeEnum: {}, // 分制枚举
         listQuery: {
           ratingName: ''
         },
@@ -85,6 +94,7 @@
       }
     },
     created () {
+      this.getPointsType()
       this.searchList()
     },
     methods: {
@@ -143,6 +153,15 @@
       // 弹框关闭动画结束后的回调
       handleClosed () {
         this.editData = null // 弹框关闭后编辑数据清空
+      },
+      // 获取等级分制类型枚举
+      async getPointsType () {
+        try {
+          const res = await getPointsType()
+          this.pointsTypeEnum = res
+        } catch (error) {
+          console.error(error)
+        }
       },
       async searchList () {
         this.listLoading = true

@@ -10,6 +10,7 @@
               <div>
                 <v-key-label label="名称">{{ detailData.ratingName }}</v-key-label>
                 <v-key-label label="编码">{{ detailData.ratingCode }}</v-key-label>
+                <v-key-label label="分制">{{ pointsTypeEnum[detailData.points] }}</v-key-label>
                 <v-key-label label="描述" is-bottom>{{ detailData.ratingDesc }}</v-key-label>
               </div>
             </b-col>
@@ -32,7 +33,7 @@
 
   export default {
     name: 'LevelStandardDetail',
-    props: ['id', 'title', 'ratingId'],
+    props: ['id', 'title', 'ratingId', 'pointsTypeEnum'],
     data () {
       return {
         loading: false,
