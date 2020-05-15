@@ -64,7 +64,7 @@
     },
     data() {
       return {
-        localList: [],
+        listCache: [], // 用于缓存person_id的数据
         list: [],
         columns: [
           { type: 'index', width: 50, align: 'center' },
@@ -80,7 +80,18 @@
     watch: {
       params: {
         handler(newVal, oldVal) { // 观察params变化维护list状态
-          const list = [...newVal]
+          // 在这里分离person_id
+          this.listCache = [] // 清空缓存的person_id数据
+          const arr = JSON.parse(JSON.stringify(newVal))
+          const index = arr.findIndex(item => {
+            return item.paraCode === 'person_id'
+          })
+          if (index > -1) { // 取出并缓存paraCode为person_id的数据
+            const obj = arr.splice(index, 1)[0]
+            this.listCache.push(obj)
+          }
+
+          const list = [...arr]
           for (let i = 0; i < list.length; i++) { // 给传递过来的参数添加初始排序字段
             const item = list[i]
             item.orderNo = i + 1
@@ -91,7 +102,11 @@
       },
       list: { // 观察list，有变化则发送携带新值的事件
         handler(newVal, oldVal) {
-          this.$emit('params-change', newVal)
+          // 在这里组合person_id
+          let list = [...newVal]
+          if (this.listCache.length) list = [...this.listCache, ...newVal]
+
+          this.$emit('params-change', list)
         },
         deep: true
       }
