@@ -276,7 +276,6 @@
       },
       // 获取列表
       async searchList() {
-        this.listLoading = true
         try {
           const res = await getIndexManageList(this.listQuery)
           this.setListData({
@@ -316,6 +315,7 @@
       },
       // tree:初始化树结构
       initTree() {
+        this.listLoading = true
         this.treeData = []
         // 请求响应返回树结构
         getIndexManageTree().then(response => {

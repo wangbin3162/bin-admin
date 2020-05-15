@@ -279,5 +279,8 @@
       }
     }
   }
+  td.bin-table-expanded-cell {
+    background: #f0f2f5;
+  }
 }
 </style>

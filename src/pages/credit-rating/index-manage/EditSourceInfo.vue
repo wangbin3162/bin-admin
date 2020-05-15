@@ -305,12 +305,14 @@
 
       .title {
         color: #909399;
-        // text-align: center;
       }
       .row {
         margin-top: 7px;
       }
     }
+  }
+  td.bin-table-expanded-cell {
+    background: #f0f2f5;
   }
 }
 </style>

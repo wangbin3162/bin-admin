@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="index-manage-edit">
     <page-header-wrap :title="title" show-close @on-close="$emit('close')">
       <v-edit-wrap>
         <template slot="full">
@@ -100,6 +100,8 @@
               <edit-select-var :open="open" :radio="true" @close="open = false" @selected="handleVarChange"></edit-select-var>
             </b-collapse-panel>
 
+            <div class="line"></div>
+
             <b-collapse-panel title="指标配置规则" name="rules">
               <edit-index-rule ref="indexRule"
                 @data-change="handleIndexRulsChange"
@@ -108,6 +110,8 @@
                 :scaleEnum="scaleEnum"
                 :rules="indexRules"></edit-index-rule>
             </b-collapse-panel>
+
+            <div class="line"></div>
 
             <b-collapse-panel title="信息资源配置" name="resources">
               <edit-source-info
@@ -313,3 +317,16 @@
     }
   }
 </script>
+
+<style lang="stylus" scoped>
+.index-manage-edit {
+  .line {
+    position: relative;
+    left: -16px;
+    height: 20px;
+    width: calc(100% + 32px);
+    background-color: #f0f2f5;
+    margin-bottom: 24px;
+  }
+}
+</style>
