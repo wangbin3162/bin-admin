@@ -8,12 +8,12 @@
         <!-- 查询条件 -->
         <v-filter-bar>
           <v-filter-item title="名称">
-            <b-input v-model.trim="listQuery.name" placeholder="请输入" clearable></b-input>
+            <b-input v-model.trim="listQuery.indexName" placeholder="请输入" clearable></b-input>
           </v-filter-item>
           <v-filter-item title="指标性质">
-            <b-select v-model="listQuery.nature" clearable>
-              <b-option v-for="item in natureOptions" :key="item.value" :value="item.value">
-                {{ item.label }}
+            <b-select v-model="listQuery.indexKind" clearable>
+              <b-option v-for="(value, key) in natureEnum" :key="key" :value="key">
+                {{ value }}
               </b-option>
             </b-select>
           </v-filter-item>
@@ -105,6 +105,7 @@
         treeData: [],
         listQuery: {
           indexName: '',
+          indexKind: '',
           bizType: ''
         },
         columns: [
@@ -149,12 +150,20 @@
       },
       // 重置查询
       resetQuery () {
+        let bizType
+        if (!this.currentTreeNode || this.currentTreeNode.code === 'C') {
+          bizType = ''
+        } else {
+          bizType = this.currentTreeNode.code
+        }
         this.listQuery = {
           page: 1,
           size: 10,
           indexName: '',
-          bizType: this.currentTreeNode ? this.currentTreeNode.id : ''
+          indexKind: '',
+          bizType: bizType
         }
+        this.searchList()
       },
       // 新增按钮回调
       handleCreate () {

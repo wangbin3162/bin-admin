@@ -38,6 +38,7 @@ export async function getIndexManageList(query) {
         method: 'get',
         params: {
           indexName: query.indexName,
+          indexKind: query.indexKind,
           bizType: query.bizType,
           size: query.size,
           page: query.page - 1,
