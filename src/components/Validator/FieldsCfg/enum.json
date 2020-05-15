@@ -21,10 +21,8 @@
     "TEXTAREA": "文本域",
     "NAT_PERSON": "选择自然人",
     "LEG_PERSON": "选择法人",
-    "CROP_REP": "选择法人代表",
     "NAT_OR_LEG_PERSON": "选择自然人或法人",
-    "FILE_UPLOAD": "文件上传",
-    "DEPART": "选择部门"
+    "FILE_UPLOAD": "文件上传"
   },
   "openType": {
     "PUBLIC": "社会公开",

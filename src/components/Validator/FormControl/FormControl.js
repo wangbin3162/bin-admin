@@ -1,11 +1,11 @@
 // form-control 根据控件类型返回不同的控件
-import LegPersonChoose from './LegPersonChoose'
-import NatPersonChoose from './NatPersonChoose'
+import SelectLegInput from './SelectLegInput'
+import SelectNatInput from './SelectNatInput'
 import { oneOf } from 'bin-ui/src/utils/util'
 
 export default {
   name: 'FormControl',
-  components: { LegPersonChoose, NatPersonChoose },
+  components: { SelectLegInput, SelectNatInput },
   data() {
     return {
       currentValue: '',
@@ -148,23 +148,19 @@ export default {
         )
         break
       case 'LEG_PERSON':
-        node = h('leg-person-choose', {
+        node = h('select-leg-input', {
           props: {
             value: this.currentValue,
-            placeholder: `选择法人`,
-            disabled: readonly,
-            clearable: !readonly
+            placeholder: `选择法人`
           },
           on: { 'on-select-leg': this.handleSelectLeg }
         })
         break
       case 'NAT_PERSON':
-        node = h('nat-person-choose', {
+        node = h('select-nat-input', {
           props: {
             value: this.currentValue,
-            placeholder: `选择自然人`,
-            disabled: readonly,
-            clearable: !readonly
+            placeholder: `选择自然人`
           },
           on: { 'on-select-nat': this.handleSelectNat }
         })

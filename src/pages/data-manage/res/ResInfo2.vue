@@ -354,9 +354,8 @@
         },
         treeData: [],
         columns: [
-          { type: 'index', width: 50, align: 'center' },
           { title: '资源名称', slot: 'resourceName' },
-          { title: '主体类别', slot: 'personClass' },
+          { title: '主体类别', slot: 'personClass', width: 130 },
           { title: '资源性质', slot: 'resProperty', width: 120, align: 'center' },
           { title: '资源状态', slot: 'status', width: 90, align: 'center' },
           { title: '可用状态', slot: 'availableStatus', width: 90, align: 'center' },
