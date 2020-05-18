@@ -33,8 +33,7 @@
               <b-form-item label="等级标准" prop="ratingId">
                 <div flex>
                   <b-input :value="ratingName" placeholder="请选择" disabled></b-input>
-                  <b-button type="primary" plain @click="open = true"
-                    :disabled="editDisabled">选择</b-button>
+                  <b-button type="primary" plain @click="open = true">选择</b-button>
                 </div>
               </b-form-item>
             </b-col>
@@ -168,7 +167,6 @@
       },
       // 针对编辑做初始化
       init () {
-        console.log(this.editData)
         if (this.editData) {
           this.form = { ...this.editData }
           this.ratingName = this.editData.ratingName

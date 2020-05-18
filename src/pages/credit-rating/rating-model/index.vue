@@ -31,8 +31,8 @@
           <template v-slot:personClass="{ row }">
             {{ personClassEnum[row.personClass]}}
           </template>
-          <template v-slot:ratingId>
-            <b-button type="text">等级标准 ></b-button>
+          <template v-slot:ratingId="{ row }">
+            <b-button type="text" @click="handleSetLevel(row)">{{ row.ratingName }} ></b-button>
           </template>
           <template v-slot:modelIndex>
             <b-button type="text">模型指标 ></b-button>
@@ -73,6 +73,10 @@
       </v-table-wrap>
     </page-header-wrap>
 
+    <select-level :open="open"
+      @close="handleLevelClose"
+      @selected="handleLevelSelected"></select-level>
+
     <edit v-if="isEdit"
       @close="handleClose"
       @success="handleEditSuccess"
@@ -85,21 +89,24 @@
   import commonMixin from '../../../common/mixins/mixin'
   import permission from '../../../common/mixins/permission'
   import Edit from './Edit'
+  import SelectLevel from './SeleceLevel'
   import { getEvalCommonStatus, getEvalSysDefault } from '../../../api/enum.api'
   import {
     getSubjectTypeTree, getRatingModelList,
     deleteRatingModel, setStatus,
-    setSysDefault
+    setSysDefault, updateRatingModel
   } from '../../../api/credit-rating/rating-model.api'
 
   export default {
     name: 'RatingModel',
     mixins: [commonMixin, permission],
     components: {
-      Edit
+      Edit,
+      SelectLevel
     },
     data () {
       return {
+        open: false, // 等级组件弹框
         statusEnum: {}, // 状态枚举
         defaultEnum: {}, // 缺省模型枚举
         editData: null, // 待编辑数据
@@ -156,6 +163,16 @@
       handleModify (row) {
         this.editData = row
         this.openEditPage('modify')
+      },
+      // 设置等级标准回调
+      handleSetLevel (row) {
+        this.editData = row
+        this.open = true
+      },
+      // 等级标准组件关闭回调
+      handleLevelClose () {
+        this.open = false
+        this.editData = null
       },
       // 删除的回调
       async handleRemove (id) {
@@ -235,6 +252,34 @@
             desc: error
           })
           console.log(error)
+        }
+      },
+      // 等级标准选择的回调
+      async handleLevelSelected ({ id, ratingName }) {
+        const params = {
+          id: this.editData.id,
+          ratingId: id
+        }
+        try {
+          const [success, errorMessage] = await updateRatingModel(params)
+          if (success) {
+            this.searchList()
+            this.$message({
+              type: 'success',
+              content: '操作成功'
+            })
+            this.searchList()
+          } else {
+            this.$notice.danger({
+              title: '操作失败',
+              desc: errorMessage
+            })
+          }
+        } catch (error) {
+          this.$notice.danger({
+              title: '操作失败',
+              desc: error
+            })
         }
       },
       async getEnum() {
