@@ -11,7 +11,8 @@
             </b-col>
             <b-col span="12">
               <b-form-item label="模型编码" prop="modelCode">
-                <b-input v-model="form.modelCode" placeholder="请输入模型编码"></b-input>
+                <b-input v-model="form.modelCode" placeholder="请输入模型编码"
+                  :disabled="editDisabled"></b-input>
               </b-form-item>
             </b-col>
           </b-row>
@@ -23,14 +24,17 @@
                   :data="subjectType"
                   change-on-select
                   @on-change="handleSubjectChange"></b-cascader>
-                <b-input v-else :value="personClassEnum[form.personClass]" :disabled="editDisabled"></b-input>
+                <b-input v-else
+                  :value="personClassEnum[form.personClass]"
+                  :disabled="editDisabled"></b-input>
               </b-form-item>
             </b-col>
             <b-col span="12">
               <b-form-item label="等级标准" prop="ratingId">
                 <div flex>
                   <b-input :value="ratingName" placeholder="请选择" disabled></b-input>
-                  <b-button type="primary" plain @click="open = true">选择</b-button>
+                  <b-button type="primary" plain @click="open = true"
+                    :disabled="editDisabled">选择</b-button>
                 </div>
               </b-form-item>
             </b-col>
@@ -59,7 +63,7 @@
 
 <script>
   import SelectLevel from './SeleceLevel'
-  import { createRatingModel } from '../../../api/credit-rating/rating-model.api'
+  import { createRatingModel, updateRatingModel } from '../../../api/credit-rating/rating-model.api'
 
   export default {
     name: 'RatingModelEdit',
@@ -136,7 +140,7 @@
          if (valid) {
            try {
              this.btnLoading = true
-             const [success, errorMessage] = await createRatingModel(this.form)
+             const [success, errorMessage] = !this.editData ? await createRatingModel(this.form) : await updateRatingModel(this.form)
              if (success) {
                this.$message({
                  type: 'success',
@@ -164,8 +168,10 @@
       },
       // 针对编辑做初始化
       init () {
+        console.log(this.editData)
         if (this.editData) {
           this.form = { ...this.editData }
+          this.ratingName = this.editData.ratingName
           this.editDisabled = true
         }
       }
