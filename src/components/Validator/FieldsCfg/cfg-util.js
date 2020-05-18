@@ -1,5 +1,5 @@
 import { deepCopy } from '../../../common/utils/assist'
-import { checkIdCard, verifyOrgNo, verifyRegNo, verifyUnifiedCode } from '../../../common/utils/validate'
+import { checkIdCard, verifyOrgNo, verifyRegNo, verifyUnifiedCode, validateDate } from '../../../common/utils/validate'
 import { getDictItems } from '../../../api/data-manage/gather.api'
 
 /**
@@ -10,15 +10,16 @@ export const RULE = {
   length: '$length',
   email: '$email',
   phone: '$phone',
-  idCode: '$idCode',
   regexp: '$regexp',
+  idCode: '$idCode',
   unifiedCode: '$unifiedCode',
   orgInstCode: '$orgInstCode',
   regNo: '$regNo',
   conditionRequired: '$conditionRequired',
   conditionNotRequired: '$conditionNotRequired',
   conditionNotBe: '$conditionNotBe',
-  notSame: '$notSame'
+  notSame: '$notSame',
+  timeBound: '$timeBound'
 }
 
 /**
@@ -41,6 +42,11 @@ export const validatorBuild = {
   $phone: function (opts) {
     return { pattern: /^((0\d{2,3}-\d{7,8})|(1[35874]\d{9}))$/, message: opts.message, trigger: opts.trigger }
   },
+  // 正则表达式  opts: { regexp,message,trigger }
+  $regexp: function (opts) {
+    return { pattern: new RegExp(opts.regexp), message: opts.message, trigger: opts.trigger }
+  },
+  /* =========[信息项规则]=============== */
   // 居民身份证号码 opts: { preField,ignoreCase,message,trigger }
   $idCode: function (opts, obj) {
     if (!obj) {
@@ -62,11 +68,6 @@ export const validatorBuild = {
       trigger: opts.trigger
     }
   },
-  // 正则表达式  opts: { regexp,message,trigger }
-  $regexp: function (opts) {
-    return { pattern: new RegExp(opts.regexp), message: opts.message, trigger: opts.trigger }
-  },
-  /* =========[信息项规则]=============== */
   // 统一社会信用代码 opts: { preField,ignoreCase,message,trigger }
   $unifiedCode: function (opts, obj) {
     if (!obj) {
@@ -197,7 +198,63 @@ export const validatorBuild = {
       },
       trigger: opts.trigger
     }
+  },
+  // 日期区间验证 opts: { time, compareMode:{gt,ge,lt,le} ,message , trigger} obj:form
+  $timeBound: function (opts, obj) {
+    if (!obj) {
+      return null
+    }
+    return {
+      validator: (rule, value, callback) => {
+        if (value.length === 0) {
+          callback()
+          return
+        }
+        // 计算实际时间 // 获取实际时间，$now 当前时间，or 2099-01-01 or preField前置字段
+        let otherTime
+        if (opts.time === '$now') {
+          otherTime = new Date()
+          // console.log('time is $now')
+        } else {
+          if (validateDate(opts.time)) {
+            otherTime = new Date(opts.time)
+            // console.log('time is date string')
+          } else {
+            let preField = obj[opts.time]// 前置字段当前值
+            otherTime = validateDate(preField) ? new Date(preField) : null
+            // console.log('time is field[' + opts.time + ']:' + preField)
+          }
+        }
+        let mode = opts.compareMode // 比较模式
+        let thisTime = new Date(value)
+        let result = true // 校验结果
+        if (otherTime) {
+          switch (mode) {
+            case 'gt':
+              result = thisTime > otherTime
+              break
+            case 'ge':
+              result = thisTime >= otherTime
+              break
+            case 'lt':
+              result = thisTime < otherTime
+              break
+            case 'le':
+              result = thisTime <= otherTime
+              break
+          }
+        }
+        if (!result) callback(new Error(opts.message))
+        callback()
+      },
+      trigger: opts.trigger
+    }
   }
+}
+
+// 将日期转换成时间戳
+function parseDate(time) {
+  return new Date(time)
 }
 
 /**

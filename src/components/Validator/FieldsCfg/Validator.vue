@@ -47,6 +47,7 @@
           <b-dropdown-item :name="RULE.conditionNotRequired">条件必不填</b-dropdown-item>
           <b-dropdown-item :name="RULE.conditionNotBe">条件不为某值</b-dropdown-item>
           <b-dropdown-item :name="RULE.notSame">值不等于</b-dropdown-item>
+          <b-dropdown-item :name="RULE.timeBound">日期区间</b-dropdown-item>
         </b-dropdown-menu>
       </b-dropdown>
     </div>
@@ -185,7 +186,7 @@
         <b-tooltip content="为空时独立校验">
           <span class="param-tip">前置字段：</span>
         </b-tooltip>
-        <b-input v-model="rulesObj[RULE.idCode].preField" size="mini"
+        <b-input v-model.trim="rulesObj[RULE.idCode].preField" size="mini"
                  @on-change="emitParamsToValue"/>
       </div>
       <div class="info">
@@ -217,7 +218,7 @@
         <b-tooltip content="为空时独立校验">
           <span class="param-tip">前置字段：</span>
         </b-tooltip>
-        <b-input v-model="rulesObj[RULE.unifiedCode].preField" size="mini"
+        <b-input v-model.trim="rulesObj[RULE.unifiedCode].preField" size="mini"
                  @on-change="emitParamsToValue"/>
       </div>
       <div class="info">
@@ -249,7 +250,7 @@
         <b-tooltip content="为空时独立校验">
           <span class="param-tip">前置字段：</span>
         </b-tooltip>
-        <b-input v-model="rulesObj[RULE.orgInstCode].preField" size="mini"
+        <b-input v-model.trim="rulesObj[RULE.orgInstCode].preField" size="mini"
                  @on-change="emitParamsToValue"/>
       </div>
       <div class="info">
@@ -311,12 +312,12 @@
       </div>
       <div class="number">
         <span class="param-tip">前置字段：</span>
-        <b-input v-model="rulesObj[RULE.conditionRequired].preField" size="mini"
+        <b-input v-model.trim="rulesObj[RULE.conditionRequired].preField" size="mini"
                  @on-change="emitParamsToValue"/>
       </div>
       <div class="number">
         <span class="param-tip">前置字段值：</span>
-        <b-input v-model="rulesObj[RULE.conditionRequired].preFieldValue" size="mini"
+        <b-input v-model.trim="rulesObj[RULE.conditionRequired].preFieldValue" size="mini"
                  @on-change="emitParamsToValue"/>
       </div>
       <div class="info">
@@ -341,12 +342,12 @@
       </div>
       <div class="number">
         <span class="param-tip">前置字段：</span>
-        <b-input v-model="rulesObj[RULE.conditionNotRequired].preField" size="mini"
+        <b-input v-model.trim="rulesObj[RULE.conditionNotRequired].preField" size="mini"
                  @on-change="emitParamsToValue"/>
       </div>
       <div class="number">
         <span class="param-tip">前置字段值：</span>
-        <b-input v-model="rulesObj[RULE.conditionNotRequired].preFieldValue" size="mini"
+        <b-input v-model.trim="rulesObj[RULE.conditionNotRequired].preFieldValue" size="mini"
                  @on-change="emitParamsToValue"/>
       </div>
       <div class="info">
@@ -371,17 +372,17 @@
       </div>
       <div class="number">
         <span class="param-tip">前置字段：</span>
-        <b-input v-model="rulesObj[RULE.conditionNotBe].preField" size="mini"
+        <b-input v-model.trim="rulesObj[RULE.conditionNotBe].preField" size="mini"
                  @on-change="emitParamsToValue"/>
       </div>
       <div class="number">
         <span class="param-tip">前置字段值：</span>
-        <b-input v-model="rulesObj[RULE.conditionNotBe].preFieldValue" size="mini"
+        <b-input v-model.trim="rulesObj[RULE.conditionNotBe].preFieldValue" size="mini"
                  @on-change="emitParamsToValue"/>
       </div>
       <div class="number">
         <span class="param-tip">不是某值：</span>
-        <b-input v-model="rulesObj[RULE.conditionNotBe].notValue" size="mini"
+        <b-input v-model.trim="rulesObj[RULE.conditionNotBe].notValue" size="mini"
                  @on-change="emitParamsToValue"/>
       </div>
       <div class="info">
@@ -417,6 +418,42 @@
       <div class="delete">
         <b-popover confirm title="确认删除此项吗?" width="170" style="margin-top: 18px;"
                    @on-ok="removeRules(RULE.notSame)">
+          <span class="remove">
+            <b-icon name="ios-remove-circle-outline" size="22" color="#f5222d"/>
+          </span>
+        </b-popover>
+      </div>
+    </div>
+    <!--日期区间-->
+    <div class="params" v-if="rulesObj[RULE.timeBound]">
+      <div class="title">
+        <span class="param-tip">规则名：</span>
+        <b-tag type="warning" no-border :tag-style="{padding:'3px',margin:'0',width:'100%'}">日期区间</b-tag>
+      </div>
+      <div class="number">
+        <b-tooltip content="$now/yyyy-MM-dd/preField">
+          <span class="param-tip">前值字段：</span>
+        </b-tooltip>
+        <b-input v-model.trim="rulesObj[RULE.timeBound].time" size="mini" @on-change="emitParamsToValue"/>
+      </div>
+      <div class="number">
+        <span class="param-tip">比较模式：</span>
+        <b-select v-model="rulesObj[RULE.timeBound].compareMode" size="mini"
+                  @on-change="emitParamsToValue">
+          <b-option value="gt">&gt;</b-option>
+          <b-option value="ge">&ge;</b-option>
+          <b-option value="lt">&lt;</b-option>
+          <b-option value="le">&le;</b-option>
+        </b-select>
+      </div>
+      <div class="info">
+        <span class="param-tip">错误提示：</span>
+        <b-input v-model.trim="rulesObj[RULE.timeBound].message" size="mini"
+                 @on-change="emitParamsToValue"/>
+      </div>
+      <div class="delete">
+        <b-popover confirm title="确认删除此项吗?" width="170" style="margin-top: 18px;"
+                   @on-ok="removeRules(RULE.timeBound)">
           <span class="remove">
             <b-icon name="ios-remove-circle-outline" size="22" color="#f5222d"/>
           </span>
@@ -630,6 +667,14 @@
               ...this.normalCfg
             }])
             break
+          case RULE.timeBound:
+            this.checkRulesArr.push([ruleType, {
+              time: '$now',
+              compareMode: 'gt',
+              message: '日期不符合区间设置',
+              ...this.normalCfg
+            }])
+            break
           default:
             break
         }
@@ -717,8 +762,8 @@
         padding: 0 4px;
       }
       .number {
-        flex: 0 0 95px;
-        width: 95px;
+        flex: 0 0 100px;
+        width: 100px;
         padding-right: 5px;
       }
       .info {
