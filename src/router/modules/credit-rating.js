@@ -33,6 +33,14 @@ export default {
       meta: {
         title: '等级标准'
       }
+    },
+    {
+      path: 'ratingModel',
+      name: 'RatingModel',
+      component: () => import(/* webpackChunkName: "RatingModel" */ '../../pages/credit-rating/rating-model'),
+      meta: {
+        title: '评级模型'
+      }
     }
   ]
 }
