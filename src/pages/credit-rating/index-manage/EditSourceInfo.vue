@@ -163,7 +163,6 @@
     watch: {
       resources: { // 观察变量选择带来的参数变动
         handler (newVal, oldVal) {
-          console.log('resource', newVal)
           this.list = this.initList(newVal)
           // table的展示绑定listCopy，内部的数据交互绑定list，避免响应式操作重新渲染table
           this.listCopy = JSON.parse(JSON.stringify(this.list))
