@@ -57,19 +57,19 @@ export async function getRatingModelList(query) {
 
 /**
  * @author haodongdong
- * @description 获取指标管理详情
+ * @description 获取评级模型详情
  * @param {*} query
  * @returns Promise
  */
-export async function getIndeManageDetail(id) {
+export async function getRatingModeDetail(id) {
   return new Promise(async (resolve, reject) => {
     try {
       const res = await request({
-        url: '/api/eval/index/detail',
+        url: '/api/eval/model/detail',
         method: 'get',
         params: { id }
       })
-      if (res.data.successful) {
+      if (res.data.code === '0') {
         resolve(res.data.data)
       } else {
         reject(res.data.message)
@@ -82,19 +82,19 @@ export async function getIndeManageDetail(id) {
 
 /**
  * @author haodongdong
- * @description 创建或更新指标管理
+ * @description 创建评级模型
  * @param {*} params
  * @returns Promise
  */
-export async function saveAndUpdate(params) {
+export async function createRatingModel(params) {
   return new Promise(async (resolve, reject) => {
     try {
       const res = await request({
-        url: '/api/eval/index/saveAndUpdate',
+        url: '/api/eval/model/create',
         method: 'post',
         data: params
       })
-      if (res.data.successful) {
+      if (res.data.code === '0') {
         resolve([true])
       } else {
         resolve([false, res.data.message])
@@ -111,11 +111,11 @@ export async function saveAndUpdate(params) {
  * @param {*} params
  * @returns Promise
  */
-export async function deleteIndexManage(id) {
+export async function deleteRatingModel(id) {
   return new Promise(async (resolve, reject) => {
     try {
       const res = await request({
-        url: '/api/eval/index/remove',
+        url: '/api/eval/model/remove',
         method: 'post',
         params: { id }
       })
