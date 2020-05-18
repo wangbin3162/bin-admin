@@ -252,11 +252,6 @@ export const validatorBuild = {
   }
 }
 
-// 将日期转换成时间戳
-function parseDate(time) {
-  return new Date(time)
-}
-
 /**
  * 根据传入字符判断是字典值还是枚举值
  * @param valid
