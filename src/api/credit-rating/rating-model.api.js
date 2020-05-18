@@ -119,7 +119,6 @@ export async function deleteRatingModel(id) {
         method: 'post',
         params: { id }
       })
-      console.log(res)
       if (res.data.successful) {
         resolve([true])
       } else {

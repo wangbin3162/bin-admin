@@ -21,28 +21,16 @@
               <b-form-item label="主体类别" prop="personClass">
                 <b-cascader v-model="personClass"
                   :data="subjectType"
-                  change-on-select></b-cascader>
+                  change-on-select
+                  @on-change="handleSubjectChange"></b-cascader>
               </b-form-item>
             </b-col>
             <b-col span="12">
               <b-form-item label="等级标准" prop="ratingId">
                 <div flex>
-                  <b-input :value="ratingName" placeholder="请选择"></b-input>
-                  <b-button type="primary" plain>选择</b-button>
+                  <b-input :value="ratingName" placeholder="请选择" disabled></b-input>
+                  <b-button type="primary" plain @click="open = true">选择</b-button>
                 </div>
-              </b-form-item>
-            </b-col>
-          </b-row>
-
-          <b-row>
-            <b-col span="12">
-              <b-form-item label="缺省模型" prop="sysDefault">
-                <b-switch v-model="form.sysDefault" true-value="1" false-value="0"></b-switch>
-              </b-form-item>
-            </b-col>
-            <b-col span="12">
-              <b-form-item label="启用" prop="status">
-                <b-switch v-model="form.status" true-value="Y" false-value="D"></b-switch>
               </b-form-item>
             </b-col>
           </b-row>
@@ -62,18 +50,27 @@
         </template>
       </v-edit-wrap>
     </page-header-wrap>
+
+    <select-level :open="open"
+      @close="open = false" @selected="handleLevelSelected"></select-level>
   </div>
 </template>
 
 <script>
+  import SelectLevel from './SeleceLevel'
+  import { createRatingModel } from '../../../api/credit-rating/rating-model.api'
+
   export default {
     name: 'RatingModelEdit',
     props: [
       'title'
     ],
-    components: {},
+    components: {
+      SelectLevel
+    },
     data () {
       return {
+        open: false, // 打开选择等级标准弹框
         btnLoading: false,
         ratingName: '',
         personClass: [],
@@ -117,10 +114,44 @@
 
     },
     methods: {
+      // 主题类别回调
+      handleSubjectChange (value) {
+        this.form.personClass = value[value.length - 1]
+      },
+      // 等级标准选择的回调
+      handleLevelSelected ({ id, ratingName }) {
+        this.form.ratingId = id
+        this.ratingName = ratingName
+      },
       // 提交表单
      async handleSubmit () {
        try {
          const valid = await this.$refs.form.validate()
+         if (valid) {
+           try {
+             this.btnLoading = true
+             const [success, errorMessage] = await createRatingModel(this.form)
+             if (success) {
+               this.$message({
+                 type: 'success',
+                 content: '操作成功'
+               })
+               this.$emit('success')
+             } else {
+               this.$notice.danger({
+               title: '操作失败',
+               desc: errorMessage
+             })
+             }
+           } catch (error) {
+             this.$notice.danger({
+               title: '操作失败',
+               desc: error
+             })
+             console.log(error)
+           }
+           this.btnLoading = false
+         }
        } catch (error) {
          console.log(error)
        }

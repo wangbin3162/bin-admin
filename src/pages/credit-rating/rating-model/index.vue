@@ -45,15 +45,22 @@
               :value="row.modelStatus"></b-switch>
           </template>
           <!-- 操作栏 -->
-          <template v-slot:action="scope">
-            <b-button type="text" @click="handleModify(scope.row)">
+          <template v-slot:action="{ row }">
+            <b-button type="text" @click="handleModify(row)">
               修改
             </b-button>
-            <!-- 是否有删除键 -->
-            <template>
-              <b-divider type="vertical"></b-divider>
-              <b-button type="text" text-color="danger" @click="handleRemove(scope.row.id)">删除</b-button>
-            </template>
+            <b-divider type="vertical"></b-divider>
+            <b-dropdown :appendToBody="true">
+              <a href="javascript:void(0)">
+                更多
+                <b-icon name="ios-arrow-down"></b-icon>
+              </a>
+              <b-dropdown-menu slot="list">
+                <b-dropdown-item :style="colorSuccess">克隆</b-dropdown-item>
+                <b-dropdown-item :style="colorDanger"
+                  @click.native="handleRemove(row.id)">删除</b-dropdown-item>
+              </b-dropdown-menu>
+            </b-dropdown>
           </template>
         </b-table>
 
@@ -63,7 +70,9 @@
       </v-table-wrap>
     </page-header-wrap>
 
-    <edit v-if="isEdit" @close="handleClose"
+    <edit v-if="isEdit"
+      @close="handleClose"
+      @success="handleEditSuccess"
       :title="editTitle"></edit>
   </div>
 </template>
@@ -73,7 +82,7 @@
   import permission from '../../../common/mixins/permission'
   import Edit from './Edit'
   import { getEvalCommonStatus, getEvalSysDefault } from '../../../api/enum.api'
-  import { getSubjectTypeTree, getRatingModelList } from '../../../api/credit-rating/rating-model.api'
+  import { getSubjectTypeTree, getRatingModelList, deleteRatingModel } from '../../../api/credit-rating/rating-model.api'
 
   export default {
     name: 'RatingModel',
@@ -101,7 +110,7 @@
           { title: '缺省模型', slot: 'sysDefault', align: 'center' },
           { title: '状态', slot: 'modelStatus', align: 'center' },
           { title: '描述', key: 'modelDesc', ellipsis: true, tooltip: true },
-          { title: '操作', slot: 'action', width: 120, align: 'center' }
+          { title: '操作', slot: 'action', width: 160, align: 'center' }
         ]
       }
     },
@@ -115,6 +124,7 @@
       this.searchList()
     },
     methods: {
+      // 重置查询
       resetQuery () {
         this.listQuery = {
           page: 1,
@@ -123,16 +133,47 @@
         }
         this.searchList()
       },
+      // 创建回调
       handleCreate () {
         this.openEditPage('create')
       },
+      // 查看详情
       handleCheck (row) {
         this.openEditPage('check')
       },
+      // 修改
       handleModify (row) {
         this.openEditPage('modify')
       },
+      // 编辑组件关闭
       handleClose () {
+        this.handleCancel()
+      },
+      async handleRemove (id) {
+        this.$confirm({
+          title: '删除',
+          content: '确定要删除当前评级模型？',
+          loading: true,
+          okType: 'danger',
+          onOk: async () => {
+            try {
+              const [success, errorMsg] = await deleteRatingModel(id)
+              if (success) {
+                this.$message({ type: 'success', content: '操作成功' })
+                this.searchList()
+              } else {
+                this.$notice.danger({ title: '操作错误', desc: errorMsg })
+              }
+            } catch (error) {
+              this.$notice.danger({ title: '操作错误', desc: error })
+            }
+            this.$modal.remove()
+          }
+        })
+      },
+      // 编辑组件成功
+      handleEditSuccess () {
+        this.searchList()
         this.handleCancel()
       },
       async getEnum() {
