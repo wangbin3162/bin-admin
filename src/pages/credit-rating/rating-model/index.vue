@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-header-wrap v-show="isNormal || isEdit">
+    <page-header-wrap v-show="isNormal">
       <v-table-wrap>
         <v-filter-bar>
           <v-filter-item title="名称">
@@ -62,19 +62,25 @@
           @on-page-size-change="handleSizeChange"></b-page>
       </v-table-wrap>
     </page-header-wrap>
+
+    <edit v-if="isEdit" @close="handleClose"
+      :title="editTitle"></edit>
   </div>
 </template>
 
 <script>
   import commonMixin from '../../../common/mixins/mixin'
   import permission from '../../../common/mixins/permission'
+  import Edit from './Edit'
   import { getEvalCommonStatus, getEvalSysDefault } from '../../../api/enum.api'
   import { getSubjectTypeTree, getRatingModelList } from '../../../api/credit-rating/rating-model.api'
 
   export default {
     name: 'RatingModel',
     mixins: [commonMixin, permission],
-    components: {},
+    components: {
+      Edit
+    },
     data () {
       return {
         personClassEnum: {}, // 主题类别枚举
@@ -125,6 +131,9 @@
       },
       handleModify (row) {
         this.openEditPage('modify')
+      },
+      handleClose () {
+        this.handleCancel()
       },
       async getEnum() {
         // 主体类别树信息 code=A
