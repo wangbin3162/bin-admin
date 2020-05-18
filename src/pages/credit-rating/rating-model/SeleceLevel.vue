@@ -4,7 +4,7 @@
       title="选择等级标准" footer-hide
       :body-styles="{ padding: 0 }" :styles="{ top: '7%' }"
       @on-visible-change="handleVisibleChange">
-      <v-table-wrap v-show="isNormal">
+      <v-table-wrap v-if="isNormal">
         <v-filter-bar>
           <v-filter-item title="名称">
             <b-input v-model="listQuery.ratingName" placeholder="请输入"></b-input>
@@ -13,8 +13,8 @@
         </v-filter-bar>
 
         <b-table :columns="columns" :data="list" :loading="listLoading" size="small">
-          <template v-slot:levelDetails="scope">
-            <b-button type="text" @click="handleCheck(scope.row.id)">
+          <template v-slot:levelDetails="{ row }">
+            <b-button type="text" @click="handleCheck(row.id)">
               查看明细
             </b-button>
           </template>
@@ -30,6 +30,17 @@
           @on-change="handleCurrentChange"
           @on-page-size-change="handleSizeChange"></b-page>
       </v-table-wrap>
+
+      <v-edit-wrap v-if="isCheck">
+        <div slot="full" style="position: relative;">
+          <!-- <v-title-bar label="评分标准 详情" class="mb-15"></v-title-bar> -->
+          <b-table :columns="columnsLevel" :loading="levelLoading"
+            :data="levelList" size="small"></b-table>
+          <div flex="main:right" style="margin-top: 10px;">
+            <b-button plain @click="handleCancel">返回</b-button>
+          </div>
+        </div>
+      </v-edit-wrap>
     </b-modal>
   </div>
 </template>
@@ -37,7 +48,7 @@
 <script>
   import commonMixin from '../../../common/mixins/mixin'
   import permission from '../../../common/mixins/permission'
-  import { getLevelStandardList, deleteLevelStandard } from '../../../api/credit-rating/level-standard.api'
+  import { getLevelStandardList, getDetailByRatingId } from '../../../api/credit-rating/level-standard.api'
   import { getPointsType } from '../../../api/enum.api'
 
   export default {
@@ -59,9 +70,15 @@
           { title: '描述', key: 'ratingDesc', ellipsis: true, tooltip: true },
           { title: '操作', slot: 'action', width: 120 }
         ],
-        editData: null, // 需要编辑的数据，新增时设为null
-        openEdit: false,
-        ratingId: null
+        columnsLevel: [
+          { type: 'index', width: 50, align: 'center' },
+          { title: '等级', key: 'levelName' },
+          { title: '上限值', key: 'upScore' },
+          { title: '下限值', key: 'dnScore' },
+          { title: '描述', key: 'levelDesc', ellipsis: true, tooltip: true }
+        ],
+        levelLoading: false, // 等级列表载入效果
+        levelList: [] // 等级标准
       }
     },
     computed: {
@@ -81,6 +98,8 @@
     methods: {
       handleVisibleChange (visible) {
         if (visible) {
+          this.handleCancel()
+          this.resetQuery()
           this.getPointsType()
           this.searchList()
         } else {
@@ -95,21 +114,27 @@
         }
         this.searchList()
       },
-      handleCheck (row) {
-        this.ratingId = row.id
+      async handleCheck (id) {
         this.openEditPage('check')
+        try {
+          this.levelLoading = true
+          const res = await getDetailByRatingId(id)
+          this.levelList = res.items
+        } catch (error) {
+          this.$notice.danger({
+            title: '载入详情失败',
+            desc: error
+          })
+        }
+        this.levelLoading = false
       },
       handleSelected (row) {
         this.$emit('selected', row)
         this.showDialog = false
       },
-      // 弹框关闭的回调
-      handleClose () {
-        this.openEdit = false
-      },
       // 弹框关闭动画结束后的回调
       handleClosed () {
-        this.editData = null // 弹框关闭后编辑数据清空
+
       },
       // 获取等级分制类型枚举
       async getPointsType () {
