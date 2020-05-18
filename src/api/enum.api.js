@@ -273,3 +273,43 @@ export async function getPointsType() {
     }
   })
 }
+
+/**
+ * @author haodongdong
+ * @description 评级模型状态枚举
+ * @returns Promise
+ */
+export async function getEvalCommonStatus() {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request.get('/api/enum/commStatus')
+      if (res.data.code === '0') {
+        resolve(res.data.data)
+      } else {
+        reject(new Error(res.data.message))
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
+ * @description 评级模型缺省模型枚举
+ * @returns Promise
+ */
+export async function getEvalSysDefault() {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request.get('/api/enum/ynWithCode')
+      if (res.data.code === '0') {
+        resolve(res.data.data)
+      } else {
+        reject(new Error(res.data.message))
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}

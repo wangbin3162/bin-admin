@@ -6,18 +6,22 @@ import request from '../request'
 
 /**
  * @author haodongdong
- * @description 获取类目树
+ * @description 获取主题类别树
  * @returns Promise
  */
-export async function getIndexManageTree() {
+export async function getSubjectTypeTree(code = 'A') {
   return new Promise(async (resolve, reject) => {
     try {
       const res = await request({
         url: '/api/dir/classify/tree',
         method: 'get',
-        params: { code: 'C' }
+        params: { code }
       })
-      resolve(res.data)
+      if (res.data.code === '0') { // 不是标准的restful，200中还可能包含接口错误。
+        resolve(res.data.data)
+      } else {
+        reject(new Error(res.data.message))
+      }
     } catch (error) {
       reject(error)
     }
@@ -26,20 +30,19 @@ export async function getIndexManageTree() {
 
 /**
  * @author haodongdong
- * @description 获取指标管理列表
+ * @description 获取评级模型列表
  * @param {*} query
  * @returns Promise
  */
-export async function getIndexManageList(query) {
+export async function getRatingModelList(query) {
   return new Promise(async (resolve, reject) => {
     try {
       const res = await request({
-        url: '/api/eval/index/search',
+        url: '/api/eval/model/search',
         method: 'get',
         params: {
-          indexName: query.indexName,
-          indexKind: query.indexKind,
-          bizType: query.bizType,
+          modelName: query.modelName,
+          // bizType: query.bizType,
           size: query.size,
           page: query.page - 1,
           sort: 'createDate,desc'
