@@ -42,7 +42,8 @@
           </template>
           <template v-slot:modelStatus="{ row }">
             <b-switch true-value="Y" false-value="D"
-              :value="row.modelStatus"></b-switch>
+              :value="row.modelStatus"
+              @on-change="handleSwitchChange($event, row.id)"></b-switch>
           </template>
           <!-- 操作栏 -->
           <template v-slot:action="{ row }">
@@ -56,6 +57,8 @@
                 <b-icon name="ios-arrow-down"></b-icon>
               </a>
               <b-dropdown-menu slot="list">
+                <b-dropdown-item :style="colorPrimary"
+                  @click.native="handleSetDefault(row.id)">设为默认</b-dropdown-item>
                 <b-dropdown-item :style="colorSuccess">克隆</b-dropdown-item>
                 <b-dropdown-item :style="colorDanger"
                   @click.native="handleRemove(row.id)">删除</b-dropdown-item>
@@ -83,7 +86,11 @@
   import permission from '../../../common/mixins/permission'
   import Edit from './Edit'
   import { getEvalCommonStatus, getEvalSysDefault } from '../../../api/enum.api'
-  import { getSubjectTypeTree, getRatingModelList, deleteRatingModel } from '../../../api/credit-rating/rating-model.api'
+  import {
+    getSubjectTypeTree, getRatingModelList,
+    deleteRatingModel, setStatus,
+    setSysDefault
+  } from '../../../api/credit-rating/rating-model.api'
 
   export default {
     name: 'RatingModel',
@@ -150,11 +157,7 @@
         this.editData = row
         this.openEditPage('modify')
       },
-      // 编辑组件关闭
-      handleClose () {
-        this.editData = null
-        this.handleCancel()
-      },
+      // 删除的回调
       async handleRemove (id) {
         this.$confirm({
           title: '删除',
@@ -177,10 +180,62 @@
           }
         })
       },
+      // 编辑组件关闭
+      handleClose () {
+        this.editData = null
+        this.handleCancel()
+      },
       // 编辑组件成功
       handleEditSuccess () {
         this.searchList()
         this.handleClose()
+      },
+      // 状态开关的回调
+      async handleSwitchChange (status, id) {
+        try {
+          const [success, errorMessage] = await setStatus(id)
+          if (success) {
+            this.$message({
+              type: 'success',
+              content: '操作成功'
+            })
+          } else {
+            this.$notice.danger({
+            title: '操作失败',
+            desc: errorMessage
+          })
+          }
+        } catch (error) {
+          this.$notice.danger({
+            title: '操作失败',
+            desc: error
+          })
+          console.log(error)
+        }
+      },
+      // 设为默认的回调
+      async handleSetDefault (id) {
+        try {
+          const [success, errorMessage] = await setSysDefault(id)
+          if (success) {
+            this.searchList()
+            this.$message({
+              type: 'success',
+              content: '操作成功'
+            })
+          } else {
+            this.$notice.danger({
+              title: '操作失败',
+              desc: errorMessage
+            })
+          }
+        } catch (error) {
+          this.$notice.danger({
+            title: '操作失败',
+            desc: error
+          })
+          console.log(error)
+        }
       },
       async getEnum() {
         // 主体类别树信息 code=A

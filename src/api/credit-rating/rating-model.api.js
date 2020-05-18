@@ -154,3 +154,57 @@ export async function deleteRatingModel(id) {
     }
   })
 }
+
+/**
+ * @author haodongdong
+ * @description 启用禁用
+ * @param {*} params
+ * @returns Promise
+ */
+export async function setStatus(id) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/api/eval/model/changeStatus',
+        method: 'post',
+        params: {
+          id
+        }
+      })
+      if (res.data.successful) {
+        resolve([true])
+      } else {
+        resolve([false, res.data.message])
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
+ * @description 设置缺省评级模型
+ * @param {*} params
+ * @returns Promise
+ */
+export async function setSysDefault(id) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/api/eval/model/changeSysDefault',
+        method: 'post',
+        params: {
+          id
+        }
+      })
+      if (res.data.successful) {
+        resolve([true])
+      } else {
+        resolve([false, res.data.message])
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
