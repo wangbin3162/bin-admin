@@ -3,13 +3,17 @@
     <div style="width: 100%;line-height:32px;" flex="main:justify">
       <span>校验: </span>
       <div>
-        <b-popover
-          confirm width="200"
-          title="确定重载校验配置吗?"
-          ok-text="是" cancel-text="否"
-          @on-ok="refreshRule">
-          <b-icon name="ios-refresh" style="vertical-align: -1px;cursor: pointer;"/>
-        </b-popover>
+        <b-tooltip content="初始化校验"
+                   style="margin: 0 10px;">
+          <b-button type="text" icon="ios-refresh" text-color="#666"
+                    :icon-style="{fontSize:'20px'}"
+                    @click="refreshRule"/>
+        </b-tooltip>
+        <b-tooltip content="恢复修改前校验">
+          <b-button type="text" icon="ios-git-pull-request" text-color="#666"
+                    :icon-style="{fontSize:'20px'}"
+                    @click="reload"/>
+        </b-tooltip>
         <v-toggle-show v-model="showReal" show-text="显示实际值" hide-text="隐藏实际值"/>
       </div>
     </div>
@@ -25,7 +29,6 @@
           <b-dropdown-item :name="RULE.length">长度</b-dropdown-item>
           <b-dropdown-item :name="RULE.email">邮箱</b-dropdown-item>
           <b-dropdown-item :name="RULE.phone">手机号码</b-dropdown-item>
-          <b-dropdown-item :name="RULE.idCode">身份证号</b-dropdown-item>
           <b-dropdown-item :name="RULE.regexp">正则匹配</b-dropdown-item>
         </b-dropdown-menu>
       </b-dropdown>
@@ -36,6 +39,7 @@
           <b-icon name="ios-arrow-down"></b-icon>
         </b-button>
         <b-dropdown-menu slot="list">
+          <b-dropdown-item :name="RULE.idCode">身份证号</b-dropdown-item>
           <b-dropdown-item :name="RULE.unifiedCode">统一社会信用代码</b-dropdown-item>
           <b-dropdown-item :name="RULE.orgInstCode">组织机构代码</b-dropdown-item>
           <b-dropdown-item :name="RULE.regNo">工商注册号</b-dropdown-item>
@@ -141,38 +145,6 @@
         </b-popover>
       </div>
     </div>
-    <!--身份证-->
-    <div class="params" v-if="rulesObj[RULE.idCode]">
-      <div class="title">
-        <span class="param-tip">规则名：</span>
-        <b-tag type="primary" no-border :tag-style="{padding:'3px',margin:'0',width:'100%'}">身份证</b-tag>
-      </div>
-      <div class="number">
-        <b-tooltip content="为空时独立校验">
-          <span class="param-tip">前置字段：</span>
-        </b-tooltip>
-        <b-input v-model="rulesObj[RULE.idCode].preField" size="mini"
-                 @on-change="emitParamsToValue"/>
-      </div>
-      <div class="info">
-        <span class="param-tip">错误提示：</span>
-        <b-input v-model.trim="rulesObj[RULE.idCode].message" size="mini"
-                 @on-change="emitParamsToValue"/>
-      </div>
-      <div class="number" style="padding-left: 10px;">
-        <span class="param-tip">忽略大小写：</span>
-        <b-switch v-model="rulesObj[RULE.idCode].ignoreCase" size="small"
-                  @on-change="emitParamsToValue"/>
-      </div>
-      <div class="delete">
-        <b-popover confirm title="确认删除此项吗?" width="170" style="margin-top: 18px;"
-                   @on-ok="removeRules(RULE.idCode)">
-          <span class="remove">
-            <b-icon name="ios-remove-circle-outline" size="22" color="#f5222d"/>
-          </span>
-        </b-popover>
-      </div>
-    </div>
     <!--正则匹配-->
     <div class="params" v-if="rulesObj[RULE.regexp]">
       <div class="title">
@@ -197,6 +169,38 @@
       <div class="delete">
         <b-popover confirm title="确认删除此项吗?" width="170" style="margin-top: 18px;"
                    @on-ok="removeRules(RULE.regexp)">
+          <span class="remove">
+            <b-icon name="ios-remove-circle-outline" size="22" color="#f5222d"/>
+          </span>
+        </b-popover>
+      </div>
+    </div>
+    <!--身份证-->
+    <div class="params" v-if="rulesObj[RULE.idCode]">
+      <div class="title">
+        <span class="param-tip">规则名：</span>
+        <b-tag type="warning" no-border :tag-style="{padding:'3px',margin:'0',width:'100%'}">身份证</b-tag>
+      </div>
+      <div class="number">
+        <b-tooltip content="为空时独立校验">
+          <span class="param-tip">前置字段：</span>
+        </b-tooltip>
+        <b-input v-model="rulesObj[RULE.idCode].preField" size="mini"
+                 @on-change="emitParamsToValue"/>
+      </div>
+      <div class="info">
+        <span class="param-tip">错误提示：</span>
+        <b-input v-model.trim="rulesObj[RULE.idCode].message" size="mini"
+                 @on-change="emitParamsToValue"/>
+      </div>
+      <div class="number" style="padding-left: 10px;">
+        <span class="param-tip">忽略大小写：</span>
+        <b-switch v-model="rulesObj[RULE.idCode].ignoreCase" size="small"
+                  @on-change="emitParamsToValue"/>
+      </div>
+      <div class="delete">
+        <b-popover confirm title="确认删除此项吗?" width="170" style="margin-top: 18px;"
+                   @on-ok="removeRules(RULE.idCode)">
           <span class="remove">
             <b-icon name="ios-remove-circle-outline" size="22" color="#f5222d"/>
           </span>
@@ -480,6 +484,10 @@
     watch: {
       value: {
         handler(val) {
+          // 存储原始值
+          if (!this.reloadRules) {
+            this.reloadRules = val
+          }
           try {
             const rules = JSON.parse(val)
             this.rulesObj = rules
@@ -495,7 +503,7 @@
               })
               this.checkRulesMap = new Map(this.checkRulesArr)
               // console.log('=======update value end=======') // 调试，可禁用
-              // // 再根据是否包含必填校验判断
+              // 再根据是否包含必填校验判断
               this.isRequired = this.checkRulesMap.has(RULE.required)
             }
           } catch (e) {
@@ -551,18 +559,18 @@
               ...this.normalCfg
             }])
             break
+          case RULE.regexp:
+            this.checkRulesArr.push([ruleType, {
+              regexp: '',
+              message: '正则表达式不匹配',
+              ...this.normalCfg
+            }])
+            break
           case RULE.idCode:
             this.checkRulesArr.push([ruleType, {
               preField: 'id_type',
               message: '身份证格式不正确',
               ignoreCase: true,
-              ...this.normalCfg
-            }])
-            break
-          case RULE.regexp:
-            this.checkRulesArr.push([ruleType, {
-              regexp: '',
-              message: '正则表达式不匹配',
               ...this.normalCfg
             }])
             break
@@ -645,6 +653,13 @@
           this.removeRules(RULE.required)
         }
       },
+      // 重载校验信息
+      reload() {
+        if (this.reloadRules) {
+          this.$emit('input', this.reloadRules)
+          this.$emit('on-change', this.reloadRules)
+        }
+      },
       // 刷新重载rules
       refreshRule() {
         this.checkRulesMap.clear()
@@ -686,7 +701,7 @@
   }
 </script>
 
-<style scoped lang="stylus">
+<style lang="stylus">
   .validator-wrap {
     width: 100%;
     margin-bottom: 16px;
@@ -718,6 +733,9 @@
         flex: 0 0 30px;
         width: 30px;
         text-align: center;
+      }
+      .bin-input-mini, .bin-input-number-mini input {
+        font-size: 12px;
       }
     }
     .param-tip {
