@@ -73,7 +73,8 @@
     <edit v-if="isEdit"
       @close="handleClose"
       @success="handleEditSuccess"
-      :title="editTitle"></edit>
+      :title="editTitle"
+      :editData="editData"></edit>
   </div>
 </template>
 
@@ -92,9 +93,9 @@
     },
     data () {
       return {
-        personClassEnum: {}, // 主题类别枚举
         statusEnum: {}, // 状态枚举
         defaultEnum: {}, // 缺省模型枚举
+        editData: null, // 待编辑数据
         listQuery: {
           modelName: '',
           bizType: [],
@@ -117,6 +118,9 @@
     computed: {
       subjectType () {
         return this.$store.state.ratingModel.subjectType
+      },
+      personClassEnum () {
+        return this.$store.state.ratingModel.personClassEnum
       }
     },
     created () {
@@ -143,10 +147,12 @@
       },
       // 修改
       handleModify (row) {
+        this.editData = row
         this.openEditPage('modify')
       },
       // 编辑组件关闭
       handleClose () {
+        this.editData = null
         this.handleCancel()
       },
       async handleRemove (id) {
@@ -174,7 +180,7 @@
       // 编辑组件成功
       handleEditSuccess () {
         this.searchList()
-        this.handleCancel()
+        this.handleClose()
       },
       async getEnum() {
         // 主体类别树信息 code=A
@@ -210,7 +216,7 @@
           personClasses.forEach(item => {
             map[item.key] = item.value
           })
-          this.personClassEnum = map // 主体类别枚举
+          this.$store.commit('SET_PERSON_CLASS_ENUM', map) // 设置主体类别枚举
           this.statusEnum = statusEnum // 状态枚举
           this.defaultEnum = defaultEnum // 缺省模型枚举
         } catch (error) {

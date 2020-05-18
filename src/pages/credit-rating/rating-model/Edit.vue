@@ -19,10 +19,11 @@
           <b-row>
             <b-col span="12">
               <b-form-item label="主体类别" prop="personClass">
-                <b-cascader v-model="personClass"
+                <b-cascader v-if="!editData" v-model="personClass"
                   :data="subjectType"
                   change-on-select
                   @on-change="handleSubjectChange"></b-cascader>
+                <b-input v-else :value="personClassEnum[form.personClass]" :disabled="editDisabled"></b-input>
               </b-form-item>
             </b-col>
             <b-col span="12">
@@ -63,7 +64,8 @@
   export default {
     name: 'RatingModelEdit',
     props: [
-      'title'
+      'title',
+      'editData'
     ],
     components: {
       SelectLevel
@@ -73,7 +75,8 @@
         open: false, // 打开选择等级标准弹框
         btnLoading: false,
         ratingName: '',
-        personClass: [],
+        personClass: [], // 主题类别级联选择框数据结构
+        editDisabled: false, // 用于编辑时禁止相关编辑项
         form: {
           modelName: '',
           modelCode: '',
@@ -108,10 +111,13 @@
     computed: {
       subjectType () {
         return this.$store.state.ratingModel.subjectType
+      },
+      personClassEnum () {
+        return this.$store.state.ratingModel.personClassEnum
       }
     },
     created () {
-
+      this.init()
     },
     methods: {
       // 主题类别回调
@@ -155,6 +161,13 @@
        } catch (error) {
          console.log(error)
        }
+      },
+      // 针对编辑做初始化
+      init () {
+        if (this.editData) {
+          this.form = { ...this.editData }
+          this.editDisabled = true
+        }
       }
     }
   }

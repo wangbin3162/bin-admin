@@ -17,11 +17,15 @@ function treeToCascade(tree) {
 
 const ratingModel = {
   state: {
-    subjectType: [] // 主体类别级联框数据结构
+    subjectType: [], // 主体类别级联框数据结构
+    personClassEnum: {} // 主题类别枚举结构
   },
   mutations: {
     SET_SBUJECT_TYPE (state, subjectType) {
       state.subjectType = subjectType
+    },
+    SET_PERSON_CLASS_ENUM (state, personClassEnum) {
+      state.personClassEnum = personClassEnum
     }
   },
   actions: {
