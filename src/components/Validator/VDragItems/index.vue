@@ -4,13 +4,15 @@
                v-bind="{ group: 'item', ghostClass:'item-over', handle: '.item-inner' }"
                @end="onDragEnd">
       <div v-for="(item,index) in totalData" :key="index" class="item"
-           :class="{'is-textarea':item.controlType==='TEXTAREA'}">
+           :class="[{'ignore':item.status==='ignore'},{'is-textarea':item.controlType==='TEXTAREA'}]">
         <!--自定义拖拽实现-->
         <!--        <div class="item-inner" @click="handleSelect(index)"-->
         <!--             :class="{'item-selected':currentIndex===index}"-->
         <!--             draggable="true" @dragstart="onDrag($event,index)" @drop="onDrop($event,index)"-->
         <!--             @dragenter="onEnter($event)" @dragleave="onLeave($event)" @dragover="allowDrop($event)">-->
-        <div class="item-inner" @click="handleSelect(index)" :class="{'item-selected':currentIndex===index}">
+        <div class="item-inner" @click="handleSelect(index)"
+             :class="{'item-selected':currentIndex===index}"
+             :title="item.fieldTitle">
           {{ item.fieldTitle }}
         </div>
         <span class="item-field">{{ item.fieldName }}</span>
@@ -164,6 +166,9 @@
     }
     &.is-textarea {
       width: 100%;
+    }
+    &.ignore .item-inner {
+      background: #f3f3f3;
     }
   }
   @keyframes selectAnim {
