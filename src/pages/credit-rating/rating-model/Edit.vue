@@ -12,7 +12,7 @@
             <b-col span="12">
               <b-form-item label="模型编码" prop="modelCode">
                 <b-input v-model="form.modelCode" placeholder="请输入模型编码"
-                  :disabled="editDisabled"></b-input>
+                  :disabled="codeDisabled"></b-input>
               </b-form-item>
             </b-col>
           </b-row>
@@ -112,11 +112,14 @@
       }
     },
     computed: {
-      subjectType () {
+      subjectType () { // 级联框数据
         return this.$store.state.ratingModel.subjectType
       },
-      personClassEnum () {
+      personClassEnum () { // 主题类别回显用枚举
         return this.$store.state.ratingModel.personClassEnum
+      },
+      codeDisabled () { // 编码输入框是否disabled，新增时不disabled，编辑时如果为null或''不disabled，不为空则disabled
+        return (this.form.modelCode !== null && this.form.modelCode !== '') && this.editDisabled
       }
     },
     created () {
