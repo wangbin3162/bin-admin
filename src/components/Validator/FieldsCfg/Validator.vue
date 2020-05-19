@@ -51,429 +51,415 @@
         </b-dropdown-menu>
       </b-dropdown>
     </div>
-    <!--必填项参数-->
-    <div class="params" v-if="rulesObj[RULE.required]">
-      <div class="title">
-        <span class="param-tip">规则名：</span>
-        <b-tag type="primary" no-border :tag-style="{padding:'3px',margin:'0',width:'100%'}">必填项</b-tag>
-      </div>
-      <div class="info">
-        <span class="param-tip">错误提示：</span>
-        <b-input v-model.trim="rulesObj[RULE.required].message" size="mini"
-                 @on-change="emitParamsToValue"/>
-      </div>
-      <!--      <div class="trigger">-->
-      <!--        <span class="param-tip">触发事件：</span>-->
-      <!--        <b-input v-model.trim="rulesObj[RULE.required].trigger" size="mini"-->
-      <!--                 @on-change="emitParamsToValue"/>-->
-      <!--      </div>-->
-      <div class="delete">
-        <b-popover confirm title="确认删除此项吗?" width="170" style="margin-top: 18px;"
-                   @on-ok="removeRules(RULE.required)">
+    <!--校验模块内容-->
+    <draggable v-model="checkRulesArr"
+               v-bind="{ group:'rules', animation: 200, ghostClass:'ghost', handle:'.rules-drag' }"
+               @end="onDragEnd">
+      <transition-group name="fade" tag="div" class="rules-list">
+        <div v-for="(rule,index) in checkRulesArr" :key="index">
+          <!--必填项参数-->
+          <div class="params" v-if="rule.name===RULE.required">
+            <div class="title">
+              <span class="param-tip">规则名：</span>
+              <b-tag type="primary" no-border :tag-style="{padding:'3px',margin:'0',width:'100%'}" class="rules-drag">
+                必填项
+              </b-tag>
+            </div>
+            <div class="info">
+              <span class="param-tip">错误提示：</span>
+              <b-input v-model.trim="checkRulesArr[index].message" size="mini" @on-change="emitValue"/>
+            </div>
+            <div class="delete">
+              <b-popover confirm title="确认删除此项吗?" width="170" @on-ok="removeRules(index)">
+            <span class="remove">
+            <b-icon name="ios-remove-circle-outline" size="22" color="#f5222d"/>
+          </span>
+              </b-popover>
+            </div>
+          </div>
+          <!--长度参数-->
+          <div class="params" v-if="rule.name===RULE.length">
+            <div class="title">
+              <span class="param-tip">规则名：</span>
+              <b-tag type="primary" no-border :tag-style="{padding:'3px',margin:'0',width:'100%'}" class="rules-drag">
+                长度参数
+              </b-tag>
+            </div>
+            <div class="number">
+              <span class="param-tip">最小值：</span>
+              <b-input-number v-model="checkRulesArr[index].min" size="mini" @on-change="emitValue"/>
+            </div>
+            <div class="number">
+              <span class="param-tip">最大值：</span>
+              <b-input-number v-model="checkRulesArr[index].max" size="mini" @on-change="emitValue"/>
+            </div>
+            <div class="info">
+              <span class="param-tip">错误提示：</span>
+              <b-input v-model.trim="checkRulesArr[index].message" size="mini" @on-change="emitValue"/>
+            </div>
+            <div class="delete">
+              <b-popover confirm title="确认删除此项吗?" width="170" @on-ok="removeRules(index)">
           <span class="remove">
             <b-icon name="ios-remove-circle-outline" size="22" color="#f5222d"/>
           </span>
-        </b-popover>
-      </div>
-    </div>
-    <!--长度参数-->
-    <div class="params" v-if="rulesObj[RULE.length]">
-      <div class="title">
-        <span class="param-tip">规则名：</span>
-        <b-tag type="primary" no-border :tag-style="{padding:'3px',margin:'0',width:'100%'}">长度参数</b-tag>
-      </div>
-      <div class="number">
-        <span class="param-tip">最小值：</span>
-        <b-input-number v-model="rulesObj[RULE.length].min" size="mini"
-                        @on-change="emitParamsToValue"/>
-      </div>
-      <div class="number">
-        <span class="param-tip">最大值：</span>
-        <b-input-number v-model="rulesObj[RULE.length].max" size="mini"
-                        @on-change="emitParamsToValue"/>
-      </div>
-      <div class="info">
-        <span class="param-tip">错误提示：</span>
-        <b-input v-model.trim="rulesObj[RULE.length].message" size="mini"
-                 @on-change="emitParamsToValue"/>
-      </div>
-      <div class="delete">
-        <b-popover confirm title="确认删除此项吗?" width="170" style="margin-top: 18px;"
-                   @on-ok="removeRules(RULE.length)">
+              </b-popover>
+            </div>
+          </div>
+          <!--邮箱参数-->
+          <div class="params" v-if="rule.name===RULE.email">
+            <div class="title">
+              <span class="param-tip">规则名：</span>
+              <b-tag type="primary" no-border :tag-style="{padding:'3px',margin:'0',width:'100%'}" class="rules-drag">
+                邮箱参数
+              </b-tag>
+            </div>
+            <div class="info">
+              <span class="param-tip">错误提示：</span>
+              <b-input v-model.trim="checkRulesArr[index].message" size="mini" @on-change="emitValue"/>
+            </div>
+            <div class="delete">
+              <b-popover confirm title="确认删除此项吗?" width="170" @on-ok="removeRules(index)">
           <span class="remove">
             <b-icon name="ios-remove-circle-outline" size="22" color="#f5222d"/>
           </span>
-        </b-popover>
-      </div>
-    </div>
-    <!--邮箱参数-->
-    <div class="params" v-if="rulesObj[RULE.email]">
-      <div class="title">
-        <span class="param-tip">规则名：</span>
-        <b-tag type="primary" no-border :tag-style="{padding:'3px',margin:'0',width:'100%'}">邮箱参数</b-tag>
-      </div>
-      <div class="info">
-        <span class="param-tip">错误提示：</span>
-        <b-input v-model.trim="rulesObj[RULE.email].message" size="mini"
-                 @on-change="emitParamsToValue"/>
-      </div>
-      <div class="delete">
-        <b-popover confirm title="确认删除此项吗?" width="170" style="margin-top: 18px;"
-                   @on-ok="removeRules(RULE.email)">
+              </b-popover>
+            </div>
+          </div>
+          <!--手机号码-->
+          <div class="params" v-if="rule.name===RULE.phone">
+            <div class="title">
+              <span class="param-tip">规则名：</span>
+              <b-tag type="primary" no-border :tag-style="{padding:'3px',margin:'0',width:'100%'}" class="rules-drag">
+                手机号码
+              </b-tag>
+            </div>
+            <div class="info">
+              <span class="param-tip">错误提示：</span>
+              <b-input v-model.trim="checkRulesArr[index].message" size="mini" @on-change="emitValue"/>
+            </div>
+            <div class="delete">
+              <b-popover confirm title="确认删除此项吗?" width="170" @on-ok="removeRules(index)">
           <span class="remove">
             <b-icon name="ios-remove-circle-outline" size="22" color="#f5222d"/>
           </span>
-        </b-popover>
-      </div>
-    </div>
-    <!--手机号码-->
-    <div class="params" v-if="rulesObj[RULE.phone]">
-      <div class="title">
-        <span class="param-tip">规则名：</span>
-        <b-tag type="primary" no-border :tag-style="{padding:'3px',margin:'0',width:'100%'}">手机号码</b-tag>
-      </div>
-      <div class="info">
-        <span class="param-tip">错误提示：</span>
-        <b-input v-model.trim="rulesObj[RULE.phone].message" size="mini"
-                 @on-change="emitParamsToValue"/>
-      </div>
-      <div class="delete">
-        <b-popover confirm title="确认删除此项吗?" width="170" style="margin-top: 18px;"
-                   @on-ok="removeRules(RULE.phone)">
+              </b-popover>
+            </div>
+          </div>
+          <!--正则匹配-->
+          <div class="params" v-if="rule.name===RULE.regexp">
+            <div class="title">
+              <span class="param-tip">规则名：</span>
+              <b-tag type="primary" no-border :tag-style="{padding:'3px',margin:'0',width:'100%'}" class="rules-drag">
+                正则匹配
+              </b-tag>
+            </div>
+            <div class="info">
+              <b-row :gutter="10">
+                <b-col span="12">
+                  <span class="param-tip">正则规则：</span>
+                  <b-input v-model.trim="checkRulesArr[index].regexp" size="mini" placeholder="需输入字符格式"
+                           @on-change="emitValue"/>
+                </b-col>
+                <b-col span="12">
+                  <span class="param-tip">错误提示：</span>
+                  <b-input v-model.trim="checkRulesArr[index].message" size="mini" @on-change="emitValue"/>
+                </b-col>
+              </b-row>
+            </div>
+            <div class="delete">
+              <b-popover confirm title="确认删除此项吗?" width="170" @on-ok="removeRules(index)">
           <span class="remove">
             <b-icon name="ios-remove-circle-outline" size="22" color="#f5222d"/>
           </span>
-        </b-popover>
-      </div>
-    </div>
-    <!--正则匹配-->
-    <div class="params" v-if="rulesObj[RULE.regexp]">
-      <div class="title">
-        <span class="param-tip">规则名：</span>
-        <b-tag type="primary" no-border :tag-style="{padding:'3px',margin:'0',width:'100%'}">正则匹配</b-tag>
-      </div>
-      <div class="info">
-        <b-row :gutter="10">
-          <b-col span="12">
-            <span class="param-tip">正则规则：</span>
-            <b-input v-model.trim="rulesObj[RULE.regexp].regexp" size="mini"
-                     placeholder="需输入字符格式"
-                     @on-change="emitParamsToValue"/>
-          </b-col>
-          <b-col span="12">
-            <span class="param-tip">错误提示：</span>
-            <b-input v-model.trim="rulesObj[RULE.regexp].message" size="mini"
-                     @on-change="emitParamsToValue"/>
-          </b-col>
-        </b-row>
-      </div>
-      <div class="delete">
-        <b-popover confirm title="确认删除此项吗?" width="170" style="margin-top: 18px;"
-                   @on-ok="removeRules(RULE.regexp)">
+              </b-popover>
+            </div>
+          </div>
+          <!--身份证-->
+          <div class="params" v-if="rule.name===RULE.idCode">
+            <div class="title">
+              <span class="param-tip">规则名：</span>
+              <b-tag type="warning" no-border :tag-style="{padding:'3px',margin:'0',width:'100%'}" class="rules-drag">
+                身份证
+              </b-tag>
+            </div>
+            <div class="number">
+              <b-tooltip content="为空时独立校验">
+                <span class="param-tip">前置字段：</span>
+              </b-tooltip>
+              <b-input v-model.trim="checkRulesArr[index].preField" size="mini" @on-change="emitValue"/>
+            </div>
+            <div class="info">
+              <span class="param-tip">错误提示：</span>
+              <b-input v-model.trim="checkRulesArr[index].message" size="mini" @on-change="emitValue"/>
+            </div>
+            <div class="number" style="padding-left: 10px;">
+              <span class="param-tip">忽略大小写：</span>
+              <b-switch v-model="checkRulesArr[index].ignoreCase" size="small" @on-change="emitValue"/>
+            </div>
+            <div class="delete">
+              <b-popover confirm title="确认删除此项吗?" width="170" @on-ok="removeRules(index)">
           <span class="remove">
             <b-icon name="ios-remove-circle-outline" size="22" color="#f5222d"/>
           </span>
-        </b-popover>
-      </div>
-    </div>
-    <!--身份证-->
-    <div class="params" v-if="rulesObj[RULE.idCode]">
-      <div class="title">
-        <span class="param-tip">规则名：</span>
-        <b-tag type="warning" no-border :tag-style="{padding:'3px',margin:'0',width:'100%'}">身份证</b-tag>
-      </div>
-      <div class="number">
-        <b-tooltip content="为空时独立校验">
-          <span class="param-tip">前置字段：</span>
-        </b-tooltip>
-        <b-input v-model.trim="rulesObj[RULE.idCode].preField" size="mini"
-                 @on-change="emitParamsToValue"/>
-      </div>
-      <div class="info">
-        <span class="param-tip">错误提示：</span>
-        <b-input v-model.trim="rulesObj[RULE.idCode].message" size="mini"
-                 @on-change="emitParamsToValue"/>
-      </div>
-      <div class="number" style="padding-left: 10px;">
-        <span class="param-tip">忽略大小写：</span>
-        <b-switch v-model="rulesObj[RULE.idCode].ignoreCase" size="small"
-                  @on-change="emitParamsToValue"/>
-      </div>
-      <div class="delete">
-        <b-popover confirm title="确认删除此项吗?" width="170" style="margin-top: 18px;"
-                   @on-ok="removeRules(RULE.idCode)">
+              </b-popover>
+            </div>
+          </div>
+          <!--统一社会信用代码-->
+          <div class="params" v-if="rule.name===RULE.unifiedCode">
+            <div class="title">
+              <span class="param-tip">规则名：</span>
+              <b-tag type="warning" no-border :tag-style="{padding:'3px',margin:'0',width:'100%'}" class="rules-drag">
+                社会信用代码
+              </b-tag>
+            </div>
+            <div class="number">
+              <b-tooltip content="为空时独立校验">
+                <span class="param-tip">前置字段：</span>
+              </b-tooltip>
+              <b-input v-model.trim="checkRulesArr[index].preField" size="mini" @on-change="emitValue"/>
+            </div>
+            <div class="info">
+              <span class="param-tip">错误提示：</span>
+              <b-input v-model.trim="checkRulesArr[index].message" size="mini" @on-change="emitValue"/>
+            </div>
+            <div class="number" style="padding-left: 10px;">
+              <span class="param-tip">忽略大小写：</span>
+              <b-switch v-model="checkRulesArr[index].ignoreCase" size="small" @on-change="emitValue"/>
+            </div>
+            <div class="delete">
+              <b-popover confirm title="确认删除此项吗?" width="170" @on-ok="removeRules(index)">
           <span class="remove">
             <b-icon name="ios-remove-circle-outline" size="22" color="#f5222d"/>
           </span>
-        </b-popover>
-      </div>
-    </div>
-    <!--统一社会信用代码-->
-    <div class="params" v-if="rulesObj[RULE.unifiedCode]">
-      <div class="title">
-        <span class="param-tip">规则名：</span>
-        <b-tag type="warning" no-border :tag-style="{padding:'3px',margin:'0',width:'100%'}">社会信用代码</b-tag>
-      </div>
-      <div class="number">
-        <b-tooltip content="为空时独立校验">
-          <span class="param-tip">前置字段：</span>
-        </b-tooltip>
-        <b-input v-model.trim="rulesObj[RULE.unifiedCode].preField" size="mini"
-                 @on-change="emitParamsToValue"/>
-      </div>
-      <div class="info">
-        <span class="param-tip">错误提示：</span>
-        <b-input v-model.trim="rulesObj[RULE.unifiedCode].message" size="mini"
-                 @on-change="emitParamsToValue"/>
-      </div>
-      <div class="number" style="padding-left: 10px;">
-        <span class="param-tip">忽略大小写：</span>
-        <b-switch v-model="rulesObj[RULE.unifiedCode].ignoreCase" size="small"
-                  @on-change="emitParamsToValue"/>
-      </div>
-      <div class="delete">
-        <b-popover confirm title="确认删除此项吗?" width="170" style="margin-top: 18px;"
-                   @on-ok="removeRules(RULE.unifiedCode)">
+              </b-popover>
+            </div>
+          </div>
+          <!--组织机构代码-->
+          <div class="params" v-if="rule.name===RULE.orgInstCode">
+            <div class="title">
+              <span class="param-tip">规则名：</span>
+              <b-tag type="warning" no-border :tag-style="{padding:'3px',margin:'0',width:'100%'}" class="rules-drag">
+                组织机构代码
+              </b-tag>
+            </div>
+            <div class="number">
+              <b-tooltip content="为空时独立校验">
+                <span class="param-tip">前置字段：</span>
+              </b-tooltip>
+              <b-input v-model.trim="checkRulesArr[index].preField" size="mini" @on-change="emitValue"/>
+            </div>
+            <div class="info">
+              <span class="param-tip">错误提示：</span>
+              <b-input v-model.trim="checkRulesArr[index].message" size="mini" @on-change="emitValue"/>
+            </div>
+            <div class="number" style="padding-left: 10px;">
+              <span class="param-tip">忽略大小写：</span>
+              <b-switch v-model="checkRulesArr[index].ignoreCase" size="small" @on-change="emitValue"/>
+            </div>
+            <div class="delete">
+              <b-popover confirm title="确认删除此项吗?" width="170" @on-ok="removeRules(index)">
           <span class="remove">
             <b-icon name="ios-remove-circle-outline" size="22" color="#f5222d"/>
           </span>
-        </b-popover>
-      </div>
-    </div>
-    <!--组织机构代码-->
-    <div class="params" v-if="rulesObj[RULE.orgInstCode]">
-      <div class="title">
-        <span class="param-tip">规则名：</span>
-        <b-tag type="warning" no-border :tag-style="{padding:'3px',margin:'0',width:'100%'}">组织机构代码</b-tag>
-      </div>
-      <div class="number">
-        <b-tooltip content="为空时独立校验">
-          <span class="param-tip">前置字段：</span>
-        </b-tooltip>
-        <b-input v-model.trim="rulesObj[RULE.orgInstCode].preField" size="mini"
-                 @on-change="emitParamsToValue"/>
-      </div>
-      <div class="info">
-        <span class="param-tip">错误提示：</span>
-        <b-input v-model.trim="rulesObj[RULE.orgInstCode].message" size="mini"
-                 @on-change="emitParamsToValue"/>
-      </div>
-      <div class="number" style="padding-left: 10px;">
-        <span class="param-tip">忽略大小写：</span>
-        <b-switch v-model="rulesObj[RULE.orgInstCode].ignoreCase" size="small"
-                  @on-change="emitParamsToValue"/>
-      </div>
-      <div class="delete">
-        <b-popover confirm title="确认删除此项吗?" width="170" style="margin-top: 18px;"
-                   @on-ok="removeRules(RULE.orgInstCode)">
+              </b-popover>
+            </div>
+          </div>
+          <!--工商注册号-->
+          <div class="params" v-if="rule.name===RULE.regNo">
+            <div class="title">
+              <span class="param-tip">规则名：</span>
+              <b-tag type="warning" no-border :tag-style="{padding:'3px',margin:'0',width:'100%'}" class="rules-drag">
+                工商注册号
+              </b-tag>
+            </div>
+            <div class="number">
+              <b-tooltip content="为空时独立校验">
+                <span class="param-tip">前置字段：</span>
+              </b-tooltip>
+              <b-input v-model="checkRulesArr[index].preField" size="mini" @on-change="emitValue"/>
+            </div>
+            <div class="info">
+              <span class="param-tip">错误提示：</span>
+              <b-input v-model.trim="checkRulesArr[index].message" size="mini" @on-change="emitValue"/>
+            </div>
+            <div class="number" style="padding-left: 10px;">
+              <span class="param-tip">忽略大小写：</span>
+              <b-switch v-model="checkRulesArr[index].ignoreCase" size="small" @on-change="emitValue"/>
+            </div>
+            <div class="delete">
+              <b-popover confirm title="确认删除此项吗?" width="170" @on-ok="removeRules(index)">
           <span class="remove">
             <b-icon name="ios-remove-circle-outline" size="22" color="#f5222d"/>
           </span>
-        </b-popover>
-      </div>
-    </div>
-    <!--工商注册号-->
-    <div class="params" v-if="rulesObj[RULE.regNo]">
-      <div class="title">
-        <span class="param-tip">规则名：</span>
-        <b-tag type="warning" no-border :tag-style="{padding:'3px',margin:'0',width:'100%'}">工商注册号</b-tag>
-      </div>
-      <div class="number">
-        <b-tooltip content="为空时独立校验">
-          <span class="param-tip">前置字段：</span>
-        </b-tooltip>
-        <b-input v-model="rulesObj[RULE.regNo].preField" size="mini"
-                 @on-change="emitParamsToValue"/>
-      </div>
-      <div class="info">
-        <span class="param-tip">错误提示：</span>
-        <b-input v-model.trim="rulesObj[RULE.regNo].message" size="mini"
-                 @on-change="emitParamsToValue"/>
-      </div>
-      <div class="number" style="padding-left: 10px;">
-        <span class="param-tip">忽略大小写：</span>
-        <b-switch v-model="rulesObj[RULE.regNo].ignoreCase" size="small"
-                  @on-change="emitParamsToValue"/>
-      </div>
-      <div class="delete">
-        <b-popover confirm title="确认删除此项吗?" width="170" style="margin-top: 18px;"
-                   @on-ok="removeRules(RULE.regNo)">
+              </b-popover>
+            </div>
+          </div>
+          <!--条件必填-->
+          <div class="params" v-if="rule.name===RULE.conditionRequired">
+            <div class="title">
+              <span class="param-tip">规则名：</span>
+              <b-tag type="warning" no-border :tag-style="{padding:'3px',margin:'0',width:'100%'}" class="rules-drag">
+                条件必填
+              </b-tag>
+            </div>
+            <div class="number">
+              <span class="param-tip">前置字段：</span>
+              <b-input v-model.trim="checkRulesArr[index].preField" size="mini" @on-change="emitValue"/>
+            </div>
+            <div class="number">
+              <span class="param-tip">前置字段值：</span>
+              <b-input v-model.trim="checkRulesArr[index].preFieldValue" size="mini" @on-change="emitValue"/>
+            </div>
+            <div class="info">
+              <span class="param-tip">错误提示：</span>
+              <b-input v-model.trim="checkRulesArr[index].message" size="mini" @on-change="emitValue"/>
+            </div>
+            <div class="delete">
+              <b-popover confirm title="确认删除此项吗?" width="170" @on-ok="removeRules(index)">
           <span class="remove">
             <b-icon name="ios-remove-circle-outline" size="22" color="#f5222d"/>
           </span>
-        </b-popover>
-      </div>
-    </div>
-    <!--条件必填-->
-    <div class="params" v-if="rulesObj[RULE.conditionRequired]">
-      <div class="title">
-        <span class="param-tip">规则名：</span>
-        <b-tag type="warning" no-border :tag-style="{padding:'3px',margin:'0',width:'100%'}">条件必填</b-tag>
-      </div>
-      <div class="number">
-        <span class="param-tip">前置字段：</span>
-        <b-input v-model.trim="rulesObj[RULE.conditionRequired].preField" size="mini"
-                 @on-change="emitParamsToValue"/>
-      </div>
-      <div class="number">
-        <span class="param-tip">前置字段值：</span>
-        <b-input v-model.trim="rulesObj[RULE.conditionRequired].preFieldValue" size="mini"
-                 @on-change="emitParamsToValue"/>
-      </div>
-      <div class="info">
-        <span class="param-tip">错误提示：</span>
-        <b-input v-model.trim="rulesObj[RULE.conditionRequired].message" size="mini"
-                 @on-change="emitParamsToValue"/>
-      </div>
-      <div class="delete">
-        <b-popover confirm title="确认删除此项吗?" width="170" style="margin-top: 18px;"
-                   @on-ok="removeRules(RULE.conditionRequired)">
+              </b-popover>
+            </div>
+          </div>
+          <!--条件必不填-->
+          <div class="params" v-if="rule.name===RULE.conditionNotRequired">
+            <div class="title">
+              <span class="param-tip">规则名：</span>
+              <b-tag type="warning" no-border :tag-style="{padding:'3px',margin:'0',width:'100%'}" class="rules-drag">
+                条件必不填
+              </b-tag>
+            </div>
+            <div class="number">
+              <span class="param-tip">前置字段：</span>
+              <b-input v-model.trim="checkRulesArr[index].preField" size="mini" @on-change="emitValue"/>
+            </div>
+            <div class="number">
+              <span class="param-tip">前置字段值：</span>
+              <b-input v-model.trim="checkRulesArr[index].preFieldValue" size="mini" @on-change="emitValue"/>
+            </div>
+            <div class="info">
+              <span class="param-tip">错误提示：</span>
+              <b-input v-model.trim="checkRulesArr[index].message" size="mini" @on-change="emitValue"/>
+            </div>
+            <div class="delete">
+              <b-popover confirm title="确认删除此项吗?" width="170" @on-ok="removeRules(index)">
           <span class="remove">
             <b-icon name="ios-remove-circle-outline" size="22" color="#f5222d"/>
           </span>
-        </b-popover>
-      </div>
-    </div>
-    <!--条件必不填-->
-    <div class="params" v-if="rulesObj[RULE.conditionNotRequired]">
-      <div class="title">
-        <span class="param-tip">规则名：</span>
-        <b-tag type="warning" no-border :tag-style="{padding:'3px',margin:'0',width:'100%'}">条件必不填</b-tag>
-      </div>
-      <div class="number">
-        <span class="param-tip">前置字段：</span>
-        <b-input v-model.trim="rulesObj[RULE.conditionNotRequired].preField" size="mini"
-                 @on-change="emitParamsToValue"/>
-      </div>
-      <div class="number">
-        <span class="param-tip">前置字段值：</span>
-        <b-input v-model.trim="rulesObj[RULE.conditionNotRequired].preFieldValue" size="mini"
-                 @on-change="emitParamsToValue"/>
-      </div>
-      <div class="info">
-        <span class="param-tip">错误提示：</span>
-        <b-input v-model.trim="rulesObj[RULE.conditionNotRequired].message" size="mini"
-                 @on-change="emitParamsToValue"/>
-      </div>
-      <div class="delete">
-        <b-popover confirm title="确认删除此项吗?" width="170" style="margin-top: 18px;"
-                   @on-ok="removeRules(RULE.conditionNotRequired)">
+              </b-popover>
+            </div>
+          </div>
+          <!--条件不为某值-->
+          <div class="params" v-if="rule.name===RULE.conditionNotBe">
+            <div class="title">
+              <span class="param-tip">规则名：</span>
+              <b-tag type="warning" no-border :tag-style="{padding:'3px',margin:'0',width:'100%'}" class="rules-drag">
+                条件不为某值
+              </b-tag>
+            </div>
+            <div class="number">
+              <span class="param-tip">前置字段：</span>
+              <b-input v-model.trim="checkRulesArr[index].preField" size="mini" @on-change="emitValue"/>
+            </div>
+            <div class="number">
+              <span class="param-tip">前置字段值：</span>
+              <b-input v-model.trim="checkRulesArr[index].preFieldValue" size="mini" @on-change="emitValue"/>
+            </div>
+            <div class="number">
+              <span class="param-tip">不是某值：</span>
+              <b-input v-model.trim="checkRulesArr[index].notValue" size="mini" @on-change="emitValue"/>
+            </div>
+            <div class="info">
+              <span class="param-tip">错误提示：</span>
+              <b-input v-model.trim="checkRulesArr[index].message" size="mini" @on-change="emitValue"/>
+            </div>
+            <div class="delete">
+              <b-popover confirm title="确认删除此项吗?" width="170" @on-ok="removeRules(index)">
           <span class="remove">
             <b-icon name="ios-remove-circle-outline" size="22" color="#f5222d"/>
           </span>
-        </b-popover>
-      </div>
-    </div>
-    <!--条件不为某值-->
-    <div class="params" v-if="rulesObj[RULE.conditionNotBe]">
-      <div class="title">
-        <span class="param-tip">规则名：</span>
-        <b-tag type="warning" no-border :tag-style="{padding:'3px',margin:'0',width:'100%'}">条件不为某值</b-tag>
-      </div>
-      <div class="number">
-        <span class="param-tip">前置字段：</span>
-        <b-input v-model.trim="rulesObj[RULE.conditionNotBe].preField" size="mini"
-                 @on-change="emitParamsToValue"/>
-      </div>
-      <div class="number">
-        <span class="param-tip">前置字段值：</span>
-        <b-input v-model.trim="rulesObj[RULE.conditionNotBe].preFieldValue" size="mini"
-                 @on-change="emitParamsToValue"/>
-      </div>
-      <div class="number">
-        <span class="param-tip">不是某值：</span>
-        <b-input v-model.trim="rulesObj[RULE.conditionNotBe].notValue" size="mini"
-                 @on-change="emitParamsToValue"/>
-      </div>
-      <div class="info">
-        <span class="param-tip">错误提示：</span>
-        <b-input v-model.trim="rulesObj[RULE.conditionNotBe].message" size="mini"
-                 @on-change="emitParamsToValue"/>
-      </div>
-      <div class="delete">
-        <b-popover confirm title="确认删除此项吗?" width="170" style="margin-top: 18px;"
-                   @on-ok="removeRules(RULE.conditionNotBe)">
+              </b-popover>
+            </div>
+          </div>
+          <!--值不能相同-->
+          <div class="params" v-if="rule.name===RULE.notSame">
+            <div class="title">
+              <span class="param-tip">规则名：</span>
+              <b-tag type="warning" no-border :tag-style="{padding:'3px',margin:'0',width:'100%'}" class="rules-drag">
+                值不能相同
+              </b-tag>
+            </div>
+            <div class="number">
+              <span class="param-tip">前置字段：</span>
+              <b-input v-model.trim="checkRulesArr[index].preField" size="mini" @on-change="emitValue"/>
+            </div>
+            <div class="info">
+              <span class="param-tip">错误提示：</span>
+              <b-input v-model.trim="checkRulesArr[index].message" size="mini" @on-change="emitValue"/>
+            </div>
+            <div class="delete">
+              <b-popover confirm title="确认删除此项吗?" width="170" @on-ok="removeRules(index)">
           <span class="remove">
             <b-icon name="ios-remove-circle-outline" size="22" color="#f5222d"/>
           </span>
-        </b-popover>
-      </div>
-    </div>
-    <!--值不能相同-->
-    <div class="params" v-if="rulesObj[RULE.notSame]">
-      <div class="title">
-        <span class="param-tip">规则名：</span>
-        <b-tag type="warning" no-border :tag-style="{padding:'3px',margin:'0',width:'100%'}">值不能相同</b-tag>
-      </div>
-      <div class="number">
-        <span class="param-tip">前置字段：</span>
-        <b-input v-model.trim="rulesObj[RULE.notSame].preField" size="mini"
-                 @on-change="emitParamsToValue"/>
-      </div>
-      <div class="info">
-        <span class="param-tip">错误提示：</span>
-        <b-input v-model.trim="rulesObj[RULE.notSame].message" size="mini"
-                 @on-change="emitParamsToValue"/>
-      </div>
-      <div class="delete">
-        <b-popover confirm title="确认删除此项吗?" width="170" style="margin-top: 18px;"
-                   @on-ok="removeRules(RULE.notSame)">
+              </b-popover>
+            </div>
+          </div>
+          <!--日期区间-->
+          <div class="params" v-if="rule.name===RULE.timeBound">
+            <div class="title">
+              <span class="param-tip">规则名：</span>
+              <b-tag type="warning" no-border :tag-style="{padding:'3px',margin:'0',width:'100%'}" class="rules-drag">
+                日期区间
+              </b-tag>
+            </div>
+            <div class="number">
+              <b-tooltip content="$now/yyyy-MM-dd/preField">
+                <span class="param-tip">前值字段：</span>
+              </b-tooltip>
+              <b-input v-model.trim="checkRulesArr[index].time" size="mini" @on-change="emitValue"/>
+            </div>
+            <div class="number">
+              <span class="param-tip">比较模式：</span>
+              <b-select v-model="checkRulesArr[index].compareMode" size="mini" @on-change="emitValue">
+                <b-option value="gt">&gt;</b-option>
+                <b-option value="ge">&ge;</b-option>
+                <b-option value="lt">&lt;</b-option>
+                <b-option value="le">&le;</b-option>
+              </b-select>
+            </div>
+            <div class="info">
+              <span class="param-tip">错误提示：</span>
+              <b-input v-model.trim="checkRulesArr[index].message" size="mini" @on-change="emitValue"/>
+            </div>
+            <div class="delete">
+              <b-popover confirm title="确认删除此项吗?" width="170" @on-ok="removeRules(index)">
           <span class="remove">
             <b-icon name="ios-remove-circle-outline" size="22" color="#f5222d"/>
           </span>
-        </b-popover>
-      </div>
-    </div>
-    <!--日期区间-->
-    <div class="params" v-if="rulesObj[RULE.timeBound]">
-      <div class="title">
-        <span class="param-tip">规则名：</span>
-        <b-tag type="warning" no-border :tag-style="{padding:'3px',margin:'0',width:'100%'}">日期区间</b-tag>
-      </div>
-      <div class="number">
-        <b-tooltip content="$now/yyyy-MM-dd/preField">
-          <span class="param-tip">前值字段：</span>
-        </b-tooltip>
-        <b-input v-model.trim="rulesObj[RULE.timeBound].time" size="mini" @on-change="emitParamsToValue"/>
-      </div>
-      <div class="number">
-        <span class="param-tip">比较模式：</span>
-        <b-select v-model="rulesObj[RULE.timeBound].compareMode" size="mini"
-                  @on-change="emitParamsToValue">
-          <b-option value="gt">&gt;</b-option>
-          <b-option value="ge">&ge;</b-option>
-          <b-option value="lt">&lt;</b-option>
-          <b-option value="le">&le;</b-option>
-        </b-select>
-      </div>
-      <div class="info">
-        <span class="param-tip">错误提示：</span>
-        <b-input v-model.trim="rulesObj[RULE.timeBound].message" size="mini"
-                 @on-change="emitParamsToValue"/>
-      </div>
-      <div class="delete">
-        <b-popover confirm title="确认删除此项吗?" width="170" style="margin-top: 18px;"
-                   @on-ok="removeRules(RULE.timeBound)">
-          <span class="remove">
-            <b-icon name="ios-remove-circle-outline" size="22" color="#f5222d"/>
-          </span>
-        </b-popover>
-      </div>
-    </div>
+              </b-popover>
+            </div>
+          </div>
+        </div>
+      </transition-group>
+    </draggable>
     <div v-if="showReal">
       <b-tag type="success" size="small">实际存储对象</b-tag>
-      <b-code-editor :value="JSON.stringify(rulesObj,null,2)" readonly/>
+      <b-code-editor :value="JSON.stringify(checkRulesArr,null,2)" readonly/>
     </div>
   </div>
 </template>
 
 <script>
+  import Draggable from 'vuedraggable'
   import VToggleShow from '../VToggleShow/index'
   import { RULE } from './cfg-util'
+  import { typeOf } from '../../../common/utils/assist'
 
   export default {
     name: 'Validator',
-    components: { VToggleShow },
+    components: { VToggleShow, Draggable },
     props: {
       value: {
         type: String
@@ -499,8 +485,7 @@
         showReal: true,
         isRequired: false,
         rulesObj: null,
-        checkRulesArr: [], // 校验二维数组，用于push校验数据
-        checkRulesMap: new Map() // 最终的格式化rules map 存储校验映射
+        checkRulesArr: [] // 校验二维数组，用于push校验数据
       }
     },
     computed: {
@@ -527,21 +512,21 @@
           }
           try {
             const rules = JSON.parse(val)
-            this.rulesObj = rules
+            // this.rulesObj = rules
             if (rules.rules) { // 旧的格式
               this.$log.warning('旧格式重置')
               this.refreshRule()
             } else {
-              // console.log('=======update value=======') // 调试，可禁用
-              this.checkRulesArr = []
-              Object.keys(rules).forEach(key => {
-                this.checkRulesArr.push([key, rules[key]])
-                // console.log(key, rules[key]) // 调试，可禁用
-              })
-              this.checkRulesMap = new Map(this.checkRulesArr)
-              // console.log('=======update value end=======') // 调试，可禁用
+              if (typeOf(rules) === 'array') {
+                this.checkRulesArr = rules
+                // console.log('=======update value=======') // 调试，可禁用
+                // console.log(this.checkRulesArr)
+                // console.log('=======update value end=======') // 调试，可禁用
+              } else {
+                this.refreshRule()
+              }
               // 再根据是否包含必填校验判断
-              this.isRequired = this.checkRulesMap.has(RULE.required)
+              this.isRequired = this.hasRequired()
             }
           } catch (e) {
             this.$log.danger('非标准json初始化')
@@ -555,137 +540,146 @@
           this.isRequired = true
           this.setRules(RULE.required)
         }
-      },
-      fieldTitle() {
-        if (this.checkRulesMap.has(RULE.required)) {
-          this.setRules(RULE.required)
-        }
       }
     },
     methods: {
       // 增加校验，即增加默认参数配置
       setRules(ruleType) {
-        if (this.checkRulesMap.has(ruleType) && ruleType !== RULE.required) {
+        if (ruleType === RULE.required && this.hasRequired()) {
+          return
+        }
+        if (this.hasSame(ruleType)) {
           this.$message({ type: 'warning', content: '已有同名规则，无需重复添加' })
           return
         }
         switch (ruleType) {
           case RULE.required:
-            this.checkRulesArr.unshift([ruleType, {
+            this.checkRulesArr.unshift({
+              name: ruleType,
               message: `${this.fieldTitle}必填`,
               ...this.normalCfg
-            }])
+            })
             break
           case RULE.length:
-            this.checkRulesArr.push([ruleType, {
+            this.checkRulesArr.push({
+              name: ruleType,
               min: Infinity,
               max: Infinity,
               message: '长度必须在指定的范围内',
               ...this.normalCfg
-            }])
+            })
             break
           case RULE.email:
-            this.checkRulesArr.push([ruleType, {
+            this.checkRulesArr.push({
+              name: ruleType,
               message: '邮箱格式不正确',
               ...this.normalCfg
-            }])
+            })
             break
           case RULE.phone:
-            this.checkRulesArr.push([ruleType, {
+            this.checkRulesArr.push({
+              name: ruleType,
               message: '手机号格式不正确',
               ...this.normalCfg
-            }])
+            })
             break
           case RULE.regexp:
-            this.checkRulesArr.push([ruleType, {
+            this.checkRulesArr.push({
+              name: ruleType,
               regexp: '',
               message: '正则表达式不匹配',
               ...this.normalCfg
-            }])
+            })
             break
           case RULE.idCode:
-            this.checkRulesArr.push([ruleType, {
+            this.checkRulesArr.push({
+              name: ruleType,
               preField: 'id_type',
               message: '身份证格式不正确',
               ignoreCase: true,
               ...this.normalCfg
-            }])
+            })
             break
           case RULE.unifiedCode:
-            this.checkRulesArr.push([ruleType, {
+            this.checkRulesArr.push({
+              name: ruleType,
               preField: 'id_type',
               message: '统一社会信用代码格式不正确',
               ignoreCase: true,
               ...this.normalCfg
-            }])
+            })
             break
           case RULE.orgInstCode:
-            this.checkRulesArr.push([ruleType, {
+            this.checkRulesArr.push({
+              name: ruleType,
               preField: 'id_type',
               message: '组织机构代码格式不正确',
               ignoreCase: true,
               ...this.normalCfg
-            }])
+            })
             break
           case RULE.regNo:
-            this.checkRulesArr.push([ruleType, {
+            this.checkRulesArr.push({
+              name: ruleType,
               preField: 'id_type',
               message: '工商注册号格式不正确',
               ignoreCase: true,
               ...this.normalCfg
-            }])
+            })
             break
           case RULE.conditionRequired:
-            this.checkRulesArr.push([ruleType, {
+            this.checkRulesArr.push({
+              name: ruleType,
               preField: '',
               preFieldValue: '',
               message: '当前字段在前置字段条件达成下必填',
               ...this.normalCfg
-            }])
+            })
             break
           case RULE.conditionNotRequired:
-            this.checkRulesArr.push([ruleType, {
+            this.checkRulesArr.push({
+              name: ruleType,
               preField: '',
               preFieldValue: '',
               message: '当前字段在前置字段条件达成下不可填写',
               ...this.normalCfg
-            }])
+            })
             break
           case RULE.conditionNotBe:
-            this.checkRulesArr.push([ruleType, {
+            this.checkRulesArr.push({
+              name: ruleType,
               preField: '',
               preFieldValue: '',
               notValue: '',
               message: '当前字段在前置字段条件达成下不能为某值',
               ...this.normalCfg
-            }])
+            })
             break
           case RULE.notSame:
-            this.checkRulesArr.push([ruleType, {
+            this.checkRulesArr.push({
+              name: ruleType,
               preField: '',
               message: '不能和前置字段值相同',
               ...this.normalCfg
-            }])
+            })
             break
           case RULE.timeBound:
-            this.checkRulesArr.push([ruleType, {
+            this.checkRulesArr.push({
+              name: ruleType,
               time: '$now',
               compareMode: 'gt',
               message: '日期不符合区间设置',
               ...this.normalCfg
-            }])
+            })
             break
           default:
             break
         }
-        this.checkRulesMap = new Map(this.checkRulesArr)
         this.emitValue()
       },
-      // 移除某个校验
-      removeRules(ruleType) {
-        if (this.checkRulesMap.has(ruleType)) {
-          this.checkRulesMap.delete(ruleType)
-        }
+      // 移除某个类型的校验
+      removeRules(index) {
+        this.checkRulesArr.splice(index, 1)
         this.emitValue()
       },
       // 必填项改变操作
@@ -694,8 +688,8 @@
           // console.log('set required')
           this.setRules(RULE.required)
         } else {
-          // console.log('remove required')
-          this.removeRules(RULE.required)
+          this.checkRulesArr = this.checkRulesArr.filter(item => item.name !== RULE.required)
+          this.emitValue()
         }
       },
       // 重载校验信息
@@ -707,40 +701,49 @@
       },
       // 刷新重载rules
       refreshRule() {
-        this.checkRulesMap.clear()
         this.checkRulesArr = []
-        if (this.required) {
+        if (this.required === 'Y') {
           this.setRules(RULE.required)
         } else {
           this.emitEmptyValue()
         }
       },
-      // 更新参数
-      emitParamsToValue() {
-        const rules = JSON.stringify(this.rulesObj)
-        this.$emit('input', rules)
-        this.$emit('on-change', rules)
-      },
       // 更新model value
       emitValue() {
-        this.rulesObj = this.formatRules(this.checkRulesMap)
-        const rules = JSON.stringify(this.rulesObj)
+        const rules = JSON.stringify(this.checkRulesArr)
         this.$emit('input', rules)
         this.$emit('on-change', rules)
       },
       // 更新空值
       emitEmptyValue() {
-        const empty = JSON.stringify({})
+        const empty = JSON.stringify([])
         this.$emit('input', empty)
         this.$emit('on-change', empty)
       },
-      // checkRulesToObj
-      formatRules(mapObj) {
-        let obj = {}
-        for (let [k, v] of mapObj) {
-          obj[k] = v
+      // 枚举拖拽结束
+      onDragEnd(event) {
+        let { oldIndex, newIndex } = event
+        if (oldIndex !== newIndex) {
+          this.emitValue()
         }
-        return obj
+      },
+      // ======checkRulesArr 数组判断函数========== //
+      hasRequired() {
+        let same = this.hasSameNameItem(RULE.required)
+        return !!same
+      },
+      // 是否有相同名称的校验项存在
+      hasSameNameItem(name) {
+        return this.checkRulesArr.find(item => item.name === name)
+      },
+      // 判断是否是5个特殊信息项，返回是否存在相同类似条件
+      hasSame(name) {
+        let infoItems = [RULE.conditionRequired, RULE.conditionNotRequired, RULE.conditionNotBe, RULE.notSame, RULE.timeBound]
+        if (infoItems.indexOf(name) > -1) { // 特殊信息项，则可以配置多个
+          return false
+        } else {
+          return !!this.hasSameNameItem(name)
+        }
       }
     }
   }
@@ -777,6 +780,7 @@
       .delete {
         flex: 0 0 30px;
         width: 30px;
+        padding-top: 18px;
         text-align: center;
       }
       .bin-input-mini, .bin-input-number-mini input {
@@ -791,6 +795,27 @@
     }
     .remove {
       cursor: pointer;
+    }
+    .rules-list {
+      .rules-drag {
+        cursor: move;
+      }
+      .ghost {
+        position: relative;
+        font-size: 0;
+        border: 1px dashed #1089ff;
+        height: 50px;
+        &::after {
+          position: absolute;
+          content: '';
+          background: #fff;
+          display: block;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+        }
+      }
     }
   }
 </style>

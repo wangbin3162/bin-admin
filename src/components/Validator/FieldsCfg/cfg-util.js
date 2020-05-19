@@ -1,4 +1,4 @@
-import { deepCopy } from '../../../common/utils/assist'
+import { deepCopy, typeOf } from '../../../common/utils/assist'
 import { checkIdCard, verifyOrgNo, verifyRegNo, verifyUnifiedCode, validateDate } from '../../../common/utils/validate'
 import { getDictItems } from '../../../api/data-manage/gather.api'
 
@@ -132,7 +132,7 @@ export const validatorBuild = {
         let preField = obj[opts.preField]// 前置字段当前值
         let preFieldValue = opts.preFieldValue// 前置字段需要匹配的值
         if ((preField == null && typeof preFieldValue === 'undefined') ||
-          (preField && (preField === preFieldValue || (preField.length === 0 && typeof preFieldValue === 'undefined')))
+          (preField && (preField.toString() === preFieldValue || (preField.length === 0 && typeof preFieldValue === 'undefined')))
         ) {
           if (value.length === 0) {
             callback(new Error(opts.message))
@@ -153,7 +153,7 @@ export const validatorBuild = {
         let preField = obj[opts.preField]// 前置字段当前值
         let preFieldValue = opts.preFieldValue// 前置字段需要匹配的值
         if ((preField == null && typeof preFieldValue === 'undefined') ||
-          (preField && (preField === preFieldValue || (preField.length === 0 && typeof preFieldValue === 'undefined')))
+          (preField && (preField.toString() === preFieldValue || (preField.length === 0 && typeof preFieldValue === 'undefined')))
         ) {
           if (value.length > 0) {
             callback(new Error(opts.message))
@@ -173,7 +173,7 @@ export const validatorBuild = {
       validator: (rule, value, callback) => {
         let preField = obj[opts.preField]// 前置字段当前值
         let preFieldValue = opts.preFieldValue// 前置字段需要匹配的值
-        if ((preField && (preField === preFieldValue))) {
+        if ((preField && (preField.toString() === preFieldValue))) {
           if (value !== null && value === opts.notValue) {
             callback(new Error(opts.message))
           }
@@ -191,7 +191,7 @@ export const validatorBuild = {
     return {
       validator: (rule, value, callback) => {
         let preField = obj[opts.preField]// 前置字段当前值
-        if ((preField && (preField === value))) {
+        if ((preField && (preField.toString() === value))) {
           callback(new Error(opts.message))
         }
         callback()
@@ -332,21 +332,15 @@ export async function initItemsByValidValue(valid) {
  * @param sourceObj
  */
 export function checkRulesToFormRules(checkRules, sourceObj) {
-  let ret = []
   try {
     const rules = JSON.parse(checkRules)
-    if (rules.rules) { // 旧的格式
-      // console.log('旧的格式')
-      return ret
-    } else {
-      Object.keys(rules).forEach(key => {
-        // 获取名称和参数后调用返回实际rules
-        // console.log(key,rules[key])
-        let rule = validatorBuild[key](rules[key], sourceObj)
-        ret.push(rule)
+    if (typeOf(rules) === 'array') {
+      return rules.map(rule => {
+        return validatorBuild[rule.name](rule, sourceObj)
       })
-      return ret
     }
+    console.warn('不是最新校验格式，请按照最新校验进行配置!')
+    return []
   } catch (e) {
     console.warn('checkRules 不是标准json')
     console.log(checkRules)

@@ -41,7 +41,7 @@ export default {
         text: 'blur'
       }[field.dataType]
       // eslint-disable-next-line no-useless-escape
-      const requireRuleStr = `{\"$required\":{\"message\":\"${field.fieldTitle}必填\",\"type\":\"${typeMap}\",\"trigger\":\"${triggerMap}\"}}`
+      const requireRuleStr = `[{\"name\":\"$required\",\"message\":\"${field.fieldTitle}必填\",\"type\":\"${typeMap}\",\"trigger\":\"${triggerMap}\"}]`
       return {
         directoryId,
         fieldName: field.fieldName, // 元信息名称（英文）
@@ -108,8 +108,7 @@ export default {
           let index = item.fieldName.slice(7)
           this.$set(this.form, `person_id${index}`, '')
         }
-        // 3、根据每个item，执行校验函数并返回校验数组
-        // 根据checkRules参数获取实际校验对象
+        // 3、根据每个item，执行校验函数并返回校验数组 根据checkRules参数获取实际校验对象
         let rules = checkRulesToFormRules(item.checkRules, this.form)
         if (rules.length > 0) {
           this.$set(this.rules, item.fieldName, rules)
