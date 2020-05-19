@@ -75,14 +75,13 @@
                     + 添加
                 </b-button>
                 <p>注：此处权重总计100%</p>
-                <b-button type="primary" @click="handleSubmit">提交</b-button>
+                <b-button type="primary" @click="handleSubmit">保存</b-button>
               </div>
             </template>
           </div>
         </div>
 
         <template slot="footer">
-          <!-- <b-button @click="$emit('close')">取 消</b-button> -->
           <b-button v-if="!editStatus" type="primary" @click="handleEditBtn">编 辑</b-button>
           <b-button v-else @click="editStatus = false">返 回</b-button>
         </template>
@@ -93,7 +92,9 @@
 
 <script>
   import commonMixin from '../../../common/mixins/mixin'
-  import { getIndexModleTree } from '../../../api/credit-rating/rating-model.api'
+  import {
+    getIndexModleTree, createIndexModel, deleteIndexModel
+  } from '../../../api/credit-rating/rating-model.api'
 
   export default {
     name: 'IndexConfig',
@@ -184,6 +185,32 @@
       // 编辑模式下删除按钮回调
       handleRemove (index, id) {
         console.log(index, id)
+        // 删除需要判断当前删除项目是提交过的还是未提交的
+        if (this.listCopy[index].title === '') {
+          this.listCopy.splice(index, 1)
+          this.list.splice(index, 1)
+        } else {
+          this.$confirm({
+            title: '删除',
+            content: '删除当前项目会删除其子项，确认删除吗？',
+            loading: true,
+            okType: 'danger',
+            onOk: async () => {
+              try {
+                const [success, errorMsg] = await deleteIndexModel(id)
+                if (success) {
+                  this.$message({ type: 'success', content: '操作成功' })
+                  this.searchList()
+                } else {
+                  this.$notice.danger({ title: '操作错误', desc: errorMsg })
+                }
+              } catch (error) {
+                this.$notice.danger({ title: '操作错误', desc: error })
+              }
+              this.$modal.remove()
+            }
+          })
+        }
       },
       // 编辑模式下提交按钮的回调
       handleSubmit () {
