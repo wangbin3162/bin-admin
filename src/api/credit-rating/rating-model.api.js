@@ -208,3 +208,31 @@ export async function setSysDefault(id) {
     }
   })
 }
+
+/**
+ * @author haodongdong
+ * @description 获取指标树
+ * @returns Promise
+ */
+export async function getIndexTree(query) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/api/eval/model/index/tree',
+        method: 'get',
+        params: {
+          modelId: query.modelId,
+          indexId: query.indexId,
+          indexType: query.indexType
+        }
+      })
+      if (res.data.code === '0') { // 不是标准的restful，200中还可能包含接口错误。
+        resolve(res.data.data)
+      } else {
+        reject(new Error(res.data.message))
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}

@@ -34,8 +34,8 @@
           <template v-slot:ratingId="{ row }">
             <b-button type="text" @click="handleSetLevel(row)">{{ row.ratingName }} ></b-button>
           </template>
-          <template v-slot:modelIndex>
-            <b-button type="text">模型指标 ></b-button>
+          <template v-slot:modelIndex="{ row }">
+            <b-button type="text" @click="handleIndexConfig(row)">指标配置 ></b-button>
           </template>
           <template v-slot:sysDefault="{ row }">
             {{ defaultEnum[row.sysDefault] }}
@@ -82,6 +82,10 @@
       @success="handleEditSuccess"
       :title="editTitle"
       :editData="editData"></edit>
+
+    <index-config v-if="dialogStatus === 'indexConfig'"
+      @close="handleIndexConfigClose"
+      :modelId="editData.id"></index-config>
   </div>
 </template>
 
@@ -90,6 +94,7 @@
   import permission from '../../../common/mixins/permission'
   import Edit from './Edit'
   import SelectLevel from './SeleceLevel'
+  import IndexConfig from './IndexConfig'
   import { getEvalCommonStatus, getEvalSysDefault } from '../../../api/enum.api'
   import {
     getSubjectTypeTree, getRatingModelList,
@@ -102,7 +107,8 @@
     mixins: [commonMixin, permission],
     components: {
       Edit,
-      SelectLevel
+      SelectLevel,
+      IndexConfig
     },
     data () {
       return {
@@ -173,6 +179,16 @@
       handleLevelClose () {
         this.open = false
         this.editData = null
+      },
+      // 指标配置按钮回调
+      handleIndexConfig (row) {
+        this.editData = row
+        this.dialogStatus = 'indexConfig'
+      },
+      // 指标配置组件关闭回调
+      handleIndexConfigClose () {
+        this.editData = null
+        this.handleCancel()
       },
       // 删除的回调
       async handleRemove (id) {
