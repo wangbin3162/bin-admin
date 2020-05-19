@@ -496,7 +496,7 @@
     },
     data() {
       return {
-        showReal: false,
+        showReal: true,
         isRequired: false,
         rulesObj: null,
         checkRulesArr: [], // 校验二维数组，用于push校验数据

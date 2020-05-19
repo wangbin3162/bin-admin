@@ -2,11 +2,12 @@
 import SelectLegInput from './SelectLegInput'
 import SelectNatInput from './SelectNatInput'
 import SelectNatOrLeg from './SelectNatOrLeg'
+import FileUpload from './FileUpload'
 import { oneOf } from 'bin-ui/src/utils/util'
 
 export default {
   name: 'FormControl',
-  components: { SelectLegInput, SelectNatInput, SelectNatOrLeg },
+  components: { SelectLegInput, SelectNatInput, SelectNatOrLeg, FileUpload },
   data() {
     return {
       currentValue: '',
@@ -18,6 +19,10 @@ export default {
     value: {
       type: [String, Number],
       default: ''
+    },
+    resourceKey: {
+      type: String,
+      required: true
     },
     controlType: {
       type: String,
@@ -174,6 +179,15 @@ export default {
             placeholder: `选择自然人或法人`
           },
           on: { 'on-select': this.handleSelectNatOrLeg }
+        })
+        break
+      case 'FILE_UPLOAD':
+        node = h('file-upload', {
+          props: {
+            value: this.currentValue,
+            resourceKey: this.resourceKey
+          },
+          on: { input: this.handleInput }
         })
         break
       default:

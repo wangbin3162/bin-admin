@@ -197,18 +197,16 @@
           <template v-if="resource.items">
             <v-title-bar label="信息项配置" class="mb-20">
               <div class="pr-20">
-                <b-button type="text" icon="ios-eye" @click="previewForm">预览</b-button>&nbsp;&nbsp;
+                <b-button type="text" icon="ios-eye" @click="previewForm">预览</b-button>
                 <b-button v-if="dialogStatus==='modify' && resource.availableStatus === 'notavailable'"
                           type="text" @click="handleReload" icon="ios-refresh">
                   重载信息项
                 </b-button>
-                <b-tooltip content="调试模式查看信息项" placement="top-end">
-                  <b-button type="text" icon="ios-bug"
-                            @click.native="debugJson=!debugJson"
-                            :text-color="debugJson?'danger':'primary'">
-                    debug
-                  </b-button>
-                </b-tooltip>
+                <b-button type="text" icon="ios-bug"
+                          @click.native="debugJson=!debugJson"
+                          :text-color="debugJson?'danger':'primary'">
+                  debug
+                </b-button>
               </div>
             </v-title-bar>
             <fields-cfg v-model="resource.items"/>
@@ -277,6 +275,7 @@
                    :control-type="item.controlType">
           <!--动态控件-->
           <form-control v-model="form[item.fieldName]"
+                        :resource-key="resource.resourceKey"
                         :control-type="item.controlType"
                         :field-name="item.fieldName"
                         :field-desc="item.fieldDesc"
@@ -292,7 +291,7 @@
       <div slot="footer">
         <b-button @click="previewModal=false">取 消</b-button>
         <b-button @click="handleDynamicFormReset">重 置</b-button>
-        <b-button type="primary" @click="handleDynamicFormSubmit">提 交</b-button>
+        <b-button type="primary" @click="handleDynamicFormSubmit">测 试</b-button>
       </div>
     </b-modal>
   </div>

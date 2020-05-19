@@ -66,36 +66,41 @@
     </page-header-wrap>
     <page-header-wrap v-show="isEdit" :title="editTitle" show-close @on-close="handleCancel">
       <v-edit-wrap>
-        <b-form :model="metadata" ref="form" :rules="ruleValidate" label-position="top">
-          <b-form-item label="所属类目" class="bin-form-item-required" v-if="currentTreeNode">
-            <b-input :value="currentTreeNode.title" readonly/>
-          </b-form-item>
-          <b-row :gutter="20">
-            <b-col span="12">
-              <b-form-item label="主体类别" prop="personClass">
-                <v-cascade :data="personClassOptions" v-if="dialogStatus !=='modify'"
-                           v-model="metadata.personClass" @on-change="handlePersonClassChange">
-                </v-cascade>
-                <b-input v-else v-model="personClassMap[metadata.personClass]" placeholder="请输入元信息英文名称"
-                         :readonly="dialogStatus==='modify'"></b-input>
-              </b-form-item>
-            </b-col>
-            <b-col span="12">
-              <b-form-item label="名称" prop="tableName">
-                <b-input v-model="metadata.tableName" placeholder="请输入元信息英文名称" clearable
-                         :readonly="dialogStatus==='modify'"></b-input>
-              </b-form-item>
-            </b-col>
-          </b-row>
-          <b-form-item label="描述" prop="metadataName">
-            <b-input v-model="metadata.metadataName" placeholder="请输入元信息中文名称" clearable></b-input>
-          </b-form-item>
-          <b-form-item label="摘要" prop="metadataDesc">
-            <b-input v-model="metadata.metadataDesc" placeholder="请输入摘要" type="textarea"></b-input>
-          </b-form-item>
-        </b-form>
         <!--信息项-->
-        <template slot="full" v-if="metadata.personClass && metadata.fields">
+        <template slot="full">
+          <v-title-bar label="基本信息" class="mb-15"/>
+          <b-form :model="metadata" ref="form" :rules="ruleValidate" label-position="top">
+            <b-row :gutter="10">
+              <b-col span="6">
+                <b-form-item label="所属类目" class="bin-form-item-required" v-if="currentTreeNode">
+                  <b-input :value="currentTreeNode.title" readonly/>
+                </b-form-item>
+              </b-col>
+              <b-col span="6">
+                <b-form-item label="主体类别" prop="personClass">
+                  <v-cascade :data="personClassOptions" v-if="dialogStatus !=='modify'"
+                             v-model="metadata.personClass" @on-change="handlePersonClassChange">
+                  </v-cascade>
+                  <b-input v-else v-model="personClassMap[metadata.personClass]" placeholder="请输入元信息英文名称"
+                           :readonly="dialogStatus==='modify'"></b-input>
+                </b-form-item>
+              </b-col>
+              <b-col span="6">
+                <b-form-item label="名称" prop="tableName">
+                  <b-input v-model="metadata.tableName" placeholder="请输入元信息英文名称" clearable
+                           :readonly="dialogStatus==='modify'"></b-input>
+                </b-form-item>
+              </b-col>
+              <b-col span="6">
+                <b-form-item label="中文名称" prop="metadataName">
+                  <b-input v-model="metadata.metadataName" placeholder="请输入元信息中文名称" clearable></b-input>
+                </b-form-item>
+              </b-col>
+            </b-row>
+            <b-form-item label="摘要" prop="metadataDesc">
+              <b-input v-model="metadata.metadataDesc" placeholder="请输入摘要" type="textarea"></b-input>
+            </b-form-item>
+          </b-form>
           <v-title-bar label="信息项" class="mt-10 mb-15">
             <b-button type="primary" transparent @click="handleAddPerson">添加主体</b-button>
             <b-button v-if="this.metadata.idsFlag>0" transparent type="danger" @click="handleClearPerson">
@@ -103,7 +108,7 @@
             </b-button>
           </v-title-bar>
           <!--信息项表格组件-->
-          <meta-fields v-model="metadata.fields"
+          <meta-fields v-model="metadata.fields" v-if="metadata.personClass && metadata.fields"
                        :person-class="metadata.personClass"
                        :data-type-map="dataTypeMap"
                        @on-add-person="handleAddPerson"></meta-fields>
