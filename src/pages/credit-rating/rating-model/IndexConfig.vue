@@ -122,7 +122,7 @@
         },
         curNode: null, // 用于缓存选中的当前节点
         curLevel: [], // 缓存当前级别下的新增节点
-        treeData: [],
+        treeData: [], // 左侧树
         listQuery: {
           modelId: this.modelId,
           indexId: '',

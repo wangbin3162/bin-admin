@@ -239,38 +239,14 @@ export async function getIndexModleTree(query) {
 
 /**
  * @author haodongdong
- * @description 创建指标模型
+ * @description 更新指标模型
  * @returns Promise
  */
-export async function createIndexModel(params) {
+export async function updatedIndexModel(params) {
   return new Promise(async (resolve, reject) => {
     try {
       const res = await request({
-        url: '/api/eval/model/index/create',
-        method: 'post',
-        data: params
-      })
-      if (res.data.successful) { // 不是标准的restful，200中还可能包含接口错误。
-        resolve(res.data.data)
-      } else {
-        reject(new Error(res.data.message))
-      }
-    } catch (error) {
-      reject(error)
-    }
-  })
-}
-
-/**
- * @author haodongdong
- * @description 修改指标模型
- * @returns Promise
- */
-export async function updateIndexModel(params) {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const res = await request({
-        url: '/api/eval/model/index/modify',
+        url: '/api/eval/model/index/createOrModify',
         method: 'post',
         data: params
       })
