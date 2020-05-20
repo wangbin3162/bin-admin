@@ -127,7 +127,6 @@
           Index: '指标'
         },
         curNode: null, // 用于缓存选中的当前节点
-        curLevel: [], // 缓存当前级别下的新增节点
         treeData: [], // 左侧树
         listQuery: {
           modelId: this.modelId,
@@ -330,10 +329,11 @@
           selected: true,
           children: this.buildTree(tree)
         }
+        console.log(rootNode)
         return [rootNode]
       },
       // 构建树
-      buildTree (tree) {
+      buildTree (tree, level = 1) {
         const list = []
         for (const item of tree) {
           // 构建tree组件用数据
@@ -341,14 +341,15 @@
             title: item.indexName,
             expand: false,
             selected: false,
+            level,
             children: [],
             ...item
           }
           // 如果有子节点则递归
-          if (item.children && item.children.length > 0) {
-            obj.children = this.buildTree(item.children)
+          if (level < 3 && (item.children && item.children.length > 0)) {
+            obj.children = this.buildTree(item.children, level + 1)
           } else {
-            item.children = [] // 把为null的置为[]
+            obj.children = [] // 把为null的置为[]
           }
           list.push(obj)
         }
