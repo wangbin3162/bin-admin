@@ -63,6 +63,7 @@
             <b-card class="box-card" head-tip
               header="已选指标">
               <b-tag
+                type="info"
                 :key="index"
                 v-for="(tag,index) in selectedList"
                 closable
@@ -70,7 +71,7 @@
                 {{tag.indexName}}
               </b-tag>
 
-              <b-button type="dashed" style="width: 100%;margin: 10px 0;"
+              <b-button type="primary" style="width: 100%;margin: 10px 0;"
                 v-if="selectedList.length"
                 @click="postSelectedList">
                 确定添加
