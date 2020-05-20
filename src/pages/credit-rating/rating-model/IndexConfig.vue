@@ -84,7 +84,7 @@
                   @click="handleSubmit">
                     保 存
                 </b-button>
-                <b-button @click="editStatus = false">取 消</b-button>
+                <b-button @click="handleCancelBtn">取 消</b-button>
               </div>
             </template>
           </div>
@@ -92,7 +92,7 @@
 
         <template slot="footer">
           <b-button v-if="!editStatus" type="primary" @click="handleEditBtn">编 辑</b-button>
-          <b-button v-else @click="editStatus = false">返 回</b-button>
+          <b-button v-else @click="handleCancelBtn">返 回</b-button>
         </template>
       </v-edit-wrap>
     </page-header-wrap>
@@ -284,6 +284,13 @@
       // 编辑按钮的回调
       handleEditBtn () {
         this.editStatus = true
+      },
+      // 取消与返回按钮的回调
+      handleCancelBtn () {
+        // 清除未保存的数据
+        this.listCopy = this.listCopy.filter(item => item.id !== undefined)
+        this.list = this.list.filter(item => item.id !== undefined)
+        this.editStatus = false
       },
       // 获取列表
       async searchList() {
