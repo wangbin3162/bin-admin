@@ -416,7 +416,7 @@
             </div>
             <div class="number">
               <b-tooltip content="$now/yyyy-MM-dd/preField">
-                <span class="param-tip">前值字段：</span>
+                <span class="param-tip">前置字段：</span>
               </b-tooltip>
               <b-input v-model.trim="checkRulesArr[index].time" size="mini" @on-change="emitValue"/>
             </div>
