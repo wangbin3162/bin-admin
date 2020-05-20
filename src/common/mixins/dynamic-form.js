@@ -1,4 +1,8 @@
 import { checkRulesToFormRules } from '../../components/Validator/FieldsCfg/cfg-util'
+import { Decode, Encode, MaskCode } from '../utils/secret'
+import { oneOf } from 'bin-ui/src/utils/util'
+import FormItem from '../../components/Validator/FormControl/FormItem'
+import FormControl from '../../components/Validator/FormControl/FormControl'
 
 /**
  * 动态表单mixin
@@ -8,11 +12,13 @@ import { checkRulesToFormRules } from '../../components/Validator/FieldsCfg/cfg-
  * dynamicFormRef 为动态渲染表单的ref获取名称
  */
 export default {
+  components: { FormControl, FormItem },
   data() {
     return {
       dynamicForm: [], // 动态form，用于遍历form表单使用
       form: {},
-      rules: {}
+      rules: {},
+      btnLoading: false
     }
   },
   methods: {
@@ -90,8 +96,7 @@ export default {
     handleDynamicFormReset() {
       this.$refs.dynamicFormRef && this.$refs.dynamicFormRef.resetFields()
     },
-    // =======init form and rules========/
-    // 初始化form集合，扩展form对象和rules校验对象
+    // =======初始化动态form，rules对象======== //
     initDynamicForm(dynamicForm) {
       this.form = {}
       this.rules = {}
@@ -120,6 +125,56 @@ export default {
       this.$log.success('----rules----')
       console.log(this.rules)
       this.$log.success('-------------')
+    },
+    // =======解码掩码函数======== //
+    decodeAndMaskFormat(arr, mask = false) {
+      let newArr = []
+      arr.forEach(item => {
+        let tmp = { ...item }
+        this.dynamicForm.forEach(field => {
+          let value = ''
+          if (field.isEncrypt === '1') { // 解密
+            value = Decode(item[field.fieldName])
+            // console.log('解码后：' + value)
+          }
+          if (mask && oneOf(field.maskModel, ['ID_CODE', 'MOBILE_PHONE'])) { // 掩码
+            value = MaskCode(tmp[field.fieldName], field.maskModel)
+            // console.log('掩码后：' + value)
+          }
+          tmp[field.fieldName] = value
+        })
+        newArr.push(tmp)
+      })
+      return newArr
+    },
+    // =======单个对象查询到值后解码======== //
+    decodeFormObj(obj) {
+      let tmp = { ...obj }
+      this.dynamicForm.forEach(field => {
+        if (field.isEncrypt === '1') { // 解码
+          tmp[field.fieldName] = Decode(obj[field.fieldName])
+        }
+      })
+      return tmp
+    },
+    // =======单个对象编码后form对象======== //
+    getEncodeFormObj() {
+      let tmp = { ...this.form }
+      this.dynamicForm.forEach(field => {
+        if (field.isEncrypt === '1') { // 编码
+          tmp[field.fieldName] = Encode(this.form[field.fieldName])
+        }
+      })
+      return tmp
+    },
+    // =======设置form表单对象======== //
+    setFormObj(target) {
+      // 注意这里不能直接拷贝或者展开，需要逐一对form表单进行填值
+      Object.keys(this.form).forEach(key => {
+        if (target[key]) {
+          this.form[key] = target[key]
+        }
+      })
     }
   }
 }

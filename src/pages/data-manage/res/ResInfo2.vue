@@ -262,7 +262,7 @@
     <!--资源扩展-->
     <res-ext-edit ref="resExtEdit" @on-close="handleCancel"/>
     <!--示例数据-->
-    <test-form ref="testForm" @on-close="handleCancel"/>
+    <sample-data ref="sampleData" @on-close="handleCancel"/>
     <!--预览表单-->
     <b-modal v-model="previewModal" title="预览表单"
              fullscreen @on-hidden="previewModalForm=false"
@@ -305,19 +305,16 @@
   import { getPersonClassTree } from '../../../api/data-manage/metadata.api'
   import { getFieldCtrl } from '../../../api/enum.api'
   import * as api from '../../../api/data-manage/res-info.api'
-  import { MetaDataChoose, ResExtEdit } from './components/ResInfo'
+  import { MetaDataChoose, ResExtEdit, SampleData } from './components/ResInfo'
   import { requiredRule } from '../../../common/utils/validate'
-  import TestForm from './components/ResInfo/TestForm'
   import { getResourceInfo } from '../../../api/data-manage/gather.api'
   import { initFormList } from '../../../components/Validator/FieldsCfg/cfg-util'
   import FieldsCfg from '../../../components/Validator/FieldsCfg/FieldsCfg'
-  import FormItem from '../../../components/Validator/FormControl/FormItem'
-  import FormControl from '../../../components/Validator/FormControl/FormControl'
 
   // map映射中如 #static 标识: 静态不改变的枚举的暂不调用接口获取
   export default {
     name: 'ResInfo',
-    components: { FormControl, FormItem, FieldsCfg, TestForm, ResExtEdit, MetaDataChoose },
+    components: { SampleData, FieldsCfg, ResExtEdit, MetaDataChoose },
     mixins: [commonMixin, permission, dynamicForm],
     data() {
       const validateResourceCode = (rule, value, callback) => {
@@ -467,7 +464,7 @@
             this.handlePublish(row)
             break
           case 'test':
-            this.handleCheckRes(row)
+            this.handleSampleData(row)
             break
           case 'remove':
             this.handleRemove(row)
@@ -517,16 +514,16 @@
           }
         })
       },
-      // 根据resourceKey查看动态渲染列表
-      handleCheckRes(row) {
+      // 示例数据弹窗
+      handleSampleData(row) {
         // 根据resourceKey获取资源信息，并将原始表头信息传入gather-list组件
         getResourceInfo(row.resourceKey).then(res => {
           if (res.data.code === '0') {
             let detail = res.data.data
             if (detail && detail.items) {
               let columns = detail.items.filter(i => i.id)
-              this.dialogStatus = 'testForm'
-              this.$refs.testForm.open(detail, columns)
+              this.dialogStatus = 'sampleData'
+              this.$refs.sampleData.open(detail, columns)
             }
           } else {
             this.$notice.danger({ title: '提示', desc: res.data.message })
