@@ -80,7 +80,8 @@
                     + 添加
                 </b-button>
                 <p>注：此处权重总计100%；编辑时无法切换左侧树节点，保存或退出后方可。</p>
-                <b-button type="primary" @click="handleSubmit">保存</b-button>
+                <b-button type="primary" style="width: 10%;"
+                  @click="handleSubmit">保 存</b-button>
               </div>
             </template>
           </div>
@@ -152,7 +153,8 @@
           {
             type: 'expand',
             width: 50,
-            render: () => {
+            className: 'custome-expand-column',
+            render: (h, scoped) => {
               return (
                 <h4>Hello World</h4>
               )
@@ -194,36 +196,31 @@
         }
         this.listCopy.push(obj) // 用于数据操作
         this.list.push(obj) // 用于显示
-        console.log(this.listCopy)
       },
       // 编辑模式下删除按钮回调
       handleRemove (index, id) {
-        // 删除需要判断当前删除项目是提交过的还是未提交的
-        if (this.listCopy[index].title === '') {
-          this.listCopy.splice(index, 1)
-          this.list.splice(index, 1)
-        } else {
-          this.$confirm({
-            title: '删除',
-            content: '删除当前项目会删除其子项，确认删除吗？',
-            loading: true,
-            okType: 'danger',
-            onOk: async () => {
-              try {
-                const [success, errorMsg] = await deleteIndexModel(id)
-                if (success) {
-                  this.$message({ type: 'success', content: '操作成功' })
-                  this.searchList()
-                } else {
-                  this.$notice.danger({ title: '操作错误', desc: errorMsg })
-                }
-              } catch (error) {
-                this.$notice.danger({ title: '操作错误', desc: error })
+        this.$confirm({
+          title: '删除',
+          content: '删除当前项目会删除其子项，确认删除吗？',
+          loading: true,
+          okType: 'danger',
+          onOk: async () => {
+            try {
+              const isSubmitted = this.listCopy[index].id !== undefined // 存在id说明提交过
+              if (isSubmitted) {
+                await deleteIndexModel(id)
               }
-              this.$modal.remove()
+              this.list.splice(index, 1) // 同步显示
+              this.listCopy.splice(index, 1) // 删除绑定数据
+              this.curNode.children = this.listCopy // 同步到左侧树
+              this.$message({ type: 'success', content: '操作成功' })
+            } catch (error) {
+              console.error(error)
+              this.$notice.danger({ title: '操作错误', desc: error })
             }
-          })
-        }
+            this.$modal.remove()
+          }
+        })
       },
       // 编辑模式下选择按钮回调
       handleSelectBtn () {
@@ -240,24 +237,14 @@
             item.title = item.indexName // 构建树组件用的title
             item.weight = Number(Number(item.weight).toFixed(2)) // 保留两位小数
           }
-          const [success, errorMsg] = await updatedIndexModel(this.listCopy)
-          if (success) {
-            this.curNode.children = this.listCopy // 节点更新至树组件
-            this.$message({
-              type: 'success',
-              content: '操作成功'
-            })
-          } else {
-            this.$notice.danger({
-            title: '操作失败',
-            desc: errorMsg
-          })
-          }
+          await updatedIndexModel(this.listCopy)
+          await this.searchList()
+          this.curNode.children = this.listCopy // 节点更新至树组件
+          this.editStatus = false // 推出编辑模式
+          this.$message({ type: 'success', content: '操作成功' })
         } catch (error) {
-          this.$notice.danger({
-            title: '操作失败',
-            desc: error
-          })
+          console.error(error)
+          this.$notice.danger({ title: '操作失败', desc: error })
         }
       },
       // 重置查询
@@ -287,15 +274,15 @@
         try {
           const res = await getIndexModleTree(this.listQuery)
           if (this.isInit) { // 第一次载入时做相关初始化
-            this.list = res
-            this.treeData = this.initTree(res)
-            this.curNode = this.treeData[0] // 把根节点存储值当前节点
+            this.treeData = this.initTree(res) // 构建左侧树
+            this.list = this.treeData[0].children // 后面或copy list 所以此处list要取构建后的结构
+            this.curNode = this.treeData[0] // 把根节点存储至当前节点
             this.isInit = false
           } else {
             // 按indexId查询拿到的是当前节点的数据，
-            // 所以获取当前节点的自己点需要自己处理
+            // 所以获取当前节点的子节点需要自己处理
             // 且根节点为手动构建，所以点击根节点发起的查询不需取children
-            if (this.listQuery.indexId) {
+            if (this.listQuery.indexId) { // 表示不是根节点
               this.list = res[0].children || []
             } else {
               this.list = res
@@ -345,6 +332,16 @@
     }
   }
 </script>
+
+<style lang="stylus">
+.index-config {
+  .custome-expand-column {
+    pointer-events: none;
+    background-color: #F5F5F5;
+    color:#ACA899;
+  }
+}
+</style>
 
 <style lang="stylus" scoped>
 .index-config {

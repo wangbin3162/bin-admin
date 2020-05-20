@@ -251,7 +251,7 @@ export async function updatedIndexModel(params) {
         data: params
       })
       if (res.data.successful) { // 不是标准的restful，200中还可能包含接口错误。
-        resolve(res.data.data)
+        resolve()
       } else {
         reject(new Error(res.data.message))
       }
@@ -275,7 +275,7 @@ export async function deleteIndexModel(id) {
         params: { id }
       })
       if (res.data.successful) { // 不是标准的restful，200中还可能包含接口错误。
-        resolve(res.data.data)
+        resolve()
       } else {
         reject(new Error(res.data.message))
       }
