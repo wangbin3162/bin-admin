@@ -51,9 +51,12 @@
                 </template>
 
                 <template v-slot:weight="{ index }">
-                  <b-input-number v-model="listCopy[index].weight"
-                    :max="100" :min="0"></b-input-number>
-                  %
+                  <div flex>
+                    <b-input-number v-model="listCopy[index].weight" style="width: 100%;"
+                      :max="100" :min="0">
+                    </b-input-number>
+                    <span style="line-height: 30px;">%</span>
+                  </div>
                 </template>
 
                 <template v-slot:indexDesc="{ index }">
@@ -63,7 +66,8 @@
                 <template v-slot:action="{ index, row }">
                   <b-button type="text" @click="handleRemove(index, row.id)">删除</b-button>
                   <b-button v-if="listCopy[index].indexType === 'Index'"
-                    type="text">
+                    type="text"
+                    @click="handleSelectBtn">
                       选择
                   </b-button>
                 </template>
@@ -87,11 +91,15 @@
         </template>
       </v-edit-wrap>
     </page-header-wrap>
+
+    <select-index :open="open"
+      @close="open = false" @choose-mul="handleChooseMul"></select-index>
   </div>
 </template>
 
 <script>
   import commonMixin from '../../../common/mixins/mixin'
+  import SelectIndex from './SelectIndex'
   import {
     getIndexModleTree, createIndexModel, deleteIndexModel
   } from '../../../api/credit-rating/rating-model.api'
@@ -100,8 +108,12 @@
     name: 'IndexConfig',
     mixins: [commonMixin],
     props: ['modelId'],
+    components: {
+      SelectIndex
+    },
     data () {
       return {
+        open: false, // 控制选择指标组件打开关闭
         isInit: true, // 是否初始化过tree组件数据
         editStatus: false, // 标识是否是编辑
         natureEnum: { // 模型指标下指标性质枚举
@@ -150,7 +162,7 @@
           { title: '性质', slot: 'indexType', align: 'center' },
           { title: '权重', slot: 'weight', align: 'center' },
           { title: '描述', slot: 'indexDesc', align: 'center' },
-          { title: '操作', slot: 'action', align: 'center' }
+          { title: '操作', slot: 'action', width: 100, align: 'center' }
         ]
       }
     },
@@ -184,7 +196,6 @@
       },
       // 编辑模式下删除按钮回调
       handleRemove (index, id) {
-        console.log(index, id)
         // 删除需要判断当前删除项目是提交过的还是未提交的
         if (this.listCopy[index].title === '') {
           this.listCopy.splice(index, 1)
@@ -211,6 +222,14 @@
             }
           })
         }
+      },
+      // 编辑模式下选择按钮回调
+      handleSelectBtn () {
+        this.open = true
+      },
+      // 选择指标组件的已选回调
+      handleChooseMul (val) {
+        console.log(val)
       },
       // 编辑模式下提交按钮的回调
       handleSubmit () {
