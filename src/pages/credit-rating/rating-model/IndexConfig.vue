@@ -5,7 +5,7 @@
         <div slot="full" flex>
           <!-- tree -->
           <div class="tree-con">
-            <b-tree :data="treeData" slot="tree" :lock-select="lockTreeSelect"
+            <b-tree :data="treeData" slot="tree" :lock-select="editStatus"
               @on-select-change="handTreeCurrentChange"></b-tree>
           </div>
           <div class="table-con">
@@ -52,7 +52,8 @@
 
                 <template v-slot:weight="{ index }">
                   <div flex>
-                    <b-input-number v-model="listCopy[index].weight" style="width: 100%;"
+                    <b-input-number style="width: 100%;"
+                      v-model="listCopy[index].weight"
                       :max="100" :min="0">
                     </b-input-number>
                     <span style="line-height: 30px;">%</span>
@@ -78,7 +79,7 @@
                  @click="handleAdd">
                     + 添加
                 </b-button>
-                <p>注：此处权重总计100%</p>
+                <p>注：此处权重总计100%；编辑时无法切换左侧树节点，保存或退出后方可。</p>
                 <b-button type="primary" @click="handleSubmit">保存</b-button>
               </div>
             </template>
@@ -101,7 +102,7 @@
   import commonMixin from '../../../common/mixins/mixin'
   import SelectIndex from './SelectIndex'
   import {
-    getIndexModleTree, createIndexModel, deleteIndexModel
+    getIndexModleTree, updatedIndexModel, deleteIndexModel
   } from '../../../api/credit-rating/rating-model.api'
 
   export default {
@@ -184,7 +185,7 @@
           selected: false,
           children: [], // 不设置为null可少一步判断
           modelId: this.modelId,
-          parentId: this.curNode.id,
+          parentId: this.curNode.id || null, // 是顶级则null
           indexName: '',
           indexType: 'Dimension',
           calIndexId: '',
@@ -193,6 +194,7 @@
         }
         this.listCopy.push(obj) // 用于数据操作
         this.list.push(obj) // 用于显示
+        console.log(this.listCopy)
       },
       // 编辑模式下删除按钮回调
       handleRemove (index, id) {
@@ -232,11 +234,31 @@
         console.log(val)
       },
       // 编辑模式下提交按钮的回调
-      handleSubmit () {
-        for (const item of this.listCopy) {
-          item.title = item.indexName
+      async handleSubmit () {
+        try {
+          for (const item of this.listCopy) {
+            item.title = item.indexName // 构建树组件用的title
+            item.weight = Number(Number(item.weight).toFixed(2)) // 保留两位小数
+          }
+          const [success, errorMsg] = await updatedIndexModel(this.listCopy)
+          if (success) {
+            this.curNode.children = this.listCopy // 节点更新至树组件
+            this.$message({
+              type: 'success',
+              content: '操作成功'
+            })
+          } else {
+            this.$notice.danger({
+            title: '操作失败',
+            desc: errorMsg
+          })
+          }
+        } catch (error) {
+          this.$notice.danger({
+            title: '操作失败',
+            desc: error
+          })
         }
-        this.curNode.children = this.listCopy
       },
       // 重置查询
       resetQuery () {
