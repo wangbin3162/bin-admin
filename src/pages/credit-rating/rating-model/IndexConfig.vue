@@ -80,8 +80,11 @@
                     + 添加
                 </b-button>
                 <p>注：此处权重总计100%；编辑时无法切换左侧树节点，保存或退出后方可。</p>
-                <b-button type="primary" style="width: 10%;"
-                  @click="handleSubmit">保 存</b-button>
+                <b-button type="primary" :loading="loadingBtn"
+                  @click="handleSubmit">
+                    保 存
+                </b-button>
+                <b-button @click="editStatus = false">取 消</b-button>
               </div>
             </template>
           </div>
@@ -115,6 +118,7 @@
     },
     data () {
       return {
+        loadingBtn: false,
         open: false, // 控制选择指标组件打开关闭
         isInit: true, // 是否初始化过tree组件数据
         editStatus: false, // 标识是否是编辑
@@ -175,9 +179,13 @@
     methods: {
       // 树节点选择改变回调
       handTreeCurrentChange (selectedNode, curNode) {
-        this.curNode = curNode
-        this.listQuery.indexId = curNode.id
-        this.handleFilter()
+        if (this.curNode.id === curNode.id) { // 点击已选择的
+          curNode.selected = true
+        } else {
+          this.curNode = curNode
+          this.listQuery.indexId = curNode.id
+          this.handleFilter()
+        }
       },
       // 编辑模式下添加按钮的回调
       handleAdd () {
@@ -209,10 +217,14 @@
               const isSubmitted = this.listCopy[index].id !== undefined // 存在id说明提交过
               if (isSubmitted) {
                 await deleteIndexModel(id)
+                this.list.splice(index, 1) // 同步显示
+                this.listCopy.splice(index, 1) // 删除绑定数据
+                const newArr = this.listCopy.filter(item => item.id !== undefined) // 排除后续添加但未提交的数据
+                this.curNode.children = JSON.parse(JSON.stringify(newArr)) // 同步到左侧树
+              } else {
+                this.list.splice(index, 1) // 同步显示
+                this.listCopy.splice(index, 1) // 删除绑定数据
               }
-              this.list.splice(index, 1) // 同步显示
-              this.listCopy.splice(index, 1) // 删除绑定数据
-              this.curNode.children = this.listCopy // 同步到左侧树
               this.$message({ type: 'success', content: '操作成功' })
             } catch (error) {
               console.error(error)
@@ -232,20 +244,25 @@
       },
       // 编辑模式下提交按钮的回调
       async handleSubmit () {
+        this.loadingBtn = true
         try {
           for (const item of this.listCopy) {
             item.title = item.indexName // 构建树组件用的title
             item.weight = Number(Number(item.weight).toFixed(2)) // 保留两位小数
           }
-          await updatedIndexModel(this.listCopy)
-          await this.searchList()
-          this.curNode.children = this.listCopy // 节点更新至树组件
+          const node = JSON.parse(JSON.stringify(this.curNode))
+          node.children = this.listCopy
+          const params = this.curNode.root ? this.listCopy : [node]
+          await updatedIndexModel(params)
+          this.curNode.children = JSON.parse(JSON.stringify(this.listCopy)) // 节点更新至树组件
           this.editStatus = false // 推出编辑模式
+          await this.searchList()
           this.$message({ type: 'success', content: '操作成功' })
         } catch (error) {
           console.error(error)
           this.$notice.danger({ title: '操作失败', desc: error })
         }
+        this.loadingBtn = false
       },
       // 重置查询
       resetQuery () {
@@ -275,8 +292,8 @@
           const res = await getIndexModleTree(this.listQuery)
           if (this.isInit) { // 第一次载入时做相关初始化
             this.treeData = this.initTree(res) // 构建左侧树
-            this.list = this.treeData[0].children // 后面或copy list 所以此处list要取构建后的结构
             this.curNode = this.treeData[0] // 把根节点存储至当前节点
+            this.list = this.buildTree(res) // 构建为树结构
             this.isInit = false
           } else {
             // 按indexId查询拿到的是当前节点的数据，
@@ -301,6 +318,7 @@
         // 创建根节点
         const rootNode = {
           title: '维度指标',
+          root: true,
           expand: true,
           selected: true,
           children: this.buildTree(tree)
