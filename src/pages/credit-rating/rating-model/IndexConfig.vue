@@ -19,7 +19,7 @@
             </v-filter-bar>
 
             <!-- 展示用table -->
-            <b-table v-if="!editStatus" :key="editStatus"
+            <b-table id="customTable" v-if="!editStatus" :key="editStatus"
               :columns="columns"
               :data="list"
               :loading="listLoading">
@@ -34,7 +34,7 @@
 
             <template v-else>
               <!-- 编辑用table -->
-              <b-table :key="editStatus"
+              <b-table id="customTable" :key="editStatus"
                 :columns="columnsEdit"
                 :data="list"
                 :loading="listLoading">
@@ -178,6 +178,7 @@
     methods: {
       // 树节点选择改变回调
       handTreeCurrentChange (selectedNode, curNode) {
+        console.log(curNode)
         if (this.curNode.id === curNode.id) { // 点击已选择的
           curNode.selected = true
         } else {
@@ -215,10 +216,12 @@
             try {
               const isSubmitted = this.listCopy[index].id !== undefined // 存在id说明提交过
               if (isSubmitted) {
+                const map = this.tileTreeToMap([this.curNode]) // 保存当前节点下的展开状态为map
                 await deleteIndexModel(id)
                 this.list.splice(index, 1) // 同步显示
                 this.listCopy.splice(index, 1) // 删除绑定数据
                 const newArr = this.listCopy.filter(item => item.id !== undefined) // 排除后续添加但未提交的数据
+                this.restoreExpandStatus(newArr, map) // 恢复当前节点下的展开状态
                 this.curNode.children = JSON.parse(JSON.stringify(newArr)) // 同步到左侧树
               } else {
                 this.list.splice(index, 1) // 同步显示
@@ -249,13 +252,29 @@
             item.title = item.indexName // 构建树组件用的title
             item.weight = Number(Number(item.weight).toFixed(2)) // 保留两位小数
           }
-          const node = JSON.parse(JSON.stringify(this.curNode))
-          node.children = this.listCopy
+          const node = JSON.parse(JSON.stringify(this.curNode)) // 深拷贝，包含当前节点内的展开状态
+          const map = this.tileTreeToMap([node]) // 保存当前节点下的展开状态为map
+          console.log(map)
+          node.children = this.listCopy // 此时如果当前节点为根节点且追加节点，则不会造成左侧树渲染
           const params = this.curNode.root ? this.listCopy : [node]
-          await updatedIndexModel(params)
+          await updatedIndexModel(params) // 请求接口更新数据
+          await this.searchList() // 主要用于更新数据后获取id，且这一步函数内会覆盖掉listCopy的展开状态
+
+          this.listCopy = this.buildTree(this.listCopy, this.curNode.level + 1)
+
+          console.log(this.listCopy)
+
+          this.restoreExpandStatus(this.listCopy, map) // 恢复当前节点下的展开状态
           this.curNode.children = JSON.parse(JSON.stringify(this.listCopy)) // 节点更新至树组件
-          this.editStatus = false // 推出编辑模式
-          await this.searchList()
+
+          // if (this.curNode.level < 3) { // 层级小于3时才追加节点
+          //   for (const item of this.listCopy) { // 用于处理追加节点时，如果当前节点为第二级，则清空children，避免追加第三级后有展开效果。
+          //     if (item.level === 2) item.children = []
+          //   }
+          //   this.restoreExpandStatus(this.listCopy, map) // 恢复当前节点下的展开状态
+          //   this.curNode.children = JSON.parse(JSON.stringify(this.listCopy)) // 节点更新至树组件
+          // }
+          this.editStatus = false // 退出编辑模式
           this.$message({ type: 'success', content: '操作成功' })
         } catch (error) {
           console.error(error)
@@ -310,7 +329,8 @@
             } else {
               this.list = res
             }
-            this.list = this.buildTree(this.list) // 每次请求都需要构建tree组件使用的数据结构
+            // 每次请求都需要构建tree组件使用的数据结构，传入当前选中节点的层级，便于准确构建子节点层级
+            this.list = this.buildTree(this.list, this.curNode.level)
           }
           this.listCopy = JSON.parse(JSON.stringify(this.list)) // 复制用于数据绑定的副本
         } catch (error) {
@@ -327,9 +347,9 @@
           root: true,
           expand: true,
           selected: true,
+          level: 0,
           children: this.buildTree(tree)
         }
-        console.log(rootNode)
         return [rootNode]
       },
       // 构建树
@@ -348,12 +368,61 @@
           // 如果有子节点则递归
           if (level < 3 && (item.children && item.children.length > 0)) {
             obj.children = this.buildTree(item.children, level + 1)
-          } else {
+          } else { // 去除第三级及后续层级的子节点
             obj.children = [] // 把为null的置为[]
           }
           list.push(obj)
         }
         return list
+      },
+      // 树结构平铺成map结构，保存展开状态、层级
+      tileTreeToMap (tree) {
+        try {
+          const map = new Map()
+          let recFun = tree => {
+            for (const item of tree) {
+              map.set(item.id, {
+                expand: item.expand
+                // level: item.level
+              })
+              if (item.children && item.children.length) {
+                recFun(item.children)
+              }
+            }
+          }
+          recFun(tree)
+          recFun = null // 清除闭包
+          return map
+        } catch (error) {
+          console.log(error)
+        }
+      },
+      // 用于恢复展开状态
+      restoreExpandStatus (tree, map) {
+        try {
+          for (const item of tree) {
+            console.log(item.id)
+            console.log(map.get(item.id)) // 这里有问题
+            item.expand = map.get(item.id).expand
+            // item.level = map.get(item.id).level
+            if (item.children && item.children.length) {
+              this.restoreExpandStatus(item.children, map)
+            }
+          }
+        } catch (error) {
+          console.log(error)
+        }
+      },
+      // 获取用于点击的可展开列的dom元素集合
+      getExpandColumn () {
+        this.domList = []
+        const table = document.getElementById('customTable')
+        const expandColumnList = table.getElementsByClassName('expand-custom-column')
+        for (const item of expandColumnList) {
+          const el = item.getElementsByTagName('div')[0].getElementsByTagName('div')[0]
+          this.domList.push(el)
+        }
+        this.domList.shift() // 去除标题中的列
       }
     }
   }
