@@ -58,11 +58,10 @@
         this.resource = deepCopy(res)
         this.isLeg = this.resource.tableName.includes('leg_')
         // 过滤person_id 获取原始列数组
-        this.columns = columns.filter(item => item.fieldName.indexOf('_id') === -1)
+        this.columns = columns.filter(item => item.fieldName.indexOf('_id') === -1 && item.status === 'use')
         // 根据原始列扩展动态表单列表数据
         initFormList(this.columns).then(res => {
           this.dynamicForm = res
-          this.handleDynamicFormReset()
           this.initDynamicForm(res) // 根据动态列扩展form，rules和
           this.visible = true
           // 查询填充示例数据第一个
@@ -95,7 +94,7 @@
                 this.$message({ type: 'success', content: '操作成功' })
                 this.handleClose()
               } else {
-                this.$notice.danger({ title: '操作错误', desc: res.data.message })
+                this.$notice.danger({ title: '操作错误', desc: res.data.message, duration: 10 })
               }
               this.btnLoading = false // 按钮状态清空
             })

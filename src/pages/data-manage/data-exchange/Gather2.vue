@@ -36,7 +36,7 @@
   import commonMixin from '../../../common/mixins/mixin'
   import permission from '../../../common/mixins/permission'
   import { getMyGather } from '../../../api/data-manage/res-info.api'
-  import GatherList from './components/Gather/GatherList'
+  import GatherList from './components/Gather/GatherList2'
   import * as api from '../../../api/data-manage/gather.api'
   import Util from '../../../common/utils/util'
 
@@ -61,7 +61,7 @@
           if (res.status === 200) {
             let detail = res.data.data
             if (resource.status === 'audited' && detail && detail.items) { // 已经发布过的
-              let columns = this.formatItemsToColumns(detail.items)
+              let columns = detail.items.filter(i => i.id)
               this.dialogStatus = 'gatherList'
               this.$refs.gatherList.open(detail, columns)
             } else {
@@ -96,7 +96,7 @@
       // 查询所有列表
       searchList() {
         this.setListData()
-        getMyGather(this.resourceName).then(response => {
+        getMyGather('测试校验').then(response => {
           if (response.status === 200) {
             this.setListData({
               list: response.data.data,
@@ -105,10 +105,6 @@
             this.computedList = this.list
           }
         })
-      },
-      // 根据获取的items转换为原始表头数组
-      formatItemsToColumns(items) {
-        return items.filter(i => i.id)
       }
     }
   }
@@ -128,10 +124,11 @@
     .card-box {
       width: 25%;
       padding: 10px;
-      transition: all .5s;
       .item {
         border-radius: 2px;
-        box-shadow: 0 0 2px 1px rgba(0, 0, 0, .1);
+        box-shadow: 0 0 0 1px rgba(0, 0, 0, .1);
+        overflow: hidden;
+        transition: .25s;
         .card-header {
           position: relative;
           font-size: 16px;
@@ -171,6 +168,9 @@
               border-right: 1px solid #ecf0f5;
             }
           }
+        }
+        &:hover {
+          box-shadow: 0 0 5px 1px rgba(0, 0, 0, .2);
         }
       }
     }

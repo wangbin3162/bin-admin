@@ -297,6 +297,7 @@ export async function initFormList(fields) {
     let promises = fields.map((item) => initItemsByValidValue(item.validValue))
     let results = await Promise.all(promises)
     for (let i = 0; i < fields.length; i++) {
+      dynamicForm[i].fieldName = dynamicForm[i].fieldName.toLowerCase() // 字段名转小写
       dynamicForm[i]['validOptions'] = results[i]
     }
   } catch (e) {

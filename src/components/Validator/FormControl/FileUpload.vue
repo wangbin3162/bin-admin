@@ -1,28 +1,38 @@
 <template>
   <div class="file-upload-wrap">
-    <div class="file-upload">
-      <input
-        ref="input"
-        type="file"
-        class="file-input"
-        @change="handleChange"
-        :multiple="multiple"
-        :accept="accept">
-      <slot>
-        <b-button type="primary" icon="ios-open" plain @click="handleClick">选择文件</b-button>
-      </slot>
-      <b-button v-if="fileList.length>0&&!result"
-                type="success" plain :loading="loadingStatus" icon="ios-cloud-upload"
-                @click="handleUpload">上传
-      </b-button>
-    </div>
-    <ul class="file-list">
-      <li v-for="(file,index) in fileList" :key="index" class="file-item">
+    <template v-if="!isShow">
+      <div class="file-upload">
+        <input
+          ref="input"
+          type="file"
+          class="file-input"
+          @change="handleChange"
+          :multiple="multiple"
+          :accept="accept">
+        <slot>
+          <b-button type="primary" icon="ios-open" plain @click="handleClick">选择文件</b-button>
+        </slot>
+        <b-button v-if="fileList.length>0&&!result"
+                  type="success" plain :loading="loadingStatus" icon="ios-cloud-upload"
+                  @click="handleUpload">上传
+        </b-button>
+      </div>
+      <ul class="file-list">
+        <li v-for="(file,index) in fileList" :key="index" class="file-item upload">
         <span :class="['file-name',{success:file.id&&result}]" @click="handleDownload(file.id,file.name)">
           <b-icon :name="format(file)"></b-icon>&nbsp;{{ file.name }}
         </span>
-        <b-icon v-if="!result" name="ios-close" class="list-item-remove" @click.native="handleRemove(index)"/>
-        <b-icon v-else name="ios-checkmark-circle-outline" class="list-item-success"/>
+          <b-icon v-if="!result" name="ios-close" class="list-item-remove" @click.native="handleRemove(index)"/>
+          <b-icon v-else name="ios-checkmark-circle-outline" class="list-item-success"/>
+        </li>
+      </ul>
+    </template>
+    <ul v-else class="file-list">
+      <li v-for="(file,index) in fileList" :key="index" class="file-item">
+        <span :class="['file-name',{success:file.id&&result}]" @click="handleDownload(file.id,file.name)"
+              :title="`下载: ${file.name}`">
+          <b-icon :name="format(file)"></b-icon>&nbsp;{{ file.name }}
+        </span>
       </li>
     </ul>
   </div>
@@ -50,6 +60,9 @@
       },
       accept: {
         type: String
+      },
+      isShow: {
+        type: Boolean
       }
     },
     data() {
@@ -217,7 +230,7 @@
       margin-right: 4px;
       color: #52c41a;
     }
-    &:hover {
+    &.upload:hover {
       background: #f3f3f3;
       .list-item-remove {
         opacity: 1;

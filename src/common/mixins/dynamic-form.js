@@ -3,6 +3,7 @@ import { Decode, Encode, MaskCode } from '../utils/secret'
 import { oneOf } from 'bin-ui/src/utils/util'
 import FormItem from '../../components/Validator/FormControl/FormItem'
 import FormControl from '../../components/Validator/FormControl/FormControl'
+import { deepCopy } from '../utils/assist'
 
 /**
  * 动态表单mixin
@@ -17,6 +18,7 @@ export default {
     return {
       dynamicForm: [], // 动态form，用于遍历form表单使用
       form: {},
+      resetForm: {},
       rules: {},
       btnLoading: false
     }
@@ -107,7 +109,7 @@ export default {
       }
       dynamicForm.forEach(item => {
         // 1、先根据filedName扩展form对象
-        this.$set(this.form, item.fieldName, item.dataType === 'number' ? 0 : '')
+        this.$set(this.form, item.fieldName.toLowerCase(), item.dataType === 'number' ? 0 : '')
         // 2、如果当前字段名称为多主体id_name1 id_name 后为索引，则需要额外添加person_id[index]
         if (item.fieldName.indexOf('id_name') === 0) {
           let index = item.fieldName.slice(7)
@@ -121,10 +123,10 @@ export default {
       })
       this.$log.primary('----form----')
       console.log(this.form)
-      this.$log.primary('------------')
       this.$log.success('----rules----')
       console.log(this.rules)
-      this.$log.success('-------------')
+      this.resetForm = deepCopy(this.form)
+      this.handleDynamicFormReset()
     },
     // =======解码掩码函数======== //
     decodeAndMaskFormat(arr, mask = false) {
@@ -132,16 +134,14 @@ export default {
       arr.forEach(item => {
         let tmp = { ...item }
         this.dynamicForm.forEach(field => {
-          let value = ''
           if (field.isEncrypt === '1') { // 解密
-            value = Decode(item[field.fieldName])
+            tmp[field.fieldName] = Decode(item[field.fieldName])
             // console.log('解码后：' + value)
           }
           if (mask && oneOf(field.maskModel, ['ID_CODE', 'MOBILE_PHONE'])) { // 掩码
-            value = MaskCode(tmp[field.fieldName], field.maskModel)
+            tmp[field.fieldName] = MaskCode(tmp[field.fieldName], field.maskModel)
             // console.log('掩码后：' + value)
           }
-          tmp[field.fieldName] = value
         })
         newArr.push(tmp)
       })
@@ -171,7 +171,7 @@ export default {
     setFormObj(target) {
       // 注意这里不能直接拷贝或者展开，需要逐一对form表单进行填值
       Object.keys(this.form).forEach(key => {
-        if (target[key]) {
+        if (target.hasOwnProperty(key)) {
           this.form[key] = target[key]
         }
       })
