@@ -266,6 +266,8 @@
       // 选择指标组件的多选回调
       handleChooseMul (mulVal) {
         console.log(mulVal)
+        const curRowObj = this.listCopy[this.curIndex]
+        curRowObj.children = this.mergeFiveList(curRowObj.children, mulVal, curRowObj.id)
       },
       // 选择指标组件的单选回调
       handleChooseSing (singVal) {
@@ -363,6 +365,33 @@
           this.$log.pretty('searchList Error', error, 'danger')
         }
         this.listLoading = false
+      },
+      // 合并第五级的数据
+      mergeFiveList (oldList, newList, pid) {
+        const cacheList = [] // 用于存放不重复的元素
+        newList.map(newItem => {
+          const oldEl = oldList.find(oldItem => oldItem.calIndexId === newItem.id) // 返回已存在的新元素
+          if (oldEl) { // 如果存在重复元素, 则更新
+            oldEl.indexName = newItem.indexName
+            oldEl.indexDesc = newItem.indexDesc
+          } else { // 如果不存在重复元素，则构建后缓存到cacheList
+            const obj = {
+              title: '',
+              expand: false,
+              selected: false,
+              children: [], // 不设置为null可少一步判断
+              modelId: this.modelId,
+              parentId: pid,
+              indexName: newItem.IndexName,
+              indexType: 'Index',
+              calIndexId: newItem.id,
+              weight: 0,
+              indexDesc: newItem.IndexDesc
+            }
+            cacheList.push(newItem)
+          }
+        })
+        return [...oldList, ...cacheList] // 返回合并后的结果
       },
       // tree:初始化树组件用数据结构
       initTree(tree) {
