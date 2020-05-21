@@ -216,13 +216,15 @@
             try {
               const isSubmitted = this.listCopy[index].id !== undefined // 存在id说明提交过
               if (isSubmitted) {
-                const map = this.tileTreeToMap([this.curNode]) // 保存当前节点下的展开状态为map
+                const map = this.tileTreeToMap(this.curNode.children) // 保存当前节点下的展开状态为map
                 await deleteIndexModel(id)
                 this.list.splice(index, 1) // 同步显示
                 this.listCopy.splice(index, 1) // 删除绑定数据
                 const newArr = this.listCopy.filter(item => item.id !== undefined) // 排除后续添加但未提交的数据
                 this.restoreExpandStatus(newArr, map) // 恢复当前节点下的展开状态
-                this.curNode.children = JSON.parse(JSON.stringify(newArr)) // 同步到左侧树
+                if (this.curNode.level < 3) { // 当前节点小于3则更新子节点至当前节点的children
+                  this.curNode.children = JSON.parse(JSON.stringify(newArr)) // 同步到左侧树
+                }
               } else {
                 this.list.splice(index, 1) // 同步显示
                 this.listCopy.splice(index, 1) // 删除绑定数据
@@ -260,20 +262,11 @@
           await updatedIndexModel(params) // 请求接口更新数据
           await this.searchList() // 主要用于更新数据后获取id，且这一步函数内会覆盖掉listCopy的展开状态
 
-          this.listCopy = this.buildTree(this.listCopy, this.curNode.level)
-
-          console.log(this.listCopy)
-
           this.restoreExpandStatus(this.listCopy, map) // 恢复当前节点下的展开状态
-          this.curNode.children = JSON.parse(JSON.stringify(this.listCopy)) // 节点更新至树组件
+          if (this.curNode.level < 3) { // 当前节点小于3则更新子节点至当前节点的children
+            this.curNode.children = JSON.parse(JSON.stringify(this.listCopy)) // 节点更新至树组件
+          }
 
-          // if (this.curNode.level < 3) { // 层级小于3时才追加节点
-          //   for (const item of this.listCopy) { // 用于处理追加节点时，如果当前节点为第二级，则清空children，避免追加第三级后有展开效果。
-          //     if (item.level === 2) item.children = []
-          //   }
-          //   this.restoreExpandStatus(this.listCopy, map) // 恢复当前节点下的展开状态
-          //   this.curNode.children = JSON.parse(JSON.stringify(this.listCopy)) // 节点更新至树组件
-          // }
           this.editStatus = false // 退出编辑模式
           this.$message({ type: 'success', content: '操作成功' })
         } catch (error) {
@@ -398,12 +391,11 @@
       restoreExpandStatus (tree, map) {
         try {
           for (const item of tree) {
-            const node = map.get(item.id)
-            if (node) { // 需要判断节点是否存在
-              item.expand = node.expand
-              if (item.children && item.children.length) {
-                this.restoreExpandStatus(item.children, map)
-              }
+            const expandStatus = map.get(item.id)
+            // map中没取到值说明之前存map时该树节点并未存在
+            if (expandStatus !== undefined) item.expand = expandStatus
+            if (item.children && item.children.length) {
+              this.restoreExpandStatus(item.children, map)
             }
           }
         } catch (error) {
