@@ -180,14 +180,23 @@
             render: (h, { row, index }) => {
               return (
                 <div class="expand-row">
-                  <h4>Hello World</h4>
-                  <b-row class="row-con">
-                    <b-col span={5}>信息项名称</b-col>
-                    <b-col span={5}>标题</b-col>
-                    <b-col span={5}>数据类型</b-col>
-                    <b-col span={5}>所属资源</b-col>
-                    <b-col span={4}></b-col>
-                  </b-row>
+                  {
+                    this.listCopy[index].children.map(item => {
+                      return (
+                        <div class="row-con">
+                          <div class="column-type"></div>
+                          <div class="column-type"></div>
+                          <div class="column-con">{ item.indexName }</div>
+                          <div class="column-con">{ this.natureEnum[item.indexType] }</div>
+                          <div class="column-con">{ item.weight }%</div>
+                          <div class="column-con">{ item.indexDesc }</div>
+                          <div class="column-action">
+                            <b-button type={'text'}>删除</b-button>
+                          </div>
+                        </div>
+                      )
+                    })
+                  }
                 </div>
               )
             }
@@ -292,6 +301,7 @@
         console.log(mulVal)
         const curRowObj = this.listCopy[this.curIndex]
         curRowObj.children = this.mergeFiveList(curRowObj.children, mulVal, curRowObj.id)
+        console.log(curRowObj)
       },
       // 选择指标组件的单选回调
       handleChooseSing (singVal) {
@@ -548,6 +558,10 @@
         white-space: normal;
         overflow-wrap: break-word;
         word-break: break-all;
+      }
+      .column-action {
+        width: 100px;
+        text-align: center;
       }
     }
   }
