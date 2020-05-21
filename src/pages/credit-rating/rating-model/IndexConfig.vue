@@ -139,7 +139,7 @@
           {
             type: 'expand',
             width: 50,
-            className: 'custome-expand-column default',
+            className: 'custome-expand-column disabled',
             render: () => {
               return (
                 <h4>Hello World</h4>
@@ -157,7 +157,7 @@
           {
             type: 'expand',
             width: 50,
-            className: 'custome-expand-column default',
+            className: 'custome-expand-column disabled',
             render: (h, scoped) => {
               return (
                 <h4>Hello World</h4>
@@ -419,13 +419,13 @@
         return domList
       },
       // 启用禁用展开列功能
-      enableOrDisableExpanColumn (level) {
+      enableOrDisableExpanColumn (level, nature) {
         const domList = this.getExpandColumn()
         for (const dom of domList) {
-          if (level >= 3) { // 当前节点层级为>=3时则清除禁用
-            dom.classList.remove('default')
+          if (level >= 3) { // 是第四层且是维度指标 可展开 && nature === 'Dimension' 暂缓维度条件
+            dom.classList.remove('disabled')
           } else {
-            dom.classList.add('default') // 反之启用
+            dom.classList.add('disabled') // 反之启用
           }
         }
       }
@@ -435,7 +435,7 @@
 
 <style lang="stylus">
 .index-config {
-  td.default.custome-expand-column {
+  td.disabled.custome-expand-column {
     pointer-events: none;
     background-color: #F5F5F5;
     i {
