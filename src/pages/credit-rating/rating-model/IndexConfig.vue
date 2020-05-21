@@ -336,7 +336,7 @@
           const params = this.curNode.root ? this.listCopy : [node] // 根节点和子节点提交的格式有些区别
 
           await updatedIndexModel(params) // 请求接口更新数据
-          await this.searchList() // 主要用于更新数据后获取id，且这一步函数内会覆盖掉listCopy的展开状态
+          await this.searchList() // 主要用于更新已选节点下数据后获取id，且这一步函数内会覆盖掉listCopy的展开状态
 
           this.restoreExpandStatus(this.listCopy, map) // 恢复当前节点下的展开状态
           if (this.curNode.level < 3) { // 当前节点小于3则更新子节点至当前节点的children
@@ -523,14 +523,14 @@
       },
       // 启用禁用展开列功能
       enableOrDisableExpanColumn (level, nature) {
-        // const domList = this.getExpandColumn()
-        // for (const dom of domList) {
-        //   if (level >= 3) { // 是第四层且是维度指标 可展开 && nature === 'Dimension' 暂缓维度条件
-        //     dom.classList.remove('disabled')
-        //   } else {
-        //     dom.classList.add('disabled') // 反之启用
-        //   }
-        // }
+        const domList = this.getExpandColumn()
+        for (const dom of domList) {
+          if (level >= 3) { // 是第四层且是维度指标 可展开 && nature === 'Dimension' 暂缓维度条件
+            dom.classList.remove('disabled')
+          } else {
+            dom.classList.add('disabled') // 反之启用
+          }
+        }
       }
     }
   }
@@ -538,13 +538,13 @@
 
 <style lang="stylus">
 .index-config {
-  // td.disabled.custome-expand-column {
-  //   pointer-events: none;
-  //   background-color: #F5F5F5;
-  //   i {
-  //     color: #c0c4cc;
-  //   }
-  // }
+  td.disabled.custome-expand-column {
+    pointer-events: none;
+    background-color: #F5F5F5;
+    i {
+      color: #c0c4cc;
+    }
+  }
 
   .bin-table-expanded-cell { // 重写展开列默认样式
     padding: 0px;
