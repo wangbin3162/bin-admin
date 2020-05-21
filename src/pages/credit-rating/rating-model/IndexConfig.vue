@@ -176,6 +176,13 @@
         ]
       }
     },
+    watch: {
+      editStatus () {
+        this.$nextTick(() => { // 编辑和取消切换table时重新处理禁用启用
+          this.enableOrDisableExpanColumn(this.curNode.level) // 根据节点层级启用禁用左侧table可展开列
+        })
+      }
+    },
     created () {
       this.searchList()
     },
