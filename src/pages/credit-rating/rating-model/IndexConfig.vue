@@ -144,9 +144,24 @@
             type: 'expand',
             width: 50,
             className: 'custome-expand-column disabled',
-            render: () => {
+            render: (h, { row, index }) => {
               return (
-                <h4>Hello World</h4>
+                <div class="expand-row">
+                  {
+                    this.listCopy[index].children.map(item => {
+                      return (
+                        <div class="row-con">
+                          <div class="column-type"></div>
+                          <div class="column-type"></div>
+                          <div class="column-con">{ item.indexName }</div>
+                          <div class="column-con">{ this.natureEnum[item.indexType] }</div>
+                          <div class="column-con">{ item.weight }%</div>
+                          <div class="column-con">{ item.indexDesc }</div>
+                        </div>
+                      )
+                    })
+                  }
+                </div>
               )
             }
           },
@@ -162,9 +177,18 @@
             type: 'expand',
             width: 50,
             className: 'custome-expand-column disabled',
-            render: (h, scoped) => {
+            render: (h, { row, index }) => {
               return (
-                <h4>Hello World</h4>
+                <div class="expand-row">
+                  <h4>Hello World</h4>
+                  <b-row class="row-con">
+                    <b-col span={5}>信息项名称</b-col>
+                    <b-col span={5}>标题</b-col>
+                    <b-col span={5}>数据类型</b-col>
+                    <b-col span={5}>所属资源</b-col>
+                    <b-col span={4}></b-col>
+                  </b-row>
+                </div>
               )
             }
           },
@@ -477,14 +501,14 @@
       },
       // 启用禁用展开列功能
       enableOrDisableExpanColumn (level, nature) {
-        const domList = this.getExpandColumn()
-        for (const dom of domList) {
-          if (level >= 3) { // 是第四层且是维度指标 可展开 && nature === 'Dimension' 暂缓维度条件
-            dom.classList.remove('disabled')
-          } else {
-            dom.classList.add('disabled') // 反之启用
-          }
-        }
+        // const domList = this.getExpandColumn()
+        // for (const dom of domList) {
+        //   if (level >= 3) { // 是第四层且是维度指标 可展开 && nature === 'Dimension' 暂缓维度条件
+        //     dom.classList.remove('disabled')
+        //   } else {
+        //     dom.classList.add('disabled') // 反之启用
+        //   }
+        // }
       }
     }
   }
@@ -492,11 +516,39 @@
 
 <style lang="stylus">
 .index-config {
-  td.disabled.custome-expand-column {
-    pointer-events: none;
-    background-color: #F5F5F5;
-    i {
-      color: #c0c4cc;
+  // td.disabled.custome-expand-column {
+  //   pointer-events: none;
+  //   background-color: #F5F5F5;
+  //   i {
+  //     color: #c0c4cc;
+  //   }
+  // }
+
+  .bin-table-expanded-cell { // 重写展开列默认样式
+    padding: 0px;
+    background: #f0f2f5;
+  }
+  .expand-row {
+    .row-con {
+      display: flex;
+      justify-content: flex-start;
+      margin: 7px 0;
+
+      .column-type {
+        width: 50px;
+        text-align: center;
+      }
+
+      .column-con {
+        width: 0px; // flex-grow 均分剩余空间需要默认初始宽度
+        flex-grow: 1;
+        text-align: center;
+        color: #909399;
+        // 以下用于处理文字换行
+        white-space: normal;
+        overflow-wrap: break-word;
+        word-break: break-all;
+      }
     }
   }
 }
