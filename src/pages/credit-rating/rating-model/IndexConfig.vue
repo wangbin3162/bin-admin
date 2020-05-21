@@ -264,7 +264,6 @@
       },
       // 编辑模式下删除按钮回调
       async handleRemove (index, id) {
-        console.log('id', id)
         this.$confirm({
           title: '删除',
           content: '删除当前项目会删除其子项，确认删除吗？',
@@ -272,7 +271,7 @@
           okType: 'danger',
           onOk: async () => {
             try {
-              const isSubmitted = this.listCopy[index].id !== undefined // 存在id说明提交过
+              const isSubmitted = id !== undefined // 存在id说明提交过
               if (isSubmitted) {
                 const map = this.tileTreeToMap(this.curNode.children) // 保存当前节点下的展开状态为map
                 await deleteIndexModel(id)
