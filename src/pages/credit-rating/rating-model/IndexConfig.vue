@@ -139,6 +139,7 @@
           {
             type: 'expand',
             width: 50,
+            className: 'custome-expand-column default',
             render: () => {
               return (
                 <h4>Hello World</h4>
@@ -156,7 +157,7 @@
           {
             type: 'expand',
             width: 50,
-            className: 'custome-expand-column',
+            className: 'custome-expand-column default',
             render: (h, scoped) => {
               return (
                 <h4>Hello World</h4>
@@ -256,9 +257,9 @@
           }
           const node = JSON.parse(JSON.stringify(this.curNode)) // 深拷贝当前节点
           const map = this.tileTreeToMap(node.children || []) // 保存当前节点下的展开状态为map
-          console.log(map)
           node.children = this.listCopy // 深拷贝后如果当前节点为根节点且追加节点，则不会造成左侧树渲染
-          const params = this.curNode.root ? this.listCopy : [node]
+          const params = this.curNode.root ? this.listCopy : [node] // 根节点和子节点提交的格式有些区别
+
           await updatedIndexModel(params) // 请求接口更新数据
           await this.searchList() // 主要用于更新数据后获取id，且这一步函数内会覆盖掉listCopy的展开状态
 
@@ -326,6 +327,9 @@
             this.list = this.buildTree(this.list, this.curNode.level)
           }
           this.listCopy = JSON.parse(JSON.stringify(this.list)) // 复制用于数据绑定的副本
+          this.$nextTick(() => {
+            this.enableOrDisableExpanColumn(this.curNode.level) // 根据节点层级启用禁用左侧table可展开列
+          })
         } catch (error) {
           console.log(error)
           this.$log.pretty('searchList Error', error, 'danger')
@@ -404,14 +408,26 @@
       },
       // 获取用于点击的可展开列的dom元素集合
       getExpandColumn () {
-        this.domList = []
-        const table = document.getElementById('customTable')
-        const expandColumnList = table.getElementsByClassName('expand-custom-column')
+        const domList = []
+        const tableEl = document.getElementById('customTable')
+        const expandColumnList = tableEl.getElementsByClassName('custome-expand-column')
         for (const item of expandColumnList) {
-          const el = item.getElementsByTagName('div')[0].getElementsByTagName('div')[0]
-          this.domList.push(el)
+          // const el = item.getElementsByTagName('div')[0].getElementsByTagName('div')[0]
+          domList.push(item)
         }
-        this.domList.shift() // 去除标题中的列
+        domList.shift() // 去除标题中的列
+        return domList
+      },
+      // 启用禁用展开列功能
+      enableOrDisableExpanColumn (level) {
+        const domList = this.getExpandColumn()
+        for (const dom of domList) {
+          if (level >= 3) { // 当前节点层级为>=3时则清除禁用
+            dom.classList.remove('default')
+          } else {
+            dom.classList.add('default') // 反之启用
+          }
+        }
       }
     }
   }
@@ -419,10 +435,12 @@
 
 <style lang="stylus">
 .index-config {
-  .custome-expand-column {
+  td.default.custome-expand-column {
     pointer-events: none;
     background-color: #F5F5F5;
-    color:#ACA899;
+    i {
+      color: #c0c4cc;
+    }
   }
 }
 </style>
