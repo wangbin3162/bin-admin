@@ -280,7 +280,8 @@
                 const newArr = this.listCopy.filter(item => item.id !== undefined) // 排除后续添加但未提交的数据
                 this.restoreExpandStatus(newArr, map) // 恢复当前节点下的展开状态
                 if (this.curNode.level < 3) { // 当前节点小于3则更新子节点至当前节点的children
-                  this.curNode.children = JSON.parse(JSON.stringify(newArr)) // 同步到左侧树
+                  const node = this.buildTree(newArr, 'Dimension', this.curNode.level) // 过滤出维度节点
+                  this.curNode.children = JSON.parse(JSON.stringify(node)) // 节点更新至树组件
                 }
               } else {
                 this.list.splice(index, 1) // 同步显示
@@ -364,7 +365,8 @@
 
           this.restoreExpandStatus(this.listCopy, map) // 恢复当前节点下的展开状态
           if (this.curNode.level < 3) { // 当前节点小于3则更新子节点至当前节点的children
-            this.curNode.children = JSON.parse(JSON.stringify(this.listCopy)) // 节点更新至树组件
+            const node = this.buildTree(this.listCopy, 'Dimension', this.curNode.level) // 过滤出维度节点
+            this.curNode.children = JSON.parse(JSON.stringify(node)) // 节点更新至树组件
           }
 
           this.editStatus = false // 退出编辑模式
@@ -409,9 +411,9 @@
         try {
           const res = await getIndexModleTree(this.listQuery)
           if (this.isInit) { // 第一次载入时做相关初始化
-            this.treeData = this.initTree(res) // 构建左侧树
+            this.treeData = this.initTree(res, 'Dimension') // 构建左侧树，只构建节点为维度的类型
             this.curNode = this.treeData[0] // 把根节点存储至当前节点
-            this.list = this.buildTree(res, this.curNode.level) // 构建为树结构
+            this.list = this.buildTree(res, 'Index', this.curNode.level) // 构建为树结构(所有类型)
             this.isInit = false
           } else {
             // 按indexId查询拿到的是当前节点的数据，
@@ -423,13 +425,10 @@
               this.list = res
             }
             // 每次请求都需要构建tree组件使用的数据结构，传入当前选中节点的层级，便于准确构建子节点层级
-            this.list = this.buildTree(this.list, this.curNode.level)
+            this.list = this.buildTree(this.list, 'Index', this.curNode.level) // 构建用于列表展示的所有类型
           }
           this.listCopy = JSON.parse(JSON.stringify(this.list)) // 复制用于数据绑定的副本
-          if (this.curNode.level === 3) {
-            console.log('唔....，这里是三级子节点')
-            console.log(this.listCopy)
-          }
+
           this.$nextTick(() => {
             this.enableOrDisableExpanColumn(this.curNode.level) // 根据节点层级启用禁用左侧table可展开列
           })
@@ -468,7 +467,7 @@
         return [...oldList, ...cacheList] // 返回合并后的结果
       },
       // tree:初始化树组件用数据结构
-      initTree(tree) {
+      initTree(tree, indexType) {
         // 创建根节点
         const rootNode = {
           title: '维度指标',
@@ -476,12 +475,12 @@
           expand: true,
           selected: true,
           level: 0,
-          children: this.buildTree(tree, 0)
+          children: this.buildTree(tree, indexType, 0)
         }
         return [rootNode]
       },
       // 构建树
-      buildTree (tree, level = 0) {
+      buildTree (tree, indexType, level = 0) { // indexType 为 Dimension 表示只筛选出维度节点，反之筛选出维度与指标节点
         const list = []
         for (const item of tree) {
           // 构建tree组件用数据
@@ -496,19 +495,23 @@
           if (obj.level < 4) { // 这边如果是4级及以上则要保留children，用于展开显示
             // 如果层级小于3且有子节点则递归
             if (obj.level < 3 && (item.children && item.children.length > 0)) {
-              obj.children = this.buildTree(item.children, obj.level)
+              obj.children = this.buildTree(item.children, indexType, obj.level)
             } else { // 去除第三级及后续层级的子节点
               obj.children = [] // 把为null的置为[]
             }
           } else {
             // 有子节点则递归
             if (item.children && item.children.length > 0) {
-              obj.children = this.buildTree(item.children, obj.level)
+              obj.children = this.buildTree(item.children, indexType, obj.level)
             } else {
               obj.children = []
             }
           }
-          list.push(obj)
+          if (indexType === 'Dimension') { // 维度时只构建包含维度的节点，忽略Index指标节点
+            if (obj.indexType === 'Dimension') list.push(obj)
+          } else { // 非维度构建时，构建所有类型节点
+            list.push(obj)
+          }
         }
         return list
       },
