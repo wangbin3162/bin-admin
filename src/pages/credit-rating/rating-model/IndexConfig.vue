@@ -402,11 +402,15 @@
             this.list = this.buildTree(this.list, this.curNode.level)
           }
           this.listCopy = JSON.parse(JSON.stringify(this.list)) // 复制用于数据绑定的副本
+          if (this.curNode.level === 3) {
+            console.log('唔....，这里是三级子节点')
+            console.log(this.listCopy)
+          }
           this.$nextTick(() => {
             this.enableOrDisableExpanColumn(this.curNode.level) // 根据节点层级启用禁用左侧table可展开列
           })
         } catch (error) {
-          console.log(error)
+          console.error(error)
           this.$log.pretty('searchList Error', error, 'danger')
         }
         this.listLoading = false
@@ -465,11 +469,20 @@
             children: [],
             ...item
           }
-          // 如果有子节点则递归
-          if (obj.level < 3 && (item.children && item.children.length > 0)) {
-            obj.children = this.buildTree(item.children, obj.level)
-          } else { // 去除第三级及后续层级的子节点
-            obj.children = [] // 把为null的置为[]
+          if (obj.level < 4) { // 这边如果是4级及以上则要保留children，用于展开显示
+            // 如果层级小于3且有子节点则递归
+            if (obj.level < 3 && (item.children && item.children.length > 0)) {
+              obj.children = this.buildTree(item.children, obj.level)
+            } else { // 去除第三级及后续层级的子节点
+              obj.children = [] // 把为null的置为[]
+            }
+          } else {
+            // 有子节点则递归
+            if (item.children && item.children.length > 0) {
+              obj.children = this.buildTree(item.children, obj.level)
+            } else {
+              obj.children = []
+            }
           }
           list.push(obj)
         }
