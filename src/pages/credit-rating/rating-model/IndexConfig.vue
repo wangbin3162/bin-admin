@@ -68,7 +68,7 @@
                   <b-button type="text" @click="handleRemove(index, row.id)">删除</b-button>
                   <b-button v-if="listCopy[index].indexType === 'Index'"
                     type="text"
-                    @click="handleSelectBtn(row.level)">
+                    @click="handleSelectBtn(row.level, index)">
                       选择
                   </b-button>
                 </template>
@@ -100,6 +100,7 @@
     <select-index :open="open"
       :radio="radio"
       @close="open = false"
+      @choose-sing="handleChooseSing"
       @choose-mul="handleChooseMul"></select-index>
   </div>
 </template>
@@ -173,7 +174,8 @@
           { title: '权重', slot: 'weight', align: 'center' },
           { title: '描述', slot: 'indexDesc', align: 'center' },
           { title: '操作', slot: 'action', width: 100, align: 'center' }
-        ]
+        ],
+        curIndex: null // 当前操作行的index
       }
     },
     watch: {
@@ -250,7 +252,8 @@
         })
       },
       // 编辑模式下选择按钮回调
-      handleSelectBtn (level) {
+      handleSelectBtn (level, index) {
+        this.curIndex = index
         if (level < 4) {
           // 单选
           this.radio = true
@@ -260,9 +263,17 @@
         }
         this.open = true
       },
-      // 选择指标组件的已选回调
-      handleChooseMul (val) {
-        console.log(val)
+      // 选择指标组件的多选回调
+      handleChooseMul (mulVal) {
+        console.log(mulVal)
+      },
+      // 选择指标组件的单选回调
+      handleChooseSing (singVal) {
+        console.log(singVal)
+        const curRowObj = this.listCopy[this.curIndex]
+        curRowObj.indexName = singVal.indexName
+        curRowObj.indexDesc = singVal.indexDesc
+        curRowObj.calIndexId = singVal.id
       },
       // 编辑模式下提交按钮的回调
       async handleSubmit () {

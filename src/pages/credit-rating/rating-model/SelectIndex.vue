@@ -33,7 +33,7 @@
               <b-table :columns="columns" :data="list"
                 :loading="listLoading" size="small">
                 <template v-slot:indexName="{ row }">
-                  <b-button type="text" @click="handleCheck(row.id)">{{ row.indexName }}</b-button>
+                  {{ row.indexName }}
                 </template>
                 <template v-slot:indexKind="{ row }">
                   {{ natureEnum[row.indexKind] }}
@@ -51,7 +51,7 @@
                     {{ checkRowSelected(row) ? '取消' : '选择' }}
                   </b-button>
                   <b-button v-else type="primary" plain
-                    @click="handleRadio">
+                    @click="handleRadio(row)">
                     选择
                   </b-button>
                 </template>
