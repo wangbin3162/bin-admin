@@ -255,7 +255,7 @@
           parentId: this.curNode.id || null, // 是顶级则null
           indexName: '',
           indexType: 'Dimension',
-          calIndexId: '',
+          calIndexId: null,
           weight: 0,
           indexDesc: ''
         }
@@ -264,6 +264,7 @@
       },
       // 编辑模式下删除按钮回调
       async handleRemove (index, id) {
+        console.log('id', id)
         this.$confirm({
           title: '删除',
           content: '删除当前项目会删除其子项，确认删除吗？',
