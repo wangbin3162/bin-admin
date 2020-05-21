@@ -252,15 +252,15 @@
             item.title = item.indexName // 构建树组件用的title
             item.weight = Number(Number(item.weight).toFixed(2)) // 保留两位小数
           }
-          const node = JSON.parse(JSON.stringify(this.curNode)) // 深拷贝，包含当前节点内的展开状态
-          const map = this.tileTreeToMap([node]) // 保存当前节点下的展开状态为map
+          const node = JSON.parse(JSON.stringify(this.curNode)) // 深拷贝当前节点
+          const map = this.tileTreeToMap(node.children || []) // 保存当前节点下的展开状态为map
           console.log(map)
-          node.children = this.listCopy // 此时如果当前节点为根节点且追加节点，则不会造成左侧树渲染
+          node.children = this.listCopy // 深拷贝后如果当前节点为根节点且追加节点，则不会造成左侧树渲染
           const params = this.curNode.root ? this.listCopy : [node]
           await updatedIndexModel(params) // 请求接口更新数据
           await this.searchList() // 主要用于更新数据后获取id，且这一步函数内会覆盖掉listCopy的展开状态
 
-          this.listCopy = this.buildTree(this.listCopy, this.curNode.level + 1)
+          this.listCopy = this.buildTree(this.listCopy, this.curNode.level)
 
           console.log(this.listCopy)
 
@@ -318,7 +318,7 @@
           if (this.isInit) { // 第一次载入时做相关初始化
             this.treeData = this.initTree(res) // 构建左侧树
             this.curNode = this.treeData[0] // 把根节点存储至当前节点
-            this.list = this.buildTree(res) // 构建为树结构
+            this.list = this.buildTree(res, this.curNode.level) // 构建为树结构
             this.isInit = false
           } else {
             // 按indexId查询拿到的是当前节点的数据，
@@ -348,12 +348,12 @@
           expand: true,
           selected: true,
           level: 0,
-          children: this.buildTree(tree)
+          children: this.buildTree(tree, 0)
         }
         return [rootNode]
       },
       // 构建树
-      buildTree (tree, level = 1) {
+      buildTree (tree, level = 0) {
         const list = []
         for (const item of tree) {
           // 构建tree组件用数据
@@ -361,13 +361,13 @@
             title: item.indexName,
             expand: false,
             selected: false,
-            level,
+            level: level + 1,
             children: [],
             ...item
           }
           // 如果有子节点则递归
-          if (level < 3 && (item.children && item.children.length > 0)) {
-            obj.children = this.buildTree(item.children, level + 1)
+          if (obj.level < 3 && (item.children && item.children.length > 0)) {
+            obj.children = this.buildTree(item.children, obj.level)
           } else { // 去除第三级及后续层级的子节点
             obj.children = [] // 把为null的置为[]
           }
@@ -381,10 +381,7 @@
           const map = new Map()
           let recFun = tree => {
             for (const item of tree) {
-              map.set(item.id, {
-                expand: item.expand
-                // level: item.level
-              })
+              map.set(item.id, item.expand)
               if (item.children && item.children.length) {
                 recFun(item.children)
               }
@@ -401,12 +398,12 @@
       restoreExpandStatus (tree, map) {
         try {
           for (const item of tree) {
-            console.log(item.id)
-            console.log(map.get(item.id)) // 这里有问题
-            item.expand = map.get(item.id).expand
-            // item.level = map.get(item.id).level
-            if (item.children && item.children.length) {
-              this.restoreExpandStatus(item.children, map)
+            const node = map.get(item.id)
+            if (node) { // 需要判断节点是否存在
+              item.expand = node.expand
+              if (item.children && item.children.length) {
+                this.restoreExpandStatus(item.children, map)
+              }
             }
           }
         } catch (error) {
