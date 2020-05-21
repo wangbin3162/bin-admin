@@ -66,9 +66,10 @@
 
                 <template v-slot:action="{ index, row }">
                   <b-button type="text" @click="handleRemove(index, row.id)">删除</b-button>
-                  <b-button v-if="listCopy[index].indexType === 'Index'"
+                  <!-- 为指标时显示 or 层级大于3时一直显示，且性质会改变所以需要绑定listCopy数据 -->
+                  <b-button v-if="listCopy[index].indexType === 'Index' || row.level > 3"
                     type="text"
-                    @click="handleSelectBtn(row.level, index)">
+                    @click="handleSelectBtn(row.level, listCopy[index].indexType, index)">
                       选择
                   </b-button>
                 </template>
@@ -298,15 +299,16 @@
         console.log(index)
       },
       // 编辑模式下选择按钮回调
-      handleSelectBtn (level, index) {
-        this.curIndex = index
+      handleSelectBtn (level, indexType, index) {
+        this.curIndex = index // 缓存点击选择按钮所在行的index
         if (level < 4) {
           // 单选
           this.radio = true
-        } else {
-          // 多选
-          this.radio = false
-        }
+        } else if (indexType === 'Index') { // 大于4级时 指标单选 维度多选
+            this.radio = true
+          } else {
+            this.radio = false
+          }
         this.open = true
       },
       // 选择指标组件的多选回调
