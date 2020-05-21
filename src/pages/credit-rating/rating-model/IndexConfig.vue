@@ -43,7 +43,8 @@
                 </template>
 
                 <template v-slot:indexType="{ index }">
-                  <b-select v-model="listCopy[index].indexType" append-to-body>
+                  <b-select v-model="listCopy[index].indexType" append-to-body
+                    @on-change="handleIndexTypeChange($event, index)">
                     <b-option v-for="(value, key) in natureEnum" :key="key" :value="key">
                       {{ value }}
                     </b-option>
@@ -219,7 +220,8 @@
           { title: '描述', slot: 'indexDesc', align: 'center' },
           { title: '操作', slot: 'action', width: 100, align: 'center' }
         ],
-        curIndex: null // 当前操作行的index
+        curIndex: null, // 当前操作行的index
+        domList: [] // 可展开列的dom
       }
     },
     watch: {
@@ -261,6 +263,19 @@
         }
         this.listCopy.push(obj) // 用于数据操作
         this.list.push(obj) // 用于显示
+      },
+      // 性质下拉框change回调
+      handleIndexTypeChange (val, index) {
+        if (this.curNode.level >= 3) { // 用于更新第四层数据可展开列状态
+          this.$nextTick(() => { // 更新展开列状态
+            this.enableOrDisableExpanColumn(this.curNode.level)
+            if (val === 'Index') { // 如果是从维度切换为指标 则把可能已展开的列收起
+              this.$nextTick(() => {
+                this.hackClick(index, 'close')
+              })
+            }
+          })
+        }
       },
       // 编辑模式下删除按钮回调
       async handleRemove (index, id) {
@@ -338,6 +353,9 @@
       handleChooseMul (mulVal) {
         const curRowObj = this.listCopy[this.curIndex]
         curRowObj.children = this.mergeFiveList(curRowObj.children, mulVal, curRowObj.id)
+        this.$nextTick(() => { // 选择后展开
+          this.hackClick(this.curIndex, 'open')
+        })
       },
       // 选择指标组件的单选回调
       handleChooseSing (singVal) {
@@ -379,18 +397,12 @@
       },
       // 重置查询
       resetQuery () {
-        let bizType
-        if (!this.currentTreeNode || this.currentTreeNode.code === 'C') {
-          bizType = ''
-        } else {
-          bizType = this.currentTreeNode.code
-        }
         this.listQuery = {
           page: 1,
           size: 10,
-          indexName: '',
-          indexKind: '',
-          bizType: bizType
+          modelId: this.modelId,
+          indexId: this.curNode.id,
+          indexType: 'Index'
         }
         this.searchList()
       },
@@ -416,9 +428,11 @@
             this.list = this.buildTree(res, 'Index', this.curNode.level) // 构建为树结构(所有类型)
             this.isInit = false
           } else {
-            // 按indexId查询拿到的是当前节点的数据，
-            // 所以获取当前节点的子节点需要自己处理
-            // 且根节点为手动构建，所以点击根节点发起的查询不需取children
+            /**
+             * 按indexId查询拿到的是当前节点的数据
+             * 且根节点为手动构建，所以点击根节点发起的查询不需取children
+             * 所以获取当前节点的子节点需要自己处理
+             */
             if (this.listQuery.indexId) { // 表示不是根节点
               this.list = res[0].children || []
             } else {
@@ -555,21 +569,42 @@
         const tableEl = document.getElementById('customTable')
         const expandColumnList = tableEl.getElementsByClassName('custome-expand-column')
         for (const item of expandColumnList) {
-          // const el = item.getElementsByTagName('div')[0].getElementsByTagName('div')[0]
           domList.push(item)
         }
         domList.shift() // 去除标题中的列
         return domList
       },
       // 启用禁用展开列功能
-      enableOrDisableExpanColumn (level, nature) {
-        const domList = this.getExpandColumn()
-        for (const dom of domList) {
-          if (level >= 3) { // 是第四层且是维度指标 可展开 && nature === 'Dimension' 暂缓维度条件
-            dom.classList.remove('disabled')
+      enableOrDisableExpanColumn (level) {
+        this.domList = this.getExpandColumn() // 获取右侧可展开节点
+        for (let i = 0; i < this.listCopy.length; i++) { // 遍历右侧table数据
+          const el = this.listCopy[i]
+          if (level >= 3 && el.indexType === 'Dimension') { // 是第四层且是维度指标 可展开 && indexType === 'Dimension' 暂缓维度条件
+            this.domList[i].classList.remove('disabled')
           } else {
-            dom.classList.add('disabled') // 反之启用
+            this.domList[i].classList.add('disabled') // 反之启用
           }
+        }
+      },
+      // hack的方式，使用原生js的click()主动触发对应行的展开操作
+      hackClick (index, type) {
+        console.log(index)
+        console.log(this.domList)
+        if (this.domList.length > 0) {
+          // 阻止bin-ui自身的报错，猜测可能是bin-in的dom渲染没有结束
+          // 或者是任务队列没执行完触发click导致没获取的需要的数据而json报错
+          setTimeout(() => {
+            console.log(this.domList[index])
+            const el = this.domList[index].getElementsByTagName('div')[0].getElementsByTagName('div')[0] // 获取可点击元素
+            const str = el.className
+            if (type === 'open') {
+              // 已展开则不点击
+              if (!str.includes('bin-table-cell-expand-expanded')) el.click()
+            } else {
+              // 为展开则不点击
+              if (str.includes('bin-table-cell-expand-expanded')) el.click()
+            }
+          }, 0)
         }
       }
     }
