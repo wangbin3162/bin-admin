@@ -68,7 +68,7 @@
                   <b-button type="text" @click="handleRemove(index, row.id)">删除</b-button>
                   <b-button v-if="listCopy[index].indexType === 'Index'"
                     type="text"
-                    @click="handleSelectBtn">
+                    @click="handleSelectBtn(row.level)">
                       选择
                   </b-button>
                 </template>
@@ -98,7 +98,9 @@
     </page-header-wrap>
 
     <select-index :open="open"
-      @close="open = false" @choose-mul="handleChooseMul"></select-index>
+      :radio="radio"
+      @close="open = false"
+      @choose-mul="handleChooseMul"></select-index>
   </div>
 </template>
 
@@ -120,6 +122,7 @@
       return {
         loadingBtn: false,
         open: false, // 控制选择指标组件打开关闭
+        radio: true, // 选择指标组件单选还是多选
         isInit: true, // 是否初始化过tree组件数据
         editStatus: false, // 标识是否是编辑
         natureEnum: { // 模型指标下指标性质枚举
@@ -131,7 +134,7 @@
         listQuery: {
           modelId: this.modelId,
           indexId: '',
-          indexType: 'Dimension'
+          indexType: 'Index'
         },
         list: [],
         listCopy: [], // 用作数据绑定的副本，避免input等相关操作会重新刷新列表挂壁==关闭已展开列。
@@ -240,7 +243,14 @@
         })
       },
       // 编辑模式下选择按钮回调
-      handleSelectBtn () {
+      handleSelectBtn (level) {
+        if (level < 4) {
+          // 单选
+          this.radio = true
+        } else {
+          // 多选
+          this.radio = false
+        }
         this.open = true
       },
       // 选择指标组件的已选回调

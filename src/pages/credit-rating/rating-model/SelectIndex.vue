@@ -2,7 +2,7 @@
   <div>
      <b-modal v-model="showDialog"
       title="选择指标"
-      width="90%"
+      :width="width"
       :styles="{ top: '10%'}"
       footer-hide
       :body-styles="{ padding: 0 }"
@@ -13,7 +13,7 @@
           @on-select-change="handTreeCurrentChange"></b-tree>
 
         <b-row :gutter="15">
-          <b-col span="16">
+          <b-col :span="span">
             <!-- 查询 -->
             <v-filter-bar>
               <v-filter-item title="名称">
@@ -46,9 +46,13 @@
                 </template>
                 <!-- 操作栏 -->
                 <template v-slot:action="{ row }">
-                  <b-button :type="checkRowSelected(row) ? 'danger' : 'primary'" plain
+                  <b-button v-if="!radio" :type="checkRowSelected(row) ? 'danger' : 'primary'" plain
                     @click="chooseOne(row)">
                     {{ checkRowSelected(row) ? '取消' : '选择' }}
+                  </b-button>
+                  <b-button v-else type="primary" plain
+                    @click="handleRadio">
+                    选择
                   </b-button>
                 </template>
               </b-table>
@@ -59,7 +63,7 @@
               @on-change="handleCurrentChange"
               @on-page-size-change="handleSizeChange"></b-page>
           </b-col>
-          <b-col span="8">
+          <b-col span="8" v-if="!radio">
             <b-card class="box-card" head-tip
               header="已选指标">
               <b-tag
@@ -92,9 +96,11 @@
   export default {
     name: 'SelectIndex',
     mixins: [commonMixin],
-    props: ['open'],
+    props: ['open', 'radio'],
     data () {
       return {
+        width: '90%',
+        span: 16,
         treeData: [],
         listQuery: {
           indexName: '',
@@ -133,6 +139,13 @@
       // b-modal组件的可视状态事件回调，用于初始化
       handleVisibleChange (visible) {
         if (visible) {
+          if (this.radio) {
+            this.width = '67%' // 单选宽度
+            this.span = 24
+          } else {
+            this.width = '90%' // 多选宽度
+            this.span = 16
+          }
           this.getEnum()
           this.initTree()
         } else {
@@ -196,6 +209,11 @@
       // 确认选择按钮回调，向外发送处理后的数据，多选
       postSelectedList () {
         this.$emit('choose-mul', this.selectedList)
+        this.showDialog = false // 关闭弹框
+      },
+      // 单选时选择选择按钮的回调
+      handleRadio (row) {
+        this.$emit('choose-sing', row)
         this.showDialog = false // 关闭弹框
       },
       // 获取列表
