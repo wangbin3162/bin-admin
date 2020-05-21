@@ -182,7 +182,7 @@
               return (
                 <div class="expand-row">
                   {
-                    this.listCopy[index].children.map(item => {
+                    this.listCopy[index].children.map((item, cIndex) => {
                       return (
                         <div class="row-con">
                           <div class="column-type"></div>
@@ -202,7 +202,7 @@
                           </div>
                           <div class="column-con">{ item.indexDesc }</div>
                           <div class="column-action">
-                            <b-button type={'text'} onClick={ () => this.handleRemoveIndex(item) }>删除</b-button>
+                            <b-button type={'text'} onClick={ () => this.handleRemoveIndex(index, cIndex, item.id) }>删除</b-button>
                           </div>
                         </div>
                       )
@@ -263,7 +263,7 @@
         this.list.push(obj) // 用于显示
       },
       // 编辑模式下删除按钮回调
-      handleRemove (index, id) {
+      async handleRemove (index, id) {
         this.$confirm({
           title: '删除',
           content: '删除当前项目会删除其子项，确认删除吗？',
@@ -295,8 +295,30 @@
           }
         })
       },
-      handleRemoveIndex(index, id) {
-        console.log(index)
+      // 展开列下删除按钮回调
+      async handleRemoveIndex(index, cIndex, id) {
+        // this.listCopy[index].children.splice(cIndex, 1)
+        const curRowChildren = this.listCopy[index].children
+        this.$confirm({
+          title: '删除',
+          content: '删除当前项后不可恢复，确认删除吗？',
+          loading: true,
+          okType: 'danger',
+          onOk: async () => {
+            try {
+              const isSubmitted = id !== undefined // 存在id说明提交过
+              if (isSubmitted) {
+                await deleteIndexModel(id)
+              }
+              curRowChildren.splice(cIndex, 1)
+              this.$message({ type: 'success', content: '操作成功' })
+            } catch (error) {
+              console.error(error)
+              this.$notice.danger({ title: '操作错误', desc: error })
+            }
+            this.$modal.remove()
+          }
+        })
       },
       // 编辑模式下选择按钮回调
       handleSelectBtn (level, indexType, index) {
