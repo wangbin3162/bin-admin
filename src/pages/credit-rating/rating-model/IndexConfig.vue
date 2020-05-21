@@ -188,10 +188,20 @@
                           <div class="column-type"></div>
                           <div class="column-con">{ item.indexName }</div>
                           <div class="column-con">{ this.natureEnum[item.indexType] }</div>
-                          <div class="column-con">{ item.weight }%</div>
+                          <div class="column-con">
+                            <div flex>
+                              <b-input-number style="width: 100%;"
+                                max={100} min={0}
+                                value={item.weight}
+                                on-on-change={
+                                  val => { item.weight = val }
+                                }></b-input-number>
+                                <span style="line-height: 30px;">%</span>
+                            </div>
+                          </div>
                           <div class="column-con">{ item.indexDesc }</div>
                           <div class="column-action">
-                            <b-button type={'text'}>删除</b-button>
+                            <b-button type={'text'} onClick={ () => this.handleRemoveIndex(item) }>删除</b-button>
                           </div>
                         </div>
                       )
@@ -284,6 +294,9 @@
           }
         })
       },
+      handleRemoveIndex(index, id) {
+        console.log(index)
+      },
       // 编辑模式下选择按钮回调
       handleSelectBtn (level, index) {
         this.curIndex = index
@@ -298,10 +311,8 @@
       },
       // 选择指标组件的多选回调
       handleChooseMul (mulVal) {
-        console.log(mulVal)
         const curRowObj = this.listCopy[this.curIndex]
         curRowObj.children = this.mergeFiveList(curRowObj.children, mulVal, curRowObj.id)
-        console.log(curRowObj)
       },
       // 选择指标组件的单选回调
       handleChooseSing (singVal) {
@@ -404,7 +415,8 @@
       mergeFiveList (oldList, newList, pid) {
         const cacheList = [] // 用于存放不重复的元素
         newList.map(newItem => {
-          const oldEl = oldList.find(oldItem => oldItem.calIndexId === newItem.id) // 返回已存在的新元素
+          const oldEl = oldList.find(oldItem => oldItem.calIndexId === newItem.calIndexId) // 返回已存在的新元素
+          console.log(oldEl)
           if (oldEl) { // 如果存在重复元素, 则更新
             oldEl.indexName = newItem.indexName
             oldEl.indexDesc = newItem.indexDesc
@@ -416,13 +428,13 @@
               children: [], // 不设置为null可少一步判断
               modelId: this.modelId,
               parentId: pid,
-              indexName: newItem.IndexName,
+              indexName: newItem.indexName,
               indexType: 'Index',
-              calIndexId: newItem.id,
+              calIndexId: newItem.calIndexId,
               weight: 0,
               indexDesc: newItem.IndexDesc
             }
-            cacheList.push(newItem)
+            cacheList.push(obj)
           }
         })
         return [...oldList, ...cacheList] // 返回合并后的结果
@@ -550,10 +562,12 @@
       }
 
       .column-con {
+        padding: 0 16px;
         width: 0px; // flex-grow 均分剩余空间需要默认初始宽度
         flex-grow: 1;
         text-align: center;
         color: #909399;
+        line-height: 30px;
         // 以下用于处理文字换行
         white-space: normal;
         overflow-wrap: break-word;
@@ -562,6 +576,7 @@
       .column-action {
         width: 100px;
         text-align: center;
+        line-height: 30px;
       }
     }
   }
