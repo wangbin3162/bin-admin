@@ -612,10 +612,12 @@
 <style lang="stylus">
 .index-config {
   td.disabled.custome-expand-column {
+    cursor: not-allowed;
+  }
+  td.disabled.custome-expand-column .bin-table-cell-expand {
     pointer-events: none;
-    background-color: #F5F5F5;
     i {
-      color: #c0c4cc;
+      color: rgba(0, 0, 0, 0.2)
     }
   }
 
