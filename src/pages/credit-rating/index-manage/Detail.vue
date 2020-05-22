@@ -198,7 +198,7 @@
           })
         } catch (error) {
           console.error(error)
-          this.$log.pretty('searchList Error', error, 'danger')
+          this.$notice.danger({ title: '加载详情失败', desc: error })
         }
         this.loading = false
       },

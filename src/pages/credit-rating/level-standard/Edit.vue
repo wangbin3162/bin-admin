@@ -9,7 +9,8 @@
             <b-input v-model="form.ratingName" placeholder="请输入等级标准名称" clearable></b-input>
           </b-form-item>
           <b-form-item label="编码" prop="ratingCode">
-            <b-input v-model="form.ratingCode" placeholder="请输入等级标准编码" clearable></b-input>
+            <b-input v-model="form.ratingCode" placeholder="请输入等级标准编码" clearable
+              :disabled="editData !== null"></b-input>
           </b-form-item>
           <b-form-item label="分制" prop="points">
             <b-select v-model="form.points">
