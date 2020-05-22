@@ -48,6 +48,7 @@
                 <template v-slot:indexType="{ index }">
                   <!-- 已提交的数据不允许修改性质 -->
                   <!-- Boolean(listCopy[index].id) 把id转为Boolean类型，提交过的数据id一定存在，未提交的则不存在 -->
+                  <!-- Boolean(listCopy[index].uSelected) 用于新增时，如果已从指标选择组件选择指标，则不允许切换性质 -->
                   <b-select v-model="listCopy[index].indexType" append-to-body
                     @on-change="handleIndexTypeChange($event, index)"
                     :disabled="Boolean(listCopy[index].id)">
@@ -139,6 +140,7 @@
           Dimension: '维度',
           Index: '指标'
         },
+        curIndex: null, // 当前操作行的index
         curNode: null, // 用于缓存选中的当前节点
         treeData: [], // 左侧树
         listQuery: {
@@ -226,7 +228,6 @@
           { title: '描述', slot: 'indexDesc', ellipsis: true, tooltip: true, align: 'center' },
           { title: '操作', slot: 'action', width: 100, align: 'center' }
         ],
-        curIndex: null, // 当前操作行的index
         domList: [] // 可展开列的dom
       }
     },
@@ -275,16 +276,25 @@
         })
       },
       // 性质下拉框change回调
-      handleIndexTypeChange (val, index) {
+      handleIndexTypeChange (indexType, index) {
         if (this.curNode.level >= 3) { // 用于更新第四层数据可展开列状态
           this.$nextTick(() => { // 更新展开列状态
             this.enableOrDisableExpanColumn(this.curNode.level + 1)
-            if (val === 'Index') { // 如果是从维度切换为指标 则把可能已展开的列收起
+            if (indexType === 'Index') { // 如果是从维度切换为指标 则把可能已展开的列收起
               this.$nextTick(() => {
                 this.hackClick(index, 'close')
               })
             }
           })
+        }
+        // 切换时清空之前类型的数据
+        this.listCopy[index].indexName = ''
+        this.listCopy[index].indexDesc = ''
+        this.listCopy[index].weight = 0
+        if (indexType === 'Index') {
+          this.listCopy[index].children = []
+        } else {
+          this.listCopy[index].calIndexId = null
         }
       },
       // 编辑模式下删除按钮回调
@@ -365,9 +375,7 @@
       handleChooseMul (mulVal) {
         const curRowObj = this.listCopy[this.curIndex]
         curRowObj.children = this.mergeFiveList(curRowObj.children, mulVal, curRowObj.id)
-        // if (!curRowObj.id) { // 用于选择后禁止切换性质下拉框
-        //   this.$set(curRowObj, 'id', 'cacheFalg')
-        // }
+        this.$set(curRowObj, 'uSelected', true) // 用于选择后禁止切换性质下拉框, 与指标下拉框关联
         this.$nextTick(() => { // 选择后展开
           this.hackClick(this.curIndex, 'open')
         })
@@ -378,9 +386,7 @@
         curRowObj.indexName = singVal.indexName
         curRowObj.indexDesc = singVal.indexDesc
         curRowObj.calIndexId = singVal.id
-        // if (!curRowObj.id) { // 用于选择后禁止切换性质下拉框
-        //   this.$set(curRowObj, 'id', 'cacheFalg')
-        // }
+        this.$set(curRowObj, 'uSelected', true) // 用于选择后禁止切换性质下拉框, 与指标下拉框关联
       },
       // 编辑模式下提交按钮的回调
       async handleSubmit () {
