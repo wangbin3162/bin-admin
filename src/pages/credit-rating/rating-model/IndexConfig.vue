@@ -588,8 +588,6 @@
       },
       // hack的方式，使用原生js的click()主动触发对应行的展开操作
       hackClick (index, type) {
-        console.log(index)
-        console.log(this.domList)
         if (this.domList.length > 0) {
           // 阻止bin-ui自身的报错，猜测可能是bin-in的dom渲染没有结束
           // 或者是任务队列没执行完触发click导致没获取的需要的数据而json报错
