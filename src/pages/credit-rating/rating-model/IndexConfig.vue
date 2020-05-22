@@ -172,11 +172,10 @@
             }
           },
           { type: 'index', width: 50, align: 'center' },
-          { title: '名称', key: 'indexName', align: 'center' },
+          { title: '名称', key: 'indexName', ellipsis: true, tooltip: true, align: 'center' },
           { title: '性质', slot: 'indexType', align: 'center' },
           { title: '权重', slot: 'weight', align: 'center' },
-          { title: '描述', key: 'indexDesc', align: 'center' }
-          // { title: '操作', slot: 'action', align: 'center' }
+          { title: '描述', key: 'indexDesc', ellipsis: true, tooltip: true, align: 'center' }
         ],
         columnsEdit: [ // 编辑用table
           {
@@ -218,10 +217,10 @@
             }
           },
           { type: 'index', width: 50, align: 'center' },
-          { title: '名称', slot: 'indexName', align: 'center' },
+          { title: '名称', slot: 'indexName', ellipsis: true, tooltip: true, align: 'center' },
           { title: '性质', slot: 'indexType', align: 'center' },
           { title: '权重', slot: 'weight', align: 'center' },
-          { title: '描述', slot: 'indexDesc', align: 'center' },
+          { title: '描述', slot: 'indexDesc', ellipsis: true, tooltip: true, align: 'center' },
           { title: '操作', slot: 'action', width: 100, align: 'center' }
         ],
         curIndex: null, // 当前操作行的index
