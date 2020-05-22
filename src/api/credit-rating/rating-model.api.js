@@ -69,7 +69,7 @@ export async function getRatingModeDetail(id) {
         method: 'get',
         params: { id }
       })
-      if (res.data.code === '0') {
+      if (res.data.successful) {
         resolve(res.data.data)
       } else {
         reject(res.data.message)

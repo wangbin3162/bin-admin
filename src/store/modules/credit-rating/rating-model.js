@@ -18,7 +18,9 @@ function treeToCascade(tree) {
 const ratingModel = {
   state: {
     subjectType: [], // 主体类别级联框数据结构
-    personClassEnum: {} // 主题类别枚举结构
+    personClassEnum: {}, // 主体类别枚举结构
+    statusEnum: {}, // 启用禁用枚举
+    defaultEnum: {} // 缺省模型枚举
   },
   mutations: {
     SET_SBUJECT_TYPE (state, subjectType) {
@@ -26,6 +28,12 @@ const ratingModel = {
     },
     SET_PERSON_CLASS_ENUM (state, personClassEnum) {
       state.personClassEnum = personClassEnum
+    },
+    SET_STATUS_ENUM(state, statusEnum) {
+      state.statusEnum = statusEnum
+    },
+    SET_DEFAULT_ENUM(state, defaultEnum) {
+      state.defaultEnum = defaultEnum
     }
   },
   actions: {

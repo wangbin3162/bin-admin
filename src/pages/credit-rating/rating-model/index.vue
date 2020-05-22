@@ -26,7 +26,7 @@
 
         <b-table :columns="columns" :data="list" :loading="listLoading">
           <template v-slot:modelName="{ row }">
-            <b-button type="text" @click="handleCheck(row)">{{ row.modelName }}</b-button>
+            <b-button type="text" @click="handleCheck(row.id)">{{ row.modelName }}</b-button>
           </template>
           <template v-slot:personClass="{ row }">
             {{ personClassEnum[row.personClass]}}
@@ -78,15 +78,20 @@
       @close="handleLevelClose"
       @selected="handleLevelSelected"></select-level>
 
+    <index-config v-if="dialogStatus === 'indexConfig'"
+      @close="handleIndexConfigClose"
+      :modelId="editData.id"></index-config>
+
     <edit v-if="isEdit"
       @close="handleClose"
       @success="handleEditSuccess"
       :title="editTitle"
       :editData="editData"></edit>
 
-    <index-config v-if="dialogStatus === 'indexConfig'"
-      @close="handleIndexConfigClose"
-      :modelId="editData.id"></index-config>
+    <detail v-if="isCheck"
+      @close="handleCancel"
+      :id="ratingModelId"
+      :title="editTitle"></detail>
   </div>
 </template>
 
@@ -94,6 +99,7 @@
   import commonMixin from '../../../common/mixins/mixin'
   import permission from '../../../common/mixins/permission'
   import Edit from './Edit'
+  import Detail from './Detail'
   import SelectLevel from './SeleceLevel'
   import IndexConfig from './IndexConfig'
   import { getEvalCommonStatus, getEvalSysDefault } from '../../../api/enum.api'
@@ -109,14 +115,15 @@
     mixins: [commonMixin, permission],
     components: {
       Edit,
+      Detail,
       SelectLevel,
       IndexConfig
     },
     data () {
       return {
+        moduleName: '评级模型',
+        ratingModelId: null,
         open: false, // 等级组件弹框
-        statusEnum: {}, // 状态枚举
-        defaultEnum: {}, // 缺省模型枚举
         editData: null, // 待编辑数据
         listQuery: {
           modelName: '',
@@ -143,6 +150,12 @@
       },
       personClassEnum () {
         return this.$store.state.ratingModel.personClassEnum
+      },
+      statusEnum () { // 状态枚举
+        return this.$store.state.ratingModel.statusEnum
+      },
+      defaultEnum () { // 缺省模型枚举
+        return this.$store.state.ratingModel.defaultEnum
       }
     },
     created () {
@@ -164,7 +177,8 @@
         this.openEditPage('create')
       },
       // 查看详情
-      handleCheck (row) {
+      handleCheck (id) {
+        this.ratingModelId = id
         this.openEditPage('check')
       },
       // 修改
@@ -313,7 +327,7 @@
           const [tree, statusEnum, defaultEnum] = await Promise.all([
             getSubjectTypeTree(), getEvalCommonStatus(), getEvalSysDefault()
           ])
-          // 构建主体类别级联框使用数据
+          // 构建主体类别级联框使用数据，并存入vuex
           this.$store.dispatch('buildSubjectType', [tree])
           // 返回的树形需要格式化成级联菜单的结构，并需要扁平化一次，用于table显示取值
           let personClasses = []
@@ -341,9 +355,10 @@
           personClasses.forEach(item => {
             map[item.key] = item.value
           })
+          mapper = null // 清除闭包
           this.$store.commit('SET_PERSON_CLASS_ENUM', map) // 设置主体类别枚举
-          this.statusEnum = statusEnum // 状态枚举
-          this.defaultEnum = defaultEnum // 缺省模型枚举
+          this.$store.commit('SET_STATUS_ENUM', statusEnum) // 设置状态枚举
+          this.$store.commit('SET_DEFAULT_ENUM', defaultEnum) // 设置缺省模型枚举
         } catch (error) {
           console.error(error)
         }
