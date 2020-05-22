@@ -145,9 +145,9 @@ export async function deleteRatingModel(id) {
         params: { id }
       })
       if (res.data.successful) {
-        resolve([true])
+        resolve()
       } else {
-        resolve([false, res.data.message])
+        reject(res.data.message)
       }
     } catch (error) {
       reject(error)

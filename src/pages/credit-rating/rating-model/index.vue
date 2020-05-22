@@ -212,13 +212,9 @@
           okType: 'danger',
           onOk: async () => {
             try {
-              const [success, errorMsg] = await deleteRatingModel(id)
-              if (success) {
-                this.$message({ type: 'success', content: '操作成功' })
-                this.searchList()
-              } else {
-                this.$notice.danger({ title: '操作错误', desc: errorMsg })
-              }
+              await deleteRatingModel(id)
+              this.$message({ type: 'success', content: '操作成功' })
+              this.searchList()
             } catch (error) {
               this.$notice.danger({ title: '操作错误', desc: error })
             }
