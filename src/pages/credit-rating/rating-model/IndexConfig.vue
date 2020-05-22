@@ -267,7 +267,7 @@
           indexDesc: ''
         }
         this.listCopy.push(obj) // 用于数据操作
-        this.list.push(obj) // 用于显示
+        this.list.push(JSON.parse(JSON.stringify(obj))) // 用于显示，深拷贝解除响应式依赖
         this.$nextTick(() => {
           this.enableOrDisableExpanColumn(this.curNode.level + 1)
         })
@@ -361,7 +361,9 @@
       handleChooseMul (mulVal) {
         const curRowObj = this.listCopy[this.curIndex]
         curRowObj.children = this.mergeFiveList(curRowObj.children, mulVal, curRowObj.id)
-        this.$set(curRowObj, 'id', 'cacheFalg')
+        // if (!curRowObj.id) { // 用于选择后禁止切换性质下拉框
+        //   this.$set(curRowObj, 'id', 'cacheFalg')
+        // }
         this.$nextTick(() => { // 选择后展开
           this.hackClick(this.curIndex, 'open')
         })
@@ -372,7 +374,9 @@
         curRowObj.indexName = singVal.indexName
         curRowObj.indexDesc = singVal.indexDesc
         curRowObj.calIndexId = singVal.id
-        this.$set(curRowObj, 'id', 'cacheFalg')
+        // if (!curRowObj.id) { // 用于选择后禁止切换性质下拉框
+        //   this.$set(curRowObj, 'id', 'cacheFalg')
+        // }
       },
       // 编辑模式下提交按钮的回调
       async handleSubmit () {
@@ -380,10 +384,17 @@
         try {
           for (const item of this.listCopy) {
             item.title = item.indexName // 构建树组件用的title
-            item.weight = Number(Number(item.weight).toFixed(2)) // 保留两位小数
           }
+
+          // if (this.curNode.level < 3) { // 层级小于3时，提交的数据中不需包含children的内容
+          //   for (const item of this.listCopy) {
+          //     item.children = []
+          //   }
+          // }
+
           const node = JSON.parse(JSON.stringify(this.curNode)) // 深拷贝当前节点
           const map = this.tileTreeToMap(node.children || []) // 保存当前节点下的展开状态为map
+
           node.children = this.listCopy // 深拷贝后如果当前节点为根节点且追加节点，则不会造成左侧树渲染
           const params = this.curNode.root ? this.listCopy : [node] // 根节点和子节点提交的格式有些区别
 
@@ -601,7 +612,6 @@
           // 阻止bin-ui自身的报错，猜测可能是bin-in的dom渲染没有结束
           // 或者是任务队列没执行完触发click导致没获取的需要的数据而json报错
           setTimeout(() => {
-            console.log(this.domList[index])
             const el = this.domList[index].getElementsByTagName('div')[0].getElementsByTagName('div')[0] // 获取可点击元素
             const str = el.className
             if (type === 'open') {
