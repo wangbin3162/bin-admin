@@ -46,6 +46,7 @@
                 </template>
 
                 <template v-slot:indexType="{ index }">
+                  <!-- 已提交的数据不允许修改性质 -->
                   <!-- Boolean(listCopy[index].id) 把id转为Boolean类型，提交过的数据id一定存在，未提交的则不存在 -->
                   <b-select v-model="listCopy[index].indexType" append-to-body
                     @on-change="handleIndexTypeChange($event, index)"
@@ -232,7 +233,7 @@
     watch: {
       editStatus () {
         this.$nextTick(() => { // 编辑和取消切换table时重新处理禁用启用
-          this.enableOrDisableExpanColumn(this.curNode.level) // 根据节点层级启用禁用左侧table可展开列
+          this.enableOrDisableExpanColumn(this.curNode.level + 1) // 根据节点层级启用禁用左侧table可展开列
         })
       }
     },
@@ -277,7 +278,7 @@
       handleIndexTypeChange (val, index) {
         if (this.curNode.level >= 3) { // 用于更新第四层数据可展开列状态
           this.$nextTick(() => { // 更新展开列状态
-            this.enableOrDisableExpanColumn(this.curNode.level)
+            this.enableOrDisableExpanColumn(this.curNode.level + 1)
             if (val === 'Index') { // 如果是从维度切换为指标 则把可能已展开的列收起
               this.$nextTick(() => {
                 this.hackClick(index, 'close')
@@ -463,7 +464,7 @@
           this.listCopy = JSON.parse(JSON.stringify(this.list)) // 复制用于数据绑定的副本
 
           this.$nextTick(() => {
-            this.enableOrDisableExpanColumn(this.curNode.level) // 根据节点层级启用禁用左侧table可展开列
+            this.enableOrDisableExpanColumn(this.curNode.level + 1) // 根据节点层级启用禁用左侧table可展开列
           })
         } catch (error) {
           console.error(error)
@@ -594,11 +595,11 @@
         return domList
       },
       // 启用禁用展开列功能
-      enableOrDisableExpanColumn (curLevel) {
+      enableOrDisableExpanColumn (curLevel) { // curLevel表示当前table展示的数据所属的层级
         this.domList = this.getExpandColumn() // 获取右侧可展开节点
         for (let i = 0; i < this.listCopy.length; i++) { // 遍历右侧table数据
           const el = this.listCopy[i]
-          if (curLevel >= 3 && el.indexType === 'Dimension') { // 是第四层且是维度指标 可展开 && indexType === 'Dimension' 暂缓维度条件
+          if (curLevel > 3 && el.indexType === 'Dimension') { // 是第四层且是维度指标 可展开
             this.domList[i].classList.remove('disabled')
           } else {
             this.domList[i].classList.add('disabled') // 反之启用
