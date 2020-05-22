@@ -12,7 +12,7 @@
                 <v-key-label label="模型编码" is-half>{{ detailData.modelCode }}</v-key-label>
                 <v-key-label label="主体类别" is-first is-half>{{ personClassEnum[detailData.personClass] }}</v-key-label>
                 <v-key-label label="等级名称" is-half>{{ detailData.ratingName }}</v-key-label>
-                <v-key-label label="启用/禁用" is-first is-half>
+                <!-- <v-key-label label="启用/禁用" is-first is-half>
                   <b-tag :type="detailData.modelStatus === 'Y' ? 'primary' : 'warning'" size="mini">
                     {{ statusEnum[detailData.modelStatus] }}
                   </b-tag>
@@ -21,7 +21,7 @@
                   <b-tag :type="detailData.sysDefault === '1' ? 'primary' : 'warning'" size="mini">
                     {{ defaultEnum[detailData.sysDefault] }}
                   </b-tag>
-                </v-key-label>
+                </v-key-label> -->
                 <v-key-label label="描述" is-bottom>{{ detailData.modelDesc }}</v-key-label>
               </div>
             </b-col>
