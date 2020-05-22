@@ -254,6 +254,7 @@
           title: '',
           expand: false,
           selected: false,
+          level: this.curNode.level + 1,
           children: [], // 不设置为null可少一步判断
           modelId: this.modelId,
           parentId: this.curNode.id || null, // 是顶级则null
@@ -358,17 +359,18 @@
       handleChooseMul (mulVal) {
         const curRowObj = this.listCopy[this.curIndex]
         curRowObj.children = this.mergeFiveList(curRowObj.children, mulVal, curRowObj.id)
+        this.$set(curRowObj, 'id', 'cacheFalg')
         this.$nextTick(() => { // 选择后展开
           this.hackClick(this.curIndex, 'open')
         })
       },
       // 选择指标组件的单选回调
       handleChooseSing (singVal) {
-        console.log(singVal)
         const curRowObj = this.listCopy[this.curIndex]
         curRowObj.indexName = singVal.indexName
         curRowObj.indexDesc = singVal.indexDesc
         curRowObj.calIndexId = singVal.id
+        this.$set(curRowObj, 'id', 'cacheFalg')
       },
       // 编辑模式下提交按钮的回调
       async handleSubmit () {
@@ -616,13 +618,13 @@
 
 <style lang="stylus">
 .index-config {
-  td.disabled.custome-expand-column {
-    cursor: not-allowed;
-  }
+  // td.disabled.custome-expand-column {
+  //   cursor: not-allowed;
+  // }
   td.disabled.custome-expand-column .bin-table-cell-expand {
     pointer-events: none;
     i {
-      color: rgba(0, 0, 0, 0.2)
+      color: rgba(0, 0, 0, 0.0)
     }
   }
 
@@ -670,7 +672,7 @@
     padding: 0;
   }
   .tree-con {
-    width: 224px;
+    width: 340px;
     border-right: 1px solid #eee;
     padding: 16px 10px;
     overflow: auto;
@@ -678,7 +680,7 @@
   }
   .table-con {
     padding: 16px;
-    width: calc(100% - 224px);
+    width: calc(100% - 370px);
 
     .table-bottom {
       margin-top: 20px;

@@ -263,13 +263,13 @@
 
 <style lang="stylus">
 .raring-model-detail {
-  td.disabled.custome-expand-column {
-    cursor: not-allowed;
-  }
+  // td.disabled.custome-expand-column {
+  //   cursor: not-allowed;
+  // }
   td.disabled.custome-expand-column .bin-table-cell-expand {
     pointer-events: none;
     i {
-      color: rgba(0, 0, 0, 0.2)
+      color: rgba(0, 0, 0, 0.0)
     }
   }
 
@@ -316,7 +316,7 @@
   width: 100%;
 
   .tree-con {
-    width: 224px;
+    width: 340px;
     border-right: 1px solid #eee;
     overflow: auto;
     max-height: 648px;
@@ -324,7 +324,7 @@
 
   .table-con {
     padding-left: 16px;
-    width: calc(100% - 224px);
+    width: calc(100% - 340px);
 
     .table-bottom {
       margin-top: 20px;
