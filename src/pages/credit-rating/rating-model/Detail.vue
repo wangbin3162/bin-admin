@@ -8,13 +8,21 @@
           <b-row type="flex" justify="center">
             <b-col span="18">
               <div>
-                <v-key-label label="模型名称" is-first is-half></v-key-label>
-                <v-key-label label="模型编码" is-half></v-key-label>
-                <v-key-label label="主体类别" is-first is-half></v-key-label>
-                <v-key-label label="等级名称" is-half></v-key-label>
-                <v-key-label label="启用/禁用" is-first is-half></v-key-label>
-                <v-key-label label="缺省模型" is-half></v-key-label>
-                <v-key-label label="描述" is-bottom></v-key-label>
+                <v-key-label label="模型名称" is-first is-half>{{ detailData.modelName }}</v-key-label>
+                <v-key-label label="模型编码" is-half>{{ detailData.modelCode }}</v-key-label>
+                <v-key-label label="主体类别" is-first is-half>{{ personClassEnum[detailData.personClass] }}</v-key-label>
+                <v-key-label label="等级名称" is-half>{{ detailData.ratingName }}</v-key-label>
+                <v-key-label label="启用/禁用" is-first is-half>
+                  <b-tag :type="detailData.modelStatus === 'Y' ? 'primary' : 'warning'" size="mini">
+                    {{ statusEnum[detailData.modelStatus] }}
+                  </b-tag>
+                </v-key-label>
+                <v-key-label label="缺省模型" is-half>
+                  <b-tag :type="detailData.sysDefault === '1' ? 'primary' : 'warning'" size="mini">
+                    {{ defaultEnum[detailData.sysDefault] }}
+                  </b-tag>
+                </v-key-label>
+                <v-key-label label="描述" is-bottom>{{ detailData.modelDesc }}</v-key-label>
               </div>
             </b-col>
           </b-row>
@@ -41,6 +49,17 @@
       return {
         loading: false,
         detailData: {}
+      }
+    },
+    computed: {
+      personClassEnum () {
+        return this.$store.state.ratingModel.personClassEnum
+      },
+      statusEnum () { // 状态枚举
+        return this.$store.state.ratingModel.statusEnum
+      },
+      defaultEnum () { // 缺省模型枚举
+        return this.$store.state.ratingModel.defaultEnum
       }
     },
     created () {
