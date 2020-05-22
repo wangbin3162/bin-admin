@@ -41,7 +41,8 @@
                 :data="list"
                 :loading="listLoading">
                 <template v-slot:indexName="{ index }">
-                  <b-input v-model="listCopy[index].indexName"></b-input>
+                  <b-input v-model="listCopy[index].indexName"
+                    :disabled="listCopy[index].indexType === 'Index'"></b-input>
                 </template>
 
                 <template v-slot:indexType="{ index }">
@@ -66,7 +67,8 @@
                 </template>
 
                 <template v-slot:indexDesc="{ index }">
-                  <b-input v-model="listCopy[index].indexDesc"></b-input>
+                  <b-input v-model="listCopy[index].indexDesc"
+                    :disabled="listCopy[index].indexType === 'Index'"></b-input>
                 </template>
 
                 <template v-slot:action="{ index, row }">
