@@ -19,7 +19,8 @@
             </v-filter-bar>
 
             <!-- 展示用table -->
-            <b-table id="customTable" v-if="!editStatus" :key="editStatus"
+            <b-table id="customTable" v-if="!editStatus" size="small"
+              :key="editStatus"
               :columns="columns"
               :data="list"
               :loading="listLoading">
@@ -34,7 +35,8 @@
 
             <template v-else>
               <!-- 编辑用table -->
-              <b-table id="customTable" :key="editStatus"
+              <b-table id="customTable" size="small"
+                :key="editStatus"
                 :columns="columnsEdit"
                 :data="list"
                 :loading="listLoading">

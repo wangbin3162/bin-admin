@@ -36,7 +36,7 @@
             </div>
             <div class="table-con">
               <!-- 展示用table -->
-              <b-table id="customTable"
+              <b-table id="customTable" size="small"
                 :columns="columns"
                 :data="list"
                 :loading="!loading && listLoading">
