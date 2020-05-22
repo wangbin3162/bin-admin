@@ -781,7 +781,7 @@
           return
         }
         // 过滤person_id
-        let fields = this.resource.items.filter(item => item.fieldName.indexOf('_id') === -1)
+        let fields = this.resource.items.filter(item => item.fieldName.indexOf('_id') === -1 && item.status === 'use')
         // 根据原始列扩展动态表单列表数据
         initFormList(fields).then(res => {
           this.previewModal = true

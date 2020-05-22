@@ -23,6 +23,26 @@ export const RULE = {
 }
 
 /**
+ * 校验枚举值名称
+ */
+export const ruleNameMap = {
+  '$required': '必填项',
+  '$length': '长度参数',
+  '$email': '邮箱参数',
+  '$phone': '手机号码',
+  '$regexp': '正则匹配',
+  '$idCode': '身份证',
+  '$unifiedCode': '统一社会信用代码',
+  '$orgInstCode': '组织机构代码',
+  '$regNo': '工商注册号',
+  '$conditionRequired': '条件必填',
+  '$conditionNotRequired': '条件必不填',
+  '$conditionNotBe': '条件不为某值',
+  '$notSame': '值不能相同',
+  '$timeBound': '日期区间'
+}
+
+/**
  * 校验生成器对象根据不同类型的校验返回符合form-item类型的校验对象
  */
 export const validatorBuild = {

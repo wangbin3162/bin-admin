@@ -14,39 +14,11 @@
       <v-title-bar label="配置项" tip-pos="left"/>
       <div class="config-item" v-if="currentIndex>-1">
         <b-form v-model="totalData[currentIndex]" label-position="top">
-          <!--标题，字段名，数据类型-->
+          <!--标题，公开类型，数据类型-->
           <b-row :gutter="15">
             <b-col span="8">
               <b-form-item label="标题" class="bin-form-item-required">
                 <b-input v-model.trim="totalData[currentIndex].fieldTitle" @on-change="emitValue"/>
-              </b-form-item>
-            </b-col>
-            <b-col span="8">
-              <b-form-item label="字段名" class="bin-form-item-required">
-                <b-input :value="totalData[currentIndex].fieldName" disabled/>
-              </b-form-item>
-            </b-col>
-            <b-col span="8">
-              <b-form-item label="数据类型" class="bin-form-item-required">
-                <b-input :value="enumMap.dataType[totalData[currentIndex].dataType]" disabled/>
-              </b-form-item>
-            </b-col>
-          </b-row>
-          <div class="config-line"/>
-          <!--信息项类型，控件类型，公开类型-->
-          <b-row :gutter="15">
-            <b-col span="8">
-              <b-form-item label="信息项类型" class="bin-form-item-required">
-                <b-select v-model="totalData[currentIndex].required" @on-change="emitValue">
-                  <b-option v-for="(value,key) in enumMap.required" :key="key" :value="key">{{ value }}</b-option>
-                </b-select>
-              </b-form-item>
-            </b-col>
-            <b-col span="8">
-              <b-form-item label="控件类型" class="bin-form-item-required">
-                <b-select v-model="totalData[currentIndex].controlType" @on-change="controlTypeChange">
-                  <b-option v-for="(value,key) in controlTypeFilter" :key="key" :value="key">{{ value }}</b-option>
-                </b-select>
               </b-form-item>
             </b-col>
             <b-col span="8">
@@ -56,13 +28,24 @@
                 </b-select>
               </b-form-item>
             </b-col>
+            <b-col span="8">
+              <b-form-item label="数据类型" class="bin-form-item-required">
+                <b-input :value="enumMap.dataType[totalData[currentIndex].dataType]" disabled/>
+              </b-form-item>
+            </b-col>
           </b-row>
-          <div class="config-line"/>
-          <!--有效值-->
-          <template v-if="showValidValue">
-            <valid-value v-model="totalData[currentIndex].validValue" @on-change="emitValue"/>
-            <div class="config-line"/>
-          </template>
+          <b-divider/>
+          <!--控件类型，有效值-->
+          <valid-value v-model="totalData[currentIndex].validValue"
+                       :show-valid-value="showValidValue" @on-change="emitValue"
+          >
+            <b-form-item label="控件类型" class="bin-form-item-required">
+              <b-select v-model="totalData[currentIndex].controlType" @on-change="controlTypeChange">
+                <b-option v-for="(value,key) in controlTypeFilter" :key="key" :value="key">{{ value }}</b-option>
+              </b-select>
+            </b-form-item>
+          </valid-value>
+          <b-divider/>
           <!--校验-->
           <validator v-model="totalData[currentIndex].checkRules"
                      :field-name="totalData[currentIndex].fieldName"
@@ -70,8 +53,16 @@
                      :control-type="totalData[currentIndex].controlType"
                      :data-type="totalData[currentIndex].dataType"
                      :required="totalData[currentIndex].required"
-                     @on-change="emitValue"/>
-          <div class="config-line"/>
+                     :original-rules="originalRules"
+                     @on-change="emitValue"
+          >
+            <b-form-item label="信息项类型" class="bin-form-item-required">
+              <b-select v-model="totalData[currentIndex].required" @on-change="emitValue">
+                <b-option v-for="(value,key) in enumMap.required" :key="key" :value="key">{{ value }}</b-option>
+              </b-select>
+            </b-form-item>
+          </validator>
+          <b-divider/>
           <b-form-item label="启用状态">
             <div style="padding-top: 3px;">
               <b-switch v-model="totalData[currentIndex].status"
@@ -82,7 +73,6 @@
               </b-tag>
             </div>
           </b-form-item>
-          <div class="config-line"/>
           <!--分词，加密，掩码-->
           <b-row :gutter="15">
             <b-col span="8">
@@ -109,7 +99,6 @@
               </b-form-item>
             </b-col>
           </b-row>
-          <div class="config-line"/>
           <!--描述-->
           <b-form-item label="信息项描述">
             <b-input v-model.trim="totalData[currentIndex].fieldDesc" :rows="1"
@@ -141,7 +130,8 @@
           { title: '标题', key: 'fieldTitle' }
         ],
         totalData: [],
-        currentIndex: -1
+        currentIndex: -1,
+        originalRules: null
       }
     },
     props: {
@@ -163,6 +153,14 @@
             this.totalData = []
             this.$refs.dragItems && this.$refs.dragItems.clearSelect()
             return
+          }
+          // 存储原始值
+          if (!this.originalRules) {
+            let obj = {}
+            val.forEach(item => {
+              obj[item.fieldName] = item.checkRules
+            })
+            this.originalRules = obj
           }
           this.totalData = this.formatItems(val)
         },
@@ -247,13 +245,13 @@
           if (item.tokenizer) {
             // 如果设置了有效值则必须为Y
             if (item.validValue.length > 0) {
-              item.tokenizer = 'Y'
+              item.tokenizer = 'N'
             }
           } else {
             // 如果类型为字符型
             if (item.dataType === 'string') {
               // 如果有效值存在
-              item.tokenizer = item.validValue.length > 0 ? 'Y' : 'N'
+              item.tokenizer = item.validValue.length > 0 ? 'N' : ''
             } else {
               item.validValue = '' // 如果类型不是字符型，则有效值必须为空
               item.tokenizer = '' // 是否分词也必须为空
@@ -281,6 +279,8 @@
         // 1.根据选择的控件类型，如不是多选和下拉多选，则都需要清空有效值
         if (['SELECT', 'MULTIPLE_SELECT'].indexOf(type) === -1) {
           this.totalData[this.currentIndex].validValue = ''
+        } else {
+          this.totalData[this.currentIndex].tokenizer = 'N'
         }
         // 2.根据选择的控件类型，批量设置校验格式触发条件
         const trigger = (type === 'TEXT' || type === 'TEXTAREA') ? 'blur' : 'change'
@@ -327,9 +327,11 @@
       border-left: 1px solid #d9d9d9;
       .config-item {
         padding: 10px 15px;
-        .config-line {
-          border-top: 1px solid #eee;
-          margin-top: -7px;
+        .bin-form-item {
+          margin-bottom: 0;
+        }
+        .bin-divider-horizontal {
+          margin: 20px 0 10px;
         }
       }
     }
