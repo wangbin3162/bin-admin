@@ -211,6 +211,33 @@ export async function setSysDefault(id) {
 
 /**
  * @author haodongdong
+ * @description 克隆评级模型
+ * @param {*} id
+ * @returns Promise
+ */
+export async function cloneRatingModel(id) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/api/eval/model/clone',
+        method: 'post',
+        params: {
+          id
+        }
+      })
+      if (res.data.successful) {
+        resolve()
+      } else {
+        reject(res.data.message)
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
  * @description 获取指标树
  * @returns Promise
  */

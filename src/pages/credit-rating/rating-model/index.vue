@@ -59,7 +59,8 @@
               <b-dropdown-menu slot="list">
                 <b-dropdown-item :style="colorPrimary"
                   @click.native="handleSetDefault(row.id)">设为默认</b-dropdown-item>
-                <b-dropdown-item :style="colorSuccess">克隆</b-dropdown-item>
+                <b-dropdown-item :style="colorSuccess"
+                  @click.native="handleClone(row.id)">克隆</b-dropdown-item>
                 <b-dropdown-item :style="colorDanger"
                   @click.native="handleRemove(row.id)">删除</b-dropdown-item>
               </b-dropdown-menu>
@@ -99,7 +100,8 @@
   import {
     getSubjectTypeTree, getRatingModelList,
     deleteRatingModel, setStatus,
-    setSysDefault, updateRatingModel
+    setSysDefault, updateRatingModel,
+    cloneRatingModel
   } from '../../../api/credit-rating/rating-model.api'
 
   export default {
@@ -189,6 +191,17 @@
       handleIndexConfigClose () {
         this.editData = null
         this.handleCancel()
+      },
+      // 克隆的回调
+      async handleClone (id) {
+        try {
+          await cloneRatingModel(id)
+          this.$message({ type: 'success', content: '操作成功' })
+          this.searchList()
+        } catch (error) {
+          console.error(error)
+          this.$notice.danger({ title: '操作错误', desc: error })
+        }
       },
       // 删除的回调
       async handleRemove (id) {
