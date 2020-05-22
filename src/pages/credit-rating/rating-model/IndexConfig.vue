@@ -499,7 +499,7 @@
         for (const item of tree) {
           // 构建tree组件用数据
           const obj = {
-            title: item.indexName,
+            title: `${item.indexName} (${item.weight}%)`,
             expand: false,
             selected: false,
             level: level + 1,
