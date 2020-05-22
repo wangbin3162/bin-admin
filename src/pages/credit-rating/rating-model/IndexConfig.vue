@@ -259,7 +259,7 @@
           level: this.curNode.level + 1,
           children: [], // 不设置为null可少一步判断
           modelId: this.modelId,
-          parentId: this.curNode.id || null, // 是顶级则null
+          parentIndex: this.curNode.id || null, // 是顶级则null
           indexName: '',
           indexType: 'Dimension',
           calIndexId: null,
@@ -297,14 +297,16 @@
               const isSubmitted = id !== undefined // 存在id说明提交过
               if (isSubmitted) {
                 const map = this.tileTreeToMap(this.curNode.children) // 保存当前节点下的展开状态为map
+
                 await deleteIndexModel(id)
                 this.list.splice(index, 1) // 同步显示
                 this.listCopy.splice(index, 1) // 删除绑定数据
-                const newArr = this.listCopy.filter(item => item.id !== undefined) // 排除后续添加但未提交的数据
-                this.restoreExpandStatus(newArr, map) // 恢复当前节点下的展开状态
+
                 if (this.curNode.level < 3) { // 当前节点小于3则更新子节点至当前节点的children
-                  const node = this.buildTree(newArr, 'Dimension', this.curNode.level) // 过滤出维度节点
-                  this.curNode.children = JSON.parse(JSON.stringify(node)) // 节点更新至树组件
+                  const newArr = this.listCopy.filter(item => item.id !== undefined) // 排除后续添加但未提交的数据
+                  const subNode = this.buildTree(newArr, 'Dimension', this.curNode.level) // 过滤出维度节点
+                  this.restoreExpandStatus(subNode, map) // 恢复当前节点下的展开状态
+                  this.curNode.children = JSON.parse(JSON.stringify(subNode)) // 节点更新至树组件
                 }
               } else {
                 this.list.splice(index, 1) // 同步显示
@@ -386,25 +388,21 @@
             item.title = item.indexName // 构建树组件用的title
           }
 
-          // if (this.curNode.level < 3) { // 层级小于3时，提交的数据中不需包含children的内容
-          //   for (const item of this.listCopy) {
-          //     item.children = []
-          //   }
-          // }
+          if (this.curNode.level < 3) { // 层级小于3时，提交的数据中不需包含children的内容
+            for (const item of this.listCopy) {
+              item.children = []
+            }
+          }
 
-          const node = JSON.parse(JSON.stringify(this.curNode)) // 深拷贝当前节点
-          const map = this.tileTreeToMap(node.children || []) // 保存当前节点下的展开状态为map
+          const map = this.tileTreeToMap(this.curNode.children) // 保存当前节点下的展开状态为map
 
-          node.children = this.listCopy // 深拷贝后如果当前节点为根节点且追加节点，则不会造成左侧树渲染
-          const params = this.curNode.root ? this.listCopy : [node] // 根节点和子节点提交的格式有些区别
-
-          await updatedIndexModel(params) // 请求接口更新数据
+          await updatedIndexModel(this.listCopy) // 请求接口更新数据
           await this.searchList() // 主要用于更新已选节点下数据后获取id，且这一步函数内会覆盖掉listCopy的展开状态
 
-          this.restoreExpandStatus(this.listCopy, map) // 恢复当前节点下的展开状态
           if (this.curNode.level < 3) { // 当前节点小于3则更新子节点至当前节点的children
-            const node = this.buildTree(this.listCopy, 'Dimension', this.curNode.level) // 过滤出维度节点
-            this.curNode.children = JSON.parse(JSON.stringify(node)) // 节点更新至树组件
+            const subNode = this.buildTree(this.listCopy, 'Dimension', this.curNode.level) // 过滤出维度节点
+            this.restoreExpandStatus(subNode, map) // 恢复当前节点下的展开状态
+            this.curNode.children = JSON.parse(JSON.stringify(subNode)) // 节点更新至树组件
           }
 
           this.editStatus = false // 退出编辑模式
@@ -488,7 +486,7 @@
               selected: false,
               children: [], // 不设置为null可少一步判断
               modelId: this.modelId,
-              parentId: pid,
+              parentIndex: pid,
               indexName: newItem.indexName,
               indexType: 'Index',
               calIndexId: newItem.calIndexId,
