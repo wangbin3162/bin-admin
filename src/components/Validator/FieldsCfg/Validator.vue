@@ -132,7 +132,8 @@
                 <b-tooltip content="为空时独立校验">
                   <span class="param-tip">前置字段：</span>
                 </b-tooltip>
-                <b-input v-model.trim="checkRulesArr[index].preField" size="mini" @on-change="emitValue"/>
+                <b-input @drop.native="onDrop($event,index)" @dragover.native="allowDrop($event)"
+                         v-model.trim="checkRulesArr[index].preField" size="mini" @on-change="emitValue"/>
               </div>
               <div class="info">
                 <span class="param-tip">错误提示：</span>
@@ -149,7 +150,8 @@
                 <b-tooltip content="为空时独立校验">
                   <span class="param-tip">前置字段：</span>
                 </b-tooltip>
-                <b-input v-model.trim="checkRulesArr[index].preField" size="mini" @on-change="emitValue"/>
+                <b-input @drop.native="onDrop($event,index)" @dragover.native="allowDrop($event)"
+                         v-model.trim="checkRulesArr[index].preField" size="mini" @on-change="emitValue"/>
               </div>
               <div class="info">
                 <span class="param-tip">错误提示：</span>
@@ -166,7 +168,8 @@
                 <b-tooltip content="为空时独立校验">
                   <span class="param-tip">前置字段：</span>
                 </b-tooltip>
-                <b-input v-model.trim="checkRulesArr[index].preField" size="mini" @on-change="emitValue"/>
+                <b-input @drop.native="onDrop($event,index)" @dragover.native="allowDrop($event)"
+                         v-model.trim="checkRulesArr[index].preField" size="mini" @on-change="emitValue"/>
               </div>
               <div class="info">
                 <span class="param-tip">错误提示：</span>
@@ -183,7 +186,8 @@
                 <b-tooltip content="为空时独立校验">
                   <span class="param-tip">前置字段：</span>
                 </b-tooltip>
-                <b-input v-model="checkRulesArr[index].preField" size="mini" @on-change="emitValue"/>
+                <b-input @drop.native="onDrop($event,index)" @dragover.native="allowDrop($event)"
+                         v-model="checkRulesArr[index].preField" size="mini" @on-change="emitValue"/>
               </div>
               <div class="info">
                 <span class="param-tip">错误提示：</span>
@@ -198,7 +202,9 @@
             <template v-if="rule.name===RULE.conditionRequired">
               <div class="number">
                 <span class="param-tip">前置字段：</span>
-                <b-input v-model.trim="checkRulesArr[index].preField" size="mini" @on-change="emitValue"/>
+                <b-input @drop.native="onDrop($event,index)" @dragover.native="allowDrop($event)"
+                         v-model.trim="checkRulesArr[index].preField" size="mini"
+                         @on-change="emitValue"/>
               </div>
               <div class="number">
                 <span class="param-tip">前置字段值：</span>
@@ -213,7 +219,8 @@
             <template v-if="rule.name===RULE.conditionNotRequired">
               <div class="number">
                 <span class="param-tip">前置字段：</span>
-                <b-input v-model.trim="checkRulesArr[index].preField" size="mini" @on-change="emitValue"/>
+                <b-input @drop.native="onDrop($event,index)" @dragover.native="allowDrop($event)"
+                         v-model.trim="checkRulesArr[index].preField" size="mini" @on-change="emitValue"/>
               </div>
               <div class="number">
                 <span class="param-tip">前置字段值：</span>
@@ -228,7 +235,8 @@
             <template v-if="rule.name===RULE.conditionNotBe">
               <div class="number">
                 <span class="param-tip">前置字段：</span>
-                <b-input v-model.trim="checkRulesArr[index].preField" size="mini" @on-change="emitValue"/>
+                <b-input @drop.native="onDrop($event,index)" @dragover.native="allowDrop($event)"
+                         v-model.trim="checkRulesArr[index].preField" size="mini" @on-change="emitValue"/>
               </div>
               <div class="number">
                 <span class="param-tip">前置字段值：</span>
@@ -247,7 +255,8 @@
             <template v-if="rule.name===RULE.notSame">
               <div class="number">
                 <span class="param-tip">前置字段：</span>
-                <b-input v-model.trim="checkRulesArr[index].preField" size="mini" @on-change="emitValue"/>
+                <b-input @drop.native="onDrop($event,index)" @dragover.native="allowDrop($event)"
+                         v-model.trim="checkRulesArr[index].preField" size="mini" @on-change="emitValue"/>
               </div>
               <div class="info">
                 <span class="param-tip">错误提示：</span>
@@ -260,7 +269,8 @@
                 <b-tooltip content="$now/yyyy-MM-dd/preField">
                   <span class="param-tip">前置字段：</span>
                 </b-tooltip>
-                <b-input v-model.trim="checkRulesArr[index].time" size="mini" @on-change="emitValue"/>
+                <b-input @drop.native="onDrop($event,index)" @dragover.native="allowDrop($event)"
+                         v-model.trim="checkRulesArr[index].time" size="mini" @on-change="emitValue"/>
               </div>
               <div class="number">
                 <span class="param-tip">比较模式：</span>
@@ -590,6 +600,13 @@
       },
       ruleStyle(name) {
         return ['$conditionRequired', '$conditionNotRequired', '$conditionNotBe', '$notSame', '$timeBound'].indexOf(name) > -1 ? 'success' : 'primary'
+      },
+      allowDrop(e) {
+        e.preventDefault()
+      },
+      onDrop(e, index) {
+        this.checkRulesArr[index].preField = e.dataTransfer.getData('index')
+        e.preventDefault()
       }
     }
   }

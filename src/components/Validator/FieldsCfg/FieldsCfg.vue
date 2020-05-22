@@ -8,7 +8,7 @@
       </v-title-bar>
       <!--信息项组件-->
       <v-drag-items v-model="totalData" no-data-text="暂无信息项" ref="dragItems"
-                    @on-drag-drop="handleDrag" @on-select="handleSelect"/>
+                    @on-drop="handleDrag" @on-select="handleSelect"/>
     </div>
     <div class="right-panel">
       <v-title-bar label="配置项" tip-pos="left"/>
@@ -265,13 +265,7 @@
         this.currentIndex = index
       },
       // 拖拽重绘
-      handleDrag(index1, index2) {
-        // 复制一个data
-        let arr = deepCopy(this.totalData)
-        let temp1 = deepCopy(arr[index1])
-        arr[index1] = deepCopy(arr[index2])
-        arr[index2] = temp1
-        this.totalData = arr
+      handleDrag() {
         this.resetHandle('重排成功')
       },
       // 控件类型改变事件
@@ -299,7 +293,6 @@
       resetHandle(message) {
         // 清空当前修改行
         this.currentIndex = -1
-        this.$refs.dragItems.clearSelect()
         // 1.emit-input
         this.emitValue()
         // 3.打印操作
