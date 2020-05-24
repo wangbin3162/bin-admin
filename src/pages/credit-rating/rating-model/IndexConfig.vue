@@ -5,7 +5,7 @@
         <div slot="full" flex>
           <!-- tree -->
           <div class="tree-con">
-            <b-tree :data="treeData" slot="tree" :lock-select="editStatus"
+            <b-tree :data="treeData" slot="tree" :lock-select="false"
               @on-select-change="handTreeCurrentChange"></b-tree>
           </div>
           <div class="table-con">
@@ -243,14 +243,29 @@
     },
     methods: {
       // 树节点选择改变回调
-      handTreeCurrentChange (selectedNode, curNode) {
+      async handTreeCurrentChange (selectedNode, curNode) {
         console.log(curNode)
         if (this.curNode.id === curNode.id) { // 点击已选择的
           curNode.selected = true
         } else {
-          this.curNode = curNode
-          this.listQuery.indexId = curNode.id
-          this.handleFilter()
+          if (this.editStatus) {
+            const ok = await this.confirm({
+              title: '提示！',
+              content: '切换会丢弃当前未保存的操作，确认切换吗？',
+              okType: 'warning'
+            })
+            if (ok) {
+              this.editStatus = false // 关闭当前编辑
+            } else {
+              curNode.selected = false
+              this.curNode.selected = true
+            }
+          }
+          if (!this.editStatus) {
+            this.curNode = curNode
+            this.listQuery.indexId = curNode.id // 设置左侧table查询条件为当前节点id
+            this.handleFilter()
+          }
         }
       },
       // 编辑模式下添加按钮的回调
@@ -297,45 +312,8 @@
           this.listCopy[index].calIndexId = null
         }
       },
-      // 编辑模式下删除按钮回调
-      async handleRemove (index, id) {
-        this.$confirm({
-          title: '删除',
-          content: '删除当前项目会删除其子项，确认删除吗？',
-          loading: true,
-          okType: 'danger',
-          onOk: async () => {
-            try {
-              const isSubmitted = id !== undefined // 存在id说明提交过
-              if (isSubmitted) {
-                const map = this.tileTreeToMap(this.curNode.children) // 保存当前节点下的展开状态为map
-
-                await deleteIndexModel(id)
-                this.list.splice(index, 1) // 同步显示
-                this.listCopy.splice(index, 1) // 删除绑定数据
-
-                if (this.curNode.level < 3) { // 当前节点小于3则更新子节点至当前节点的children
-                  const newArr = this.listCopy.filter(item => item.id !== undefined) // 排除后续添加但未提交的数据
-                  const subNode = this.buildTree(newArr, 'Dimension', this.curNode.level) // 过滤出维度节点
-                  this.restoreExpandStatus(subNode, map) // 恢复当前节点下的展开状态
-                  this.curNode.children = JSON.parse(JSON.stringify(subNode)) // 节点更新至树组件
-                }
-              } else {
-                this.list.splice(index, 1) // 同步显示
-                this.listCopy.splice(index, 1) // 删除绑定数据
-              }
-              this.$message({ type: 'success', content: '操作成功' })
-            } catch (error) {
-              console.error(error)
-              this.$notice.danger({ title: '操作错误', desc: error })
-            }
-            this.$modal.remove()
-          }
-        })
-      },
       // 展开列下删除按钮回调
       async handleRemoveIndex(index, cIndex, id) {
-        // this.listCopy[index].children.splice(cIndex, 1)
         const curRowChildren = this.listCopy[index].children
         this.$confirm({
           title: '删除',
@@ -388,14 +366,46 @@
         curRowObj.calIndexId = singVal.id
         this.$set(curRowObj, 'uSelected', true) // 用于选择后禁止切换性质下拉框, 与指标下拉框关联
       },
+      // 编辑模式下删除按钮回调
+      async handleRemove (index, id) {
+        this.$confirm({
+          title: '删除',
+          content: '删除当前项目会删除其子项，确认删除吗？',
+          loading: true,
+          okType: 'danger',
+          onOk: async () => {
+            try {
+              const isSubmitted = id !== undefined // 存在id说明提交过
+              if (isSubmitted) {
+                const map = this.tileTreeToMap(this.curNode.children) // 保存当前节点下的展开状态为map
+
+                await deleteIndexModel(id)
+                this.list.splice(index, 1) // 同步显示
+                this.listCopy.splice(index, 1) // 删除绑定数据
+
+                if (this.curNode.level < 3) { // 当前节点小于3则更新子节点至当前节点的children
+                  const newArr = this.listCopy.filter(item => item.id !== undefined) // 排除后续添加但未提交的数据
+                  const subNode = this.buildTree(newArr, this.curNode.level) // 默认过滤出维度节点
+                  this.restoreExpandStatus(subNode, map) // 恢复当前节点下的展开状态
+                  this.updateSubNodeToTreeCom(subNode) // 节点更新至树组件
+                }
+              } else {
+                this.list.splice(index, 1) // 同步显示
+                this.listCopy.splice(index, 1) // 删除绑定数据
+              }
+              this.$message({ type: 'success', content: '操作成功' })
+            } catch (error) {
+              console.error(error)
+              this.$notice.danger({ title: '操作错误', desc: error })
+            }
+            this.$modal.remove()
+          }
+        })
+      },
       // 编辑模式下提交按钮的回调
       async handleSubmit () {
         this.loadingBtn = true
         try {
-          for (const item of this.listCopy) {
-            item.title = item.indexName // 构建树组件用的title
-          }
-
           if (this.curNode.level < 3) { // 层级小于3时，提交的数据中不需包含children的内容
             for (const item of this.listCopy) {
               item.children = []
@@ -408,9 +418,9 @@
           await this.searchList() // 主要用于更新已选节点下数据后获取id，且这一步函数内会覆盖掉listCopy的展开状态
 
           if (this.curNode.level < 3) { // 当前节点小于3则更新子节点至当前节点的children
-            const subNode = this.buildTree(this.listCopy, 'Dimension', this.curNode.level) // 过滤出维度节点
+            const subNode = this.buildTree(this.listCopy, this.curNode.level) // 默认过滤出维度节点
             this.restoreExpandStatus(subNode, map) // 恢复当前节点下的展开状态
-            this.curNode.children = JSON.parse(JSON.stringify(subNode)) // 节点更新至树组件
+            this.updateSubNodeToTreeCom(subNode) // 节点更新至树组件
           }
 
           this.editStatus = false // 退出编辑模式
@@ -449,9 +459,9 @@
         try {
           const res = await getIndexModleTree(this.listQuery)
           if (this.isInit) { // 第一次载入时做相关初始化
-            this.treeData = this.initTree(res, 'Dimension') // 构建左侧树，只构建节点为维度的类型
+            this.treeData = this.initTree(res) // 构建左侧树，默认只构建节点为维度的类型
             this.curNode = this.treeData[0] // 把根节点存储至当前节点
-            this.list = this.buildTree(res, 'Index', this.curNode.level) // 构建为树结构(所有类型)
+            this.list = this.buildTree(res, this.curNode.level, 'Index') // 构建为树结构(过滤出所有类型节点)
             this.isInit = false
           } else {
             /**
@@ -465,7 +475,7 @@
               this.list = res
             }
             // 每次请求都需要构建tree组件使用的数据结构，传入当前选中节点的层级，便于准确构建子节点层级
-            this.list = this.buildTree(this.list, 'Index', this.curNode.level) // 构建用于列表展示的所有类型
+            this.list = this.buildTree(this.list, this.curNode.level, 'Index') // 构建用于列表展示的所有类型
           }
           this.listCopy = JSON.parse(JSON.stringify(this.list)) // 复制用于数据绑定的副本
 
@@ -477,6 +487,10 @@
           this.$log.pretty('searchList Error', error, 'danger')
         }
         this.listLoading = false
+      },
+      // 更新右侧table的相关节点状态到左侧树
+      updateSubNodeToTreeCom (subNode) {
+        this.curNode.children = JSON.parse(JSON.stringify(subNode)) // 节点更新至树组件
       },
       // 合并第五级的数据
       mergeFiveList (oldList, newList, pid) {
@@ -507,7 +521,7 @@
         return [...oldList, ...cacheList] // 返回合并后的结果
       },
       // tree:初始化树组件用数据结构
-      initTree(tree, indexType) {
+      initTree(tree) {
         // 创建根节点
         const rootNode = {
           title: '维度指标',
@@ -515,12 +529,15 @@
           expand: true,
           selected: true,
           level: 0,
-          children: this.buildTree(tree, indexType, 0)
+          children: this.buildTree(tree, 0)
         }
         return [rootNode]
       },
-      // 构建树
-      buildTree (tree, indexType, level = 0) { // indexType 为 Dimension 表示只筛选出维度节点，反之筛选出维度与指标节点
+      /**
+       * 构建树，用于把后端树形数据处理成b-tree组件可用的结构。
+       * 扩展了一些树组件需要的字段。
+       */
+      buildTree (tree, level = 0, indexType = 'Dimension') { // indexType 为 Dimension 表示只筛选出维度节点，反之筛选出维度与指标节点
         const list = []
         for (const item of tree) {
           // 构建tree组件用数据
@@ -535,14 +552,14 @@
           if (obj.level < 4) { // 这边如果是4级及以上则要保留children，用于展开显示
             // 如果层级小于3且有子节点则递归
             if (obj.level < 3 && (item.children && item.children.length > 0)) {
-              obj.children = this.buildTree(item.children, indexType, obj.level)
+              obj.children = this.buildTree(item.children, obj.level, indexType)
             } else { // 去除第三级及后续层级的子节点
               obj.children = [] // 把为null的置为[]
             }
           } else {
             // 有子节点则递归
             if (item.children && item.children.length > 0) {
-              obj.children = this.buildTree(item.children, indexType, obj.level)
+              obj.children = this.buildTree(item.children, obj.level, indexType)
             } else {
               obj.children = []
             }
@@ -629,6 +646,20 @@
             }
           }, 0)
         }
+      },
+      // 封装为支持Promise的confirm
+      async confirm (obj) {
+        return new Promise((resolve, reject) => {
+          this.$confirm({
+            onOk: () => {
+              resolve(true)
+            },
+            onCancel: () => {
+              resolve(false)
+            },
+            ...obj
+          })
+        })
       }
     }
   }
