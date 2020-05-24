@@ -449,6 +449,7 @@
       },
       // 编辑按钮的回调
       handleEditBtn () {
+        this.listCopy = JSON.parse(JSON.stringify(this.list)) // 复制用于数据绑定的副本
         this.editStatus = true
       },
       // 取消与返回按钮的回调
