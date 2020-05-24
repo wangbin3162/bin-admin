@@ -404,32 +404,37 @@
       },
       // 编辑模式下提交按钮的回调
       async handleSubmit () {
-        this.loadingBtn = true
         try {
-          if (this.curNode.level < 3) { // 层级小于3时，提交的数据中不需包含children的内容
-            for (const item of this.listCopy) {
-              item.children = []
+          await this.validate(this.listCopy)
+          this.loadingBtn = true
+          try {
+            if (this.curNode.level < 3) { // 层级小于3时，提交的数据中不需包含children的内容
+              for (const item of this.listCopy) {
+                item.children = []
+              }
             }
+
+            const map = this.tileTreeToMap(this.curNode.children) // 保存当前节点下的展开状态为map
+
+            await updatedIndexModel(this.listCopy) // 请求接口更新数据
+            await this.searchList() // 主要用于更新已选节点下数据后获取id，且这一步函数内会覆盖掉listCopy的展开状态
+
+            if (this.curNode.level < 3) { // 当前节点小于3则更新子节点至当前节点的children
+              const subNode = this.buildTree(this.listCopy, this.curNode.level) // 默认过滤出维度节点
+              this.restoreExpandStatus(subNode, map) // 恢复当前节点下的展开状态
+              this.updateSubNodeToTreeCom(subNode) // 节点更新至树组件
+            }
+
+            this.editStatus = false // 退出编辑模式
+            this.$message({ type: 'success', content: '操作成功' })
+          } catch (error) {
+            console.error(error)
+            this.$notice.danger({ title: '操作失败', desc: error })
           }
-
-          const map = this.tileTreeToMap(this.curNode.children) // 保存当前节点下的展开状态为map
-
-          await updatedIndexModel(this.listCopy) // 请求接口更新数据
-          await this.searchList() // 主要用于更新已选节点下数据后获取id，且这一步函数内会覆盖掉listCopy的展开状态
-
-          if (this.curNode.level < 3) { // 当前节点小于3则更新子节点至当前节点的children
-            const subNode = this.buildTree(this.listCopy, this.curNode.level) // 默认过滤出维度节点
-            this.restoreExpandStatus(subNode, map) // 恢复当前节点下的展开状态
-            this.updateSubNodeToTreeCom(subNode) // 节点更新至树组件
-          }
-
-          this.editStatus = false // 退出编辑模式
-          this.$message({ type: 'success', content: '操作成功' })
+          this.loadingBtn = false
         } catch (error) {
-          console.error(error)
-          this.$notice.danger({ title: '操作失败', desc: error })
+          this.$message({ type: 'warning', content: error.message })
         }
-        this.loadingBtn = false
       },
       // 重置查询
       resetQuery () {
@@ -659,6 +664,68 @@
             },
             ...obj
           })
+        })
+      },
+      async isRequired (obj, key) {
+        return new Promise((resolve, reject) => {
+          const el = obj[key]
+          if (el === '' || el === null) {
+            reject(new Error(key + '字段不能为空'))
+          } else {
+            resolve()
+          }
+        })
+      },
+      async isCount100 (list) {
+        return new Promise((resolve, reject) => {
+          const num = list.reduce((total, curItem) => {
+            return total + curItem.weight
+          }, 0)
+          if (num !== 100) {
+            reject(new Error('每层权重之和必须为100%'))
+          }
+          resolve()
+        })
+      },
+      async validate (listCopy) {
+        return new Promise(async (resolve, reject) => {
+          try {
+            for (const item of listCopy) {
+              for (const key in item) {
+                if (item.hasOwnProperty(key)) {
+                  if (key === 'indexName' || key === 'weight') {
+                    try {
+                      await this.isRequired(item, key)
+                    } catch (error) {
+                      reject(new Error('名称或权重不能为空！'))
+                    }
+                  }
+                }
+              }
+            }
+            try {
+              // 验证当前层级的权重之和是否为100%
+              await this.isCount100(listCopy)
+              // 如果是第四层的话，则验证四层内的子节点权重之和是否为100%
+              if (this.curNode.level >= 3) {
+                listCopy.forEach(async (item, index) => {
+                  try {
+                    await this.isCount100(item.children)
+                    resolve()
+                  } catch (error) {
+                    this.hackClick(index, 'open')
+                    reject(new Error('第5层指标权重之和必须为100%！'))
+                  }
+                })
+              } else {
+                resolve()
+              }
+            } catch (error) {
+              reject(new Error('当前层级权重之和必须为100%！'))
+            }
+          } catch (error) {
+            reject(new Error('名称或权重不能为空！'))
+          }
         })
       }
     }
