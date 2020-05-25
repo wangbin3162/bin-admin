@@ -89,22 +89,18 @@ export async function getNaturalList(query) {
 
 /**
  * @author haodongdong
- * @description 分页查询(法人)
- * @param {*} query
+ * @description 详情内信用信息
+ * @param {*} resultId
  * @returns Promise
  */
-export async function getNatualList(query) {
+export async function getCreditInfo(resultId) {
   return new Promise(async (resolve, reject) => {
     try {
       const res = await request({
-        url: '/api/eval/cal/result/leg/search',
+        url: '/api/eval/cal/resultDetail/search',
         method: 'get',
         params: {
-          compName: query.compName,
-          modelName: query.modelName,
-          size: query.size,
-          page: query.page - 1,
-          sort: 'createDate,desc'
+          resultId
         }
       })
       resolve(res.data)

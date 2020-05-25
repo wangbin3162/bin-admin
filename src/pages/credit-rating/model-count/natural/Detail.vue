@@ -227,9 +227,14 @@
 </template>
 
 <script>
+  import { getCreditInfo } from '../../../../api/credit-rating/model-count.api'
+
   export default {
     name: 'ModelCountNaturalDetail',
-    props: ['id', 'title'],
+    props: [
+      'title',
+      'detail'
+    ],
     data () {
       return {
         collapseValue: ['baseInfo', 'countResInfo', 'creditInfo'], // 控制手风琴展开
@@ -242,47 +247,54 @@
       }
     },
     created () {
-
+      this.getCreditInfo()
+      console.log(this.detail)
     },
     methods: {
-
+      async getCreditInfo () {
+        try {
+          const res = await getCreditInfo(this.detail.id)
+        } catch (error) {
+          console.error(error)
+        }
+      }
     }
   }
 </script>
 
 <style lang="stylus" scoped>
-.model-count-legal-detaiil {
-  .line {
-    position: relative;
-    left: -16px;
-    height: 20px;
-    width: calc(100% + 32px);
-    background-color: #f0f2f5;
-    margin-bottom: 24px;
-  }
+  .model-count-legal-detaiil {
+    .line {
+      position: relative;
+      left: -16px;
+      height: 20px;
+      width: calc(100% + 32px);
+      background-color: #f0f2f5;
+      margin-bottom: 24px;
+    }
 
-  .table {
-    width: 100%;
-    border-collapse:separate;
-    border-spacing:0px 10px;
-    font-size: 13px;
-  }
-
-  .field {
-    display: flex;
-    label {
-      width: 116px;
+    .table {
+      width: 100%;
+      border-collapse:separate;
+      border-spacing:0px 10px;
       font-size: 13px;
     }
-    .con {
-      flex: auto;
-      text-align: left
-      font-size: 13px;
+
+    .field {
+      display: flex;
+      label {
+        width: 116px;
+        font-size: 13px;
+      }
+      .con {
+        flex: auto;
+        text-align: left
+        font-size: 13px;
+      }
+    }
+
+    .credit-info {
+
     }
   }
-
-  .credit-info {
-
-  }
-}
 </style>
