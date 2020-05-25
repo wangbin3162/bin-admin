@@ -23,7 +23,8 @@
         </v-filter-bar>
         <!-- 操作栏 -->
         <v-table-tool-bar>
-          <b-button type="primary" icon="ios-add-circle-outline">重新计算</b-button>
+          <b-button type="primary" icon="ios-add-circle-outline"
+            @click="handleCheck(1)">重新计算</b-button>
           <b-button plain icon="md-list">模板计算</b-button>
           <b-button plain icon="ios-arrow-round-down">下载模板</b-button>
         </v-table-tool-bar>
@@ -52,12 +53,17 @@
           @on-page-size-change="handleSizeChange"></b-page>
       </v-table-wrap>
     </page-header-wrap>
+
+    <detail v-if="isCheck"
+      @close="handleCancel"
+      :title="editTitle"></detail>
   </div>
 </template>
 
 <script>
   import commonMixin from '../../../../common/mixins/mixin'
   import permission from '../../../../common/mixins/permission'
+  import Detail from './Detail'
   import { getEvalVarType, getEvalDataType, getEvalParamType } from '../../../../api/enum.api'
   import { getIndexVarList, deleteIndexVar } from '../../../../api/credit-rating/index-var.api'
 
@@ -65,6 +71,7 @@
     name: 'ModelCountLegal',
     mixins: [commonMixin, permission],
     components: {
+      Detail
     },
     data () {
       return {
