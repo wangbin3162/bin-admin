@@ -82,14 +82,21 @@
                 <b-row>
                   <b-col span="12">
                     <b-form-item label="有效期字段" prop="validParamName">
-                      <b-input v-model="form.index.validParamName" placeholder="请输入有效期字段" style="width: 100%;">
-                      </b-input>
+                      <div flex>
+                        <b-input v-model="form.index.validParamName" disabled
+                          placeholder="请选择有效期字段" style="width: 100%;">
+                        </b-input>
+                        <b-button type="primary" plain>选择</b-button>
+                      </div>
                     </b-form-item>
                   </b-col>
                   <b-col span="12">
                     <b-form-item label="有效期" prop="validMonth">
-                      <b-input-number v-model="form.index.validMonth" :max="12" :min="1" placeholder="请输入有效期" style="width: 100%;">
-                      </b-input-number>
+                      <div flex>
+                        <b-input-number v-model="form.index.validMonth" :max="12" :min="1" placeholder="请输入有效期" style="width: 100%;">
+                        </b-input-number>
+                        <b-button>月</b-button>
+                      </div>
                     </b-form-item>
                   </b-col>
                 </b-row>
@@ -210,9 +217,9 @@
           validParamName: [
             { required: true, message: '有效期字段不能为空', trigger: 'blur' }
           ],
-          validMonth: [
-            { type: 'integer', required: true, message: '必须为1-12的整数', trigger: 'blur' }
-          ],
+          // validMonth: [
+          //   { type: 'integer', required: true, message: '必须为1-12的整数', trigger: 'blur' }
+          // ],
           indexScale: [
             { required: true, message: '请选择标度', trigger: 'change' }
           ],
