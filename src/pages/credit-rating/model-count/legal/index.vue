@@ -5,22 +5,23 @@
         <!-- 查询条件 -->
         <v-filter-bar>
           <v-filter-item title="名称">
-            <b-input v-model="listQuery.varName" placeholder="请输入名称"></b-input>
+            <b-input v-model="listQuery.compName" placeholder="请输入名称"></b-input>
           </v-filter-item>
            <v-filter-item title="评价方案">
-            <b-select v-model="listQuery.varType">
-              <b-option v-for="item in varTypeOptions" :key="item.value"
-                :value="item.value">{{ item.label }}</b-option>
+            <b-select v-model="listQuery.modelId" @on-change="handleModelChange">
+              <b-option v-for="item in modelList" :key="item.id"
+                :value="item.id">{{ item.name }}</b-option>
             </b-select>
           </v-filter-item>
-          <v-filter-item title="评级等级">
-            <b-select v-model="listQuery.varType">
-              <b-option v-for="item in varTypeOptions" :key="item.value"
-                :value="item.value">{{ item.label }}</b-option>
+          <v-filter-item title="评价等级">
+            <b-select v-model="listQuery.levelCode">
+              <b-option v-for="item in ratingOptions" :key="item.levelCode"
+                :value="item.levelCode">{{ item.levelName }}</b-option>
             </b-select>
           </v-filter-item>
           <v-filter-item @on-search="handleFilter" @on-reset="resetQuery"></v-filter-item>
         </v-filter-bar>
+
         <!-- 操作栏 -->
         <v-table-tool-bar>
           <b-button type="primary" icon="ios-add-circle-outline"
@@ -28,17 +29,11 @@
           <b-button plain icon="md-list">模板计算</b-button>
           <b-button plain icon="ios-arrow-round-down">下载模板</b-button>
         </v-table-tool-bar>
-        <b-table :columns="columns" :data="list" :loading="listLoading">
-          <template v-slot:varName="{ row }">
+
+        <!-- table -->
+        <b-table :columns="columns" :data="[]" :loading="listLoading">
+          <template v-slot:name="{ row }">
             <b-button type="text" @click="handleCheck(row.id)">{{ row.varName }}</b-button>
-          </template>
-
-          <template v-slot:varType="{ row }">
-            {{ varTypeEnum[row.varType] }}
-          </template>
-
-          <template v-slot:dataType="{ row }">
-            {{ dataTypeEnum[row.dataType] }}
           </template>
 
           <template v-slot:action="{ row }">
@@ -64,8 +59,7 @@
   import commonMixin from '../../../../common/mixins/mixin'
   import permission from '../../../../common/mixins/permission'
   import Detail from './Detail'
-  import { getEvalVarType, getEvalDataType, getEvalParamType } from '../../../../api/enum.api'
-  import { getIndexVarList, deleteIndexVar } from '../../../../api/credit-rating/index-var.api'
+  import { getLegalList, getModelList } from '../../../../api/credit-rating/model-count.api'
 
   export default {
     name: 'ModelCountLegal',
@@ -78,8 +72,9 @@
         id: '', // 查看详情的id
         editData: null, // 编辑操作使用的数据
         listQuery: {
-          varName: '',
-          varType: ''
+          compName: '',
+          modelId: '',
+          levelCode: ''
         },
         columns: [
           { type: 'selection', width: 50, align: 'center' },
@@ -92,13 +87,15 @@
             tooltip: true,
             align: 'center'
           },
-          { title: '评价方案名称', slot: 'modelId', align: 'center' },
-          { title: '等级标准', slot: 'dataType', align: 'center' },
-          { title: '评价得分', key: 'tplContent', ellipsis: true, tooltip: true, align: 'center' },
-          { title: '评价等级', key: 'varDesc', ellipsis: true, tooltip: true, align: 'center' },
+          { title: '评价方案名称', slot: 'name', align: 'center' },
+          { title: '等级标准', key: 'ratingName', align: 'center' },
+          { title: '评价得分', key: 'score', ellipsis: true, tooltip: true, align: 'center' },
+          { title: '评价等级', key: 'levelCode', ellipsis: true, tooltip: true, align: 'center' },
           { title: '评价日期', key: 'varDesc', ellipsis: true, tooltip: true, align: 'center' },
           { title: '操作', slot: 'action', width: 120, align: 'center' }
         ],
+        modelList: [], // 评级模型下拉框数据
+        ratingOptions: [], // 评级等级下拉框数据
         varTypeEnum: {},
         dataTypeEnum: {},
         paramTypeEnum: {},
@@ -108,7 +105,7 @@
       }
     },
     created () {
-      this.getEnum()
+      this.getModelList()
       this.searchList()
     },
     methods: {
@@ -116,10 +113,18 @@
         this.listQuery = {
           page: 1,
           size: 10,
-          varName: '',
-          varType: ''
+          compName: '',
+          modelName: '',
+          levelCode: ''
         }
         this.searchList()
+      },
+      // 评价方案下来框chang事件
+      handleModelChange (val) {
+        // 变化后更新评价等级下拉框数据
+        this.ratingOptions = this.modelList.find(item => {
+          return item.id === val
+        }).ratingOptions
       },
       handleCreate () {
         this.openEditPage('create')
@@ -132,65 +137,35 @@
         this.editData = row
         this.openEditPage('modify')
       },
+      // 获取评级模型
+      async getModelList () {
+        try {
+          const res = await getModelList('A02') // A01 自然人
+          this.modelList = res
+          // 用于下拉框选中设为默认的评级模型
+          const defaultModel = res.find(item => item.sysDefault === '1')
+          this.listQuery.modelId = defaultModel.id
+          this.ratingOptions = defaultModel.ratingOptions
+        } catch (error) {
+          console.error(error)
+        }
+      },
       async searchList () {
         this.listLoading = true
         try {
-          const res = await getIndexVarList(this.listQuery)
-          // this.setListData({
-          //   list: res.rows,
-          //   total: res.total
-          // })
+          const res = await getLegalList(this.listQuery)
+          this.setListData({
+            list: res.rows,
+            total: res.total
+          })
         } catch (error) {
-          console.log(error)
+          console.error(error)
         }
         this.listLoading = false
       },
       // 或许所需的枚举值
       async getEnum () {
-        try {
-          const [varType, dataType, paramType] = await Promise.all([
-            getEvalVarType(), getEvalDataType(), getEvalParamType()
-          ])
-          this.varTypeEnum = varType
-          this.dataTypeEnum = dataType
-          this.paramTypeEnum = paramType
-          this.initOptions()
-        } catch (error) {
-          console.log(error)
-        }
-      },
-      // 构建所需枚举类型下拉框的option
-      initOptions () {
-        // 变量类型下拉框option使用的枚举值
-          for (const key in this.varTypeEnum) {
-            if (this.varTypeEnum.hasOwnProperty(key)) {
-              const element = this.varTypeEnum[key]
-              this.varTypeOptions.push({
-                label: element,
-                value: key
-              })
-            }
-          }
-        // 数据类型下拉框option使用的枚举值
-        for (const key in this.dataTypeEnum) {
-          if (this.dataTypeEnum.hasOwnProperty(key)) {
-            const element = this.dataTypeEnum[key]
-            this.dataTypeOptions.push({
-              label: element,
-              value: key
-            })
-          }
-        }
-        // 参数类型下拉框option使用的枚举值
-        for (const key in this.paramTypeEnum) {
-          if (this.paramTypeEnum.hasOwnProperty(key)) {
-            const element = this.paramTypeEnum[key]
-            this.paramTypeOptions.push({
-              label: element,
-              value: key
-            })
-          }
-        }
+
       }
     }
   }

@@ -6,21 +6,24 @@ import request from '../request'
 
 /**
  * @author haodongdong
- * @description 获取主题类别树
+ * @description 获取评级模型列表
+ * @param {*} personClass
  * @returns Promise
  */
-export async function getSubjectTypeTree(code = 'A') {
+export async function getModelList(personClass) {
   return new Promise(async (resolve, reject) => {
     try {
       const res = await request({
-        url: '/api/dir/classify/tree',
+        url: '/api/eval/model/queryModelList',
         method: 'get',
-        params: { code }
+        params: {
+          personClass
+        }
       })
-      if (res.data.code === '0') { // 不是标准的restful，200中还可能包含接口错误。
+      if (res.data.successful) {
         resolve(res.data.data)
       } else {
-        reject(new Error(res.data.message))
+        reject(res.data.message)
       }
     } catch (error) {
       reject(error)
@@ -30,19 +33,20 @@ export async function getSubjectTypeTree(code = 'A') {
 
 /**
  * @author haodongdong
- * @description 获取评级模型列表
+ * @description 分页查询(法人)
  * @param {*} query
  * @returns Promise
  */
-export async function getRatingModelList(query) {
+export async function getLegalList(query) {
   return new Promise(async (resolve, reject) => {
     try {
       const res = await request({
-        url: '/api/eval/model/search',
+        url: '/api/eval/cal/result/leg/search',
         method: 'get',
         params: {
-          modelName: query.modelName,
-          // bizType: query.bizType,
+          compName: query.compName,
+          modelId: query.modelId,
+          levelCode: query.levelCode,
           size: query.size,
           page: query.page - 1,
           sort: 'createDate,desc'
@@ -57,255 +61,25 @@ export async function getRatingModelList(query) {
 
 /**
  * @author haodongdong
- * @description 获取评级模型详情
+ * @description 分页查询(法人)
  * @param {*} query
  * @returns Promise
  */
-export async function getRatingModeDetail(id) {
+export async function getNatualList(query) {
   return new Promise(async (resolve, reject) => {
     try {
       const res = await request({
-        url: '/api/eval/model/detail',
-        method: 'get',
-        params: { id }
-      })
-      if (res.data.successful) {
-        resolve(res.data.data)
-      } else {
-        reject(res.data.message)
-      }
-    } catch (error) {
-      reject(error)
-    }
-  })
-}
-
-/**
- * @author haodongdong
- * @description 创建评级模型
- * @param {*} params
- * @returns Promise
- */
-export async function createRatingModel(params) {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const res = await request({
-        url: '/api/eval/model/create',
-        method: 'post',
-        data: params
-      })
-      if (res.data.successful) {
-        resolve([true])
-      } else {
-        resolve([false, res.data.message])
-      }
-    } catch (error) {
-      reject(error)
-    }
-  })
-}
-
-/**
- * @author haodongdong
- * @description 更新评级模型
- * @param {*} params
- * @returns Promise
- */
-export async function updateRatingModel(params) {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const res = await request({
-        url: '/api/eval/model/modify',
-        method: 'post',
-        data: params
-      })
-      if (res.data.successful) {
-        resolve([true])
-      } else {
-        resolve([false, res.data.message])
-      }
-    } catch (error) {
-      reject(error)
-    }
-  })
-}
-
-/**
- * @author haodongdong
- * @description 删除指标
- * @param {*} params
- * @returns Promise
- */
-export async function deleteRatingModel(id) {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const res = await request({
-        url: '/api/eval/model/remove',
-        method: 'post',
-        params: { id }
-      })
-      if (res.data.successful) {
-        resolve()
-      } else {
-        reject(res.data.message)
-      }
-    } catch (error) {
-      reject(error)
-    }
-  })
-}
-
-/**
- * @author haodongdong
- * @description 启用禁用
- * @param {*} params
- * @returns Promise
- */
-export async function setStatus(id) {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const res = await request({
-        url: '/api/eval/model/changeStatus',
-        method: 'post',
-        params: {
-          id
-        }
-      })
-      if (res.data.successful) {
-        resolve([true])
-      } else {
-        resolve([false, res.data.message])
-      }
-    } catch (error) {
-      reject(error)
-    }
-  })
-}
-
-/**
- * @author haodongdong
- * @description 设置缺省评级模型
- * @param {*} params
- * @returns Promise
- */
-export async function setSysDefault(id) {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const res = await request({
-        url: '/api/eval/model/changeSysDefault',
-        method: 'post',
-        params: {
-          id
-        }
-      })
-      if (res.data.successful) {
-        resolve([true])
-      } else {
-        resolve([false, res.data.message])
-      }
-    } catch (error) {
-      reject(error)
-    }
-  })
-}
-
-/**
- * @author haodongdong
- * @description 克隆评级模型
- * @param {*} id
- * @returns Promise
- */
-export async function cloneRatingModel(id) {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const res = await request({
-        url: '/api/eval/model/clone',
-        method: 'post',
-        params: {
-          id
-        }
-      })
-      if (res.data.successful) {
-        resolve()
-      } else {
-        reject(res.data.message)
-      }
-    } catch (error) {
-      reject(error)
-    }
-  })
-}
-
-/**
- * @author haodongdong
- * @description 获取指标树
- * @returns Promise
- */
-export async function getIndexModleTree(query) {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const res = await request({
-        url: '/api/eval/model/index/tree',
+        url: '/api/eval/cal/result/leg/search',
         method: 'get',
         params: {
-          modelId: query.modelId,
-          indexId: query.indexId,
-          indexType: query.indexType
+          compName: query.compName,
+          modelName: query.modelName,
+          size: query.size,
+          page: query.page - 1,
+          sort: 'createDate,desc'
         }
       })
-      if (res.data.code === '0') { // 不是标准的restful，200中还可能包含接口错误。
-        resolve(res.data.data)
-      } else {
-        reject(new Error(res.data.message))
-      }
-    } catch (error) {
-      reject(error)
-    }
-  })
-}
-
-/**
- * @author haodongdong
- * @description 更新指标模型
- * @returns Promise
- */
-export async function updatedIndexModel(params) {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const res = await request({
-        url: '/api/eval/model/index/createOrModify',
-        method: 'post',
-        data: params
-      })
-      if (res.data.successful) { // 不是标准的restful，200中还可能包含接口错误。
-        resolve()
-      } else {
-        reject(new Error(res.data.message))
-      }
-    } catch (error) {
-      reject(error)
-    }
-  })
-}
-
-/**
- * @author haodongdong
- * @description 删除指标模型
- * @returns Promise
- */
-export async function deleteIndexModel(id) {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const res = await request({
-        url: '/api/eval/model/index/remove',
-        method: 'post',
-        params: { id }
-      })
-      if (res.data.successful) { // 不是标准的restful，200中还可能包含接口错误。
-        resolve()
-      } else {
-        reject(new Error(res.data.message))
-      }
+      resolve(res.data)
     } catch (error) {
       reject(error)
     }
