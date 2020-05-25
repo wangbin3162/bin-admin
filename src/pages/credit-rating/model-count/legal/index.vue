@@ -70,7 +70,6 @@
     data () {
       return {
         id: '', // 查看详情的id
-        editData: null, // 编辑操作使用的数据
         listQuery: {
           compName: '',
           modelId: '',
@@ -95,13 +94,7 @@
           { title: '操作', slot: 'action', width: 120, align: 'center' }
         ],
         modelList: [], // 评级模型下拉框数据
-        ratingOptions: [], // 评级等级下拉框数据
-        varTypeEnum: {},
-        dataTypeEnum: {},
-        paramTypeEnum: {},
-        varTypeOptions: [], // 变量类型下拉框 用于父子组件
-        dataTypeOptions: [], // 数据类型下拉框 用于子组件
-        paramTypeOptions: [] // 参数类型下拉框  用于子组件
+        ratingOptions: [] // 评级等级下拉框数据
       }
     },
     created () {

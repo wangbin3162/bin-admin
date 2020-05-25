@@ -61,6 +61,34 @@ export async function getLegalList(query) {
 
 /**
  * @author haodongdong
+ * @description 分页查询(自然人)
+ * @param {*} query
+ * @returns Promise
+ */
+export async function getNaturalList(query) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/api/eval/cal/result/nat/search',
+        method: 'get',
+        params: {
+          name: query.name,
+          modelId: query.modelId,
+          levelCode: query.levelCode,
+          size: query.size,
+          page: query.page - 1,
+          sort: 'createDate,desc'
+        }
+      })
+      resolve(res.data)
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
  * @description 分页查询(法人)
  * @param {*} query
  * @returns Promise
