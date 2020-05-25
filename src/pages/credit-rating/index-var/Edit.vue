@@ -97,7 +97,7 @@
       @selected="handleSelectedTemp"></edit-select-biz-template>
     <!-- 返回的参数：变量编码 -->
     <edit-select-var :open="openSelectVar" @close="openSelectVar = false"
-      @selected="handleVarSelected"></edit-select-var>
+      @choose-mul="handleVarChooseMul"></edit-select-var>
   </div>
 </template>
 
@@ -185,7 +185,7 @@
         this.params = tempObj.params
       },
       // 变量选择组件选中回调
-      handleVarSelected (tempVarCodeList) {
+      handleVarChooseMul (tempVarCodeList) {
         // 业务相同的变量只允许选择一次，所以这里做个去重处理
         this.tempVarCodeList = [...new Set([...this.tempVarCodeList, ...tempVarCodeList])]
       },
