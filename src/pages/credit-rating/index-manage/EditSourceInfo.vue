@@ -16,13 +16,13 @@
     </b-table>
 
     <!-- 资源配置弹框 -->
-    <edit-source-info-select
+    <source-info-select
       @close="open = false"
       @choose-mul="handleChooseMul"
       @choose-sin="handleChooseSin"
       :open="open"
       :paraType="paraType">
-    </edit-source-info-select>
+    </source-info-select>
   </div>
 </template>
 
@@ -30,7 +30,7 @@
   import { getEvalParamType } from '../../../api/enum.api'
   import { getPersonClassTree } from '../../../api/data-manage/metadata.api'
   import { getResPropertyTree } from '../../../api/data-manage/res-info.api'
-  import EditSourceInfoSelect from './EditSourceInfoSelect'
+  import SourceInfoSelect from './SourceInfoSelect'
 
   export default {
     name: 'IndexManageSourceInfo',
@@ -49,7 +49,7 @@
       }
     },
     components: {
-      EditSourceInfoSelect
+      SourceInfoSelect
     },
     data () {
       return {
