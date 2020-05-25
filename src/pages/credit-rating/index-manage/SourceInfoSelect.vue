@@ -41,7 +41,7 @@
               </b-table>
             </div>
             <!--下方分页器-->
-            <b-page :total="total" show-sizer
+            <b-page :total="total" size="small"
               :current.sync="listQuery.page"
               @on-change="handleCurrentChange"
               @on-page-size-change="handleSizeChange"></b-page>

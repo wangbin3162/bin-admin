@@ -62,7 +62,7 @@
                       <div flex style="width:100%;">
                         <b-input :value="varName" placeholder="请选择变量" class="choose-btn"
                           readonly disabled></b-input>
-                        <b-button slot="suffix" type="primary" plain
+                        <b-button type="primary" plain
                           @click="openSelectVarHandler" style="flex: 0 0 auto;">
                           选择
                         </b-button>
@@ -82,11 +82,15 @@
                 <b-row>
                   <b-col span="12">
                     <b-form-item label="有效期字段" prop="validParamName">
-                      <div flex>
-                        <b-input v-model="form.index.validParamName" disabled
+                      <div flex style="width:100%;">
+                        <b-input :value="form.index.validParamName" disabled
                           placeholder="请选择有效期字段" style="width: 100%;">
                         </b-input>
-                        <b-button type="primary" plain>选择</b-button>
+                        <b-button type="primary" plain
+                          style="flex: 0 0 auto;"
+                          @click="handleOpenSource">
+                            选择
+                          </b-button>
                       </div>
                     </b-form-item>
                   </b-col>
@@ -139,6 +143,14 @@
         </template>
       </v-edit-wrap>
     </page-header-wrap>
+
+    <!-- 资源配置弹框 -->
+    <source-info-select
+      @close="openSource = false"
+      @choose-sin="handleSourceChooseSin"
+      :open="openSource"
+      paraType="I">
+    </source-info-select>
   </div>
 </template>
 
@@ -146,6 +158,7 @@
   import EditIndexRule from './EditIndexRule'
   import EditSourceInfo from './EditSourceInfo'
   import EditSelectVar from '../index-var/EditSelectVar'
+  import SourceInfoSelect from './SourceInfoSelect'
   import { saveAndUpdate, getIndeManageDetail } from '../../../api/credit-rating/index-manage.api'
 
   export default {
@@ -166,14 +179,16 @@
     components: {
       EditSelectVar,
       EditIndexRule,
-      EditSourceInfo
+      EditSourceInfo,
+      SourceInfoSelect
     },
     data () {
       return {
         btnLoading: false,
         editLoading: false,
         collapseValue: ['index', 'rules', 'resources'], // 控制手风琴展开
-        open: false,
+        open: false, // 选择变量弹框
+        openSource: false, // 选择资源弹框
         cascadeData: [], // 指标类型级联数据
         cascadeModel: [], // 用于级联绑定
         varName: '', // 变量名称 用于显示
@@ -214,9 +229,9 @@
           calClass: [
             { required: true, message: '请选择计算类型', trigger: 'change' }
           ],
-          validParamName: [
-            { required: true, message: '有效期字段不能为空', trigger: 'blur' }
-          ],
+          // validParamName: [
+          //   { required: true, message: '有效期字段不能为空', trigger: 'blur' }
+          // ],
           // validMonth: [
           //   { type: 'integer', required: true, message: '必须为1-12的整数', trigger: 'blur' }
           // ],
@@ -253,6 +268,14 @@
       // 打开变量选择弹框
       openSelectVarHandler () {
         this.open = true
+      },
+      // 有效期字段选择按钮
+      handleOpenSource () {
+        this.openSource = true
+      },
+      // 有效期选择组件的回调
+      handleSourceChooseSin ({ fieldName }) {
+        this.form.index.validParamName = fieldName
       },
       // 指标规则组件内数据变化事件
       handleIndexRulsChange (list) {
