@@ -92,7 +92,7 @@
             tooltip: true,
             align: 'center'
           },
-          { title: '评价方案名称', slot: 'varType', align: 'center' },
+          { title: '评价方案名称', slot: 'modelId', align: 'center' },
           { title: '等级标准', slot: 'dataType', align: 'center' },
           { title: '评价得分', key: 'tplContent', ellipsis: true, tooltip: true, align: 'center' },
           { title: '评价等级', key: 'varDesc', ellipsis: true, tooltip: true, align: 'center' },
