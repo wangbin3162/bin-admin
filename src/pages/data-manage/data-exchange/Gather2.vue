@@ -96,7 +96,7 @@
       // 查询所有列表
       searchList() {
         this.setListData()
-        getMyGather('测试校验').then(response => {
+        getMyGather(this.resourceName).then(response => {
           if (response.status === 200) {
             this.setListData({
               list: response.data.data,
