@@ -13,7 +13,8 @@
             </b-select>
           </v-filter-item>
           <v-filter-item title="实施部门">
-            <urp-dept-select v-model="listQuery.departId"/>
+            <urp-dept-select v-model="listQuery.departId" :default-name="listQuery.departName"
+                             @on-choose="({departName})=>{listQuery.departName=departName}"/>
           </v-filter-item>
           <!--添加查询按钮位置-->
           <v-filter-item @on-search="handleFilter" @on-reset="resetQuery"></v-filter-item>
@@ -145,7 +146,8 @@
           size: 10,
           measureName: '',
           measureType: '',
-          departId: ''
+          departId: '',
+          departName: ''
         }
         this.handleFilter()
       },
