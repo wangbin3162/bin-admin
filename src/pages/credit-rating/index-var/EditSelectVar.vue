@@ -1,12 +1,12 @@
 <template>
   <div class="select-var">
     <b-modal v-model="showDialog" title="选择变量"
-      width="80%" footer-hide
-      :body-styles="{padding:0}"
+      :width="width" footer-hide
+      :body-styles="{ padding: 0 }"
       @on-visible-change="handleVisibleChange">
       <v-table-wrap>
         <b-row :gutter="15">
-          <b-col span="16">
+          <b-col :span="span">
             <v-filter-bar>
               <v-filter-item title="变量名">
                 <b-input v-model="listQuery.varName" placeholder="请输入变量名"></b-input>
@@ -21,8 +21,7 @@
               <v-filter-item @on-search="handleFilter" @on-reset="resetQuery"></v-filter-item>
             </v-filter-bar>
 
-            <b-table :columns="columns" :data="list" :loading="listLoading" size="small"
-              :highlight-row="radio" @on-current-change="handleRadio">
+            <b-table :columns="columns" :data="list" :loading="listLoading" size="small">
               <template v-slot:varType="{ row }">
                 {{ varTypeEnum[row.varType] }}
               </template>
@@ -30,15 +29,22 @@
                 {{ dataTypeEnum[row.dataType] }}
               </template>
               <template v-slot:action="{ row }">
-                  <b-button :type="checkRowSelected(row) ? 'danger' : 'primary'" plain size="small"
-                    @click="chooseOne(row)">
-                    {{ checkRowSelected(row) ? '取消' : '选择' }}
-                  </b-button>
-                </template>
+                <b-button v-if="!radio"
+                  plain size="small"
+                  :type="checkRowSelected(row) ? 'danger' : 'primary'"
+                  @click="chooseOne(row)">
+                  {{ checkRowSelected(row) ? '取消' : '选择' }}
+                </b-button>
+                <b-button v-else
+                  type="primary" plain size="small"
+                  @click="handleRadio(row)">
+                  选择
+                 </b-button>
+              </template>
             </b-table>
           </b-col>
 
-          <b-col span="8">
+          <b-col v-if="!radio" span="8">
             <b-card class="box-card" head-tip
               header="已选变量">
               <b-tag
@@ -86,7 +92,8 @@
     mixins: [commonMixin, permission],
     data() {
       return {
-        tip: '', // 在指标管理新增组件中使用时提示
+        width: '80%',
+        span: 16,
         varCodeList: [],
         listQuery: {
           varName: '',
@@ -137,11 +144,6 @@
         this.$emit('selected', curRow)
         this.showDialog = false
       },
-      // 发送选中的数据
-      handleOk() {
-        this.$emit('selected', this.varCodeList)
-        this.showDialog = false
-      },
       resetQuery() {
         this.listQuery = {
           page: 1,
@@ -181,16 +183,11 @@
       // 判断组件是单选还是多选，用于处理不同组件的不同行为
       init () {
         if (this.radio) { // 指标管理使用则是单选形式
-          this.tip = '提示：点击表格行选择变量'
-          this.columns = [
-            { type: 'index', width: 50, align: 'center' },
-            { title: '变量名称', key: 'varName' },
-            { title: '变量编码', key: 'varCode' },
-            { title: '变量类型', slot: 'varType' },
-            { title: '数据类型', slot: 'dataType' },
-            { title: '模板内容', key: 'tplContent', ellipsis: true, tooltip: true },
-            { title: '描述', key: 'varDesc', ellipsis: true, tooltip: true }
-          ]
+          this.span = 24
+          this.width = '72%'
+        } else {
+          this.span = 16
+          this.width = '80%'
         }
       },
        // 用于检查是否选中
