@@ -7,8 +7,12 @@
             <b-input v-model="listQuery.modelName" placeholder="请输入"></b-input>
           </v-filter-item>
           <v-filter-item title="主体类型">
-            <b-cascader :data="subjectType" v-model="listQuery.bizType"
-              change-on-select></b-cascader>
+            <!-- <b-cascader :data="subjectType" v-model="listQuery.bizType"
+              change-on-select></b-cascader> -->
+            <b-select v-model="listQuery.bizType">
+              <b-option value="A01">自然人</b-option>
+              <b-option value="A02">法人和其他组织</b-option>
+            </b-select>
           </v-filter-item>
           <v-filter-item title="状态">
             <b-select v-model="listQuery.modelStatus">
