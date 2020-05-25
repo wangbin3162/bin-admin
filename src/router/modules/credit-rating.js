@@ -41,6 +41,36 @@ export default {
       meta: {
         title: '评级模型'
       }
+    },
+    {
+      path: 'modelCount',
+      name: 'ModelCount',
+      component: {
+        render: h => {
+          return h('router-view')
+        }
+      },
+      meta: {
+        title: '模型计算'
+      },
+      children: [
+        {
+          path: 'legal',
+          name: 'Legal',
+          component: () => import(/* webpackChunkName: "Legal" */ '../../pages/credit-rating/model-count/legal'),
+          meta: {
+            title: '法人'
+          }
+        },
+        {
+          path: 'natural',
+          name: 'Natural',
+          component: () => import(/* webpackChunkName: "Natural" */ '../../pages/credit-rating/model-count/natural'),
+          meta: {
+            title: '自然人'
+          }
+        }
+      ]
     }
   ]
 }
