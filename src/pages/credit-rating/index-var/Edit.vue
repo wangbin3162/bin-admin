@@ -2,91 +2,94 @@
   <div>
     <page-header-wrap :title="title" show-close @on-close="$emit('close')">
       <v-edit-wrap>
-        <b-form :model="form" ref="form" :rules="rules" :label-width="100">
-          <b-row>
-            <b-col span="12">
-              <b-form-item label="变量名称" prop="varName">
-                <b-input v-model="form.varName" placeholder="请输入变量名称" clearable></b-input>
-              </b-form-item>
-            </b-col>
-            <b-col span="12">
-              <b-form-item label="变量编码" prop="varCode">
-                <b-input v-model="form.varCode" placeholder="请输入变量编码" clearable></b-input>
-              </b-form-item>
-            </b-col>
-          </b-row>
-          <b-row>
-            <b-col span="12">
-              <b-form-item label="变量类型" prop="varType">
-                <b-select v-model="form.varType" @on-change="handleVarTypeChange">
-                  <b-option v-for="item in varTypeOptions" :key="item.value"
-                    :value="item.value">{{ item.label }}</b-option>
-                </b-select>
-              </b-form-item>
-            </b-col>
-            <b-col span="12">
-              <b-form-item label="数据类型" prop="dataType">
-                <b-select v-model="form.dataType">
-                  <b-option v-for="item in dataTypeOptions" :key="item.value"
-                    :value="item.value">{{ item.label }}</b-option>
-                </b-select>
-              </b-form-item>
-            </b-col>
-          </b-row>
-          <b-row v-if="form.varType === 'Common'" :key="form.varType">
-            <b-col span="12">
-              <b-form-item label="业务模板" prop="tplContent"
-                :rules=" { required: true, message: '请选择业务模板', trigger: 'change' }">
-                <div flex style="width:100%;">
-                  <b-input class="choose-btn" :value="form.tplContent" placeholder="请选择业务模板"
-                    disabled readonly></b-input>
-                  <b-button slot="suffix" type="primary" plain
-                    @click="openBelongTypeHandler" style="flex: 0 0 auto;">
-                    选择
-                  </b-button>
-                </div>
-              </b-form-item>
-            </b-col>
-            <b-col span="12"></b-col>
-          </b-row>
-          <b-row v-else>
-            <b-col span="24">
-              <b-form-item label="已选变量" v-if="tempVarCodeList.length > 0">
-                <b-tag color="#409EFF" dot closable
-                  v-for="(item, index) in tempVarCodeList" :key="item"
-                  @on-close="handleTagClose(index)">
-                  {{ item }}
-                </b-tag>
-              </b-form-item>
-              <b-form-item label="表达式" prop="tplContent"
-                :rules=" { required: true, message: '请输入el表达式', trigger: 'blur' }">
-                <div flex="main:justify" style="width: 100%;">
-                  <b-input v-model="form.tplContent" style="max-width: 93%;"
-                    type="textarea" placeholder="请输入el表达式"
-                    @input.native="handleElInput"></b-input>
-                  <b-button type="primary" plain style="margin-left: 5px;"
-                    @click="openSelectVarHandler">
-                    选择
-                  </b-button>
-                </div>
-              </b-form-item>
-            </b-col>
-          </b-row>
-          <b-form-item label="描述" prop="varDesc">
-            <b-input v-model="form.varDesc" placeholder="请输入描述" type="textarea"></b-input>
-          </b-form-item>
-        </b-form>
+        <div slot="full">
+          <v-title-bar label="基本信息" class="mb-15"></v-title-bar>
+          <b-form :model="form" ref="form" :rules="rules" :label-width="100">
+            <b-row>
+              <b-col span="12">
+                <b-form-item label="变量名称" prop="varName">
+                  <b-input v-model="form.varName" placeholder="请输入变量名称" clearable></b-input>
+                </b-form-item>
+              </b-col>
+              <b-col span="12">
+                <b-form-item label="变量编码" prop="varCode">
+                  <b-input v-model="form.varCode" placeholder="请输入变量编码" clearable></b-input>
+                </b-form-item>
+              </b-col>
+            </b-row>
+            <b-row>
+              <b-col span="12">
+                <b-form-item label="变量类型" prop="varType">
+                  <b-select v-model="form.varType" @on-change="handleVarTypeChange">
+                    <b-option v-for="item in varTypeOptions" :key="item.value"
+                      :value="item.value">{{ item.label }}</b-option>
+                  </b-select>
+                </b-form-item>
+              </b-col>
+              <b-col span="12">
+                <b-form-item label="数据类型" prop="dataType">
+                  <b-select v-model="form.dataType">
+                    <b-option v-for="item in dataTypeOptions" :key="item.value"
+                      :value="item.value">{{ item.label }}</b-option>
+                  </b-select>
+                </b-form-item>
+              </b-col>
+            </b-row>
+            <b-row v-if="form.varType === 'Common'" :key="form.varType">
+              <b-col span="12">
+                <b-form-item label="业务模板" prop="tplContent"
+                  :rules=" { required: true, message: '请选择业务模板', trigger: 'change' }">
+                  <div flex style="width:100%;">
+                    <b-input class="choose-btn" :value="form.tplContent" placeholder="请选择业务模板"
+                      disabled readonly></b-input>
+                    <b-button slot="suffix" type="primary" plain
+                      @click="openBelongTypeHandler" style="flex: 0 0 auto;">
+                      选择
+                    </b-button>
+                  </div>
+                </b-form-item>
+              </b-col>
+              <b-col span="12"></b-col>
+            </b-row>
+            <b-row v-else>
+              <b-col span="24">
+                <b-form-item label="已选变量" v-if="tempVarCodeList.length > 0">
+                  <b-tag color="#409EFF" dot closable
+                    v-for="(item, index) in tempVarCodeList" :key="item"
+                    @on-close="handleTagClose(index)">
+                    {{ item }}
+                  </b-tag>
+                </b-form-item>
+                <b-form-item label="表达式" prop="tplContent"
+                  :rules=" { required: true, message: '请输入el表达式', trigger: 'blur' }">
+                  <div flex="main:justify" style="width: 100%;">
+                    <b-input v-model="form.tplContent" style="max-width: 93%;"
+                      type="textarea" placeholder="请输入el表达式"
+                      @input.native="handleElInput"></b-input>
+                    <b-button type="primary" plain style="margin-left: 5px;"
+                      @click="openSelectVarHandler">
+                      选择
+                    </b-button>
+                  </div>
+                </b-form-item>
+              </b-col>
+            </b-row>
+            <b-form-item label="描述" prop="varDesc">
+              <b-input v-model="form.varDesc" placeholder="请输入描述" type="textarea"></b-input>
+            </b-form-item>
+          </b-form>
+          <!-- 一般变量时，选择模板带过来的参数不可改动与删除 -->
+          <!-- 复合变量时，新增的参数不可再选择变量带过来的参数中 -->
+          <edit-param-manage ref="paramManage" :paramTypeOptions="paramTypeOptions"
+            :params="params" :tempVarCodeList="tempVarCodeList"
+            @params-change="params => form.params = params"></edit-param-manage>
+        </div>
         <template slot="footer">
           <b-button @click="$emit('close')">取 消</b-button>
           <b-button type="primary" @click="handleSubmit" :loading="btnLoading">提 交</b-button>
         </template>
       </v-edit-wrap>
 
-      <!-- 一般变量时，选择模板带过来的参数不可改动与删除 -->
-      <!-- 复合变量时，新增的参数不可再选择变量带过来的参数中 -->
-      <edit-param-manage ref="paramManage" :paramTypeOptions="paramTypeOptions"
-        :params="params" :tempVarCodeList="tempVarCodeList"
-        @params-change="params => form.params = params"></edit-param-manage>
     </page-header-wrap>
 
     <!-- 返回的参数：模板id、模板名称、fields字段[paramName、paramCode、paraDesc] 不可删除，描述 -->

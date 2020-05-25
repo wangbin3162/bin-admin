@@ -1,7 +1,7 @@
 <template>
   <div class="edit-param-manage">
     <v-table-wrap>
-      <h3 style="margin: 20px 0;">参数管理</h3>
+      <v-title-bar label="参数配置" class="mb-15"></v-title-bar>
       <b-table :columns="columns" :data="list" size="small">
         <template v-slot:paraName="{ index }">
           <b-tooltip :content="list[index].paraNameMsg" max-width="200"
