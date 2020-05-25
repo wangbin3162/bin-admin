@@ -591,7 +591,7 @@
       },
       // 判断是否是5个特殊信息项，返回是否存在相同类似条件
       hasSame(name) {
-        let infoItems = [RULE.conditionRequired, RULE.conditionNotRequired, RULE.conditionNotBe, RULE.notSame, RULE.timeBound]
+        let infoItems = [RULE.regexp, RULE.conditionRequired, RULE.conditionNotRequired, RULE.conditionNotBe, RULE.notSame, RULE.timeBound]
         if (infoItems.indexOf(name) > -1) { // 特殊信息项，则可以配置多个
           return false
         } else {
