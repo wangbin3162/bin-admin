@@ -188,6 +188,7 @@
     &-name {
       padding: 0 10px;
       line-height: 35px;
+      height: 35px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;

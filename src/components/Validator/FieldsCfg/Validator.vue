@@ -287,7 +287,8 @@
               </div>
             </template>
             <div class="delete">
-              <b-button type="text" text-color="#f5222d" @click="removeRules(index)" :disabled="required==='Y'">
+              <b-button type="text" text-color="#f5222d" @click="removeRules(index)"
+                        :disabled="required==='Y'&&rule.name===RULE.required">
                 <b-icon name="ios-remove-circle-outline" size="22"/>
               </b-button>
             </div>
@@ -606,6 +607,7 @@
       },
       onDrop(e, index) {
         this.checkRulesArr[index].preField = e.dataTransfer.getData('index')
+        this.emitValue()
         e.preventDefault()
       }
     }
