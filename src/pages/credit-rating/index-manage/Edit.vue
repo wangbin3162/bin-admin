@@ -29,7 +29,7 @@
                   </b-col>
                   <b-col span="6">
                     <b-form-item label="指标类型" prop="bizType">
-                      <b-cascader :data="cascadeData" v-model="cascadeModel" placeholder="请选择指标类型"
+                      <b-cascader :data="cascadeData" v-model="cascadeModel" placeholder="请选择指标类型" disabled
                         change-on-select @on-change="handleCascadeChange"></b-cascader>
                     </b-form-item>
                   </b-col>
@@ -172,6 +172,7 @@
       'personClassEnum',
       'resPropertyEnum',
       'paramTypeEnum',
+      'defaultCascade',
       'treeData'
     ],
     components: {
@@ -334,7 +335,10 @@
           }
           this.editLoading = false
           this.collapseValue = ['index', 'rules', 'resources']
+        } else {
+          this.cascadeModel = this.defaultCascade
         }
+        this.form.index.bizType = [...this.cascadeModel].pop() // 把级联选择数据赋值到form
       },
       // 把类目的树形数据转换为级联选择框可用的树形结构
       treeToCascade (tree) {

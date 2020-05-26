@@ -66,6 +66,7 @@
       :personClassEnum="personClassEnum"
       :resPropertyEnum="resPropertyEnum"
       :paramTypeEnum="paramTypeEnum"
+      :defaultCascade="defaultCascade"
       :treeData="treeData"
       :editData="editData"></edit>
       <!-- 详情 -->
@@ -121,6 +122,7 @@
         ],
         id: null, // 详情组件使用的获取详情的id
         editData: null, // 待编辑数据
+        defaultCascade: [], // 新增时传递给编辑组件的指标类型级联控件
         natureEnum: {}, // 指标性质枚举
         dataTypeEnum: {}, // 数据类型枚举
         calcTypeEnum: {}, // 计算类型枚举
@@ -167,7 +169,18 @@
       },
       // 新增按钮回调
       handleCreate () {
-        this.openEditPage('create')
+        if (this.currentTreeNode.code === 'C') {
+          this.$message({ type: 'warning', content: '请选择左侧类目信息下具体信息后新增。' })
+        } else {
+          // 查找父节点，用于构建编辑组件内级联选择框所需默认数据结构
+          const pCode = this.findParent(this.treeData, this.currentTreeNode.code)
+          if (pCode === 'C') {
+            this.defaultCascade = [this.currentTreeNode.code]
+          } else {
+            this.defaultCascade = [pCode, this.currentTreeNode.code]
+          }
+          this.openEditPage('create')
+        }
       },
       // 修改按钮回调
       handleModify (row) {
@@ -344,6 +357,29 @@
             this.handleFilter()
           }
         })
+      },
+      // 根据子节点code查找父节点
+      findParent (tree, code) {
+        let pCode = null
+        let recFun = (tree, code) => {
+          for (const item of tree) {
+            if (item.code === code) { // 找到相等节点则退出循环和递归
+              return true
+            } else { // 没找到则看是否有子节点
+              if (item.children && item.children.length) { // 有则然后继续递归查找
+                const res = recFun(item.children, code)
+                if (res) { // 如果子节点中包含所要查找的code，则保存当前节点，然后返回false退出递归
+                  pCode = item.code
+                  return false
+                }
+              }
+            }
+          }
+          return false
+        }
+        recFun(tree, code)
+        recFun = null
+        return pCode
       }
     }
   }
