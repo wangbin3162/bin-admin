@@ -1,4 +1,5 @@
 import layout from '../../layout'
+import { wrap } from 'bin-ui'
 
 // 容器组件
 const Wrap = {
@@ -90,6 +91,20 @@ export default {
           name: 'ParamSetting',
           component: () => import(/* webpackChunkName: "setting" */ '../../pages/sys/setting/ParamSetting'),
           meta: { title: '参数设置' }
+        }
+      ]
+    },
+    {
+      path: 'dataConfig',
+      component: Wrap,
+      redirect: { name: 'CreditReport' },
+      meta: { title: '数据配置', icon: 'ios-options' },
+      children: [
+        {
+          path: 'creditReport',
+          name: 'CreditReport',
+          component: () => import(/* webpackChunkName: "CreditReport" */ '../../pages/sys/data-config/credit-report-config'),
+          meta: { title: '信用报告配置' }
         }
       ]
     }

@@ -276,7 +276,7 @@ export async function getPointsType() {
 
 /**
  * @author haodongdong
- * @description 评级模型状态枚举
+ * @description 评级相关通用状态枚举
  * @returns Promise
  */
 export async function getEvalCommonStatus() {
@@ -304,6 +304,26 @@ export async function getEvalSysDefault() {
     try {
       const res = await request.get('/api/enum/ynWithCode')
       if (res.data.code === '0') {
+        resolve(res.data.data)
+      } else {
+        reject(new Error(res.data.message))
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
+ * @description 系统管理信用报告配置报告类型
+ * @returns Promise
+ */
+export async function getEvalReportType() {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request.get('/api/enum/eval/reportType')
+      if (res.data.successful) {
         resolve(res.data.data)
       } else {
         reject(new Error(res.data.message))
