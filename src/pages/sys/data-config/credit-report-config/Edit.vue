@@ -81,7 +81,7 @@
 </template>
 
 <script>
-  import { createCreditReport } from '../../../../api/sys/credit-report-config.api'
+  import { createCreditReport, updateCreditReport } from '../../../../api/sys/credit-report-config.api'
 
   export default {
     name: 'IndexVarEdit',
@@ -132,32 +132,27 @@
       }
     },
     created () {
-      // this.initEditData()
+      this.initEditData()
     },
     methods: {
       async handleSubmit () {
         const valid = await this.$refs.form.validate()
         if (valid) {
-          // const [success, errorMsg] = this.editData ? await createCreditReport(this.form) : await createIndexVar(this.form)
-          const [success, errorMsg] = await createCreditReport(this.form)
-          if (success) {
+          try {
+            this.btnLoading = true
+            this.editData ? await updateCreditReport(this.form) : await createCreditReport(this.form)
             this.$message({ type: 'success', content: '操作成功' })
             this.$emit('success') // 发送成功事件
             this.$emit('close') // 关闭编辑组件
-          } else {
-            this.$notice.danger({ title: '操作错误', desc: errorMsg })
+          } catch (error) {
+            this.$notice.danger({ title: '操作错误', desc: error })
           }
+          this.btnLoading = false
         }
       },
       initEditData () {
         if (this.editData) {
           this.form = { ...this.editData }
-          // 把form.params放入params，params用于向管理参数组件传递参数
-          this.params = this.form.params
-          if (this.form.varType === 'Complex') {
-            // 如果是符合变量那么需要把tplId还原成数组用于渲染已选变量tag
-            this.tempVarCodeList = this.form.tplId.length > 0 ? this.form.tplId.split(',') : []
-          }
         }
       }
     }

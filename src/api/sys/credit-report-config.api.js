@@ -60,6 +60,31 @@ export async function createCreditReport(params) {
 
 /**
  * @author haodongdong
+ * @description 更新信用报告
+ * @param {*} query
+ * @returns Promise
+ */
+export async function updateCreditReport(params) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/api/eval/report/modify',
+        method: 'post',
+        data: params
+      })
+      if (res.data.successful) {
+        resolve()
+      } else {
+        reject(new Error(res.data.message))
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
  * @description 删除信用报告
  * @param {*} query
  * @returns Promise
@@ -71,6 +96,33 @@ export async function deleteCreditReport(id) {
         url: '/api/eval/report/remove',
         method: 'post',
         params: { id }
+      })
+      if (res.data.successful) {
+        resolve()
+      } else {
+        reject(new Error(res.data.message))
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
+ * @description 启用禁用
+ * @param {*} query
+ * @returns Promise
+ */
+export async function changeStatus(id) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/api/eval/report/changeStatus',
+        method: 'post',
+        params: {
+          id
+        }
       })
       if (res.data.successful) {
         resolve()

@@ -52,7 +52,11 @@
           </template>
 
           <template v-slot:reportDefault="{ row }">
-            <b-button type="text">{{ reportDefaultEnum[row.reportDefault] }}</b-button>
+            <b-switch :value="row.reportDefault" size="large"
+              true-value="Y" false-value="D" @on-change="handleSwitch($event, row.id)">
+              <span slot="open">启用</span>
+              <span slot="close">禁用</span>
+            </b-switch>
           </template>
 
           <template v-slot:action="{ row }">
@@ -82,8 +86,9 @@
     </page-header-wrap>
 
     <edit v-if="isEdit"
-    @close="handleEditClose"
-    @success="searchList"></edit>
+      :editData="detail"
+      @close="handleEditClose"
+      @success="searchList"></edit>
   </div>
 </template>
 
@@ -92,7 +97,7 @@
   import permission from '../../../../common/mixins/permission'
   import Edit from './Edit'
   import { getEvalCommonStatus, getEvalReportType } from '../../../../api/enum.api'
-  import { getCreditReportList, deleteCreditReport } from '../../../../api/sys/credit-report-config.api'
+  import { getCreditReportList, deleteCreditReport, changeStatus } from '../../../../api/sys/credit-report-config.api'
 
   export default {
     name: 'CreditReportConfig',
@@ -102,7 +107,7 @@
     },
     data () {
       return {
-        detail: '', // 存储行数据
+        detail: null, // 存储行数据
         listQuery: {
           reportName: '',
           reportType: '',
@@ -113,7 +118,7 @@
           { title: '报告名称', slot: 'reportName', align: 'center' },
           { title: '报告类型', slot: 'reportType', align: 'center' },
           { title: '主体类别', slot: 'personClass', align: 'center' },
-          { title: '状态', slot: 'reportDefault', align: 'center' },
+          { title: '启用/禁用', slot: 'reportDefault', align: 'center' },
           { title: '操作', slot: 'action', width: 250, align: 'center' }
         ]
       }
@@ -153,8 +158,17 @@
         this.openEditPage('check')
       },
       handleModify (row) {
-        // this.editData = row
-        // this.openEditPage('modify')
+        this.detail = row
+        this.openEditPage('modify')
+      },
+      // 启用禁用回调
+      async handleSwitch (value, id) {
+        try {
+          await changeStatus(id)
+          this.$message({ type: 'success', content: '操作成功' })
+        } catch (error) {
+          this.$notice.danger({ title: '操作失败', desc: error })
+        }
       },
       // 删除按钮回调
       handleRemove (id) {
