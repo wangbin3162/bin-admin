@@ -68,6 +68,20 @@
             <b-form-item label="报告须知" prop="varDesc">
               <b-input v-model="form.reportDesc" placeholder="请输入报告须知" type="textarea" :rows="4"></b-input>
             </b-form-item>
+
+            <b-form-item label="水印图片">
+              <div style="max-width: 200px;">
+                <b-upload action="/" type="drag"
+                  :before-upload="handleUpload">
+                  <div style="padding: 20px 0;border:1px dashed #eee;cursor: pointer;"
+                    flex="dir:top main:center cross:center">
+                      <p><b-icon name="ios-add" size="52" style="color: #3399ff"></b-icon></p>
+                      <p>点击或拖拽上传</p>
+                  </div>
+                  <img :src="imgSrc" />
+                </b-upload>
+              </div>
+            </b-form-item>
           </b-form>
         </div>
         <template slot="footer">
@@ -94,6 +108,7 @@
     data () {
       return {
         btnLoading: false,
+        imgSrc: '',
         form: {
           reportName: '',
           reportType: '',
@@ -149,6 +164,17 @@
           }
           this.btnLoading = false
         }
+      },
+      // 上传前的回调
+      handleUpload (file) {
+        console.log(file)
+        const reader = new FileReader()
+        reader.readAsDataURL(file)
+        reader.onload = e => {
+          console.log(e.target.result)
+          this.imgSrc = e.target.result
+        }
+        return false
       },
       initEditData () {
         if (this.editData) {
