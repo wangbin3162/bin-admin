@@ -50,6 +50,8 @@
   import commonMixin from '../../../common/mixins/mixin'
   import permission from '../../../common/mixins/permission'
   import { getListResult } from '../../../api/urp/list-rewult.api'
+  import { Decode, MaskCode } from '../../../common/utils/secret'
+  import { oneOf } from 'bin-ui/src/utils/util'
 
   export default {
     name: 'ListResult',
@@ -64,11 +66,11 @@
         columns: [
           { type: 'index', width: 50, align: 'center' },
           { title: '备忘录名称', key: 'memoName' },
-          { title: '主体名称', key: 'name', align: 'center', width: 150 },
+          { title: '主体名称', key: 'name', align: 'center' },
           { title: '证件号码', key: 'idCode', align: 'center', width: 200 },
           { title: '统一社会信用代码', key: 'unifiedCode', align: 'center', width: 200 },
           { title: '组织机构代码', key: 'orgInstCode', align: 'center', width: 200 },
-          { title: '操作', slot: 'action', width: 150 }
+          { title: '操作', slot: 'action', width: 100 }
         ],
         record: null
       }
@@ -114,11 +116,24 @@
         getListResult(this.listQuery).then(response => {
           if (response.status === 200) {
             this.setListData({
-              list: response.data.rows,
+              list: this.decodeAndMaskFormat(response.data.rows || [], true),
               total: response.data.total
             })
           }
         })
+      },
+      // =======解码掩码函数======== //
+      decodeAndMaskFormat(arr, mask = false) {
+        let newArr = []
+        arr.forEach(item => {
+          let tmp = { ...item }
+          if (tmp.personClass === 'ZRP') { // 自然人需要将idCode解码并掩码显示
+            let str = tmp.idCode
+            tmp.idCode = MaskCode(Decode(str), 'ID_CODE')
+          }
+          newArr.push(tmp)
+        })
+        return newArr
       }
     }
   }
