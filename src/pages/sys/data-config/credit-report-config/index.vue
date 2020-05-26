@@ -40,7 +40,7 @@
         <!-- table -->
         <b-table :columns="columns" :data="list" :loading="listLoading">
           <template v-slot:reportName="{ row }">
-            <b-button type="text">{{ row.reportName }}</b-button>
+            <b-button type="text" @click="handleCheck(row)">{{ row.reportName }}</b-button>
           </template>
 
           <template v-slot:reportType="{ row }">
@@ -89,6 +89,11 @@
       :editData="detail"
       @close="handleEditClose"
       @success="searchList"></edit>
+
+    <detail v-if="isCheck"
+      :title="editTitle"
+      :detail="detail"
+      @close="handleEditClose"></detail>
   </div>
 </template>
 
@@ -96,6 +101,7 @@
   import commonMixin from '../../../../common/mixins/mixin'
   import permission from '../../../../common/mixins/permission'
   import Edit from './Edit'
+  import Detail from './Detail'
   import { getEvalCommonStatus, getEvalReportType } from '../../../../api/enum.api'
   import { getCreditReportList, deleteCreditReport, changeStatus } from '../../../../api/sys/credit-report-config.api'
 
@@ -103,7 +109,8 @@
     name: 'CreditReportConfig',
     mixins: [commonMixin, permission],
     components: {
-      Edit
+      Edit,
+      Detail
     },
     data () {
       return {

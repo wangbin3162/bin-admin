@@ -84,7 +84,7 @@
   import { createCreditReport, updateCreditReport } from '../../../../api/sys/credit-report-config.api'
 
   export default {
-    name: 'IndexVarEdit',
+    name: 'CreditReportConfigEdit',
     props: [
       'title',
       'editData'
