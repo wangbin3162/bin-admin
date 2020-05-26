@@ -8,62 +8,18 @@
               <h4>基本信息</h4>
               <table class="table">
                 <tr>
-                  <td>企业名称：</td>
-                  <td>湖南协力木业有限公司</td>
-                  <td>统一社会信用代码：</td>
-                  <td>914100001699542485</td>
+                  <td>姓名：</td>
+                  <td>{{ detail.natBaseInfo.name }}</td>
+                  <td>证件类型：</td>
+                  <td>{{ detail.natBaseInfo.idTypeName }}</td>
+                  <td>证件号：</td>
+                  <td width="310">{{ detail.natBaseInfo.idCode }}</td>
                 </tr>
                 <tr>
-                  <td>英文名称：</td>
-                  <td></td>
-                  <td>企业类型：</td>
-                  <td>企业法人</td>
-                  <td>工商注册号：</td>
-                  <td>已启用</td>
-                </tr>
-                <tr>
-                  <td>负责人：</td>
-                  <td>管理员</td>
-                  <td>组织机构代码：</td>
-                  <td>73899059x</td>
-                  <td>业务状态</td>
-                  <td>默认/普通</td>
-                </tr>
-                <tr>
-                  <td>投资者人数：</td>
-                  <td></td>
-                  <td>负责人证件类型：</td>
-                  <td>未知</td>
-                  <td>负责人证件号码：</td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td>企业地址：</td>
-                  <td></td>
-                  <td>联系电话：</td>
-                  <td></td>
-                  <td>邮政编码：</td>
-                  <td></td>
-                </tr>
-                 <tr>
-                  <td>投资国别：</td>
-                  <td></td>
-                  <td>从业人数：</td>
-                  <td></td>
-                  <td>行业代码：</td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td>实收资本(金)万元：</td>
-                  <td></td>
-                  <td>注册货币种类：</td>
-                  <td></td>
-                  <td>注册资本(金)万元：</td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td>经营范围：</td>
-                  <td></td>
+                  <td>性别：</td>
+                  <td>{{ detail.natBaseInfo.xb === '1' ? '男' : '女' }}</td>
+                  <td>出生日期：</td>
+                  <td>{{ detail.natBaseInfo.csrq }}</td>
                 </tr>
                 <tr>
                   <td colspan="6">
@@ -77,84 +33,16 @@
                 </tr>
                 <tr>
                   <td>采集人员：</td>
-                  <td>超级管理员</td>
+                  <td>{{ detail.natBaseInfo.createName }}</td>
                   <td>采集部门：</td>
-                  <td>xx市</td>
+                  <td>{{ detail.natBaseInfo.createDeptName }}</td>
                   <td>采集时间：</td>
-                  <td>2019-9-20 10:59:35</td>
+                  <td>
+                    {{ $util.parseTime(detail.natBaseInfo.createDate, '{y}-{m}-{d} {h}:{i}:{s}') }}
+                  </td>
                 </tr>
               </table>
 
-              <!-- <b-divider></b-divider> -->
-
-              <!-- <h4>投资信息</h4>
-              <table class="table">
-                <tr>
-                  <td>档案号：</td>
-                  <td></td>
-                  <td>属地监管工商所：</td>
-                  <td></td>
-                  <td>登记机关：</td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td>管辖单位：</td>
-                  <td></td>
-                  <td>主体分类：</td>
-                  <td></td>
-                  <td>企业来源：</td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td>成立日期：</td>
-                  <td></td>
-                  <td>核准日期：</td>
-                  <td></td>
-                  <td>注销日期：</td>
-                  <td></td>
-                </tr>
-                 <tr>
-                  <td>吊销日期：</td>
-                  <td></td>
-                  <td>营业期限自：</td>
-                  <td></td>
-                  <td>营业期限至：</td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td>源注册号：</td>
-                  <td></td>
-                  <td>吊销依据：</td>
-                  <td></td>
-                  <td>行业门类：</td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td>字号：</td>
-                  <td></td>
-                  <td>字号拼音：</td>
-                </tr>
-                <tr>
-                  <td>源注册号：</td>
-                  <td></td>
-                  <td>吊销依据：</td>
-                  <td></td>
-                  <td>行业门类：</td>
-                  <td></td>
-                </tr>
-              </table> -->
-
-              <!-- <h4>系统信息</h4>
-              <table class="table">
-                <tr>
-                  <td>采集人员：</td>
-                  <td>超级管理员</td>
-                  <td>采集部门：</td>
-                  <td>xx市</td>
-                  <td>采集时间：</td>
-                  <td>2019-9-20 10:59:35</td>
-                </tr>
-              </table> -->
             </b-collapse-panel>
 
             <div class="line"></div>
