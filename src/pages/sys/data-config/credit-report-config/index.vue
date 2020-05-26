@@ -33,7 +33,8 @@
 
         <!-- 操作栏 -->
         <v-table-tool-bar>
-          <b-button type="primary" icon="ios-add-circle-outline">添加</b-button>
+          <b-button type="primary" icon="ios-add-circle-outline"
+            @click="handleCreate">添加</b-button>
         </v-table-tool-bar>
 
         <!-- table -->
@@ -43,11 +44,11 @@
           </template>
 
           <template v-slot:reportType="{ row }">
-            <b-button type="text">{{ reportTypeEnum[row.reportType] }}</b-button>
+            {{ reportTypeEnum[row.reportType] }}
           </template>
 
           <template v-slot:personClass="{ row }">
-            <b-button type="text">{{ personClassEnum[row.personClass] }}</b-button>
+            {{ personClassEnum[row.personClass] }}
           </template>
 
           <template v-slot:reportDefault="{ row }">
@@ -56,7 +57,20 @@
 
           <template v-slot:action="{ row }">
             <b-button type="text" @click="handleModify(row)">
-              各种操作
+              修改
+            </b-button>
+            <b-divider type="vertical"></b-divider>
+            <b-button type="text">
+              信息类
+            </b-button>
+            <b-divider type="vertical"></b-divider>
+            <b-button type="text">
+              模板预览
+            </b-button>
+            <b-divider type="vertical"></b-divider>
+            <b-button type="text" text-color="danger"
+              @click="handleRemove(row.id)">
+              删除
             </b-button>
           </template>
         </b-table>
@@ -67,26 +81,27 @@
       </v-table-wrap>
     </page-header-wrap>
 
+    <edit v-if="isEdit"
+    @close="handleEditClose"
+    @success="searchList"></edit>
   </div>
 </template>
 
 <script>
   import commonMixin from '../../../../common/mixins/mixin'
   import permission from '../../../../common/mixins/permission'
+  import Edit from './Edit'
   import { getEvalCommonStatus, getEvalReportType } from '../../../../api/enum.api'
-  import { getCreditReportList } from '../../../../api/sys/data-config.api'
+  import { getCreditReportList, deleteCreditReport } from '../../../../api/sys/credit-report-config.api'
 
   export default {
     name: 'CreditReportConfig',
     mixins: [commonMixin, permission],
     components: {
+      Edit
     },
     data () {
       return {
-        personClassEnum: { // 此处主题类别就两种类型
-          A01: '自然人',
-          A02: '社会法人'
-        },
         detail: '', // 存储行数据
         listQuery: {
           reportName: '',
@@ -99,11 +114,14 @@
           { title: '报告类型', slot: 'reportType', align: 'center' },
           { title: '主体类别', slot: 'personClass', align: 'center' },
           { title: '状态', slot: 'reportDefault', align: 'center' },
-          { title: '操作', slot: 'action', align: 'center' }
+          { title: '操作', slot: 'action', width: 250, align: 'center' }
         ]
       }
     },
     computed: {
+      personClassEnum () {
+        return this.$store.state.creditReportConfig.personClassEnum
+      },
       reportDefaultEnum () {
         return this.$store.state.creditReportConfig.reportDefaultEnum
       },
@@ -138,6 +156,30 @@
         // this.editData = row
         // this.openEditPage('modify')
       },
+      // 删除按钮回调
+      handleRemove (id) {
+        this.$confirm({
+          title: '删除',
+          content: '确定要删除当前报告配置？',
+          loading: true,
+          okType: 'danger',
+          onOk: async () => {
+            try {
+              await deleteCreditReport(id)
+              this.$message({ type: 'success', content: '操作成功' })
+              this.searchList()
+            } catch (error) {
+              this.$notice.danger({ title: '操作错误', desc: error })
+            }
+            this.$modal.remove()
+          }
+        })
+      },
+      // 编辑组件关闭回调
+      handleEditClose () {
+        this.detail = null
+        this.handleCancel()
+      },
       async searchList () {
         this.listLoading = true
         try {
@@ -155,6 +197,10 @@
       async getEnum () {
         try {
           const [reportDefaultEnum, reportTypeEnum] = await Promise.all([getEvalCommonStatus(), getEvalReportType()])
+          this.$store.commit('SET_PERSON_CLASS_ENUM', { // 此处主题类别就两种类型
+            A01: '自然人',
+            A02: '社会法人'
+          })
           this.$store.commit('SET_REPORT_DEFAULT_ENUM', reportDefaultEnum)
           this.$store.commit('SET_REPORT_TYPE_ENUM', reportTypeEnum)
         } catch (error) {
