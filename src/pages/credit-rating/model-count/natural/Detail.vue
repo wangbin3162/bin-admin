@@ -50,15 +50,15 @@
               <table class="table">
                 <tr>
                   <td>ID：</td>
-                  <td>XYBG-Z-20200512-000009F</td>
+                  <td>{{ detail.id }}</td>
                 </tr>
                 <tr>
                   <td>所属方案：</td>
-                  <td>法人默认方案</td>
+                  <td>{{ detail.modelName }}</td>
                   <td>信用主体：</td>
-                  <td>乐视网信息技术(北京)股份有限公司</td>
-                  <td>统一社会信用代码：</td>
-                  <td>XYBG-Z-20200512-000009F</td>
+                  <td>{{ detail.natBaseInfo.name }}</td>
+                  <td>证件号码：</td>
+                  <td>{{ detail.natBaseInfo.idCode }}</td>
                 </tr>
                 <tr>
                   <td>信用级别：</td>
@@ -88,20 +88,26 @@
               <b-row class="mb-15">
                 <b-col span="12" class="field">
                   <label>信用主体：</label>
-                  <p class="con">乐视网信息技术(北京)股份有限公司</p>
+                  <p class="con">{{ detail.natBaseInfo.name }}</p>
                 </b-col>
                 <b-col span="6" class="field">
                   <label>信用得分：</label>
-                  <p class="con">1000</p>
+                  <p class="con">{{ detail.score }}</p>
                 </b-col>
                 <b-col span="6" class="field">
                   <label>信用级别：</label>
-                  <p class="con">A</p>
+                  <p class="con"></p>
                 </b-col>
               </b-row>
 
-              <b-table :columns="columns" :data="[]" size="small">
+              <b-table :columns="columns" :data="list" size="small" class="mb-15">
               </b-table>
+              <div flex="main:right">
+                <!-- pagation -->
+                <b-page :total="total" :current.sync="query.page"
+                  show-total size="small"
+                  @on-change="handleCurrentChange"></b-page>
+              </div>
             </b-collapse-panel>
           </b-collapse>
         </div>
@@ -126,11 +132,17 @@
     data () {
       return {
         collapseValue: ['baseInfo', 'countResInfo', 'creditInfo'], // 控制手风琴展开
+        query: {
+          id: this.detail.id,
+          page: 1
+        },
+        total: 0,
+        list: [],
         columns: [
           { type: 'index', width: 50, align: 'center' },
-          { title: '指标名称', key: '', align: 'center' },
-          { title: '指标得分', key: '', align: 'center' },
-          { title: '事件描述', key: '', align: 'center' }
+          { title: '指标名称', key: 'indexName', align: 'center' },
+          { title: '指标得分', key: 'score', align: 'center' },
+          { title: '事件描述', key: 'valDesc', align: 'center' }
         ]
       }
     },
@@ -139,9 +151,15 @@
       console.log(this.detail)
     },
     methods: {
+      handleCurrentChange (page) {
+        this.query.page = page
+        this.getCreditInfo()
+      },
       async getCreditInfo () {
         try {
-          const res = await getCreditInfo(this.detail.id)
+          const res = await getCreditInfo(this.query)
+          this.list = res.rows
+          this.total = res.total
         } catch (error) {
           console.error(error)
         }
