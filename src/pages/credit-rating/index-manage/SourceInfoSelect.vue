@@ -50,21 +50,21 @@
             <b-card v-if="paraType === 'S'"
               class="box-card" head-tip
               header="已选资源信息">
-              <b-tag
+              <b-tag type="info"
                 :key="index"
                 v-for="(tag,index) in selectedList"
                 closable
                 @on-close="handleCloseTag(index)">
                 {{tag.resourceName}}
               </b-tag>
-              <b-button type="dashed" style="width: 100%;margin: 10px 0;"
+              <b-button type="primary" style="width: 100%;margin: 10px 0;"
                 v-if="selectedList.length"
                 @click="postSelectedList">
                 确定添加
               </b-button>
             </b-card>
 
-            <div v-else class="card-con">
+            <!-- <div v-else class="card-con">
               <b-card head-tip header="选择信息项">
                 <b-table :data="infoItemList" :columns="columnsInfo"
                   :loading="infoTableLoading" height="400">
@@ -78,7 +78,16 @@
                   </template>
                 </b-table>
               </b-card>
-            </div>
+            </div> -->
+
+            <b-card v-else head-tip header="选择信息项(点击选择)">
+              <b-tag type="info" style="cursor: pointer; margin: 4px;"
+                v-for="item in infoItemList"
+                :key="item.id"
+                @on-click="handleRaiod(item)">
+                {{ item.fieldTitle }}
+              </b-tag>
+            </b-card>
           </b-col>
         </b-row>
       </v-table-wrap>
