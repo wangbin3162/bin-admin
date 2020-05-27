@@ -99,7 +99,7 @@
 
     <info-class  v-if="dialogStatus === 'infoClass'"
       @close="handleEditClose"
-      :id="detail.id">
+      :reportId="detail.id">
     </info-class>
   </div>
 </template>

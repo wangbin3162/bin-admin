@@ -44,12 +44,13 @@
       </v-table-wrap>
     </page-header-wrap>
 
-    <!-- <edit v-if="isEdit"
+    <edit v-if="isEdit"
+      :reportId="reportId"
       :editData="detail"
       @close="handleEditClose"
       @success="searchList"></edit>
 
-    <detail v-if="isCheck"
+    <!-- <detail v-if="isCheck"
       :title="editTitle"
       :detail="detail"
       @close="handleEditClose"></detail> -->
@@ -59,7 +60,7 @@
 <script>
   import commonMixin from '../../../../../common/mixins/mixin'
   import permission from '../../../../../common/mixins/permission'
-  // import Edit from './Edit'
+  import Edit from './Edit'
   // import Detail from './Detail'
   import { getEvalReportItemType, getEvalReportLayoutType } from '../../../../../api/enum.api'
   import { getInfoClassList } from '../../../../../api/sys/credit-report-config.api'
@@ -67,9 +68,9 @@
   export default {
     name: 'CreditReportConfigInfoClass',
     mixins: [commonMixin, permission],
-    props: ['id'],
+    props: ['reportId'],
     components: {
-      // Edit,
+      Edit
       // Detail
     },
     data () {
