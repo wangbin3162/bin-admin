@@ -27,8 +27,7 @@
 
         <!-- 操作栏 -->
         <v-table-tool-bar>
-          <b-button type="primary" icon="ios-add-circle-outline"
-            @click="handleCheck(1)">重新计算</b-button>
+          <b-button type="primary" icon="ios-add-circle-outline">重新计算</b-button>
           <b-button plain icon="md-list">模板计算</b-button>
           <b-button plain icon="ios-arrow-round-down">下载模板</b-button>
         </v-table-tool-bar>
@@ -140,8 +139,8 @@
         this.openEditPage('check')
       },
       handleModify (row) {
-        this.editData = row
-        this.openEditPage('modify')
+        // this.editData = row
+        // this.openEditPage('modify')
       },
       // 获取评级模型
       async getModelList () {

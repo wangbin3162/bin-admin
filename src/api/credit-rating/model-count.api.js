@@ -93,14 +93,15 @@ export async function getNaturalList(query) {
  * @param {*} resultId
  * @returns Promise
  */
-export async function getCreditInfo(resultId) {
+export async function getCreditInfo(query) {
   return new Promise(async (resolve, reject) => {
     try {
       const res = await request({
         url: '/api/eval/cal/resultDetail/search',
         method: 'get',
         params: {
-          resultId
+          resultId: query.id,
+          page: query.page - 1
         }
       })
       resolve(res.data)

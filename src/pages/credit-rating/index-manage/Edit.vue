@@ -6,21 +6,19 @@
           <b-loading fix show-text="loading" v-if="editLoading"></b-loading>
           <b-collapse v-model="collapseValue" simple>
             <b-collapse-panel title="基本信息" name="index">
-              <b-form :model="form.index" ref="form" :rules="roles" :label-width="100">
-                <b-row>
-                  <b-col span="12">
+              <b-form :model="form.index" ref="form" :rules="roles" label-position="top" :label-width="100">
+                <b-row :gutter="15">
+                  <b-col span="6">
                     <b-form-item label="名称" prop="indexName">
                       <b-input v-model="form.index.indexName" placeholder="请输入名称" clearable></b-input>
                     </b-form-item>
                   </b-col>
-                  <b-col span="12">
+                  <b-col span="6">
                     <b-form-item label="编码" prop="indexCode">
                       <b-input v-model="form.index.indexCode" placeholder="请输入编码" clearable></b-input>
                     </b-form-item>
                   </b-col>
-                </b-row>
-                <b-row>
-                  <b-col span="12">
+                   <b-col span="6">
                     <b-form-item label="指标性质" prop="indexKind">
                       <b-select v-model="form.index.indexKind">
                         <b-option v-for="item in natureOptions" :key="item.value" :value="item.value">
@@ -29,15 +27,16 @@
                       </b-select>
                     </b-form-item>
                   </b-col>
-                  <b-col span="12">
+                  <b-col span="6">
                     <b-form-item label="指标类型" prop="bizType">
-                      <b-cascader :data="cascadeData" v-model="cascadeModel" placeholder="请选择指标类型"
+                      <b-cascader :data="cascadeData" v-model="cascadeModel" placeholder="请选择指标类型" disabled
                         change-on-select @on-change="handleCascadeChange"></b-cascader>
                     </b-form-item>
                   </b-col>
                 </b-row>
-                <b-row>
-                  <b-col span="12">
+
+                <b-row :gutter="15">
+                  <b-col span="6">
                     <b-form-item label="数据类型" prop="dataType">
                       <b-select v-model="form.index.dataType" @on-change="handleIndexRules">
                         <b-option v-for="item in dataTypeOptions" :key="item.value" :value="item.value">
@@ -46,7 +45,7 @@
                       </b-select>
                     </b-form-item>
                   </b-col>
-                  <b-col span="12">
+                  <b-col span="6">
                     <b-form-item label="计算类型" prop="calClass">
                       <b-select v-model="form.index.calClass">
                         <b-option v-for="item in calcTypeOptions" :key="item.value" :value="item.value">
@@ -55,9 +54,7 @@
                       </b-select>
                     </b-form-item>
                   </b-col>
-                </b-row>
-                <b-row>
-                  <b-col span="12">
+                  <b-col span="6">
                     <b-form-item label="变量" prop="varId">
                       <div flex style="width:100%;">
                         <b-input :value="varName" placeholder="请选择变量" class="choose-btn"
@@ -69,7 +66,7 @@
                       </div>
                     </b-form-item>
                   </b-col>
-                  <b-col span="12">
+                  <b-col span="6">
                     <b-form-item label="标度" prop="indexScale">
                       <b-select v-model="form.index.indexScale" @on-change="handleIndexRules">
                         <b-option v-for="item in scaleOptions" :key="item.value" :value="item.value">
@@ -79,8 +76,9 @@
                     </b-form-item>
                   </b-col>
                 </b-row>
-                <b-row>
-                  <b-col span="12">
+
+                <b-row :gutter="15">
+                  <b-col span="6">
                     <b-form-item label="有效期字段" prop="validParamName">
                       <div flex style="width:100%;">
                         <b-input :value="form.index.validParamName" disabled
@@ -94,7 +92,7 @@
                       </div>
                     </b-form-item>
                   </b-col>
-                  <b-col span="12">
+                  <b-col span="6">
                     <b-form-item label="有效期" prop="validMonth">
                       <div flex>
                         <b-input-number v-model="form.index.validMonth" :max="12" :min="1" placeholder="请输入有效期" style="width: 100%;">
@@ -174,6 +172,7 @@
       'personClassEnum',
       'resPropertyEnum',
       'paramTypeEnum',
+      'defaultCascade',
       'treeData'
     ],
     components: {
@@ -336,7 +335,10 @@
           }
           this.editLoading = false
           this.collapseValue = ['index', 'rules', 'resources']
+        } else {
+          this.cascadeModel = this.defaultCascade
         }
+        this.form.index.bizType = [...this.cascadeModel].pop() // 把级联选择数据赋值到form
       },
       // 把类目的树形数据转换为级联选择框可用的树形结构
       treeToCascade (tree) {
