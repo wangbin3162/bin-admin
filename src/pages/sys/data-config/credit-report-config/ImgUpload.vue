@@ -20,7 +20,7 @@
 </template>
 
 <script>
-  import { fileUpload } from '../../../../api/import-export.api'
+  import { fileUpload, fileDownLoad } from '../../../../api/import-export.api'
 
   export default {
     name: 'ImgUpload',
@@ -28,6 +28,10 @@
       moduleName: {
         type: String,
         required: true
+      },
+      echoId: { // 用于编辑时下载回显 回显id
+        type: String,
+        default: null
       }
     },
     data () {
@@ -39,7 +43,7 @@
       }
     },
     created () {
-
+      this.init()
     },
     methods: {
       // 上传前的回调
@@ -74,6 +78,30 @@
         }
         this.uploading = false
         this.pointerEvent = 'auto'
+      },
+      // 图片下载请求
+      async fileDownload (moduleName, id) {
+        try {
+          this.uploading = true
+          this.pointerEvent = 'none'
+          const res = await fileDownLoad(moduleName, id)
+          const reader = new FileReader()
+          reader.readAsDataURL(res)
+          reader.onload = e => {
+            this.imgSrc = e.target.result
+            this.hasFile = true
+          }
+        } catch (error) {
+          console.error(error)
+          this.$notice.danger({ title: '图片下载失败', desc: error })
+        }
+        this.uploading = false
+        this.pointerEvent = 'auto'
+      },
+      init () {
+        if (this.echoId) {
+          this.fileDownload(this.moduleName, this.echoId)
+        }
       }
     }
   }

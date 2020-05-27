@@ -157,19 +157,19 @@ export function fileUpload(moduleName, file) {
  * @param {*} file
  * @returns Promise
  */
-export function fileDownLoad(id) {
+export function fileDownLoad(funName, id) {
   return new Promise(async (resolve, reject) => {
     try {
       const res = await request({
         url: '/api/comm/file/download',
+        responseType: 'blob',
         method: 'get',
-        params: { id }
+        params: {
+          id,
+          funName
+        }
       })
-      if (res.data.successful) {
-        resolve(res.data.data)
-      } else {
-        reject(res.data.message)
-      }
+      resolve(res.data)
     } catch (error) {
       reject(error)
     }

@@ -71,6 +71,7 @@
 
             <b-form-item label="水印图片">
               <img-upload moduleName="report"
+                :echoId="form.reportWaterMark"
                 @success="handleFileUploadSuccess"
                 @clear="handleFileClear"></img-upload>
             </b-form-item>
