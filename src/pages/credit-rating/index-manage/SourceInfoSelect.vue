@@ -2,7 +2,7 @@
   <div class="source-select">
     <b-modal v-model="showDialog"
       title="选择资源"
-      width="75%"
+      :width="width"
       :styles="{ top: '5%'}"
       footer-hide
       :body-styles="{ padding: 0 }"
@@ -114,6 +114,7 @@
     },
     data () {
       return {
+        width: '75%',
         personClassMap: {},
         resPropertyMap: {},
         resPropertyOptions: [],
@@ -351,6 +352,7 @@
         this.getEnum()
         this.initTree()
         if (this.paraType === 'I') {
+          this.width = '75%'
           this.columns = [
             { type: 'index', width: 50, align: 'center' },
             { title: '资源名称', key: 'resourceName', align: 'center' },
@@ -358,6 +360,7 @@
             { title: '资源性质', slot: 'resProperty', align: 'center' }
           ]
         } else {
+          this.width = '80%'
           this.columns = [
             { type: 'index', width: 50, align: 'center' },
             { title: '资源名称', key: 'resourceName', align: 'center' },

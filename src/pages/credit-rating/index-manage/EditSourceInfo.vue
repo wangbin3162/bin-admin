@@ -1,6 +1,6 @@
 <template>
   <div class="edit-source-info">
-    <b-alert v-if="valid" type="warning">有暂未配置的资源，请配置后提交。</b-alert>
+    <b-alert v-if="valid" type="warning">有暂未配置的资源或常量缺省值，请配置后提交。</b-alert>
     <b-table id="customTable" :columns="columns" :data="listCopy">
       <template v-slot:paraType="{ row }">
         {{ paramTypeEnum[row.paraType] }}
@@ -11,7 +11,10 @@
       </template>
 
       <template v-slot:action="{ row, index }">
-        <b-button type="text" @click="openSourceInfoSelect(row, index)">+ 配置资源</b-button>
+        <b-button v-if="row.paraType !== 'C'"
+          type="text" @click="openSourceInfoSelect(row, index)">
+          + 配置资源
+        </b-button>
       </template>
     </b-table>
 
@@ -138,9 +141,11 @@
                     <h4>
                       { row.paraType === 'S' ? '所选资源信息' : '所选信息项'}
                     </h4>
-                    <span onClick={() => this.clearAll(index)} class={
-                      row.paraType === 'S' ? '' : 'not-clear'
-                    }><b-icon name="ios-trash"></b-icon> 清空</span>
+                    {
+                      row.paraType === 'S'
+                      ? <span onClick={() => this.clearAll(index)}><b-icon name="ios-trash"></b-icon> 清空</span>
+                      : ''
+                    }
                   </div>
                   { template }
                 </div>
@@ -291,12 +296,24 @@
         return new Promise((resolve, reject) => {
           this.valid = false
           for (const item of this.list) {
-            if (item.paraValue === '') {
-              this.valid = true
-              this.$notice.warning({
-                title: '有未配置的资源，请配置后提交。'
-              })
-              resolve(false)
+            if (item.paraType !== 'C') {
+              if (item.paraValue === '') {
+                this.valid = true
+                this.$notice.warning({
+                  title: '有未配置的资源，请配置后提交。'
+                })
+                resolve(false)
+                break
+              }
+            } else {
+              if (item.defaultValue === '') {
+                this.valid = true
+                this.$notice.warning({
+                  title: '常量需要缺省值，请填写后提交。'
+                })
+                resolve(false)
+                break
+              }
             }
           }
           resolve(true)
