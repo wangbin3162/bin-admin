@@ -70,17 +70,9 @@
             </b-form-item>
 
             <b-form-item label="水印图片">
-              <div style="max-width: 200px;">
-                <b-upload action="/" type="drag"
-                  :before-upload="handleUpload">
-                  <div style="padding: 20px 0;border:1px dashed #eee;cursor: pointer;"
-                    flex="dir:top main:center cross:center">
-                      <p><b-icon name="ios-add" size="52" style="color: #3399ff"></b-icon></p>
-                      <p>点击或拖拽上传</p>
-                  </div>
-                  <img :src="imgSrc" />
-                </b-upload>
-              </div>
+              <img-upload moduleName="report"
+                @success="handleFileUploadSuccess"
+                @clear="handleFileClear"></img-upload>
             </b-form-item>
           </b-form>
         </div>
@@ -96,6 +88,7 @@
 
 <script>
   import { createCreditReport, updateCreditReport } from '../../../../api/sys/credit-report-config.api'
+  import ImgUpload from './ImgUpload'
 
   export default {
     name: 'CreditReportConfigEdit',
@@ -104,11 +97,11 @@
       'editData'
     ],
     components: {
+      ImgUpload
     },
     data () {
       return {
         btnLoading: false,
-        imgSrc: '',
         form: {
           reportName: '',
           reportType: '',
@@ -150,9 +143,22 @@
       this.initEditData()
     },
     methods: {
+      // 图片组件上传成功的回调
+      handleFileUploadSuccess (val) {
+        this.form.reportWaterMark = val
+      },
+      // 图片上传组件清空的回调
+      handleFileClear () {
+        this.form.reportWaterMark = ''
+      },
       async handleSubmit () {
+        let imgValid = true
+        if (this.form.reportWaterMark === '') {
+          imgValid = false
+          this.$message({ type: 'warning', content: '请上传水印图片。' })
+        }
         const valid = await this.$refs.form.validate()
-        if (valid) {
+        if (imgValid && valid) {
           try {
             this.btnLoading = true
             this.editData ? await updateCreditReport(this.form) : await createCreditReport(this.form)
@@ -164,17 +170,6 @@
           }
           this.btnLoading = false
         }
-      },
-      // 上传前的回调
-      handleUpload (file) {
-        console.log(file)
-        const reader = new FileReader()
-        reader.readAsDataURL(file)
-        reader.onload = e => {
-          console.log(e.target.result)
-          this.imgSrc = e.target.result
-        }
-        return false
       },
       initEditData () {
         if (this.editData) {

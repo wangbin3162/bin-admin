@@ -120,3 +120,58 @@ export function downloadExport(id) {
     params: { id }
   })
 }
+
+/**
+ * @author haodongdong
+ * @description 通用？文件上传接口，目前用于信用报告配置新增图片上传
+ * @param {*} moduleName
+ * @param {*} file
+ * @returns Promise
+ */
+export function fileUpload(moduleName, file) {
+  return new Promise(async (resolve, reject) => {
+    const url = '/api/comm/file/upload'
+
+    let data = new FormData()
+
+    appendFormData(data, 'uploadFile', file)
+    appendFormData(data, 'funName', moduleName)
+
+    try {
+      const res = await requestPostFormData(url, data)
+      if (res.data.successful) {
+        resolve(res.data.data)
+      } else {
+        reject(res.data.message)
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
+ * @description 通用？文件下载接口，目前用于信用报告配置图片回显
+ * @param {*} moduleName
+ * @param {*} file
+ * @returns Promise
+ */
+export function fileDownLoad(id) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/api/comm/file/download',
+        method: 'get',
+        params: { id }
+      })
+      if (res.data.successful) {
+        resolve(res.data.data)
+      } else {
+        reject(res.data.message)
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
