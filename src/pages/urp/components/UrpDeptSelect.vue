@@ -96,8 +96,6 @@
   import permission from '../../../common/mixins/permission'
   import * as api from '../../../api/sys/depart.api'
   import { getDeptStatus, getDeptType } from '../../../api/enum.api'
-  import { postAddDept } from '../../../api/data-manage/res-dir.api'
-  import { attachmentUpload } from '../../../api/data-manage/attachment.api'
 
   export default {
     name: 'UrpDeptSelect',
