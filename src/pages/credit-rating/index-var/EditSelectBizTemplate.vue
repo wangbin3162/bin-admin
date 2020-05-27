@@ -1,7 +1,11 @@
 <template>
   <div class="edit-belong-type">
-    <b-modal v-model="showDialog" title="所属类型"
-      width="70%" @on-visible-change="handleVisibleChange">
+    <b-modal v-model="showDialog" title="选择业务模板"
+      width="70%"
+      :styles="{ top: '5%' }"
+      :body-styles="{ padding: 0 }"
+      footer-hide
+      @on-visible-change="handleVisibleChange">
       <v-table-wrap class="con">
         <b-tree :data="treeData" slot="tree" :lock-select="lockTreeSelect"
           @on-select-change="handTreeCurrentChange"></b-tree>
@@ -20,15 +24,18 @@
 
         <div class="table">
           <!--中央表格-->
-          <b-table :columns="columns" :data="list" :loading="listLoading">
+          <b-table :columns="columns" :data="list" :loading="listLoading" size="small">
             <!--操作栏-->
             <template v-slot:action="{ row }">
-              <b-button type="text" @click="handleSelect(row)">选择</b-button>
+              <b-button type="primary" plain
+                @click="handleSelect(row)">
+                选择
+              </b-button>
             </template>
           </b-table>
         </div>
         <!--下方分页器-->
-        <b-page :total="total" show-sizer :current.sync="listQuery.page"
+        <b-page :total="total" :current.sync="listQuery.page" size="small"
           @on-change="handleCurrentChange"
           @on-page-size-change="handleSizeChange"></b-page>
       </v-table-wrap>
@@ -170,20 +177,11 @@
   }
 </script>
 
-<style lang="stylus">
-  // 覆盖bin-ui弹框组件样式
-  .edit-belong-type {
-    .bin-modal-body {
-      padding: 0!important;
-    }
-  }
-</style>
-
 <style lang="stylus" scoped>
 .edit-belong-type {
   .table {
-    max-height: 400px;
-    overflow-y: auto;
+    // max-height: 400px;
+    // overflow-y: auto;
   }
 }
 </style>
