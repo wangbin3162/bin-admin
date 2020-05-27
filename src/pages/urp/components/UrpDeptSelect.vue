@@ -14,9 +14,9 @@
              class="layout-inner" :mask-closable="false"
              :body-styles="{padding:0}">
       <v-table-wrap>
-        <!--树结构-->
-        <b-tree :data="treeData" slot="tree" @on-select-change="handTreeCurrentChange"/>
+        <!--多选部门-->
         <template v-if="multiple">
+          <b-tree :data="treeData" slot="tree" @on-select-change="handTreeCurrentChange"/>
           <b-row :gutter="15">
             <b-col span="16">
               <!--查询条件-->
@@ -60,7 +60,11 @@
             </b-col>
           </b-row>
         </template>
+        <!--单选部门-->
         <template v-else>
+          <b-tree :data="treeData" check-strictly slot="tree" show-checkbox
+                  @on-select-change="handTreeCurrentChange"
+                  @on-check-change="handleTreeCheck"/>
           <!--查询条件-->
           <v-filter-bar>
             <v-filter-item title="部门名称" :span="8">
@@ -235,6 +239,13 @@
         this.current = row.departName
         this.$emit('input', row.id)
         this.$emit('on-choose', { id: row.id, departName: row.departName })
+        this.dialogFormVisible = false
+      },
+      // 选择根节点
+      handleTreeCheck(list, node) {
+        this.current = node.title
+        this.$emit('input', node.id)
+        this.$emit('on-choose', { id: node.id, departName: node.title })
         this.dialogFormVisible = false
       },
       close() {
