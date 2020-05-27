@@ -49,7 +49,7 @@
     <page-header-wrap v-show="isEdit" :title="editTitle" show-close @on-close="handleCancel">
       <v-edit-wrap>
         <template slot="full">
-          <b-collapse :value="['2']" simple>
+          <b-collapse v-model="infoOpen" simple>
             <b-collapse-panel title="基础信息" name="1">
               <b-form :model="memo" ref="form" :rules="ruleValidate" :label-width="130">
                 <b-form-item label="备忘录名称" prop="memoName">
@@ -72,7 +72,7 @@
                 </b-row>
                 <b-row :gutter="20">
                   <b-col span="12">
-                    <b-form-item label="备忘录状态" prop="initiateDept">
+                    <b-form-item label="备忘录状态" prop="memoStatus">
                       <b-select v-model="memo.memoStatus" disabled>
                         <b-option v-for="(val,key) in memoStatusMap" :key="key" :value="key">{{ val }}</b-option>
                       </b-select>
@@ -100,7 +100,8 @@
               </b-form>
             </b-collapse-panel>
             <b-collapse-panel title="参与部门及关联措施" name="2">
-              <dept-measures :departs="memo.departs" :dept-measures-map="deptMeasuresBuffer"/>
+              <dept-measures :departs="memo.departs" :dept-measures="deptMeasuresBuffer"
+                             @on-change="handleDeptMeasuresChange"/>
             </b-collapse-panel>
           </b-collapse>
           <b-code-editor class="mt-20" v-if="isEdit" :value="JSON.stringify(memo,null,2)" readonly/>
@@ -156,6 +157,7 @@
           fileCode: [requiredRule],
           signDate: [{ required: true, message: '签署日期必选', trigger: 'change' }]
         },
+        infoOpen: ['2'],
         initDeptMeasuresMap: [], // 初始的部门-措施映射列表
         deptMeasuresBuffer: [] // 部门-措施映射缓存，新增时为初始部门-映射，修改时需要在调用方法获取
       }
@@ -183,7 +185,6 @@
         this.resetMemo()
         // 缓存原始映射值
         this.deptMeasuresBuffer = deepCopy(this.initDeptMeasuresMap)
-        console.log(this.deptMeasuresBuffer)
         this.openEditPage('create')
       },
       // 编辑事件
@@ -237,6 +238,12 @@
             })
           }
         })
+      },
+      // 部门关联措施改变事件
+      handleDeptMeasuresChange(tiledDeparts, tiledMeasures, unionDeptCount) {
+        this.memo.departs = deepCopy(tiledDeparts)
+        this.memo.measures = deepCopy(tiledMeasures)
+        this.memo.unionNum = unionDeptCount
       },
       // 重置对象
       resetMemo() {
