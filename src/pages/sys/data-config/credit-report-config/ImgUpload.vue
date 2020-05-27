@@ -11,7 +11,7 @@
           </p>
           <p>点击或拖拽上传</p>
       </div>
-      <b-loading fix show-text="上传中...." v-if="uploading"></b-loading>
+      <b-loading fix :show-text="loadiingText" v-if="uploading"></b-loading>
       <img v-if="hasFile" :src="imgSrc" />
     </b-upload>
 
@@ -37,6 +37,7 @@
     data () {
       return {
         pointerEvent: 'auto', // 用于上传时禁止点击
+        loadiingText: '上传中....',
         uploading: false,
         hasFile: false,
         imgSrc: ''
@@ -67,6 +68,7 @@
       // 图片上传请求
       async fileUpload (moduleName, file) {
         try {
+          this.loadiingText = '上传中....'
           this.uploading = true
           this.pointerEvent = 'none'
           const res = await fileUpload(moduleName, file)
@@ -82,6 +84,7 @@
       // 图片下载请求
       async fileDownload (moduleName, id) {
         try {
+          this.loadiingText = '下载中....'
           this.uploading = true
           this.pointerEvent = 'none'
           const res = await fileDownLoad(moduleName, id)
