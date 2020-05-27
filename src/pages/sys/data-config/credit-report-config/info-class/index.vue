@@ -63,7 +63,7 @@
   import Edit from './Edit'
   // import Detail from './Detail'
   import { getEvalReportItemType, getEvalReportLayoutType } from '../../../../../api/enum.api'
-  import { getInfoClassList } from '../../../../../api/sys/credit-report-config.api'
+  import { getInfoClassList, deleteInfoClass } from '../../../../../api/sys/credit-report-config.api'
 
   export default {
     name: 'CreditReportConfigInfoClass',
@@ -124,12 +124,12 @@
       handleRemove (id) {
         this.$confirm({
           title: '删除',
-          content: '确定要删除当前报告配置？',
+          content: '确定要删除当前信息类？',
           loading: true,
           okType: 'danger',
           onOk: async () => {
             try {
-              // await deleteCreditReport(id)
+              await deleteInfoClass(id)
               this.$message({ type: 'success', content: '操作成功' })
               this.searchList()
             } catch (error) {

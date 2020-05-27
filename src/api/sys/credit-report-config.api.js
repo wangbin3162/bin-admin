@@ -160,3 +160,78 @@ export async function getInfoClassList(query) {
     }
   })
 }
+
+/**
+ * @author haodongdong
+ * @description 创建信息类
+ * @param {*} query
+ * @returns Promise
+ */
+export async function createInfoClass(params) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/api/eval/report/item/create',
+        method: 'post',
+        data: params
+      })
+      if (res.data.successful) {
+        resolve()
+      } else {
+        reject(new Error(res.data.message))
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
+ * @description 修改信息类
+ * @param {*} query
+ * @returns Promise
+ */
+export async function updateInfoClass(params) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/api/eval/report/item/modify',
+        method: 'post',
+        data: params
+      })
+      if (res.data.successful) {
+        resolve()
+      } else {
+        reject(new Error(res.data.message))
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
+ * @description 删除信息类信息类
+ * @param {*} query
+ * @returns Promise
+ */
+export async function deleteInfoClass(id) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/api/eval/report/item/remove',
+        method: 'get',
+        params: { id }
+      })
+      if (res.data.successful) {
+        resolve()
+      } else {
+        reject(new Error(res.data.message))
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
