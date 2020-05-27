@@ -2,8 +2,8 @@
   <div class="source-select">
     <b-modal v-model="showDialog"
       title="选择资源"
-      width="90%"
-      :styles="{ top: '10%'}"
+      width="75%"
+      :styles="{ top: '5%'}"
       footer-hide
       :body-styles="{ padding: 0 }"
       @on-visible-change="handleVisibleChange">
@@ -24,11 +24,10 @@
               <v-filter-item @on-search="handleFilter" @on-reset="resetQuery"></v-filter-item>
             </v-filter-bar>
             <!-- table -->
-            <div class="tabl">
+            <div class="table">
               <b-table :columns="columns" :data="list"
-                height="400"
                 :loading="listLoading"
-                :highlight-row="paraType === 'I'"
+                :highlight-row="paraType === 'I'" size="small"
                 @on-current-change="handleCurrentRowChange">
                 <template v-slot:personClass="{row}">{{ personClassMap[row.personClass] }}</template>
                 <template v-slot:resProperty="{row}">{{ resPropertyMap[row.resProperty] }}</template>
@@ -386,8 +385,8 @@
 <style lang="stylus" scoped>
   .source-select {
     .table {
-      max-height: 400px;
-      overflow-y: auto;
+      // max-height: 400px;
+      // overflow-y: auto;
     }
   }
 </style>

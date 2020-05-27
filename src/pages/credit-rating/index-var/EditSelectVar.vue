@@ -2,6 +2,7 @@
   <div class="select-var">
     <b-modal v-model="showDialog" title="选择变量"
       :width="width" footer-hide
+      :styles="{ top: '5%' }"
       :body-styles="{ padding: 0 }"
       @on-visible-change="handleVisibleChange">
       <v-table-wrap>
@@ -47,14 +48,14 @@
           <b-col v-if="!radio" span="8">
             <b-card class="box-card" head-tip
               header="已选变量">
-              <b-tag
-                :key="index"
+              <b-tag type="info"
                 v-for="(tag,index) in selectedList"
+                :key="index"
                 closable
                 @on-close="handleCloseTag(index)">
                 {{tag.varName}}
               </b-tag>
-              <b-button type="dashed" style="width: 100%;margin: 10px 0;"
+              <b-button type="primary" style="width: 100%;margin: 10px 0;"
                 v-if="selectedList.length"
                 @click="postSelectedList">
                 确定添加
@@ -184,7 +185,7 @@
       init () {
         if (this.radio) { // 指标管理使用则是单选形式
           this.span = 24
-          this.width = '72%'
+          this.width = '70%'
         } else {
           this.span = 16
           this.width = '80%'
