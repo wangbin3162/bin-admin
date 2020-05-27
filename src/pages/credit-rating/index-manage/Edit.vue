@@ -20,7 +20,7 @@
                   </b-col>
                    <b-col span="6">
                     <b-form-item label="指标性质" prop="indexKind">
-                      <b-select v-model="form.index.indexKind">
+                      <b-select v-model="form.index.indexKind" @on-change="handleIndexRules">
                         <b-option v-for="item in natureOptions" :key="item.value" :value="item.value">
                           {{ item.label }}
                         </b-option>
@@ -38,7 +38,7 @@
                 <b-row :gutter="15">
                   <b-col span="6">
                     <b-form-item label="数据类型" prop="dataType">
-                      <b-select v-model="form.index.dataType" @on-change="handleIndexRules">
+                      <b-select v-model="form.index.dataType" disabled>
                         <b-option v-for="item in dataTypeOptions" :key="item.value" :value="item.value">
                           {{ item.label }}
                         </b-option>
@@ -116,9 +116,11 @@
               <edit-index-rule ref="indexRule"
                 @data-change="handleIndexRulsChange"
                 :dataType="form.index.dataType"
+                :indexNature="form.index.indexKind"
                 :scale="form.index.indexScale"
                 :scaleEnum="scaleEnum"
-                :rules="indexRules"></edit-index-rule>
+                :rules="indexRules">
+              </edit-index-rule>
             </b-collapse-panel>
 
             <div class="line"></div>
@@ -198,7 +200,7 @@
             indexDesc: '',
             bizType: '', // 指标类型[类别编码[类别数据为树形结构]]
             bizTypeArray: '', // 存储级联选择关系的数组类型的json字符串
-            indexKind: '', // 指标性质
+            indexKind: 'R', // 指标性质
             calClass: '', // 计算类型
             dataType: 'N', // 数据类型， 默认数值N
             validParamName: '', // 有效期参数名
@@ -280,9 +282,14 @@
       handleIndexRulsChange (list) {
         this.form.rules = list
       },
-      // 数据类型与标度下拉框的change回调，用于创建对应的指标规则
-      handleIndexRules () {
-        this.$refs.indexRule.initArr(this.form.index.dataType, this.form.index.indexScale)
+      // 指标性质与标度下拉框的change回调，用于创建对应的指标规则
+      handleIndexRules (indexKind) { // 指标性质 indexKind 定性 Q 定量 R
+        if (indexKind === 'Q') { // 定性的话则数据类型为字符串
+          this.form.index.dataType = 'S'
+        } else { // 反之为数值
+          this.form.index.dataType = 'N'
+        }
+        this.$refs.indexRule.initArr(this.form.index.indexKind, this.form.index.indexScale)
       },
       // 资源信息组件的数据回调
       handleSourceChange (resources) {
