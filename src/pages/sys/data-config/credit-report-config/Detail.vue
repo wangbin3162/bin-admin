@@ -17,7 +17,14 @@
                 <v-key-label label="单位名称" is-first is-half>{{ detailData.unitName }}</v-key-label>
                 <v-key-label label="单位网址" is-half>{{ detailData.unitUrl }}</v-key-label>
                 <v-key-label label="单位地址">{{ detailData.unitAddress }}</v-key-label>
-                <v-key-label label="报告须知" is-bottom>{{ detailData.reportDesc }}</v-key-label>
+                <v-key-label label="报告须知">{{ detailData.reportDesc }}</v-key-label>
+                <v-key-label label="水印图片" is-bottom>
+                  <div style="padding: 5px 0;">
+                    <img-upload moduleName="report"
+                      :echoId="detailData.reportWaterMark"
+                      :showModel="true"></img-upload>
+                  </div>
+                </v-key-label>
               </div>
             </b-col>
           </b-row>
@@ -32,7 +39,7 @@
 </template>
 
 <script>
-  import { } from '../../../../api/sys/credit-report-config.api'
+  import ImgUpload from './ImgUpload'
 
   export default {
     name: 'CreditReportConfigDetail',
@@ -40,6 +47,9 @@
       'title',
       'detail'
     ],
+    components: {
+      ImgUpload
+    },
     data () {
       return {
         loading: false,

@@ -1,21 +1,19 @@
 <template>
-  <div class="img-upload" :style="{ pointerEvents: pointerEvent }">
-    <b-upload action="/" type="drag"
-      :before-upload="handleUpload">
-      <div>
-      </div>
+  <div class="img-upload">
+    <b-upload action="/" type="drag" :show-upload-list="false"
+      :before-upload="handleUpload" :disabled="disabled">
       <div v-if="!hasFile"
         class="con" flex="dir:top main:center cross:center">
-          <p>
-            <b-icon name="ios-add" size="52" style="color: #3399ff"></b-icon>
-          </p>
-          <p>点击或拖拽上传</p>
+        <p>
+          <b-icon name="ios-add" size="52" style="color: #3399ff"></b-icon>
+        </p>
+        <p>点击或拖拽上传</p>
       </div>
       <b-loading fix :show-text="loadiingText" v-if="uploading"></b-loading>
-      <img v-if="hasFile" :src="imgSrc" />
+      <img v-if="hasFile" :class="{ 'show-model': showModel}" :src="imgSrc"/>
     </b-upload>
 
-    <b-button v-if="hasFile" @click="clearImg">清 空</b-button>
+    <b-button v-if="hasFile && !showModel" @click="clearImg">清 空</b-button>
   </div>
 </template>
 
@@ -32,11 +30,16 @@
       echoId: { // 用于编辑时下载回显 回显id
         type: String,
         default: null
+      },
+      showModel: { // 用于下载显示的模式，可用在详情中
+        type: Boolean,
+        default: false
       }
     },
     data () {
       return {
         pointerEvent: 'auto', // 用于上传时禁止点击
+        disabled: false, // 用于上传时禁止点击
         loadiingText: '上传中....',
         uploading: false,
         hasFile: false,
@@ -67,10 +70,11 @@
       },
       // 图片上传请求
       async fileUpload (moduleName, file) {
+        this.loadiingText = '上传中....'
+        this.uploading = true
+        this.disabled = true
+
         try {
-          this.loadiingText = '上传中....'
-          this.uploading = true
-          this.pointerEvent = 'none'
           const res = await fileUpload(moduleName, file)
           this.$emit('success', res) // 上传成功事件
           this.$message({ type: 'success', content: '图片上传 成功' })
@@ -78,15 +82,17 @@
           this.$emit('fail') // 上传失败事件
           this.$notice.danger({ title: '上传失败', desc: error })
         }
+
         this.uploading = false
-        this.pointerEvent = 'auto'
+        this.disabled = false
       },
       // 图片下载请求
       async fileDownload (moduleName, id) {
+        this.loadiingText = '下载中....'
+        this.uploading = true
+        this.disabled = true
+
         try {
-          this.loadiingText = '下载中....'
-          this.uploading = true
-          this.pointerEvent = 'none'
           const res = await fileDownLoad(moduleName, id)
           const reader = new FileReader()
           reader.readAsDataURL(res)
@@ -98,8 +104,10 @@
           console.error(error)
           this.$notice.danger({ title: '图片下载失败', desc: error })
         }
+
         this.uploading = false
-        this.pointerEvent = 'auto'
+        this.disabled = false
+        if (this.showModel) this.disabled = true // 如果时显示模式则禁止上传
       },
       init () {
         if (this.echoId) {
@@ -124,6 +132,9 @@
     }
     img {
       max-width: 100%;
+    }
+    .show-model {
+      display: block
     }
   }
 </style>
