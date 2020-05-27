@@ -64,7 +64,7 @@
               修改
             </b-button>
             <b-divider type="vertical"></b-divider>
-            <b-button type="text">
+            <b-button type="text" @click="handleInfoClass(row)">
               信息类
             </b-button>
             <b-divider type="vertical"></b-divider>
@@ -88,12 +88,19 @@
     <edit v-if="isEdit"
       :editData="detail"
       @close="handleEditClose"
-      @success="searchList"></edit>
+      @success="searchList">
+    </edit>
 
     <detail v-if="isCheck"
       :title="editTitle"
       :detail="detail"
-      @close="handleEditClose"></detail>
+      @close="handleEditClose">
+    </detail>
+
+    <info-class  v-if="dialogStatus === 'infoClass'"
+      @close="handleEditClose"
+      :id="detail.id">
+    </info-class>
   </div>
 </template>
 
@@ -102,6 +109,7 @@
   import permission from '../../../../common/mixins/permission'
   import Edit from './Edit'
   import Detail from './Detail'
+  import InfoClass from './info-class'
   import { getEvalCommonStatus, getEvalReportType } from '../../../../api/enum.api'
   import { getCreditReportList, deleteCreditReport, changeStatus } from '../../../../api/sys/credit-report-config.api'
 
@@ -110,7 +118,8 @@
     mixins: [commonMixin, permission],
     components: {
       Edit,
-      Detail
+      Detail,
+      InfoClass
     },
     data () {
       return {
@@ -168,6 +177,11 @@
         this.detail = row
         this.openEditPage('modify')
       },
+      // 信息类按钮回调
+      handleInfoClass (row) {
+        this.detail = row
+        this.dialogStatus = 'infoClass'
+      },
       // 启用禁用回调
       async handleSwitch (value, id) {
         try {
@@ -196,7 +210,7 @@
           }
         })
       },
-      // 编辑组件关闭回调
+      // 编辑、信息类组件关闭回调
       handleEditClose () {
         this.detail = null
         this.handleCancel()

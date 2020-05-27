@@ -333,3 +333,43 @@ export async function getEvalReportType() {
     }
   })
 }
+
+/**
+ * @author haodongdong
+ * @description 系统管理信用报告配置报告信息类类别
+ * @returns Promise
+ */
+export async function getEvalReportItemType() {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request.get('/api/enum/eval/reportItemType')
+      if (res.data.successful) {
+        resolve(res.data.data)
+      } else {
+        reject(new Error(res.data.message))
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
+ * @description 系统管理信用报告配置报告信息类下布局方式
+ * @returns Promise
+ */
+export async function getEvalReportLayoutType() {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request.get('/api/enum/eval/reportLayoutType')
+      if (res.data.successful) {
+        resolve(res.data.data)
+      } else {
+        reject(new Error(res.data.message))
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
