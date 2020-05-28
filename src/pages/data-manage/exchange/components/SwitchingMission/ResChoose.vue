@@ -2,14 +2,12 @@
   <!--选择资源 for SwitchingMission.vue -->
   <div style="width: 100%;">
     <div flex="box:last">
-      <b-input v-model="current" placeholder="选择填充" readonly clearable
+      <b-input v-model="current" placeholder="选择资源信息" readonly clearable
                @on-clear="handleClear"></b-input>
-      <b-button type="primary" @click="handleShowModal">
-        选择
-      </b-button>
+      <b-button type="primary" @click="handleShowModal" plain>选择</b-button>
     </div>
     <b-modal v-model="dialogFormVisible" title="选择资源" width="1020" class="layout-inner" :mask-closable="false"
-             :body-styles="{padding:0}">
+             append-to-body :body-styles="{padding:0}">
       <v-table-wrap style="padding: 0;">
         <!--树结构-->
         <b-tree :data="treeData" slot="tree" :lock-select="lockTreeSelect"
@@ -34,8 +32,7 @@
       </v-table-wrap>
       <div slot="footer">
         <!--下方分页器-->
-        <b-page :total="total" show-sizer :current.sync="listQuery.page"
-                @on-change="handleCurrentChange" @on-page-size-change="handleSizeChange"></b-page>
+        <b-page :total="total" :current.sync="listQuery.page" @on-change="handleCurrentChange"/>
       </div>
     </b-modal>
   </div>

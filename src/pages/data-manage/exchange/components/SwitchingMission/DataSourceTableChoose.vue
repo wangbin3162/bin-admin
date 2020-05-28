@@ -2,13 +2,12 @@
   <!--数据源库表信息 for SwitchingMission.vue -->
   <div style="width: 100%;">
     <div flex="box:last">
-      <b-input v-model="current" placeholder="选择填充" readonly clearable
+      <b-input v-model="current" placeholder="选择源资源" readonly clearable
                @on-clear="handleClear"></b-input>
-      <b-button type="primary" @click="handleShowModal">
-        选择
-      </b-button>
+      <b-button type="primary" @click="handleShowModal" plain>选择</b-button>
     </div>
-    <b-modal v-model="dialogFormVisible" title="选择数据源库表" width="860" class="layout-inner" :mask-closable="false">
+    <b-modal v-model="dialogFormVisible" title="选择数据源库表" width="860" class="layout-inner"
+             append-to-body :mask-closable="false">
       <div>
         <!--中央表格-->
         <b-table :columns="columns" :data="list" :loading="listLoading" max-height="375" size="small">
