@@ -163,6 +163,33 @@ export async function getInfoClassList(query) {
 
 /**
  * @author haodongdong
+ * @description 根据resourceKey获取资源详情
+ * @param {*} resourceKey
+ * @returns Promise
+ */
+export async function getResourceDetail(resourceKey) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/api/dir/detailByResourceKey',
+        method: 'get',
+        params: {
+          resourceKey
+        }
+      })
+      if (res.data.successful) {
+        resolve(res.data.data)
+      } else {
+        reject(new Error(res.data.message))
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
  * @description 创建信息类
  * @param {*} query
  * @returns Promise

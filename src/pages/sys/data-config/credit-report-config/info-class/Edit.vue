@@ -32,14 +32,15 @@
           <v-title-bar label="配置信用报告信息项" class="mb-15">
             <b-button type="text" @click="handleAddSourceInfo">+ 添加资源信息</b-button>
           </v-title-bar>
+
           <b-table :columns="columns" :data="list" :show-header="false" size="small">
-            <template v-slot:orderNo>
-              排序：<b-input-number :min="0"></b-input-number>
+            <template v-slot:orderNo="{ index }">
+              排序：<b-input-number v-model="listCopy[index].orderNo" :min="0"></b-input-number>
             </template>
 
-            <template v-slot:action>
-              <b-button type="text">删除</b-button>
-              <b-button type="text">编辑</b-button>
+            <template v-slot:action="{ index }">
+              <b-button type="text" @click="handleRemove(index)">删除</b-button>
+              <b-button type="text" @click="handleEdit(index)">编辑</b-button>
             </template>
           </b-table>
         </div>
@@ -59,11 +60,20 @@
       :open="openSource"
       :infoMulModel="true">
     </source-info-select>
+
+    <edit-source-info-field
+      @close="openSourceField = false"
+      @save="handleSave"
+      :open="openSourceField"
+      :resourceKey="resourceKey"
+      :fieldNames="fieldNames">
+    </edit-source-info-field>
   </div>
 </template>
 
 <script>
   import SourceInfoSelect from '../../../../credit-rating/index-manage/SourceInfoSelect'
+  import EditSourceInfoField from './EditSourceInfoField'
   import { createInfoClass, updateCreditReport, updateInfoClass } from '../../../../../api/sys/credit-report-config.api'
 
   export default {
@@ -74,12 +84,17 @@
       'editData'
     ],
     components: {
-      SourceInfoSelect
+      SourceInfoSelect,
+      EditSourceInfoField
     },
     data () {
       return {
+        curIndex: 0, // 存储当前行index
+        resourceKey: '', // 传递给edit-source-info-field
+        fieldNames: '', // 当前编辑行的fieldNames，传递给edit-source-info-field
         btnLoading: false,
         openSource: false, // 打开source-info-select组件
+        openSourceField: false, // 打开edit-source-info-field组件
         form: {
           configId: this.configId,
           categoryName: '',
@@ -98,32 +113,48 @@
             { type: 'integer', required: true, message: '必须为整数', trigger: 'blur' }
           ]
         },
-        jsxRules: {}, // JSX内form用的验证规则
-        list: [
-          {
-            title: '【自然人基本信息表】[DIR-20181105-104448-118]',
-            sort: 0
-          }
-        ],
+        jsxRules: {
+          displayName: [
+            { required: true, message: '显示名称不能为空', trigger: 'blur' }
+          ],
+          layout: [
+            { required: true, message: '布局方式不能为空', trigger: 'blur' }
+          ],
+          fieldNames: [
+            { required: true, message: '字段列表不能为空', trigger: 'blur' }
+          ],
+          fieldTitles: [
+            { required: true, message: '字段标题不能为空', trigger: 'blur' }
+          ]
+        }, // JSX内form用的验证规则
+        list: [],
+        listCopy: [],
         columns: [
           {
             type: 'expand',
             width: 50,
             // model={{}} rules={this.jsxRules}
-            render: (h, { row, index }) => {
+            render: (h, { index }) => {
+              const row = this.listCopy[index]
               return (
                 <div class="expand-row">
                   <b-form>
                     <b-row gutter={15}>
                       <b-col span={12}>
                         <b-form-item label="显示名称">
-                          <b-input></b-input>
+                          <b-input value={row.displayName}
+                            onInput={
+                              val => { row.displayName = val }
+                            }></b-input>
                         </b-form-item>
                       </b-col>
 
                       <b-col span={12}>
                         <b-form-item label="布局方式">
-                          <b-select>
+                          <b-select value={ row.layout }
+                            on-on-change={
+                              val => { row.layout = val }
+                            }>
                             {
                               Object.keys(this.reportLayoutTypeEnum).map(key => {
                                 return (
@@ -139,13 +170,17 @@
 
                       <b-col span={24}>
                         <b-form-item label="字段列表">
-                          <b-input></b-input>
+                          <b-input disabled value={
+                            row.fieldNames
+                          }></b-input>
                         </b-form-item>
                       </b-col>
 
                       <b-col span={24}>
                         <b-form-item label="字段标题">
-                          <b-input></b-input>
+                          <b-input disabled value={
+                            row.fieldTitles
+                          }></b-input>
                         </b-form-item>
                       </b-col>
 
@@ -161,8 +196,8 @@
             }
           },
           { type: 'index', width: 50 },
-          { title: 'Title', key: 'title', align: 'left' },
-          { title: 'Sort', slot: 'orderNo', align: 'right' },
+          { title: 'resourceName', key: 'resourceName', align: 'left' },
+          { title: 'orderNo', slot: 'orderNo', align: 'right' },
           { title: 'Action', slot: 'action', width: 140, align: 'right' }
         ]
       }
@@ -185,16 +220,69 @@
       },
       // 资源选择组件选中的回调
       handleSourceSelected ({ resource, infoItems }) {
-        console.log(resource, infoItems)
+        const exist = this.list.some(item => {
+          return resource.resourceKey === item.resourceKey
+        })
+        if (exist) {
+          this.$message({ type: 'warning', content: '选择的资源已存在。' })
+        } else {
+          const nameArr = []
+          const titleArr = []
+          infoItems.forEach(item => {
+            nameArr.push(item.fieldName)
+            titleArr.push(item.fieldTitle)
+          })
+
+          const obj = {
+            displayName: '',
+            layout: '',
+            orderNo: this.list.length,
+            categoryId: this.configId,
+            resourceKey: resource.resourceKey,
+            resourceName: resource.resourceName,
+            tableName: resource.tableName,
+            fieldNames: nameArr.join(','),
+            fieldTitles: titleArr.join(','),
+            onelineNames: '',
+            fieldFilter: ''
+          }
+          this.listCopy.push(obj)
+          this.list.push(JSON.parse(JSON.stringify(obj)))
+        }
+      },
+      // 删除按钮的回调
+      handleRemove (index) {
+        this.$confirm({
+          title: '删除',
+          content: '确定要删除当前信息报告信息项？',
+          loading: true,
+          okType: 'danger',
+          onOk: () => {
+            this.list.splice(index, 1)
+            this.listCopy.splice(index, 1)
+            this.$modal.remove()
+          }
+        })
+      },
+      // 编辑按钮回调
+      handleEdit (index) {
+        const row = this.listCopy[index]
+
+        this.curIndex = index
+        this.resourceKey = row.resourceKey
+        this.fieldNames = row.fieldNames
+        this.openSourceField = true
+      },
+      // 资源编辑组件保存后的回调
+      handleSave ({ fieldNames, fieldTitles }) {
+        const row = this.listCopy[this.curIndex]
+        row.fieldNames = fieldNames
+        row.fieldTitles = fieldTitles
       },
       async handleSubmit () {
-        let imgValid = true
-        if (this.form.reportWaterMark === '') {
-          imgValid = false
-          this.$message({ type: 'warning', content: '请上传水印图片。' })
-        }
+        this.form.items = this.listCopy
         const valid = await this.$refs.form.validate()
-        if (imgValid && valid) {
+        if (valid) {
           try {
             this.btnLoading = true
             this.editData ? await updateInfoClass(this.form) : await createInfoClass(this.form)
@@ -209,7 +297,7 @@
       },
       initEditData () {
         if (this.editData) {
-          this.form = this.$util.deepClone(this.editData)
+          // this.form = this.$util.deepClone(this.editData)
         }
       }
     }
