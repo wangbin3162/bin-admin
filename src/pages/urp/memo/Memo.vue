@@ -117,6 +117,55 @@
         </template>
       </v-edit-wrap>
     </page-header-wrap>
+    <page-header-wrap v-show="isCheck" :title="editTitle" show-close @on-close="handleCancel">
+      <div>
+        <b-collapse value="1" simple>
+          <b-collapse-panel title="基础信息" name="1">
+            <v-key-label label="备忘录名称">{{ memo.memoName }}</v-key-label>
+            <v-key-label label="发起部门" is-first is-half>{{ memo.initiateDeptName }}</v-key-label>
+            <v-key-label label="备忘录类型" is-half>{{ memoTypeMap[memo.memoType] }}</v-key-label>
+            <v-key-label label="备忘录状态" is-first is-half> {{ memoStatusMap[memo.memoStatus] }}</v-key-label>
+            <v-key-label label="文案号" is-half>{{ memo.fileCode }}</v-key-label>
+            <v-key-label label="签署日期" is-first is-half is-bottom>{{ memo.signDate }}</v-key-label>
+            <v-key-label label="联合部门数" is-half is-bottom>{{ memo.unionNum }}</v-key-label>
+          </b-collapse-panel>
+        </b-collapse>
+      </div>
+      <div style="margin-top: 20px;">
+        <b-collapse value="1" simple>
+          <b-collapse-panel title="参与部门及关联措施" name="1">
+            <div class="top-wrap" flex="box:first">
+              <div class="total" style="width: 280px;">参与部门({{ deptMeasuresBuffer.length }})</div>
+              <div class="total">处置措施({{ allMeasures }})</div>
+            </div>
+            <div class="dept-measures" flex="box:first">
+              <div class="departs">
+                <b-timeline>
+                  <b-anchor show-ink @on-select="handleSelectDept">
+                    <b-anchor-link v-for="dept in deptMeasuresBuffer" :key="dept.id"
+                                   :href="`#${dept.id}`" :title="dept.name"></b-anchor-link>
+                  </b-anchor>
+                </b-timeline>
+              </div>
+              <div class="measures">
+                <div class="item" v-for="dept in deptMeasuresBuffer" :key="dept.id">
+                  <div class="dept-name" :class="{'active':dept.id===activeDeptID}"
+                       :id="dept.id">
+                    {{ dept.name }}
+                    <span>({{ dept.measures?dept.measures.length:'0' }})</span>
+                  </div>
+                  <div class="measure-item" v-for="measure in dept.measures" :key="measure.id">
+                    <b-checkbox :value="measure.isUse==='1'" disabled>
+                      {{ measure.measureName }}
+                    </b-checkbox>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </b-collapse-panel>
+        </b-collapse>
+      </div>
+    </page-header-wrap>
   </div>
 </template>
 
@@ -161,10 +210,23 @@
           fileCode: [requiredRule],
           signDate: [{ required: true, message: '签署日期必选', trigger: 'change' }]
         },
-        infoOpen: ['2'],
+        infoOpen: ['1', '2'],
         initDeptMeasuresMap: [], // 初始的部门-措施映射列表
         departsBuffer: [], // 联合部门树缓存，用于修改时初始化树结构
-        deptMeasuresBuffer: [] // 部门-措施映射缓存，新增时为初始部门-映射，修改时需要在调用方法获取
+        deptMeasuresBuffer: [], // 部门-措施映射缓存，新增时为初始部门-映射，修改时需要在调用方法获取
+        activeDeptID: ''
+      }
+    },
+    computed: {
+      // 所有措施
+      allMeasures() {
+        let count = 0
+        this.deptMeasuresBuffer.forEach(dept => {
+          if (dept.measures) {
+            count += dept.measures.length
+          }
+        })
+        return count
       }
     },
     created() {
@@ -198,21 +260,80 @@
         this.resetMemo()
         this.memo = { ...this.memo, ...row }
         // 查询已配置好的部门-措施映射
-        this.getDeptMeasuresMap(this.memo.id).then(data => {
-          this.deptMeasuresBuffer = data
-          // 查询已存储过的部门树
-          api.getModifyUrpDeparts(this.memo.id).then(resp => {
-            if (resp.data.code === '0') {
-              this.departsBuffer = resp.data.data
+        Promise.all([this.getDeptMeasuresMap(this.memo.id), api.getModifyUrpDeparts(this.memo.id)])
+          .then(([resp1, resp2]) => {
+            this.deptMeasuresBuffer = resp1
+            if (resp2.data.code === '0') {
+              this.departsBuffer = resp2.data.data
             }
           })
-        })
         this.openEditPage('modify')
       },
       // 查看按钮事件
       handleCheck(row) {
-        this.memo = { ...row }
+        this.resetMemo()
+        this.memo = { ...this.memo, ...row }
+        // 查询已配置好的部门-措施映射
+        Promise.all([this.getDeptMeasuresMap(this.memo.id), api.getModifyUrpDeparts(this.memo.id)])
+          .then(([resp1, resp2]) => {
+            let deptMeasures1 = resp1
+            let deptMeasures2 = this.tiledReadyDeparts(resp2.data.data)
+            this.deptMeasuresBuffer = deptMeasures1.filter(item => {
+              return deptMeasures2.findIndex(i => i.departId === item.id) > -1
+            })
+          })
         this.openEditPage('check')
+      },
+      // 递归映射，用于追加部门对应的措施数组
+      mapperWithMeasures(departs, deptMeasuresBuffer) {
+        let newTree = []
+        let arr = []
+        deptMeasuresBuffer.forEach(item => {
+          arr.push([item.id, item.measures || []])
+        })
+        let deptMeasuresMap = new Map(arr)
+        let mapper = node => {
+          let cs = deptMeasuresMap.get(node.id).map(i => {
+            return {
+              id: i.id,
+              measureName: i.measureName,
+              departId: i.departId,
+              isUse: i.isUse
+            }
+          })
+          return {
+            id: node.id,
+            title: node.title || node.text,
+            expand: node.expand || true,
+            selected: false,
+            children: (node.children && node.children.map(mapper)) || [],
+            measures: cs
+          }
+        }
+        departs.forEach(topNode => {
+          newTree.push(mapper(topNode))
+        })
+        return newTree
+      },
+      // 平铺树结构
+      tiledReadyDeparts(readyDeparts) {
+        let all = []
+        const mapper = (node) => {
+          all.push({ departId: node.id, departName: node.title || node.text })
+          if (node.children) {
+            node.children.forEach(item => {
+              mapper(item)
+            })
+          }
+        }
+        readyDeparts.forEach(item => {
+          mapper(item)
+        })
+        return all
+      },
+      // 查看列表点击参与部门
+      handleSelectDept(href) {
+        this.activeDeptID = href.slice(1)
       },
       // 弹窗提示是否删除
       handleRemove(row) {
@@ -316,3 +437,42 @@
     }
   }
 </script>
+
+<style lang="stylus" scoped>
+  .top-wrap {
+    .total {
+      padding: 0 20px;
+      line-height 40px;
+      font-size: 16px;
+      padding-bottom: 15px;
+      &:first-child {
+        border-right: 1px solid #d9d9d9;
+      }
+    }
+  }
+  .dept-measures {
+    .departs {
+      padding: 0 15px;
+      width: 280px;
+      border-right: 1px solid #d9d9d9;
+      .dept-name {
+        cursor: pointer;
+        &.active {
+          color: #1089ff;
+        }
+      }
+    }
+    .measures {
+      padding: 0 0 0 20px;
+      .item {
+        line-height: 35px;
+        .dept-name {
+          font-size: 16px;
+          &.active {
+            color: #1089ff;
+          }
+        }
+      }
+    }
+  }
+</style>
