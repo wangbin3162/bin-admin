@@ -30,7 +30,7 @@
           </b-form>
 
           <v-title-bar label="配置信用报告信息项" class="mb-15">
-            <b-button type="text">+ 添加资源信息</b-button>
+            <b-button type="text" @click="handleAddSourceInfo">+ 添加资源信息</b-button>
           </v-title-bar>
           <b-table :columns="columns" :data="list" :show-header="false" size="small">
             <template v-slot:orderNo>
@@ -51,10 +51,19 @@
       </v-edit-wrap>
 
     </page-header-wrap>
+
+    <source-info-select
+      @close="openSource = false"
+      @choose-mul-info="handleSourceSelected"
+      paraType="I"
+      :open="openSource"
+      :infoMulModel="true">
+    </source-info-select>
   </div>
 </template>
 
 <script>
+  import SourceInfoSelect from '../../../../credit-rating/index-manage/SourceInfoSelect'
   import { createInfoClass, updateCreditReport, updateInfoClass } from '../../../../../api/sys/credit-report-config.api'
 
   export default {
@@ -65,10 +74,12 @@
       'editData'
     ],
     components: {
+      SourceInfoSelect
     },
     data () {
       return {
         btnLoading: false,
+        openSource: false, // 打开source-info-select组件
         form: {
           configId: this.configId,
           categoryName: '',
@@ -168,6 +179,14 @@
       this.initEditData()
     },
     methods: {
+      // 添加资源信息按钮回调
+      handleAddSourceInfo () {
+        this.openSource = true
+      },
+      // 资源选择组件选中的回调
+      handleSourceSelected ({ resource, infoItems }) {
+        console.log(resource, infoItems)
+      },
       async handleSubmit () {
         let imgValid = true
         if (this.form.reportWaterMark === '') {
