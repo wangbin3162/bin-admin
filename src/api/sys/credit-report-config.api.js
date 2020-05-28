@@ -148,7 +148,7 @@ export async function getInfoClassList(query) {
         url: '/api/eval/report/item/search',
         method: 'get',
         params: {
-          reportId: query.id,
+          configId: query.configId,
           category: query.category,
           size: query.size,
           page: query.page - 1

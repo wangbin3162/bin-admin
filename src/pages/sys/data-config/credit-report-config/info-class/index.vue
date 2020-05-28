@@ -68,7 +68,7 @@
   export default {
     name: 'CreditReportConfigInfoClass',
     mixins: [commonMixin, permission],
-    props: ['reportId'],
+    props: ['configId'], // 报告配置id
     components: {
       Edit
       // Detail
@@ -77,7 +77,7 @@
       return {
         detail: null, // 存储行数据
         listQuery: {
-          reportId: this.id,
+          configId: this.configId,
           category: ''
         },
         columns: [

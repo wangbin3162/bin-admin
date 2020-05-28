@@ -48,7 +48,7 @@
   export default {
     name: 'CreditReportConfigInfoClassEdit',
     props: [
-      'reportId',
+      'configId', // 报告配置id
       'title',
       'editData'
     ],
