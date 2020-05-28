@@ -45,7 +45,7 @@
     </page-header-wrap>
 
     <edit v-if="isEdit"
-      :reportId="reportId"
+      :configId="configId"
       :editData="detail"
       @close="handleEditClose"
       @success="searchList"></edit>
