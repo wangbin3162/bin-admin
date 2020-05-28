@@ -46,7 +46,7 @@
               @on-page-size-change="handleSizeChange"></b-page>
           </b-col>
           <b-col span="10">
-            <!-- <b-card v-if="paraType === 'S'"
+            <b-card v-if="paraType === 'S'"
               class="box-card" head-tip
               header="已选资源信息">
               <b-tag type="info"
@@ -61,7 +61,7 @@
                 @click="postSelectedList">
                 确定添加
               </b-button>
-            </b-card> -->
+            </b-card>
 
             <!-- <div v-else class="card-con">
               <b-card head-tip header="选择信息项">
@@ -88,7 +88,7 @@
               </b-tag>
             </b-card>
 
-            <b-card v-else head-tip>
+            <b-card v-if="paraType === 'I' && infoMulModel" head-tip>
               <div slot="header" flex="main:justify cross:center">
                 <span>选择信息项</span>
                 <div>
