@@ -29,14 +29,18 @@
           <!--操作栏-->
           <template v-slot:action="{row}">
             <!--如果可编辑且是禁用（可删除即为禁用）状态下不可编辑-->
-            <b-button :disabled="!canModify" type="text" @click="handleModify(row)">
+            <b-button :disabled="!canModify || row.memoStatus!=='0'" type="text" @click="handleModify(row)">
               修改
             </b-button>
             <!--是否有删除键-->
-            <b-divider type="vertical"></b-divider>
             <b-button :disabled="!canRemove" type="text" text-color="danger"
                       @click="handleRemove(row)">
               删除
+            </b-button>
+            <b-button :disabled="!havePermission('batchReceive')"
+                      v-if="row.memoStatus==='0'" type="text"
+                      @click="handleReceive(row)">
+              批量接收
             </b-button>
           </template>
         </b-table>
@@ -100,11 +104,11 @@
               </b-form>
             </b-collapse-panel>
             <b-collapse-panel title="参与部门及关联措施" name="2">
-              <dept-measures :departs="memo.departs" :dept-measures="deptMeasuresBuffer"
+              <dept-measures :departs="departsBuffer" :dept-measures="deptMeasuresBuffer"
                              @on-change="handleDeptMeasuresChange"/>
             </b-collapse-panel>
           </b-collapse>
-          <b-code-editor class="mt-20" v-if="isEdit" :value="JSON.stringify(memo,null,2)" readonly/>
+          <!-- <b-code-editor class="mt-20" v-if="isEdit" :value="JSON.stringify(memo,null,2)" readonly/>-->
         </template>
         <!--保存提交-->
         <template slot="footer">
@@ -143,7 +147,7 @@
           { title: '联合部门数', key: 'unionNum', align: 'center', width: 120 },
           { title: '备忘录状态', slot: 'memoStatus', align: 'center', width: 120 },
           { title: '签署日期', key: 'signDate', align: 'center', width: 120 },
-          { title: '操作', slot: 'action', width: 150 }
+          { title: '操作', slot: 'action', width: 200 }
         ],
         memoTypeMap: { '1': '惩戒', '2': '激励' },
         memoStatusMap: { '0': '通报', '1': '实施', '2': '过期' },
@@ -159,6 +163,7 @@
         },
         infoOpen: ['2'],
         initDeptMeasuresMap: [], // 初始的部门-措施映射列表
+        departsBuffer: [], // 联合部门树缓存，用于修改时初始化树结构
         deptMeasuresBuffer: [] // 部门-措施映射缓存，新增时为初始部门-映射，修改时需要在调用方法获取
       }
     },
@@ -184,6 +189,7 @@
       handleCreate() {
         this.resetMemo()
         // 缓存原始映射值
+        this.departsBuffer = []
         this.deptMeasuresBuffer = deepCopy(this.initDeptMeasuresMap)
         this.openEditPage('create')
       },
@@ -191,6 +197,16 @@
       handleModify(row) {
         this.resetMemo()
         this.memo = { ...this.memo, ...row }
+        // 查询已配置好的部门-措施映射
+        this.getDeptMeasuresMap(this.memo.id).then(data => {
+          this.deptMeasuresBuffer = data
+          // 查询已存储过的部门树
+          api.getModifyUrpDeparts(this.memo.id).then(resp => {
+            if (resp.data.code === '0') {
+              this.departsBuffer = resp.data.data
+            }
+          })
+        })
         this.openEditPage('modify')
       },
       // 查看按钮事件
@@ -221,10 +237,22 @@
           }
         })
       },
+      // 批量接收
+      handleReceive(row) {
+        api.receiveAll(row.id).then(resp => {
+          if (resp.data.code === '0') {
+            this.handleFilter()
+          }
+        })
+      },
       // 表单提交
       handleSubmit() {
         this.$refs.form.validate((valid) => {
           if (valid) {
+            if (this.memo.departs.length === 0 || this.memo.measures.length === 0) {
+              this.$message({ type: 'danger', content: '必须关联部门措施' })
+              return
+            }
             this.btnLoading = true
             let fun = this.dialogStatus === 'create' ? api.createMemo : api.modifyMemo
             fun(this.memo).then(res => {

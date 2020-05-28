@@ -85,7 +85,17 @@
         return [...new Set(arr)]
       }
     },
-    watch: {},
+    watch: {
+      departs: {
+        handler(val) {
+          // 保存联合部门
+          // 先清空
+          this.currentTreeNode = null
+          this.handleSaveUnionDept(val)
+        },
+        immediate: true
+      }
+    },
     created() {
     },
     methods: {
@@ -106,9 +116,12 @@
       },
       // 添加已经勾选的措施列表，续判断是否存在
       addTiledMeasures(item) {
-        let hasSame = this.tiledMeasures.findIndex(i => i.id === item.id) > -1
+        let hasSame = this.tiledMeasures.findIndex(i => i.measureId === item.id) > -1
         if (!hasSame) {
-          this.tiledMeasures.push(item)
+          this.tiledMeasures.push({
+            measureId: item.id,
+            measureName: item.measureName
+          })
           // 递归更新当前部门及子孙节点的措施选择
           this.changeChildrenMeasure(this.currentTreeNode, item)
           this.emitValue()
@@ -116,7 +129,7 @@
       },
       // 移除已经勾选的措施列表，续判断是否存在
       removeTiledMeasures(item) {
-        let index = this.tiledMeasures.findIndex(i => i.id === item.id)
+        let index = this.tiledMeasures.findIndex(i => i.measureId === item.id)
         if (index > -1) {
           this.tiledMeasures.splice(index, 1)
           this.emitValue()
@@ -149,7 +162,10 @@
         this.unionDeparts = this.mapperWithMeasures(departs)
         // 填充平铺部门列表
         this.tiledDeparts = this.tiledReadyDeparts(departs)
-        this.unionDeptCount = count
+        // 填充平铺措施列表
+        this.tiledMeasures = this.tiledReadyMeasures()
+        // 填充部门总数
+        this.unionDeptCount = count || this.tiledDeparts.length
         if (this.unionDeparts.length > 0) {
           this.$set(this.unionDeparts[0], 'selected', true)
           this.currentTreeNode = this.unionDeparts[0]
@@ -173,8 +189,9 @@
           })
           return {
             id: node.id,
-            title: node.title,
-            expand: node.expand,
+            title: node.title || node.text,
+            expand: node.expand || true,
+            selected: false,
             children: (node.children && node.children.map(mapper)) || [],
             measures: cs
           }
@@ -188,7 +205,7 @@
       tiledReadyDeparts(readyDeparts) {
         let all = []
         const mapper = (node) => {
-          all.push({ departId: node.id, departName: node.title })
+          all.push({ departId: node.id, departName: node.title || node.text })
           if (node.children) {
             node.children.forEach(item => {
               mapper(item)
@@ -199,6 +216,23 @@
           mapper(item)
         })
         return all
+      },
+      // 循环遍历措施列表，将已勾选的措施填充值平铺 措施列表
+      tiledReadyMeasures() {
+        let arr = []
+        this.deptMeasures.forEach(dept => {
+          if (dept.measures) {
+            dept.measures.forEach(measure => {
+              if (measure.isUse === '1') {
+                arr.push({
+                  measureId: measure.id,
+                  measureName: measure.measureName
+                })
+              }
+            })
+          }
+        })
+        return arr
       }
     }
   }

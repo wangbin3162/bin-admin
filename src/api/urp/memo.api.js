@@ -4,7 +4,7 @@ import request from '../request'
 /* 备忘录列表 */
 export function getMemoList(query) {
   return request({
-    url: 'api/urpMemo/search',
+    url: '/api/urpMemo/search',
     method: 'get',
     params: {
       memoName: query.memoName,
@@ -18,7 +18,7 @@ export function getMemoList(query) {
 /* 新增 */
 export function createMemo(memo) {
   return request({
-    url: 'api/urpMemo/create',
+    url: '/api/urpMemo/create',
     method: 'post',
     data: {
       memoName: memo.memoName,
@@ -38,7 +38,7 @@ export function createMemo(memo) {
 /* 修改 */
 export function modifyMemo(memo) {
   return request({
-    url: 'api/urpMemo/modify',
+    url: '/api/urpMemo/modify',
     method: 'post',
     data: {
       id: memo.id,
@@ -59,7 +59,7 @@ export function modifyMemo(memo) {
 /* 删除 */
 export function removeMemo(memo) {
   return request({
-    url: 'api/urpMemo/remove',
+    url: '/api/urpMemo/remove',
     method: 'post',
     params: {
       id: memo.id
@@ -68,9 +68,9 @@ export function removeMemo(memo) {
 }
 
 /* 备忘录部门树列表（修改界面已选择的联合部门树) */
-export function unionDeparts(memoId) {
+export function getModifyUrpDeparts(memoId) {
   return request({
-    url: 'api/urpMemo/departs',
+    url: '/api/urpMemo/departs',
     method: 'get',
     params: { memoId }
   })
@@ -79,8 +79,17 @@ export function unionDeparts(memoId) {
 /* 根据备忘录和部门查询对应的措施列表 memoId 可选 不填表示新增时的列表 */
 export function deptMeasuresMap(memoId) {
   return request({
-    url: 'api/urpMemo/measures',
+    url: '/api/urpMemo/measures',
     method: 'get',
+    params: { memoId }
+  })
+}
+
+/* 批量接收 */
+export function receiveAll(memoId) {
+  return request({
+    url: '/api/urpMemo/receiveAll',
+    method: 'post',
     params: { memoId }
   })
 }
