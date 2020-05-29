@@ -226,7 +226,11 @@
           return resource.resourceKey === item.resourceKey
         })
         if (exist) {
-          this.$message({ type: 'warning', content: '选择的资源已存在。' })
+          this.$alert({
+            type: 'warning',
+            title: '资源已存在',
+            content: '选择的资源已存在，请重新选择。'
+          })
         } else {
           const nameArr = []
           const titleArr = []
