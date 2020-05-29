@@ -16,7 +16,7 @@ export function getMemoMappingList(query) {
 }
 
 /* 增加映射 */
-export function createMemo(mapping) {
+export function createMapping(mapping) {
   return request({
     url: '/api/urp/memoMapping/create',
     method: 'post',
@@ -33,7 +33,7 @@ export function createMemo(mapping) {
 }
 
 /* 修改映射 */
-export function modifyMemo(mapping) {
+export function modifyMapping(mapping) {
   return request({
     url: '/api/urp/memoMapping/modify',
     method: 'post',
@@ -58,5 +58,13 @@ export function removeMapping(id) {
     params: {
       id
     }
+  })
+}
+
+/* 河南接口标识列表 */
+export function urpServiceList() {
+  return request({
+    url: 'api/urpService/redBlack',
+    method: 'get'
   })
 }

@@ -40,19 +40,82 @@
                 @on-page-size-change="handleSizeChange"></b-page>
       </v-table-wrap>
     </page-header-wrap>
+    <page-header-wrap v-show="isEdit" :title="editTitle" show-close @on-close="handleCancel">
+      <v-edit-wrap>
+        <b-form :model="mapping" ref="form" :rules="ruleValidate" :label-width="130">
+          <b-row :gutter="20">
+            <b-col span="12">
+              <b-form-item label="备忘录名称" prop="memoId">
+                <memo-select v-model="mapping.memoId" :default-name="mapping.memoName"
+                             @on-change="memo=>{ mapping.memoName = memo.memoName}"/>
+              </b-form-item>
+            </b-col>
+            <b-col span="12">
+              <b-form-item label="主体类型" prop="personClass">
+                <b-select v-model="mapping.personClass" clearable>
+                  <b-option v-for="(val,key) in personClassMap" :key="key" :value="key">{{ val }}</b-option>
+                </b-select>
+              </b-form-item>
+            </b-col>
+          </b-row>
+          <b-form-item label="映射类型" prop="isSys" class="bin-form-item-required">
+            <b-radio-group v-model="mapping.isSys" @on-change="handleIsSysChange">
+              <b-radio label="1">资源信息</b-radio>
+              <b-radio label="0">外部接口</b-radio>
+            </b-radio-group>
+          </b-form-item>
+          <b-row :gutter="20">
+            <b-col span="12">
+              <b-form-item label="资源信息" prop="resourceKey"
+                           :class="{'bin-form-item-required':mapping.isSys==='1'}">
+                <res-choose v-model="mapping.resourceKey" :default-name="mapping.resourceName"
+                            @on-change="res=>{ mapping.resourceName = res.resourceName}"/>
+              </b-form-item>
+            </b-col>
+            <b-col span="12">
+              <b-form-item label="接口标识" prop="ifcTagName"
+                           :class="{'bin-form-item-required':mapping.isSys==='0'}">
+                <ifc-tag-select v-model="mapping.ifcTagName"/>
+              </b-form-item>
+            </b-col>
+          </b-row>
+        </b-form>
+        <b-code-editor class="mt-20" v-if="isEdit" :value="JSON.stringify(mapping,null,2)" readonly/>
+        <!--保存提交-->
+        <template slot="footer">
+          <b-button @click="handleCancel">取 消</b-button>
+          <b-button type="primary" @click="handleSubmit" :loading="btnLoading">提 交</b-button>
+        </template>
+      </v-edit-wrap>
+    </page-header-wrap>
   </div>
 </template>
 
 <script>
   import commonMixin from '../../../common/mixins/mixin'
   import permission from '../../../common/mixins/permission'
-  import { requiredRule } from '../../../common/utils/validate'
   import * as api from '../../../api/urp/memo-mapping.api'
+  import ResChoose from '../../data-manage/res/components/ResInfo/ResChoose'
+  import MemoSelect from '../components/MemoSelect'
+  import IfcTagSelect from '../components/IfcTagSelect'
 
   export default {
     name: 'MemoMapping',
+    components: { IfcTagSelect, MemoSelect, ResChoose },
     mixins: [commonMixin, permission],
     data() {
+      const validateResource = (rule, value, callback) => {
+        if (this.mapping && this.mapping.isSys === '1' && value.length === 0) {
+          callback(new Error('资源信息必选'))
+        }
+        callback()
+      }
+      const validateIfcTagName = (rule, value, callback) => {
+        if (this.mapping && this.mapping.isSys === '0' && value.length === 0) {
+          callback(new Error('接口必选'))
+        }
+        callback()
+      }
       return {
         listQuery: {
           memoName: '',
@@ -70,7 +133,13 @@
         memoTypeMap: { '1': '惩戒', '2': '激励' },
         memoStatusMap: { '0': '通报', '1': '实施', '2': '过期' },
         personClassMap: { 'ZRP': '自然人', 'FO': '法人和其他组织' },
-        mapTypeMap: { '1': '资源信息', '0': '外部接口' },
+        mapTypeMap: { '0': '外部接口', '1': '资源信息' },
+        ruleValidate: {
+          memoId: [{ required: true, message: '备忘录必选', trigger: 'change' }],
+          personClass: [{ required: true, message: '主体类型必选', trigger: 'change' }],
+          resourceKey: [{ validator: validateResource, trigger: 'change' }],
+          ifcTagName: [{ validator: validateIfcTagName, trigger: 'change' }]
+        },
         mapping: null
       }
     },
@@ -91,6 +160,7 @@
       },
       // 新增按钮事件
       handleCreate() {
+        this.resetMapping()
         this.openEditPage('create')
       },
       // 编辑事件
@@ -107,7 +177,7 @@
           loading: true,
           okType: 'danger',
           onOk: () => {
-            api.removeMapping(row).then(res => {
+            api.removeMapping(row.id).then(res => {
               if (res.data.code === '0') {
                 this.$message({ type: 'success', content: '操作成功' })
                 this.$modal.remove()
@@ -122,20 +192,41 @@
           }
         })
       },
+      // 映射类型改变
+      handleIsSysChange(val) {
+        // 校验资源信息和接口标识
+        this.$refs.form.validateField('resourceKey')
+        this.$refs.form.validateField('ifcTagName')
+      },
+      // 表单提交
+      handleSubmit() {
+        this.$refs.form.validate((valid) => {
+          if (valid) {
+            this.btnLoading = true
+            let fun = this.dialogStatus === 'create' ? api.createMapping : api.modifyMapping
+            fun(this.mapping).then(res => {
+              if (res.data.code === '0') {
+                this.submitDone(true)
+                this.handleFilter()
+              } else {
+                this.submitDone(false)
+                this.$notice.danger({ title: '操作错误', desc: res.data.message })
+              }
+            })
+          }
+        })
+      },
       // 重置对象
       resetMapping() {
         this.mapping = {
           id: '',
+          memoId: '',
           memoName: '',
-          memoType: '',
-          unionNum: 0,
-          memoStatus: '0',
-          fileCode: '',
-          signDate: '',
-          initiateDept: '',
-          initiateDeptName: '',
-          departs: [],
-          measures: []
+          resourceKey: '',
+          resourceName: '',
+          personClass: '',
+          ifcTagName: '',
+          isSys: '1' // { '1': '资源信息', '0': '外部接口' }
         }
       },
       // 查询所有措施列表
