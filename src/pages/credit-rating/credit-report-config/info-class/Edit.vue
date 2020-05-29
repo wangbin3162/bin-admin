@@ -73,9 +73,9 @@
 </template>
 
 <script>
-  import SourceInfoSelect from '../../../../credit-rating/index-manage/SourceInfoSelect'
+  import SourceInfoSelect from '../../../credit-rating/index-manage/SourceInfoSelect'
   import EditSourceInfoField from './EditSourceInfoField'
-  import { createInfoClass, updateCreditReport, updateInfoClass } from '../../../../../api/sys/credit-report-config.api'
+  import { createInfoClass, updateCreditReport, updateInfoClass } from '../../../../api/credit-rating/credit-report-config.api'
 
   export default {
     name: 'CreditReportConfigInfoClassEdit',

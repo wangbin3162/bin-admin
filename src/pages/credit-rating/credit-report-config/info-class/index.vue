@@ -58,12 +58,11 @@
 </template>
 
 <script>
-  import commonMixin from '../../../../../common/mixins/mixin'
-  import permission from '../../../../../common/mixins/permission'
+  import commonMixin from '../../../../common/mixins/mixin'
+  import permission from '../../../../common/mixins/permission'
   import Edit from './Edit'
-  // import Detail from './Detail'
-  import { getEvalReportItemType, getEvalReportLayoutType } from '../../../../../api/enum.api'
-  import { getInfoClassList, deleteInfoClass } from '../../../../../api/sys/credit-report-config.api'
+  import { getEvalReportItemType, getEvalReportLayoutType } from '../../../../api/enum.api'
+  import { getInfoClassList, deleteInfoClass } from '../../../../api/credit-rating/credit-report-config.api'
 
   export default {
     name: 'CreditReportConfigInfoClass',

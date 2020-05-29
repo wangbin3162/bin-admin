@@ -78,10 +78,10 @@
 </template>
 
 <script>
-  import { getResPropertyTree } from '../../../../../api/data-manage/res-info.api'
-  import { getPersonClassTree } from '../../../../../api/data-manage/metadata.api'
-  import { getResourceDetail } from '../../../../../api/sys/credit-report-config.api'
-  import { getFieldCtrl } from '../../../../../api/enum.api'
+  import { getResPropertyTree } from '../../../../api/data-manage/res-info.api'
+  import { getPersonClassTree } from '../../../../api/data-manage/metadata.api'
+  import { getResourceDetail } from '../../../../api/credit-rating/credit-report-config.api'
+  import { getFieldCtrl } from '../../../../api/enum.api'
 
   export default {
     name: 'EditSourceInfoField',

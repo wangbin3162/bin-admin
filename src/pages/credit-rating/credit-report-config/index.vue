@@ -105,13 +105,13 @@
 </template>
 
 <script>
-  import commonMixin from '../../../../common/mixins/mixin'
-  import permission from '../../../../common/mixins/permission'
+  import commonMixin from '../../../common/mixins/mixin'
+  import permission from '../../../common/mixins/permission'
   import Edit from './Edit'
   import Detail from './Detail'
   import InfoClass from './info-class'
-  import { getEvalCommonStatus, getEvalReportType } from '../../../../api/enum.api'
-  import { getCreditReportList, deleteCreditReport, changeStatus } from '../../../../api/sys/credit-report-config.api'
+  import { getEvalCommonStatus, getEvalReportType } from '../../../api/enum.api'
+  import { getCreditReportList, deleteCreditReport, changeStatus } from '../../../api/credit-rating/credit-report-config.api'
 
   export default {
     name: 'CreditReportConfig',
