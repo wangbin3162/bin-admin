@@ -45,7 +45,7 @@
     </page-header-wrap>
 
     <edit v-if="isEdit"
-      :reportId="reportId"
+      :configId="configId"
       :editData="detail"
       @close="handleEditClose"
       @success="searchList"></edit>
@@ -68,7 +68,7 @@
   export default {
     name: 'CreditReportConfigInfoClass',
     mixins: [commonMixin, permission],
-    props: ['reportId'],
+    props: ['configId'], // 报告配置id
     components: {
       Edit
       // Detail
@@ -77,7 +77,7 @@
       return {
         detail: null, // 存储行数据
         listQuery: {
-          reportId: this.id,
+          configId: this.configId,
           category: ''
         },
         columns: [

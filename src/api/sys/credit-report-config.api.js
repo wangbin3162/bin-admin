@@ -148,13 +148,40 @@ export async function getInfoClassList(query) {
         url: '/api/eval/report/item/search',
         method: 'get',
         params: {
-          reportId: query.id,
+          configId: query.configId,
           category: query.category,
           size: query.size,
           page: query.page - 1
         }
       })
       resolve(res.data)
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
+ * @description 根据resourceKey获取资源详情
+ * @param {*} resourceKey
+ * @returns Promise
+ */
+export async function getResourceDetail(resourceKey) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/api/dir/detailByResourceKey',
+        method: 'get',
+        params: {
+          resourceKey
+        }
+      })
+      if (res.data.successful) {
+        resolve(res.data.data)
+      } else {
+        reject(new Error(res.data.message))
+      }
     } catch (error) {
       reject(error)
     }

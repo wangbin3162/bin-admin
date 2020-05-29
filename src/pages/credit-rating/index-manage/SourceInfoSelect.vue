@@ -78,12 +78,31 @@
                 </b-table>
               </b-card>
             </div> -->
-
-            <b-card v-else head-tip header="选择信息项(点击选择)">
+            <!-- 为信息项模式且信息项需要单选则启用此块逻辑 -->
+            <b-card v-if="paraType === 'I' && !infoMulModel" head-tip header="选择信息项(点击选择)">
               <b-tag type="info" style="cursor: pointer; margin: 4px;"
                 v-for="item in infoItemList"
                 :key="item.id"
                 @on-click="handleRaiod(item)">
+                {{ item.fieldTitle }}
+              </b-tag>
+            </b-card>
+
+            <b-card v-if="paraType === 'I' && infoMulModel" head-tip>
+              <div slot="header" flex="main:justify cross:center">
+                <span>选择信息项</span>
+                <div>
+                  <b-button type="text" @click="handleClearBtn">清空</b-button>
+                  <b-button type="text" @click="handleAddBtn">添加</b-button>
+                </div>
+              </div>
+
+              <b-tag
+                style="cursor: pointer; margin: 4px;"
+                :type="item.customSelected ? 'primary' : 'info'"
+                v-for="item in infoItemList"
+                :key="item.id"
+                @on-click="handleMulSelect(item)">
                 {{ item.fieldTitle }}
               </b-tag>
             </b-card>
@@ -110,6 +129,10 @@
       },
       paraType: { // 参数类型 S 资源 I 信息项
         type: String
+      },
+      infoMulModel: { // 信息项模式时，信息项是单选还是多选模式
+        type: Boolean,
+        default: false
       }
     },
     data () {
@@ -197,8 +220,12 @@
       handleCurrentRowChange (row) {
         this.curRow = row // 缓存资源信息当前行
         this.infoTableLoading = true
+        // this.infoItemList = []
         getResDetail(row.id).then(res => {
           this.infoItemList = res.data.data.items
+          this.infoItemList.forEach(item => { // 扩展用于处理选中效果的字段
+            this.$set(item, 'customSelected', false)
+          })
           this.infoTableLoading = false
         })
       },
@@ -222,6 +249,14 @@
         })
         this.showDialog = false // 关闭弹框
       },
+      // 信息项tag点击回调，用于多选
+      handleMulSelect (item) {
+        if (item.customSelected) {
+          item.customSelected = false
+        } else {
+          item.customSelected = true
+        }
+      },
       // 用于检查是否选中
       checkRowSelected(row) {
         const dept = this.selectedList.find(item => {
@@ -244,6 +279,21 @@
           })
         } else {
           this.selectedList.splice(index, 1)
+        }
+      },
+      // 选择信息项下清空按钮的回调
+      handleClearBtn () {
+        this.infoItemList.forEach(item => { item.customSelected = false })
+      },
+      // 选择信息项下添加按钮的回调
+      handleAddBtn () {
+        const selectedList = this.infoItemList.filter(item => item.customSelected === true)
+        if (selectedList.length) {
+          this.$emit('choose-mul-info', {
+            resource: this.curRow,
+            infoItems: selectedList
+          })
+          this.showDialog = false // close modal
         }
       },
       // 通用枚举
