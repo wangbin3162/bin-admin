@@ -32,8 +32,8 @@
         <b-table v-if="!isEdit" :key="isEdit"
           :columns="columns" :data="list"
           size="small" :loading="loading">
-          <template v-slot:fullRow>
-            full
+          <template v-slot:controlType="{ row }">
+            {{ fieldCtrlEnum[row.controlType] }}
           </template>
 
           <template v-slot:action="{ index }">
@@ -78,9 +78,10 @@
 </template>
 
 <script>
-  import { getResPropertyTree, getResDetail } from '../../../../../api/data-manage/res-info.api'
+  import { getResPropertyTree } from '../../../../../api/data-manage/res-info.api'
   import { getPersonClassTree } from '../../../../../api/data-manage/metadata.api'
   import { getResourceDetail } from '../../../../../api/sys/credit-report-config.api'
+  import { getFieldCtrl } from '../../../../../api/enum.api'
 
   export default {
     name: 'EditSourceInfoField',
@@ -95,13 +96,14 @@
         isEdit: true, // 用于显示选择的table还是编辑的table
         personClassEnum: {}, // 主体类别枚举
         resPropertyEnum: {}, // 资源性质枚举
+        fieldCtrlEnum: {}, // 控件类型枚举
         detail: {},
         list: [],
         columns: [
           { type: 'index', width: 50, align: 'center' },
           { title: '字段名称', key: 'fieldName', align: 'center' },
           { title: '字段标题', key: 'fieldTitle', align: 'center' },
-          { title: '控件类型', key: 'controlType', align: 'center' },
+          { title: '控件类型', slot: 'controlType', align: 'center' },
           { title: '操作', slot: 'action', align: 'center' }
         ],
         listEdit: [], // 存储已选中用于编辑的信息项字段
@@ -250,6 +252,11 @@
             })
             this.resPropertyEnum = keyValue
             mapper = null
+          }
+        })
+        getFieldCtrl().then(res => {
+          if (res.status === 200) {
+            this.fieldCtrlEnum = res.data.data
           }
         })
       },
