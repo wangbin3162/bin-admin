@@ -66,7 +66,6 @@
       @save="handleSave"
       :open="openSourceField"
       :resourceKey="resourceKey"
-      :fieldNames="fieldNames"
       :fieldMap="fieldMap">
     </edit-source-info-field>
   </div>
@@ -75,7 +74,7 @@
 <script>
   import SourceInfoSelect from '../../../credit-rating/index-manage/SourceInfoSelect'
   import EditSourceInfoField from './EditSourceInfoField'
-  import { createInfoClass, updateCreditReport, updateInfoClass } from '../../../../api/credit-rating/credit-report-config.api'
+  import { createInfoClass, updateInfoClass, getInfoClassDetaiil } from '../../../../api/credit-rating/credit-report-config.api'
 
   export default {
     name: 'CreditReportConfigInfoClassEdit',
@@ -92,7 +91,6 @@
       return {
         curIndex: 0, // 存储当前行index
         resourceKey: '', // 传递给edit-source-info-field
-        fieldNames: '', // 当前编辑行的fieldNames，传递给edit-source-info-field
         fieldMap: null, // 当前编辑行的fieldNames与fieldTitles，传递给edit-source-info-field
         btnLoading: false,
         openSource: false, // 打开source-info-select组件
@@ -274,9 +272,20 @@
         const fieldMap = new Map()
         const fieldNamesList = row.fieldNames.split(',')
         const fieldTitlesList = row.fieldTitles.split(',')
+        const onelineNamesList = row.onelineNames.split(',')
 
         for (let i = 0; i < fieldNamesList.length; i++) {
-          fieldMap.set(fieldNamesList[i], fieldTitlesList[i])
+          const fieldName = fieldNamesList[i]
+          const fieldTitle = fieldTitlesList[i]
+          const isOneLine = onelineNamesList.some(item => item === fieldName) // 判单当前fieldName是否占满一行
+
+          const fieldObj = {
+            fieldName,
+            fieldTitle,
+            isOneLine
+          }
+
+          fieldMap.set(fieldNamesList[i], fieldObj)
         }
 
         this.resourceKey = row.resourceKey
@@ -285,10 +294,11 @@
         this.openSourceField = true
       },
       // 资源编辑组件保存后的回调
-      handleSave ({ fieldNames, fieldTitles }) {
+      handleSave ({ fieldNames, fieldTitles, onelineNames }) {
         const row = this.listCopy[this.curIndex]
         row.fieldNames = fieldNames
         row.fieldTitles = fieldTitles
+        row.onelineNames = onelineNames
       },
       async handleSubmit () {
         this.form.items = this.listCopy
@@ -306,9 +316,19 @@
           this.btnLoading = false
         }
       },
+      async getInfoClassDetaiil (id) {
+        try {
+          const res = await getInfoClassDetaiil(id)
+          this.form = { ...this.form, ...res }
+          this.list = this.$util.deepClone(res.items)
+          this.listCopy = this.$util.deepClone(res.items)
+        } catch (error) {
+          console.error(error)
+        }
+      },
       initEditData () {
         if (this.editData) {
-          // this.form = this.$util.deepClone(this.editData)
+          this.getInfoClassDetaiil(this.editData.id)
         }
       }
     }

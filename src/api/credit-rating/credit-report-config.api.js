@@ -145,7 +145,7 @@ export async function getInfoClassList(query) {
   return new Promise(async (resolve, reject) => {
     try {
       const res = await request({
-        url: '/api/eval/report/item/search',
+        url: '/api/eval/report/category/search',
         method: 'get',
         params: {
           configId: query.configId,
@@ -190,6 +190,33 @@ export async function getResourceDetail(resourceKey) {
 
 /**
  * @author haodongdong
+ * @description 获取信息类详情
+ * @param {*} resourceKey
+ * @returns Promise
+ */
+export async function getInfoClassDetaiil(id) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/api/eval/report/category/detail',
+        method: 'get',
+        params: {
+          id
+        }
+      })
+      if (res.data.successful) {
+        resolve(res.data.data)
+      } else {
+        reject(new Error(res.data.message))
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
  * @description 创建信息类
  * @param {*} query
  * @returns Promise
@@ -198,7 +225,7 @@ export async function createInfoClass(params) {
   return new Promise(async (resolve, reject) => {
     try {
       const res = await request({
-        url: '/api/eval/report/item/create',
+        url: '/api/eval/report/category/create',
         method: 'post',
         data: params
       })
@@ -223,7 +250,7 @@ export async function updateInfoClass(params) {
   return new Promise(async (resolve, reject) => {
     try {
       const res = await request({
-        url: '/api/eval/report/item/modify',
+        url: '/api/eval/report/category/modify',
         method: 'post',
         data: params
       })
@@ -248,8 +275,8 @@ export async function deleteInfoClass(id) {
   return new Promise(async (resolve, reject) => {
     try {
       const res = await request({
-        url: '/api/eval/report/item/remove',
-        method: 'get',
+        url: '/api/eval/report/category/remove',
+        method: 'post',
         params: { id }
       })
       if (res.data.successful) {

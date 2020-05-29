@@ -267,21 +267,26 @@
           const res = await getResourceDetail(resourceKey)
           this.detail = res
           this.list = res.items
-          this.list.forEach(item => { // 默认设置自定义的选择标识，默认不选择
-            this.$set(item, 'customSelected', false)
+          this.list.forEach(item => {
+            this.$set(item, 'customSelected', false) // 自定义选择标识
+            this.$set(item, 'customFullRow', false) // 自定义占满一行字段
           })
         } catch (error) {
           console.error(error)
         }
         this.loading = false
       },
-      // 用于同步已选
+      // 用于同步已选、占满一行
       asyncSelect (list) {
         // 同步选择状态
         list.forEach(item => {
-          const exist = this.fieldMap.get(item.fieldName)
-          if (exist) {
+          const fieldObj = this.fieldMap.get(item.fieldName)
+          if (fieldObj) { // 存在则选中
             item.customSelected = true
+
+            if (fieldObj.isOneLine) { // 是否占满一行
+              item.customFullRow = true
+            }
           }
         })
         // 取出已选字段放入编辑列表
@@ -291,11 +296,9 @@
       filterSelected (list) {
         const filteredList = JSON.parse(JSON.stringify(list.filter(item => item.customSelected)))
         filteredList.forEach(item => {
-          this.$set(item, 'customFullRow', false) // 自定义占满一行字段
-
-          const exist = this.fieldMap.get(item.fieldName)
-          if (exist) {
-            item.fieldTitle = this.fieldMap.get(item.fieldName) // 更新fieldTitle
+          const fieldObj = this.fieldMap.get(item.fieldName)
+          if (fieldObj) {
+            item.fieldTitle = fieldObj.fieldTitle // 更新fieldTitle
           }
         })
         return filteredList
