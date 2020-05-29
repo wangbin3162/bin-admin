@@ -11,8 +11,8 @@
         <!-- tree -->
         <b-tree :data="treeData" slot="tree" @on-select-change="handTreeCurrentChange"></b-tree>
 
-        <b-row :gutter="15">
-          <b-col span="14">
+        <b-row :gutter="15" style="max-height: 600px; overflow: auto;">
+          <b-col span="15">
             <!-- 查询 -->
             <v-filter-bar>
               <v-filter-item title="资源名称" :span="8">
@@ -24,7 +24,7 @@
               <v-filter-item @on-search="handleFilter" @on-reset="resetQuery"></v-filter-item>
             </v-filter-bar>
             <!-- table -->
-            <div class="table">
+            <div>
               <b-table :columns="columns" :data="list"
                 :loading="listLoading"
                 :highlight-row="paraType === 'I'" size="small"
@@ -32,7 +32,7 @@
                 <template v-slot:personClass="{row}">{{ personClassMap[row.personClass] }}</template>
                 <template v-slot:resProperty="{row}">{{ resPropertyMap[row.resProperty] }}</template>
                 <template v-slot:action="{ row }">
-                  <b-button :type="checkRowSelected(row) ? 'danger' : 'primary'" plain
+                  <b-button :type="checkRowSelected(row) ? 'danger' : 'primary'" plain size="small"
                     @click="chooseOne(row)">
                     {{ checkRowSelected(row) ? '取消' : '选择' }}
                   </b-button>
@@ -45,71 +45,80 @@
               @on-change="handleCurrentChange"
               @on-page-size-change="handleSizeChange"></b-page>
           </b-col>
-          <b-col span="10" class="card-con">
-            <b-card v-if="paraType === 'S'"
-              class="box-card" head-tip
-              header="已选资源信息">
-              <b-tag type="info"
-                :key="index"
-                v-for="(tag,index) in selectedList"
-                closable
-                @on-close="handleCloseTag(index)">
-                {{tag.resourceName}}
-              </b-tag>
-              <b-button type="primary" style="width: 100%;margin: 10px 0;"
-                v-if="selectedList.length"
-                @click="postSelectedList">
-                确定添加
-              </b-button>
-            </b-card>
-
-            <!-- 为信息项模式且信息项需要单选则启用此块逻辑 -->
-            <b-card v-if="paraType === 'I' && !infoMulModel" head-tip header="选择信息项(点击选择)">
-              <b-tag type="info" style="cursor: pointer; margin: 4px;"
-                v-for="item in infoItemList"
-                :key="item.id"
-                @on-click="handleRaiod(item)">
-                {{ item.fieldTitle }}
-              </b-tag>
-            </b-card>
-
-            <!-- 为信息项模式且信息项需要多选则启用此块逻辑 -->
-            <b-card v-if="paraType === 'I' && infoMulModel" head-tip>
-              <div slot="header" flex="main:justify cross:center">
-                <span>选择信息项</span>
-                <div>
-                  <b-button type="text" @click="handleClearBtn">清空</b-button>
-                  <b-button type="text" @click="handleAddBtn">添加</b-button>
+          <b-col span="9" class="card-con">
+            <b-card head-tip>
+              <template v-if="paraType === 'S'">
+                <div slot="header" flex="main:justify cross:center">
+                  <span>已选资源信息</span>
                 </div>
-              </div>
-              <p v-if="infoItemList.length" style="margin: 5px;">点击以下标签多选：</p>
 
-              <b-tag
-                style="cursor: pointer; margin: 4px;"
-                :type="item.customSelected ? 'primary' : 'info'"
-                v-for="item in infoItemList"
-                :key="item.id"
-                @on-click="handleMulSelect(item)">
-                {{ item.fieldTitle }}
-              </b-tag>
+                <b-tag type="info"
+                  :key="index"
+                  v-for="(tag,index) in selectedList"
+                  closable
+                  @on-close="handleCloseTag(index)">
+                  {{tag.resourceName}}
+                </b-tag>
+
+                <b-button type="primary" style="width: 100%;margin: 10px 0;"
+                  v-if="selectedList.length"
+                  @click="postSelectedList">
+                  确定添加
+                </b-button>
+              </template>
+
+              <!-- 为信息项模式且信息项需要单选则启用此块逻辑 -->
+              <template v-if="paraType === 'I' && !infoMulModel">
+                <div slot="header" flex="main:justify cross:center">
+                  <span>选择信息项(点击选择)</span>
+                </div>
+
+                <b-tag type="info" style="cursor: pointer; margin: 4px;"
+                  v-for="item in infoItemList"
+                  :key="item.id"
+                  @on-click="handleRaiod(item)">
+                  {{ item.fieldTitle }}
+                </b-tag>
+              </template>
+
+              <!-- 为信息项模式且信息项需要多选则启用此块逻辑 -->
+              <template v-if="paraType === 'I' && infoMulModel">
+                <div slot="header" flex="main:justify cross:center">
+                  <span>选择信息项</span>
+                  <div>
+                    <b-button type="text" @click="handleClearBtn">清空</b-button>
+                    <b-button type="text" @click="handleAddBtn">添加</b-button>
+                  </div>
+                </div>
+                <p v-if="infoItemList.length" style="margin: 5px;">点击以下标签多选：</p>
+
+                <b-tag
+                  style="cursor: pointer; margin: 4px;"
+                  :type="item.customSelected ? 'primary' : 'info'"
+                  v-for="item in infoItemList"
+                  :key="item.id"
+                  @on-click="handleMulSelect(item)">
+                  {{ item.fieldTitle }}
+                </b-tag>
+              </template>
             </b-card>
-          </b-col>
 
-          <!-- <div v-else class="card-con">
-              <b-card head-tip header="选择信息项">
-                <b-table :data="infoItemList" :columns="columnsInfo"
-                  :loading="infoTableLoading" height="400">
-                  <template v-slot:dataType="{ row }">
-                    {{ dataTypeMap[row.dataType] }}
-                  </template>
-                  <template v-slot:action="{ row }">
-                    <b-button type="text" @click="handleRaiod(row)">
-                      选择
-                    </b-button>
-                  </template>
-                </b-table>
-              </b-card>
-            </div> -->
+            <!-- <div v-else class="card-con">
+                <b-card head-tip header="选择信息项">
+                  <b-table :data="infoItemList" :columns="columnsInfo"
+                    :loading="infoTableLoading" height="400">
+                    <template v-slot:dataType="{ row }">
+                      {{ dataTypeMap[row.dataType] }}
+                    </template>
+                    <template v-slot:action="{ row }">
+                      <b-button type="text" @click="handleRaiod(row)">
+                        选择
+                      </b-button>
+                    </template>
+                  </b-table>
+                </b-card>
+              </div> -->
+          </b-col>
         </b-row>
       </v-table-wrap>
     </b-modal>
@@ -158,7 +167,7 @@
           { title: '名称', key: 'fieldName', align: 'center' },
           { title: '标题', key: 'fieldTitle', align: 'center' },
           { title: '操作', slot: 'action', align: 'center' }
-        ], // 信息项表单columns
+        ], // 信息项表单columns，暂时弃用
         infoItemList: [], // 存储信息项
         dataTypeMap: { // 信息项表单使用枚举对象
           string: '字符型',
@@ -410,18 +419,18 @@
           this.width = '75%'
           this.columns = [
             { type: 'index', width: 50, align: 'center' },
-            { title: '资源名称', key: 'resourceName', align: 'center' },
-            { title: '主体类别', slot: 'personClass', align: 'center' },
-            { title: '资源性质', slot: 'resProperty', align: 'center' }
+            { title: '资源名称', key: 'resourceName', ellipsis: true, tooltip: true, align: 'center' },
+            { title: '主体类别', slot: 'personClass', ellipsis: true, tooltip: true, align: 'center' },
+            { title: '资源性质', slot: 'resProperty', ellipsis: true, tooltip: true, align: 'center' }
           ]
         } else {
           this.width = '80%'
           this.columns = [
             { type: 'index', width: 50, align: 'center' },
-            { title: '资源名称', key: 'resourceName', align: 'center' },
-            { title: '主体类别', slot: 'personClass', align: 'center' },
-            { title: '资源性质', slot: 'resProperty', align: 'center' },
-            { title: '操作', slot: 'action', width: 150, align: 'center' }
+            { title: '资源名称', key: 'resourceName', ellipsis: true, tooltip: true, align: 'center' },
+            { title: '主体类别', slot: 'personClass', ellipsis: true, tooltip: true, align: 'center' },
+            { title: '资源性质', slot: 'resProperty', ellipsis: true, tooltip: true, align: 'center' },
+            { title: '操作', slot: 'action', width: 75, align: 'center' }
           ]
         }
       }
@@ -442,9 +451,6 @@
 
 <style lang="stylus" scoped>
   .source-select {
-    .table {
-      // max-height: 400px;
-      // overflow-y: auto;
-    }
+
   }
 </style>
