@@ -80,7 +80,7 @@
           category: ''
         },
         columns: [
-          { type: 'selection', width: 50, align: 'center' },
+          // { type: 'selection', width: 50, align: 'center' },
           { title: '信息类名称', key: 'categoryName', align: 'center' },
           { title: '信息类类别', slot: 'categoryCode', align: 'center' },
           // { title: '信息项名称', key: 'categoryName', align: 'center' },

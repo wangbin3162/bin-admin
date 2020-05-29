@@ -2,7 +2,8 @@
   <div class="credit-report-config-info-class-edit">
     <page-header-wrap :title="title" show-close @on-close="$emit('close')">
       <v-edit-wrap>
-        <div slot="full">
+        <div slot="full" style="position: relative;">
+          <b-loading fix show-text="loading" v-if="loading"></b-loading>
           <v-title-bar label="基本信息" class="mb-15"></v-title-bar>
           <b-form :model="form" ref="form" :rules="rules"
             :label-width="100" label-position="left" style="padding: 0 100px;">
@@ -39,7 +40,7 @@
             </template>
 
             <template v-slot:action="{ index }">
-              <b-button type="text" @click="handleRemove(index)">删除</b-button>
+              <b-button type="text" text-color="danger" @click="handleRemove(index)">删除</b-button>
               <b-button type="text" @click="handleEdit(index)">编辑</b-button>
             </template>
           </b-table>
@@ -89,10 +90,11 @@
     },
     data () {
       return {
+        loading: false, // 遮罩loading
+        btnLoading: false,
         curIndex: 0, // 存储当前行index
         resourceKey: '', // 传递给edit-source-info-field
         fieldMap: null, // 当前编辑行的fieldNames与fieldTitles，传递给edit-source-info-field
-        btnLoading: false,
         openSource: false, // 打开source-info-select组件
         openSourceField: false, // 打开edit-source-info-field组件
         form: {
@@ -254,7 +256,7 @@
       handleRemove (index) {
         this.$confirm({
           title: '删除',
-          content: '确定要删除当前信息报告信息项？',
+          content: '确定要删除当前信用报告信息项？',
           loading: true,
           okType: 'danger',
           onOk: () => {
@@ -272,7 +274,7 @@
         const fieldMap = new Map()
         const fieldNamesList = row.fieldNames.split(',')
         const fieldTitlesList = row.fieldTitles.split(',')
-        const onelineNamesList = row.onelineNames.split(',')
+        const onelineNamesList = row.onelineNames === undefined ? [] : row.onelineNames.split(',')
 
         for (let i = 0; i < fieldNamesList.length; i++) {
           const fieldName = fieldNamesList[i]
@@ -317,6 +319,7 @@
         }
       },
       async getInfoClassDetaiil (id) {
+        this.loading = true
         try {
           const res = await getInfoClassDetaiil(id)
           this.form = { ...this.form, ...res }
@@ -325,6 +328,7 @@
         } catch (error) {
           console.error(error)
         }
+        this.loading = false
       },
       initEditData () {
         if (this.editData) {

@@ -136,6 +136,7 @@
         if (visible) {
           this.init()
         } else {
+          this.detail = {}
           this.list = []
           this.listEdit = []
           this.isEdit = true

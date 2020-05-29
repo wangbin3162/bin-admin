@@ -45,7 +45,7 @@
               @on-change="handleCurrentChange"
               @on-page-size-change="handleSizeChange"></b-page>
           </b-col>
-          <b-col span="10">
+          <b-col span="10" class="card-con">
             <b-card v-if="paraType === 'S'"
               class="box-card" head-tip
               header="已选资源信息">
@@ -63,7 +63,39 @@
               </b-button>
             </b-card>
 
-            <!-- <div v-else class="card-con">
+            <!-- 为信息项模式且信息项需要单选则启用此块逻辑 -->
+            <b-card v-if="paraType === 'I' && !infoMulModel" head-tip header="选择信息项(点击选择)">
+              <b-tag type="info" style="cursor: pointer; margin: 4px;"
+                v-for="item in infoItemList"
+                :key="item.id"
+                @on-click="handleRaiod(item)">
+                {{ item.fieldTitle }}
+              </b-tag>
+            </b-card>
+
+            <!-- 为信息项模式且信息项需要多选则启用此块逻辑 -->
+            <b-card v-if="paraType === 'I' && infoMulModel" head-tip>
+              <div slot="header" flex="main:justify cross:center">
+                <span>选择信息项</span>
+                <div>
+                  <b-button type="text" @click="handleClearBtn">清空</b-button>
+                  <b-button type="text" @click="handleAddBtn">添加</b-button>
+                </div>
+              </div>
+              <p v-if="infoItemList.length" style="margin: 5px;">点击以下标签多选：</p>
+
+              <b-tag
+                style="cursor: pointer; margin: 4px;"
+                :type="item.customSelected ? 'primary' : 'info'"
+                v-for="item in infoItemList"
+                :key="item.id"
+                @on-click="handleMulSelect(item)">
+                {{ item.fieldTitle }}
+              </b-tag>
+            </b-card>
+          </b-col>
+
+          <!-- <div v-else class="card-con">
               <b-card head-tip header="选择信息项">
                 <b-table :data="infoItemList" :columns="columnsInfo"
                   :loading="infoTableLoading" height="400">
@@ -78,35 +110,6 @@
                 </b-table>
               </b-card>
             </div> -->
-            <!-- 为信息项模式且信息项需要单选则启用此块逻辑 -->
-            <b-card v-if="paraType === 'I' && !infoMulModel" head-tip header="选择信息项(点击选择)">
-              <b-tag type="info" style="cursor: pointer; margin: 4px;"
-                v-for="item in infoItemList"
-                :key="item.id"
-                @on-click="handleRaiod(item)">
-                {{ item.fieldTitle }}
-              </b-tag>
-            </b-card>
-
-            <b-card v-if="paraType === 'I' && infoMulModel" head-tip>
-              <div slot="header" flex="main:justify cross:center">
-                <span>选择信息项</span>
-                <div>
-                  <b-button type="text" @click="handleClearBtn">清空</b-button>
-                  <b-button type="text" @click="handleAddBtn">添加</b-button>
-                </div>
-              </div>
-
-              <b-tag
-                style="cursor: pointer; margin: 4px;"
-                :type="item.customSelected ? 'primary' : 'info'"
-                v-for="item in infoItemList"
-                :key="item.id"
-                @on-click="handleMulSelect(item)">
-                {{ item.fieldTitle }}
-              </b-tag>
-            </b-card>
-          </b-col>
         </b-row>
       </v-table-wrap>
     </b-modal>
@@ -294,6 +297,8 @@
             infoItems: selectedList
           })
           this.showDialog = false // close modal
+        } else {
+          this.$message({ type: 'warning', content: '请选择后添加。' })
         }
       },
       // 通用枚举
@@ -426,11 +431,11 @@
 
 <style lang="stylus">
   .source-select {
-    .card-con .bin-card .bin-card__header {
-      padding: 14px 20px !important;
-    }
+    // .card-con .bin-card .bin-card__header {
+    //   padding: 14px 20px !important;
+    // }
     .card-con .bin-card .bin-card__body {
-      padding: 0 !important;
+      padding: 4px;
     }
   }
 </style>
