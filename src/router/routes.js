@@ -4,7 +4,6 @@ import dataManage from './modules/data-manage'
 import dataAnalyze from './modules/data-analyze'
 import creditRating from './modules/credit-rating'
 import urp from './modules/urp'
-import formDemo from './demo/form-demo'
 
 /**
  * router自定义配置项
@@ -18,7 +17,7 @@ import formDemo from './demo/form-demo'
   }
  **/
 export const asyncRouterMap = [
-  sys, dataManage, dataAnalyze, creditRating, urp, formDemo,
+  sys, dataManage, dataAnalyze, creditRating, urp,
   { path: '*', redirect: '/404', hidden: true }
 ]
 

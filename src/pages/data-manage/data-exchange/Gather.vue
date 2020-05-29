@@ -7,7 +7,7 @@
             <span style="width: 80px;">资源名称：</span>
             <b-input v-model.trim="resourceName" placeholder="请输入资源名称" clearable
                      @on-keyup.enter="handleFilter"
-                     style="width: 400px;margin-right: 4px;"></b-input>
+                     style="width: 400px;margin-right: 4px;"/>
             <b-button type="primary" @click="handleFilter">查 询</b-button>
           </div>
         </div>
@@ -16,11 +16,12 @@
             <div class="item">
               <div class="card-header t-ellipsis">{{res.resourceName}}</div>
               <div class="center-box">
-                <p class="f-s-12 mb-15">最新采集时间:{{res.createDate}}</p>
+                <p class="create-date">最新采集时间:{{res.createDate}}</p>
+                <div class="count">50<span>&nbsp;条</span></div>
               </div>
-              <div class="check-box" flex="main:justify cross:center">
+              <div class="check-box">
+                <span class="check" @click="handleDownloadTemplate(res)">模板下载</span>
                 <span class="check" @click="handleCheckRes(res)">查看数据</span>
-                <b-icon name="md-arrow-round-forward" @click.native="handleCheckRes(res)"></b-icon>
               </div>
             </div>
           </div>
@@ -37,6 +38,7 @@
   import { getMyGather } from '../../../api/data-manage/res-info.api'
   import GatherList from './components/Gather/GatherList'
   import * as api from '../../../api/data-manage/gather.api'
+  import Util from '../../../common/utils/util'
 
   export default {
     name: 'Gather',
@@ -59,7 +61,7 @@
           if (res.status === 200) {
             let detail = res.data.data
             if (resource.status === 'audited' && detail && detail.items) { // 已经发布过的
-              let columns = this.formatItemsToColumns(detail.items)
+              let columns = detail.items.filter(i => i.id)
               this.dialogStatus = 'gatherList'
               this.$refs.gatherList.open(detail, columns)
             } else {
@@ -67,6 +69,19 @@
             }
           }
         })
+      },
+      // 下载模板
+      handleDownloadTemplate(resource) {
+        if (!this.downloadEvent) { // 点击下载事件，需要函数防抖动
+          this.downloadEvent = this.$util.debounce((resource) => {
+            api.downloadTemplate(resource.resourceKey).then(res => {
+              if (res.status === 200) {
+                Util.downloadFile(res.data, `${resource.resourceName}.xlsx`)
+              }
+            })
+          }, 1000)
+        }
+        this.downloadEvent(resource)
       },
       // 查询方法
       handleFilter() {
@@ -90,10 +105,6 @@
             this.computedList = this.list
           }
         })
-      },
-      // 根据获取的items转换为原始表头数组
-      formatItemsToColumns(items) {
-        return items.filter(i => i.id)
       }
     }
   }
@@ -110,50 +121,67 @@
     padding: 10px;
     display: flex;
     flex-wrap: wrap;
-    .card-move-enter, .card-move-leave-to {
-      opacity: 0;
-      transform: translateY(30px);
-    }
-    .card-move-leave-active {
-      position: absolute;
-    }
     .card-box {
       width: 25%;
       padding: 10px;
-      transition: all .5s;
       .item {
-        padding: 6px 0;
-        border-radius: 8px;
-        box-shadow: 0 0 2px 1px rgba(0, 0, 0, .1);
+        border-radius: 2px;
+        box-shadow: 0 0 0 1px rgba(0, 0, 0, .1);
+        overflow: hidden;
+        transition: .25s;
         .card-header {
           position: relative;
-          font-size: 14px;
-          padding: 10px 0 10px 15px;
-          &:before {
-            content: ''
-            position: absolute;
-            top: 10px;
-            left: 0;
-            bottom: 10px;
-            width: 4px;
-            background rgb(32, 123, 247);
+          font-size: 16px;
+          padding: 15px 15px 0;
+        }
+        .create-date {
+          font-size: 12px;
+          color: #999;
+        }
+        .count {
+          padding: 16px 0;
+          font-size: 30px;
+          color: rgba(0, 0, 0, .65)
+          span {
+            font-size: 14px;
           }
         }
         .center-box {
-          padding: 0 10px;
+          padding: 0 15px;
         }
         .check-box {
-          padding: 10px 30px 5px;
           border-top: 1px solid #ecf0f5;
-          transition: .35s;
-          &:hover {
-            padding-right: 25px;
-          }
-          .check, .iconfont {
+          padding: 10px 0;
+          .check {
+            display: inline-block;
+            width: 50%;
             cursor: pointer;
-            color: #5f6f8f;
+            height: 24px;
+            line-height: 24px;
+            text-align: center;
+            transition: .25s;
+            color: #666;
+            &:hover {
+              color: #1089ff;
+            }
+            &:first-child {
+              border-right: 1px solid #ecf0f5;
+            }
           }
         }
+        &:hover {
+          box-shadow: 0 0 5px 1px rgba(0, 0, 0, .2);
+        }
+      }
+    }
+    @media (min-width: 1200px) and (max-width: 1500px) {
+      .card-box {
+        width: 33.33%;
+      }
+    }
+    @media (min-width: 768px) and (max-width: 1199px) {
+      .card-box {
+        width: 50%;
       }
     }
   }

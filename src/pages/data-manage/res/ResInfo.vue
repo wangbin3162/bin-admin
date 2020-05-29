@@ -94,7 +94,7 @@
                 @on-page-size-change="handleSizeChange"></b-page>
       </v-table-wrap>
     </page-header-wrap>
-    <page-header-wrap v-show="isEdit" :title="editTitle" show-close @on-close="handleCancel">
+    <page-header-wrap v-if="isEdit" :title="editTitle" show-close @on-close="handleCancel">
       <v-edit-wrap>
         <template slot="full">
           <b-collapse value="1" simple>
@@ -195,16 +195,26 @@
             </b-collapse-panel>
           </b-collapse>
           <template v-if="resource.items">
-            <v-title-bar label="信息项" lass="mb-15">
-              <b-button v-if="dialogStatus==='modify' && resource.availableStatus === 'notavailable'" type="primary"
-                        transparent @click="handleReload">重载信息项
-              </b-button>
+            <v-title-bar label="信息项配置" class="mb-20">
+              <div class="pr-20">
+                <b-button type="text" icon="ios-eye" @click="previewForm">预览</b-button>
+                <b-button v-if="dialogStatus==='modify' && resource.availableStatus === 'notavailable'"
+                          type="text" @click="handleReload" icon="ios-refresh">
+                  重载信息项
+                </b-button>
+                <b-button type="text" icon="ios-bug"
+                          @click.native="debugJson=!debugJson"
+                          :text-color="debugJson?'danger':'primary'">
+                  debug
+                </b-button>
+              </div>
             </v-title-bar>
-            <!--信息项表格组件-->
-            <res-info-items v-model="resource.items"
-                            :data-type-map="dataTypeMap"
-                            :field-ctrl-map="fieldCtrlMap">
-            </res-info-items>
+            <fields-cfg v-model="resource.items"/>
+            <!--调试模式-->
+            <div class="mt-15" v-if="debugJson">
+              <b-tag type="success" size="small">实际存储对象[fields]</b-tag>
+              <b-code-editor :value="JSON.stringify(resource.items,null,2)" readonly/>
+            </div>
           </template>
         </template>
         <!--保存提交-->
@@ -252,28 +262,60 @@
     <!--资源扩展-->
     <res-ext-edit ref="resExtEdit" @on-close="handleCancel"/>
     <!--示例数据-->
-    <test-form ref="testForm" @on-close="handleCancel"/>
+    <sample-data ref="sampleData" @on-close="handleCancel"/>
+    <!--预览表单-->
+    <b-modal v-model="previewModal" title="预览表单"
+             fullscreen @on-hidden="previewModalForm=false"
+             :body-styles="{overflowY:'auto',top:'55px'}">
+      <b-form v-if="previewModalForm" :model="form" :rules="rules" ref="dynamicFormRef" label-position="top">
+        <!--自定义form-item-->
+        <form-item :key="item.id||index" v-for="(item,index) in dynamicForm"
+                   :label="item.fieldTitle"
+                   :prop="item.fieldName"
+                   :control-type="item.controlType">
+          <!--动态控件-->
+          <form-control v-model="form[item.fieldName]"
+                        :resource-key="resource.resourceKey"
+                        :control-type="item.controlType"
+                        :field-name="item.fieldName"
+                        :field-desc="item.fieldDesc"
+                        :field-title="item.fieldTitle"
+                        :data-length="item.dataLength"
+                        :data-precision="item.dataPrecision"
+                        :options="item.validOptions"
+                        :table-name="resource.tableName"
+                        @on-select="handleSelectNatLeg">
+          </form-control>
+        </form-item>
+      </b-form>
+      <div slot="footer">
+        <b-button @click="previewModal=false">取 消</b-button>
+        <b-button @click="handleDynamicFormReset">重 置</b-button>
+        <b-button type="primary" @click="handleDynamicFormSubmit">测 试</b-button>
+      </div>
+    </b-modal>
   </div>
 </template>
 
 <script>
   import commonMixin from '../../../common/mixins/mixin'
   import permission from '../../../common/mixins/permission'
+  import dynamicForm from '../../../common/mixins/dynamic-form'
   import { getClassifyTree } from '../../../api/data-manage/classify.api'
   import { getPersonClassTree } from '../../../api/data-manage/metadata.api'
   import { getFieldCtrl } from '../../../api/enum.api'
   import * as api from '../../../api/data-manage/res-info.api'
-  import { MetaDataChoose, ResExtEdit } from './components/ResInfo'
-  import ResInfoItems from './components/ResInfoItems'
+  import { MetaDataChoose, ResExtEdit, SampleData } from './components/ResInfo'
   import { requiredRule } from '../../../common/utils/validate'
-  import TestForm from './components/ResInfo/TestForm'
   import { getResourceInfo } from '../../../api/data-manage/gather.api'
+  import { initFormList } from '../../../components/Validator/FieldsCfg/cfg-util'
+  import FieldsCfg from '../../../components/Validator/FieldsCfg/FieldsCfg'
 
   // map映射中如 #static 标识: 静态不改变的枚举的暂不调用接口获取
   export default {
     name: 'ResInfo',
-    components: { TestForm, ResExtEdit, MetaDataChoose, ResInfoItems },
-    mixins: [commonMixin, permission],
+    components: { SampleData, FieldsCfg, ResExtEdit, MetaDataChoose },
+    mixins: [commonMixin, permission, dynamicForm],
     data() {
       const validateResourceCode = (rule, value, callback) => {
         if (!/^[0-9]{4}$/.test(value)) {
@@ -296,6 +338,7 @@
         }
       }
       return {
+        debugJson: false,
         moduleName: '资源信息',
         listQuery: {
           resourceCode: '', // 所属分类
@@ -306,9 +349,8 @@
         },
         treeData: [],
         columns: [
-          { type: 'index', width: 50, align: 'center' },
           { title: '资源名称', slot: 'resourceName' },
-          { title: '主体类别', slot: 'personClass' },
+          { title: '主体类别', slot: 'personClass', width: 130 },
           { title: '资源性质', slot: 'resProperty', width: 120, align: 'center' },
           { title: '资源状态', slot: 'status', width: 90, align: 'center' },
           { title: '可用状态', slot: 'availableStatus', width: 90, align: 'center' },
@@ -360,7 +402,9 @@
           datetime: '日期时间型',
           text: '备注型'
         },
-        fieldStatusMap: { use: '选用', ignore: '不选用' } // 资源信息项状态#static
+        fieldStatusMap: { use: '选用', ignore: '不选用' }, // 资源信息项状态#static
+        previewModal: false,
+        previewModalForm: false
       }
     },
     created() {
@@ -406,11 +450,11 @@
       // 编辑事件
       handleModify(row) {
         api.getResDetail(row.id).then(res => {
+          this.openEditPage('modify')
           this.resource = res.data.data
           // 分隔类目编码,并显示后四位 210,C0204,1234
           this.resource.metadataCode = this.resource.resourceCode.slice(3, 8)
           this.resource.resourceCode = this.resource.resourceCode.slice(-4)
-          this.openEditPage('modify')
         })
       },
       // 更多操作点击事件
@@ -420,7 +464,7 @@
             this.handlePublish(row)
             break
           case 'test':
-            this.handleCheckRes(row)
+            this.handleSampleData(row)
             break
           case 'remove':
             this.handleRemove(row)
@@ -470,16 +514,16 @@
           }
         })
       },
-      // 根据resourceKey查看动态渲染列表
-      handleCheckRes(row) {
+      // 示例数据弹窗
+      handleSampleData(row) {
         // 根据resourceKey获取资源信息，并将原始表头信息传入gather-list组件
         getResourceInfo(row.resourceKey).then(res => {
           if (res.data.code === '0') {
             let detail = res.data.data
             if (detail && detail.items) {
               let columns = detail.items.filter(i => i.id)
-              this.dialogStatus = 'testForm'
-              this.$refs.testForm.open(detail, columns)
+              this.dialogStatus = 'sampleData'
+              this.$refs.sampleData.open(detail, columns)
             }
           } else {
             this.$notice.danger({ title: '提示', desc: res.data.message })
@@ -525,25 +569,9 @@
         this.resource.metadataCode = item.metadataCode // 元信息所属类目code
         this.resource.metadataKey = item.metadataKey // 资源标识符带入
         // 格式化items
-        this.resource.items = item.fields.map(item => {
-          return {
-            fieldName: item.fieldName, // 元信息名称（英文）
-            fieldTitle: item.fieldTitle, // 元信息标题
-            dataType: item.dataType, // 数据类型
-            openType: 'PUBLIC', // 信息项公开类型,默认社会公开
-            controlType: 'TEXT', // 控件类型,默认文本框
-            fieldDesc: '', // 提示信息
-            validValue: '', // 有效值
-            maskModel: '', // 掩码方式
-            isEncrypt: '', // 是否加密
-            required: 'Y', // 信息项类型，默认核心项
-            status: 'use', // 启用状态，默认启用
-            tokenizer: '', // 是否分词
-            // eslint-disable-next-line no-template-curly-in-string
-            checkRules: '{"rules":["$required(obj, value, {\\"message\\":\\"${title}不可以为空\\"})"]}'// 校验配置,校验配置默认配置一个必填项
-          }
-        })
-
+        this.resource.items = item.fields.map(field => {
+          return this.fieldsToInfoItem(field, this.resource.id)
+        }).filter(item => item.fieldName.indexOf('_id') === -1)
         // 选中后重新触发校验
         this.$refs.form.validateField('tableName')
         this.$refs.form.validateField('personClass')
@@ -576,26 +604,8 @@
                   // 新增项
                   const addItems = res.data.data.addFields
                   addItems.forEach(item => {
-                    if (!currentItemsMap.has(item.fieldName)) {
-                      currentItemsMap.set(
-                        item.fieldName,
-                        {
-                          fieldName: item.fieldName, // 元信息名称（英文）
-                          fieldTitle: item.fieldTitle, // 元信息标题
-                          dataType: item.dataType, // 数据类型
-                          openType: 'PUBLIC', // 信息项公开类型,默认社会公开
-                          controlType: 'TEXT', // 控件类型,默认文本框
-                          fieldDesc: item.fieldDesc, // 提示信息
-                          validValue: '', // 有效值
-                          maskModel: '', // 掩码方式
-                          isEncrypt: '', // 是否加密
-                          required: 'Y', // 信息项类型，默认核心项
-                          status: 'use', // 启用状态，默认启用
-                          tokenizer: '', // 是否分词
-                          directoryId: this.resource.id,
-                          // eslint-disable-next-line no-template-curly-in-string
-                          checkRules: '{"rules":["$required(obj, value, {\\"message\\":\\"${title}不可以为空\\"})"]}'// 校验配置,校验配置默认配置一个必填项
-                        })
+                    if (!currentItemsMap.has(item.fieldName) && item.fieldName.indexOf('_id') === -1) {
+                      currentItemsMap.set(item.fieldName, this.fieldsToInfoItem(item, this.resource.id))
                     }
                   })
                 }
@@ -762,6 +772,23 @@
               total: response.data.total
             })
           }
+        })
+      },
+      // 预览form
+      previewForm() {
+        if (this.resource.items.length === 0) {
+          this.$message({ type: 'danger', content: '没有配置信息项，请配置后预览' })
+          return
+        }
+        // 过滤person_id
+        let fields = this.resource.items.filter(item => item.fieldName.indexOf('_id') === -1 && item.status === 'use')
+        // 根据原始列扩展动态表单列表数据
+        initFormList(fields).then(res => {
+          this.previewModal = true
+          this.previewModalForm = true
+          this.handleDynamicFormReset()
+          this.dynamicForm = res
+          this.initDynamicForm(res) // 根据动态列扩展form，rules和
         })
       }
     }

@@ -15,13 +15,13 @@ export default {
     {
       path: 'resInfo2',
       name: 'ResInfo2',
-      component: () => import('../../pages/data-manage/res/ResInfo2'),
+      component: () => import('../../pages/data-manage/res/ResInfo'),
       meta: { title: '资源信息(测试)', roles: true }
     },
     {
       path: 'gather2',
       name: 'Gather2',
-      component: () => import('../../pages/data-manage/data-exchange/Gather2'),
+      component: () => import('../../pages/data-manage/data-exchange/Gather'),
       meta: { title: '我的采集(新)', roles: true }
     }
   ]
