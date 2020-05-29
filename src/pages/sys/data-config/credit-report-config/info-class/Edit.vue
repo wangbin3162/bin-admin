@@ -66,7 +66,8 @@
       @save="handleSave"
       :open="openSourceField"
       :resourceKey="resourceKey"
-      :fieldNames="fieldNames">
+      :fieldNames="fieldNames"
+      :fieldMap="fieldMap">
     </edit-source-info-field>
   </div>
 </template>
@@ -92,6 +93,7 @@
         curIndex: 0, // 存储当前行index
         resourceKey: '', // 传递给edit-source-info-field
         fieldNames: '', // 当前编辑行的fieldNames，传递给edit-source-info-field
+        fieldMap: null, // 当前编辑行的fieldNames与fieldTitles，传递给edit-source-info-field
         btnLoading: false,
         openSource: false, // 打开source-info-select组件
         openSourceField: false, // 打开edit-source-info-field组件
@@ -266,11 +268,20 @@
       },
       // 编辑按钮回调
       handleEdit (index) {
-        const row = this.listCopy[index]
-
         this.curIndex = index
+
+        const row = this.listCopy[index]
+        const fieldMap = new Map()
+        const fieldNamesList = row.fieldNames.split(',')
+        const fieldTitlesList = row.fieldTitles.split(',')
+
+        for (let i = 0; i < fieldNamesList.length; i++) {
+          fieldMap.set(fieldNamesList[i], fieldTitlesList[i])
+        }
+
         this.resourceKey = row.resourceKey
-        this.fieldNames = row.fieldNames
+        this.fieldMap = fieldMap
+
         this.openSourceField = true
       },
       // 资源编辑组件保存后的回调
