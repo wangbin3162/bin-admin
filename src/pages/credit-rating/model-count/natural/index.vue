@@ -67,7 +67,7 @@
           </template>
 
           <template v-slot:action="{ row }">
-            <b-button type="text" @click="handleModify(row)">
+            <b-button type="text" @click="handleCreditReport(row)">
               信用报告
             </b-button>
           </template>
@@ -125,7 +125,7 @@
         openReCount: false, // 打开re-count组件
         openTempCount: false, // 打开temp-count组件
         personClass: 'A01',
-        detail: '', // 存储行数据
+        detail: {}, // 存储行数据
         listQuery: {
           name: '',
           modelId: '',
@@ -182,7 +182,7 @@
         this.detail = row
         this.openEditPage('check')
       },
-      handleModify (row) {
+      handleCreditReport (row) {
         // this.editData = row
         // this.openEditPage('modify')
       },
