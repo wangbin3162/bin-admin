@@ -25,8 +25,12 @@
         <!-- 操作栏 -->
         <v-table-tool-bar>
           <b-button type="primary" icon="ios-add-circle-outline"
-            @click="handleReCount">重新计算</b-button>
-          <b-button plain icon="md-list">模板计算</b-button>
+            @click="handleReCount">
+            重新计算
+          </b-button>
+          <b-button plain icon="md-list" @click="handleTempCount">
+            模板计算
+          </b-button>
           <temp-dl-btn personClass="A02"></temp-dl-btn>
         </v-table-tool-bar>
 
@@ -64,7 +68,14 @@
       @close="openReCount = false"
       @recount-success="searchList"
       :open="openReCount"
-      personClass="A02"></re-count>
+      personClass="A02">
+    </re-count>
+
+    <temp-count
+      @close="openTempCount = false"
+      :open="openTempCount"
+      personClass="A02">
+    </temp-count>
   </div>
 </template>
 
@@ -74,6 +85,7 @@
   import Detail from './Detail'
   import TempDlBtn from '../components/TempDlBtn'
   import ReCount from '../components/ReCount'
+  import TempCount from '../components/TempCount'
   import { getLegalList, getModelList, reCount } from '../../../../api/credit-rating/model-count.api'
 
   export default {
@@ -82,11 +94,13 @@
     components: {
       Detail,
       TempDlBtn,
-      ReCount
+      ReCount,
+      TempCount
     },
     data () {
       return {
         openReCount: false, // 打开re-count组件
+        openTempCount: false, // 打开temp-count组件
         id: '', // 查看详情的id
         listQuery: {
           compName: '',
@@ -138,6 +152,10 @@
       // 重新计算按钮回调
       handleReCount () {
         this.openReCount = true
+      },
+      // 模板计算按钮回调
+      handleTempCount () {
+        this.openTempCount = true
       },
       handleCheck (id) {
         this.id = id

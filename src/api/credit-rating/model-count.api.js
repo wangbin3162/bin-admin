@@ -129,7 +129,7 @@ export async function reCount(params) {
         data: params
       })
       if (res.data.successful) {
-        resolve(res.data.data)
+        resolve()
       } else {
         reject(res.data.message)
       }
@@ -142,7 +142,7 @@ export async function reCount(params) {
 /**
  * @author haodongdong
  * @description 模板下载
- * @param {*} params
+ * @param {*} personClass
  * @returns Promise
  */
 export async function templateDownload(personClass) {
@@ -157,6 +157,35 @@ export async function templateDownload(personClass) {
         }
       })
       resolve(res.data)
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
+ * @description 模板上传计算
+ * @param {*} params
+ * @returns Promise
+ */
+export async function templateCount(params) {
+  return new Promise(async (resolve, reject) => {
+    const url = '/api/eval/cal/result/template/import'
+
+    let data = new FormData()
+
+    appendFormData(data, 'personClass', params.personClass)
+    appendFormData(data, 'modelId', params.modelId)
+    appendFormData(data, 'uploadFile', params.uploadFile)
+
+    try {
+      const res = await requestPostFormData(url, data)
+      if (res.data.successful) {
+        resolve()
+      } else {
+        reject(res.data.message)
+      }
     } catch (error) {
       reject(error)
     }
