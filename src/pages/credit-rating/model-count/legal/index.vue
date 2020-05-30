@@ -25,9 +25,9 @@
         <!-- 操作栏 -->
         <v-table-tool-bar>
           <b-button type="primary" icon="ios-add-circle-outline"
-            @click="handleCheck(1)">重新计算</b-button>
+            @click="handleReCount">重新计算</b-button>
           <b-button plain icon="md-list">模板计算</b-button>
-          <b-button plain icon="ios-arrow-round-down">下载模板</b-button>
+          <temp-dl-btn personClass="A02"></temp-dl-btn>
         </v-table-tool-bar>
 
         <!-- table -->
@@ -59,13 +59,15 @@
   import commonMixin from '../../../../common/mixins/mixin'
   import permission from '../../../../common/mixins/permission'
   import Detail from './Detail'
-  import { getLegalList, getModelList } from '../../../../api/credit-rating/model-count.api'
+  import TempDlBtn from '../components/TempDlBtn'
+  import { getLegalList, getModelList, reCount } from '../../../../api/credit-rating/model-count.api'
 
   export default {
     name: 'ModelCountLegal',
     mixins: [commonMixin, permission],
     components: {
-      Detail
+      Detail,
+      TempDlBtn
     },
     data () {
       return {
@@ -119,8 +121,9 @@
           return item.id === val
         }).ratingOptions
       },
-      handleCreate () {
-        this.openEditPage('create')
+      // 重新计算按钮回调
+      handleReCount () {
+
       },
       handleCheck (id) {
         this.id = id

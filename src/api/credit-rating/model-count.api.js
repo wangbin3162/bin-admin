@@ -2,7 +2,10 @@
  * @author haodongdong
  * @description 信用评级下模型计算相关接口
  */
-import request from '../request'
+import request, {
+  appendFormData,
+  requestPostFormData
+} from '../request'
 
 /**
  * @author haodongdong
@@ -102,6 +105,53 @@ export async function getCreditInfo(query) {
         params: {
           resultId: query.id,
           page: query.page - 1
+        }
+      })
+      resolve(res.data)
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
+ * @description 重新计算
+ * @param {*} params
+ * @returns Promise
+ */
+export async function reCount(params) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let url = '/api/eval/cal/result/reCalc'
+      let data = new FormData()
+
+      appendFormData(data, 'personId', params.personId)
+      appendFormData(data, 'modelId', params.modelId)
+
+      const res = await requestPostFormData(url, data)
+      resolve(res.data)
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
+ * @description 模板下载
+ * @param {*} params
+ * @returns Promise
+ */
+export async function templateDownload(personClass) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/api/eval/cal/result/template/download',
+        responseType: 'blob',
+        method: 'get',
+        params: {
+          personClass
         }
       })
       resolve(res.data)
