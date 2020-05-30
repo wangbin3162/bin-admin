@@ -31,13 +31,25 @@
           <b-button plain icon="md-list" @click="handleTempCount">
             模板计算
           </b-button>
-          <temp-dl-btn personClass="A02"></temp-dl-btn>
+          <temp-dl-btn :personClass="personClass">
+            模板下载
+          </temp-dl-btn>
+
+          <template slot="right">
+            <b-button type="text">
+              模板计算记录
+            </b-button>
+          </template>
         </v-table-tool-bar>
 
         <!-- table -->
         <b-table :columns="columns" :data="list" :loading="listLoading">
           <template v-slot:modelName="{ row }">
             <b-button type="text" @click="handleCheck(row.id)">{{ row.modelName }}</b-button>
+          </template>
+
+          <template v-slot:idCode="{ row }">
+            {{ row.legBaseInfo.idCode }}
           </template>
 
           <template v-slot:createDate="{ row }">
@@ -68,13 +80,13 @@
       @close="openReCount = false"
       @recount-success="searchList"
       :open="openReCount"
-      personClass="A02">
+      :personClass="personClass">
     </re-count>
 
     <temp-count
       @close="openTempCount = false"
       :open="openTempCount"
-      personClass="A02">
+      :personClass="personClass">
     </temp-count>
   </div>
 </template>
@@ -101,6 +113,7 @@
       return {
         openReCount: false, // 打开re-count组件
         openTempCount: false, // 打开temp-count组件
+        personClass: 'A02',
         id: '', // 查看详情的id
         listQuery: {
           compName: '',
@@ -111,7 +124,7 @@
           { title: '名称', slot: 'modelName' },
           {
             title: '统一社会信用码',
-            key: '',
+            slot: 'idCode',
             ellipsis: true,
             tooltip: true,
             align: 'center'

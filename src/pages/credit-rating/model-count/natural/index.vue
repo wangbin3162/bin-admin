@@ -4,19 +4,19 @@
       <v-table-wrap>
         <!-- 查询条件 -->
         <v-filter-bar>
-          <v-filter-item title="名称">
+          <v-filter-item title="名称" :span="5">
             <b-input v-model="listQuery.name" placeholder="请输入名称"></b-input>
           </v-filter-item>
-          <v-filter-item title="证件号码">
+          <v-filter-item title="证件号码" :span="5">
             <b-input v-model="listQuery.code" placeholder="请输入证件号码"></b-input>
           </v-filter-item>
-           <v-filter-item title="评价方案">
+           <v-filter-item title="评价方案" :span="4">
             <b-select v-model="listQuery.modelId" @on-change="handleModelChange">
               <b-option v-for="item in modelList" :key="item.id"
                 :value="item.id">{{ item.name }}</b-option>
             </b-select>
           </v-filter-item>
-          <v-filter-item title="评价等级">
+          <v-filter-item title="评价等级" :span="4">
             <b-select v-model="listQuery.levelCode">
               <b-option v-for="item in ratingOptions" :key="item.levelCode"
                 :value="item.levelCode">{{ item.levelName }}</b-option>
@@ -27,9 +27,22 @@
 
         <!-- 操作栏 -->
         <v-table-tool-bar>
-          <b-button type="primary" icon="ios-add-circle-outline">重新计算</b-button>
-          <b-button plain icon="md-list">模板计算</b-button>
-          <b-button plain icon="ios-arrow-round-down">下载模板</b-button>
+          <b-button type="primary" icon="ios-add-circle-outline"
+            @click="handleReCount">
+            重新计算
+          </b-button>
+          <b-button plain icon="md-list" @click="handleTempCount">
+            模板计算
+          </b-button>
+          <temp-dl-btn :personClass="personClass">
+            模板下载
+          </temp-dl-btn>
+
+          <template slot="right">
+            <b-button type="text">
+              模板计算记录
+            </b-button>
+          </template>
         </v-table-tool-bar>
 
         <!-- table -->
@@ -49,7 +62,8 @@
           </template>
 
           <template v-slot:createDate="{ row }">
-            {{ $util.parseTime(row.createDate, '{y}-{m}-{d} {h}:{i}:{s}') }}
+            <p>{{ $util.parseTime(row.createDate, '{y}-{m}-{d}') }}</p>
+            <p>{{ $util.parseTime(row.createDate, '{h}:{i}:{s}') }}</p>
           </template>
 
           <template v-slot:action="{ row }">
@@ -68,7 +82,22 @@
     <detail v-if="isCheck"
       @close="handleCancel"
       :title="editTitle"
-      :detail="detail"></detail>
+      :detail="detail">
+    </detail>
+
+    <!-- 重新算分组件 -->
+    <re-count
+      @close="openReCount = false"
+      @recount-success="searchList"
+      :open="openReCount"
+      :personClass="personClass">
+    </re-count>
+
+    <temp-count
+      @close="openTempCount = false"
+      :open="openTempCount"
+      :personClass="personClass">
+    </temp-count>
   </div>
 </template>
 
@@ -76,16 +105,26 @@
   import commonMixin from '../../../../common/mixins/mixin'
   import permission from '../../../../common/mixins/permission'
   import Detail from './Detail'
+  import TempDlBtn from '../components/TempDlBtn'
+  import ReCount from '../components/ReCount'
+  import TempCount from '../components/TempCount'
+  import { Decode, MaskCode } from '../../../../common/utils/secret'
   import { getNaturalList, getModelList } from '../../../../api/credit-rating/model-count.api'
 
   export default {
     name: 'ModelCountNatural',
     mixins: [commonMixin, permission],
     components: {
-      Detail
+      Detail,
+      TempDlBtn,
+      ReCount,
+      TempCount
     },
     data () {
       return {
+        openReCount: false, // 打开re-count组件
+        openTempCount: false, // 打开temp-count组件
+        personClass: 'A01',
         detail: '', // 存储行数据
         listQuery: {
           name: '',
@@ -94,14 +133,14 @@
         },
         columns: [
           { type: 'selection', width: 50, align: 'center' },
-          { title: '名称', slot: 'name' },
+          { title: '名称', width: 80, slot: 'name' },
           { title: '证件类型', slot: 'idTypeName', align: 'center' },
-          { title: '证件号码', slot: 'idCode', width: 150, align: 'center' },
+          { title: '证件号码', slot: 'idCode', width: 155, align: 'center' },
           { title: '评价方案', key: 'modelName', align: 'center' },
           { title: '等级标准', key: 'ratingName', align: 'center' },
           { title: '评价得分', key: 'score', align: 'center' },
           { title: '评价等级', key: 'levelCode', align: 'center' },
-          { title: '评价日期', slot: 'createDate', width: 170, align: 'center' },
+          { title: '评价日期', slot: 'createDate', align: 'center' },
           { title: '操作', slot: 'action', width: 120, align: 'center' }
         ],
         defaultModelId: null, // 存储默认模型id
@@ -131,8 +170,13 @@
           return item.id === val
         }).ratingOptions
       },
-      handleCreate () {
-        this.openEditPage('create')
+      // 重新计算按钮回调
+      handleReCount () {
+        this.openReCount = true
+      },
+      // 模板计算按钮回调
+      handleTempCount () {
+        this.openTempCount = true
       },
       handleCheck (row) {
         this.detail = row
@@ -163,7 +207,7 @@
         try {
           const res = await getNaturalList(this.listQuery)
           this.setListData({
-            list: res.rows,
+            list: this.decodeAndMaskFormat(res.rows),
             total: res.total
           })
         } catch (error) {
@@ -171,9 +215,13 @@
         }
         this.listLoading = false
       },
-      // 或许所需的枚举值
-      async getEnum () {
-
+      // 解码和掩码处理列表
+      decodeAndMaskFormat(list) {
+        list.forEach(item => {
+          item.natBaseInfo.idCode = Decode(item.natBaseInfo.idCode)
+          if (item.natBaseInfo.idCode.length === 18) item.natBaseInfo.idCode = MaskCode(item.natBaseInfo.idCode, 'ID_CODE')
+        })
+        return list
       }
     }
   }
