@@ -31,9 +31,14 @@
         </v-table-tool-bar>
 
         <!-- table -->
-        <b-table :columns="columns" :data="[]" :loading="listLoading">
-          <template v-slot:name="{ row }">
-            <b-button type="text" @click="handleCheck(row.id)">{{ row.varName }}</b-button>
+        <b-table :columns="columns" :data="list" :loading="listLoading">
+          <template v-slot:modelName="{ row }">
+            <b-button type="text" @click="handleCheck(row.id)">{{ row.modelName }}</b-button>
+          </template>
+
+          <template v-slot:createDate="{ row }">
+            <p>{{ $util.parseTime(row.createDate, '{y}-{m}-{d}') }}</p>
+            <p>{{ $util.parseTime(row.createDate, '{h}:{i}:{s}') }}</p>
           </template>
 
           <template v-slot:action="{ row }">
@@ -51,7 +56,15 @@
 
     <detail v-if="isCheck"
       @close="handleCancel"
-      :title="editTitle"></detail>
+      :title="editTitle">
+    </detail>
+
+    <!-- 重新算分组件 -->
+    <re-count
+      @close="openReCount = false"
+      @recount-success="searchList"
+      :open="openReCount"
+      personClass="A02"></re-count>
   </div>
 </template>
 
@@ -60,6 +73,7 @@
   import permission from '../../../../common/mixins/permission'
   import Detail from './Detail'
   import TempDlBtn from '../components/TempDlBtn'
+  import ReCount from '../components/ReCount'
   import { getLegalList, getModelList, reCount } from '../../../../api/credit-rating/model-count.api'
 
   export default {
@@ -67,10 +81,12 @@
     mixins: [commonMixin, permission],
     components: {
       Detail,
-      TempDlBtn
+      TempDlBtn,
+      ReCount
     },
     data () {
       return {
+        openReCount: false, // 打开re-count组件
         id: '', // 查看详情的id
         listQuery: {
           compName: '',
@@ -78,21 +94,19 @@
           levelCode: ''
         },
         columns: [
-          { type: 'selection', width: 50, align: 'center' },
-          { title: '名称', slot: 'varName' },
+          { title: '名称', slot: 'modelName' },
           {
             title: '统一社会信用码',
-            key: 'varCode',
-            width: 140,
+            key: '',
             ellipsis: true,
             tooltip: true,
             align: 'center'
           },
-          { title: '评价方案名称', slot: 'name', align: 'center' },
+          { title: '评价方案', key: 'modelName', align: 'center' },
           { title: '等级标准', key: 'ratingName', align: 'center' },
-          { title: '评价得分', key: 'score', ellipsis: true, tooltip: true, align: 'center' },
-          { title: '评价等级', key: 'levelCode', ellipsis: true, tooltip: true, align: 'center' },
-          { title: '评价日期', key: 'varDesc', ellipsis: true, tooltip: true, align: 'center' },
+          { title: '评价得分', key: 'score', align: 'center' },
+          { title: '评价等级', key: 'levelCode', align: 'center' },
+          { title: '评价日期', slot: 'createDate', align: 'center' },
           { title: '操作', slot: 'action', width: 120, align: 'center' }
         ],
         modelList: [], // 评级模型下拉框数据
@@ -123,7 +137,7 @@
       },
       // 重新计算按钮回调
       handleReCount () {
-
+        this.openReCount = true
       },
       handleCheck (id) {
         this.id = id
@@ -138,6 +152,8 @@
         try {
           const res = await getModelList('A02') // A01 自然人
           this.modelList = res
+          // 存入vuex
+          this.$store.commit('SET_MODEL_LIST', res)
           // 用于下拉框选中设为默认的评级模型
           const defaultModel = res.find(item => item.sysDefault === '1')
           this.listQuery.modelId = defaultModel.id

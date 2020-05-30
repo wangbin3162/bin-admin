@@ -147,6 +147,8 @@
         try {
           const res = await getModelList('A01') // A02 法人
           this.modelList = res
+          // 存入vuex
+          this.$store.commit('SET_MODEL_LIST', res)
           // 用于下拉框选中设为默认的评级模型
           const defaultModel = res.find(item => item.sysDefault === '1')
           this.listQuery.modelId = defaultModel.id

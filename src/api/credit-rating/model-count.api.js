@@ -123,14 +123,16 @@ export async function getCreditInfo(query) {
 export async function reCount(params) {
   return new Promise(async (resolve, reject) => {
     try {
-      let url = '/api/eval/cal/result/reCalc'
-      let data = new FormData()
-
-      appendFormData(data, 'personId', params.personId)
-      appendFormData(data, 'modelId', params.modelId)
-
-      const res = await requestPostFormData(url, data)
-      resolve(res.data)
+      const res = await request({
+        url: '/api/eval/cal/result/reCalc',
+        method: 'post',
+        data: params
+      })
+      if (res.data.successful) {
+        resolve(res.data.data)
+      } else {
+        reject(res.data.message)
+      }
     } catch (error) {
       reject(error)
     }
