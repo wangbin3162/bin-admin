@@ -39,7 +39,7 @@
           </temp-dl-btn>
 
           <template slot="right">
-            <b-button type="text">
+            <b-button type="text" @click="handleRecord">
               模板计算记录
             </b-button>
           </template>
@@ -98,6 +98,8 @@
       :open="openTempCount"
       :personClass="personClass">
     </temp-count>
+
+    <record-list ref="record" @on-close="handleCancel"></record-list>
   </div>
 </template>
 
@@ -105,6 +107,7 @@
   import commonMixin from '../../../../common/mixins/mixin'
   import permission from '../../../../common/mixins/permission'
   import Detail from './Detail'
+  import RecordList from '../components/RecordList'
   import TempDlBtn from '../components/TempDlBtn'
   import ReCount from '../components/ReCount'
   import TempCount from '../components/TempCount'
@@ -116,6 +119,7 @@
     mixins: [commonMixin, permission],
     components: {
       Detail,
+      RecordList,
       TempDlBtn,
       ReCount,
       TempCount
@@ -178,13 +182,20 @@
       handleTempCount () {
         this.openTempCount = true
       },
+      // 详情按钮回调
       handleCheck (row) {
         this.detail = row
         this.openEditPage('check')
       },
+      // 信用报告按钮回调
       handleCreditReport (row) {
         // this.editData = row
         // this.openEditPage('modify')
+      },
+      // 模板计算记录按钮回调
+      handleRecord () {
+        this.dialogStatus = 'record'
+        this.$refs.record.open('EVAL_NAT') // 自然人
       },
       // 获取评级模型
       async getModelList () {
