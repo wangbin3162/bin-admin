@@ -258,10 +258,21 @@
   .table {
     width: 100%;
     font-size: 13px;
+    border-collapse: collapse;
 
-    td {
+    td, th {
       height: 40px;
+      width: 16.6%;
+      padding: 5px 12px
+      // border-bottom: 1px solid #c5c5c5;
+      // color: white;
     }
+    // tr:nth-child(odd){
+    //     background: #01cf97;
+    // }
+    // tr:nth-child(even){
+    //     background: #a2a9b6;
+    // }
   }
 
   .field {

@@ -245,12 +245,13 @@
 
     .table {
       width: 100%;
-      // border-collapse: separate;
-      // border-spacing: 0px 10px;
       font-size: 13px;
+      border-collapse: collapse;
 
       td {
         height: 40px;
+        width: 16.6%;
+        padding: 5px 12px
       }
     }
 
