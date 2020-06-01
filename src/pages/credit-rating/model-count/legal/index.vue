@@ -45,7 +45,7 @@
         <!-- table -->
         <b-table :columns="columns" :data="list" :loading="listLoading">
           <template v-slot:modelName="{ row }">
-            <b-button type="text" @click="handleCheck(row.id)">{{ row.modelName }}</b-button>
+            <b-button type="text" @click="handleCheck(row)">{{ row.modelName }}</b-button>
           </template>
 
           <template v-slot:idCode="{ row }">
@@ -72,7 +72,8 @@
 
     <detail v-if="isCheck"
       @close="handleCancel"
-      :title="editTitle">
+      :title="editTitle"
+      :detail="detail">
     </detail>
 
     <!-- 重新算分组件 -->
@@ -118,7 +119,7 @@
         openReCount: false, // 打开re-count组件
         openTempCount: false, // 打开temp-count组件
         personClass: 'A02',
-        id: '', // 查看详情的id
+        detail: {}, // 存储行数据
         listQuery: {
           compName: '',
           modelId: '',
@@ -175,8 +176,8 @@
         this.openTempCount = true
       },
       // 详情按钮回调
-      handleCheck (id) {
-        this.id = id
+      handleCheck (row) {
+        this.detail = row
         this.openEditPage('check')
       },
       // 信用报告按钮回调
