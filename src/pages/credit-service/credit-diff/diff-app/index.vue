@@ -51,7 +51,7 @@
   import Detail from './Detail'
   import { MaskCode } from '../../../../common/utils/secret'
   import { getServiceDataType } from '../../../../api/enum.api'
-  import { getDiffAppList } from '../../../../api/credit-service/diff-app.api'
+  import { getDiffAppList } from '../../../../api/credit-service/credit-diff.api'
 
   export default {
     name: 'IndexVar',

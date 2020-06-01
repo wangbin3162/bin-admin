@@ -37,6 +37,14 @@ export default {
           meta: {
             title: '异议初审'
           }
+        },
+        {
+          path: 'diffHandle',
+          name: 'DiffHandle',
+          component: () => import(/* webpackChunkName: "DiffHandle" */ '../../pages/credit-service/credit-diff/diff-handle'),
+          meta: {
+            title: '异议处理'
+          }
         }
       ]
     },

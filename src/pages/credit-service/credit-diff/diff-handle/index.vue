@@ -20,7 +20,7 @@
         <b-table :columns="columns" :data="list" :loading="listLoading">
           <template v-slot:action="{ row }">
             <b-button type="text" @click="handleCheck(row)">
-              审核
+              处理
             </b-button>
           </template>
         </b-table>
@@ -48,7 +48,7 @@
   import Audit from './Audit'
   import { MaskCode } from '../../../../common/utils/secret'
   import { getServiceDataType } from '../../../../api/enum.api'
-  import { getApproveList, getDiffAppList } from '../../../../api/credit-service/credit-diff.api'
+  import { getHandleList } from '../../../../api/credit-service/credit-diff.api'
 
   export default {
     name: 'IndexVar',
@@ -110,7 +110,7 @@
       async searchList () {
         this.listLoading = true
         try {
-          const res = await getApproveList(this.listQuery)
+          const res = await getHandleList(this.listQuery)
           this.setListData({
             list: res.rows,
             total: res.total

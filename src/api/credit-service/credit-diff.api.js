@@ -59,6 +59,32 @@ export async function getApproveList(query) {
 
 /**
  * @author haodongdong
+ * @description 获取异议处理列表
+ * @param {*} query
+ * @returns Promise
+ */
+export async function getHandleList(query) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/api/service/objectionFlow/dealList',
+        method: 'get',
+        params: {
+          searchCode: query.searchCode,
+          resourceKey: query.resourceKey,
+          size: query.size,
+          page: query.page - 1
+        }
+      })
+      resolve(res.data)
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
  * @description 异议流程初审接口
  * @param {*} params
  * @returns Promise

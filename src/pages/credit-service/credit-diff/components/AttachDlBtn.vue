@@ -6,7 +6,7 @@
 
 <script>
   import Util from '../../../../common/utils/util'
-  import { attachmentDownload } from '../../../../api/credit-service/diff-app.api'
+  import { attachmentDownload } from '../../../../api/credit-service/credit-diff.api'
 
   export default {
     name: 'TempDlBtn',
