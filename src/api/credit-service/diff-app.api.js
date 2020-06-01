@@ -6,152 +6,20 @@ import request from '../request'
 
 /**
  * @author haodongdong
- * @description 获取信用报告配置列表
+ * @description 获取异议申请列表
  * @param {*} query
  * @returns Promise
  */
-export async function getCreditReportList(query) {
+export async function getDiffAppList(query) {
   return new Promise(async (resolve, reject) => {
     try {
       const res = await request({
-        url: '/api/eval/report/search',
+        url: '/api/service/objectionFlow/applyList',
         method: 'get',
         params: {
-          reportName: query.reportName,
-          reportType: query.reportType,
-          personClass: query.personClass,
-          reportDefault: query.reportDefault,
-          size: query.size,
-          page: query.page - 1
-          // sort: 'createDate,desc'
-        }
-      })
-      resolve(res.data)
-    } catch (error) {
-      reject(error)
-    }
-  })
-}
-
-/**
- * @author haodongdong
- * @description 创建信用报告
- * @param {*} query
- * @returns Promise
- */
-export async function createCreditReport(params) {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const res = await request({
-        url: '/api/eval/report/create',
-        method: 'post',
-        data: params
-      })
-      if (res.data.successful) {
-        resolve()
-      } else {
-        reject(new Error(res.data.message))
-      }
-    } catch (error) {
-      reject(error)
-    }
-  })
-}
-
-/**
- * @author haodongdong
- * @description 更新信用报告
- * @param {*} query
- * @returns Promise
- */
-export async function updateCreditReport(params) {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const res = await request({
-        url: '/api/eval/report/modify',
-        method: 'post',
-        data: params
-      })
-      if (res.data.successful) {
-        resolve()
-      } else {
-        reject(new Error(res.data.message))
-      }
-    } catch (error) {
-      reject(error)
-    }
-  })
-}
-
-/**
- * @author haodongdong
- * @description 删除信用报告
- * @param {*} query
- * @returns Promise
- */
-export async function deleteCreditReport(id) {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const res = await request({
-        url: '/api/eval/report/remove',
-        method: 'post',
-        params: {
-          id
-        }
-      })
-      if (res.data.successful) {
-        resolve()
-      } else {
-        reject(new Error(res.data.message))
-      }
-    } catch (error) {
-      reject(error)
-    }
-  })
-}
-
-/**
- * @author haodongdong
- * @description 启用禁用
- * @param {*} query
- * @returns Promise
- */
-export async function changeStatus(id) {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const res = await request({
-        url: '/api/eval/report/changeStatus',
-        method: 'post',
-        params: {
-          id
-        }
-      })
-      if (res.data.successful) {
-        resolve()
-      } else {
-        reject(new Error(res.data.message))
-      }
-    } catch (error) {
-      reject(error)
-    }
-  })
-}
-
-/**
- * @author haodongdong
- * @description 获取信用报告配置的信息类列表
- * @param {*} query
- * @returns Promise
- */
-export async function getInfoClassList(query) {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const res = await request({
-        url: '/api/eval/report/category/search',
-        method: 'get',
-        params: {
-          configId: query.configId,
-          category: query.category,
+          searchCode: query.searchCode,
+          status: query.status,
+          resourceKey: query.resourceKey,
           size: query.size,
           page: query.page - 1
         }
@@ -165,129 +33,20 @@ export async function getInfoClassList(query) {
 
 /**
  * @author haodongdong
- * @description 根据resourceKey获取资源详情
- * @param {*} resourceKey
+ * @description 附件下载
+ * @param {*} personClass
  * @returns Promise
  */
-export async function getResourceDetail(resourceKey) {
+export async function attachmentDownload(id) {
   return new Promise(async (resolve, reject) => {
     try {
       const res = await request({
-        url: '/api/dir/detailByResourceKey',
+        url: '/api/service/attachment/download',
+        responseType: 'blob',
         method: 'get',
-        params: {
-          resourceKey
-        }
+        params: { id }
       })
-      if (res.data.successful) {
-        resolve(res.data.data)
-      } else {
-        reject(new Error(res.data.message))
-      }
-    } catch (error) {
-      reject(error)
-    }
-  })
-}
-
-/**
- * @author haodongdong
- * @description 获取信息类详情
- * @param {*} resourceKey
- * @returns Promise
- */
-export async function getInfoClassDetaiil(id) {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const res = await request({
-        url: '/api/eval/report/category/detail',
-        method: 'get',
-        params: {
-          id
-        }
-      })
-      if (res.data.successful) {
-        resolve(res.data.data)
-      } else {
-        reject(new Error(res.data.message))
-      }
-    } catch (error) {
-      reject(error)
-    }
-  })
-}
-
-/**
- * @author haodongdong
- * @description 创建信息类
- * @param {*} query
- * @returns Promise
- */
-export async function createInfoClass(params) {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const res = await request({
-        url: '/api/eval/report/category/create',
-        method: 'post',
-        data: params
-      })
-      if (res.data.successful) {
-        resolve()
-      } else {
-        reject(new Error(res.data.message))
-      }
-    } catch (error) {
-      reject(error)
-    }
-  })
-}
-
-/**
- * @author haodongdong
- * @description 修改信息类
- * @param {*} query
- * @returns Promise
- */
-export async function updateInfoClass(params) {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const res = await request({
-        url: '/api/eval/report/category/modify',
-        method: 'post',
-        data: params
-      })
-      if (res.data.successful) {
-        resolve()
-      } else {
-        reject(new Error(res.data.message))
-      }
-    } catch (error) {
-      reject(error)
-    }
-  })
-}
-
-/**
- * @author haodongdong
- * @description 删除信息类信息类
- * @param {*} query
- * @returns Promise
- */
-export async function deleteInfoClass(id) {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const res = await request({
-        url: '/api/eval/report/category/remove',
-        method: 'post',
-        params: {
-          id
-        }
-      })
-      if (res.data.successful) {
-        resolve()
-      } else {
-        reject(new Error(res.data.message))
-      }
+      resolve(res.data)
     } catch (error) {
       reject(error)
     }

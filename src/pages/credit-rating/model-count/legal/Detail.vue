@@ -224,7 +224,7 @@
     },
     created () {
       this.getCreditInfo()
-      console.log(JSON.stringify(this.detail))
+      // console.log(JSON.stringify(this.detail))
     },
     methods: {
       handleCurrentChange (page) {

@@ -373,3 +373,23 @@ export async function getEvalReportLayoutType() {
     }
   })
 }
+
+/**
+ * @author haodongdong
+ * @description 信用服务下数据类型枚举
+ * @returns Promise
+ */
+export async function getServiceDataType() {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request.get('/api/service/objectionFlow/mapping')
+      if (res.data.successful) {
+        resolve(res.data.data)
+      } else {
+        reject(new Error(res.data.message))
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
