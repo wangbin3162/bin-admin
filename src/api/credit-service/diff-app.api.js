@@ -33,6 +33,57 @@ export async function getDiffAppList(query) {
 
 /**
  * @author haodongdong
+ * @description 获取异议初审列表
+ * @param {*} query
+ * @returns Promise
+ */
+export async function getApproveList(query) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/api/service/objectionFlow/approveList',
+        method: 'get',
+        params: {
+          searchCode: query.searchCode,
+          resourceKey: query.resourceKey,
+          size: query.size,
+          page: query.page - 1
+        }
+      })
+      resolve(res.data)
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
+ * @description 异议流程初审接口
+ * @param {*} params
+ * @returns Promise
+ */
+export async function approve(params) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/api/service/objectionFlow/approve',
+        method: 'post',
+        data: params
+      })
+      if (res.data.successful) {
+        resolve()
+      } else {
+        reject(new Error(res.data.message))
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
  * @description 附件下载
  * @param {*} personClass
  * @returns Promise

@@ -29,6 +29,14 @@ export default {
           meta: {
             title: '异议申请'
           }
+        },
+        {
+          path: 'diffApprove',
+          name: 'DiffApprove',
+          component: () => import(/* webpackChunkName: "DiffApprove" */ '../../pages/credit-service/credit-diff/diff-approve'),
+          meta: {
+            title: '异议初审'
+          }
         }
       ]
     },

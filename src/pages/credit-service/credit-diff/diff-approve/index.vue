@@ -13,12 +13,6 @@
                 :value="item.resourceKey">{{ item.resourceName }}</b-option>
             </b-select>
           </v-filter-item>
-          <v-filter-item title="异议状态">
-            <b-select v-model="listQuery.status">
-              <b-option v-for="(value, key) in statusEnum" :key="key"
-                :value="key">{{ value }}</b-option>
-            </b-select>
-          </v-filter-item>
           <v-filter-item @on-search="handleFilter" @on-reset="resetQuery"></v-filter-item>
         </v-filter-bar>
 
@@ -26,7 +20,7 @@
         <b-table :columns="columns" :data="list" :loading="listLoading">
           <template v-slot:action="{ row }">
             <b-button type="text" @click="handleCheck(row)">
-              查看
+              审核
             </b-button>
           </template>
         </b-table>
@@ -37,27 +31,30 @@
       </v-table-wrap>
     </page-header-wrap>
 
-    <!-- 详情组件 -->
-    <detail v-if="isCheck" @close="handleCancel"
+    <!-- 审核组件 -->
+    <audit
+      v-if="isCheck"
+      @close="handleCancel"
+      @approve-done="searchList"
       :title="editTitle"
       :detail="detail">
-    </detail>
+    </audit>
   </div>
 </template>
 
 <script>
   import commonMixin from '../../../../common/mixins/mixin'
   import permission from '../../../../common/mixins/permission'
-  import Detail from './Detail'
+  import Audit from './Audit'
   import { MaskCode } from '../../../../common/utils/secret'
   import { getServiceDataType } from '../../../../api/enum.api'
-  import { getDiffAppList } from '../../../../api/credit-service/diff-app.api'
+  import { getApproveList, getDiffAppList } from '../../../../api/credit-service/diff-app.api'
 
   export default {
     name: 'IndexVar',
     mixins: [commonMixin, permission],
     components: {
-      Detail
+      Audit
     },
     data () {
       return {
@@ -113,7 +110,7 @@
       async searchList () {
         this.listLoading = true
         try {
-          const res = await getDiffAppList(this.listQuery)
+          const res = await getApproveList(this.listQuery)
           this.setListData({
             list: res.rows,
             total: res.total
