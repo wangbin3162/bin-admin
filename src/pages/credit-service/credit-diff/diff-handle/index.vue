@@ -32,20 +32,20 @@
     </page-header-wrap>
 
     <!-- 审核组件 -->
-    <audit
+    <handle
       v-if="isCheck"
       @close="handleCancel"
-      @approve-done="searchList"
+      @handle-done="searchList"
       :title="editTitle"
       :detail="detail">
-    </audit>
+    </handle>
   </div>
 </template>
 
 <script>
   import commonMixin from '../../../../common/mixins/mixin'
   import permission from '../../../../common/mixins/permission'
-  import Audit from './Audit'
+  import Handle from './Handle'
   import { MaskCode } from '../../../../common/utils/secret'
   import { getServiceDataType } from '../../../../api/enum.api'
   import { getHandleList } from '../../../../api/credit-service/credit-diff.api'
@@ -54,7 +54,7 @@
     name: 'IndexVar',
     mixins: [commonMixin, permission],
     components: {
-      Audit
+      Handle
     },
     data () {
       return {

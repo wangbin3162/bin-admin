@@ -20,7 +20,11 @@
                 </tr>
                 <tr>
                   <td>数据类型：</td>
-                  <td>{{ detail.resourceName }}</td>
+                  <td>
+                    <b-button type="text">
+                      {{ detail.resourceName }}
+                    </b-button>
+                  </td>
                   <td>异议申请时间：</td>
                   <td>{{ detail.applyDate }}</td>
                 </tr>
@@ -89,7 +93,6 @@
 
 <script>
   import AttachDlBtn from '../components/AttachDlBtn'
-  import { show } from '../../../../api/data-manage/gather.api'
   import { approve } from '../../../../api/credit-service/credit-diff.api'
 
   export default {
@@ -129,6 +132,7 @@
             await approve(this.form)
             this.$message({ type: 'success', content: '操作成功' })
             this.$emit('approve-done')
+            this.$emit('close')
           } catch (error) {
             console.error(error)
             this.$notice.danger({ title: '操作失败', desc: error })
