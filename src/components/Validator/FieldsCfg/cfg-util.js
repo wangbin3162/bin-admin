@@ -1,6 +1,7 @@
 import { deepCopy, typeOf } from '../../../common/utils/assist'
 import { checkIdCard, verifyOrgNo, verifyRegNo, verifyUnifiedCode, validateDate } from '../../../common/utils/validate'
 import { getDictItems } from '../../../api/data-manage/gather.api'
+import Util from '../../../common/utils/util'
 
 /**
  * 校验枚举值
@@ -237,7 +238,9 @@ export const validatorBuild = {
           // console.log('time is $now')
         } else {
           if (validateDate(opts.time)) {
-            otherTime = new Date(opts.time)
+            // 转换2020-01-01 中划线，转换date时取东八区8点补全
+            otherTime = new Date(opts.time.replace(/-/g, '/'))
+            // console.log(otherTime)
             // console.log('time is date string')
           } else {
             let preField = obj[opts.time]// 前置字段当前值
