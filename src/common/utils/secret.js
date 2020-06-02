@@ -25,16 +25,10 @@ export function MaskCode(code, type) {
   if (type === 'ID_CODE') {
     if (code.length === 18) {
       output = code.substr(0, 6) + '********' + code.substr(14)
-    } else {
-      output = '----'
-      console.error('身份证位数不合法')
     }
   } else if (type === 'MOBILE_PHONE') {
     if (code.length === 11) {
       output = code.substr(0, 3) + '****' + code.substr(7)
-    } else {
-      output = '----'
-      console.error('手机号不合法')
     }
   }
   return output
