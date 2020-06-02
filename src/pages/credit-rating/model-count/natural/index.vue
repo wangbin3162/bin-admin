@@ -27,11 +27,11 @@
 
         <!-- 操作栏 -->
         <v-table-tool-bar>
-          <b-button type="primary" icon="ios-add-circle-outline"
+          <!-- <b-button type="primary" icon="ios-add-circle-outline"
             @click="handleReCount">
             重新计算
-          </b-button>
-          <b-button plain icon="md-list" @click="handleTempCount">
+          </b-button> -->
+          <b-button plain type="primary" icon="md-list" @click="handleTempCount">
             模板计算
           </b-button>
           <temp-dl-btn :personClass="personClass">
@@ -136,7 +136,6 @@
           levelCode: ''
         },
         columns: [
-          { type: 'selection', width: 50, align: 'center' },
           { title: '名称', width: 80, slot: 'name' },
           { title: '证件类型', slot: 'idTypeName', align: 'center' },
           { title: '证件号码', slot: 'idCode', width: 155, align: 'center' },
@@ -152,9 +151,9 @@
         ratingOptions: [] // 评级等级下拉框数据
       }
     },
-    created () {
-      this.getModelList()
-      this.searchList()
+    async created () {
+      await this.getModelList()
+      await this.searchList()
     },
     methods: {
       resetQuery () {
@@ -174,10 +173,6 @@
           return item.id === val
         }).ratingOptions
       },
-      // 重新计算按钮回调
-      handleReCount () {
-        this.openReCount = true
-      },
       // 模板计算按钮回调
       handleTempCount () {
         this.openTempCount = true
@@ -189,8 +184,7 @@
       },
       // 信用报告按钮回调
       handleCreditReport (row) {
-        // this.editData = row
-        // this.openEditPage('modify')
+        this.openReCount = true
       },
       // 模板计算记录按钮回调
       handleRecord () {

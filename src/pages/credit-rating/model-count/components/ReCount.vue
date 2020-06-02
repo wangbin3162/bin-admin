@@ -6,7 +6,7 @@
       @on-hidden="handleOnHidden">
 
       <div>
-        <b-form ref="form" :model="form" :rules="rules">
+        <b-form ref="form" :model="form" :rules="rules" :label-width="100">
 
           <b-form-item label="主体名称" prop="personId">
             <div flex>
@@ -25,6 +25,22 @@
                 {{ item.name }}
               </b-option>
             </b-select>
+          </b-form-item>
+
+           <b-form-item label="报告类型" prop="configId">
+            <b-select v-model="form.configId">
+              <b-option v-for="item in creditReportList" :key="item.id"
+                :value="item.id">
+                {{ item.reportName }}
+              </b-option>
+            </b-select>
+          </b-form-item>
+
+          <b-form-item label="是否掩码" prop="maskCode">
+            <b-radio-group v-model="form.maskCode">
+              <b-radio label="true">是</b-radio>
+              <b-radio label="false">否</b-radio>
+            </b-radio-group>
           </b-form-item>
 
         </b-form>
@@ -47,7 +63,8 @@
 <script>
   import LegPersonModal from '../../../../components/Validator/FormControl/LegPersonModal'
   import NatPersonModal from '../../../../components/Validator/FormControl/NatPersonModal'
-  import { reCount } from '../../../../api/credit-rating/model-count.api'
+  import { getCreditReportList } from '../../../../api/credit-rating/credit-report-config.api'
+  import { reCount, exportPDF } from '../../../../api/credit-rating/model-count.api'
 
   export default {
     name: 'ReCount',
@@ -68,9 +85,12 @@
       return {
         loadingBtn: false,
         name: '', // 回显的主体名称
+        creditReportList: [],
         form: {
           personId: '',
-          modelId: ''
+          modelId: '',
+          configId: '',
+          maskCode: 'true'
         },
         rules: {
           personId: [
@@ -78,8 +98,15 @@
           ],
           modelId: [
             { required: true, message: '请选择方案名称', trigger: 'change' }
+          ],
+          configId: [
+            { required: true, message: '请选择报告类型', trigger: 'change' }
+          ],
+          maskCode: [
+            { required: true, message: '请选择是否掩码', trigger: 'change' }
           ]
-        }
+        },
+        src: null
       }
     },
     computed: {
@@ -101,6 +128,9 @@
       isLeg () { // 法人
         return this.personClass === 'A02'
       }
+    },
+    created () {
+
     },
     methods: {
       handleVisibleChange(visible) {
@@ -135,11 +165,23 @@
       // 确定按钮回调
       async handleSubmit () {
         const valid = await this.$refs.form.validate()
+
         if (valid) {
           try {
             this.loadingBtn = true
             const res = await reCount(this.form)
-            console.log(res)
+
+            const model = this.modelList.find(item => item.id === this.form.modelId)
+            const res2 = await exportPDF({
+              personId: this.form.personId,
+              configId: this.form.configId,
+              maskCode: JSON.parse(this.form.maskCode),
+              modelName: model.name
+            })
+
+            // console.log(res2)
+            // this.src = URL.createObjectURL(res2)
+
             this.showDialog = false
             this.$emit('recount-success')
           } catch (error) {
@@ -148,7 +190,17 @@
           this.loadingBtn = false
         }
       },
+      // 获取配置报告用于select
+      async getCreditReportList () {
+        try {
+          const res = await getCreditReportList({ size: 1000, page: 1 })
+          this.creditReportList = res.rows
+        } catch (error) {
+          console.error(error)
+        }
+      },
       init () {
+        this.getCreditReportList()
         const defaultModel = this.modelList.find(item => item.sysDefault === '1')
         this.form.modelId = defaultModel.id
       }

@@ -153,10 +153,10 @@
                 return this.listQuery.size * (this.listQuery.page - 1) + row._index + 1
               }
             },
-            { title: '文件名', key: 'fileName' },
+            { title: '任务名称', key: 'fileName' },
             { title: '导入用户', key: 'createUserName' },
-            { title: '导入时间', key: 'uploadDate' },
-            { title: '导入状态', slot: 'jobStatus', width: 170, align: 'center' },
+            { title: '计算时间', key: 'uploadDate' },
+            { title: '计算状态', slot: 'jobStatus', width: 170, align: 'center' },
             { title: '操作', slot: 'action', width: 180, align: 'center' }
           ]
         }
