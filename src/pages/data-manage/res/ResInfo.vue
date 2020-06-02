@@ -737,7 +737,7 @@
           resourceKey: '',
           updatePeriod: '0_IN_TIME_M', // 更新周期
           expiryLimit: 24, // 有效期限
-          resProperty: 'B01', // 资源性质
+          resProperty: 'B03', // 资源性质
           sharedType: 'PUBLIC', // 共享属性
           shareCondition: '', // 共享条件
           shareMode: '', // 共享方式
