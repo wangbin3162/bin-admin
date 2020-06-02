@@ -151,7 +151,7 @@ export const validatorBuild = {
       validator: (rule, value, callback) => {
         let preField = obj[opts.preField]// 前置字段当前值
         let preFieldValue = opts.preFieldValue// 前置字段需要匹配的值
-        if ((preField == null && typeof preFieldValue === 'undefined') ||
+        if ((preField == null && typeof preFieldValue === 'undefined') || (preField === preFieldValue) ||
           (preField && (preField.toString() === preFieldValue || (preField.length === 0 && typeof preFieldValue === 'undefined')))
         ) {
           if (value.length === 0) {
@@ -172,7 +172,7 @@ export const validatorBuild = {
       validator: (rule, value, callback) => {
         let preField = obj[opts.preField]// 前置字段当前值
         let preFieldValue = opts.preFieldValue// 前置字段需要匹配的值
-        if ((preField == null && typeof preFieldValue === 'undefined') ||
+        if ((preField == null && typeof preFieldValue === 'undefined') || (preField === preFieldValue) ||
           (preField && (preField.toString() === preFieldValue || (preField.length === 0 && typeof preFieldValue === 'undefined')))
         ) {
           if (value.length > 0) {
@@ -193,8 +193,8 @@ export const validatorBuild = {
       validator: (rule, value, callback) => {
         let preField = obj[opts.preField]// 前置字段当前值
         let preFieldValue = opts.preFieldValue// 前置字段需要匹配的值
-        if ((preField && (preField.toString() === preFieldValue))) {
-          if (value !== null && value === opts.notValue) {
+        if ((preField === preFieldValue) || (preField && (preField.toString() === preFieldValue))) {
+          if (value === opts.notValue) {
             callback(new Error(opts.message))
           }
         }
@@ -211,7 +211,7 @@ export const validatorBuild = {
     return {
       validator: (rule, value, callback) => {
         let preField = obj[opts.preField]// 前置字段当前值
-        if ((preField && (preField.toString() === value))) {
+        if ((preField && (preField.toString() === value)) || (preField === value)) {
           callback(new Error(opts.message))
         }
         callback()
