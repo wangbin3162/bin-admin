@@ -64,7 +64,7 @@
           idType: item.idType,
           idCode: item.idCode
         }
-        this.$emit('on-select', result)
+        this.$emit('on-select', result, 'nat', null)
       },
       handleChooseLeg(item) {
         this.type = 'leg'
@@ -84,7 +84,7 @@
           name: '',
           idType: '',
           idCode: ''
-        })
+        }, 'natOrLeg', null)
       }
     }
   }

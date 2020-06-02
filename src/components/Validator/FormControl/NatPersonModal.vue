@@ -64,12 +64,7 @@
       },
       chooseOne(index) {
         let item = this.noMaskList[index]
-        this.$emit('choose-one', {
-          id: item.id,
-          name: item.name,
-          idType: item.idType,
-          idCode: item.idCode
-        })
+        this.$emit('choose-one', item)
         this.dialogFormVisible = false
       },
       // 查询所有自然人列表

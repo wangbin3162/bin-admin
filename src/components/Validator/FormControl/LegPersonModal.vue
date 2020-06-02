@@ -70,12 +70,7 @@
         this.handleFilter()
       },
       chooseOne(item) {
-        this.$emit('choose-one', {
-          id: item.id,
-          compName: item.compName,
-          idType: item.idType,
-          idCode: item.idCode
-        })
+        this.$emit('choose-one', item)
         this.dialogFormVisible = false
       },
       // 查询所有法人列表

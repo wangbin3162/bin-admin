@@ -50,7 +50,7 @@
           idType: nat.idType,
           idCode: nat.idCode
         }
-        this.$emit('on-select', result)
+        this.$emit('on-select', result, 'nat', null)
       },
       // 清空时触发调用
       handleClear() {
@@ -59,7 +59,7 @@
           name: '',
           idType: '',
           idCode: ''
-        })
+        }, 'nat', null)
       }
     }
   }

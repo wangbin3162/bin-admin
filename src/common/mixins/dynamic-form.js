@@ -70,16 +70,15 @@ export default {
       }
     },
     // 选择法人,自然人事件
-    handleSelectNatLeg(fillField, nat) {
-      let [field0, field1, field2, field3] = fillField
-      this.form[field0] = nat.id
-      this.form[field1] = nat.name
-      this.form[field2] = nat.idType
-      this.form[field3] = nat.idCode
-      // 选中后重新触发校验
-      this.$refs.dynamicFormRef.validateField(field1)
-      this.$refs.dynamicFormRef.validateField(field2)
-      this.$refs.dynamicFormRef.validateField(field3)
+    handleSelectNatLeg(item) {
+      Object.keys(item).forEach(key => {
+        if (this.form.hasOwnProperty(key)) {
+          this.form[key] = item[key]
+          if (key.indexOf('person_id') === -1) { // 除person_id[index]之外的字段需要校验
+            this.$refs.dynamicFormRef.validateField(key)
+          }
+        }
+      })
     },
     // 表单提交
     handleDynamicFormSubmit() {

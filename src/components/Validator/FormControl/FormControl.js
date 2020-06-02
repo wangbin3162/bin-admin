@@ -215,17 +215,45 @@ export default {
       this.currentValue = value.join(',')
       this.$emit('input', this.currentValue)
     },
-    // 选择自然人或法人事件
-    handleSelectNatOrLeg(item) {
+    // 选择自然人或法人事件,基本item，type，codes，六码
+    handleSelectNatOrLeg(item, type, codes) {
       let index = oneOf(this.fieldName, ['name', 'comp_name']) ? '' : this.fieldName.slice('id_name'.length)
-      // 填充字段名称，需要根据多主体索引来判断
-      let fillField = [
-        `person_id${index}`,
-        this.fieldName,
-        `id_type${index}`,
-        `id_code${index}`
-      ]
-      this.$emit('on-select', fillField, item)
+      let baseInfo = {}
+      baseInfo[`person_id${index}`] = item.id
+      baseInfo[this.fieldName] = item.name
+      baseInfo[`id_type${index}`] = item.idType
+      baseInfo[`id_code${index}`] = item.idCode
+      let result = { ...baseInfo }
+      if (type === 'leg' && codes) {
+        // 判断是否是【双公示】】法人行政许可【leg_xzxk_info】或 法人行政处罚【leg_xzcf_info
+        if (this.tableName === 'leg_xzxk_info') {
+          result = {
+            ...baseInfo,
+            ...{
+              'xk_xdr_shxym': codes.idShxym, // 统一社会信用代码
+              'xk_xdr_gszc': codes.idGszc, // 工商注册号
+              'xk_xdr_zzjg': codes.idShxym, // 组织机构代码
+              'xk_xdr_swdj': codes.idShxym, // 税务登记号
+              'xk_xdr_sydw': codes.idShxym, // 事业单位证书号
+              'xk_xdr_shzz': codes.idShxym // 社会组织登记号
+            }
+          }
+        }
+        if (this.tableName === 'leg_xzcf_info') {
+          result = {
+            ...baseInfo,
+            ...{
+              'cf_xdr_shxym': codes.idShxym, // 统一社会信用代码
+              'cf_xdr_gszc': codes.idGszc, // 工商注册号
+              'cf_xdr_zzjg': codes.idShxym, // 组织机构代码
+              'cf_xdr_swdj': codes.idShxym, // 税务登记号
+              'cf_xdr_sydw': codes.idShxym, // 事业单位证书号
+              'cf_xdr_shzz': codes.idShxym // 社会组织登记号
+            }
+          }
+        }
+      }
+      this.$emit('on-select', result)
     }
   }
 }

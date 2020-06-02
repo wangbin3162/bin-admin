@@ -236,6 +236,11 @@
         }
       }
     },
+    mounted() {
+      if (this.totalData.length > 0) {
+        this.currentIndex = 0
+      }
+    },
     methods: {
       // 针对传入的数组对是否分词进行初始化
       formatItems(items) {

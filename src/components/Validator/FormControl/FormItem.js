@@ -28,7 +28,7 @@ export default {
   computed: {
     wrapStyle() {
       return {
-        width: this.controlType === 'TEXTAREA' ? '100%' : '25%',
+        width: ['FILE_UPLOAD', 'TEXTAREA'].indexOf(this.controlType) > -1 ? '100%' : '25%',
         display: 'inline-block',
         padding: '0 5px'
       }
