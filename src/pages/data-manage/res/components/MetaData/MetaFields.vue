@@ -109,10 +109,6 @@
       },
       showDataPrecision() {
         return ['number', 'money'].includes(this.metaItem.dataType)
-      },
-      // 系统信息项个数
-      sysItemCount() {
-        return this.totalData.filter(item => item.status).length
       }
     },
     data() {
@@ -140,7 +136,7 @@
           })
           callback()
         } else {
-          callback(new Error('英文字母开头(包括字母、数字和下划线)'))
+          callback(new Error('名称只能是以字母开头，内容为包含英文字母、数字和下划线'))
         }
       }
       // 信息项标题校验
@@ -157,7 +153,7 @@
           }
           callback()
         } else {
-          callback(new Error('非数字开头(中文、字母、数字、中英文括号、/和_)'))
+          callback(new Error('标题只能输入中文、字母、数字、()、（）、/和下划线，且数字不能出现在首位'))
         }
       }
       // 信息项数据长度校验
@@ -240,7 +236,7 @@
         // 复制一个data
         let arr = deepCopy(this.totalData)
         if (type === 'up') { // 上移操作
-          if (index > this.sysItemCount) {
+          if (index > 0) {
             let newArr = upGo(arr, index)
             this.totalData = deepCopy(newArr)
             this.resetHandle('上移一层')

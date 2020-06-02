@@ -288,15 +288,15 @@
         api.queryMultiPersonFields().then(res => {
           if (res.data.code === '0') {
             // 格式化新主体列表
-            this.metadata.idsFlag++
+            let index = this.metadata.idsFlag ? this.metadata.idsFlag + 1 : 1
+            this.metadata.idsFlag = index
             const newList = res.data.data.map(item => ({
-              fieldName: item.fieldName + this.metadata.idsFlag,
+              fieldName: item.fieldName + index,
               fieldTitle: item.fieldTitle,
               dataType: item.dataType,
               dataLength: item.dataLength,
               controlType: item.controlType,
-              status: item.status,
-              idsFlag: this.metadata.idsFlag > 0
+              status: item.status
             }))
             this.metadata.fields = this.metadata.fields.concat(newList)
           }
@@ -304,7 +304,14 @@
       },
       // 清空多主体
       handleClearPerson() {
-        this.metadata.fields = this.metadata.fields.filter(item => !item.idsFlag)
+        this.metadata.fields = this.metadata.fields.filter(item => {
+          let result = ['person_id', 'name', 'comp_name', 'id_type', 'id_code'].indexOf(item.fieldName) === -1 &&
+            (item.fieldName.includes('person_id') ||
+              item.fieldName.includes('id_name') ||
+              item.fieldName.includes('id_type') ||
+              item.fieldName.includes('id_code'))
+          return !result
+        })
         this.metadata.idsFlag = 0
       },
       // 弹窗提示是否删除
