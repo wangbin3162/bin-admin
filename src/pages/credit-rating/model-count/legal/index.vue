@@ -25,19 +25,40 @@
         <!-- 操作栏 -->
         <v-table-tool-bar>
           <b-button type="primary" icon="ios-add-circle-outline"
-            @click="handleCheck(1)">重新计算</b-button>
-          <b-button plain icon="md-list">模板计算</b-button>
-          <b-button plain icon="ios-arrow-round-down">下载模板</b-button>
+            @click="handleReCount">
+            重新计算
+          </b-button>
+          <b-button plain icon="md-list" @click="handleTempCount">
+            模板计算
+          </b-button>
+          <temp-dl-btn :personClass="personClass">
+            模板下载
+          </temp-dl-btn>
+
+          <template slot="right">
+            <b-button type="text" @click="handleRecord">
+              模板计算记录
+            </b-button>
+          </template>
         </v-table-tool-bar>
 
         <!-- table -->
-        <b-table :columns="columns" :data="[]" :loading="listLoading">
-          <template v-slot:name="{ row }">
-            <b-button type="text" @click="handleCheck(row.id)">{{ row.varName }}</b-button>
+        <b-table :columns="columns" :data="list" :loading="listLoading">
+          <template v-slot:modelName="{ row }">
+            <b-button type="text" @click="handleCheck(row)">{{ row.modelName }}</b-button>
+          </template>
+
+          <template v-slot:idCode="{ row }">
+            {{ row.legBaseInfo.idCode }}
+          </template>
+
+          <template v-slot:createDate="{ row }">
+            <p>{{ $util.parseTime(row.createDate, '{y}-{m}-{d}') }}</p>
+            <p>{{ $util.parseTime(row.createDate, '{h}:{i}:{s}') }}</p>
           </template>
 
           <template v-slot:action="{ row }">
-            <b-button type="text" @click="handleModify(row)">
+            <b-button type="text" @click="handleCreditReport(row)">
               信用报告
             </b-button>
           </template>
@@ -51,7 +72,25 @@
 
     <detail v-if="isCheck"
       @close="handleCancel"
-      :title="editTitle"></detail>
+      :title="editTitle"
+      :detail="detail">
+    </detail>
+
+    <!-- 重新算分组件 -->
+    <re-count
+      @close="openReCount = false"
+      @recount-success="searchList"
+      :open="openReCount"
+      :personClass="personClass">
+    </re-count>
+
+    <temp-count
+      @close="openTempCount = false"
+      :open="openTempCount"
+      :personClass="personClass">
+    </temp-count>
+
+    <record-list ref="record" @on-close="handleCancel"></record-list>
   </div>
 </template>
 
@@ -59,38 +98,47 @@
   import commonMixin from '../../../../common/mixins/mixin'
   import permission from '../../../../common/mixins/permission'
   import Detail from './Detail'
-  import { getLegalList, getModelList } from '../../../../api/credit-rating/model-count.api'
+  import RecordList from '../components/RecordList'
+  import TempDlBtn from '../components/TempDlBtn'
+  import ReCount from '../components/ReCount'
+  import TempCount from '../components/TempCount'
+  import { getLegalList, getModelList, reCount } from '../../../../api/credit-rating/model-count.api'
 
   export default {
     name: 'ModelCountLegal',
     mixins: [commonMixin, permission],
     components: {
-      Detail
+      Detail,
+      RecordList,
+      TempDlBtn,
+      ReCount,
+      TempCount
     },
     data () {
       return {
-        id: '', // 查看详情的id
+        openReCount: false, // 打开re-count组件
+        openTempCount: false, // 打开temp-count组件
+        personClass: 'A02',
+        detail: {}, // 存储行数据
         listQuery: {
           compName: '',
           modelId: '',
           levelCode: ''
         },
         columns: [
-          { type: 'selection', width: 50, align: 'center' },
-          { title: '名称', slot: 'varName' },
+          { title: '名称', slot: 'modelName' },
           {
             title: '统一社会信用码',
-            key: 'varCode',
-            width: 140,
+            slot: 'idCode',
             ellipsis: true,
             tooltip: true,
             align: 'center'
           },
-          { title: '评价方案名称', slot: 'name', align: 'center' },
+          { title: '评价方案', key: 'modelName', align: 'center' },
           { title: '等级标准', key: 'ratingName', align: 'center' },
-          { title: '评价得分', key: 'score', ellipsis: true, tooltip: true, align: 'center' },
-          { title: '评价等级', key: 'levelCode', ellipsis: true, tooltip: true, align: 'center' },
-          { title: '评价日期', key: 'varDesc', ellipsis: true, tooltip: true, align: 'center' },
+          { title: '评价得分', key: 'score', align: 'center' },
+          { title: '评价等级', key: 'levelCode', align: 'center' },
+          { title: '评价日期', slot: 'createDate', align: 'center' },
           { title: '操作', slot: 'action', width: 120, align: 'center' }
         ],
         modelList: [], // 评级模型下拉框数据
@@ -119,22 +167,36 @@
           return item.id === val
         }).ratingOptions
       },
-      handleCreate () {
-        this.openEditPage('create')
+      // 重新计算按钮回调
+      handleReCount () {
+        this.openReCount = true
       },
-      handleCheck (id) {
-        this.id = id
+      // 模板计算按钮回调
+      handleTempCount () {
+        this.openTempCount = true
+      },
+      // 详情按钮回调
+      handleCheck (row) {
+        this.detail = row
         this.openEditPage('check')
       },
-      handleModify (row) {
+      // 信用报告按钮回调
+      handleCreditReport (row) {
         this.editData = row
         this.openEditPage('modify')
+      },
+      // 模板计算记录按钮回调
+      handleRecord () {
+        this.dialogStatus = 'record'
+        this.$refs.record.open('EVAL_LEG') // 法人
       },
       // 获取评级模型
       async getModelList () {
         try {
           const res = await getModelList('A02') // A01 自然人
           this.modelList = res
+          // 存入vuex
+          this.$store.commit('SET_MODEL_LIST', res)
           // 用于下拉框选中设为默认的评级模型
           const defaultModel = res.find(item => item.sysDefault === '1')
           this.listQuery.modelId = defaultModel.id

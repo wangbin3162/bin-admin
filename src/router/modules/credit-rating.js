@@ -71,6 +71,14 @@ export default {
           }
         }
       ]
+    },
+    {
+      path: 'creditReport',
+      name: 'CreditReport',
+      component: () => import(/* webpackChunkName: "CreditReport" */ '../../pages/credit-rating/credit-report-config'),
+      meta: {
+        title: '信用报告配置'
+      }
     }
   ]
 }

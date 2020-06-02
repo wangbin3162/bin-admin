@@ -5,7 +5,9 @@ import app from './modules/app'
 import user from './modules/user'
 import permission from './modules/permission'
 import ratingModel from './modules/credit-rating/rating-model'
-import creditReportConfig from './modules/sys/credit-report-config'
+import creditReportConfig from './modules/credit-rating/credit-report-config'
+import modelCount from './modules/credit-rating/model-count'
+import creditDiff from './modules/credit-service/credit-diff'
 
 Vue.use(Vuex)
 
@@ -16,6 +18,8 @@ export default new Vuex.Store({
     user,
     permission,
     ratingModel,
-    creditReportConfig
+    creditReportConfig,
+    modelCount,
+    creditDiff
   }
 })

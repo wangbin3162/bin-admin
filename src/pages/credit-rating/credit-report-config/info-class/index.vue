@@ -22,8 +22,8 @@
 
         <!-- table -->
         <b-table :columns="columns" :data="list" :loading="listLoading">
-          <template v-slot:category="{ row }">
-            {{ reportItemTypeEnum[row.category] }}
+          <template v-slot:categoryCode="{ row }">
+            {{ reportItemTypeEnum[row.categoryCode] }}
           </template>
 
           <template v-slot:action="{ row }">
@@ -58,12 +58,11 @@
 </template>
 
 <script>
-  import commonMixin from '../../../../../common/mixins/mixin'
-  import permission from '../../../../../common/mixins/permission'
+  import commonMixin from '../../../../common/mixins/mixin'
+  import permission from '../../../../common/mixins/permission'
   import Edit from './Edit'
-  // import Detail from './Detail'
-  import { getEvalReportItemType, getEvalReportLayoutType } from '../../../../../api/enum.api'
-  import { getInfoClassList, deleteInfoClass } from '../../../../../api/sys/credit-report-config.api'
+  import { getEvalReportItemType, getEvalReportLayoutType } from '../../../../api/enum.api'
+  import { getInfoClassList, deleteInfoClass } from '../../../../api/credit-rating/credit-report-config.api'
 
   export default {
     name: 'CreditReportConfigInfoClass',
@@ -81,11 +80,11 @@
           category: ''
         },
         columns: [
-          { type: 'selection', width: 50, align: 'center' },
-          { title: '信息类名称', key: 'displayName', align: 'center' },
-          { title: '信息类类别', slot: 'category', align: 'center' },
-          { title: '信息项名称', key: 'resourceName', align: 'center' },
-          { title: '所属报告配置', key: 'reportId', align: 'center' },
+          // { type: 'selection', width: 50, align: 'center' },
+          { title: '信息类名称', key: 'categoryName', align: 'center' },
+          { title: '信息类类别', slot: 'categoryCode', align: 'center' },
+          // { title: '信息项名称', key: 'categoryName', align: 'center' },
+          { title: '所属报告配置', key: 'reportName', align: 'center' },
           { title: '排序编码', key: 'orderNo', align: 'center' },
           { title: '操作', slot: 'action', align: 'center' }
         ]

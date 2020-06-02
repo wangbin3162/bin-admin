@@ -2,7 +2,10 @@
  * @author haodongdong
  * @description 信用评级下模型计算相关接口
  */
-import request from '../request'
+import request, {
+  appendFormData,
+  requestPostFormData
+} from '../request'
 
 /**
  * @author haodongdong
@@ -105,6 +108,84 @@ export async function getCreditInfo(query) {
         }
       })
       resolve(res.data)
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
+ * @description 重新计算
+ * @param {*} params
+ * @returns Promise
+ */
+export async function reCount(params) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/api/eval/cal/result/reCalc',
+        method: 'post',
+        data: params
+      })
+      if (res.data.successful) {
+        resolve()
+      } else {
+        reject(res.data.message)
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
+ * @description 模板下载
+ * @param {*} personClass
+ * @returns Promise
+ */
+export async function templateDownload(personClass) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/api/eval/cal/result/template/download',
+        responseType: 'blob',
+        method: 'get',
+        params: {
+          personClass
+        }
+      })
+      resolve(res.data)
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
+ * @description 模板上传计算
+ * @param {*} params
+ * @returns Promise
+ */
+export async function templateCount(params) {
+  return new Promise(async (resolve, reject) => {
+    const url = '/api/eval/cal/result/template/import'
+
+    let data = new FormData()
+
+    appendFormData(data, 'personClass', params.personClass)
+    appendFormData(data, 'modelId', params.modelId)
+    appendFormData(data, 'uploadFile', params.uploadFile)
+
+    try {
+      const res = await requestPostFormData(url, data)
+      if (res.data.successful) {
+        resolve()
+      } else {
+        reject(res.data.message)
+      }
     } catch (error) {
       reject(error)
     }

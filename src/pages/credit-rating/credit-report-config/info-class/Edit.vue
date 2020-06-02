@@ -2,7 +2,8 @@
   <div class="credit-report-config-info-class-edit">
     <page-header-wrap :title="title" show-close @on-close="$emit('close')">
       <v-edit-wrap>
-        <div slot="full">
+        <div slot="full" style="position: relative;">
+          <b-loading fix show-text="loading" v-if="loading"></b-loading>
           <v-title-bar label="基本信息" class="mb-15"></v-title-bar>
           <b-form :model="form" ref="form" :rules="rules"
             :label-width="100" label-position="left" style="padding: 0 100px;">
@@ -39,7 +40,7 @@
             </template>
 
             <template v-slot:action="{ index }">
-              <b-button type="text" @click="handleRemove(index)">删除</b-button>
+              <b-button type="text" text-color="danger" @click="handleRemove(index)">删除</b-button>
               <b-button type="text" @click="handleEdit(index)">编辑</b-button>
             </template>
           </b-table>
@@ -66,15 +67,15 @@
       @save="handleSave"
       :open="openSourceField"
       :resourceKey="resourceKey"
-      :fieldNames="fieldNames">
+      :fieldMap="fieldMap">
     </edit-source-info-field>
   </div>
 </template>
 
 <script>
-  import SourceInfoSelect from '../../../../credit-rating/index-manage/SourceInfoSelect'
+  import SourceInfoSelect from '../../../credit-rating/index-manage/SourceInfoSelect'
   import EditSourceInfoField from './EditSourceInfoField'
-  import { createInfoClass, updateCreditReport, updateInfoClass } from '../../../../../api/sys/credit-report-config.api'
+  import { createInfoClass, updateInfoClass, getInfoClassDetaiil } from '../../../../api/credit-rating/credit-report-config.api'
 
   export default {
     name: 'CreditReportConfigInfoClassEdit',
@@ -89,10 +90,11 @@
     },
     data () {
       return {
+        loading: false, // 遮罩loading
+        btnLoading: false,
         curIndex: 0, // 存储当前行index
         resourceKey: '', // 传递给edit-source-info-field
-        fieldNames: '', // 当前编辑行的fieldNames，传递给edit-source-info-field
-        btnLoading: false,
+        fieldMap: null, // 当前编辑行的fieldNames与fieldTitles，传递给edit-source-info-field
         openSource: false, // 打开source-info-select组件
         openSourceField: false, // 打开edit-source-info-field组件
         form: {
@@ -224,7 +226,11 @@
           return resource.resourceKey === item.resourceKey
         })
         if (exist) {
-          this.$message({ type: 'warning', content: '选择的资源已存在。' })
+          this.$alert({
+            type: 'warning',
+            title: '资源已存在',
+            content: '选择的资源已存在，请重新选择。'
+          })
         } else {
           const nameArr = []
           const titleArr = []
@@ -254,7 +260,7 @@
       handleRemove (index) {
         this.$confirm({
           title: '删除',
-          content: '确定要删除当前信息报告信息项？',
+          content: '确定要删除当前信用报告信息项？',
           loading: true,
           okType: 'danger',
           onOk: () => {
@@ -266,18 +272,39 @@
       },
       // 编辑按钮回调
       handleEdit (index) {
-        const row = this.listCopy[index]
-
         this.curIndex = index
+
+        const row = this.listCopy[index]
+        const fieldMap = new Map()
+        const fieldNamesList = row.fieldNames.split(',')
+        const fieldTitlesList = row.fieldTitles.split(',')
+        const onelineNamesList = row.onelineNames === undefined ? [] : row.onelineNames.split(',')
+
+        for (let i = 0; i < fieldNamesList.length; i++) {
+          const fieldName = fieldNamesList[i]
+          const fieldTitle = fieldTitlesList[i]
+          const isOneLine = onelineNamesList.some(item => item === fieldName) // 判单当前fieldName是否占满一行
+
+          const fieldObj = {
+            fieldName,
+            fieldTitle,
+            isOneLine
+          }
+
+          fieldMap.set(fieldNamesList[i], fieldObj)
+        }
+
         this.resourceKey = row.resourceKey
-        this.fieldNames = row.fieldNames
+        this.fieldMap = fieldMap
+
         this.openSourceField = true
       },
       // 资源编辑组件保存后的回调
-      handleSave ({ fieldNames, fieldTitles }) {
+      handleSave ({ fieldNames, fieldTitles, onelineNames }) {
         const row = this.listCopy[this.curIndex]
         row.fieldNames = fieldNames
         row.fieldTitles = fieldTitles
+        row.onelineNames = onelineNames
       },
       async handleSubmit () {
         this.form.items = this.listCopy
@@ -295,9 +322,21 @@
           this.btnLoading = false
         }
       },
+      async getInfoClassDetaiil (id) {
+        this.loading = true
+        try {
+          const res = await getInfoClassDetaiil(id)
+          this.form = { ...this.form, ...res }
+          this.list = this.$util.deepClone(res.items)
+          this.listCopy = this.$util.deepClone(res.items)
+        } catch (error) {
+          console.error(error)
+        }
+        this.loading = false
+      },
       initEditData () {
         if (this.editData) {
-          // this.form = this.$util.deepClone(this.editData)
+          this.getInfoClassDetaiil(this.editData.id)
         }
       }
     }

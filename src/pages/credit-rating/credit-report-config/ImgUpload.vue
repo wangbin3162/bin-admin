@@ -18,7 +18,7 @@
 </template>
 
 <script>
-  import { fileUpload, fileDownLoad } from '../../../../api/import-export.api'
+  import { fileUpload, fileDownLoad } from '../../../api/import-export.api'
 
   export default {
     name: 'ImgUpload',
