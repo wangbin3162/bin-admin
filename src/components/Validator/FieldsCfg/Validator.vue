@@ -606,7 +606,12 @@
         e.preventDefault()
       },
       onDrop(e, index) {
-        this.checkRulesArr[index].preField = e.dataTransfer.getData('index')
+        if (this.checkRulesArr[index].preField) {
+          this.checkRulesArr[index].preField = e.dataTransfer.getData('index')
+        }
+        if (this.checkRulesArr[index].time) {
+          this.checkRulesArr[index].time = e.dataTransfer.getData('index')
+        }
         this.emitValue()
         e.preventDefault()
       }

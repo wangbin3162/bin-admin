@@ -11,7 +11,7 @@
         <!--             draggable="true" @dragstart="onDrag($event,index)" @drop="onDrop($event,index)"-->
         <!--             @dragenter="onEnter($event)" @dragleave="onLeave($event)" @dragover="allowDrop($event)">-->
         <div class="item-inner" @click="handleSelect(index)"
-             :class="{'item-selected':currentIndex===index}"
+             :class="[{'item-selected':currentIndex===index},{'empty-title':item.fieldTitle.length===0}]"
              :title="item.fieldTitle">
           <div class="item-field">
             <div class="item-drag">
@@ -19,7 +19,10 @@
             </div>
             <span draggable="true" @dragstart="onDrag($event,item.fieldName)">{{ item.fieldName }}</span>
           </div>
-          <div class="item-name">{{ item.fieldTitle }}</div>
+          <div class="item-name" v-if="item.fieldTitle.length>0">{{ item.fieldTitle }}</div>
+          <div class="item-name" v-else>
+            <b-tag type="danger" size="mini">空标题</b-tag>
+          </div>
           <span class="item-required" :class="{'active':item.required==='Y'}">核心</span>
           <span class="item-required rule" :class="{'active':hasRequiredRule(item)}">必填</span>
         </div>
@@ -147,6 +150,14 @@
       &:hover {
         border: 1px solid #1089ff;
       }
+      &.empty-title {
+        border-color: #ff4d4f;
+        &.item-selected {
+          transition: .2s;
+          border-color: #ff4d4f;
+          animation: selectAnimError 2s infinite ease-in-out;
+        }
+      }
     }
     &-field {
       display: flex;
@@ -231,6 +242,17 @@
     }
     100% {
       box-shadow: 0 1px 0 3px rgba(64, 158, 255, .2);
+    }
+  }
+  @keyframes selectAnimError {
+    0% {
+      box-shadow: 0 1px 0 3px rgba(255, 77, 79, 0.2);
+    }
+    50% {
+      box-shadow: 0 1px 0 2px rgba(255, 77, 79, 0.1);
+    }
+    100% {
+      box-shadow: 0 1px 0 3px rgba(255, 77, 79, 0.2);
     }
   }
 </style>

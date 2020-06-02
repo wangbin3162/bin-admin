@@ -13,12 +13,15 @@
     <div class="right-panel">
       <v-title-bar label="配置项" tip-pos="left"/>
       <div class="config-item" v-if="currentIndex>-1">
-        <b-form v-model="totalData[currentIndex]" label-position="top">
+        <b-form v-model="totalData[currentIndex]" label-position="top" ref="cfgForm">
           <!--标题，公开类型，数据类型-->
           <b-row :gutter="15">
             <b-col span="8">
-              <b-form-item label="标题" class="bin-form-item-required">
+              <b-form-item label="标题" class="bin-form-item-required"
+                           :class="{'bin-form-item-error':totalData[currentIndex].fieldTitle.length===0}">
                 <b-input v-model.trim="totalData[currentIndex].fieldTitle" @on-change="emitValue"/>
+                <span class="bin-form-item-error-tip"
+                      v-if="totalData[currentIndex].fieldTitle.length===0">标题不能为空</span>
               </b-form-item>
             </b-col>
             <b-col span="8">

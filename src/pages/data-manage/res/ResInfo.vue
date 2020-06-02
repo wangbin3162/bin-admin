@@ -623,6 +623,15 @@
       handleSubmit() {
         this.$refs.form.validate((valid) => {
           if (valid) {
+            // 判断信息项是否存在空标题
+            let emptyItemFieldIndex = this.resource.items.findIndex(i => i.fieldTitle.length === 0)
+            if (emptyItemFieldIndex > -1) {
+              this.$message({
+                type: 'danger',
+                content: `请填写字段[${this.resource.items[emptyItemFieldIndex].fieldName}]标题！`
+              })
+              return
+            }
             this.btnLoading = true
             let status = this.resource.status
             // 这里修改的时候需要额外判断是否发布，如已经发布，则实际相当于copy一个新增，后台会将原有同名元信息设置为历史状态
