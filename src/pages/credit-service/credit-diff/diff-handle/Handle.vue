@@ -1,6 +1,6 @@
 <template>
   <div class="diff-app-detail">
-    <page-header-wrap :title="title" show-close @on-close="$emit('close')">
+    <page-header-wrap show-close @on-close="$emit('close')">
       <v-edit-wrap>
         <div slot="full">
           <b-collapse :value="['1', '2']" simple>
@@ -20,7 +20,11 @@
                 </tr>
                 <tr>
                   <td>数据类型：</td>
-                  <td>{{ detail.resourceName }}</td>
+                  <td>
+                    <b-button type="text" @click="handleOpenResDetail">
+                      {{ detail.resourceName }}
+                    </b-button>
+                  </td>
                   <td>异议申请时间：</td>
                   <td>{{ detail.applyDate }}</td>
                 </tr>
@@ -58,20 +62,22 @@
 
             <div class="line"></div>
 
-            <b-collapse-panel title="初审结果" name="2">
+            <b-collapse-panel title="方案计算结果信息" name="2">
               <b-form ref="form" :model="form" :rules="rules" :label-width="100">
-                <b-form-item label="初审结果" prop="status">
-                  <b-radio-group v-model="form.status">
-                    <b-radio label="T1">初审通过</b-radio>
-                    <b-radio label="TR">驳回</b-radio>
+                <b-form-item label="处理结果" prop="dealResult">
+                  <b-radio-group v-model="form.dealResult">
+                    <b-radio label="NO">核实无误</b-radio>
+                    <b-radio label="CA">取消公示</b-radio>
+                    <b-radio label="DE">删除信息</b-radio>
+                    <b-radio label="UP">更新信息</b-radio>
                   </b-radio-group>
                 </b-form-item>
-                <b-form-item label="初审说明" prop="approveDescription">
-                  <b-input v-model="form.approveDescription" type="textarea" :rows="4" placeholder="请输入...." ></b-input>
+                <b-form-item label="处理说明" prop="dealDescription">
+                  <b-input v-model="form.dealDescription" type="textarea" :rows="4" placeholder="请输入...." ></b-input>
                 </b-form-item>
                 <b-form-item>
                   <b-button type="primary" @click="handleSubmit">
-                    初审完成
+                    处理完成
                   </b-button>
                 </b-form-item>
               </b-form>
@@ -84,13 +90,19 @@
         </template>
       </v-edit-wrap>
     </page-header-wrap>
+
+    <res-detail-dialog
+      @close="open = false"
+      :open="open"
+      :diffDetail="detail">
+    </res-detail-dialog>
   </div>
 </template>
 
 <script>
   import AttachDlBtn from '../components/AttachDlBtn'
-  import { show } from '../../../../api/data-manage/gather.api'
-  import { approve } from '../../../../api/credit-service/credit-diff.api'
+  import ResDetailDialog from '../components/ResDetailDialog'
+  import { deal } from '../../../../api/credit-service/credit-diff.api'
 
   export default {
     name: 'DiffAppDetail',
@@ -99,20 +111,22 @@
       'detail'
     ],
     components: {
-      AttachDlBtn
+      AttachDlBtn,
+      ResDetailDialog
     },
     data () {
       return {
+        open: false, // 打开res-detail-dialog
         form: {
           id: this.detail.id,
-          status: 'T1',
-          approveDescription: ''
+          dealResult: 'NO',
+          dealDescription: ''
         },
         rules: {
-          status: [
+          dealResult: [
             { required: true, message: '审核说明必填', trigger: 'blur' }
           ],
-          approveDescription: [
+          dealDescription: [
             { required: true, message: '审核说明必填', trigger: 'blur' }
           ]
         }
@@ -122,13 +136,18 @@
 
     },
     methods: {
+      // 数据类型查看详情btn的回调
+      handleOpenResDetail () {
+        this.open = true
+      },
       async handleSubmit () {
         const valid = await this.$refs.form.validate()
         if (valid) {
           try {
-            await approve(this.form)
+            await deal(this.form)
             this.$message({ type: 'success', content: '操作成功' })
             this.$emit('handle-done')
+            this.$emit('close')
           } catch (error) {
             console.error(error)
             this.$notice.danger({ title: '操作失败', desc: error })
