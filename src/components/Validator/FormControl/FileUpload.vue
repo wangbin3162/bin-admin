@@ -1,5 +1,5 @@
 <template>
-  <div class="file-upload-wrap">
+  <div class="file-upload-wrap" :style="{width:isShow?'100%':'25%'}">
     <template v-if="!isShow">
       <div class="file-upload">
         <input
@@ -187,6 +187,9 @@
 </script>
 
 <style scoped lang="stylus">
+  .file-upload-wrap {
+    width: 25%;
+  }
   .file-upload input[type="file"] {
     display: none;
   }
@@ -194,7 +197,9 @@
     margin-top: 8px;
   }
   .file-item {
-    padding: 4px;
+    position: relative;
+    width: 100%;
+    padding: 4px 22px 4px 4px;
     color: #515a6e;
     border-radius: 4px;
     line-height: 1.5em;
@@ -202,21 +207,21 @@
     -webkit-transition: background-color 0.2s ease-in-out;
     transition: background-color 0.2s ease-in-out;
     overflow: hidden;
-    position: relative;
     > span i {
       display: inline-block;
-      vertical-align: baseline;
+      vertical-align: -1px;
       width: 12px;
       height: 12px;
       color: #515a6e;
       text-align: center;
     }
     .list-item-remove {
+      position: absolute;
+      right: 4px;
+      top: 4px;
       opacity: 0;
       font-size: 20px;
       cursor: pointer;
-      float: right;
-      margin-right: 4px;
       color: #999;
       -webkit-transition: all 0.2s ease;
       transition: all 0.2s ease;
@@ -225,9 +230,10 @@
       }
     }
     .list-item-success {
+      position: absolute;
+      right: 4px;
+      top: 4px;
       font-size: 20px;
-      float: right;
-      margin-right: 4px;
       color: #52c41a;
     }
     &.upload:hover {
@@ -236,9 +242,17 @@
         opacity: 1;
       }
     }
-    .file-name.success:hover {
-      color: #1089ff;
-      cursor: pointer;
+    .file-name {
+      display: inline-block;
+      vertical-align: middle;
+      width: 100%;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis
+      .success:hover {
+        color: #1089ff;
+        cursor: pointer;
+      }
     }
   }
 </style>

@@ -4,7 +4,7 @@
                v-bind="{ group: 'item', animation: 200, ghostClass:'item-over', handle: '.item-drag' }"
                @end="onDragEnd">
       <div v-for="(item,index) in totalData" :key="index" class="item"
-           :class="[{'ignore':item.status==='ignore'},{'is-textarea':item.controlType==='TEXTAREA'}]">
+           :class="[{'ignore':item.status==='ignore'},{'is-textarea':['FILE_UPLOAD', 'TEXTAREA'].indexOf(item.controlType) > -1 }]">
         <!--自定义拖拽实现-->
         <!--        <div class="item-inner" @click="handleSelect(index)"-->
         <!--             :class="{'item-selected':currentIndex===index}"-->
