@@ -24,11 +24,11 @@
 
         <!-- 操作栏 -->
         <v-table-tool-bar>
-          <b-button type="primary" icon="ios-add-circle-outline"
+          <!-- <b-button type="primary" icon="ios-add-circle-outline"
             @click="handleReCount">
             重新计算
-          </b-button>
-          <b-button plain icon="md-list" @click="handleTempCount">
+          </b-button> -->
+          <b-button plain type="primary" icon="md-list" @click="handleTempCount">
             模板计算
           </b-button>
           <temp-dl-btn :personClass="personClass">
@@ -90,6 +90,11 @@
       :personClass="personClass">
     </temp-count>
 
+    <p-d-f
+      @close="openPDF = false"
+      :open="openPDF">
+    </p-d-f>
+
     <record-list ref="record" @on-close="handleCancel"></record-list>
   </div>
 </template>
@@ -102,6 +107,7 @@
   import TempDlBtn from '../components/TempDlBtn'
   import ReCount from '../components/ReCount'
   import TempCount from '../components/TempCount'
+  import PDF from '../components/PDF'
   import { getLegalList, getModelList, reCount } from '../../../../api/credit-rating/model-count.api'
 
   export default {
@@ -112,12 +118,14 @@
       RecordList,
       TempDlBtn,
       ReCount,
-      TempCount
+      TempCount,
+      PDF
     },
     data () {
       return {
         openReCount: false, // 打开re-count组件
         openTempCount: false, // 打开temp-count组件
+        openPDF: true, // 打开p-d-f组件
         personClass: 'A02',
         detail: {}, // 存储行数据
         listQuery: {
@@ -145,9 +153,9 @@
         ratingOptions: [] // 评级等级下拉框数据
       }
     },
-    created () {
-      this.getModelList()
-      this.searchList()
+    async created () {
+      await this.getModelList()
+      await this.searchList()
     },
     methods: {
       resetQuery () {
@@ -160,16 +168,14 @@
         }
         this.searchList()
       },
-      // 评价方案下来框chang事件
+      // 评价方案下拉框chang事件
       handleModelChange (val) {
         // 变化后更新评价等级下拉框数据
-        this.ratingOptions = this.modelList.find(item => {
-          return item.id === val
-        }).ratingOptions
-      },
-      // 重新计算按钮回调
-      handleReCount () {
-        this.openReCount = true
+        if (val) {
+          this.ratingOptions = this.modelList.find(item => {
+            return item.id === val
+          }).ratingOptions
+        }
       },
       // 模板计算按钮回调
       handleTempCount () {
@@ -182,8 +188,7 @@
       },
       // 信用报告按钮回调
       handleCreditReport (row) {
-        this.editData = row
-        this.openEditPage('modify')
+        this.openReCount = true
       },
       // 模板计算记录按钮回调
       handleRecord () {

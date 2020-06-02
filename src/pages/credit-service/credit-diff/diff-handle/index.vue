@@ -58,7 +58,6 @@
     },
     data () {
       return {
-        moduleName: '异议申请',
         detail: null,
         resourceTypeOpt: [], // 数据(资源)类型
         listQuery: {

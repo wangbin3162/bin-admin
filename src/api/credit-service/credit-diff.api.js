@@ -110,6 +110,31 @@ export async function approve(params) {
 
 /**
  * @author haodongdong
+ * @description 异议流程处理接口
+ * @param {*} params
+ * @returns Promise
+ */
+export async function deal(params) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/api/service/objectionFlow/deal',
+        method: 'post',
+        data: params
+      })
+      if (res.data.successful) {
+        resolve()
+      } else {
+        reject(new Error(res.data.message))
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
  * @description 附件下载
  * @param {*} personClass
  * @returns Promise

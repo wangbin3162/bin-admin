@@ -1,5 +1,7 @@
 <template>
-  <b-button plain icon="ios-arrow-round-down" size="small" @click="clickHandler">
+  <b-button type="primary" plain icon="ios-arrow-round-down"
+    size="small"
+    @click="clickHandler">
     <slot>下载</slot>
   </b-button>
 </template>

@@ -1,6 +1,6 @@
 <template>
   <div class="diff-app-detail">
-    <page-header-wrap :title="title" show-close @on-close="$emit('close')">
+    <page-header-wrap show-close @on-close="$emit('close')">
       <v-edit-wrap>
         <div slot="full">
           <b-collapse :value="['1', '2']" simple>
@@ -21,7 +21,7 @@
                 <tr>
                   <td>数据类型：</td>
                   <td>
-                    <b-button type="text">
+                    <b-button type="text" @click="handleOpenResDetail">
                       {{ detail.resourceName }}
                     </b-button>
                   </td>
@@ -88,11 +88,18 @@
         </template>
       </v-edit-wrap>
     </page-header-wrap>
+
+    <res-detail-dialog
+      @close="open = false"
+      :open="open"
+      :diffDetail="detail">
+    </res-detail-dialog>
   </div>
 </template>
 
 <script>
   import AttachDlBtn from '../components/AttachDlBtn'
+  import ResDetailDialog from '../components/ResDetailDialog'
   import { approve } from '../../../../api/credit-service/credit-diff.api'
 
   export default {
@@ -102,10 +109,12 @@
       'detail'
     ],
     components: {
-      AttachDlBtn
+      AttachDlBtn,
+      ResDetailDialog
     },
     data () {
       return {
+        open: false, // 打开res-detail-dialog
         form: {
           id: this.detail.id,
           status: 'T1',
@@ -125,6 +134,10 @@
 
     },
     methods: {
+      // 数据类型查看详情btn的回调
+      handleOpenResDetail () {
+        this.open = true
+      },
       async handleSubmit () {
         const valid = await this.$refs.form.validate()
         if (valid) {
