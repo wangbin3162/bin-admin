@@ -606,10 +606,10 @@
         e.preventDefault()
       },
       onDrop(e, index) {
-        if (this.checkRulesArr[index].preField) {
+        if (this.checkRulesArr[index].hasOwnProperty('preField')) {
           this.checkRulesArr[index].preField = e.dataTransfer.getData('index')
         }
-        if (this.checkRulesArr[index].time) {
+        if (this.checkRulesArr[index].hasOwnProperty('time')) {
           this.checkRulesArr[index].time = e.dataTransfer.getData('index')
         }
         this.emitValue()
