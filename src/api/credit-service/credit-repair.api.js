@@ -117,3 +117,30 @@ export async function deleteDirConfig(id) {
     }
   })
 }
+
+/**
+ * @author haodongdong
+ * @description 获取信用修复申请列表
+ * @param {*} query
+ * @returns Promise
+ */
+export async function getRepairApplyList(query) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/api/service/repairFlow/applyList',
+        method: 'get',
+        params: {
+          resourceName: query.resourceName,
+          name: query.name,
+          status: query.status,
+          size: query.size,
+          page: query.page - 1
+        }
+      })
+      resolve(res.data)
+    } catch (error) {
+      reject(error)
+    }
+  })
+}

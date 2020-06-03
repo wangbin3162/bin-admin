@@ -4,24 +4,27 @@
       <v-table-wrap>
         <!-- 查询条件 -->
         <v-filter-bar @keydown.enter.native="handleFilter">
-          <v-filter-item title="目录名称">
-            <b-input v-model="listQuery.resourceName" placeholder="请输入目录名称"></b-input>
+          <v-filter-item title="申请目录">
+            <b-input v-model="listQuery.resourceName" placeholder="请输入申请目录"></b-input>
           </v-filter-item>
-           <v-filter-item title="目录表名">
-            <b-input v-model="listQuery.tableName" placeholder="请输入目录表名"></b-input>
+           <v-filter-item title="主体名称">
+            <b-input v-model="listQuery.name" placeholder="请输入主体名称"></b-input>
+          </v-filter-item>
+          <v-filter-item title="状态">
+            <b-select v-model="listQuery.status">
+              <b-option v-for="(value, key) in statusEnum" :key="key"
+                :value="key">
+                {{ value }}
+              </b-option>
+            </b-select>
           </v-filter-item>
           <v-filter-item @on-search="handleFilter" @on-reset="resetQuery"></v-filter-item>
         </v-filter-bar>
         <!-- 操作栏 -->
         <v-table-tool-bar>
-          <b-button type="primary" icon="ios-add-circle-outline" @click="handleCreate">新 增</b-button>
+          <b-button type="primary" icon="ios-add-circle-outline" @click="handleCreate">修复申请</b-button>
         </v-table-tool-bar>
         <b-table :columns="columns" :data="list" :loading="listLoading">
-
-          <template v-slot:configType="{ row }">
-            {{ configTypeEnum[row.configType] }}
-          </template>
-
           <template v-slot:action="{ row }">
             <b-button type="text" @click="handleModify(row)">
               修改
@@ -41,7 +44,6 @@
       </v-table-wrap>
     </page-header-wrap>
 
-    <!-- 编辑组件 -->
     <edit v-if="isEdit"
       @close="handleClose"
       @success="searchList"
@@ -55,7 +57,7 @@
   import commonMixin from '../../../../common/mixins/mixin'
   import permission from '../../../../common/mixins/permission'
   import Edit from './Edit'
-  import { getDirConfigList, deleteDirConfig } from '../../../../api/credit-service/credit-repair.api'
+  import { getRepairApplyList } from '../../../../api/credit-service/credit-repair.api'
 
   export default {
     name: 'DirConfig',
@@ -65,26 +67,30 @@
     },
     data () {
       return {
-        moduleName: '信用目录配置',
+        moduleName: '信用修复申请',
         curRow: null, // 当前行数据
         listQuery: {
           resourceName: '',
-          tableName: ''
+          name: '',
+          status: ''
         },
         columns: [
           { type: 'index', width: 50, align: 'center' },
-          { title: '目录名称', key: 'resourceName' },
-          { title: '资源ID', key: 'resourceKey' },
-          { title: '目录表名', key: 'tableName' },
-          { title: '配置类型', slot: 'configType' },
-          { title: '备注', key: 'bz', ellipsis: true, tooltip: true },
+          { title: '申请目录', key: 'resourceName' },
+          { title: '主体名称', key: 'name' },
+          { title: '修复原因', key: 'repairCause' },
+          { title: '处理方式', key: 'dealMode' },
+          { title: '申请人', key: 'applyName' },
+          { title: '申请部门', key: 'applyDeptName' },
+          { title: '申请时间', key: 'applyDate' },
+          { title: '当前状态', key: 'status' },
           { title: '操作', slot: 'action', width: 120 }
         ]
       }
     },
     computed: {
-      configTypeEnum () {
-        return this.$store.state.creditRepair.configTypeEnum
+      statusEnum () {
+        return this.$store.state.creditRepair.statusEnum
       }
     },
     created () {
@@ -138,14 +144,18 @@
       async searchList () {
         this.listLoading = true
         try {
-          const res = await getDirConfigList(this.listQuery)
+          const res = await getRepairApplyList(this.listQuery)
+
+          res.rows.forEach(item => {
+            item.status = this.statusEnum[item.status]
+          })
 
           this.setListData({
             list: res.rows,
             total: res.total
           })
         } catch (error) {
-          console.log(error)
+          console.error(error)
         }
         this.listLoading = false
       }
