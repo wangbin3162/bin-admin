@@ -1,7 +1,7 @@
 <template>
   <div class="res-detail-dialog">
     <b-modal v-model="showDialog"
-      title="资源详细信息"
+      :title="diffDetail.resourceName + ' 详情'"
       :width="640"
       :styles="{ top: '5%'}"
       footer-hide

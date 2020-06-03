@@ -1,6 +1,6 @@
 <template>
   <div class="diff-app-detail">
-    <page-header-wrap show-close @on-close="$emit('close')">
+    <page-header-wrap v-show="isHandlePage" show-close @on-close="$emit('close')">
       <v-edit-wrap>
         <div slot="full">
           <b-collapse :value="['1', '2']" simple>
@@ -91,17 +91,18 @@
       </v-edit-wrap>
     </page-header-wrap>
 
-    <res-detail-dialog
-      @close="open = false"
-      :open="open"
+    <!--为了触发重绘更新form字段设置 使用v-if-->
+    <res-edit-dialog
+      v-if="!isHandlePage"
+      @close="isHandlePage = true"
       :diffDetail="detail">
-    </res-detail-dialog>
+    </res-edit-dialog>
   </div>
 </template>
 
 <script>
   import AttachDlBtn from '../components/AttachDlBtn'
-  import ResDetailDialog from '../components/ResDetailDialog'
+  import ResEditDialog from '../components/ResEditDialog'
   import { deal } from '../../../../api/credit-service/credit-diff.api'
 
   export default {
@@ -112,11 +113,11 @@
     ],
     components: {
       AttachDlBtn,
-      ResDetailDialog
+      ResEditDialog
     },
     data () {
       return {
-        open: false, // 打开res-detail-dialog
+        isHandlePage: true,
         form: {
           id: this.detail.id,
           dealResult: 'NO',
@@ -138,7 +139,7 @@
     methods: {
       // 数据类型查看详情btn的回调
       handleOpenResDetail () {
-        this.open = true
+        this.isHandlePage = false
       },
       async handleSubmit () {
         const valid = await this.$refs.form.validate()
