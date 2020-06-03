@@ -12,7 +12,7 @@
         <b-tree :data="treeData" slot="tree" @on-select-change="handTreeCurrentChange"></b-tree>
 
         <b-row :gutter="15" style="max-height: 600px; overflow: auto;">
-          <b-col span="15">
+          <b-col :span="spanLeft">
             <!-- 查询 -->
             <v-filter-bar>
               <v-filter-item title="资源名称" :span="8">
@@ -32,7 +32,11 @@
                 <template v-slot:personClass="{row}">{{ personClassMap[row.personClass] }}</template>
                 <template v-slot:resProperty="{row}">{{ resPropertyMap[row.resProperty] }}</template>
                 <template v-slot:action="{ row }">
-                  <b-button :type="checkRowSelected(row) ? 'danger' : 'primary'" plain size="small"
+                  <b-button v-if="sourceRadioModel" type="primary" plain size="small"
+                    @click="handleRadioBtn(row)">
+                    选择
+                  </b-button>
+                  <b-button v-else :type="checkRowSelected(row) ? 'danger' : 'primary'" plain size="small"
                     @click="chooseOne(row)">
                     {{ checkRowSelected(row) ? '取消' : '选择' }}
                   </b-button>
@@ -45,7 +49,7 @@
               @on-change="handleCurrentChange"
               @on-page-size-change="handleSizeChange"></b-page>
           </b-col>
-          <b-col span="9" class="card-con">
+          <b-col v-if="!sourceRadioModel" :span="spanRight" class="card-con">
             <b-card head-tip>
               <template v-if="paraType === 'S'">
                 <div slot="header" flex="main:justify cross:center">
@@ -142,6 +146,10 @@
       paraType: { // 参数类型 S 资源 I 信息项
         type: String
       },
+      sourceRadioModel: { // 资源模式时，table选择按钮是多选还是单选
+        type: Boolean,
+        default: false
+      },
       infoMulModel: { // 信息项模式时，信息项是单选还是多选模式
         type: Boolean,
         default: false
@@ -150,6 +158,8 @@
     data () {
       return {
         width: '75%',
+        spanLeft: 15,
+        spanRight: 9,
         personClassMap: {},
         resPropertyMap: {},
         resPropertyOptions: [],
@@ -240,6 +250,11 @@
           })
           this.infoTableLoading = false
         })
+      },
+      // 资源单选模式时，选择按钮回调
+      handleRadioBtn (row) {
+        this.$emit('choose-sin', row)
+        this.showDialog = false // 关闭弹框
       },
       // tag关闭回调
       handleCloseTag(index) {
@@ -432,6 +447,11 @@
             { title: '资源性质', slot: 'resProperty', ellipsis: true, tooltip: true, align: 'center' },
             { title: '操作', slot: 'action', width: 75, align: 'center' }
           ]
+
+          if (this.sourceRadioModel) {
+            this.width = '70%'
+            this.spanLeft = 24
+          }
         }
       }
     }
