@@ -60,7 +60,14 @@ export default {
         title: '信用修复'
       },
       children: [
-
+        {
+          path: 'dirConfig',
+          name: 'DirConfig',
+          component: () => import(/* webpackChunkName: "DirConfig" */ '../../pages/credit-service/credit-repair/dir-config'),
+          meta: {
+            title: '信用目录配置'
+          }
+        }
       ]
     }
   ]
