@@ -68,17 +68,19 @@
       <v-edit-wrap>
         <b-form :model="scheme" ref="form" :rules="ruleValidate" :label-width="120">
           <b-row>
-            <b-col span="8">
+            <b-col span="12">
               <b-form-item label="方案名称" prop="cfgName">
                 <b-input v-model="scheme.cfgName" placeholder="请输入方案名称" clearable></b-input>
               </b-form-item>
             </b-col>
-            <b-col span="8">
+            <b-col span="12">
               <b-form-item label="运行周期" prop="cronStr">
-                <b-input v-model="scheme.cronStr" placeholder="请输入运行周期" clearable></b-input>
+                <run-cycle :cron="scheme.cronStr"  @on-select="handleCronStr"></run-cycle>
               </b-form-item>
             </b-col>
-            <b-col span="8">
+          </b-row>
+          <b-row>
+            <b-col span="12">
               <b-form-item label="信息流向" prop="flowDirection">
                 <b-select v-model="scheme.flowDirection" append-to-body
                           @on-change="flowDirectionChange">
@@ -189,13 +191,13 @@
   import permission from '../../../common/mixins/permission'
   import * as api from '../../../api/data-manage/switching-scheme.api'
   import { getExchangeStatus, getExchangeType, getFlowDirection, getTransmitKind } from '../../../api/enum.api'
-  import { NodeChoose } from './components/SwitchingScheme'
+  import { NodeChoose, RunCycle } from './components/SwitchingScheme'
   import { getDefaultNode } from '../../../api/data-manage/switching-node.api'
   import { requiredRule } from '../../../common/utils/validate'
   // 非空字段提示
   export default {
     name: 'SwitchingScheme',
-    components: { NodeChoose },
+    components: { NodeChoose, RunCycle },
     mixins: [commonMixin, permission],
     data() {
       return {
@@ -418,6 +420,10 @@
       handleFillTarget(obj) {
         this.scheme.target = obj.code
         this.scheme.nameTarget = obj.name
+      },
+      // 填充cronstr
+      handleCronStr(cronStr) {
+        this.scheme.cronStr = cronStr
       },
       /* [数据接口] */
       // 通用枚举
