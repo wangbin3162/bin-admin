@@ -196,8 +196,6 @@
           this.cronStr = this.calCron
           this.$emit('on-select', this.cronStr)
           this.cronClear()
-          this.test()
-          debugger
       },
       cronClear() {
           this.sec = { list: [], flag: 'time', begin: 1, cycle: 2 }
