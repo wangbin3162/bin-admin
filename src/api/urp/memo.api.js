@@ -9,6 +9,7 @@ export function getMemoList(query) {
     params: {
       memoName: query.memoName,
       memoType: query.memoType,
+      memoStatus: query.memoStatus,
       page: query.page - 1,
       size: query.size
     }

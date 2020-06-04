@@ -62,7 +62,8 @@
         dialogFormVisible: false,
         listQuery: {
           memoName: '',
-          memoType: ''
+          memoType: '',
+          memoStatus: '1'
         },
         memoTypeMap: { '1': '惩戒', '2': '激励' },
         memoStatusMap: { '0': '通报', '1': '实施', '2': '过期' },
@@ -91,7 +92,8 @@
           page: 1,
           size: 10,
           memoName: '',
-          memoType: ''
+          memoType: '',
+          memoStatus: '1'
         }
         this.handleFilter()
       },
