@@ -27,8 +27,8 @@
 </template>
 
 <script>
-  import Util from '../../../../common/utils/util'
-  import { downLoadTemplate, downLoadAttach } from '../../../../api/credit-service/credit-repair.api'
+  import Util from '../../../common/utils/util'
+  import { downLoadTemplate, downLoadAttach } from '../../../api/credit-service/credit-repair.api'
 
   export default {
     name: 'RepairApplyAttachList',

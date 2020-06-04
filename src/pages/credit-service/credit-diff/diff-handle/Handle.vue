@@ -101,8 +101,8 @@
 </template>
 
 <script>
-  import AttachDlBtn from '../components/AttachDlBtn'
-  import ResEditDialog from '../components/ResEditDialog'
+  import AttachDlBtn from '../../components/AttachDlBtn'
+  import ResEditDialog from '../../components/ResEditDialog'
   import { deal } from '../../../../api/credit-service/credit-diff.api'
 
   export default {

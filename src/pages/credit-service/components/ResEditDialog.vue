@@ -38,11 +38,11 @@
 </template>
 
 <script>
-  import dynamicForm from '../../../../common/mixins/dynamic-form'
-  import { deepCopy } from '../../../../common/utils/assist'
-  import { initFormList } from '../../../../components/Validator/FieldsCfg/cfg-util'
-  import { Decode, MaskCode } from '../../../../common/utils/secret'
-  import { getResourceInfo, queryOne, modifyGather } from '../../../../api/data-manage/gather.api'
+  import dynamicForm from '../../../common/mixins/dynamic-form'
+  import { deepCopy } from '../../../common/utils/assist'
+  import { initFormList } from '../../../components/Validator/FieldsCfg/cfg-util'
+  import { Decode, MaskCode } from '../../../common/utils/secret'
+  import { getResourceInfo, queryOne, modifyGather } from '../../../api/data-manage/gather.api'
 
   export default {
     name: 'ResEditDialog',

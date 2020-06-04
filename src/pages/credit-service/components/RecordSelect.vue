@@ -71,14 +71,14 @@
 </template>
 
 <script>
-  import commonMixin from '../../../../common/mixins/mixin'
-  import permission from '../../../../common/mixins/permission'
-  import dynamicForm from '../../../../common/mixins/dynamic-form'
-  import { deepCopy } from '../../../../common/utils/assist'
-  import { initFormList } from '../../../../components/Validator/FieldsCfg/cfg-util'
-  import Util from '../../../../common/utils/util'
-  import FileUpload from '../../../../components/Validator/FormControl/FileUpload'
-  import * as api from '../../../../api/data-manage/gather.api'
+  import commonMixin from '../../../common/mixins/mixin'
+  import permission from '../../../common/mixins/permission'
+  import dynamicForm from '../../../common/mixins/dynamic-form'
+  import { deepCopy } from '../../../common/utils/assist'
+  import { initFormList } from '../../../components/Validator/FieldsCfg/cfg-util'
+  import Util from '../../../common/utils/util'
+  import FileUpload from '../../../components/Validator/FormControl/FileUpload'
+  import * as api from '../../../api/data-manage/gather.api'
 
   export default {
     name: 'RecordSelect',

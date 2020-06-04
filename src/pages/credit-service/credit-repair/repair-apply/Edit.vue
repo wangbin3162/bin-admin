@@ -24,8 +24,8 @@
                 <b-form-item label="选择记录" prop="recordId">
                   <div flex>
                     <b-input :value="recordData" type="textarea" :rows="4" disabled></b-input>
-                    <!-- 待审核状态则选择记录 -->
-                    <b-button v-if="editData.status === '1'"
+                    <!-- 新增 or 待审核状态则选择记录 -->
+                    <b-button v-if="editData === null || editData.status === '1'"
                       type="primary" plain size="small" style="flex: 0 0 auto; margin-left: 5px;"
                       :disabled="form.resourceKey === null" :loading="btnLoading"
                       @click="handleSelectBtn">
@@ -84,9 +84,9 @@
 </template>
 
 <script>
-  import RepairApplyAttachList from '../components/RepairApplyAttachList'
   import { getAllDirConfig, getRecordData, repairApply } from '../../../../api/credit-service/credit-repair.api'
-  import RecordSelect from './RecordSelect'
+  import RepairApplyAttachList from '../../components/RepairApplyAttachList'
+  import RecordSelect from '../../components/RecordSelect'
 
   export default {
     name: 'RepairApplyEdit',

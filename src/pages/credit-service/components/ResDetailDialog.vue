@@ -26,8 +26,8 @@
 </template>
 
 <script>
-  import { Decode, MaskCode } from '../../../../common/utils/secret'
-  import { getResourceInfo, show } from '../../../../api/data-manage/gather.api'
+  import { Decode, MaskCode } from '../../../common/utils/secret'
+  import { getResourceInfo, show } from '../../../api/data-manage/gather.api'
 
   export default {
     name: 'ResDetailDialog',

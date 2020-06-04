@@ -100,8 +100,8 @@
 </template>
 
 <script>
-  import AttachDlBtn from '../components/AttachDlBtn'
-  import ResDetailDialog from '../components/ResDetailDialog'
+  import AttachDlBtn from '../../components/AttachDlBtn'
+  import ResDetailDialog from '../../components/ResDetailDialog'
   import { approve } from '../../../../api/credit-service/credit-diff.api'
 
   export default {

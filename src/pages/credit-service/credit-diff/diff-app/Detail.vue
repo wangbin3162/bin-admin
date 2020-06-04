@@ -113,7 +113,7 @@
 </template>
 
 <script>
-  import AttachDlBtn from '../components/AttachDlBtn'
+  import AttachDlBtn from '../../components/AttachDlBtn'
 
   export default {
     name: 'DiffAppDetail',
