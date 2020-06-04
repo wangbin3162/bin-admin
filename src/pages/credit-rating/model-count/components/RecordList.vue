@@ -79,11 +79,11 @@
                 <v-simple-label label="数据总量">{{ importDetail.totalCount }}</v-simple-label>
               </b-col>
               <b-col span="8">
-                <v-simple-label label="错误数据量">
+                <v-simple-label label="计算结果">
                   {{ importDetail.validationCount }}
-                  <b-button type="text" v-if="importDetail.validationCount>0"
-                            @click="handleDownloadExport(importDetail.batchInfoId,importDetail.uploadDate,'导入记录-错误报告')">
-                    下载：错误数据
+                  <b-button type="text" v-if="importDetail.validationCount > 0"
+                    @click="handleDownloadExport(importDetail.batchInfoId,importDetail.uploadDate,'导入记录-计算结果')">
+                    下载：计算结果
                   </b-button>
                 </v-simple-label>
               </b-col>

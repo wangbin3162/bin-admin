@@ -175,3 +175,30 @@ export function fileDownLoad(funName, id) {
     }
   })
 }
+
+/**
+ * @author haodongdong
+ * @description 信用评级下导出PDF
+ * @returns Promise
+ */
+export async function exportPDF(params) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/api/eval/pdf/create',
+        responseType: 'blob',
+        method: 'post',
+        data: {
+          personId: params.personId,
+          configId: params.configId,
+          modelName: params.modelName,
+          maskCode: params.maskCode
+        }
+
+      })
+      resolve(res.data)
+    } catch (error) {
+      reject(error)
+    }
+  })
+}

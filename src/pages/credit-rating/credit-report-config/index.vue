@@ -68,7 +68,7 @@
               信息类
             </b-button>
             <b-divider type="vertical"></b-divider>
-            <b-button type="text">
+            <b-button type="text" @click="handleTempPre(row)">
               模板预览
             </b-button>
             <b-divider type="vertical"></b-divider>
@@ -101,17 +101,25 @@
       @close="handleEditClose"
       :configId="detail.id">
     </info-class>
+
+    <p-d-f
+      @close="openPDF = false"
+      :open="openPDF"
+      :pdfBlob="pdfBlob">
+    </p-d-f>
   </div>
 </template>
 
 <script>
   import commonMixin from '../../../common/mixins/mixin'
   import permission from '../../../common/mixins/permission'
+  import { getEvalCommonStatus, getEvalReportType } from '../../../api/enum.api'
+  import { getCreditReportList, deleteCreditReport, changeStatus } from '../../../api/credit-rating/credit-report-config.api'
+  import { exportPDF } from '../../../api/import-export.api'
   import Edit from './Edit'
   import Detail from './Detail'
   import InfoClass from './info-class'
-  import { getEvalCommonStatus, getEvalReportType } from '../../../api/enum.api'
-  import { getCreditReportList, deleteCreditReport, changeStatus } from '../../../api/credit-rating/credit-report-config.api'
+  import PDF from '../model-count/components/PDF'
 
   export default {
     name: 'CreditReportConfig',
@@ -119,11 +127,14 @@
     components: {
       Edit,
       Detail,
-      InfoClass
+      InfoClass,
+      PDF
     },
     data () {
       return {
         detail: null, // 存储行数据
+        openPDF: false, // 打开p-d-f组件
+        pdfBlob: null, // 存储re-count组件返回的pdfBlob
         listQuery: {
           reportName: '',
           reportType: '',
@@ -181,6 +192,10 @@
       handleInfoClass (row) {
         this.detail = row
         this.dialogStatus = 'infoClass'
+      },
+      // 模板预览按钮回调
+      async handleTempPre (row) {
+        await this.exportPDF(row)
       },
       // 启用禁用回调
       async handleSwitch (value, id) {
@@ -240,6 +255,21 @@
           this.$store.commit('SET_REPORT_TYPE_ENUM', reportTypeEnum)
         } catch (error) {
           console.error(error)
+        }
+      },
+      async exportPDF (row) {
+        try {
+          const pdfBlob = await exportPDF({
+            personId: '', // 空字符串表示预览
+            configId: row.id,
+            maskCode: true,
+            modelName: ''
+          })
+          this.pdfBlob = pdfBlob
+          this.openPDF = true
+        } catch (error) {
+          console.error(error)
+          this.$notice.danger({ title: '预览失败', desc: error })
         }
       }
     }

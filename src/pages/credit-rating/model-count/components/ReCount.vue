@@ -64,7 +64,8 @@
   import LegPersonModal from '../../../../components/Validator/FormControl/LegPersonModal'
   import NatPersonModal from '../../../../components/Validator/FormControl/NatPersonModal'
   import { getCreditReportList } from '../../../../api/credit-rating/credit-report-config.api'
-  import { reCount, exportPDF } from '../../../../api/credit-rating/model-count.api'
+  import { reCount } from '../../../../api/credit-rating/model-count.api'
+  import { exportPDF } from '../../../../api/import-export.api'
 
   export default {
     name: 'ReCount',
@@ -181,6 +182,7 @@
             this.showDialog = false
             this.$emit('recount-success', pdfBlob)
           } catch (error) {
+            console.error(error)
             this.$notice.danger({ title: '操作失败', desc: error })
           }
           this.loadingBtn = false
