@@ -19,17 +19,17 @@
                 </div>
               </div>
               <div class="row-one">
-                <div class="label">是否增补基础信息</div>
+                <div class="label">是否关联验证</div>
                 <div class="value">
-                  <b-switch v-model="config.appendBaseCfg" true-value="1" false-value="0">
+                  <b-switch v-model="config.relationBaseCfg" true-value="1" false-value="0">
                     <span slot="open">是</span><span slot="close">否</span>
                   </b-switch>
                 </div>
               </div>
               <div class="row-one">
-                <div class="label">是否关联验证</div>
+                <div class="label">是否增补基础信息</div>
                 <div class="value">
-                  <b-switch v-model="config.relationBaseCfg" true-value="1" false-value="0">
+                  <b-switch v-model="config.appendBaseCfg" true-value="1" false-value="0">
                     <span slot="open">是</span><span slot="close">否</span>
                   </b-switch>
                 </div>
@@ -39,7 +39,7 @@
               <div class="row-one repeat">
                 <div class="label first">重复字段列表</div>
                 <div class="value">
-                  <div style="width: 600px;">
+                  <div>
                     <b-checkbox-group v-model="checkItems" @on-change="itemsChange">
                       <span v-for="item in items" :key="item.id" class="field-item">
                         <b-checkbox :label="item.fieldName">
