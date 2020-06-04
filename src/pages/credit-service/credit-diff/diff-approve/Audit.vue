@@ -92,7 +92,9 @@
     <res-detail-dialog
       @close="open = false"
       :open="open"
-      :diffDetail="detail">
+      :resourceKey="detail.resourceKey"
+      :resourceName="detail.resourceName"
+      :recordId="detail.recordId">
     </res-detail-dialog>
   </div>
 </template>

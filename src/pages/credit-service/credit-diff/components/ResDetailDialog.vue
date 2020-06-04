@@ -1,7 +1,7 @@
 <template>
   <div class="res-detail-dialog">
     <b-modal v-model="showDialog"
-      :title="diffDetail.resourceName + ' 详情'"
+      :title="resourceName + ' 详情'"
       :width="640"
       :styles="{ top: '5%'}"
       footer-hide
@@ -33,7 +33,9 @@
     name: 'ResDetailDialog',
     props: [
       'open',
-      'diffDetail'
+      'resourceKey',
+      'resourceName',
+      'recordId'
     ],
     data () {
       return {
@@ -65,8 +67,8 @@
         this.loading = true
         try {
           const [resourceInfo, showRes] = await Promise.all([
-            getResourceInfo(this.diffDetail.resourceKey),
-            show(this.diffDetail.recordId, this.diffDetail.resourceKey)
+            getResourceInfo(this.resourceKey),
+            show(this.recordId, this.resourceKey)
           ])
 
           const labels = resourceInfo.data.data.items.filter(item => item.id)

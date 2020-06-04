@@ -24,10 +24,16 @@
                 <b-form-item label="选择记录" prop="recordId">
                   <div flex>
                     <b-input :value="recordData" type="textarea" :rows="4" disabled></b-input>
-                    <b-button type="primary" plain size="small" style="flex: 0 0 auto; margin-left: 5px;"
+                    <!-- 待审核状态则选择记录 -->
+                    <b-button v-if="editData.status === '1'"
+                      type="primary" plain size="small" style="flex: 0 0 auto; margin-left: 5px;"
                       :disabled="form.resourceKey === null" :loading="btnLoading"
                       @click="handleSelectBtn">
                       选择记录
+                    </b-button>
+                    <b-button v-else
+                      type="primary" plain size="small" style="flex: 0 0 auto; margin-left: 5px;">
+                      查看详细
                     </b-button>
                   </div>
                 </b-form-item>
