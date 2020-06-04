@@ -1,5 +1,5 @@
 <template>
-  <b-button type="primary" plain icon="ios-arrow-round-down"
+  <b-button :type="btnType" plain icon="ios-arrow-round-down"
     size="small"
     @click="clickHandler">
     <slot>下载</slot>
@@ -12,10 +12,20 @@
 
   export default {
     name: 'TempDlBtn',
-    props: [
-      'id',
-      'fileName'
-    ],
+    props: {
+      id: {
+        type: String,
+        required: true
+      },
+      fileName: {
+        type: String,
+        required: true
+      },
+      btnType: {
+        type: String,
+        default: 'primary'
+      }
+    },
     data () {
       return {
 

@@ -136,7 +136,7 @@ export async function deal(params) {
 /**
  * @author haodongdong
  * @description 附件下载
- * @param {*} personClass
+ * @param {*} id
  * @returns Promise
  */
 export async function attachmentDownload(id) {
