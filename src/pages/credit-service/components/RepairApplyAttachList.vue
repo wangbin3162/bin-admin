@@ -13,7 +13,11 @@
     <div v-for="item in attachments" :key="item.id">
       <div flex="main:justify">
         <span>{{ item.fileName }}</span>
-        <b-button type="text" @click="handleDlBtn(item)">下载</b-button>
+        <attach-dl-btn
+          :id="item.id"
+          :fileName="item.fileName"
+          btnType="text">
+        </attach-dl-btn>
       </div>
     </div>
     <!-- 待上传的附件列表 -->
@@ -28,7 +32,8 @@
 
 <script>
   import Util from '../../../common/utils/util'
-  import { downLoadTemplate, downLoadAttach } from '../../../api/credit-service/credit-repair.api'
+  import { downLoadTemplate } from '../../../api/credit-service/credit-repair.api'
+  import AttachDlBtn from './AttachDlBtn'
 
   export default {
     name: 'RepairApplyAttachList',
@@ -39,6 +44,9 @@
           return []
         }
       }
+    },
+    components: {
+      AttachDlBtn
     },
     data () {
       return {
@@ -68,17 +76,6 @@
           console.log(res)
           this.downloadFile(res, '申请模板')
         } catch (error) {
-          this.$notice.danger({ title: '下载失败', desc: error })
-        }
-      },
-      // 附件列表下载按钮回调
-      async handleDlBtn (attachments) {
-        try {
-          const res = await downLoadAttach(attachments.id)
-          console.log(res)
-          this.downloadFile(res, attachments.fileName)
-        } catch (error) {
-          console.error(error)
           this.$notice.danger({ title: '下载失败', desc: error })
         }
       },

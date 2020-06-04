@@ -203,8 +203,7 @@ export async function getRecordData(resourceKey, recordId) {
 /**
  * @author haodongdong
  * @description 信用修复申请
- * @param {*} resourceKey
- * @param {*} recordId
+ * @param {*} params
  * @returns Promise
  */
 export async function repairApply(params) {
@@ -255,28 +254,6 @@ export async function downLoadTemplate() {
         url: '/api/service/repairFlow/template',
         responseType: 'blob',
         method: 'get'
-      })
-      resolve(res.data)
-    } catch (error) {
-      reject(error)
-    }
-  })
-}
-
-/**
- * @author haodongdong
- * @description 信用修复附件下载
- * @param {*} query
- * @returns Promise
- */
-export async function downLoadAttach(id) {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const res = await request({
-        url: '/api/service/attachment/download',
-        responseType: 'blob',
-        method: 'get',
-        params: { id }
       })
       resolve(res.data)
     } catch (error) {

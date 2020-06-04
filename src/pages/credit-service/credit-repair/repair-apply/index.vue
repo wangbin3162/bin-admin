@@ -20,10 +20,13 @@
           </v-filter-item>
           <v-filter-item @on-search="handleFilter" @on-reset="resetQuery"></v-filter-item>
         </v-filter-bar>
+
         <!-- 操作栏 -->
         <v-table-tool-bar>
           <b-button type="primary" icon="ios-add-circle-outline" @click="handleCreate">修复申请</b-button>
         </v-table-tool-bar>
+
+        <!-- table -->
         <b-table :columns="columns" :data="list" :loading="listLoading">
           <template v-slot:dealMode="{ row }">
             {{ dealModeEnum[row.dealMode] }}
@@ -34,14 +37,18 @@
           </template>
 
           <template v-slot:action="{ row }">
-            <b-button type="text" @click="handleModify(row)">
-              修改
-            </b-button>
+            <!-- 待审核的可以删除、修改 -->
             <template v-if="row.status === '1'">
+              <b-button type="text" @click="handleModify(row)">
+                修改
+              </b-button>
               <b-button type="text" text-color="danger" @click="handleRemove(row.id)">
                 删除
               </b-button>
             </template>
+            <b-button v-else type="text" @click="handleCheck(row)">
+              查看
+            </b-button>
           </template>
         </b-table>
         <!-- 分页器 -->
@@ -57,20 +64,28 @@
       :title="editTitle"
       :editData="curRow">
     </edit>
+
+    <detail v-if="isCheck"
+      @close="handleClose"
+      :title="editTitle"
+      :detail="curRow">
+    </detail>
   </div>
 </template>
 
 <script>
   import commonMixin from '../../../../common/mixins/mixin'
   import permission from '../../../../common/mixins/permission'
-  import Edit from './Edit'
   import { getRepairApplyList } from '../../../../api/credit-service/credit-repair.api'
+  import Edit from './Edit'
+  import Detail from './Detail'
 
   export default {
     name: 'DirConfig',
     mixins: [commonMixin, permission],
     components: {
-      Edit
+      Edit,
+      Detail
     },
     data () {
       return {
@@ -119,6 +134,11 @@
       handleCreate () {
         this.openEditPage('create')
       },
+      // 查看按钮回调
+      handleCheck (row) {
+        this.curRow = row
+        this.openEditPage('check')
+      },
       handleModify (row) {
         this.curRow = row
         this.openEditPage('modify')
@@ -130,17 +150,17 @@
           loading: true,
           okType: 'danger',
           onOk: async () => {
-            try {
-              const [success, errorMsg] = await deleteDirConfig(id)
-              if (success) {
-                this.$message({ type: 'success', content: '操作成功' })
-                this.searchList()
-              } else {
-                this.$notice.danger({ title: '操作错误', desc: errorMsg })
-              }
-            } catch (error) {
-              this.$notice.danger({ title: '操作错误', desc: error })
-            }
+            // try {
+            //   const [success, errorMsg] = await deleteDirConfig(id)
+            //   if (success) {
+            //     this.$message({ type: 'success', content: '操作成功' })
+            //     this.searchList()
+            //   } else {
+            //     this.$notice.danger({ title: '操作错误', desc: errorMsg })
+            //   }
+            // } catch (error) {
+            //   this.$notice.danger({ title: '操作错误', desc: error })
+            // }
             this.$modal.remove()
           }
         })
