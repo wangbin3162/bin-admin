@@ -105,8 +105,7 @@
           maskCode: [
             { required: true, message: '请选择是否掩码', trigger: 'change' }
           ]
-        },
-        src: null
+        }
       }
     },
     computed: {
@@ -172,18 +171,15 @@
             const res = await reCount(this.form)
 
             const model = this.modelList.find(item => item.id === this.form.modelId)
-            const res2 = await exportPDF({
+            const pdfBlob = await exportPDF({
               personId: this.form.personId,
               configId: this.form.configId,
               maskCode: JSON.parse(this.form.maskCode),
               modelName: model.name
             })
 
-            // console.log(res2)
-            // this.src = URL.createObjectURL(res2)
-
             this.showDialog = false
-            this.$emit('recount-success')
+            this.$emit('recount-success', pdfBlob)
           } catch (error) {
             this.$notice.danger({ title: '操作失败', desc: error })
           }

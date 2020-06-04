@@ -79,7 +79,7 @@
     <!-- 重新算分组件 -->
     <re-count
       @close="openReCount = false"
-      @recount-success="searchList"
+      @recount-success="handleReCountSuccess"
       :open="openReCount"
       :personClass="personClass">
     </re-count>
@@ -92,7 +92,8 @@
 
     <p-d-f
       @close="openPDF = false"
-      :open="openPDF">
+      :open="openPDF"
+      :pdfBlob="pdfBlob">
     </p-d-f>
 
     <record-list ref="record" @on-close="handleCancel"></record-list>
@@ -102,13 +103,13 @@
 <script>
   import commonMixin from '../../../../common/mixins/mixin'
   import permission from '../../../../common/mixins/permission'
+  import { getLegalList, getModelList, reCount } from '../../../../api/credit-rating/model-count.api'
   import Detail from './Detail'
   import RecordList from '../components/RecordList'
   import TempDlBtn from '../components/TempDlBtn'
   import ReCount from '../components/ReCount'
   import TempCount from '../components/TempCount'
   import PDF from '../components/PDF'
-  import { getLegalList, getModelList, reCount } from '../../../../api/credit-rating/model-count.api'
 
   export default {
     name: 'ModelCountLegal',
@@ -125,8 +126,9 @@
       return {
         openReCount: false, // 打开re-count组件
         openTempCount: false, // 打开temp-count组件
-        openPDF: true, // 打开p-d-f组件
-        personClass: 'A02',
+        openPDF: false, // 打开p-d-f组件
+        pdfBlob: null, // 存储re-count组件返回的pdfBlob
+        personClass: 'A02', // 主体类型
         detail: {}, // 存储行数据
         listQuery: {
           compName: '',
@@ -181,6 +183,11 @@
       handleTempCount () {
         this.openTempCount = true
       },
+      // 模板计算记录按钮回调
+      handleRecord () {
+        this.dialogStatus = 'record'
+        this.$refs.record.open('EVAL_LEG') // 法人
+      },
       // 详情按钮回调
       handleCheck (row) {
         this.detail = row
@@ -190,10 +197,11 @@
       handleCreditReport (row) {
         this.openReCount = true
       },
-      // 模板计算记录按钮回调
-      handleRecord () {
-        this.dialogStatus = 'record'
-        this.$refs.record.open('EVAL_LEG') // 法人
+      // re-count组件回调
+      handleReCountSuccess (pdfBlob) {
+        this.pdfBlob = pdfBlob
+        this.openPDF = true
+        this.searchList()
       },
       // 获取评级模型
       async getModelList () {

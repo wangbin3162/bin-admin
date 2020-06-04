@@ -10,10 +10,10 @@
       <iframe :src="src"
         style="height: 65vh; width: 100%; border: 0px none;">
       </iframe>
-      <b-upload action="/" :before-upload="test">
-        <b-button icon="ios-cloud-upload" plain type="primary"> 点击上传</b-button>
-      </b-upload>
 
+      <!-- <b-upload action="/" :before-upload="test">
+        <b-button icon="ios-cloud-upload" plain type="primary"> 点击上传</b-button>
+      </b-upload> -->
     </b-modal>
   </div>
 </template>
@@ -45,23 +45,21 @@
 
     },
     methods: {
-      test (file) {
-        console.log(file)
+      init (pdfBlob) {
+        console.log(pdfBlob)
         const reader = new FileReader()
-        // reader.readAsDataURL(file)
-        reader.readAsArrayBuffer(file)
+        reader.readAsDataURL(pdfBlob)
+        // reader.readAsArrayBuffer(pdfBlob)
         reader.onload = e => {
-          console.log(e.target.result)
-          // this.src = e.target.result
-          const pdfBlob = new Blob([e.target.result], { type: 'application/pdf' })
-          this.src = URL.createObjectURL(pdfBlob)
-          console.log(this.src)
+          // const pdfBlob = new Blob([e.target.result], { type: 'application/pdf' })
+          // this.src = URL.createObjectURL(pdfBlob)
+          this.src = e.target.result
         }
         return false
       },
       handleVisibleChange(visible) {
         if (visible) {
-
+          this.init(this.pdfBlob)
         }
       },
       handleOnHidden () { // 弹框关闭动画结束后清理数据

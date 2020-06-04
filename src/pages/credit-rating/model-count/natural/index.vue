@@ -88,7 +88,7 @@
     <!-- 重新算分组件 -->
     <re-count
       @close="openReCount = false"
-      @recount-success="searchList"
+      @recount-success="handleReCountSuccess"
       :open="openReCount"
       :personClass="personClass">
     </re-count>
@@ -99,6 +99,12 @@
       :personClass="personClass">
     </temp-count>
 
+    <p-d-f
+      @close="openPDF = false"
+      :open="openPDF"
+      :pdfBlob="pdfBlob">
+    </p-d-f>
+
     <record-list ref="record" @on-close="handleCancel"></record-list>
   </div>
 </template>
@@ -106,13 +112,14 @@
 <script>
   import commonMixin from '../../../../common/mixins/mixin'
   import permission from '../../../../common/mixins/permission'
+  import { Decode, MaskCode } from '../../../../common/utils/secret'
+  import { getNaturalList, getModelList } from '../../../../api/credit-rating/model-count.api'
   import Detail from './Detail'
   import RecordList from '../components/RecordList'
   import TempDlBtn from '../components/TempDlBtn'
   import ReCount from '../components/ReCount'
   import TempCount from '../components/TempCount'
-  import { Decode, MaskCode } from '../../../../common/utils/secret'
-  import { getNaturalList, getModelList } from '../../../../api/credit-rating/model-count.api'
+  import PDF from '../components/PDF'
 
   export default {
     name: 'ModelCountNatural',
@@ -122,12 +129,15 @@
       RecordList,
       TempDlBtn,
       ReCount,
-      TempCount
+      TempCount,
+      PDF
     },
     data () {
       return {
         openReCount: false, // 打开re-count组件
         openTempCount: false, // 打开temp-count组件
+        openPDF: false, // 打开p-d-f组件
+        pdfBlob: null, // 存储re-count组件返回的pdfBlob
         personClass: 'A01',
         detail: {}, // 存储行数据
         listQuery: {
@@ -177,6 +187,11 @@
       handleTempCount () {
         this.openTempCount = true
       },
+      // 模板计算记录按钮回调
+      handleRecord () {
+        this.dialogStatus = 'record'
+        this.$refs.record.open('EVAL_NAT') // 自然人
+      },
       // 详情按钮回调
       handleCheck (row) {
         this.detail = row
@@ -186,10 +201,11 @@
       handleCreditReport (row) {
         this.openReCount = true
       },
-      // 模板计算记录按钮回调
-      handleRecord () {
-        this.dialogStatus = 'record'
-        this.$refs.record.open('EVAL_NAT') // 自然人
+      // re-count组件回调
+      handleReCountSuccess (pdfBlob) {
+        this.pdfBlob = pdfBlob
+        this.openPDF = true
+        this.searchList()
       },
       // 获取评级模型
       async getModelList () {
