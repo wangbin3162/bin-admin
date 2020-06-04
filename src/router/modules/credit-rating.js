@@ -59,7 +59,7 @@ export default {
           name: 'Legal',
           component: () => import(/* webpackChunkName: "Legal" */ '../../pages/credit-rating/model-count/legal'),
           meta: {
-            title: '法人'
+            title: '法人或其他组织'
           }
         },
         {

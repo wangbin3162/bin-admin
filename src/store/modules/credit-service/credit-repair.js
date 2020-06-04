@@ -4,9 +4,14 @@ const creditRepair = {
       hmd: '黑名单',
       xzcf: '行政处罚'
     },
-    statusEnum: {
+    statusEnum: { // 审核状态
       1: '待审核',
       2: '已审核'
+    },
+    dealModeEnum: { // 处理方式
+      1: '申请修复',
+      2: '同意修复',
+      3: '拒绝修复'
     }
   },
   mutations: {
@@ -15,6 +20,9 @@ const creditRepair = {
     },
     SET_STATUS_ENUM(state, statusEnum) {
       state.statusEnum = statusEnum
+    },
+    SET_DEAL_MODE_ENUM(state, dealModeEnum) {
+      state.dealModeEnum = dealModeEnum
     }
   },
   actions: {}

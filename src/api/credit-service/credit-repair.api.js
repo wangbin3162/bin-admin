@@ -118,6 +118,8 @@ export async function deleteDirConfig(id) {
   })
 }
 
+// 信用修复申请接口-------------------------
+
 /**
  * @author haodongdong
  * @description 获取信用修复申请列表
@@ -137,6 +139,144 @@ export async function getRepairApplyList(query) {
           size: query.size,
           page: query.page - 1
         }
+      })
+      resolve(res.data)
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
+ * @description 获取所有申请目录列表
+ * @param {*} query
+ * @returns Promise
+ */
+export async function getAllDirConfig() {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/api/service/repairDirConfig/configList',
+        method: 'get'
+      })
+      if (res.data.successful) {
+        resolve(res.data.data)
+      } else {
+        reject(res.data.message)
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
+ * @description 获取修复记录JSON数据
+ * @param {*} resourceKey
+ * @param {*} recordId
+ * @returns Promise
+ */
+export async function getRecordData(resourceKey, recordId) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/api/service/repairFlow/getRecordData',
+        method: 'get',
+        params: {
+          resourceKey,
+          recordId
+        }
+      })
+      if (res.data.successful) {
+        resolve(res.data.data)
+      } else {
+        reject(res.data.message)
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
+ * @description 信用修复申请
+ * @param {*} resourceKey
+ * @param {*} recordId
+ * @returns Promise
+ */
+export async function repairApply(params) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const data = new FormData()
+
+      Object.keys(params).forEach(key => {
+        if (key !== 'attachment') {
+          data.append(key, params[key])
+        } else { // attachment 为File数组
+          for (const file of params[key]) {
+            data.append(key, file, file.name)
+          }
+        }
+      })
+
+      const res = await request({
+        url: '/api/service/repairFlow/apply',
+        method: 'post',
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        },
+        data: data
+      })
+
+      if (res.data.successful) {
+        resolve(res.data.data)
+      } else {
+        reject(res.data.message)
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
+ * @description 信用修复申请书下载
+ * @param {*} query
+ * @returns Promise
+ */
+export async function downLoadTemplate() {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/api/service/repairFlow/template',
+        responseType: 'blob',
+        method: 'get'
+      })
+      resolve(res.data)
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
+ * @description 信用修复附件下载
+ * @param {*} query
+ * @returns Promise
+ */
+export async function downLoadAttach(id) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/api/service/attachment/download',
+        responseType: 'blob',
+        method: 'get',
+        params: { id }
       })
       resolve(res.data)
     } catch (error) {

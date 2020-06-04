@@ -25,12 +25,19 @@
           <b-button type="primary" icon="ios-add-circle-outline" @click="handleCreate">修复申请</b-button>
         </v-table-tool-bar>
         <b-table :columns="columns" :data="list" :loading="listLoading">
+          <template v-slot:dealMode="{ row }">
+            {{ dealModeEnum[row.dealMode] }}
+          </template>
+
+          <template v-slot:status="{ row }">
+            {{ statusEnum[row.status] }}
+          </template>
+
           <template v-slot:action="{ row }">
             <b-button type="text" @click="handleModify(row)">
               修改
             </b-button>
-            <template>
-              <b-divider type="vertical"></b-divider>
+            <template v-if="row.status === '1'">
               <b-button type="text" text-color="danger" @click="handleRemove(row.id)">
                 删除
               </b-button>
@@ -79,11 +86,11 @@
           { title: '申请目录', key: 'resourceName' },
           { title: '主体名称', key: 'name' },
           { title: '修复原因', key: 'repairCause' },
-          { title: '处理方式', key: 'dealMode' },
+          { title: '处理方式', slot: 'dealMode' },
           { title: '申请人', key: 'applyName' },
           { title: '申请部门', key: 'applyDeptName' },
           { title: '申请时间', key: 'applyDate' },
-          { title: '当前状态', key: 'status' },
+          { title: '当前状态', slot: 'status' },
           { title: '操作', slot: 'action', width: 120 }
         ]
       }
@@ -91,6 +98,9 @@
     computed: {
       statusEnum () {
         return this.$store.state.creditRepair.statusEnum
+      },
+      dealModeEnum () {
+        return this.$store.state.creditRepair.dealModeEnum
       }
     },
     created () {
@@ -145,10 +155,6 @@
         this.listLoading = true
         try {
           const res = await getRepairApplyList(this.listQuery)
-
-          res.rows.forEach(item => {
-            item.status = this.statusEnum[item.status]
-          })
 
           this.setListData({
             list: res.rows,

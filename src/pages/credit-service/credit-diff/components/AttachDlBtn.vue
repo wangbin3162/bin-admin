@@ -7,7 +7,7 @@
 </template>
 
 <script>
-  import Util from '../../../../common/utils/util'
+  // import Util from '../../../../common/utils/util'
   import { attachmentDownload } from '../../../../api/credit-service/credit-diff.api'
 
   export default {
@@ -28,9 +28,22 @@
       async clickHandler () {
         try {
           const res = await attachmentDownload(this.id)
-          Util.downloadFile(res, this.fileName)
+          this.downloadFile(res, this.fileName)
         } catch (error) {
           this.$notice.danger({ title: '下载失败', desc: error })
+        }
+      },
+      downloadFile (blob, fileName) {
+        if (window.navigator.msSaveOrOpenBlob) {
+          navigator.msSaveBlob(blob, fileName)
+        } else {
+          let link = document.createElement('a')
+          link.href = window.URL.createObjectURL(blob)
+          link.setAttribute('download', fileName)
+          document.body.appendChild(link)
+          link.click()
+          document.body.removeChild(link)
+          window.URL.revokeObjectURL(link.href)
         }
       }
     }
