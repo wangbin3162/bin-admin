@@ -68,6 +68,9 @@
       value: {
         handler(val) {
           this.totalData = deepCopy(val)
+          if (this.totalData.length > 0 && this.currentIndex === -1) {
+            this.currentIndex = 0
+          }
         },
         immediate: true
       }

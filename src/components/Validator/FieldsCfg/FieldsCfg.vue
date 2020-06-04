@@ -166,6 +166,10 @@
             this.originalRules = obj
           }
           this.totalData = this.formatItems(val)
+
+          if (this.totalData.length > 0 && this.currentIndex === -1) {
+            this.currentIndex = 0
+          }
         },
         immediate: true
       }
@@ -237,11 +241,6 @@
           default:
             return controlType
         }
-      }
-    },
-    mounted() {
-      if (this.totalData.length > 0) {
-        this.currentIndex = 0
       }
     },
     methods: {
