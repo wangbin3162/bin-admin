@@ -27,6 +27,7 @@
           </template>
           <template v-slot:memoType="{row}">{{ memoTypeMap[row.memoType] }}</template>
           <template v-slot:memoStatus="{row}">{{ memoStatusMap[row.memoStatus] }}</template>
+          <template v-slot:memoDepartName="{row}">{{ row.memoDepartName }}</template>
           <template v-slot:receiveStatus="{row}">{{ receiveStatusMap[row.receiveStatus] }}</template>
           <!--操作栏-->
           <template v-slot:action="{row}">
@@ -52,8 +53,9 @@
             <v-key-label label="备忘录类型" is-half>{{ memoTypeMap[memo.memoType] }}</v-key-label>
             <v-key-label label="备忘录状态" is-first is-half> {{ memoStatusMap[memo.memoStatus] }}</v-key-label>
             <v-key-label label="文案号" is-half>{{ memo.fileCode }}</v-key-label>
-            <v-key-label label="签署日期" is-first is-half is-bottom>{{ memo.signDate }}</v-key-label>
-            <v-key-label label="联合部门数" is-half is-bottom>{{ memo.unionNum }}</v-key-label>
+            <v-key-label label="签署日期" is-first is-half>{{ memo.signDate }}</v-key-label>
+            <v-key-label label="联合部门数" is-half>{{ memo.unionNum }}</v-key-label>
+            <v-key-label label="接收状态" is-bottom>{{ receiveStatusMap[memo.receiveStatus] }}</v-key-label>
           </b-collapse-panel>
         </b-collapse>
       </div>
@@ -62,7 +64,7 @@
           <b-collapse-panel title="参与部门及关联措施" name="1">
             <div class="top-wrap" flex="box:first">
               <div class="total" style="width: 280px;">参与部门({{ deptMeasuresBuffer.length }})</div>
-              <div class="total">处置措施({{ allMeasures }})</div>
+              <div class="total">处置措施</div>
             </div>
             <div class="dept-measures" flex="box:first">
               <div class="departs">
@@ -118,6 +120,7 @@
           { title: '发起部门', key: 'initiateDeptName', width: 150 },
           { title: '联合部门数', key: 'unionNum', align: 'center', width: 120 },
           { title: '备忘录状态', slot: 'memoStatus', align: 'center', width: 120 },
+          { title: '接收部门', slot: 'memoDepartName', align: 'center', width: 120 },
           { title: '接收状态', slot: 'receiveStatus', align: 'center', width: 120 },
           { title: '操作', slot: 'action', width: 150 }
         ],
@@ -243,6 +246,7 @@
           signDate: '',
           initiateDept: '',
           initiateDeptName: '',
+          memoDepartName: '',
           departs: [],
           measures: []
         }

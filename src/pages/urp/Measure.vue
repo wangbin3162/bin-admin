@@ -111,6 +111,21 @@
     components: { UrpDeptSelect },
     mixins: [commonMixin, permission],
     data() {
+      const validateMeasureName = (rule, value, callback) => {
+        if (value.length >512) {
+          callback(new Error('措施名称必须小于512个字符'))
+        } else {
+            api.oneMeasureName(this.measure).then(response => {
+              if (response.data.data) {
+                callback(new Error('同一部门措施名称重复'))
+              } else {
+                callback()
+              }
+            }).catch(() => {
+              callback(new Error('请求验证重复性出错'))
+            })
+          }
+        }
       return {
         listQuery: {
           measureName: '',
@@ -128,9 +143,10 @@
           { title: '操作', slot: 'action', width: 150 }
         ],
         ruleValidate: {
-          measureName: [requiredRule],
+          measureName: [requiredRule, { validator: validateMeasureName, trigger: 'blur' }],
           measureType: [{ required: true, message: '类型必选', trigger: 'change' }],
-          departId: [{ required: true, message: '实施部门必选', trigger: 'change' }]
+          departId: [{ required: true, message: '实施部门必选', trigger: 'change' }],
+          measureContent: [requiredRule]
         }
       }
     },

@@ -183,6 +183,21 @@
     components: { DeptMeasures, UrpDeptSelect },
     mixins: [commonMixin, permission],
     data() {
+      const validateMemoName = (rule, value, callback) => {
+        if (value.length >200) {
+          callback(new Error('备忘录名称必须小于200个字符'))
+        } else {
+          api.oneMemoName(this.memo).then(response => {
+            if (response.data.data) {
+              callback(new Error('备忘录名称重复'))
+            } else {
+              callback()
+            }
+          }).catch(() => {
+            callback(new Error('请求验证重复性出错'))
+          })
+        }
+      }
       return {
         listQuery: {
           memoName: '',
@@ -202,7 +217,7 @@
         memoStatusMap: { '0': '通报', '1': '实施', '2': '过期' },
         memo: null,
         ruleValidate: {
-          memoName: [requiredRule],
+          memoName: [requiredRule, { validator: validateMemoName, trigger: 'blur' }],
           initiateDept: [{ required: true, message: '部门必选', trigger: 'change' }],
           memoType: [{ required: true, message: '类型必选', trigger: 'change' }],
           unionNum: [{ required: true, message: '必填项', trigger: 'blur', type: 'number' }],

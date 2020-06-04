@@ -135,7 +135,7 @@
         listQuery: {
           departName: '',
           parentId: '',
-          status: 'D'
+          status: 'Y'
         },
         treeData: [],
         columns: [
@@ -177,7 +177,7 @@
           page: 1,
           size: 10,
           departName: '',
-          status: 'D',
+          status: 'Y',
           parentId: this.currentTreeNode ? this.currentTreeNode.id : ''
         }
         this.handleFilter()

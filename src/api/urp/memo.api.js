@@ -94,3 +94,15 @@ export function receiveAll(memoId) {
     params: { memoId }
   })
 }
+
+/* 备忘录名称是否唯一 */
+export function oneMemoName(memo) {
+  return request({
+    url: '/api/urpMemo/checkMemoNameExists',
+    method: 'get',
+    params: {
+      id: memo.id || '',
+      memoName: memo.memoName
+    }
+  })
+}

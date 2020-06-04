@@ -57,3 +57,16 @@ export function removeMeasure(measure) {
     }
   })
 }
+
+/* 同一部门措施名称是否唯一 */
+export function oneMeasureName(measure) {
+  return request({
+    url: '/api/urp/measure/checkMeasureNameExists',
+    method: 'get',
+    params: {
+      id: measure.id || '',
+      measureName: measure.measureName,
+      departId: measure.departId
+    }
+  })
+}
