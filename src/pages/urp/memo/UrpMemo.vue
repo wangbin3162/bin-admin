@@ -31,8 +31,7 @@
           <template v-slot:receiveStatus="{row}">{{ receiveStatusMap[row.receiveStatus] }}</template>
           <!--操作栏-->
           <template v-slot:action="{row}">
-            <b-button :disabled="!havePermission('batchReceive')"
-                      v-if="row.receiveStatus==='0'" type="text"
+            <b-button v-if="row.receiveStatus==='0'" type="text"
                       @click="handleReceive(row)">
               接收
             </b-button>
