@@ -42,11 +42,8 @@
             </b-button>
             <!-- 待审核的可以删除 -->
             <template v-if="row.status === '1'">
-              <!-- <b-button type="text" @click="handleModify(row)">
-                修改
-              </b-button> -->
-              <b-button type="text" text-color="danger" @click="handleRemove(row.id)">
-                删除
+              <b-button type="text" @click="handleModify(row)">
+                审核
               </b-button>
             </template>
           </template>
@@ -81,7 +78,7 @@
   import Detail from './Detail'
 
   export default {
-    name: 'RepairApplay',
+    name: 'RepairAudit',
     mixins: [commonMixin, permission],
     components: {
       Edit,

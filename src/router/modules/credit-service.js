@@ -77,6 +77,14 @@ export default {
           meta: {
             title: '信用修复申请'
           }
+        },
+        {
+          path: 'repairAudit',
+          name: 'RepairAudit',
+          component: () => import(/* webpackChunkName: "RepairAudit" */ '../../pages/credit-service/credit-repair/repair-audit'),
+          meta: {
+            title: '信用修复审核'
+          }
         }
       ]
     }
