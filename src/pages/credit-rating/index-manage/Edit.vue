@@ -15,7 +15,7 @@
                   </b-col>
                   <b-col span="6">
                     <b-form-item label="编码" prop="indexCode">
-                      <b-input v-model="form.index.indexCode" placeholder="请输入编码" clearable></b-input>
+                      <b-input v-model="form.index.indexCode" placeholder="请输入编码" clearable :disabled="editData !== null"></b-input>
                     </b-form-item>
                   </b-col>
                    <b-col span="6">

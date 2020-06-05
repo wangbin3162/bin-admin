@@ -13,7 +13,8 @@
               </b-col>
               <b-col span="12">
                 <b-form-item label="变量编码" prop="varCode">
-                  <b-input v-model="form.varCode" placeholder="请输入变量编码" clearable></b-input>
+                  <b-input v-model="form.varCode" placeholder="请输入变量编码" clearable :disabled="editData !== null">
+                  </b-input>
                 </b-form-item>
               </b-col>
             </b-row>
