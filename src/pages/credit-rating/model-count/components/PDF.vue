@@ -6,15 +6,14 @@
       :body-styles="{ padding: 0 }"
       footer-hide
       @on-visible-change="handleVisibleChange"
+      @on-opened="handleOnOpened"
       @on-hidden="handleOnHidden">
+      <!-- <b-loading fix show-text="加载中...." v-if="loading"></b-loading> -->
 
       <iframe :src="src"
         style="height: calc(100vh - 70px); width: 100%; border: 0px none;">
       </iframe>
 
-      <!-- <b-upload action="/" :before-upload="test">
-        <b-button icon="ios-cloud-upload" plain type="primary"> 点击上传</b-button>
-      </b-upload> -->
     </b-modal>
   </div>
 </template>
@@ -28,6 +27,8 @@
     ],
     data () {
       return {
+        loading: false,
+        loaded: false,
         src: ''
       }
     },
@@ -47,7 +48,7 @@
     },
     methods: {
       init (pdfBlob) {
-        console.log(pdfBlob)
+        this.loading = true
         const reader = new FileReader()
         reader.readAsDataURL(pdfBlob)
         // reader.readAsArrayBuffer(pdfBlob)
@@ -55,6 +56,7 @@
           // const pdfBlob = new Blob([e.target.result], { type: 'application/pdf' })
           // this.src = URL.createObjectURL(pdfBlob)
           this.src = e.target.result
+          this.loading = false
         }
         return false
       },
@@ -63,8 +65,11 @@
           this.init(this.pdfBlob)
         }
       },
-      handleOnHidden () { // 弹框关闭动画结束后清理数据
+      handleOnOpened () {
 
+      },
+      handleOnHidden () { // 弹框关闭动画结束后清理数据
+        this.src = ''
       }
     }
   }
