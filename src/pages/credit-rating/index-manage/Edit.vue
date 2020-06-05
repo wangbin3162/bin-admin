@@ -201,7 +201,7 @@
             bizType: '', // 指标类型[类别编码[类别数据为树形结构]]
             bizTypeArray: '', // 存储级联选择关系的数组类型的json字符串
             indexKind: 'R', // 指标性质
-            calClass: '', // 计算类型
+            calClass: 'GI', // 计算类型
             dataType: 'N', // 数据类型， 默认数值N
             validParamName: '', // 有效期参数名
             validMonth: 1, // 有效期 单位：月

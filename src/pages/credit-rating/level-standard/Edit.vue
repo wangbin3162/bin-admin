@@ -13,7 +13,7 @@
               :disabled="editData !== null"></b-input>
           </b-form-item>
           <b-form-item label="分制" prop="points">
-            <b-select v-model="form.points">
+            <b-select v-model="form.points" :disabled="editData !== null">
               <b-option v-for="(value, key) in pointsTypeEnum" :value="key" :key="key">{{ value }}</b-option>
             </b-select>
           </b-form-item>
