@@ -17,7 +17,7 @@
         </div>
         <div class="measures-inner">
           <div v-for="(item,index) in currentMeasures" :key="item.id||index" class="item">
-            <measure-checkbox v-model="currentMeasures[index].isUse" :item="item"
+            <measure-checkbox v-model="currentMeasures[index].isUse" :item="item" v-if="filterMeasure === item.measureType"
                               @on-change="handleMeasureChange"/>
           </div>
           <b-empty v-show="currentMeasures.length===0">暂无处置措施</b-empty>
@@ -39,6 +39,7 @@
 <script>
   import UnionDeptCfg from './UnionDeptCfg'
   import MeasureCheckbox from './MeasureCheckbox'
+  import { removeMeasure } from '../../../api/urp/measure.api'
 
   export default {
     name: 'DeptMeasures',
@@ -55,6 +56,9 @@
         default() {
           return []
         }
+      },
+      memoType: { // 备忘录类型
+        type: String
       }
     },
     data() {
@@ -63,7 +67,8 @@
         unionDeptCount: 0,
         currentTreeNode: null, // 当前选择的联合部门
         tiledDeparts: [], // 平铺的部门
-        tiledMeasures: [] // 平铺的措施列表
+        tiledMeasures: [], // 平铺的措施列表
+        measureTypeMap: { '1': 'P', '2': 'R' }
       }
     },
     computed: {
@@ -83,6 +88,10 @@
       measuresNames() {
         let arr = this.tiledMeasures.map(item => item.measureName)
         return [...new Set(arr)]
+      },
+      filterMeasure() {
+          debugger
+        return this.measureTypeMap[this.memoType]
       }
     },
     watch: {
@@ -120,7 +129,8 @@
         if (!hasSame) {
           this.tiledMeasures.push({
             measureId: item.id,
-            measureName: item.measureName
+            measureName: item.measureName,
+            measureType: item.measureType
           })
           // 递归更新当前部门及子孙节点的措施选择
           this.changeChildrenMeasure(this.currentTreeNode, item)
@@ -158,6 +168,7 @@
       },
       // 保存联合部门
       handleSaveUnionDept(departs, count) {
+          debugger
         // 填充带有措施的部门树
         this.unionDeparts = this.mapperWithMeasures(departs)
         // 如果没有选择任何部门 措施列表清空
@@ -188,7 +199,8 @@
               id: i.id,
               measureName: i.measureName,
               departId: i.departId,
-              isUse: i.isUse
+              isUse: i.isUse,
+              measureType: i.measureType
             }
           })
           return {
@@ -230,13 +242,43 @@
               if (measure.isUse === '1') {
                 arr.push({
                   measureId: measure.id,
-                  measureName: measure.measureName
+                  measureName: measure.measureName,
+                  measureType: measure.measureType
                 })
               }
             })
           }
         })
         return arr
+      },
+      // 清空已经选中的措施
+      clearMeasures(memoType) {
+          if (this.tiledMeasures.length > 0) {
+             this.tiledMeasures.forEach((measure, index) => {
+                 if (measure.measureType !== this.measureTypeMap[memoType]) {
+                     this.tiledMeasures.splice(index, 1)
+                 }
+             })
+          }
+          this.unionDeparts.forEach((item) => {
+              this.removeDeptMeasures(item, memoType)
+          })
+          this.emitValue()
+      },
+      // 根据备忘录类型解绑措施
+      removeDeptMeasures(item, memoType) {
+          if (item.measures) {
+              item.measures.forEach((measure) => {
+                  if (measure.measureType !== this.measureTypeMap[memoType]) {
+                      measure.isUse = '0'
+                  }
+              })
+          }
+          if (item.children) {
+              item.children.forEach(item => {
+                  this.removeDeptMeasures(item, memoType)
+              })
+          }
       }
     }
   }
