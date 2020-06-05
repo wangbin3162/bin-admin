@@ -5,7 +5,7 @@ import store from '../store'
 import { constantRouterMap } from './routes'
 import BinUI from 'bin-ui'
 import util from '../common/utils/util'
-import { ACCESS_TOKEN } from '../store/mutation-types'
+import { ACCESS_TOKEN } from '../common/token-const'
 
 Vue.use(BinUI)
 

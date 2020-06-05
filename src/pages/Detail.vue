@@ -153,8 +153,7 @@
                   <key-label label="外文名">{{ current.wwm | valueFilter }}</key-label>
                   <key-label label="与户主关系">{{ current.yhzgx | valueFilter }}</key-label>
                   <key-label label="国籍">{{ current.gjdq | valueFilter }}</key-label>
-                  <key-label label="证件号码">{{ current.id_sfz | valueFilter }}</key-label>
-                  <key-label label="出生日期">{{ current.csrq | valueFilter }}</key-label>
+                  <key-label label="证件号码" is-full>{{ current.id_sfz | valueFilter }}</key-label>
                   <key-label label="签发机关">{{ current.qfjg | valueFilter }}</key-label>
                   <key-label label="签发日期">{{ current.qfrq | valueFilter }}</key-label>
                   <key-label label="居住地址" is-full>{{ current.txdz | valueFilter }}</key-label>
@@ -344,12 +343,6 @@
         this.$store.dispatch('setQuery', query)
         this.$router.push('/index')
       },
-      // 返回查询列表
-      backToIndex() {
-        let query = { id: '', q: '', type: '1', reason: '' }
-        this.$store.dispatch('setQuery', query)
-        this.$router.push('/index')
-      },
       // 字段显示函数
       fieldShow(name) {
         if (this.current && this.current[name] && this.current[name].toString().length !== 0) {
@@ -398,12 +391,8 @@
             // 默认选中一个
             if (this.classifyTabs.length > 0) {
               this.activeCode = this.classifyTabs[0].code
-              let tabs = this.classifyMap[this.activeCode]
-              if (tabs.length >= 2) {
-                let activeFloatTab = this.isLeg ? tabs[0] : tabs[1]
-                // 子类别选中
-                this.handleChangeClassifyCode(activeFloatTab) // 如果是法人则默认选中登记信息，自然人默认选中户籍信息
-              }
+              // 默认选中第一个有数据的小类
+              this.handleChooseFirst()
             }
           }
         })
@@ -470,7 +459,16 @@
       handleChangeAgg(code) {
         if (this.activeCode !== code) {
           this.activeCode = code
+          this.handleChooseFirst()
         }
+      },
+      // 根据大类code，获取对应的左侧tabs，并查询第一个amount值>0的小类信息，然后设置其tab选中状态
+      handleChooseFirst() {
+        // 获取对应的左侧tabs
+        let tabs = this.classifyMap[this.activeCode]
+        // 查找到第一个有amount数据的tab
+        let first = tabs.find(tab => tab.amount > 0)// 子类别选中
+        this.handleChangeClassifyCode(first)
       },
       // 子类别改变事件
       handleChangeClassifyCode(tab) {

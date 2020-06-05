@@ -50,6 +50,8 @@
 </template>
 
 <script>
+  import { queryReason } from '../../api/search.api'
+
   export default {
     name: 'BaseSearch',
     props: {
@@ -59,7 +61,7 @@
       },
       value: {
         type: Object,
-        default () {
+        default() {
           return {
             type: '1', // 1法人，2自然人
             reason: '', // 1核查报告，2信用档案
@@ -68,7 +70,7 @@
         }
       }
     },
-    data () {
+    data() {
       return {
         current: {},
         reasonMap: {
@@ -79,52 +81,59 @@
     },
     watch: {
       value: {
-        handler (val) {
+        handler(val) {
           this.current = { ...val }
         },
         immediate: true
       }
     },
     computed: {
-      isDefault () {
+      isDefault() {
         return this.size === 'default'
       },
-      typeLabel () {
+      typeLabel() {
         const typeMap = {
           '1': '法人',
           '2': '自然人'
         }
         return typeMap[this.current.type]
       },
-      reasonLabel () {
+      reasonLabel() {
         return this.current.reason.length === 0 ? '选择查询原因' : this.reasonMap[this.current.reason]
       },
-      placeholderLabel () {
+      placeholderLabel() {
         return this.current.type === '1' ? '请输入企业名称、统一社会信用代码、工商注册号、组织机构代码' : '请输入自然人名称'
       }
     },
+    created() {
+      queryReason().then(resp => {
+        if (resp.data.code === '0') {
+          this.reasonMap = resp.data.data
+        }
+      })
+    },
     methods: {
-      changeType (type) {
+      changeType(type) {
         if (this.current.type !== type) {
           this.current.type = type
         }
         this.emitValue()
       },
-      changeReason (key) {
+      changeReason(key) {
         if (this.current.reason !== key) {
           this.current.reason = key
         }
         this.emitValue()
       },
-      handleSearch () {
+      handleSearch() {
         this.$emit('on-search')
       },
-      handleClear () {
+      handleClear() {
         this.current.q = ''
         this.emitValue()
         this.$emit('on-clear')
       },
-      emitValue () {
+      emitValue() {
         this.$emit('input', this.current)
         this.$emit('on-change', this.current)
       }

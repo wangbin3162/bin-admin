@@ -2,9 +2,19 @@
 import request from './request'
 
 /**
+ * 信用档案查询原因
+ */
+export function queryReason() {
+  return request({
+    url: '/api/docs/queryByGroupCode?groupCode=queryReason',
+    type: 'get'
+  })
+}
+
+/**
  * 获取查询结果列表
  */
-export function getSearchList (listQuery) {
+export function getSearchList(listQuery) {
   return request({
     url: '/api/docs/search',
     type: 'get',
@@ -20,7 +30,7 @@ export function getSearchList (listQuery) {
 /**
  * 根据id和类型查询档案详情
  */
-export function getDetail (id, type, reason) {
+export function getDetail(id, type, reason) {
   return request({
     url: '/api/docs/detail',
     type: 'get',
@@ -33,7 +43,7 @@ export function getDetail (id, type, reason) {
 /**
  * 获取正负面信息统计次数
  */
-export function getPnAggs (personId, type) {
+export function getPnAggs(personId, type) {
   return request({
     url: '/api/docs/pn/aggs',
     type: 'get',
@@ -46,7 +56,7 @@ export function getPnAggs (personId, type) {
 /**
  * 自然人、法人或其他组织正负面信息资源统计接口
  */
-export function getPnStat (personId, type, pnType) {
+export function getPnStat(personId, type, pnType) {
   return request({
     url: '/api/docs/pn/stat',
     type: 'get',
@@ -59,7 +69,7 @@ export function getPnStat (personId, type, pnType) {
 /**
  * 获取7大类别tab
  */
-export function getAggs (personId, type) {
+export function getAggs(personId, type) {
   return request({
     url: '/api/docs/aggs',
     type: 'get',
@@ -72,7 +82,7 @@ export function getAggs (personId, type) {
 /**
  * 指定类别下的资源信息接口
  */
-export function getClassifyStat (personId, type, classifyCode) {
+export function getClassifyStat(personId, type, classifyCode) {
   return request({
     url: '/api/docs/classify/stat',
     type: 'get',
@@ -85,7 +95,7 @@ export function getClassifyStat (personId, type, classifyCode) {
 /**
  * 获取资源信息列表
  */
-export function getQueryList (listQuery) {
+export function getQueryList(listQuery) {
   return request({
     url: '/api/docs/query/list',
     type: 'get',
@@ -102,7 +112,7 @@ export function getQueryList (listQuery) {
 /**
  * 获取资源信息列表详情
  */
-export function getQueryDetail (id, resourceKey, type) {
+export function getQueryDetail(id, resourceKey, type) {
   return request({
     url: '/api/docs/query/detail',
     type: 'get',
@@ -115,7 +125,7 @@ export function getQueryDetail (id, resourceKey, type) {
 /**
  * 法人或其他组织法定代表人所属公司列表查询接口
  */
-export function getCompList (fddbr, type) {
+export function getCompList(fddbr, type) {
   return request({
     url: '/api/docs/compList',
     type: 'get',
@@ -128,7 +138,7 @@ export function getCompList (fddbr, type) {
 /**
  * 统计企业股权接口
  */
-export function getStockRightStat (personId) {
+export function getStockRightStat(personId) {
   return request({
     url: '/api/docs/stockRightStat',
     type: 'get',
@@ -141,7 +151,7 @@ export function getStockRightStat (personId) {
 /**
  * 资源信息查询日志接口
  */
-export function getQueryLogs (personId, page) {
+export function getQueryLogs(personId, page) {
   return request({
     url: '/api/docs/query/log',
     type: 'get',

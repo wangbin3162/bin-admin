@@ -1,5 +1,5 @@
 import store from '../store'
-import { ACCESS_TOKEN } from '../store/mutation-types'
+import { ACCESS_TOKEN } from '../common/token-const'
 /**
  *创建服务实例
  */

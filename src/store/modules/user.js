@@ -1,6 +1,6 @@
 import { getInfo } from '../../api/login.api'
 import util from '../../common/utils/util'
-import { ACCESS_TOKEN } from '../mutation-types'
+import { ACCESS_TOKEN } from '../../common/token-const'
 
 export default {
   state: {

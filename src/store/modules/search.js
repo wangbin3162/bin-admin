@@ -2,7 +2,7 @@ export default {
   state: {
     query: {
       type: '1', // 1法人，2自然人
-      reason: '', // 1核查报告，2信用档案
+      reason: '',
       q: '', // 查询条件
       id: '' // 信用主体id
     }
@@ -13,10 +13,10 @@ export default {
     }
   },
   actions: {
-    setQuery ({ commit }, query) {
+    setQuery({ commit }, query) {
       commit('SET_QUERY', query)
     },
-    resetQuery ({ commit }) {
+    resetQuery({ commit }) {
       commit('SET_QUERY', { type: '1', reason: '', q: '', id: '' })
     }
   }

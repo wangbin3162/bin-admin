@@ -11,8 +11,56 @@
                    :loading="loading"
                    @on-check-detail="handleCheckDetail"></base-list>
       </transition>
+      <div v-show="!showList" class="center-banner">
+        <div flex="main:justify" class="mb-10">
+          <div class="card data">
+            <div class="inner" style="padding: 50px 40px;">
+              <h2>数据可视化</h2>
+              <p>Data visualization</p>
+              <a class="check" href>
+                <b-icon name="ios-arrow-round-forward"/>
+                查看
+              </a>
+            </div>
+          </div>
+          <div>
+            <div class="small-card analysis">
+              <img src="../assets/images/analysis.png" alt="">
+              <h2>我的采集</h2>
+            </div>
+            <div class="small-card collection">
+              <img src="../assets/images/collection.png" alt="">
+              <h2>归集分析</h2>
+            </div>
+          </div>
+        </div>
+        <div flex="main:justify">
+          <div class="card service" flex="main:justify cross:center">
+            <img src="../assets/images/service.png" alt=""/>
+            <div class="inner">
+              <h2>信用服务</h2>
+              <p>Credit Service</p>
+              <a class="check" href>
+                <b-icon name="ios-arrow-round-forward"/>
+                查看
+              </a>
+            </div>
+          </div>
+          <div class="card exchange" flex="main:justify cross:center">
+            <img src="../assets/images/exchange.png" alt=""/>
+            <div class="inner">
+              <h2>交换监控</h2>
+              <p>Exchange Monitor</p>
+              <a class="check" href>
+                <b-icon name="ios-arrow-round-forward"/>
+                查看
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
       <div class="page-wrap">
-        <b-page v-if="total>listQuery.size" :total="total" :current.sync="listQuery.page"
+        <b-page :total="total" :current.sync="listQuery.page" v-if="total>listQuery.size"
                 show-total @on-change="handlePageChange"></b-page>
       </div>
     </div>
@@ -48,7 +96,7 @@
     computed: {
       ...mapGetters(['queryData']),
       searchWrapStyle() {
-        return this.showList ? { padding: '50px' } : { padding: '170px 50px 100px' }
+        return this.showList ? { padding: '50px' } : { padding: '70px 50px 140px' }
       },
       searchSize() {
         return this.showList ? 'small' : 'default'
@@ -138,7 +186,7 @@
 <style scoped lang="stylus">
   .main-wrap {
     height: 100%;
-    background: url("../assets/images/banner-bg0.png") no-repeat 0 0;
+    background: url("../assets/images/banner-bg0.png") no-repeat 0 -635px;
     &.mini-wrap {
       background: url("../assets/images/banner-bg.png") no-repeat 0 -370px;
       animation: bg .4s ease-in-out forwards;
@@ -148,13 +196,83 @@
       width: 1300px;
       margin: 0 auto;
       transition: .3s;
-
       h2 {
         color: #fff;
         text-align: center;
         font-weight: 400;
         font-size: 34px;
         letter-spacing: 4px;
+      }
+    }
+    .center-banner {
+      width: 1300px;
+      margin: 0 auto;
+      .card {
+        padding: 24px;
+        background: #fff;
+        .inner {
+          h2 {
+            font-weight: normal;
+            font-size: 18px;
+            color: rgba(0, 0, 0, .85);
+          }
+          p {
+            color: rgba(0, 0, 0, .45);
+            margin: .7em 0;
+          }
+          .check {
+            display: inline-block;
+            margin-top: 1.5em;
+            background: #1089ff;
+            color: #fff;
+            padding: 6px 15px;
+            border-radius: 15px;
+            .iconfont {
+              font-size: 18px;
+              vertical-align: -1px;
+            }
+          }
+        }
+        &.data {
+          width: 942px;
+          background: #fff url("../assets/images/bigdata.png") no-repeat 500px bottom;
+        }
+        &.service {
+          width: 646px;
+          height: 180px;
+          background: #fff url("../assets/images/service.png") no-repeat 30px bottom;
+          .inner {
+            width: 265px;
+          }
+        }
+        &.exchange {
+          width: 646px;
+          height: 180px;
+          background: #fff url("../assets/images/exchange.png") no-repeat 30px bottom;
+          .inner {
+            width: 265px;
+          }
+        }
+      }
+      .small-card {
+        width: 350px;
+        height: 132px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        h2 {
+          color: #fff;
+          padding-top: 16px;
+          font-weight: normal;
+        }
+        &.analysis {
+          margin-bottom: 8px;
+          background: url("../assets/images/analysis-bg.png")
+        }
+        &.collection {
+          background: url("../assets/images/collection-bg.png")
+        }
       }
     }
   }
