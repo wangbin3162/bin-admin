@@ -76,7 +76,7 @@
           { title: '申请人身份证号码', key: 'idCode', width: 170 },
           // { title: '联系电话', key: 'phone' },
           { title: '数据类型', key: 'resourceName', ellipsis: true, tooltip: true },
-          { title: '数据单位', key: 'sourceDeptName', ellipsis: true, tooltip: true },
+          { title: '数源单位', key: 'sourceDeptName', ellipsis: true, tooltip: true },
           { title: '异议状态', key: 'status' },
           // { title: '申请日期', key: 'applyDate', ellipsis: true, tooltip: true },
           { title: '操作', slot: 'action' }

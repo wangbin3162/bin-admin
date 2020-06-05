@@ -29,7 +29,7 @@
                   <td>{{ detail.applyDate }}</td>
                 </tr>
                  <tr>
-                  <td>数据单位：</td>
+                  <td>数源单位：</td>
                   <td>{{ detail.sourceDeptName }}</td>
                 </tr>
                 <tr>

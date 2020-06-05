@@ -50,8 +50,6 @@
                 <tr>
                   <td>流程状态：</td>
                   <td>{{ statusEnum[detail.status] }}</td>
-                  <td>处理方式：</td>
-                  <td>{{ dealModeEnum[detail.dealMode] }}</td>
                 </tr>
                 <tr>
                   <td>修复申请附件：</td>
@@ -82,7 +80,7 @@
                   <td>审核结果：</td>
                   <td>{{ detail.x }}</td>
                   <td>审核意见：</td>
-                  <td>{{ detail.x }}</td>
+                  <td>{{ detail.approveDesc }}</td>
                 </tr>
               </table>
             </b-collapse-panel>

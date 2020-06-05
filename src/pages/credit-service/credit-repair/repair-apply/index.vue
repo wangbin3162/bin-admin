@@ -29,7 +29,7 @@
         <!-- table -->
         <b-table :columns="columns" :data="list" :loading="listLoading">
           <template v-slot:dealMode="{ row }">
-            {{ dealModeEnum[row.dealMode] }}
+            {{ dealModeEnum[row.dealMode] || '申请修复' }}
           </template>
 
           <template v-slot:status="{ row }">
@@ -76,7 +76,7 @@
 <script>
   import commonMixin from '../../../../common/mixins/mixin'
   import permission from '../../../../common/mixins/permission'
-  import { getRepairApplyList } from '../../../../api/credit-service/credit-repair.api'
+  import { getRepairApplyList, deleteRepairApply } from '../../../../api/credit-service/credit-repair.api'
   import Edit from './Edit'
   import Detail from './Detail'
 
@@ -150,17 +150,13 @@
           loading: true,
           okType: 'danger',
           onOk: async () => {
-            // try {
-            //   const [success, errorMsg] = await deleteDirConfig(id)
-            //   if (success) {
-            //     this.$message({ type: 'success', content: '操作成功' })
-            //     this.searchList()
-            //   } else {
-            //     this.$notice.danger({ title: '操作错误', desc: errorMsg })
-            //   }
-            // } catch (error) {
-            //   this.$notice.danger({ title: '操作错误', desc: error })
-            // }
+            try {
+              await deleteRepairApply(id)
+              this.$message({ type: 'success', content: '操作成功' })
+              this.searchList()
+            } catch (error) {
+              this.$notice.danger({ title: '操作错误', desc: error })
+            }
             this.$modal.remove()
           }
         })
