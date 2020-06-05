@@ -92,6 +92,56 @@ export async function getNaturalList(query) {
 
 /**
  * @author haodongdong
+ * @description 法人详情
+ * @param {*} id
+ * @returns Promise
+ */
+export async function getLegalDetail(id) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/api/eval/cal/result/leg/detail',
+        method: 'get',
+        params: { id }
+      })
+      if (res.data.successful) {
+        resolve(res.data.data)
+      } else {
+        reject(new Error(res.data.message))
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
+ * @description 自然人详情
+ * @param {*} id
+ * @returns Promise
+ */
+export async function getNaturalDetail(id) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/api/eval/cal/result/nat/detail',
+        method: 'get',
+        params: { id }
+      })
+      if (res.data.successful) {
+        resolve(res.data.data)
+      } else {
+        reject(new Error(res.data.message))
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
  * @description 详情内信用信息
  * @param {*} resultId
  * @returns Promise

@@ -73,7 +73,8 @@
     <detail v-if="isCheck"
       @close="handleCancel"
       :title="editTitle"
-      :detail="detail">
+      :id="detail.id"
+      :personId="detail.personId">
     </detail>
 
     <!-- 重新算分组件 -->
