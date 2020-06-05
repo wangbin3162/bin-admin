@@ -56,13 +56,14 @@
                 <tr>
                   <td>修复申请附件：</td>
                   <td colspan="3">
-                    <!-- <div v-for="item in detail.attachments" :key="item.id">
-                      {{ item.fileName }}
+                    <div v-for="item in detail.attachments" :key="item.id">
                       <attach-dl-btn
                         :id="item.id"
-                        :fileName="item.fileName">
+                        :fileName="item.fileName"
+                        btnType="text">
+                        {{ item.fileName }}
                       </attach-dl-btn>
-                    </div> -->
+                    </div>
                   </td>
                 </tr>
                 <tr>
@@ -172,8 +173,13 @@
 
     td {
       height: 40px;
-      width: 25%;
-      padding: 5px 12px
+      width: 35%;
+      padding: 5px 12px;
+      vertical-align: top;
+    }
+
+    td:nth-child(2n+1) {
+      width: 15%;
     }
   }
 }

@@ -103,7 +103,7 @@
 .res-detail-dialog {
   .table-con {
     min-height: 300px;
-    max-height: 600px;
+    max-height: 570px;
     overflow: auto;
 
     table {
