@@ -184,7 +184,7 @@
     mixins: [commonMixin, permission],
     data() {
       const validateMemoName = (rule, value, callback) => {
-        if (value.length >200) {
+        if (value.length > 200) {
           callback(new Error('备忘录名称必须小于200个字符'))
         } else {
           api.oneMemoName(this.memo).then(response => {
