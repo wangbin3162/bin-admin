@@ -160,6 +160,10 @@
       handleSaveUnionDept(departs, count) {
         // 填充带有措施的部门树
         this.unionDeparts = this.mapperWithMeasures(departs)
+        // 如果没有选择任何部门 措施列表清空
+        if (this.unionDeparts.length < 1) {
+             this.currentTreeNode = null
+        }
         // 填充平铺部门列表
         this.tiledDeparts = this.tiledReadyDeparts(departs)
         // 填充平铺措施列表
