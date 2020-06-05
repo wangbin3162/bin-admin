@@ -132,8 +132,8 @@
         ],
         columnsN: [
           { type: 'index', width: 50 },
-          { title: '上限值（ \'[\' ）', slot: 'upValue', align: 'center' },
-          { title: '下限值（ \')\' ）', slot: 'dnValue', align: 'center' },
+          { title: '下限值（ \'(\' ）', slot: 'dnValue', align: 'center' },
+          { title: '上限值（ \']\' ）', slot: 'upValue', align: 'center' },
           { title: '得分', slot: 'score', align: 'center' },
           { title: '排序', slot: 'sort', align: 'center' },
           { title: '操作', slot: 'action', align: 'center' }
