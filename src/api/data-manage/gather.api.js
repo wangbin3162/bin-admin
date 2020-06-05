@@ -1,6 +1,19 @@
 // 我的采集
 import request, { appendFormData, requestPostFormData } from '../request'
 
+/* 获取我的采集资源列表（无分页） */
+export function getMyGather(query) {
+  return request({
+    url: 'api/analysis/dir/gather/search',
+    method: 'get',
+    params: {
+      size: query.size,
+      page: query.page - 1,
+      resourceName: query.resourceName
+    }
+  })
+}
+
 /* 获取资源信息列表 */
 export function getResourceInfo(resourceKey) {
   return request({

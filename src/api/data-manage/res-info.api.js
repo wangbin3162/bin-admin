@@ -19,17 +19,6 @@ export function getResInfoList(query) {
   })
 }
 
-/* 获取我的采集资源列表（无分页） */
-export function getMyGather(resourceName) {
-  return request({
-    url: '/api/dir/mygather',
-    method: 'get',
-    params: {
-      resourceName
-    }
-  })
-}
-
 /* 获取其中一个资源的所有字段 */
 export function getFields(resourceKey) {
   return request({

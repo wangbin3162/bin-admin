@@ -5,27 +5,38 @@
         <div class="header-search" flex="main:center">
           <div flex="cross:center">
             <span style="width: 80px;">资源名称：</span>
-            <b-input v-model.trim="resourceName" placeholder="请输入资源名称" clearable
+            <b-input v-model.trim="listQuery.resourceName" placeholder="请输入资源名称" clearable
                      @on-keyup.enter="handleFilter"
                      style="width: 400px;margin-right: 4px;"/>
             <b-button type="primary" @click="handleFilter">查 询</b-button>
           </div>
         </div>
         <div class="gather-wrap">
-          <div class="card-box" v-for="res in computedList" :key="res.id">
+          <div class="card-box" v-for="res in list" :key="res.id">
             <div class="item">
+              <div class="label-icon">{{ res.resourceName.slice(0,1) }}</div>
               <div class="card-header t-ellipsis">{{res.resourceName}}</div>
               <div class="center-box">
-                <p class="create-date">最新采集时间:{{res.createDate}}</p>
-                <div class="count">50<span>&nbsp;条</span></div>
+                <p class="create-date">最新采集时间:{{ res.lastDate }}</p>
+                <div class="count">{{ res.totalCount }}<span>&nbsp;条</span></div>
               </div>
               <div class="check-box">
-                <span class="check" @click="handleDownloadTemplate(res)">模板下载</span>
-                <span class="check" @click="handleCheckRes(res)">查看数据</span>
+                <span class="check" @click="handleDownloadTemplate(res)" title="下载模板">
+                  <svg-icon icon-class="download" style="width: 22px;height:22px;"/>
+                </span>
+                <span class="check" @click="handleCheckRes(res)" title="查看数据">
+                  <svg-icon icon-class="check-data" style="width: 20px;height:20px;"/>
+                </span>
+              </div>
+              <div class="status-icon" :class="{'active':res.gatherStatus}"
+                   :title="res.gatherStatus?'数据已填报':'您还未填报数据'">
+                <svg-icon icon-class="dengpao" class="icon"/>
               </div>
             </div>
           </div>
         </div>
+        <!--下方分页器-->
+        <b-page :total="total" :current.sync="listQuery.page" @on-change="handleCurrentChange"></b-page>
       </v-table-wrap>
     </page-header-wrap>
     <gather-list ref="gatherList" @on-close="handleCancel"></gather-list>
@@ -35,7 +46,6 @@
 <script>
   import commonMixin from '../../../common/mixins/mixin'
   import permission from '../../../common/mixins/permission'
-  import { getMyGather } from '../../../api/data-manage/res-info.api'
   import GatherList from './components/Gather/GatherList'
   import * as api from '../../../api/data-manage/gather.api'
   import Util from '../../../common/utils/util'
@@ -46,7 +56,11 @@
     mixins: [commonMixin, permission],
     data() {
       return {
-        resourceName: '',
+        listQuery: {
+          size: 12,
+          page: 1,
+          resourceName: ''
+        },
         computedList: []
       }
     },
@@ -85,24 +99,17 @@
       },
       // 查询方法
       handleFilter() {
-        if (this.resourceName.length === 0) {
-          this.searchList()
-        } else {
-          this.computedList = this.list.filter(item => {
-            return item.resourceName.indexOf(this.resourceName) !== -1
-          })
-        }
+        this.searchList()
       },
       // 查询所有列表
       searchList() {
         this.setListData()
-        getMyGather(this.resourceName).then(response => {
+        api.getMyGather(this.listQuery).then(response => {
           if (response.status === 200) {
             this.setListData({
-              list: response.data.data,
+              list: response.data.rows,
               total: response.data.total
             })
-            this.computedList = this.list
           }
         })
       }
@@ -125,6 +132,7 @@
       width: 25%;
       padding: 10px;
       .item {
+        position: relative;
         border-radius: 2px;
         box-shadow: 0 0 0 1px rgba(0, 0, 0, .1);
         overflow: hidden;
@@ -132,7 +140,7 @@
         .card-header {
           position: relative;
           font-size: 16px;
-          padding: 15px 15px 0;
+          padding: 15px 15px 0 60px;
         }
         .create-date {
           font-size: 12px;
@@ -147,13 +155,15 @@
           }
         }
         .center-box {
-          padding: 0 15px;
+          padding: 0 15px 0 60px;
         }
         .check-box {
+          background: #f7f9fa;
           border-top: 1px solid #ecf0f5;
-          padding: 10px 0;
+          padding: 6px 0;
           .check {
             display: inline-block;
+            vertical-align: middle;
             width: 50%;
             cursor: pointer;
             height: 24px;
@@ -166,6 +176,37 @@
             }
             &:first-child {
               border-right: 1px solid #ecf0f5;
+            }
+          }
+        }
+        .label-icon {
+          position: absolute;
+          top: 14px;
+          left: 10px;
+          width: 34px;
+          height: 34px;
+          line-height: 34px;
+          text-align: center;
+          color: #fff;
+          border-radius: 50%;
+          background: #3d9dff;
+        }
+        .status-icon {
+          position: absolute;
+          top: 10px;
+          right: 0;
+          padding: 4px 15px;
+          border-radius: 20px 0 0 20px;
+          background: #fff6ed;
+          .icon {
+            width: 20px;
+            height: 20px;
+            fill: #ffb11a;
+          }
+          &.active {
+            background: #e6fff0;
+            .icon {
+              fill: #60d791;
             }
           }
         }
