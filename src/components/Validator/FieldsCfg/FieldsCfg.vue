@@ -12,7 +12,7 @@
     </div>
     <div class="right-panel">
       <v-title-bar label="配置项" tip-pos="left"/>
-      <div class="config-item" v-if="currentIndex>-1">
+      <div class="config-item" v-if="currentIndex>-1" ref="rightPanel">
         <b-form v-model="totalData[currentIndex]" label-position="top" ref="cfgForm">
           <!--标题，公开类型，数据类型-->
           <b-row :gutter="15">
@@ -270,6 +270,7 @@
       // 选中项
       handleSelect(index) {
         this.currentIndex = index
+        this.$refs.rightPanel.scrollTop = 0 // 触发伪滚动更新
       },
       // 拖拽重绘
       handleDrag() {
@@ -321,12 +322,20 @@
     border: 1px solid #d9d9d9;
     .left-fields {
       width: 45%;
+      .item-wrap {
+        max-height: 500px;
+        overflow-y: auto;
+        overflow-x: hidden;
+      }
     }
     .right-panel {
       width: 55%;
       border-left: 1px solid #d9d9d9;
       .config-item {
         padding: 10px 15px;
+        max-height: 500px;
+        overflow-y: auto;
+        overflow-x: hidden;
         .bin-form-item {
           margin-bottom: 0;
         }

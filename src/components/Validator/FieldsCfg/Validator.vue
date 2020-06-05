@@ -20,7 +20,7 @@
                           :icon-style="{fontSize:'20px'}"
                           @click="reload"/>
               </b-tooltip>
-              <v-toggle-show v-model="showReal" show-text="显示实际值" hide-text="隐藏实际值"/>
+              <v-toggle-show v-model="showReal" show-text="显示调试" hide-text="隐藏调试"/>
             </div>
           </div>
           <div style="width: 100%;line-height:32px;">

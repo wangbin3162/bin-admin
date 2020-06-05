@@ -13,7 +13,7 @@
                 <b-icon name="ios-trash" style="vertical-align: -1px;cursor: pointer;"
                         @click.native="emitEmptyValue"/>
               </b-tooltip>
-              <v-toggle-show v-model="showReal" show-text="显示实际值" hide-text="隐藏实际值"/>
+              <v-toggle-show v-model="showReal" show-text="显示调试" hide-text="隐藏调试"/>
             </div>
           </div>
           <div style="width: 100%;line-height:32px;" flex="cross:center">
@@ -63,7 +63,7 @@
             </div>
           </transition-group>
         </draggable>
-        <b-button type="primary" @click="addNewEnum" style="width: 100%;border-style: dashed;"
+        <b-button type="primary" @click="addNewEnum" style="width: 100%;" dashed
                   plain icon="ios-add-circle-outline">
           添加项
         </b-button>

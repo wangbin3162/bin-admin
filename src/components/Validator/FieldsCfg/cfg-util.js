@@ -249,7 +249,7 @@ export const validatorBuild = {
           }
         }
         let mode = opts.compareMode // 比较模式
-        let thisTime = new Date(value)
+        let thisTime = new Date(value.replace(/-/g, '/'))
         let result = true // 校验结果
         if (otherTime) {
           switch (mode) {
