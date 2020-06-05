@@ -39,9 +39,9 @@
           <template v-slot:action="{ row }">
             <!-- 待审核的可以删除、修改 -->
             <template v-if="row.status === '1'">
-              <b-button type="text" @click="handleModify(row)">
+              <!-- <b-button type="text" @click="handleModify(row)">
                 修改
-              </b-button>
+              </b-button> -->
               <b-button type="text" text-color="danger" @click="handleRemove(row.id)">
                 删除
               </b-button>
@@ -68,7 +68,7 @@
     <detail v-if="isCheck"
       @close="handleClose"
       :title="editTitle"
-      :detail="curRow">
+      :id="curRow.id">
     </detail>
   </div>
 </template>

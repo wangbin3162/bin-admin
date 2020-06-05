@@ -243,6 +243,31 @@ export async function repairApply(params) {
 
 /**
  * @author haodongdong
+ * @description 获取信用修复申请详情
+ * @param {*} id
+ * @returns Promise
+ */
+export async function getRepairApplyDetail(id) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/api/service/repairFlow/detail',
+        method: 'get',
+        params: { id }
+      })
+      if (res.data.successful) {
+        resolve(res.data.data)
+      } else {
+        reject(res.data.message)
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
  * @description 信用修复申请书下载
  * @param {*} query
  * @returns Promise

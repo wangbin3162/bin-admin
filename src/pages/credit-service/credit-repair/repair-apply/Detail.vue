@@ -2,7 +2,8 @@
   <div class="repair-apply-detail">
     <page-header-wrap :title="title" show-close @on-close="$emit('close')">
       <v-edit-wrap>
-        <div slot="full">
+        <div slot="full" style="position: relative;">
+          <b-loading fix show-text="加载中...." v-if="loading"></b-loading>
           <b-collapse :value="['1', '2']" simple>
             <b-collapse-panel title="修复主体详细" name="1">
               <table class="table">
@@ -21,7 +22,10 @@
                 <tr>
                   <td>数据记录：</td>
                   <td colspan="3">
-                    {{ detail.recordJson }}
+                    <b-input type="textarea" :value="detail.recordJson" :rows="4" disabled></b-input>
+                    <b-button type="text" @click="open = true">
+                      查看详细
+                    </b-button>
                   </td>
                 </tr>
               </table>
@@ -45,14 +49,20 @@
                 </tr>
                 <tr>
                   <td>流程状态：</td>
-                  <td>{{ detail.status }}</td>
+                  <td>{{ statusEnum[detail.status] }}</td>
                   <td>处理方式：</td>
-                  <td>{{ detail.dealMode }}</td>
+                  <td>{{ dealModeEnum[detail.dealMode] }}</td>
                 </tr>
                 <tr>
                   <td>修复申请附件：</td>
                   <td colspan="3">
-
+                    <!-- <div v-for="item in detail.attachments" :key="item.id">
+                      {{ item.fileName }}
+                      <attach-dl-btn
+                        :id="item.id"
+                        :fileName="item.fileName">
+                      </attach-dl-btn>
+                    </div> -->
                   </td>
                 </tr>
                 <tr>
@@ -83,31 +93,63 @@
         </template>
       </v-edit-wrap>
     </page-header-wrap>
+
+    <res-detail-dialog
+      @close="open = false"
+      :open="open"
+      :resourceKey="detail.resourceKey"
+      :resourceName="detail.resourceName"
+      :recordId="detail.recordId">
+    </res-detail-dialog>
   </div>
 </template>
 
 <script>
+  import { getRepairApplyDetail } from '../../../../api/credit-service/credit-repair.api'
   import AttachDlBtn from '../../components/AttachDlBtn'
+  import ResDetailDialog from '../../components/ResDetailDialog'
 
   export default {
     name: 'RepairApplyDetail',
     props: [
       'title',
-      'detail'
+      'id'
     ],
     components: {
-      AttachDlBtn
+      AttachDlBtn,
+      ResDetailDialog
     },
     data () {
       return {
-
+        loading: false,
+        open: false, // 打开res-detail-dialog
+        detail: {}
+      }
+    },
+    computed: {
+      statusEnum () {
+        return this.$store.state.creditRepair.statusEnum
+      },
+      dealModeEnum () {
+        return this.$store.state.creditRepair.dealModeEnum
       }
     },
     created () {
-
+      this.getRepairApplyDetail(this.id)
     },
     methods: {
-
+      // 获取详情
+      async getRepairApplyDetail (id) {
+        this.loading = true
+        try {
+          const res = await getRepairApplyDetail(id)
+          this.detail = res
+        } catch (error) {
+          console.error(error)
+          this.$notice.danger({ title: '加载失败', desc: error })
+        }
+        this.loading = false
+      }
     }
   }
 </script>
