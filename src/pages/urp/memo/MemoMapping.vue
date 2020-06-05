@@ -104,17 +104,58 @@
     components: { IfcTagSelect, MemoSelect, ResChoose },
     mixins: [commonMixin, permission],
     data() {
+      const validateMemo = (rule, value, callback) => {
+          if (value.length === 0) {
+            callback(new Error('备忘录必选'))
+          } else {
+            api.oneMemo(this.mapping).then(response => {
+              if (response.data.data) {
+                callback(new Error('备忘录已配置映射'))
+              } else {
+                callback()
+              }
+            }).catch(() => {
+              callback(new Error('请求验证重复性出错'))
+            })
+          }
+      }
       const validateResource = (rule, value, callback) => {
-        if (this.mapping && this.mapping.isSys === '1' && value.length === 0) {
-          callback(new Error('资源信息必选'))
+        if (this.mapping && this.mapping.isSys === '1') {
+          if (value.length === 0) {
+            callback(new Error('资源信息必选'))
+          } else {
+            api.oneResource(this.mapping).then(response => {
+              if (response.data.data) {
+                callback(new Error('资源信息已被占用'))
+              } else {
+                callback()
+              }
+            }).catch(() => {
+              callback(new Error('请求验证重复性出错'))
+            })
+          }
+        } else {
+          callback()
         }
-        callback()
       }
       const validateIfcTagName = (rule, value, callback) => {
-        if (this.mapping && this.mapping.isSys === '0' && value.length === 0) {
-          callback(new Error('接口必选'))
+        if (this.mapping && this.mapping.isSys === '0') {
+          if (value.length === 0) {
+            callback(new Error('接口必选'))
+          } else {
+            api.oneIfcTagName(this.mapping).then(response => {
+              if (response.data.data) {
+                callback(new Error('接口已被占用'))
+              } else {
+                callback()
+              }
+            }).catch(() => {
+              callback(new Error('请求验证重复性出错'))
+            })
+          }
+        } else {
+          callback()
         }
-        callback()
       }
       return {
         listQuery: {
@@ -135,7 +176,7 @@
         personClassMap: { 'ZRP': '自然人', 'FO': '法人和其他组织' },
         mapTypeMap: { '0': '外部接口', '1': '资源信息' },
         ruleValidate: {
-          memoId: [{ required: true, message: '备忘录必选', trigger: 'change' }],
+          memoId: [{ required: true, validator: validateMemo, trigger: 'change' }],
           personClass: [{ required: true, message: '主体类型必选', trigger: 'change' }],
           resourceKey: [{ validator: validateResource, trigger: 'change' }],
           ifcTagName: [{ validator: validateIfcTagName, trigger: 'change' }]

@@ -68,3 +68,39 @@ export function urpServiceList() {
     method: 'get'
   })
 }
+
+/* 备忘录Id是否唯一 */
+export function oneMemo(mapping) {
+  return request({
+    url: '/api/urp/memoMapping/checkMemoIdExists',
+    method: 'get',
+    params: {
+      id: mapping.id || '',
+      memoId: mapping.memoId
+    }
+  })
+}
+
+/* 资源信息是否唯一 */
+export function oneResource(mapping) {
+  return request({
+    url: '/api/urp/memoMapping/checkResourceKeyExists',
+    method: 'get',
+    params: {
+      id: mapping.id || '',
+      resourceKey: mapping.resourceKey
+    }
+  })
+}
+
+/* 接口名称是否唯一 */
+export function oneIfcTagName(mapping) {
+  return request({
+    url: '/api/urp/memoMapping/checkIfcTagNameExists',
+    method: 'get',
+    params: {
+      id: mapping.id || '',
+      ifcTagName: mapping.ifcTagName
+    }
+  })
+}
