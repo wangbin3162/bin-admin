@@ -8,7 +8,7 @@ export function getMemoMappingList(query) {
     method: 'get',
     params: {
       memoName: query.memoName,
-      resourceName: query.memoType,
+      resourceName: query.resourceName,
       page: query.page - 1,
       size: query.size
     }
