@@ -34,8 +34,9 @@
           <v-key-label label="证件号码">{{ record.idCode }}</v-key-label>
           <v-key-label label="统一社会信用代码">{{ record.unifiedCode }}</v-key-label>
           <v-key-label label="组织机构代码">{{ record.orgInstCode }}</v-key-label>
+          <v-key-label label="工商注册号">{{ record.regNo }}</v-key-label>
           <v-key-label label="反馈时间">{{ record.feedbackDate }}</v-key-label>
-          <v-key-label label="反馈来源">{{ record.feedbackSource }}</v-key-label>
+         <!-- <v-key-label label="反馈来源">{{ record.feedbackSource }}</v-key-label>-->
           <v-key-label label="措施内容" is-bottom>{{ record.measureContent}}</v-key-label>
         </div>
         <template slot="footer">
@@ -70,6 +71,7 @@
           { title: '证件号码', key: 'idCode', align: 'center', width: 200 },
           { title: '统一社会信用代码', key: 'unifiedCode', align: 'center', width: 200 },
           { title: '组织机构代码', key: 'orgInstCode', align: 'center', width: 200 },
+          { title: '工商注册号', key: 'regNo', align: 'center', width: 200 },
           { title: '操作', slot: 'action', width: 100 }
         ],
         record: null

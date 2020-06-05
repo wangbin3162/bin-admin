@@ -243,7 +243,7 @@
     display: flex;
     border: 1px solid #d9d9d9;
     .depart {
-      width: 300px;
+      min-width: 300px;
       border-right: 1px solid #d9d9d9;
       &-inner {
         padding: 15px;

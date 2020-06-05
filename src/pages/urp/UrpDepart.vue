@@ -17,7 +17,7 @@
           <b-button v-if="canCreate" type="primary" icon="ios-add-circle-outline" @click="handleCreate">新 增</b-button>
         </v-table-tool-bar>
         <!--中央表格-->
-        <b-table :columns="columns" :data="list" :loading="listLoading">
+        <b-table :columns="columns" :data="list" :loading="listLoading" height="450">
           <!--操作栏-->
           <template v-slot:action="scope">
             <b-button :disabled="!canRemove" type="text" text-color="danger" @click="handleRemove(scope.row)">
