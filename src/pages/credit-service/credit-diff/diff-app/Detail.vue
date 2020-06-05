@@ -9,7 +9,7 @@
                 <tr>
                   <td>主体名称：</td>
                   <td>{{ detail.name }}</td>
-                  <td>数据单位：</td>
+                  <td>数源单位：</td>
                   <td>{{ detail.sourceDeptName }}</td>
                 </tr>
                 <tr>

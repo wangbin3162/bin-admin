@@ -13,7 +13,8 @@
               </b-col>
               <b-col span="12">
                 <b-form-item label="变量编码" prop="varCode">
-                  <b-input v-model="form.varCode" placeholder="请输入变量编码" clearable></b-input>
+                  <b-input v-model="form.varCode" placeholder="请输入变量编码" clearable :disabled="editData !== null">
+                  </b-input>
                 </b-form-item>
               </b-col>
             </b-row>
@@ -56,16 +57,21 @@
                 <b-form-item label="已选变量" v-if="tempVarCodeList.length > 0">
                   <b-tag color="#409EFF" dot closable
                     v-for="(item, index) in tempVarCodeList" :key="item"
-                    @on-close="handleTagClose(index)">
+                    @on-close="handleTagClose(index)"
+                    @on-click="handleTagClick(item)">
                     {{ item }}
                   </b-tag>
                 </b-form-item>
                 <b-form-item label="表达式" prop="tplContent"
                   :rules=" { required: true, message: '请输入el表达式', trigger: 'blur' }">
                   <div flex="main:justify" style="width: 100%;">
-                    <b-input v-model="form.tplContent" style="max-width: 93%;"
-                      type="textarea" placeholder="请输入el表达式"
-                      @input.native="handleElInput"></b-input>
+                    <b-input v-model="form.tplContent"
+                      element-id="elInput"
+                      type="textarea"
+                      :rows="4"
+                      style="max-width: 93%;"
+                      placeholder="请输入el表达式">
+                    </b-input>
                     <b-button type="primary" plain style="margin-left: 5px;"
                       @click="openSelectVarHandler">
                       选择
@@ -75,7 +81,7 @@
               </b-col>
             </b-row>
             <b-form-item label="描述" prop="varDesc">
-              <b-input v-model="form.varDesc" placeholder="请输入描述" type="textarea"></b-input>
+              <b-input v-model="form.varDesc" placeholder="请输入描述" type="textarea" :rows="4"></b-input>
             </b-form-item>
           </b-form>
           <!-- 一般变量时，选择模板带过来的参数不可改动与删除 -->
@@ -126,7 +132,7 @@
     },
     data () {
       return {
-        timer: null,
+        curCursor: 0, // 表达式输入框当前光标位置
         form: {
           varName: '',
           varType: 'Common', // 变量类型默认选择一般变量
@@ -192,6 +198,19 @@
       // tag关闭回调
       handleTagClose (index) {
         this.tempVarCodeList.splice(index, 1)
+      },
+      // tag点击回调
+      handleTagClick (text) {
+        // Astlvk
+        const strArr = [...this.form.tplContent]
+        let curCursor = document.getElementById('elInput').selectionStart
+        if (curCursor === 0 && this.curCursor !== 0) {
+          curCursor = this.curCursor
+        } else {
+          this.curCursor = curCursor
+        }
+        strArr.splice(curCursor, 0, text)
+        this.form.tplContent = strArr.join('')
       },
       async handleSubmit () {
         if (this.form.varType === 'Complex') {

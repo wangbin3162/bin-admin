@@ -126,7 +126,10 @@
                             <b-col span={5}>{this.dataTypeCustomEnum[this.list[index].info[key].dataType]}</b-col>
                             <b-col span={5}>{this.list[index].info[key].resourceName}</b-col>
                             <b-col span={4} style="text-align: right">
-                              <b-button type="text" disabled size="mini" onClick={() => this.remove()}>移除</b-button>
+                              <b-button type="text" size="mini"
+                                onClick={() => this.openSourceInfoSelect(row, index)}>
+                                更新
+                              </b-button>
                             </b-col>
                           </b-row>
                         )

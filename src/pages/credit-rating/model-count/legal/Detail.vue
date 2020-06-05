@@ -3,6 +3,7 @@
     <page-header-wrap :title="title" show-close @on-close="$emit('close')">
       <v-edit-wrap>
         <div slot="full" style="position: relative;">
+          <b-loading fix show-text="加载中...." v-if="loading"></b-loading>
           <b-collapse v-model="collapseValue" simple>
             <b-collapse-panel title="企业法人详情" name="baseInfo">
               <h4>基本信息</h4>
@@ -118,7 +119,8 @@
               </table>
             </b-collapse-panel>
 
-            <div class="line"></div>
+            <div class="line" v-show="!loading"></div>
+
             <b-collapse-panel title="方案计算结果" name="countResInfo" class="count-res-inifo">
               <table class="table">
                 <tr>
@@ -158,7 +160,8 @@
               </table>
             </b-collapse-panel>
 
-            <div class="line"></div>
+            <div class="line" v-show="!loading"></div>
+
             <b-collapse-panel title="信用信息详情" name="creditInfo" class="credit-info">
               <b-row class="mb-15">
                 <b-col span="12" class="field">
@@ -196,20 +199,24 @@
 </template>
 
 <script>
-  import { getCreditInfo } from '../../../../api/credit-rating/model-count.api'
+  import { getCreditInfo, getLegalDetail } from '../../../../api/credit-rating/model-count.api'
 
   export default {
     name: 'ModelCountLegalDetail',
     props: [
       'id',
-      'title',
-      'detail'
+      'personId',
+      'title'
     ],
     data () {
       return {
-        collapseValue: ['baseInfo', 'countResInfo', 'creditInfo'], // 控制手风琴展开
+        loading: false,
+        collapseValue: [], // 控制手风琴展开
+        detail: {
+          legBaseInfo: {}
+        }, // 详情对象
         query: {
-          id: this.detail.id,
+          id: this.id,
           page: 1
         },
         total: 0,
@@ -223,21 +230,37 @@
       }
     },
     created () {
-      this.getCreditInfo()
-      // console.log(JSON.stringify(this.detail))
+      this.getCreditInfo(this.query)
+      this.getLegalDetail(this.id)
     },
     methods: {
+      // 分页按钮切换回调
       handleCurrentChange (page) {
         this.query.page = page
         this.getCreditInfo()
       },
-      async getCreditInfo () {
+      // 获取法人详情
+      async getLegalDetail (id) {
+        this.loading = true
         try {
-          const res = await getCreditInfo(this.query)
+          const res = await getLegalDetail(id)
+          this.detail = res
+        } catch (error) {
+          console.error(error)
+          this.$notice.danger({ title: '加载失败', desc: error })
+        }
+        this.loading = false
+        this.collapseValue = ['baseInfo', 'countResInfo', 'creditInfo']
+      },
+      // 获取信用评级信息
+      async getCreditInfo (query) {
+        try {
+          const res = await getCreditInfo(query)
           this.list = res.rows
           this.total = res.total
         } catch (error) {
           console.error(error)
+          this.$notice.danger({ title: '加载失败', desc: error })
         }
       }
     }
@@ -264,6 +287,7 @@
       height: 40px;
       width: 16.6%;
       padding: 5px 12px
+      vertical-align: top;
       // border-bottom: 1px solid #c5c5c5;
       // color: white;
     }

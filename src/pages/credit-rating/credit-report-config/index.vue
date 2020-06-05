@@ -68,8 +68,13 @@
               信息类
             </b-button>
             <b-divider type="vertical"></b-divider>
-            <b-button type="text" @click="handleTempPre(row)">
-              模板预览
+            <b-button type="text" @click="handleTempPre(row)" :disabled="btnLoading">
+              <template v-if="btnLoading">
+                <b-icon name="loading2" class="icon-is-rotating"></b-icon>生成中
+              </template>
+              <template v-else>
+                模板预览
+              </template>
             </b-button>
             <b-divider type="vertical"></b-divider>
             <b-button type="text" text-color="danger"
@@ -132,6 +137,7 @@
     },
     data () {
       return {
+        btnLoading: false,
         detail: null, // 存储行数据
         openPDF: false, // 打开p-d-f组件
         pdfBlob: null, // 存储re-count组件返回的pdfBlob
@@ -258,6 +264,7 @@
         }
       },
       async exportPDF (row) {
+        this.btnLoading = true
         try {
           const pdfBlob = await exportPDF({
             personId: '', // 空字符串表示预览
@@ -271,6 +278,7 @@
           console.error(error)
           this.$notice.danger({ title: '预览失败', desc: error })
         }
+        this.btnLoading = false
       }
     }
   }

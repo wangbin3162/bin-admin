@@ -44,8 +44,8 @@
 
         <!-- table -->
         <b-table :columns="columns" :data="list" :loading="listLoading">
-          <template v-slot:modelName="{ row }">
-            <b-button type="text" @click="handleCheck(row)">{{ row.modelName }}</b-button>
+          <template v-slot:compName="{ row }">
+            <b-button type="text" @click="handleCheck(row)">{{ row.legBaseInfo.compName }}</b-button>
           </template>
 
           <template v-slot:idCode="{ row }">
@@ -73,7 +73,8 @@
     <detail v-if="isCheck"
       @close="handleCancel"
       :title="editTitle"
-      :detail="detail">
+      :id="detail.id"
+      :personId="detail.personId">
     </detail>
 
     <!-- 重新算分组件 -->
@@ -136,7 +137,7 @@
           levelCode: ''
         },
         columns: [
-          { title: '名称', slot: 'modelName' },
+          { title: '名称', slot: 'compName' },
           {
             title: '统一社会信用码',
             slot: 'idCode',

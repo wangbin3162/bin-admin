@@ -109,7 +109,7 @@
   import ResDetailDialog from '../../components/ResDetailDialog'
 
   export default {
-    name: 'RepairApplyDetail',
+    name: 'RepairAuditDetail',
     props: [
       'title',
       'id'
