@@ -1,6 +1,8 @@
+/**
+ * 信用服务路由
+ */
 import layout from '../../layout'
 
-// 数据分析
 export default {
   path: '/creditService',
   component: layout,

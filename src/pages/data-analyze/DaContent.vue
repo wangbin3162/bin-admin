@@ -164,7 +164,7 @@
   import ApiChoose from './components/DaContent/ApiChoose'
   import ThemeChoose from './components/DaContent/ThemeChoose'
   import { requiredRule } from '../../common/utils/validate'
-  import ResponseConfigPanel from './components/DaBizTemplate/ResponseConfigPanel'
+  import ResponseConfigPanel from '../analyze-engine/components/DaBizTemplate/ResponseConfigPanel'
 
   export default {
     name: 'Content',

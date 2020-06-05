@@ -1,6 +1,8 @@
+/**
+ * 信用评级路由
+ */
 import layout from '../../layout'
 
-// 数据分析
 export default {
   path: '/creditRating',
   component: layout,

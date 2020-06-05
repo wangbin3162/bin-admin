@@ -1,4 +1,6 @@
-// 联合奖惩urp union rewards punish
+/**
+ * 联合奖惩路由
+ */
 import layout from '../../layout'
 
 // 容器组件
@@ -64,7 +66,7 @@ export default {
       path: 'urpDepart',
       name: 'UrpDepart',
       component: () => import(/* webpackChunkName: "urp" */ '../../pages/urp/UrpDepart'),
-      meta: { title: '部门管理' }
+      meta: { title: '实施单位' }
     }
   ]
 }

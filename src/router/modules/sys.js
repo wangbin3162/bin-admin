@@ -1,5 +1,7 @@
+/**
+ * 系统管理路由
+ */
 import layout from '../../layout'
-import { wrap } from 'bin-ui'
 
 // 容器组件
 const Wrap = {

@@ -1,9 +1,10 @@
 import layout from '../layout'
 import sys from './modules/sys'
 import dataManage from './modules/data-manage'
+import analyzeEngine from './modules/analyze-engine'
 import dataAnalyze from './modules/data-analyze'
-import creditRating from './modules/credit-rating'
 import urp from './modules/urp'
+import creditRating from './modules/credit-rating'
 import creditService from './modules/credit-service'
 
 /**
@@ -18,7 +19,7 @@ import creditService from './modules/credit-service'
   }
  **/
 export const asyncRouterMap = [
-  sys, dataManage, dataAnalyze, creditRating, urp, creditService,
+  sys, dataManage, analyzeEngine, dataAnalyze, urp, creditRating, creditService,
   { path: '*', redirect: '/404', hidden: true }
 ]
 

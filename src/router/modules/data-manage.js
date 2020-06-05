@@ -1,3 +1,6 @@
+/**
+ * 数据治理路由
+ */
 import layout from '../../layout'
 
 // 容器组件
