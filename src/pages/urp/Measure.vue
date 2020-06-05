@@ -26,7 +26,7 @@
         <!--中央表格-->
         <b-table :columns="columns" :data="list" :loading="listLoading">
           <template v-slot:measureName="{row}">
-            <b-button type="text" @click="handleCheck(row)">{{ row.measureName }}</b-button>
+            <b-button type="text"  :title="row.measureName" @click="handleCheck(row)">{{ row.measureName }}</b-button>
           </template>
           <!--类型-->
           <template v-slot:measureType="{row}">{{ measureTypeMap[row.measureType] }}</template>
