@@ -36,12 +36,14 @@
     <div v-if="showValidValue">
       <!--如果选项是字典类型-->
       <div v-show="isDict">
-        <div>
+        <span>
           <b-tag style="margin: 0;" type="primary">字典名称</b-tag>
           <b-tag style="margin: 0 5px 0 0;">{{dict.name}}</b-tag>
           <b-tag style="margin: 0;" type="primary">字典编码</b-tag>
           <b-tag style="margin: 0;">{{dict.code}}</b-tag>
-        </div>
+        </span>
+        &nbsp;
+        <b-button type="text" v-if="dict.code.length>0" @click="getDictItemList(dict.code)">详情</b-button>
       </div>
       <!--如果是枚举值类型-->
       <div v-show="isEnum">
@@ -98,6 +100,14 @@
         <b-page :total="total" :current.sync="listQuery.page" @on-change="handleCurrentChange"></b-page>
       </div>
     </b-modal>
+    <!--查看字典详情组件-->
+    <b-modal v-model="dictModal" title="字典详情">
+      <!--中央表格-->
+      <b-table :columns="dictColumns" :data="dictItems" size="small"/>
+      <div slot="footer">
+        <b-button @click="dictModal=false">返 回</b-button>
+      </div>
+    </b-modal>
   </div>
 </template>
 
@@ -107,6 +117,7 @@
   import commonMixin from '../../../common/mixins/mixin'
   import VToggleShow from '../VToggleShow/index'
   import { getDictGroupList } from '../../../api/sys/dict.api'
+  import { getDictItems } from '../../../api/data-manage/gather.api'
 
   export default {
     name: 'ValidValue',
@@ -141,6 +152,13 @@
           { title: '字典名称', key: 'groupName' },
           { title: '字典编码', key: 'groupCode' },
           { title: '操作', slot: 'action', width: 90, align: 'center' }
+        ],
+        dictModal: false,
+        dictItems: [],
+        dictColumns: [
+          { type: 'index', width: 50, align: 'center' },
+          { title: '字典名称', key: 'name' },
+          { title: '字典编码', key: 'code' }
         ]
       }
     },
@@ -249,6 +267,15 @@
               list: response.data.rows,
               total: response.data.total
             })
+          }
+        })
+      },
+      // 根据当前字典项查询字典列表
+      getDictItemList(dictCode) {
+        getDictItems(dictCode).then(res => {
+          if (res.data.code === '0') {
+            this.dictItems = res.data.data
+            this.dictModal = true
           }
         })
       }
