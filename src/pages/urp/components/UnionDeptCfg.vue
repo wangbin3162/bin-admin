@@ -48,6 +48,9 @@
       open(readyDeparts) {
         this.readyDeparts = this.tiledReadyDeparts(readyDeparts) // 已选择的部门树结构平铺
         this.editModal = true
+        // 初始化已经选择的部门
+        this.departCheckedData = readyDeparts
+        this.checkedCount = this.readyDeparts.length
         // 打开时需要mapper映射初始化一次
         if (this.initDeparts.length > 0) {
           this.departTree = [this.treeMapper(this.initDeparts[0])]
