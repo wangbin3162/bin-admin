@@ -55,7 +55,8 @@
             <v-key-label label="文案号" is-half>{{ memo.fileCode }}</v-key-label>
             <v-key-label label="签署日期" is-first is-half>{{ memo.signDate }}</v-key-label>
             <v-key-label label="联合部门数" is-half>{{ memo.unionNum }}</v-key-label>
-            <v-key-label label="接收状态" is-bottom>{{ receiveStatusMap[memo.receiveStatus] }}</v-key-label>
+            <v-key-label label="接收部门" is-first is-half is-bottom>{{ memo.memoDepartName }}</v-key-label>
+            <v-key-label label="接收状态" is-half is-bottom>{{ receiveStatusMap[memo.receiveStatus] }}</v-key-label>
           </b-collapse-panel>
         </b-collapse>
       </div>
