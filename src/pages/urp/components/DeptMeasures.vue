@@ -90,7 +90,6 @@
         return [...new Set(arr)]
       },
       filterMeasure() {
-          debugger
         return this.measureTypeMap[this.memoType]
       }
     },
@@ -168,7 +167,6 @@
       },
       // 保存联合部门
       handleSaveUnionDept(departs, count) {
-          debugger
         // 填充带有措施的部门树
         this.unionDeparts = this.mapperWithMeasures(departs)
         // 如果没有选择任何部门 措施列表清空
