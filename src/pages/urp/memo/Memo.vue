@@ -215,7 +215,9 @@
         ],
         memoTypeMap: { '1': '惩戒', '2': '激励' },
         memoStatusMap: { '0': '通报', '1': '实施', '2': '过期' },
-        memo: null,
+        memo: {
+            memoType: '1'
+        },
         ruleValidate: {
           memoName: [requiredRule, { validator: validateMemoName, trigger: 'blur' }],
           initiateDept: [{ required: true, message: '部门必选', trigger: 'change' }],
@@ -419,7 +421,7 @@
         this.memo = {
           id: '',
           memoName: '',
-          memoType: '',
+          memoType: '1',
           unionNum: 0,
           memoStatus: '0',
           fileCode: '',
