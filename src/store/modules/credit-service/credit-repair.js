@@ -12,6 +12,14 @@ const creditRepair = {
       1: '申请修复',
       2: '同意修复',
       3: '拒绝修复'
+    },
+    lrlxEnum: { // 录入类型枚举
+      1: '信用修复',
+      2: '奖惩解除'
+    },
+    ztEnum: { // 名单有效状态
+      1: '有效',
+      2: '无效'
     }
   },
   mutations: {
@@ -23,6 +31,12 @@ const creditRepair = {
     },
     SET_DEAL_MODE_ENUM(state, dealModeEnum) {
       state.dealModeEnum = dealModeEnum
+    },
+    SET_LRLX_ENUM(state, lrlxEnum) {
+      state.lrlxEnum = lrlxEnum
+    },
+    SET_ZT_ENUM(state, ztEnum) {
+      state.ztEnum = ztEnum
     }
   },
   actions: {}

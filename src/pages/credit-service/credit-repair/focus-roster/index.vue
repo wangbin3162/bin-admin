@@ -4,19 +4,11 @@
       <v-table-wrap>
         <!-- 查询条件 -->
         <v-filter-bar @keydown.enter.native="handleFilter">
-          <v-filter-item title="申请目录">
-            <b-input v-model="listQuery.resourceName" placeholder="请输入申请目录"></b-input>
-          </v-filter-item>
            <v-filter-item title="主体名称">
             <b-input v-model="listQuery.name" placeholder="请输入主体名称"></b-input>
           </v-filter-item>
-          <v-filter-item title="状态">
-            <b-select v-model="listQuery.status">
-              <b-option v-for="(value, key) in statusEnum" :key="key"
-                :value="key">
-                {{ value }}
-              </b-option>
-            </b-select>
+          <v-filter-item title="资源目录">
+            <b-input v-model="listQuery.resourceName" placeholder="请输入资源目录"></b-input>
           </v-filter-item>
           <v-filter-item @on-search="handleFilter" @on-reset="resetQuery"></v-filter-item>
         </v-filter-bar>
@@ -35,12 +27,6 @@
             <b-button type="text" @click="handleCheck(row)">
               查看
             </b-button>
-            <!-- 待审核的可以删除 -->
-            <template v-if="row.status === '1'">
-              <b-button type="text" @click="handleModify(row)">
-                审核
-              </b-button>
-            </template>
           </template>
         </b-table>
         <!-- 分页器 -->
@@ -50,17 +36,10 @@
       </v-table-wrap>
     </page-header-wrap>
 
-    <edit v-if="isEdit"
-      @close="handleClose"
-      @success="searchList"
-      :title="editTitle"
-      :id="curRow.id">
-    </edit>
-
     <detail v-if="isCheck"
       @close="handleClose"
       :title="editTitle"
-      :id="curRow.id">
+      :detail="curRow">
     </detail>
   </div>
 </template>
@@ -68,15 +47,13 @@
 <script>
   import commonMixin from '../../../../common/mixins/mixin'
   import permission from '../../../../common/mixins/permission'
-  import { getRepairApplyList, deleteRepairApply } from '../../../../api/credit-service/credit-repair.api'
-  import Edit from './Edit'
+  import { getFocusRosterList } from '../../../../api/credit-service/credit-repair.api'
   import Detail from './Detail'
 
   export default {
-    name: 'RepairAudit',
+    name: 'FocusRoster',
     mixins: [commonMixin, permission],
     components: {
-      Edit,
       Detail
     },
     data () {
@@ -90,24 +67,23 @@
         },
         columns: [
           { type: 'index', width: 50, align: 'center' },
-          { title: '申请目录', key: 'resourceName' },
           { title: '主体名称', key: 'name' },
-          { title: '修复原因', key: 'repairCause' },
-          { title: '处理方式', slot: 'dealMode' },
-          { title: '申请人', key: 'applyName' },
-          { title: '申请部门', key: 'applyDeptName' },
-          { title: '申请时间', key: 'applyDate' },
-          { title: '当前状态', slot: 'status' },
+          { title: '录入类型', key: 'lrlx' },
+          { title: '资源目录', key: 'resourceName' },
+          { title: '关注时间', key: 'lrrq' },
+          { title: '关注截止期', key: 'jzrq' },
+          { title: '关注部门', key: 'departName' },
+          { title: '状态', key: 'zt' },
           { title: '操作', slot: 'action', width: 120 }
         ]
       }
     },
     computed: {
-      statusEnum () {
-        return this.$store.state.creditRepair.statusEnum
+      lrlxEnum () {
+        return this.$store.state.creditRepair.lrlxEnum
       },
-      dealModeEnum () {
-        return this.$store.state.creditRepair.dealModeEnum
+      ztEnum () {
+        return this.$store.state.creditRepair.ztEnum
       }
     },
     created () {
@@ -118,40 +94,15 @@
         this.listQuery = {
           page: 1,
           size: 10,
-          varName: '',
-          varType: ''
+          name: '',
+          resourceName: ''
         }
         this.searchList()
-      },
-      handleCreate () {
-        this.openEditPage('create')
       },
       // 查看按钮回调
       handleCheck (row) {
         this.curRow = row
         this.openEditPage('check')
-      },
-      handleModify (row) {
-        this.curRow = row
-        this.openEditPage('modify')
-      },
-      handleRemove (id) {
-        this.$confirm({
-          title: '删除',
-          content: '确定要删除当前目录配置吗？',
-          loading: true,
-          okType: 'danger',
-          onOk: async () => {
-            try {
-              await deleteRepairApply(id)
-              this.$message({ type: 'success', content: '操作成功' })
-              this.searchList()
-            } catch (error) {
-              this.$notice.danger({ title: '操作错误', desc: error })
-            }
-            this.$modal.remove()
-          }
-        })
       },
       // 处理编辑框关闭事件
       handleClose () {
@@ -162,7 +113,12 @@
       async searchList () {
         this.listLoading = true
         try {
-          const res = await getRepairApplyList(this.listQuery)
+          const res = await getFocusRosterList(this.listQuery)
+
+          res.rows.forEach(item => {
+            item.lrlx = this.lrlxEnum[item.lrlx]
+            item.zt = this.ztEnum[item.zt]
+          })
 
           this.setListData({
             list: res.rows,

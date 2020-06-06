@@ -268,6 +268,31 @@ export async function deleteRepairApply(id) {
 
 /**
  * @author haodongdong
+ * @description 信用修复审核
+ * @param {*} params
+ * @returns Promise
+ */
+export async function repairApprove(params) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/api/service/repairFlow/approve',
+        method: 'post',
+        data: params
+      })
+      if (res.data.successful) {
+        resolve()
+      } else {
+        reject(res.data.message)
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
  * @description 获取信用修复申请详情
  * @param {*} id
  * @returns Promise
@@ -304,6 +329,32 @@ export async function downLoadTemplate() {
         url: '/api/service/repairFlow/template',
         responseType: 'blob',
         method: 'get'
+      })
+      resolve(res.data)
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
+ * @description 获取重点关注名单列表
+ * @param {*} query
+ * @returns Promise
+ */
+export async function getFocusRosterList(query) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/api/service/repairPointList/search',
+        method: 'get',
+        params: {
+          name: query.name,
+          resourceName: query.resourceName,
+          size: query.size,
+          page: query.page - 1
+        }
       })
       resolve(res.data)
     } catch (error) {

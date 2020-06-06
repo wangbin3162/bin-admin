@@ -85,6 +85,14 @@ export default {
           meta: {
             title: '信用修复审核'
           }
+        },
+        {
+          path: 'focusRoster',
+          name: 'FocusRoster',
+          component: () => import(/* webpackChunkName: "FocusRoster" */ '../../pages/credit-service/credit-repair/focus-roster'),
+          meta: {
+            title: '重点关注名单'
+          }
         }
       ]
     }
