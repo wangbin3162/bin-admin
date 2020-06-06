@@ -20,7 +20,7 @@
       },
       labelWidth: {
         type: String,
-        default: '130px'
+        default: '200px'
       },
       labelPosition: {
         type: String,

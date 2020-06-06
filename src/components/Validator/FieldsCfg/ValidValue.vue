@@ -1,37 +1,49 @@
 <template>
   <div class="valid-value-wrap">
-    <div style="width: 100%;line-height:32px;" flex="main:justify">
-      <span>有效值: </span>
-      <div>
-        <b-tooltip content="清空有效值">
-          <b-icon name="close" style="vertical-align: -1px;cursor: pointer;"
-                  @click.native="emitEmptyValue"/>
-        </b-tooltip>
-        <v-toggle-show v-model="showReal" show-text="显示实际值" hide-text="隐藏实际值"/>
-      </div>
+    <div class="mb-10">
+      <b-row :gutter="15">
+        <b-col span="8" v-if="$slots.default">
+          <slot></slot>
+        </b-col>
+        <b-col :span="$slots.default?16:24" v-if="showValidValue">
+          <div style="width: 100%;line-height:32px;" flex="main:justify">
+            <span>有效值: </span>
+            <div>
+              <b-tooltip content="清空有效值">
+                <b-icon name="ios-trash" style="vertical-align: -1px;cursor: pointer;"
+                        @click.native="emitEmptyValue"/>
+              </b-tooltip>
+              <v-toggle-show v-model="showReal" show-text="显示调试" hide-text="隐藏调试"/>
+            </div>
+          </div>
+          <div style="width: 100%;line-height:32px;" flex="cross:center">
+            <b-radio-group v-model="normalType">
+              <b-radio label="enum">
+                <span>枚举</span>
+              </b-radio>
+              <b-radio label="dict">
+                <span>字典</span>
+              </b-radio>
+            </b-radio-group>
+            <b-button v-if="isDict" icon="ios-apps" size="mini"
+                      type="primary" transparent @click="openDictModal">
+              选择字典
+            </b-button>
+          </div>
+        </b-col>
+      </b-row>
     </div>
-    <b-radio-group v-model="normalType">
-      <b-radio label="enum">
-        <span>枚举</span>
-      </b-radio>
-      <b-radio label="dict">
-        <span>字典</span>
-      </b-radio>
-    </b-radio-group>
-    <div style="padding: 10px 0 0;">
+    <div v-if="showValidValue">
       <!--如果选项是字典类型-->
-      <div v-show="isDict" flex="main:justify cross:center">
-        <div>
+      <div v-show="isDict">
+        <span>
           <b-tag style="margin: 0;" type="primary">字典名称</b-tag>
           <b-tag style="margin: 0 5px 0 0;">{{dict.name}}</b-tag>
           <b-tag style="margin: 0;" type="primary">字典编码</b-tag>
           <b-tag style="margin: 0;">{{dict.code}}</b-tag>
-        </div>
-        <div>
-          <b-tooltip content="选择字典" theme="light">
-            <b-button icon="ios-play" type="primary" transparent @click="openDictModal"/>
-          </b-tooltip>
-        </div>
+        </span>
+        &nbsp;
+        <b-button type="text" v-if="dict.code.length>0" @click="getDictItemList(dict.code)">详情</b-button>
       </div>
       <!--如果是枚举值类型-->
       <div v-show="isEnum">
@@ -45,23 +57,21 @@
                        placeholder="code"/>&nbsp;
               <b-input v-model.trim="arrData[index].name" style="width: 40%;" @on-change="emitValue"
                        placeholder="name"/>&nbsp;
-              <b-popover confirm title="确认删除此项吗?" @on-ok="removeEnumItem(index)" width="170">
-                <span class="remove">
-                  <b-icon name="ios-remove-circle-outline" size="22" color="#f5222d"/>
-                </span>
-              </b-popover>
+              <b-button type="text" text-color="#f5222d" @click="removeEnumItem(index)">
+                <b-icon name="ios-remove-circle-outline" size="22"/>
+              </b-button>
             </div>
           </transition-group>
         </draggable>
-        <b-button type="text" @click="addNewEnum">
-          <b-icon name="ios-add-circle-outline"/>
+        <b-button type="primary" @click="addNewEnum" style="width: 100%;" dashed
+                  plain icon="ios-add-circle-outline">
           添加项
         </b-button>
       </div>
-    </div>
-    <div v-if="showReal">
-      <b-tag type="success" size="small">实际存储值</b-tag>
-      <b-input :value="validValue" readonly/>
+      <div v-if="showReal" flex="box:first" class="pt-10">
+        <b-tag type="success" :tag-style="{margin:0}">实际存储值</b-tag>
+        <b-input :value="validValue" placeholder="检查配置正确值使用" readonly/>
+      </div>
     </div>
     <!--字典选择组件-->
     <b-modal v-model="chooseModal" title="选择系统字典" width="860" class="layout-inner" :mask-closable="false">
@@ -90,6 +100,14 @@
         <b-page :total="total" :current.sync="listQuery.page" @on-change="handleCurrentChange"></b-page>
       </div>
     </b-modal>
+    <!--查看字典详情组件-->
+    <b-modal v-model="dictModal" title="字典详情">
+      <!--中央表格-->
+      <b-table :columns="dictColumns" :data="dictItems" size="small"/>
+      <div slot="footer">
+        <b-button @click="dictModal=false">返 回</b-button>
+      </div>
+    </b-modal>
   </div>
 </template>
 
@@ -98,6 +116,8 @@
   import { getValidValue } from './cfg-util'
   import commonMixin from '../../../common/mixins/mixin'
   import VToggleShow from '../VToggleShow/index'
+  // import { getDictGroupList } from '../../../api/sys/dict.api'
+  import { getDictItems } from '../../../api/data-manage/gather.api'
 
   export default {
     name: 'ValidValue',
@@ -106,6 +126,9 @@
     props: {
       value: {
         type: String
+      },
+      showValidValue: {
+        type: Boolean
       }
     },
     data() {
@@ -117,7 +140,7 @@
           code: ''
         },
         arrData: [],
-        showReal: true,
+        showReal: false,
         // 用于选择字典弹窗
         listQuery: {
           groupName: '',
@@ -129,6 +152,13 @@
           { title: '字典名称', key: 'groupName' },
           { title: '字典编码', key: 'groupCode' },
           { title: '操作', slot: 'action', width: 90, align: 'center' }
+        ],
+        dictModal: false,
+        dictItems: [],
+        dictColumns: [
+          { type: 'index', width: 50, align: 'center' },
+          { title: '字典名称', key: 'name' },
+          { title: '字典编码', key: 'code' }
         ]
       }
     },
@@ -231,7 +261,7 @@
           list: [{ groupName: '自然人证件类型', groupCode: 'natIdType' }, { groupName: '性别', groupCode: 'sex' }],
           total: 10
         })
-        // api.getDictGroupList(this.listQuery).then(response => {
+        // getDictGroupList(this.listQuery).then(response => {
         //   if (response.status === 200) {
         //     this.setListData({
         //       list: response.data.rows,
@@ -239,6 +269,15 @@
         //     })
         //   }
         // })
+      },
+      // 根据当前字典项查询字典列表
+      getDictItemList(dictCode) {
+        getDictItems(dictCode).then(res => {
+          if (res.data.code === '0') {
+            this.dictItems = res.data.data
+            this.dictModal = true
+          }
+        })
       }
     }
   }
@@ -247,7 +286,6 @@
 <style scoped lang="stylus">
   .valid-value-wrap {
     width: 100%;
-    margin-bottom: 16px;
   }
   .enum-item {
     box-sizing: border-box;

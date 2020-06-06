@@ -23,5 +23,20 @@ module.exports = {
   chainWebpack: config => {
     config.resolve.alias
       .set('@', resolve('src')) // key,value自行定义，比如.set('@@', resolve('src/components'))
+    config.module
+      .rule('svg')
+      .exclude.add(resolve('src/icons'))
+      .end()
+    config.module
+      .rule('icons')
+      .test(/\.svg$/)
+      .include.add(resolve('src/icons'))
+      .end()
+      .use('svg-sprite-loader')
+      .loader('svg-sprite-loader')
+      .options({
+        symbolId: 'icon-[name]'
+      })
+      .end()
   }
 }

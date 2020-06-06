@@ -15,15 +15,14 @@
     "TEXT": "文本框",
     "NUMBER_TEXT": "数值文本框",
     "SELECT": "下拉框",
+    "MULTIPLE_SELECT": "多选下拉框",
     "DATE": "日期",
     "DATE_TIME": "日期时间",
     "TEXTAREA": "文本域",
     "NAT_PERSON": "选择自然人",
     "LEG_PERSON": "选择法人",
-    "CROP_REP": "选择法人代表",
     "NAT_OR_LEG_PERSON": "选择自然人或法人",
-    "FILE_UPLOAD": "文件上传",
-    "DEPART": "选择部门"
+    "FILE_UPLOAD": "文件上传"
   },
   "openType": {
     "PUBLIC": "社会公开",

@@ -28,7 +28,7 @@
     "metadataId": "c0a86e8f709d1b6281709f2bf71d000d",
     "fieldName": "test",
     "fieldTitle": "是否启用",
-    "dataType": "boolean",
-    "fieldSort": 0
+    "dataType": "text",
+    "fieldSort": "0"
   }
 ]

@@ -1,11 +1,13 @@
 // form-control 根据控件类型返回不同的控件
-// import LegPersonChoose from './LegPersonChoose'
-// import NatPersonChoose from './NatPersonChoose'
+import SelectLegInput from './SelectLegInput'
+import SelectNatInput from './SelectNatInput'
+import SelectNatOrLeg from './SelectNatOrLeg'
+import FileUpload from './FileUpload'
+import { oneOf } from 'bin-ui/src/utils/util'
 
-const READONLY = ['id_code', 'id_type']
 export default {
   name: 'FormControl',
-  // components: { LegPersonChoose, NatPersonChoose },
+  components: { SelectLegInput, SelectNatInput, SelectNatOrLeg, FileUpload },
   data() {
     return {
       currentValue: '',
@@ -17,6 +19,10 @@ export default {
     value: {
       type: [String, Number],
       default: ''
+    },
+    resourceKey: {
+      type: String,
+      required: true
     },
     controlType: {
       type: String,
@@ -34,6 +40,12 @@ export default {
       type: String,
       default: ''
     },
+    dataLength: {
+      type: Number
+    },
+    dataPrecision: {
+      type: Number
+    },
     options: {
       type: Array,
       default() {
@@ -46,14 +58,16 @@ export default {
     }
   },
   render(h) {
-    const readonly = READONLY.includes(this.fieldName) &&
+    const readonly = (this.fieldName.indexOf('id_code') === 0 || this.fieldName.indexOf('id_type') === 0) &&
       (this.tableName !== 'leg_base_info' && this.tableName !== 'nat_base_info')
+    // const readonly = false
     let node
     switch (this.controlType) {
       case 'TEXT':
         node = h('b-input', {
           props: {
             value: this.currentValue,
+            maxlength: this.dataLength,
             placeholder: `${this.fieldDesc ? this.fieldDesc : '请输入' + this.fieldTitle}`,
             disabled: readonly,
             clearable: !readonly
@@ -65,6 +79,7 @@ export default {
         node = h('b-input-number', {
           props: {
             value: this.currentValue,
+            precision: this.dataPrecision,
             disabled: readonly,
             clearable: !readonly
           },
@@ -76,8 +91,9 @@ export default {
         node = h('b-input', {
           props: {
             value: this.currentValue,
+            maxlength: this.dataLength,
             placeholder: `${this.fieldDesc ? this.fieldDesc : '请输入' + this.fieldTitle}`,
-            rows: 1,
+            autosize: { minRows: 1, maxRows: 4 },
             type: 'textarea'
           },
           on: { 'input': this.handleInput }
@@ -120,26 +136,58 @@ export default {
           })
         )
         break
+      case 'MULTIPLE_SELECT':
+        node = h('b-select', {
+            props: {
+              value: this.currentValue.split(','),
+              placeholder: `${this.fieldDesc ? this.fieldDesc : '请选择' + this.fieldTitle}`,
+              disabled: readonly,
+              clearable: !readonly,
+              appendToBody: true,
+              multiple: true,
+              maxTagCount: 2
+            },
+            on: { 'on-change': this.handleInputMultiple }
+          },
+          this.options.map((item) => {
+            return h('b-option', { props: { value: item.code } }, [item.name])
+          })
+        )
+        break
       case 'LEG_PERSON':
-        node = h('leg-person-choose', {
+        node = h('select-leg-input', {
           props: {
             value: this.currentValue,
-            placeholder: `选择法人填充${this.fieldDesc}等字段`,
-            readonly: readonly,
-            clearable: !readonly
+            placeholder: `选择法人`
           },
-          on: { 'on-select-leg': this.handleSelectLeg }
+          on: { 'on-select': this.handleSelectNatOrLeg }
         })
         break
       case 'NAT_PERSON':
-        node = h('nat-person-choose', {
+        node = h('select-nat-input', {
           props: {
             value: this.currentValue,
-            placeholder: `选择自然人填充${this.fieldDesc}等字段`,
-            readonly: readonly,
-            clearable: !readonly
+            placeholder: `选择自然人`
           },
-          on: { 'on-select-nat': this.handleSelectNat }
+          on: { 'on-select': this.handleSelectNatOrLeg }
+        })
+        break
+      case 'NAT_OR_LEG_PERSON':
+        node = h('select-nat-or-leg', {
+          props: {
+            value: this.currentValue,
+            placeholder: `选择自然人或法人`
+          },
+          on: { 'on-select': this.handleSelectNatOrLeg }
+        })
+        break
+      case 'FILE_UPLOAD':
+        node = h('file-upload', {
+          props: {
+            value: this.currentValue,
+            resourceKey: this.resourceKey
+          },
+          on: { input: this.handleInput }
         })
         break
       default:
@@ -162,13 +210,50 @@ export default {
       this.currentValue = value
       this.$emit('input', this.currentValue)
     },
-    // 法人选择事件,从法人控件中监听并继续向上层抛出
-    handleSelectLeg(leg) {
-      this.$emit('on-select-leg', leg)
+    // 触发多选input函数
+    handleInputMultiple(value) {
+      this.currentValue = value.join(',')
+      this.$emit('input', this.currentValue)
     },
-    // 自然人选择事件,从自然人控件中监听并继续向上层抛出
-    handleSelectNat(nat) {
-      this.$emit('on-select-nat', nat)
+    // 选择自然人或法人事件,基本item，type，codes，六码
+    handleSelectNatOrLeg(item, type, codes) {
+      let index = oneOf(this.fieldName, ['name', 'comp_name']) ? '' : this.fieldName.slice('id_name'.length)
+      let baseInfo = {}
+      baseInfo[`person_id${index}`] = item.id
+      baseInfo[this.fieldName] = item.name
+      baseInfo[`id_type${index}`] = item.idType
+      baseInfo[`id_code${index}`] = item.idCode
+      let result = { ...baseInfo }
+      if (type === 'leg' && codes) {
+        // 判断是否是【双公示】】法人行政许可【leg_xzxk_info】或 法人行政处罚【leg_xzcf_info
+        if (this.tableName === 'leg_xzxk_info') {
+          result = {
+            ...baseInfo,
+            ...{
+              'xk_xdr_shxym': codes.idShxym, // 统一社会信用代码
+              'xk_xdr_gszc': codes.idGszc, // 工商注册号
+              'xk_xdr_zzjg': codes.idShxym, // 组织机构代码
+              'xk_xdr_swdj': codes.idShxym, // 税务登记号
+              'xk_xdr_sydw': codes.idShxym, // 事业单位证书号
+              'xk_xdr_shzz': codes.idShxym // 社会组织登记号
+            }
+          }
+        }
+        if (this.tableName === 'leg_xzcf_info') {
+          result = {
+            ...baseInfo,
+            ...{
+              'cf_xdr_shxym': codes.idShxym, // 统一社会信用代码
+              'cf_xdr_gszc': codes.idGszc, // 工商注册号
+              'cf_xdr_zzjg': codes.idShxym, // 组织机构代码
+              'cf_xdr_swdj': codes.idShxym, // 税务登记号
+              'cf_xdr_sydw': codes.idShxym, // 事业单位证书号
+              'cf_xdr_shzz': codes.idShxym // 社会组织登记号
+            }
+          }
+        }
+      }
+      this.$emit('on-select', result)
     }
   }
 }

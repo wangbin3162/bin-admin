@@ -5,6 +5,7 @@ import Router from 'vue-router'
 import router from './router'
 import store from './store'
 import BinAdmin from './plugin'
+import './icons'
 import './assets/styles/index.styl'
 // mock
 import './mock'
