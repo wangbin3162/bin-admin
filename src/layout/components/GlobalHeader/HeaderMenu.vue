@@ -1,5 +1,5 @@
 <template>
-  <b-menu class="header-menu" mode="horizontal" :theme="theme"
+  <b-menu class="header-menu" mode="horizontal" :theme="theme" scrollable
           :active-name="activeMenu" @on-select="handleMenuSelect">
     <template v-for="(menu, menuIndex) in navMenu">
       <menu-item v-if="!menu.children" :menu="menu" :key="menuIndex" :base-path="menu.path"></menu-item>

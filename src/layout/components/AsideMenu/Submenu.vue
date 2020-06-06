@@ -1,5 +1,5 @@
 <template>
-  <b-submenu :name="resolvePath(menu.path)">
+  <b-submenu :name="resolvePath(menu.path)" transfer>
     <template slot="title">
       <i v-if="menu.icon" :class="`iconfont icon-${menu.icon}`"></i>
       {{ menu.title }}
@@ -35,7 +35,7 @@
       }
     },
     methods: {
-      resolvePath (routePath) {
+      resolvePath(routePath) {
         return path.resolve(this.basePath, routePath)
       }
     }

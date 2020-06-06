@@ -59,7 +59,7 @@
     </page-header-wrap>
     <page-header-wrap v-show="isEdit" :title="editTitle" show-close @on-close="handleCancel">
       <v-edit-wrap transparent>
-        <v-collapse-wrap title="基础信息" collapse>
+        <b-collapse-wrap title="基础信息" collapse>
           <b-form :model="user" ref="form" :rules="ruleValidate" label-position="top">
             <b-row :gutter="10">
               <b-col span="12">
@@ -86,8 +86,8 @@
               </b-col>
             </b-row>
           </b-form>
-        </v-collapse-wrap>
-        <v-collapse-wrap title="信息项配置">
+        </b-collapse-wrap>
+        <b-collapse-wrap title="信息项配置">
           <div slot="right">
             <b-button type="primary" dashed size="small">Primary</b-button>
             <b-button type="success" dashed size="small">Success</b-button>
@@ -103,7 +103,7 @@
               <b-button type="text">编辑</b-button>
             </template>
           </b-table>
-        </v-collapse-wrap>
+        </b-collapse-wrap>
         <!--保存提交-->
         <template slot="footer">
           <b-button @click="handleCancel">取 消</b-button>
