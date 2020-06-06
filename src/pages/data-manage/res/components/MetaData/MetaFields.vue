@@ -3,21 +3,25 @@
   <div>
     <b-table disabled-hover :data="totalData" :columns="fieldsColumns" size="small">
       <!--类型-->
-      <template v-slot:dataType="scope">{{ dataTypeMap[scope.row.dataType] }}</template>
+      <template v-slot:dataType="{row}">{{ dataTypeMap[row.dataType] }}</template>
       <!--排序-->
-      <template v-slot:sort="scope">
-        <template v-if="!scope.row.status">
-          <v-sort-arrow @on-up="handleSort('up',scope.index)" @on-down="handleSort('down',scope.index)"></v-sort-arrow>
+      <template v-slot:isEncrypt="{row}">
+        {{ row.isEncrypt==='1'?'是':'否' }}
+      </template>
+      <!--排序-->
+      <template v-slot:sort="{row,index}">
+        <template v-if="!row.status">
+          <v-sort-arrow @on-up="handleSort('up',index)" @on-down="handleSort('down',index)"></v-sort-arrow>
         </template>
       </template>
       <!--操作栏-->
-      <template v-slot:action="scope">
-        <template v-if="!scope.row.status">
-          <b-button type="text" @click="handleModify(scope.row,scope.index)">
+      <template v-slot:action="{row,index}">
+        <template v-if="!row.status">
+          <b-button type="text" @click="handleModify(row,index)">
             修改
           </b-button>
           <b-divider type="vertical"></b-divider>
-          <b-button type="text" text-color="danger" @click="handleRemove(scope.row,scope.index)">删除</b-button>
+          <b-button type="text" text-color="danger" @click="handleRemove(row,index)">删除</b-button>
         </template>
       </template>
     </b-table>
@@ -25,6 +29,7 @@
               style="width: 100%;margin-top: 16px;margin-bottom: 8px;"
               @click="handleCreateItem">添加信息项
     </b-button>
+    <b-code-editor :value="JSON.stringify(totalData,null,2)" readonly/>
     <!--新增修改弹窗-->
     <b-modal v-model="dialogFormVisible" width="800"
              :title="dialogTitle" :mask-closable="false">
@@ -55,6 +60,15 @@
                 <b-col span="12">
                   <b-form-item label="数据长度" prop="dataLength" v-if="showDataLength">
                     <b-input-number v-model="metaItem.dataLength" :max="3000"></b-input-number>
+                  </b-form-item>
+                </b-col>
+                <b-col span="12">
+                  <b-form-item label="是否加密" prop="isEncrypt"
+                               v-if="metaItem.dataType==='string'||metaItem.dataType==='text'">
+                    <b-switch v-model="metaItem.isEncrypt" true-value="1" false-value="0" style="margin-top: 5px;">
+                      <span slot="open">是</span>
+                      <span slot="close">否</span>
+                    </b-switch>
                   </b-form-item>
                 </b-col>
                 <b-col span="12">
@@ -174,6 +188,7 @@
           { title: '类型', slot: 'dataType', width: 150, align: 'center' },
           { title: '数据长度', key: 'dataLength', width: 100, align: 'center' },
           { title: '数据精度', key: 'dataPrecision', width: 100, align: 'center' },
+          { title: '加密字段', slot: 'isEncrypt', width: 100, align: 'center' },
           { title: '备注', key: 'fieldDesc' },
           { title: '排序', slot: 'sort', width: 100, align: 'center' },
           { title: '操作', slot: 'action', width: 150, align: 'center' }
@@ -199,6 +214,12 @@
       value: {
         handler(val) {
           this.totalData = deepCopy(val)
+          // .map(item => {
+          //   return {
+          //     ...item,
+          //     isEncrypt: item.isEncrypt ? item.isEncrypt : '1'
+          //   }
+          // })
         },
         immediate: true
       }
@@ -262,18 +283,22 @@
           case 'text':
             this.metaItem.dataLength = 64
             this.metaItem.dataPrecision = null
+            this.metaItem.isEncrypt = '0'
             break
           case 'number':
             this.metaItem.dataLength = 24
             this.metaItem.dataPrecision = 0
+            this.metaItem.isEncrypt = null
             break
           case 'money':
             this.metaItem.dataLength = 24
             this.metaItem.dataPrecision = 0
+            this.metaItem.isEncrypt = null
             break
           default:
             this.metaItem.dataLength = null
             this.metaItem.dataPrecision = null
+            this.metaItem.isEncrypt = null
             break
         }
       },
@@ -314,7 +339,8 @@
           dataType: '',
           dataLength: null,
           dataPrecision: null,
-          fieldDesc: ''
+          fieldDesc: '',
+          isEncrypt: null // 1：加密字段;0:非加密字段
         }
       }
     }

@@ -151,7 +151,7 @@
   import permission from '../../../common/mixins/permission'
   import { getClassifyTree } from '../../../api/data-manage/classify.api'
   import * as api from '../../../api/data-manage/metadata.api'
-  import { getMetadataStatus, getDataType } from '../../../api/enum.api'
+  import { getMetadataStatus } from '../../../api/enum.api'
   import { MetaFields } from './components/MetaData'
   import { ischina2, requiredRule } from '../../../common/utils/validate'
   import enumObj from '../../../components/Validator/FieldsCfg/enum.json'

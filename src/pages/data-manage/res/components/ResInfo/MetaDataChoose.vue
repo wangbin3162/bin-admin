@@ -69,7 +69,7 @@
         this.chooseDialog = true
         this.resetQuery()
       },
-      // 选中一个角色
+      // 选中一个
       chooseOne(item) {
         api.getLimitFieldsById(item.id).then(res => {
           const metadata = res.data.data

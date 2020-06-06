@@ -253,6 +253,20 @@ export default {
           }
         }
       }
+      // 登记信息
+      if (type === 'nat') {
+        // 判断是否是登记信息，leg_base_info
+        if (this.tableName === 'leg_base_info') {
+          result = {
+            ...baseInfo,
+            ...{
+              'fddbr': item.name, // 法定代表人
+              'fddbrzjlx': item.idType, // 法定代表人证件类型
+              'fddbrzjhm': item.idCode // 法定代表人证件号码
+            }
+          }
+        }
+      }
       this.$emit('on-select', result)
     }
   }

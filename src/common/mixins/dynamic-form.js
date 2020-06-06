@@ -62,7 +62,7 @@ export default {
         fieldDesc: '', // 提示信息
         validValue: '', // 有效值
         maskModel: '', // 掩码方式
-        isEncrypt: '', // 是否加密
+        isEncrypt: field.isEncrypt ? field.isEncrypt : '', // 是否加密
         required: 'Y', // 信息项类型，默认核心项
         status: 'use', // 启用状态，默认启用
         tokenizer: '', // 是否分词

@@ -88,8 +88,7 @@
             </b-col>
             <b-col span="8">
               <b-form-item label="是否加密">
-                <b-select v-model="totalData[currentIndex].isEncrypt" clearable @on-change="emitValue"
-                          :disabled="encryptDisabled">
+                <b-select v-model="totalData[currentIndex].isEncrypt" placeholder="" @on-change="emitValue" disabled>
                   <b-option v-for="(value,key) in enumMap.isEncrypt" :key="key" :value="key">{{ value }}</b-option>
                 </b-select>
               </b-form-item>
@@ -180,13 +179,6 @@
         if (this.currentIndex !== -1) {
           let item = this.totalData[this.currentIndex]
           return item.dataType !== 'string' || item.validValue.length > 0
-        }
-        return false
-      },
-      // 是否加密禁用条件
-      encryptDisabled() {
-        if (this.currentIndex !== -1) {
-          return this.totalData[this.currentIndex].dataType !== 'string'
         }
         return false
       },

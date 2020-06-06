@@ -34,6 +34,14 @@
                   </b-switch>
                 </div>
               </div>
+              <div class="row-one">
+                <div class="label">是否补码</div>
+                <div class="value">
+                  <b-switch v-model="config.replenishCodeCfg" true-value="1" false-value="0">
+                    <span slot="open">是</span><span slot="close">否</span>
+                  </b-switch>
+                </div>
+              </div>
             </div>
             <div class="row">
               <div class="row-one repeat">
@@ -137,7 +145,8 @@
           appendBaseCfg: '1', // 增补基础信息
           relationBaseCfg: '1', // 关联基础信息
           repeatedCheckCfg: '1', // 是否重复验证(1,0)
-          repeatedLineCfg: '' // 重复记录验证配置(逗号分隔信息项串)
+          repeatedLineCfg: '', // 重复记录验证配置(逗号分隔信息项串)，
+          replenishCodeCfg: '' // 是否补码
         },
         resourceName: '',
         items: [],
