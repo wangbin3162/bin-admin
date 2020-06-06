@@ -136,7 +136,7 @@
           <b-collapse-panel title="参与部门及关联措施" name="1">
             <div class="top-wrap" flex="box:first">
               <div class="total" style="width: 280px;">参与部门({{ deptMeasuresBuffer.length }})</div>
-              <div class="total">处置措施({{ allMeasures }})</div>
+              <div class="total">处置措施<!--({{ allMeasures }})--></div>
             </div>
             <div class="dept-measures" flex="box:first">
               <div class="departs">
@@ -152,7 +152,7 @@
                   <div class="dept-name" :class="{'active':dept.id===activeDeptID}"
                        :id="dept.id">
                     {{ dept.name }}
-                    <span style="float: right;margin-right: 20px;font-size: 14px">未接收</span>
+                    <span style="float: right;margin-right: 20px;font-size: 14px">{{dept.receiveStatus === '0' ? '未接收':'已接收' }}</span>
                   </div>
                   <div class="measure-item" v-for="measure in dept.measures"  :key="measure.id">
                     <b-checkbox :value="measure.isUse==='1'" v-if="measure.isUse==='1'"  disabled>
@@ -296,7 +296,12 @@
             this.deptMeasuresBuffer = deptMeasures1.filter(item => {
               return deptMeasures2.findIndex(i => i.departId === item.id) > -1
             })
+            this.deptMeasuresBuffer.forEach((item) => {
+               let index = deptMeasures2.findIndex(i => i.departId === item.id)
+               item.receiveStatus = deptMeasures2[index].receiveStatus
+            })
           })
+
         this.openEditPage('check')
       },
       // 递归映射，用于追加部门对应的措施数组
@@ -334,7 +339,7 @@
       tiledReadyDeparts(readyDeparts) {
         let all = []
         const mapper = (node) => {
-          all.push({ departId: node.id, departName: node.title || node.text })
+          all.push({ departId: node.id, departName: node.title || node.text, receiveStatus: node.receiveStatus })
           if (node.children) {
             node.children.forEach(item => {
               mapper(item)

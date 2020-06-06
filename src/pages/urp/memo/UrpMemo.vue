@@ -54,8 +54,6 @@
             <v-key-label label="文案号" is-half>{{ memo.fileCode }}</v-key-label>
             <v-key-label label="签署日期" is-first is-half>{{ memo.signDate }}</v-key-label>
             <v-key-label label="联合部门数" is-half>{{ memo.unionNum }}</v-key-label>
-            <v-key-label label="接收部门" is-first is-half is-bottom>{{ memo.memoDepartName }}</v-key-label>
-            <v-key-label label="接收状态" is-half is-bottom>{{ receiveStatusMap[memo.receiveStatus] }}</v-key-label>
           </b-collapse-panel>
         </b-collapse>
       </div>
@@ -80,10 +78,11 @@
                   <div class="dept-name" :class="{'active':dept.id===activeDeptID}"
                        :id="dept.id">
                     {{ dept.name }}
-                    <span>({{ dept.measures?dept.measures.length:'0' }})</span>
+                  <!--  <span>({{ dept.measures?dept.measures.length:'0' }})</span>-->
+                    <span style="float: right;margin-right: 20px;font-size: 14px">{{dept.receiveStatus === '0' ? '未接收':'已接收' }}</span>
                   </div>
                   <div class="measure-item" v-for="measure in dept.measures" :key="measure.id">
-                    <b-checkbox :value="measure.isUse==='1'" disabled>
+                    <b-checkbox :value="measure.isUse==='1'"  v-if="measure.isUse==='1'"  disabled>
                       {{ measure.measureName }}
                     </b-checkbox>
                   </div>
@@ -172,6 +171,11 @@
             this.deptMeasuresBuffer = deptMeasures1.filter(item => {
               return deptMeasures2.findIndex(i => i.departId === item.id) > -1
             })
+            this.deptMeasuresBuffer.forEach((item) => {
+                let index = deptMeasures2.findIndex(i => i.departId === item.id)
+                item.receiveStatus = deptMeasures2[index].receiveStatus
+            })
+            console.log( this.deptMeasuresBuffer)
           })
         this.openEditPage('check')
       },
@@ -210,7 +214,7 @@
       tiledReadyDeparts(readyDeparts) {
         let all = []
         const mapper = (node) => {
-          all.push({ departId: node.id, departName: node.title || node.text })
+          all.push({ departId: node.id, departName: node.title || node.text, receiveStatus: node.receiveStatus })
           if (node.children) {
             node.children.forEach(item => {
               mapper(item)
