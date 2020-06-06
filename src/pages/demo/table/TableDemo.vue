@@ -58,45 +58,52 @@
       </v-table-wrap>
     </page-header-wrap>
     <page-header-wrap v-show="isEdit" :title="editTitle" show-close @on-close="handleCancel">
-      <v-edit-wrap>
-        <b-form :model="user" ref="form" :rules="ruleValidate" label-position="top">
-          <b-row :gutter="10">
-            <b-col span="12">
-              <b-form-item label="姓名" prop="name" class="mr-15">
-                <b-input v-model="user.name" placeholder="请输入姓名" clearable></b-input>
-              </b-form-item>
-            </b-col>
-            <b-col span="12">
-              <b-form-item label="年龄" prop="age">
-                <b-input-number :min="0" v-model="user.age" style="width: 100%;"></b-input-number>
-              </b-form-item>
-            </b-col>
-          </b-row>
-          <b-row :gutter="10">
-            <b-col span="12">
-              <b-form-item label="出生日期" prop="birthday" class="mr-15">
-                <b-input v-model="user.birthday" placeholder="请输入出生日期" clearable></b-input>
-              </b-form-item>
-            </b-col>
-            <b-col span="12">
-              <b-form-item label="地址" prop="address">
-                <b-input v-model="user.address" placeholder="请输入地址" clearable></b-input>
-              </b-form-item>
-            </b-col>
-          </b-row>
-          <b-row :gutter="10">
-            <b-col span="12">
-              <b-form-item label="姓名" prop="name" class="mr-15">
-                <b-input v-model="user.name" placeholder="请输入姓名" clearable></b-input>
-              </b-form-item>
-            </b-col>
-            <b-col span="12">
-              <b-form-item label="年龄" prop="age">
-                <b-input-number :min="0" v-model="user.age" style="width: 100%;"></b-input-number>
-              </b-form-item>
-            </b-col>
-          </b-row>
-        </b-form>
+      <v-edit-wrap transparent>
+        <v-collapse-wrap title="基础信息" collapse>
+          <b-form :model="user" ref="form" :rules="ruleValidate" label-position="top">
+            <b-row :gutter="10">
+              <b-col span="12">
+                <b-form-item label="姓名" prop="name" class="mr-15">
+                  <b-input v-model="user.name" placeholder="请输入姓名" clearable></b-input>
+                </b-form-item>
+              </b-col>
+              <b-col span="12">
+                <b-form-item label="年龄" prop="age">
+                  <b-input-number :min="0" v-model="user.age" style="width: 100%;"></b-input-number>
+                </b-form-item>
+              </b-col>
+            </b-row>
+            <b-row :gutter="10">
+              <b-col span="12">
+                <b-form-item label="出生日期" prop="birthday" class="mr-15">
+                  <b-input v-model="user.birthday" placeholder="请输入出生日期" clearable></b-input>
+                </b-form-item>
+              </b-col>
+              <b-col span="12">
+                <b-form-item label="地址" prop="address">
+                  <b-input v-model="user.address" placeholder="请输入地址" clearable></b-input>
+                </b-form-item>
+              </b-col>
+            </b-row>
+          </b-form>
+        </v-collapse-wrap>
+        <v-collapse-wrap title="信息项配置">
+          <div slot="right">
+            <b-button type="primary" dashed size="small">Primary</b-button>
+            <b-button type="success" dashed size="small">Success</b-button>
+            <b-button type="warning" dashed size="small">Warning</b-button>
+            <b-button type="danger" dashed size="small">Danger</b-button>
+          </div>
+          <b-table :columns="columns" :data="list" size="small">
+            <template v-slot:name="scope">
+              <a href="" @click.stop.prevent="handleCheck(scope.row)">{{ scope.row.name }}</a>
+            </template>
+            <!--操作栏-->
+            <template v-slot:action="scope">
+              <b-button type="text">编辑</b-button>
+            </template>
+          </b-table>
+        </v-collapse-wrap>
         <!--保存提交-->
         <template slot="footer">
           <b-button @click="handleCancel">取 消</b-button>

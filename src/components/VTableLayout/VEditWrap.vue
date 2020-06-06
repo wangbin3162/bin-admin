@@ -1,11 +1,9 @@
 <template>
-  <div class="edit-wrap">
-    <b-row type="flex" justify="center">
-      <b-col :xs="22" :sm="22" :md="22" :lg="18" :xl="18" :xxl="18">
-        <slot></slot>
-      </b-col>
-    </b-row>
-    <slot name="full"></slot>
+  <div class="edit-wrap" :class="{'transparent':transparent}">
+    <slot></slot>
+    <div class="full" v-if="$slots.full">
+      <slot slot="full"></slot>
+    </div>
     <div class="edit-form-footer" :style="footerStyle">
       <slot name="footer"></slot>
     </div>
@@ -17,6 +15,11 @@
 
   export default {
     name: 'VEditWrap',
+    props: {
+      transparent: {
+        type: Boolean
+      }
+    },
     computed: {
       ...mapGetters(['menuType', 'sidebar']),
       footerStyle() {
@@ -38,6 +41,11 @@
     background: #ffffff;
     border-radius: 2px;
     padding: 24px 16px;
+    &.transparent {
+      padding: 0;
+      border-radius: 0;
+      background: none;
+    }
     .edit-form-footer {
       position: fixed;
       right: 0;
