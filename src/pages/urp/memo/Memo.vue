@@ -68,7 +68,7 @@
                   </b-col>
                   <b-col span="12">
                     <b-form-item label="备忘录类型" prop="memoType">
-                      <b-select v-model="memo.memoType" placeholder="全部" clearable>
+                      <b-select v-model="memo.memoType" placeholder="全部" clearable  @on-change="memoTypeChange">
                         <b-option v-for="(val,key) in memoTypeMap" :key="key" :value="key">{{ val }}</b-option>
                       </b-select>
                     </b-form-item>
@@ -104,7 +104,7 @@
               </b-form>
             </b-collapse-panel>
             <b-collapse-panel title="参与部门及关联措施" name="2">
-              <dept-measures :departs="departsBuffer" :dept-measures="deptMeasuresBuffer"
+              <dept-measures ref="deptMeasures" :departs="departsBuffer" :dept-measures="deptMeasuresBuffer" :memoType="memo.memoType"
                              @on-change="handleDeptMeasuresChange"/>
             </b-collapse-panel>
           </b-collapse>
@@ -152,10 +152,10 @@
                   <div class="dept-name" :class="{'active':dept.id===activeDeptID}"
                        :id="dept.id">
                     {{ dept.name }}
-                    <span>({{ dept.measures?dept.measures.length:'0' }})</span>
+                    <span style="float: right;margin-right: 20px;font-size: 14px">未接收</span>
                   </div>
-                  <div class="measure-item" v-for="measure in dept.measures" :key="measure.id">
-                    <b-checkbox :value="measure.isUse==='1'" disabled>
+                  <div class="measure-item" v-for="measure in dept.measures"  :key="measure.id">
+                    <b-checkbox :value="measure.isUse==='1'" v-if="measure.isUse==='1'"  disabled>
                       {{ measure.measureName }}
                     </b-checkbox>
                   </div>
@@ -448,6 +448,10 @@
         } catch (e) {
           return []
         }
+      },
+      // 备忘录类型改变事件
+      memoTypeChange() {
+        this.$refs.deptMeasures.clearMeasures(this.memo.memoType)
       }
     }
   }
