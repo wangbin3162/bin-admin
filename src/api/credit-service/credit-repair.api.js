@@ -336,3 +336,29 @@ export async function downLoadTemplate() {
     }
   })
 }
+
+/**
+ * @author haodongdong
+ * @description 获取重点关注名单列表
+ * @param {*} query
+ * @returns Promise
+ */
+export async function getFocusRosterList(query) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/api/service/repairPointList/search',
+        method: 'get',
+        params: {
+          name: query.name,
+          resourceName: query.resourceName,
+          size: query.size,
+          page: query.page - 1
+        }
+      })
+      resolve(res.data)
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
