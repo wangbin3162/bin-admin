@@ -83,12 +83,13 @@ export function modifyBusinessTemplate(template, params) {
 }
 
 /* 测试业务模板 */
-export function testBusinessTemplate(id, indexes, params) {
+export function testBusinessTemplate(id, params) {
   return request({
     url: '/da/businessTemplate/execute',
-    method: 'get',
-    params: {
-      id, indexes, ...params
+    method: 'post',
+    data: {
+      id,
+      params
     }
   })
 }

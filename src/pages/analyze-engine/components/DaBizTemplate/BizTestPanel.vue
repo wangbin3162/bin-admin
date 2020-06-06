@@ -106,9 +106,8 @@
           if (valid) {
             this.btnLoading = true
             let bizId = this.temp.id
-            let indices = this.temp.indices
             let params = this.form
-            api.testBusinessTemplate(bizId, indices, params).then(res => {
+            api.testBusinessTemplate(bizId, params).then(res => {
               if (res.status === 200) {
                 this.result = res.data
                 this.btnLoading = false
