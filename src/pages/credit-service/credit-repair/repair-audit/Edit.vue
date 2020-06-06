@@ -2,15 +2,14 @@
   <div class="repair-audit">
     <page-header-wrap :title="title" show-close @on-close="$emit('close')">
       <v-edit-wrap>
-        <div slot="full">
+        <div slot="full" style="position: relative;">
+          <b-loading fix show-text="加载中...." v-if="loading"></b-loading>
           <v-title-bar label="异议申请详情信息" tipPos="left" class="mb-20"></v-title-bar>
-          <b-row>
+
+          <div class="con">
             <table class="table">
               <tr>
-                <b-col span="12">
-                  申请目录：
-                  {{ detail.resourceName }}
-                </b-col>
+                <td>申请目录：</td>
                 <td>{{ detail.resourceName }}</td>
                 <td>主体名称：</td>
                 <td>{{ detail.name }}</td>
@@ -22,28 +21,30 @@
                 <td>{{ detail.applyName }}</td>
               </tr>
             </table>
-            <b-col span="12">
-              申请目录：
-              {{ detail.resourceName }}
-            </b-col>
-          </b-row>
+          </div>
+
           <b-form :model="form" ref="form" :rules="rules" :label-width="100">
             <b-form-item label="数据记录">
-              <b-input :value="recordData" type="textarea" :rows="4" disabled></b-input>
+              <b-input :value="detail.recordJson" type="textarea" :rows="4" disabled></b-input>
             </b-form-item>
 
             <b-form-item label="修复原因">
-              <b-input v-model="form.repairCause" type="textarea" :rows="4" disabled></b-input>
+              <b-input v-model="detail.repairCause" type="textarea" :rows="4" disabled></b-input>
             </b-form-item>
 
             <b-form-item label="修复内容">
-              <b-input v-model="form.repairContent" type="textarea" :rows="4" disabled></b-input>
+              <b-input v-model="detail.repairContent" type="textarea" :rows="4" disabled></b-input>
             </b-form-item>
 
-            <b-form-item label="审核意见">
-              <b-input v-model="form.repairContent" type="textarea" :rows="4"></b-input>
+            <b-form-item label="审核意见" prop="approveDesc">
+              <b-input v-model="form.approveDesc" type="textarea" :rows="4"></b-input>
             </b-form-item>
           </b-form>
+
+          <div flex="main:center">
+            <b-button type="primary" @click="handleSubmit()">同意修复</b-button>
+            <b-button type="primary" plain @click="handleSubmit()">拒绝修复</b-button>
+          </div>
         </div>
 
         <template slot="footer">
@@ -51,27 +52,20 @@
         </template>
       </v-edit-wrap>
     </page-header-wrap>
-
-    <record-select ref="dirSelect"
-      @selected="handleSelected"
-      :resourceKey="form.resourceKey">
-    </record-select>
   </div>
 </template>
 
 <script>
-  import { getRepairApplyDetail } from '../../../../api/credit-service/credit-repair.api'
-  import RepairApplyAttachList from '../../components/RepairApplyAttachList'
-  import RecordSelect from '../../components/RecordSelect'
+  import { getRepairApplyDetail, repairApprove } from '../../../../api/credit-service/credit-repair.api'
 
   export default {
     name: 'RepairAuditEdit',
     props: [
       'title',
-      'editData'
+      'id'
     ],
     components: {
-      RecordSelect
+
     },
     data () {
       return {
@@ -79,28 +73,13 @@
         loading: false,
         detail: {},
         form: {
-          resourceKey: null,
-          resourceName: '',
-          tableName: '',
-          repairCause: '',
-          repairContent: '',
-          recordId: '',
-          name: '',
-          personId: '',
-          attachment: []
+          id: this.id,
+          dealModel: '',
+          approveDesc: ''
         },
         rules: {
-          resourceKey: [
-            { required: true, message: '资源ID不能为空', trigger: 'blur' }
-          ],
-          recordId: [
-            { required: true, message: '选择记录不能为空', trigger: 'change' }
-          ],
-          repairCause: [
-            { required: true, message: '修复原因不能为空', trigger: 'change' }
-          ],
-          repairContent: [
-            { required: true, message: '修复内容不能为空', trigger: 'change' }
+          approveDesc: [
+            { required: true, message: '审核意见不能为空', trigger: 'change' }
           ]
         }
       }
@@ -109,7 +88,7 @@
 
     },
     created () {
-      this.init()
+      this.getRepairApplyDetail(this.id)
     },
     methods: {
       // 获取详情
@@ -126,12 +105,11 @@
       },
       // 提交按钮回调
       async handleSubmit () {
-        // console.log(this.form)
         const valid = await this.$refs.form.validate()
         if (valid) {
           this.btnLoading = true
           try {
-            await repairApply(this.form)
+            await repairApprove(this.form)
             this.$message({ type: 'success', content: '操作成功' })
             this.$emit('success')
             this.$emit('close')
@@ -141,9 +119,6 @@
           }
           this.btnLoading = false
         }
-      },
-      init () {
-        this.getRepairApplyDetail(this.editData.id)
       }
     }
   }
@@ -151,20 +126,24 @@
 
 <style lang="stylus" scoped>
 .repair-audit {
-  .table {
-    width: 100%;
-    font-size: 13px;
-    border-collapse: collapse;
+  .con {
+    width: 70%;
+    margin-left: 93px;
 
-    td {
-      height: 40px;
-      width: 35%;
-      padding: 5px 12px;
-      vertical-align: top;
-    }
+    .table {
+      width: 100%;
+      border-collapse: collapse;
 
-    td:nth-child(2n+1) {
-      width: 15%;
+      td {
+        height: 40px;
+        width: 35%;
+        padding: 5px 12px;
+        vertical-align: top;
+      }
+
+      td:nth-child(2n+1) {
+        width: 15%;
+      }
     }
   }
 }

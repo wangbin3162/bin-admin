@@ -59,7 +59,7 @@
       @close="handleClose"
       @success="searchList"
       :title="editTitle"
-      :editData="curRow">
+      :id="curRow.id">
     </edit>
 
     <detail v-if="isCheck"
