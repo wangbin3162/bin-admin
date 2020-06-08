@@ -21,7 +21,9 @@
         </v-table-tool-bar>
         <b-table :columns="columns" :data="list" :loading="listLoading">
           <template v-slot:varName="{ row }">
-            <b-button type="text" @click="handleCheck(row.id)">{{ row.varName }}</b-button>
+            <b-button type="text" @click="handleCheck(row.id)" t-ellipsis :title="row.varName">
+              {{ row.varName }}
+            </b-button>
           </template>
 
           <template v-slot:varType="{ row }">

@@ -9,7 +9,7 @@
             <b-row :gutter="15">
               <b-col span="12">
                 <b-form-item label="报告名称" prop="reportName">
-                  <b-input v-model="form.reportName" placeholder="请输入变量名称" clearable></b-input>
+                  <b-input v-model="form.reportName" placeholder="请输入报告名称" clearable></b-input>
                 </b-form-item>
               </b-col>
               <b-col span="12">

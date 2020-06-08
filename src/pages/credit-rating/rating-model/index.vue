@@ -56,10 +56,9 @@
             </b-button>
             <b-divider type="vertical"></b-divider>
             <b-dropdown :appendToBody="true">
-              <a href="javascript:void(0)">
-                更多
-                <b-icon name="ios-arrow-down"></b-icon>
-              </a>
+              <b-button type="text">更多
+                <b-icon name="ios-arrow-down"/>
+              </b-button>
               <b-dropdown-menu slot="list">
                 <b-dropdown-item :style="colorPrimary"
                   @click.native="handleSetDefault(row.id)">设为默认</b-dropdown-item>
@@ -104,7 +103,7 @@
   import permission from '../../../common/mixins/permission'
   import Edit from './Edit'
   import Detail from './Detail'
-  import SelectLevel from './SeleceLevel'
+  import SelectLevel from './SelectLevel'
   import IndexConfig from './IndexConfig'
   import { getEvalCommonStatus, getEvalSysDefault } from '../../../api/enum.api'
   import {
@@ -141,8 +140,8 @@
           { title: '主体类别', slot: 'personClass', align: 'center' },
           { title: '等级标准', slot: 'ratingId', align: 'center' },
           { title: '模型指标', slot: 'modelIndex', align: 'center' },
-          { title: '缺省模型', slot: 'sysDefault', align: 'center' },
-          { title: '启用/禁用', slot: 'modelStatus', align: 'center' },
+          { title: '默认方案', slot: 'sysDefault', align: 'center' },
+          { title: '状态', slot: 'modelStatus', align: 'center' },
           // { title: '描述', key: 'modelDesc', ellipsis: true, tooltip: true },
           { title: '操作', slot: 'action', width: 160, align: 'center' }
         ]
