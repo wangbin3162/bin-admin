@@ -100,8 +100,9 @@ export const validatorBuild = {
         let preFieldRule = opts.preField.length > 0 && !(preField && (preField === 'L1' || preField.length === 0))
         // 需判是否需要级联判断id_type，统一社会信用代码为L1，工商注册号代码为L2，组织机构代码为L3
         let caseValue = opts.ignoreCase ? String(value).toUpperCase() : value
-        let result = (value.length === 0 || preFieldRule || value === '00000000000000000X' || verifyUnifiedCode(caseValue))
+        let result = (!value || value.length === 0 || preFieldRule || value === '00000000000000000X' || verifyUnifiedCode(caseValue))
         if (!result) callback(new Error(opts.message))
+        // console.log('$unifiedCode', result)
         callback()
       },
       trigger: opts.trigger
@@ -118,8 +119,9 @@ export const validatorBuild = {
         let preFieldRule = opts.preField.length > 0 && !(preField && (preField === 'L2' || preField.length === 0))
         // 需判是否需要级联判断id_type，统一社会信用代码为L1，工商注册号代码为L2，组织机构代码为L3
         let caseValue = opts.ignoreCase ? String(value).toUpperCase() : value
-        let result = (value.length === 0 || preFieldRule || verifyRegNo(caseValue))
+        let result = (!value || value.length === 0 || preFieldRule || verifyRegNo(caseValue))
         if (!result) callback(new Error(opts.message))
+        // console.log('$regNo', result)
         callback()
       },
       trigger: opts.trigger
@@ -136,8 +138,9 @@ export const validatorBuild = {
         let preFieldRule = opts.preField.length > 0 && !(preField && (preField === 'L3' || preField.length === 0))
         // 需判是否需要级联判断id_type，统一社会信用代码为L1，工商注册号代码为L2，组织机构代码为L3
         let caseValue = opts.ignoreCase ? String(value).toUpperCase() : value
-        let result = (value.length === 0 || preFieldRule || verifyOrgNo(caseValue))
+        let result = (!value || value.length === 0 || preFieldRule || verifyOrgNo(caseValue))
         if (!result) callback(new Error(opts.message))
+        // console.log('$orgInstCode', result)
         callback()
       },
       trigger: opts.trigger

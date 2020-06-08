@@ -103,7 +103,7 @@ export default {
       this.rules = {}
       // 额外扩展id和person_id字段
       this.$set(this.form, 'id', '')
-      if (!['leg_base_info', 'nat_base_info', 'leg_id_info', 'nat_id_info'].includes(this.resource.tableName)) {
+      if (this.resource.tableName !== 'nat_base_info') {
         this.$set(this.form, 'person_id', '')
       }
       dynamicForm.forEach(item => {

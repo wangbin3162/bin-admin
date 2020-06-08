@@ -68,7 +68,7 @@
                       @on-close="handleCancel">
       <!--为了触发重绘更新form字段设置 使用v-if-->
       <v-edit-wrap>
-        <b-form slot="full" :model="form" ref="dynamicFormRef" label-position="top" :rules="rules">
+        <b-form :model="form" ref="dynamicFormRef" label-position="top" :rules="rules">
           <form-item :key="item.id" v-for="item in dynamicForm"
                      :label="item.fieldTitle"
                      :prop="item.fieldName"
