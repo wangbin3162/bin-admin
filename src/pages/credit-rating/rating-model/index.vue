@@ -141,7 +141,7 @@
           { title: '主体类别', slot: 'personClass', align: 'center' },
           { title: '等级标准', slot: 'ratingId', align: 'center' },
           { title: '模型指标', slot: 'modelIndex', align: 'center' },
-          { title: '缺省模型', slot: 'sysDefault', align: 'center' },
+          { title: '是否默认', slot: 'sysDefault', align: 'center' },
           { title: '启用/禁用', slot: 'modelStatus', align: 'center' },
           // { title: '描述', key: 'modelDesc', ellipsis: true, tooltip: true },
           { title: '操作', slot: 'action', width: 160, align: 'center' }
