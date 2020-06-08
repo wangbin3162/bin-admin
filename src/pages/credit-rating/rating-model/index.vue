@@ -56,10 +56,9 @@
             </b-button>
             <b-divider type="vertical"></b-divider>
             <b-dropdown :appendToBody="true">
-              <a href="javascript:void(0)">
-                更多
-                <b-icon name="ios-arrow-down"></b-icon>
-              </a>
+              <b-button type="text">更多
+                <b-icon name="ios-arrow-down"/>
+              </b-button>
               <b-dropdown-menu slot="list">
                 <b-dropdown-item :style="colorPrimary"
                   @click.native="handleSetDefault(row.id)">设为默认</b-dropdown-item>
