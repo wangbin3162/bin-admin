@@ -35,6 +35,7 @@ export function createTheme(item) {
       name: item.name,
       code: item.code,
       url: item.url,
+      category: item.category,
       describe: item.describe
     }
   })
@@ -61,6 +62,7 @@ export function modifyTheme(item) {
       name: item.name,
       code: item.code,
       url: item.url,
+      category: item.category,
       describe: item.describe
     }
   })

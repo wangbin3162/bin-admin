@@ -113,6 +113,9 @@
         <v-key-label label="主机地址" is-half is-first>{{ ds.host }}</v-key-label>
         <v-key-label label="端口号" is-half>{{ ds.port }}</v-key-label>
         <v-key-label label="用户名" is-bottom>{{ ds.userName }}</v-key-label>
+        <div class="pt-20">
+          <b-button type="primary" @click="checkLink">测试连接</b-button>
+        </div>
         <!--保存提交-->
         <template slot="footer">
           <b-button @click="handleCancel">返 回</b-button>

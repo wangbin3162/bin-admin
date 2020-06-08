@@ -155,7 +155,7 @@
           { type: 'index', width: 50, align: 'center' },
           { title: '模板名称', key: 'tempName' },
           { title: '模板编码', key: 'tempCode' },
-          { title: '模板说明', key: 'tempDesc' },
+          { title: '模板说明', key: 'tempDesc', tooltip: true },
           { title: '模板操作', slot: 'action', width: 130 }
         ],
         treeData: [],
