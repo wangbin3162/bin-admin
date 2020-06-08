@@ -251,12 +251,15 @@
       },
       // 清空已经选中的措施
       clearMeasures(memoType) {
+          debugger
           if (this.tiledMeasures.length > 0) {
-             this.tiledMeasures.forEach((measure, index) => {
+            /* this.tiledMeasures.forEach((measure, index) => {
                  if (measure.measureType !== this.measureTypeMap[memoType]) {
                      this.tiledMeasures.splice(index, 1)
                  }
              })
+              */
+              this.tiledMeasures = []
           }
           this.unionDeparts.forEach((item) => {
               this.removeDeptMeasures(item, memoType)
