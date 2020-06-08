@@ -5,7 +5,7 @@
         <!--树结构-->
         <b-tree :data="treeData" slot="tree" @on-select-change="handTreeCurrentChange"></b-tree>
         <!--查询条件-->
-        <v-filter-bar>
+        <v-filter-bar @keyup-enter="handleFilter">
           <v-filter-item title="资源名称" :span="8">
             <b-input v-model.trim="listQuery.resourceName" placeholder="资源名称(中文名)" clearable></b-input>
           </v-filter-item>
@@ -225,33 +225,71 @@
       </v-edit-wrap>
     </page-header-wrap>
     <page-header-wrap v-show="isCheck" :title="editTitle" show-close @on-close="handleCancel">
-      <v-edit-wrap v-if="currentTreeNode">
-        <template slot="full">
-          <v-title-bar label="资源信息详情" class="mb-15"></v-title-bar>
-          <b-row type="flex" justify="center">
-            <b-col span="18">
-              <v-key-label label="资源名称" is-half is-first>{{ resource.resourceName }}</v-key-label>
-              <v-key-label label="所属类目" is-half>{{ resource.dirClassifyName }}</v-key-label>
-              <v-key-label label="资源代码">{{ resource.resourceCode }}</v-key-label>
-              <v-key-label label="资源摘要">{{ resource.resourceDesc }}</v-key-label>
-              <v-key-label label="主体类别" is-half is-first>{{ personClassMap[resource.personClass] }}</v-key-label>
-              <v-key-label label="共享属性" is-half>{{ shareMap[resource.sharedType] }}</v-key-label>
-              <v-key-label label="共享条件" is-half is-first>{{ resource.shareCondition }}</v-key-label>
-              <v-key-label label="共享方式" is-half>{{ resource.shareMode }}</v-key-label>
-              <v-key-label label="开放属性" is-half is-first>{{ openMap[resource.isOpen] }}</v-key-label>
-              <v-key-label label="开放条件" is-half>{{ resource.openCondition }}</v-key-label>
-              <v-key-label label="资源性质" is-half is-first>{{ resPropertyMap[resource.resProperty] }}</v-key-label>
-              <v-key-label label="更新周期" is-half>{{ updateMap[resource.updatePeriod] }}</v-key-label>
-              <v-key-label label="有效期限" is-bottom>{{ resource.expiryLimit }}</v-key-label>
-            </b-col>
-          </b-row>
-          <v-title-bar label="信息项明细" class="mb-15 mt-15"></v-title-bar>
-          <b-table disabled-hover :data="resource.items" :columns="checkItemsTableColumns">
+      <v-edit-wrap transparent>
+        <b-collapse-wrap title="基本信息" collapse :value="false">
+          <v-key-label label="资源名称" is-half is-first>{{ resource.resourceName }}</v-key-label>
+          <v-key-label label="所属类目" is-half>{{ resource.dirClassifyName }}</v-key-label>
+          <v-key-label label="资源代码">{{ resource.resourceCode }}</v-key-label>
+          <v-key-label label="资源摘要">{{ resource.resourceDesc }}</v-key-label>
+          <v-key-label label="主体类别" is-half is-first>{{ personClassMap[resource.personClass] }}
+          </v-key-label>
+          <v-key-label label="共享属性" is-half>{{ shareMap[resource.sharedType] }}</v-key-label>
+          <v-key-label label="共享条件" is-half is-first>{{ resource.shareCondition }}</v-key-label>
+          <v-key-label label="共享方式" is-half>{{ resource.shareMode }}</v-key-label>
+          <v-key-label label="开放属性" is-half is-first>{{ openMap[resource.isOpen] }}</v-key-label>
+          <v-key-label label="开放条件" is-half>{{ resource.openCondition }}</v-key-label>
+          <v-key-label label="资源性质" is-half is-first>{{ resPropertyMap[resource.resProperty] }}
+          </v-key-label>
+          <v-key-label label="更新周期" is-half>{{ updateMap[resource.updatePeriod] }}</v-key-label>
+          <v-key-label label="有效期限" is-bottom>{{ resource.expiryLimit }}</v-key-label>
+        </b-collapse-wrap>
+        <b-collapse-wrap title="信息项" collapse :value="false">
+          <b-table disabled-hover :data="resource.items" :columns="checkItemsTableColumns" size="small">
             <template v-slot:dataType="{row}">{{ dataTypeMap[row.dataType] }}</template>
             <template v-slot:status="{row}">{{ fieldStatusMap[row.status] }}</template>
           </b-table>
-        </template>
-        <!--保存提交-->
+        </b-collapse-wrap>
+        <b-collapse-wrap title="扩展配置" collapse :value="false">
+          <div v-if="resource.ext">
+            <div class="ext-info">
+              <div class="row" flex="box:mean">
+                <div class="row-one">
+                  <div class="label first">是否重复验证</div>
+                  <div class="value">{{ resource.ext.repeatedCheckCfg==='1'?'是':'否' }}</div>
+                </div>
+                <div class="row-one">
+                  <div class="label">是否关联验证</div>
+                  <div class="value">{{ resource.ext.relationBaseCfg==='1'?'是':'否' }}</div>
+                </div>
+                <div class="row-one">
+                  <div class="label">是否增补基础信息</div>
+                  <div class="value">{{ resource.ext.appendBaseCfg==='1'?'是':'否' }}</div>
+                </div>
+                <div class="row-one">
+                  <div class="label">是否补码</div>
+                  <div class="value">{{ resource.ext.replenishCodeCfg==='1'?'是':'否' }}</div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="row-one repeat">
+                  <div class="label first">重复字段列表</div>
+                  <div class="value">
+                    <div>
+                      <b-tag v-for="field in resource.ext.repeatedLineCfg.split(',')" :key="field">
+                        {{ field }}
+                      </b-tag>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </b-collapse-wrap>
+        <b-collapse-wrap title="关联同步配置" collapse :value="true">
+          <div v-if="resource.sync">
+            <sync-svg :resource-name="resource.resourceName" :data="resource.sync"/>
+          </div>
+        </b-collapse-wrap>
         <template slot="footer">
           <b-button @click="handleCancel">返 回</b-button>
         </template>
@@ -310,11 +348,12 @@
   import { getResourceInfo } from '../../../api/data-manage/gather.api'
   import { initFormList } from '../../../components/Validator/FieldsCfg/cfg-util'
   import FieldsCfg from '../../../components/Validator/FieldsCfg/FieldsCfg'
+  import SyncSvg from './components/ResInfo/SyncSvg'
 
   // map映射中如 #static 标识: 静态不改变的枚举的暂不调用接口获取
   export default {
     name: 'ResInfo',
-    components: { SampleData, FieldsCfg, ResExtEdit, MetaDataChoose },
+    components: { SyncSvg, SampleData, FieldsCfg, ResExtEdit, MetaDataChoose },
     mixins: [commonMixin, permission, dynamicForm],
     data() {
       const validateResourceCode = (rule, value, callback) => {
@@ -803,3 +842,43 @@
     }
   }
 </script>
+
+<style lang="stylus" scoped>
+  .ext-info {
+    border-top: 1px solid #eee;
+    border-right: 1px solid #eee;
+    .row {
+      border-bottom: 1px solid #eee;
+      border-left: 1px solid #eee;
+      .row-one {
+        display: flex;
+        align-items: center;
+        .label {
+          flex: 0 0 200px;
+          width: 200px;
+          padding: 20px;
+          border-left: 1px solid #eee;
+          &.first {
+            border-left: none;
+          }
+        }
+        .value {
+          flex: auto;
+          padding: 20px;
+          border-left: 1px solid #eee;
+        }
+      }
+    }
+  }
+  .submit-footer {
+    padding: 20px 20px 20px 200px;
+  }
+  .field-item {
+    display: inline-block;
+    width: 25%;
+    padding: 5px 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis
+  }
+</style>
