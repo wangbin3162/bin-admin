@@ -3,12 +3,12 @@
     <page-header-wrap v-show="isNormal">
       <v-table-wrap>
         <!-- 查询条件 -->
-        <v-filter-bar>
+        <v-filter-bar @keyup-enter="handleFilter">
           <v-filter-item title="名称">
-            <b-input v-model="listQuery.varName" placeholder="请输入名称"></b-input>
+            <b-input v-model="listQuery.varName" placeholder="请输入名称" clearable ></b-input>
           </v-filter-item>
            <v-filter-item title="变量类型">
-            <b-select v-model="listQuery.varType">
+            <b-select v-model="listQuery.varType" clearable>
               <b-option v-for="item in varTypeOptions" :key="item.value"
                 :value="item.value">{{ item.label }}</b-option>
             </b-select>

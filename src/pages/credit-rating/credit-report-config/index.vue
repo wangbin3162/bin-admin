@@ -3,9 +3,9 @@
     <page-header-wrap v-show="isNormal">
       <v-table-wrap>
         <!-- 查询条件 -->
-        <v-filter-bar>
+        <v-filter-bar @keyup-enter="handleFilter">
           <v-filter-item title="报告名称" :span="5">
-            <b-input v-model="listQuery.reportName" placeholder="请输入名称"></b-input>
+            <b-input v-model="listQuery.reportName" placeholder="请输入名称" clearable></b-input>
           </v-filter-item>
           <v-filter-item title="报告类型" :span="5">
             <b-select v-model="listQuery.reportType" clearable>

@@ -11,7 +11,7 @@
           @on-select-change="handTreeCurrentChange"></b-tree>
 
         <!--查询条件-->
-        <v-filter-bar>
+        <v-filter-bar @keyup-enter="handleFilter">
           <v-filter-item title="模板名称" style="max-width: 35%">
             <b-input v-model.trim="listQuery.tempName" placeholder="请输入" clearable></b-input>
           </v-filter-item>

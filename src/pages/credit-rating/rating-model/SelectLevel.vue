@@ -5,9 +5,9 @@
       :body-styles="{ padding: 0 }" :styles="{ top: '7%' }"
       @on-visible-change="handleVisibleChange">
       <v-table-wrap v-if="isNormal">
-        <v-filter-bar>
+        <v-filter-bar @keyup-enter="handleFilter">
           <v-filter-item title="名称">
-            <b-input v-model="listQuery.ratingName" placeholder="请输入"></b-input>
+            <b-input v-model="listQuery.ratingName" placeholder="请输入" clearable></b-input>
           </v-filter-item>
           <v-filter-item @on-search="handleFilter" @on-reset="resetQuery"></v-filter-item>
         </v-filter-bar>

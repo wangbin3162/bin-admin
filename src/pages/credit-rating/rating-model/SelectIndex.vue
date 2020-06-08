@@ -15,7 +15,7 @@
         <b-row :gutter="15">
           <b-col :span="span">
             <!-- 查询 -->
-            <v-filter-bar>
+            <v-filter-bar @keyup-enter="handleFilter">
               <v-filter-item title="名称">
                 <b-input v-model.trim="listQuery.indexName" placeholder="请输入" clearable></b-input>
               </v-filter-item>

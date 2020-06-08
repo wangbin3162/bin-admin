@@ -2,9 +2,9 @@
   <div>
     <page-header-wrap v-show="isNormal || isEdit">
       <v-table-wrap>
-        <v-filter-bar>
+        <v-filter-bar @keyup-enter="handleFilter">
           <v-filter-item title="名称">
-            <b-input v-model="listQuery.ratingName" placeholder="请输入"></b-input>
+            <b-input v-model="listQuery.ratingName" placeholder="请输入" clearable></b-input>
           </v-filter-item>
           <v-filter-item @on-search="handleFilter" @on-reset="resetQuery"></v-filter-item>
         </v-filter-bar>
