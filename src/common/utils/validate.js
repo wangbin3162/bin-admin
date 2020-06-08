@@ -214,7 +214,7 @@ export function verifyRegNo(regNo) {
 /* 校验组织机构代码 */
 export function verifyOrgNo(orgNo) {
   const CVAL = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-  const regex = /^[0-9A-Z]{8}-[0-9X]$/
+  const regex = /^[0-9A-Z]{8}-?[0-9X]$/
   const MD = [3, 7, 9, 10, 5, 8, 4, 2]
   const CC = '0123456789X0'
 
