@@ -2,20 +2,20 @@
   <div>
     <page-header-wrap v-show="isNormal">
       <v-table-wrap>
-        <v-filter-bar>
+        <v-filter-bar @keyup-enter="handleFilter">
           <v-filter-item title="名称">
-            <b-input v-model="listQuery.modelName" placeholder="请输入"></b-input>
+            <b-input v-model="listQuery.modelName" placeholder="请输入" clearable></b-input>
           </v-filter-item>
           <v-filter-item title="主体类型">
             <!-- <b-cascader :data="subjectType" v-model="listQuery.bizType"
               change-on-select></b-cascader> -->
-            <b-select v-model="listQuery.bizType">
+            <b-select v-model="listQuery.bizType" clearable>
               <b-option value="A01">自然人</b-option>
               <b-option value="A02">法人和其他组织</b-option>
             </b-select>
           </v-filter-item>
           <v-filter-item title="状态">
-            <b-select v-model="listQuery.modelStatus">
+            <b-select v-model="listQuery.modelStatus" clearable>
               <b-option v-for="(value, key) in statusEnum" :key="value" :value="key">
                 {{ value }}
               </b-option>

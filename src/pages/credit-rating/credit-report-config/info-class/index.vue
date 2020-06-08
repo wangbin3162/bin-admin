@@ -3,7 +3,7 @@
     <page-header-wrap title="信息类配置" show-close @on-close="$emit('close')" v-show="isNormal">
       <v-table-wrap>
         <!-- 查询条件 -->
-        <v-filter-bar>
+        <v-filter-bar @keyup-enter="handleFilter">
            <v-filter-item title="信息类类别">
             <b-select v-model="listQuery.category" clearable>
               <b-option v-for="(value, key) in reportItemTypeEnum" :key="key" :value="key">

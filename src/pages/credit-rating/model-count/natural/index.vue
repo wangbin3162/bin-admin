@@ -3,12 +3,12 @@
     <page-header-wrap v-show="isNormal">
       <v-table-wrap>
         <!-- 查询条件 -->
-        <v-filter-bar>
+        <v-filter-bar @keyup-enter="handleFilter">
           <v-filter-item title="名称" :span="5">
-            <b-input v-model="listQuery.name" placeholder="请输入名称"></b-input>
+            <b-input v-model="listQuery.name" placeholder="请输入名称" clearable></b-input>
           </v-filter-item>
           <v-filter-item title="证件号码" :span="5">
-            <b-input v-model="listQuery.code" placeholder="请输入证件号码"></b-input>
+            <b-input v-model="listQuery.code" placeholder="请输入证件号码" clearable></b-input>
           </v-filter-item>
            <v-filter-item title="评价方案" :span="4">
             <b-select v-model="listQuery.modelId" @on-change="handleModelChange">
@@ -171,7 +171,7 @@
         this.listQuery = {
           page: 1,
           size: 10,
-          compName: '',
+          name: '',
           modelId: this.defaultModelId,
           levelCode: ''
         }
@@ -217,9 +217,11 @@
           this.$store.commit('SET_MODEL_LIST', res)
           // 用于下拉框选中设为默认的评级模型
           const defaultModel = res.find(item => item.sysDefault === '1')
-          this.listQuery.modelId = defaultModel.id
-          this.defaultModelId = defaultModel.id
-          this.ratingOptions = defaultModel.ratingOptions
+          if (defaultModel) {
+            this.listQuery.modelId = defaultModel.id
+            this.defaultModelId = defaultModel.id
+            this.ratingOptions = defaultModel.ratingOptions
+          }
         } catch (error) {
           console.error(error)
         }

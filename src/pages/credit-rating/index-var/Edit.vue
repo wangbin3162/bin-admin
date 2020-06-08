@@ -54,29 +54,27 @@
             </b-row>
             <b-row v-else>
               <b-col span="24">
-                <b-form-item label="已选变量" v-if="tempVarCodeList.length > 0">
+                <b-form-item label="已选变量">
                   <b-tag color="#409EFF" dot closable
                     v-for="(item, index) in tempVarCodeList" :key="item"
                     @on-close="handleTagClose(index)"
                     @on-click="handleTagClick(item)">
                     {{ item }}
                   </b-tag>
+                  <b-button type="primary" plain style="margin-left: 5px;"
+                    @click="openSelectVarHandler">
+                    选择
+                  </b-button>
                 </b-form-item>
                 <b-form-item label="表达式" prop="tplContent"
                   :rules=" { required: true, message: '请输入el表达式', trigger: 'blur' }">
-                  <div flex="main:justify" style="width: 100%;">
-                    <b-input v-model="form.tplContent"
-                      element-id="elInput"
-                      type="textarea"
-                      :rows="4"
-                      style="max-width: 93%;"
-                      placeholder="请输入el表达式">
-                    </b-input>
-                    <b-button type="primary" plain style="margin-left: 5px;"
-                      @click="openSelectVarHandler">
-                      选择
-                    </b-button>
-                  </div>
+                  <b-input v-model="form.tplContent"
+                    element-id="elInput"
+                    type="textarea"
+                    :rows="4"
+                    style="max-width: 93%;"
+                    placeholder="请输入el表达式">
+                  </b-input>
                 </b-form-item>
               </b-col>
             </b-row>

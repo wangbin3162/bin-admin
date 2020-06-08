@@ -3,18 +3,18 @@
     <page-header-wrap v-show="isNormal">
       <v-table-wrap>
         <!-- 查询条件 -->
-        <v-filter-bar>
+        <v-filter-bar @keyup-enter="handleFilter">
           <v-filter-item title="名称">
-            <b-input v-model="listQuery.compName" placeholder="请输入名称"></b-input>
+            <b-input v-model="listQuery.compName" placeholder="请输入名称" clearable></b-input>
           </v-filter-item>
            <v-filter-item title="评价方案">
-            <b-select v-model="listQuery.modelId" @on-change="handleModelChange">
+            <b-select v-model="listQuery.modelId" @on-change="handleModelChange" clearable>
               <b-option v-for="item in modelList" :key="item.id"
                 :value="item.id">{{ item.name }}</b-option>
             </b-select>
           </v-filter-item>
           <v-filter-item title="评价等级">
-            <b-select v-model="listQuery.levelCode">
+            <b-select v-model="listQuery.levelCode" clearable>
               <b-option v-for="item in ratingOptions" :key="item.levelCode"
                 :value="item.levelCode">{{ item.levelName }}</b-option>
             </b-select>
@@ -152,6 +152,7 @@
           { title: '评价日期', slot: 'createDate', align: 'center' },
           { title: '操作', slot: 'action', width: 120, align: 'center' }
         ],
+        defaultModelId: null, // 存储默认模型id
         modelList: [], // 评级模型下拉框数据
         ratingOptions: [] // 评级等级下拉框数据
       }
@@ -166,7 +167,7 @@
           page: 1,
           size: 10,
           compName: '',
-          modelName: '',
+          modelId: this.defaultModelId,
           levelCode: ''
         }
         this.searchList()
@@ -213,8 +214,11 @@
           this.$store.commit('SET_MODEL_LIST', res)
           // 用于下拉框选中设为默认的评级模型
           const defaultModel = res.find(item => item.sysDefault === '1')
-          this.listQuery.modelId = defaultModel.id
-          this.ratingOptions = defaultModel.ratingOptions
+          if (defaultModel) {
+            this.listQuery.modelId = defaultModel.id
+            this.defaultModelId = defaultModel.id
+            this.ratingOptions = defaultModel.ratingOptions
+          }
         } catch (error) {
           console.error(error)
         }

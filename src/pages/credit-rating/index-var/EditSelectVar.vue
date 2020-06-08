@@ -8,12 +8,12 @@
       <v-table-wrap>
         <b-row :gutter="15">
           <b-col :span="span">
-            <v-filter-bar>
+            <v-filter-bar @keyup-enter="handleFilter">
               <v-filter-item title="变量名">
-                <b-input v-model="listQuery.varName" placeholder="请输入变量名"></b-input>
+                <b-input v-model="listQuery.varName" placeholder="请输入变量名" clearable></b-input>
               </v-filter-item>
               <v-filter-item title="变量类型">
-                <b-select v-model="listQuery.varType">
+                <b-select v-model="listQuery.varType" clearable>
                   <b-option v-for="item in varTypeOptions" :key="item.value"
                     :value="item.value">{{ item.label }}
                   </b-option>

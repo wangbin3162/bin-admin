@@ -14,7 +14,7 @@
         <b-row :gutter="15" style="max-height: 600px; overflow: auto;">
           <b-col :span="spanLeft">
             <!-- 查询 -->
-            <v-filter-bar>
+            <v-filter-bar @keyup-enter="handleFilter">
               <v-filter-item title="资源名称" :span="8">
                 <b-input v-model.trim="listQuery.resourceName" placeholder="资源名称" clearable></b-input>
               </v-filter-item>
