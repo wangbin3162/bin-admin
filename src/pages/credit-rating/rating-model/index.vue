@@ -104,7 +104,7 @@
   import permission from '../../../common/mixins/permission'
   import Edit from './Edit'
   import Detail from './Detail'
-  import SelectLevel from './SeleceLevel'
+  import SelectLevel from './SelectLevel'
   import IndexConfig from './IndexConfig'
   import { getEvalCommonStatus, getEvalSysDefault } from '../../../api/enum.api'
   import {

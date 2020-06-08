@@ -73,8 +73,8 @@
         columnsLevel: [
           { type: 'index', width: 50, align: 'center' },
           { title: '等级', key: 'levelName' },
-          { title: '上限值', key: 'upScore' },
-          { title: '下限值', key: 'dnScore' },
+          { title: '下限值  (', key: 'dnScore' },
+          { title: '上限值  ]', key: 'upScore' },
           { title: '描述', key: 'levelDesc', ellipsis: true, tooltip: true }
         ],
         levelLoading: false, // 等级列表载入效果

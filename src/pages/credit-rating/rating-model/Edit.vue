@@ -61,7 +61,7 @@
 </template>
 
 <script>
-  import SelectLevel from './SeleceLevel'
+  import SelectLevel from './SelectLevel'
   import { createRatingModel, updateRatingModel } from '../../../api/credit-rating/rating-model.api'
 
   export default {
