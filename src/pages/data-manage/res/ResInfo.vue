@@ -95,128 +95,124 @@
       </v-table-wrap>
     </page-header-wrap>
     <page-header-wrap v-if="isEdit" :title="editTitle" show-close @on-close="handleCancel">
-      <v-edit-wrap>
-        <template slot="full">
-          <b-collapse value="1" simple>
-            <b-collapse-panel title="基础信息" name="1">
-              <b-form :model="resource" ref="form" :rules="ruleValidate" label-position="top" class="p10">
-                <b-row :gutter="10">
-                  <b-col span="6">
-                    <b-form-item label="元信息名称" prop="tableName">
-                      <div flex style="width: 100%;">
-                        <b-input v-model="resource.tableName" placeholder="选择元信息带入" readonly
-                                 class="choose-btn"></b-input>
-                        <b-button style="flex:0 0 auto;" type="primary" plain @click="handleShowDialogChoose">选择
-                        </b-button>
-                      </div>
-                    </b-form-item>
-                  </b-col>
-                  <b-col span="6">
-                    <b-form-item label="主体类别" prop="personClass">
-                      <b-input :value="personClassMap[resource.personClass]" placeholder="选择元信息带入" readonly></b-input>
-                    </b-form-item>
-                  </b-col>
-                  <b-col span="6">
-                    <b-form-item label="资源名称" prop="resourceName">
-                      <b-input v-model="resource.resourceName" placeholder="请输入资源名称" clearable></b-input>
-                    </b-form-item>
-                  </b-col>
-                  <b-col span="6">
-                    <b-form-item label="资源代码" prop="resourceCode">
-                      <div flex style="width:100%;">
-                        <b-tag type="primary" style="margin: 0;flex:0 0 auto;">
-                          210{{ resource.metadataCode }}
-                        </b-tag>
-                        <div flex-box="1">
-                          <b-input v-model="resource.resourceCode" placeholder="请输入资源代码" clearable/>
-                        </div>
-                      </div>
-                    </b-form-item>
-                  </b-col>
-                </b-row>
-                <b-row :gutter="10">
-                  <b-col span="6">
-                    <b-form-item label="更新周期" prop="updatePeriod">
-                      <b-select v-model="resource.updatePeriod" clearable>
-                        <b-option v-for="(value,key) in updateMap" :key="key" :value="key">{{ value }}</b-option>
-                      </b-select>
-                    </b-form-item>
-                  </b-col>
-                  <b-col span="6">
-                    <b-form-item label="资源性质" prop="resProperty">
-                      <v-cascade :data="resPropertyOptions" v-model="resource.resProperty"></v-cascade>
-                    </b-form-item>
-                  </b-col>
-                  <b-col span="6">
-                    <b-form-item label="有效期限(月)" prop="expiryLimit">
-                      <b-input-number v-model.number="resource.expiryLimit" :min="0"
-                                      style="width: 100%;"></b-input-number>
-                    </b-form-item>
-                  </b-col>
-                  <b-col span="6">
-                    <b-form-item label="共享属性" prop="sharedType">
-                      <b-select v-model="resource.sharedType" clearable @on-change="sharedTypeChange">
-                        <b-option v-for="(value,key) in shareMap" :key="key" :value="key">{{ value }}</b-option>
-                      </b-select>
-                    </b-form-item>
-                  </b-col>
-                </b-row>
-                <b-row :gutter="10">
-                  <b-col span="6">
-                    <b-form-item label="开放属性" prop="isOpen">
-                      <b-select v-model="resource.isOpen" clearable @on-change="isOpenChange">
-                        <b-option v-for="(value,key) in openMap" :key="key" :value="key">{{ value }}</b-option>
-                      </b-select>
-                    </b-form-item>
-                  </b-col>
-                  <b-col span="6">
-                    <b-form-item label="开放条件" prop="openCondition">
-                      <b-input v-model="resource.openCondition" placeholder="请输入开放条件" clearable
-                               :disabled="resource.isOpen!=='1'"></b-input>
-                    </b-form-item>
-                  </b-col>
-                  <b-col span="6">
-                    <b-form-item label="共享条件" prop="sharedConditions">
-                      <b-input v-model="resource.sharedConditions" placeholder="请输入共享条件" clearable
-                               :disabled="resource.sharedType!=='DEPART_RANGE'"></b-input>
-                    </b-form-item>
-                  </b-col>
-                  <b-col span="6">
-                    <b-form-item label="共享方式" prop="sharedMode">
-                      <b-input v-model="resource.sharedMode" placeholder="请输入共享方式" clearable
-                               :disabled="resource.sharedType!=='DEPART_RANGE'"></b-input>
-                    </b-form-item>
-                  </b-col>
-                </b-row>
-                <b-form-item label="资源摘要" prop="resourceDesc">
-                  <b-input v-model="resource.resourceDesc" placeholder="请输入摘要" type="textarea"></b-input>
+      <v-edit-wrap transparent>
+        <b-collapse-wrap title="基本信息" collapse>
+          <b-form :model="resource" ref="form" :rules="ruleValidate" label-position="top" class="p10">
+            <b-row :gutter="10">
+              <b-col span="6">
+                <b-form-item label="元信息名称" prop="tableName">
+                  <div flex style="width: 100%;">
+                    <b-input v-model="resource.tableName" placeholder="选择元信息带入" readonly
+                             class="choose-btn"></b-input>
+                    <b-button style="flex:0 0 auto;" type="primary" plain @click="handleShowDialogChoose">选择
+                    </b-button>
+                  </div>
                 </b-form-item>
-              </b-form>
-            </b-collapse-panel>
-          </b-collapse>
-          <template v-if="resource.items">
-            <v-title-bar label="信息项配置" class="mb-20">
-              <div class="pr-20">
-                <b-button type="text" icon="ios-eye" @click="previewForm">预览</b-button>
-                <b-button v-if="dialogStatus==='modify' && resource.availableStatus === 'notavailable'"
-                          type="text" @click="handleReload" icon="ios-refresh">
-                  重载信息项
-                </b-button>
-                <b-button type="text" icon="ios-bug"
-                          @click.native="debugJson=!debugJson"
-                          :text-color="debugJson?'danger':'primary'">
-                  debug
-                </b-button>
-              </div>
-            </v-title-bar>
+              </b-col>
+              <b-col span="6">
+                <b-form-item label="主体类别" prop="personClass">
+                  <b-input :value="personClassMap[resource.personClass]" placeholder="选择元信息带入" readonly></b-input>
+                </b-form-item>
+              </b-col>
+              <b-col span="6">
+                <b-form-item label="资源名称" prop="resourceName">
+                  <b-input v-model="resource.resourceName" placeholder="请输入资源名称" clearable></b-input>
+                </b-form-item>
+              </b-col>
+              <b-col span="6">
+                <b-form-item label="资源代码" prop="resourceCode">
+                  <div flex style="width:100%;">
+                    <b-tag type="primary" style="margin: 0;flex:0 0 auto;">
+                      210{{ resource.metadataCode }}
+                    </b-tag>
+                    <div flex-box="1">
+                      <b-input v-model="resource.resourceCode" placeholder="请输入资源代码" clearable/>
+                    </div>
+                  </div>
+                </b-form-item>
+              </b-col>
+            </b-row>
+            <b-row :gutter="10">
+              <b-col span="6">
+                <b-form-item label="更新周期" prop="updatePeriod">
+                  <b-select v-model="resource.updatePeriod" clearable>
+                    <b-option v-for="(value,key) in updateMap" :key="key" :value="key">{{ value }}</b-option>
+                  </b-select>
+                </b-form-item>
+              </b-col>
+              <b-col span="6">
+                <b-form-item label="资源性质" prop="resProperty">
+                  <v-cascade :data="resPropertyOptions" v-model="resource.resProperty"></v-cascade>
+                </b-form-item>
+              </b-col>
+              <b-col span="6">
+                <b-form-item label="有效期限(月)" prop="expiryLimit">
+                  <b-input-number v-model.number="resource.expiryLimit" :min="0"
+                                  style="width: 100%;"></b-input-number>
+                </b-form-item>
+              </b-col>
+              <b-col span="6">
+                <b-form-item label="共享属性" prop="sharedType">
+                  <b-select v-model="resource.sharedType" clearable @on-change="sharedTypeChange">
+                    <b-option v-for="(value,key) in shareMap" :key="key" :value="key">{{ value }}</b-option>
+                  </b-select>
+                </b-form-item>
+              </b-col>
+            </b-row>
+            <b-row :gutter="10">
+              <b-col span="6">
+                <b-form-item label="开放属性" prop="isOpen">
+                  <b-select v-model="resource.isOpen" clearable @on-change="isOpenChange">
+                    <b-option v-for="(value,key) in openMap" :key="key" :value="key">{{ value }}</b-option>
+                  </b-select>
+                </b-form-item>
+              </b-col>
+              <b-col span="6">
+                <b-form-item label="开放条件" prop="openCondition">
+                  <b-input v-model="resource.openCondition" placeholder="请输入开放条件" clearable
+                           :disabled="resource.isOpen!=='1'"></b-input>
+                </b-form-item>
+              </b-col>
+              <b-col span="6">
+                <b-form-item label="共享条件" prop="sharedConditions">
+                  <b-input v-model="resource.sharedConditions" placeholder="请输入共享条件" clearable
+                           :disabled="resource.sharedType!=='DEPART_RANGE'"></b-input>
+                </b-form-item>
+              </b-col>
+              <b-col span="6">
+                <b-form-item label="共享方式" prop="sharedMode">
+                  <b-input v-model="resource.sharedMode" placeholder="请输入共享方式" clearable
+                           :disabled="resource.sharedType!=='DEPART_RANGE'"></b-input>
+                </b-form-item>
+              </b-col>
+            </b-row>
+            <b-form-item label="资源摘要" prop="resourceDesc">
+              <b-input v-model="resource.resourceDesc" placeholder="请输入摘要" type="textarea"></b-input>
+            </b-form-item>
+          </b-form>
+        </b-collapse-wrap>
+        <b-collapse-wrap title="信息项配置">
+          <div slot="right">
+            <b-button type="text" icon="ios-eye" @click="previewForm">预览</b-button>
+            <b-button v-if="dialogStatus==='modify' && resource.availableStatus === 'notavailable'"
+                      type="text" @click="handleReload" icon="ios-refresh">
+              重载信息项
+            </b-button>
+            <b-button type="text" icon="ios-bug"
+                      @click.native="debugJson=!debugJson"
+                      :text-color="debugJson?'danger':'primary'">
+              debug
+            </b-button>
+          </div>
+          <div v-if="resource.items">
             <fields-cfg v-model="resource.items"/>
             <!--调试模式-->
             <div class="mt-15" v-if="debugJson">
               <b-tag type="success" size="small">实际存储对象[fields]</b-tag>
               <b-code-editor :value="JSON.stringify(resource.items,null,2)" readonly/>
             </div>
-          </template>
-        </template>
+          </div>
+        </b-collapse-wrap>
         <!--保存提交-->
         <template slot="footer">
           <b-button @click="handleCancel">取 消</b-button>

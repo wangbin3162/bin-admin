@@ -178,7 +178,7 @@
       tokenizerDisabled() {
         if (this.currentIndex !== -1) {
           let item = this.totalData[this.currentIndex]
-          return item.dataType !== 'string' || item.validValue.length > 0
+          return item.dataType !== 'string' || (item.validValue && item.validValue.length > 0)
         }
         return false
       },
@@ -243,14 +243,14 @@
           // 如果已经有值
           if (item.tokenizer) {
             // 如果设置了有效值则必须为Y
-            if (item.validValue.length > 0) {
+            if (item.validValue && item.validValue.length > 0) {
               item.tokenizer = 'N'
             }
           } else {
             // 如果类型为字符型
             if (item.dataType === 'string') {
               // 如果有效值存在
-              item.tokenizer = item.validValue.length > 0 ? 'N' : ''
+              item.tokenizer = (item.validValue && item.validValue.length > 0) ? 'N' : ''
             } else {
               item.validValue = '' // 如果类型不是字符型，则有效值必须为空
               item.tokenizer = '' // 是否分词也必须为空
