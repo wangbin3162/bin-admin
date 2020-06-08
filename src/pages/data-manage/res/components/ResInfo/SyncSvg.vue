@@ -1,19 +1,23 @@
 <template>
-  <svg width="100%" :height="data.length*100" ref="wrap">
-    <g v-for="(item,index) in data" :key="item.id||index">
-      <!--原资源-->
-      <g :transform="getNodeTransform(index)">
-        <rect :width="nodeWidth(index)" :height="nodeHeight(index)" x="0" y="0" rx="2" ry="2"
-              style="fill: rgb(0, 132, 255); opacity: 0.8;"></rect>
-        <!--      <text y="16" style="fill: rgb(255, 255, 255); font-size: 14px; font-weight: bold;">-->
-        <!--        <tspan class="text" x="16" dy="1em">{{resource.resourceName}}</tspan>-->
-        <!--      </text>-->
+  <svg width="100%" :height="totalHeight" ref="wrap">
+    <g :transform="getNodeTransform(index)" v-for="(item,index) in data" :key="item.id||index">
+      <g>
+        <rect :width="nodeWidth(index,resourceName)" :height="nodeHeight" x="1" y="1" rx="2" ry="2"
+              class="node-rect"></rect>
+        <text x="18" y="27" style="font-size: 14px;">{{resourceName}}</text>
+      </g>
+      <g :transform="arrowTrans(index,resourceName)">
+        <polygon points="0,0 100,0 100,-6 120,1 100,8 100,2 0,2"
+                 style="fill: rgb(0, 132, 255); opacity: 0.5;"></polygon>
+        <text x="40" y="-4" style="font-size: 14px;">{{ typeMap[item.syncType] }}</text>
+      </g>
+      <g :transform="targetTrans(index,resourceName)">
+        <rect :width="nodeWidth(index,item.targetName)" :height="nodeHeight" x="1" y="1" rx="2" ry="2"
+              class="node-rect" style="stroke: rgb(166, 111, 200);fill: rgb(166, 111, 200);"></rect>
+        <text x="18" y="27" style="font-size: 14px;">{{ item.targetName }}</text>
       </g>
     </g>
   </svg>
-  <!--<div class="sync-item" v-for="(item,index) in resource.sync" :key="item.id||index">-->
-  <!--{{resource.resourceName}} &ndash;&gt; {{ item.targetName }} {{ {A:'添加',M:'修改',D:'删除'}[item.syncType] }}-->
-  <!--</div>-->
 </template>
 
 <script>
@@ -33,7 +37,14 @@
     },
     data() {
       return {
+        nodeHeight: 40,
+        marginBottom: 24,
         typeMap: { A: '添加', M: '修改', D: '删除' }
+      }
+    },
+    computed: {
+      totalHeight() {
+        return this.data.length * (this.nodeHeight + this.marginBottom) - this.marginBottom + 2
       }
     },
     methods: {
@@ -41,17 +52,31 @@
       nodeWidth(index, label) {
         return label.length * 14 + 16 * 2
       },
-      nodeHeight(index) {
-        return 14 + 2 + 16 * 2
-      },
       // 获取偏移
       getNodeTransform(index) {
-        return `translate(${index},-26)`
+        return `translate(0,${index * this.nodeHeight + (index > 0 ? this.marginBottom : 0)})`
+      },
+      // 箭头偏移
+      arrowTrans(index, label) {
+        let x = this.nodeWidth(index, label) + 24
+        return `translate(${x},20)`
+      },
+      // 目标资源偏移
+      targetTrans(index, label) {
+        let x = this.nodeWidth(index, label) + 120 + 24 * 2
+        return `translate(${x},0)`
       }
     }
   }
 </script>
 
 <style scoped>
-
+  .node-rect {
+    fill: #1089ff;
+    fill-opacity: .1;
+    opacity: 1;
+    stroke: #1089ff;
+    stroke-width: 1;
+    stroke-opacity: .5;
+  }
 </style>

@@ -226,7 +226,7 @@
     </page-header-wrap>
     <page-header-wrap v-show="isCheck" :title="editTitle" show-close @on-close="handleCancel">
       <v-edit-wrap transparent>
-        <b-collapse-wrap title="基本信息" collapse :value="false">
+        <b-collapse-wrap title="基本信息" collapse>
           <v-key-label label="资源名称" is-half is-first>{{ resource.resourceName }}</v-key-label>
           <v-key-label label="所属类目" is-half>{{ resource.dirClassifyName }}</v-key-label>
           <v-key-label label="资源代码">{{ resource.resourceCode }}</v-key-label>
@@ -243,13 +243,13 @@
           <v-key-label label="更新周期" is-half>{{ updateMap[resource.updatePeriod] }}</v-key-label>
           <v-key-label label="有效期限" is-bottom>{{ resource.expiryLimit }}</v-key-label>
         </b-collapse-wrap>
-        <b-collapse-wrap title="信息项" collapse :value="false">
+        <b-collapse-wrap title="信息项" collapse>
           <b-table disabled-hover :data="resource.items" :columns="checkItemsTableColumns" size="small">
             <template v-slot:dataType="{row}">{{ dataTypeMap[row.dataType] }}</template>
             <template v-slot:status="{row}">{{ fieldStatusMap[row.status] }}</template>
           </b-table>
         </b-collapse-wrap>
-        <b-collapse-wrap title="扩展配置" collapse :value="false">
+        <b-collapse-wrap title="扩展配置" collapse>
           <div v-if="resource.ext">
             <div class="ext-info">
               <div class="row" flex="box:mean">
@@ -285,7 +285,7 @@
             </div>
           </div>
         </b-collapse-wrap>
-        <b-collapse-wrap title="关联同步配置" collapse :value="true">
+        <b-collapse-wrap title="关联同步配置" collapse>
           <div v-if="resource.sync">
             <sync-svg :resource-name="resource.resourceName" :data="resource.sync"/>
           </div>
