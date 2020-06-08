@@ -106,6 +106,11 @@
           let list = [...newVal]
           if (this.listCache.length) list = [...this.listCache, ...newVal]
 
+          list.forEach(item => {
+            // 禅道bug 13979会引起paraType为uundefined
+            // 原因为b-select组件如果绑定的值为''、null，则组件会把绑定的值设为undefined
+            if (item.paraType === undefined) item.paraType = ''
+          })
           this.$emit('params-change', list)
         },
         deep: true
