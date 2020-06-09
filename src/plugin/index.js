@@ -19,6 +19,7 @@ import VSimpleLabel from '../components/VKeyLabel/Simple'
 import VTitleBar from '../components/VTitleBar'
 import VSortArrow from '../components/VSortArrow'
 import VCascade from '../components/VCascade'
+import { isEmpty, isNotEmpty } from '../common/utils/assist'
 
 export default {
   async install(Vue, options) {
@@ -40,10 +41,8 @@ export default {
     Vue.component(VCascade.name, VCascade)
     // 全局通信
     Vue.prototype.$EventBus = new Vue()
-    // 扩展string方法
-    // eslint-disable-next-line no-extend-native
-    String.prototype.isNotEmpty = function () {
-      return this.length > 0 || this !== ''
-    }
+    // 全局函数，为空和不为空的判断
+    Vue.prototype.$isEmpty = isEmpty
+    Vue.prototype.$isNotEmpty = isNotEmpty
   }
 }
