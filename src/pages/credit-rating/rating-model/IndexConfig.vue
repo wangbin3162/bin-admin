@@ -10,13 +10,12 @@
           </div>
           <div class="table-con">
             <!-- search -->
-            <v-filter-bar @keyup-enter="handleFilter">
+            <!-- <v-filter-bar @keyup-enter="handleFilter">
               <v-filter-item title="名称">
                 <b-input v-model.trim="listQuery.indexName" placeholder="请输入" clearable></b-input>
               </v-filter-item>
-              <!-- search btn -->
               <v-filter-item @on-search="handleFilter" @on-reset="resetQuery"></v-filter-item>
-            </v-filter-bar>
+            </v-filter-bar> -->
 
             <!-- 展示用table -->
             <b-table id="customTable" v-if="!editStatus" size="small"
