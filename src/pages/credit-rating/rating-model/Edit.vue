@@ -80,6 +80,7 @@
         ratingName: '',
         personClass: [], // 主题类别级联选择框数据结构
         editDisabled: false, // 用于编辑时禁止相关编辑项
+        codeDisabled: false, // 用于编辑非初次克隆项目时禁止编码编辑input
         form: {
           modelName: '',
           modelCode: '',
@@ -117,9 +118,6 @@
       },
       personClassEnum () { // 主题类别回显用枚举
         return this.$store.state.ratingModel.personClassEnum
-      },
-      codeDisabled () { // 编码输入框是否disabled，新增时不disabled，编辑时如果为null或''不disabled，不为空则disabled
-        return (this.form.modelCode !== null && this.form.modelCode !== '') && this.editDisabled
       }
     },
     created () {
@@ -174,6 +172,10 @@
           this.form = { ...this.editData }
           this.ratingName = this.editData.ratingName
           this.editDisabled = true
+        }
+        // 编码输入框是否disabled，新增时不disabled，编辑时如果为null或''不disabled，不为空则disabled
+        if ((this.form.modelCode !== null && this.form.modelCode !== '') && this.editDisabled) {
+          this.codeDisabled = true
         }
       }
     }
