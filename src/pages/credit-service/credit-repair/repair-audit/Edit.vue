@@ -26,6 +26,9 @@
           <b-form :model="form" ref="form" :rules="rules" :label-width="100">
             <b-form-item label="数据记录">
               <b-input :value="detail.recordJson" type="textarea" :rows="4" disabled></b-input>
+              <b-button type="text" @click="open = true">
+                查看详细
+              </b-button>
             </b-form-item>
 
             <b-form-item label="修复原因">
@@ -42,8 +45,8 @@
           </b-form>
 
           <div flex="main:center">
-            <b-button type="primary" @click="handleSubmit()">同意修复</b-button>
-            <b-button type="primary" plain @click="handleSubmit()">拒绝修复</b-button>
+            <b-button type="primary" @click="handleSubmit('2')">同意修复</b-button>
+            <b-button type="primary" plain @click="handleSubmit('3')">拒绝修复</b-button>
           </div>
         </div>
 
@@ -52,12 +55,20 @@
         </template>
       </v-edit-wrap>
     </page-header-wrap>
+
+    <res-detail-dialog
+      @close="open = false"
+      :open="open"
+      :resourceKey="detail.resourceKey"
+      :resourceName="detail.resourceName"
+      :recordId="detail.recordId">
+    </res-detail-dialog>
   </div>
 </template>
 
 <script>
   import { getRepairApplyDetail, repairApprove } from '../../../../api/credit-service/credit-repair.api'
-
+  import ResDetailDialog from '../../components/ResDetailDialog'
   export default {
     name: 'RepairAuditEdit',
     props: [
@@ -65,16 +76,17 @@
       'id'
     ],
     components: {
-
+      ResDetailDialog
     },
     data () {
       return {
         btnLoading: false,
         loading: false,
         detail: {},
+        open: false,
         form: {
           id: this.id,
-          dealModel: '',
+          dealMode: '',
           approveDesc: ''
         },
         rules: {
@@ -104,11 +116,12 @@
         this.loading = false
       },
       // 提交按钮回调
-      async handleSubmit () {
+      async handleSubmit (dealMode) {
         const valid = await this.$refs.form.validate()
         if (valid) {
           this.btnLoading = true
           try {
+            this.form.dealMode = dealMode
             await repairApprove(this.form)
             this.$message({ type: 'success', content: '操作成功' })
             this.$emit('success')

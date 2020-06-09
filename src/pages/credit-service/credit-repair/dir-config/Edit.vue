@@ -7,18 +7,18 @@
           <b-form :model="form" ref="form" :rules="rules" :label-width="100">
             <b-row>
               <b-col span="12">
-                <b-form-item label="目录名称" prop="resourceName">
+                <b-form-item label="资源名称" prop="resourceName">
                   <div flex>
-                    <b-input v-model="form.resourceName" placeholder="请选择目录" disabled></b-input>
+                    <b-input v-model="form.resourceName" placeholder="请选择资源信息" disabled></b-input>
                     <b-button type="primary" plain style="flex: 0 0 auto;"
                       @click="handleSelectBtn">
-                      选择目录
+                      选择资源
                     </b-button>
                   </div>
                 </b-form-item>
               </b-col>
               <b-col span="12">
-                <b-form-item label="配置类型" prop="configType">
+                <b-form-item label="配置类别" prop="configType">
                   <b-select v-model="form.configType">
                     <b-option v-for="(value, key) in configTypeEnum" :key="key"
                       :value="key">
@@ -28,12 +28,12 @@
                 </b-form-item>
               </b-col>
               <b-col span="12">
-                <b-form-item label="目录表名" prop="tableName">
+                <b-form-item label="资源表名" prop="tableName">
                   <b-input v-model="form.tableName" disabled></b-input>
                 </b-form-item>
               </b-col>
               <b-col span="12">
-                <b-form-item label="资源ID" prop="resourceKey">
+                <b-form-item label="资源标识" prop="resourceKey">
                   <b-input v-model="form.resourceKey" disabled></b-input>
                 </b-form-item>
               </b-col>
