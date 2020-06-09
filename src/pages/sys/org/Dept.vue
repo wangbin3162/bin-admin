@@ -5,7 +5,7 @@
         <!--树结构-->
         <b-tree :data="treeData" slot="tree" @on-select-change="handTreeCurrentChange"></b-tree>
         <!--查询条件-->
-        <v-filter-bar>
+        <v-filter-bar @keyup-enter="handleFilter">
           <v-filter-item title="部门名称">
             <b-input v-model.trim="listQuery.departName" placeholder="请输入" clearable></b-input>
           </v-filter-item>
@@ -75,55 +75,57 @@
       </v-table-wrap>
     </page-header-wrap>
     <page-header-wrap v-show="isEdit" :title="editTitle" show-close @on-close="handleCancel">
-      <v-edit-wrap>
-        <b-form :model="depart" ref="form" :rules="ruleValidate" :label-width="130">
-          <b-form-item label="上级部门">
-            <b-input v-if="currentTreeNode" :value="currentTreeNode.title" readonly></b-input>
-          </b-form-item>
-          <b-row>
-            <b-col span="12">
-              <b-form-item label="部门名称" prop="departName">
-                <b-input v-model="depart.departName" placeholder="请输入部门名称" clearable></b-input>
-              </b-form-item>
-            </b-col>
-            <b-col span="12">
-              <b-form-item label="部门类型" prop="departKind">
-                <b-select v-model="depart.departKind">
-                  <b-option v-for="item in departKindOptions" :key="item.value" :value="item.value">
-                    {{ item.label }}
-                  </b-option>
-                </b-select>
-              </b-form-item>
-            </b-col>
-          </b-row>
-          <b-row>
-            <b-col span="12">
-              <b-form-item label="部门全称" prop="fullName">
-                <b-input v-model="depart.fullName" placeholder="请输入部门全称" clearable></b-input>
-              </b-form-item>
-            </b-col>
-            <b-col span="12">
-              <b-form-item label="统一社会信用代码" prop="unifiedCode">
-                <b-input v-model="depart.unifiedCode" placeholder="请输入统一社会信用代码" clearable></b-input>
-              </b-form-item>
-            </b-col>
-          </b-row>
-          <b-row>
-            <b-col span="12">
-              <b-form-item label="行政区划代码" prop="regionId">
-                <b-input v-model="depart.regionId" placeholder="请输入行政区划代码" clearable></b-input>
-              </b-form-item>
-            </b-col>
-            <b-col span="12">
-              <b-form-item label="排序编号" prop="sortNum">
-                <b-input-number :min="0" v-model="depart.sortNum" style="width: 100%;"></b-input-number>
-              </b-form-item>
-            </b-col>
-          </b-row>
-          <b-form-item label="备注" prop="remark">
-            <b-input v-model="depart.remark" placeholder="请输入备注" type="textarea"></b-input>
-          </b-form-item>
-        </b-form>
+      <v-edit-wrap transparent>
+        <b-collapse-wrap title="基本信息">
+          <b-form :model="depart" ref="form" :rules="ruleValidate" :label-width="130">
+            <b-form-item label="上级部门">
+              <b-input v-if="currentTreeNode" :value="currentTreeNode.title" readonly></b-input>
+            </b-form-item>
+            <b-row>
+              <b-col span="12">
+                <b-form-item label="部门名称" prop="departName">
+                  <b-input v-model="depart.departName" placeholder="请输入部门名称" clearable></b-input>
+                </b-form-item>
+              </b-col>
+              <b-col span="12">
+                <b-form-item label="部门类型" prop="departKind">
+                  <b-select v-model="depart.departKind">
+                    <b-option v-for="item in departKindOptions" :key="item.value" :value="item.value">
+                      {{ item.label }}
+                    </b-option>
+                  </b-select>
+                </b-form-item>
+              </b-col>
+            </b-row>
+            <b-row>
+              <b-col span="12">
+                <b-form-item label="部门全称" prop="fullName">
+                  <b-input v-model="depart.fullName" placeholder="请输入部门全称" clearable></b-input>
+                </b-form-item>
+              </b-col>
+              <b-col span="12">
+                <b-form-item label="统一社会信用代码" prop="unifiedCode">
+                  <b-input v-model="depart.unifiedCode" placeholder="请输入统一社会信用代码" clearable></b-input>
+                </b-form-item>
+              </b-col>
+            </b-row>
+            <b-row>
+              <b-col span="12">
+                <b-form-item label="行政区划代码" prop="regionId">
+                  <b-input v-model="depart.regionId" placeholder="请输入行政区划代码" clearable></b-input>
+                </b-form-item>
+              </b-col>
+              <b-col span="12">
+                <b-form-item label="排序编号" prop="sortNum">
+                  <b-input-number :min="0" v-model="depart.sortNum" style="width: 100%;"></b-input-number>
+                </b-form-item>
+              </b-col>
+            </b-row>
+            <b-form-item label="备注" prop="remark">
+              <b-input v-model="depart.remark" placeholder="请输入备注" type="textarea"></b-input>
+            </b-form-item>
+          </b-form>
+        </b-collapse-wrap>
         <!--保存提交-->
         <template slot="footer">
           <b-button @click="handleCancel">取 消</b-button>
@@ -132,17 +134,19 @@
       </v-edit-wrap>
     </page-header-wrap>
     <page-header-wrap v-show="isCheck" :title="editTitle" show-close @on-close="handleCancel">
-      <v-edit-wrap>
-        <div>
-          <v-key-label label="上级部门" label-width="150px" v-if="currentTreeNode">{{ currentTreeNode.title }}</v-key-label>
-          <v-key-label label="部门名称" label-width="150px">{{ depart.departName }}</v-key-label>
-          <v-key-label label="部门类型" label-width="150px">{{ deptMap[depart.departKind] }}</v-key-label>
-          <v-key-label label="排序编号" label-width="150px">{{ depart.sortNum }}</v-key-label>
-          <v-key-label label="统一社会信用代码" label-width="150px">{{ depart.unifiedCode }}</v-key-label>
-          <v-key-label label="部门全称" label-width="150px">{{ depart.fullName }}</v-key-label>
-          <v-key-label label="行政区划代码" label-width="150px">{{ depart.regionId }}</v-key-label>
-          <v-key-label label="备注" label-width="150px" is-bottom>{{ depart.remark }}</v-key-label>
-        </div>
+      <v-edit-wrap transparent>
+        <b-collapse-wrap title="基本信息">
+          <v-key-label label="上级部门" is-half is-first v-if="currentTreeNode">
+            {{ currentTreeNode.title }}
+          </v-key-label>
+          <v-key-label label="部门名称" is-half>{{ depart.departName }}</v-key-label>
+          <v-key-label label="部门类型" is-half is-first>{{ deptMap[depart.departKind] }}</v-key-label>
+          <v-key-label label="排序编号" is-half>{{ depart.sortNum }}</v-key-label>
+          <v-key-label label="统一社会信用代码">{{ depart.unifiedCode }}</v-key-label>
+          <v-key-label label="部门全称">{{ depart.fullName }}</v-key-label>
+          <v-key-label label="行政区划代码">{{ depart.regionId }}</v-key-label>
+          <v-key-label label="备注" is-bottom>{{ depart.remark }}</v-key-label>
+        </b-collapse-wrap>
         <template slot="footer">
           <b-button @click="handleCancel">返 回</b-button>
         </template>
