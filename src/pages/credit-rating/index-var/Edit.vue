@@ -2,8 +2,7 @@
   <div>
     <page-header-wrap :title="title" show-close @on-close="$emit('close')">
       <v-edit-wrap>
-        <div slot="full">
-          <v-title-bar label="基本信息" class="mb-15"></v-title-bar>
+        <b-collapse-wrap title="基本信息" collapse>
           <b-form :model="form" ref="form" :rules="rules" :label-width="100">
             <b-row>
               <b-col span="12">
@@ -82,12 +81,17 @@
               <b-input v-model="form.varDesc" placeholder="请输入描述" type="textarea" :rows="4"></b-input>
             </b-form-item>
           </b-form>
-          <!-- 一般变量时，选择模板带过来的参数不可改动与删除 -->
-          <!-- 复合变量时，新增的参数不可再选择变量带过来的参数中 -->
-          <edit-param-manage ref="paramManage" :paramTypeOptions="paramTypeOptions"
-            :params="params" :tempVarCodeList="tempVarCodeList"
-            @params-change="params => form.params = params"></edit-param-manage>
-        </div>
+        </b-collapse-wrap>
+
+        <!-- 一般变量时，选择模板带过来的参数不可改动与删除 -->
+        <!-- 复合变量时，新增的参数不可再选择变量带过来的参数中 -->
+        <edit-param-manage ref="paramManage"
+          :paramTypeOptions="paramTypeOptions"
+          :params="params"
+          :tempVarCodeList="tempVarCodeList"
+          @params-change="params => form.params = params">
+        </edit-param-manage>
+
         <template slot="footer">
           <b-button @click="$emit('close')">取 消</b-button>
           <b-button type="primary" @click="handleSubmit" :loading="btnLoading">提 交</b-button>
