@@ -97,7 +97,7 @@
           { title: '申请人', key: 'applyName' },
           { title: '申请部门', key: 'applyDeptName' },
           { title: '申请时间', key: 'applyDate' },
-          { title: '当前状态', slot: 'status' },
+          { title: '状态', slot: 'status' },
           { title: '操作', slot: 'action', width: 120 }
         ]
       }

@@ -10,20 +10,20 @@
                 <tr>
                   <td>主体名称：</td>
                   <td>{{ detail.name }}</td>
-                  <td>主体唯一标识：</td>
+                  <td>主体标识：</td>
                   <td>{{ detail.personId }}</td>
                 </tr>
                 <tr>
                   <td>申请目录：</td>
                   <td>{{ detail.resourceName }}</td>
-                  <td>目录资源ID：</td>
+                  <td>资源标识：</td>
                   <td>{{ detail.resourceKey }}</td>
                 </tr>
                 <tr>
                   <td>数据记录：</td>
                   <td colspan="3">
                     <b-input type="textarea" :value="detail.recordJson" :rows="4" disabled></b-input>
-                    <b-button type="text" @click="open = true">
+                    <b-button type="text" @click="open = true" v-if ="detail.dealMode !='2'">
                       查看详细
                     </b-button>
                   </td>
@@ -44,7 +44,7 @@
                 <tr>
                   <td>申请时间：</td>
                   <td>{{ detail.applyDate }}</td>
-                  <td>数据资源表名：</td>
+                  <td>资源表名：</td>
                   <td>{{ detail.tableName }}</td>
                 </tr>
                 <tr>
@@ -52,7 +52,7 @@
                   <td>{{ statusEnum[detail.status] }}</td>
                 </tr>
                 <tr>
-                  <td>修复申请附件：</td>
+                  <td>流程附件：</td>
                   <td colspan="3">
                     <div v-for="item in detail.attachments" :key="item.id">
                       <attach-dl-btn

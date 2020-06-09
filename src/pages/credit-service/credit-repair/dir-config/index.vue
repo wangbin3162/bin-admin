@@ -4,11 +4,11 @@
       <v-table-wrap>
         <!-- 查询条件 -->
         <v-filter-bar @keydown.enter.native="handleFilter">
-          <v-filter-item title="目录名称">
-            <b-input v-model="listQuery.resourceName" placeholder="请输入目录名称"></b-input>
+          <v-filter-item title="资源名称">
+            <b-input v-model="listQuery.resourceName" placeholder="请输入资源名称"></b-input>
           </v-filter-item>
-           <v-filter-item title="目录表名">
-            <b-input v-model="listQuery.tableName" placeholder="请输入目录表名"></b-input>
+           <v-filter-item title="资源表名">
+            <b-input v-model="listQuery.tableName" placeholder="请输入资源表名"></b-input>
           </v-filter-item>
           <v-filter-item @on-search="handleFilter" @on-reset="resetQuery"></v-filter-item>
         </v-filter-bar>
@@ -73,10 +73,10 @@
         },
         columns: [
           { type: 'index', width: 50, align: 'center' },
-          { title: '目录名称', key: 'resourceName' },
-          { title: '资源ID', key: 'resourceKey' },
-          { title: '目录表名', key: 'tableName' },
-          { title: '配置类型', slot: 'configType' },
+          { title: '资源名称', key: 'resourceName' },
+          { title: '资源标识', key: 'resourceKey' },
+          { title: '资源表名', key: 'tableName' },
+          { title: '配置类别', slot: 'configType' },
           { title: '备注', key: 'bz', ellipsis: true, tooltip: true },
           { title: '操作', slot: 'action', width: 120 }
         ]

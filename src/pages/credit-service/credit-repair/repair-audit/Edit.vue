@@ -42,8 +42,8 @@
           </b-form>
 
           <div flex="main:center">
-            <b-button type="primary" @click="handleSubmit()">同意修复</b-button>
-            <b-button type="primary" plain @click="handleSubmit()">拒绝修复</b-button>
+            <b-button type="primary" @click="handleSubmit('2')">同意修复</b-button>
+            <b-button type="primary" plain @click="handleSubmit('3')">拒绝修复</b-button>
           </div>
         </div>
 
@@ -74,7 +74,7 @@
         detail: {},
         form: {
           id: this.id,
-          dealModel: '',
+          dealMode: '',
           approveDesc: ''
         },
         rules: {
@@ -104,11 +104,12 @@
         this.loading = false
       },
       // 提交按钮回调
-      async handleSubmit () {
+      async handleSubmit (dealMode) {
         const valid = await this.$refs.form.validate()
         if (valid) {
           this.btnLoading = true
           try {
+            this.form.dealMode = dealMode
             await repairApprove(this.form)
             this.$message({ type: 'success', content: '操作成功' })
             this.$emit('success')
