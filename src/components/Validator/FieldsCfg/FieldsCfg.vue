@@ -7,7 +7,7 @@
         </b-tooltip>
       </v-title-bar>
       <!--信息项组件-->
-      <v-drag-items v-model="totalData" no-data-text="暂无信息项" ref="dragItems"
+      <v-drag-items v-model="showData" no-data-text="暂无信息项" ref="dragItems"
                     @on-drop="handleDrag" @on-select="handleSelect"/>
     </div>
     <div class="right-panel">
@@ -60,9 +60,12 @@
                      @on-change="emitValue"
           >
             <b-form-item label="信息项类型" class="bin-form-item-required">
-              <b-select v-model="totalData[currentIndex].required" @on-change="emitValue">
-                <b-option v-for="(value,key) in enumMap.required" :key="key" :value="key">{{ value }}</b-option>
-              </b-select>
+              <b-radio-group v-model="totalData[currentIndex].required" @on-change="emitValue">
+                <b-radio v-for="(value,key) in enumMap.required" :key="key" :label="key">{{ value }}</b-radio>
+              </b-radio-group>
+              <!--              <b-select v-model="totalData[currentIndex].required" @on-change="emitValue">-->
+              <!--                <b-option v-for="(value,key) in enumMap.required" :key="key" :value="key">{{ value }}</b-option>-->
+              <!--              </b-select>-->
             </b-form-item>
           </validator>
           <b-divider/>
@@ -132,6 +135,7 @@
           { title: '标题', key: 'fieldTitle' }
         ],
         totalData: [],
+        personIds: [],
         currentIndex: -1,
         originalRules: null
       }
@@ -164,8 +168,8 @@
             })
             this.originalRules = obj
           }
-          this.totalData = this.formatItems(val)
-
+          this.personIds = val.filter(item => item.fieldName.indexOf('person_id') > -1)
+          this.totalData = this.formatItems(val).filter(item => item.fieldName.indexOf('person_id') === -1)
           if (this.totalData.length > 0 && this.currentIndex === -1) {
             this.currentIndex = 0
           }
@@ -233,6 +237,10 @@
           default:
             return controlType
         }
+      },
+      // 过滤person_id
+      showData() {
+        return this.totalData.filter(item => item.fieldName.indexOf('_id') === -1)
       }
     },
     methods: {
@@ -300,8 +308,8 @@
       },
       // 更新model value
       emitValue() {
-        this.$emit('input', this.totalData)
-        this.$emit('on-change', this.totalData)
+        this.$emit('input', this.totalData.concat(this.personIds))
+        this.$emit('on-change', this.totalData.concat(this.personIds))
       }
     }
   }

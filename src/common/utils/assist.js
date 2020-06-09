@@ -67,8 +67,10 @@ export function isEmpty(data) {
       return data.length === 0
     case 'object':
       return JSON.stringify(data) === '{}'
+    case 'number':
+      return false
     default:
-      // 其余情况转换boolean 返回，主要是 null,undefined,'',0,NaN,false,都表示空
+      // 其余情况转换boolean 返回，主要是 null,undefined,'',,NaN,false,都表示空
       return !data
   }
 }

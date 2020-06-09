@@ -1,7 +1,6 @@
-import { deepCopy, typeOf } from '../../../common/utils/assist'
+import { deepCopy, typeOf, isEmpty, isNotEmpty } from '../../../common/utils/assist'
 import { checkIdCard, verifyOrgNo, verifyRegNo, verifyUnifiedCode, validateDate } from '../../../common/utils/validate'
 import { getDictItems } from '../../../api/data-manage/gather.api'
-import Util from '../../../common/utils/util'
 
 /**
  * 校验枚举值
@@ -76,13 +75,11 @@ export const validatorBuild = {
     return {
       validator: (rule, value, callback) => {
         // 需判断证件类型值，这里要求配置校验规则时区分法人与自然人
-        // 如果是法人类型表，切存在【法定代表人证件类型】字段则类型设置需要比对fddbrzjlx，
-        // 这里也要求设置校验配置时，居民身份证类型需要选择自然人证件类型
-        // let type = obj['fddbrzjlx'] ? obj['fddbrzjlx'] : obj['id_type']
         let preField = obj[opts.preField]// 前置字段当前值
-        let preFieldRule = opts.preField.length > 0 && !(preField && (preField === 'N1' || preField.length === 0))
+        // 判断前置字段不满足情况 字段名为空，字段值为空或者不等于目标值的时候，返回true
+        let preFieldRule = (isNotEmpty(opts.preField) && preField !== 'N1')
         let caseValue = opts.ignoreCase ? String(value).toUpperCase() : value
-        let result = (value.length === 0 || preFieldRule || checkIdCard(caseValue))
+        let result = (isEmpty(value) || preFieldRule || checkIdCard(caseValue))
         if (!result) callback(new Error(opts.message))
         callback()
       },
@@ -97,10 +94,10 @@ export const validatorBuild = {
     return {
       validator: (rule, value, callback) => {
         let preField = obj[opts.preField] // 前置字段当前值
-        let preFieldRule = opts.preField.length > 0 && !(preField && (preField === 'L1' || preField.length === 0))
+        let preFieldRule = isNotEmpty(opts.preField) && preField !== 'L1'
         // 需判是否需要级联判断id_type，统一社会信用代码为L1，工商注册号代码为L2，组织机构代码为L3
         let caseValue = opts.ignoreCase ? String(value).toUpperCase() : value
-        let result = (!value || value.length === 0 || preFieldRule || value === '00000000000000000X' || verifyUnifiedCode(caseValue))
+        let result = (isEmpty(value) || value === '00000000000000000X' || preFieldRule || verifyUnifiedCode(caseValue))
         if (!result) callback(new Error(opts.message))
         // console.log('$unifiedCode', result)
         callback()
@@ -116,10 +113,10 @@ export const validatorBuild = {
     return {
       validator: (rule, value, callback) => {
         let preField = obj[opts.preField] // 前置字段当前值
-        let preFieldRule = opts.preField.length > 0 && !(preField && (preField === 'L2' || preField.length === 0))
+        let preFieldRule = isNotEmpty(opts.preField) && preField !== 'L2'
         // 需判是否需要级联判断id_type，统一社会信用代码为L1，工商注册号代码为L2，组织机构代码为L3
         let caseValue = opts.ignoreCase ? String(value).toUpperCase() : value
-        let result = (!value || value.length === 0 || preFieldRule || verifyRegNo(caseValue))
+        let result = (isEmpty(value) || preFieldRule || verifyRegNo(caseValue))
         if (!result) callback(new Error(opts.message))
         // console.log('$regNo', result)
         callback()
@@ -135,10 +132,10 @@ export const validatorBuild = {
     return {
       validator: (rule, value, callback) => {
         let preField = obj[opts.preField] // 前置字段当前值
-        let preFieldRule = opts.preField.length > 0 && !(preField && (preField === 'L3' || preField.length === 0))
+        let preFieldRule = isNotEmpty(opts.preField) && preField !== 'L3'
         // 需判是否需要级联判断id_type，统一社会信用代码为L1，工商注册号代码为L2，组织机构代码为L3
         let caseValue = opts.ignoreCase ? String(value).toUpperCase() : value
-        let result = (!value || value.length === 0 || preFieldRule || verifyOrgNo(caseValue))
+        let result = (isEmpty(value) || preFieldRule || verifyOrgNo(caseValue))
         if (!result) callback(new Error(opts.message))
         // console.log('$orgInstCode', result)
         callback()
@@ -155,12 +152,10 @@ export const validatorBuild = {
       validator: (rule, value, callback) => {
         let preField = obj[opts.preField]// 前置字段当前值
         let preFieldValue = opts.preFieldValue// 前置字段需要匹配的值
-        if ((preField == null && typeof preFieldValue === 'undefined') || (preField === preFieldValue) ||
-          (preField && (preField.toString() === preFieldValue || (preField.length === 0 && typeof preFieldValue === 'undefined')))
-        ) {
-          if (value.length === 0) {
-            callback(new Error(opts.message))
-          }
+        console.log(preField, preFieldValue)
+        if ((isEmpty(preField) && isEmpty(preFieldValue)) || (preField === preFieldValue) ||
+          (preField.toString() === preFieldValue)) {
+          if (isEmpty(value)) callback(new Error(opts.message))
         }
         callback()
       },
@@ -176,12 +171,9 @@ export const validatorBuild = {
       validator: (rule, value, callback) => {
         let preField = obj[opts.preField]// 前置字段当前值
         let preFieldValue = opts.preFieldValue// 前置字段需要匹配的值
-        if ((preField == null && typeof preFieldValue === 'undefined') || (preField === preFieldValue) ||
-          (preField && (preField.toString() === preFieldValue || (preField.length === 0 && typeof preFieldValue === 'undefined')))
-        ) {
-          if (value.length > 0) {
-            callback(new Error(opts.message))
-          }
+        if ((isEmpty(preField) && isEmpty(preFieldValue)) || (preField === preFieldValue) ||
+          (preField.toString() === preFieldValue)) {
+          if (isNotEmpty(value)) callback(new Error(opts.message))
         }
         callback()
       },
@@ -198,7 +190,7 @@ export const validatorBuild = {
         let preField = obj[opts.preField]// 前置字段当前值
         let preFieldValue = opts.preFieldValue// 前置字段需要匹配的值
         if ((preField === preFieldValue) || (preField && (preField.toString() === preFieldValue))) {
-          if (value === opts.notValue) {
+          if (value === opts.notValue || value.toString() === opts.notValue) {
             callback(new Error(opts.message))
           }
         }
@@ -230,7 +222,7 @@ export const validatorBuild = {
     }
     return {
       validator: (rule, value, callback) => {
-        if (value.length === 0) {
+        if (isEmpty(value)) {
           callback()
           return
         }

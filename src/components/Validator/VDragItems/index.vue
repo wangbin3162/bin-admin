@@ -4,12 +4,14 @@
                v-bind="{ group: 'item', animation: 200, ghostClass:'item-over', handle: '.item-drag' }"
                @end="onDragEnd">
       <div v-for="(item,index) in totalData" :key="index" class="item"
-           :class="[{'ignore':item.status==='ignore'},{'is-textarea':['FILE_UPLOAD', 'TEXTAREA'].indexOf(item.controlType) > -1 }]">
+           :class="[{'ignore':item.status==='ignore'},
+           {'is-textarea':['FILE_UPLOAD', 'TEXTAREA'].indexOf(item.controlType) > -1 }]"
+      >
         <!--自定义拖拽实现-->
-        <!--        <div class="item-inner" @click="handleSelect(index)"-->
-        <!--             :class="{'item-selected':currentIndex===index}"-->
-        <!--             draggable="true" @dragstart="onDrag($event,index)" @drop="onDrop($event,index)"-->
-        <!--             @dragenter="onEnter($event)" @dragleave="onLeave($event)" @dragover="allowDrop($event)">-->
+        <!--<div class="item-inner" @click="handleSelect(index)"-->
+        <!--:class="{'item-selected':currentIndex===index}"-->
+        <!--draggable="true" @dragstart="onDrag($event,index)" @drop="onDrop($event,index)"-->
+        <!--@dragenter="onEnter($event)" @dragleave="onLeave($event)" @dragover="allowDrop($event)">-->
         <div class="item-inner" @click="handleSelect(index)"
              :class="[{'item-selected':currentIndex===index},{'empty-title':item.fieldTitle.length===0}]"
              :title="item.fieldTitle">

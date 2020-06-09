@@ -270,11 +270,12 @@
                 <div class="row-one repeat">
                   <div class="label first">重复字段列表</div>
                   <div class="value">
-                    <div>
+                    <div v-if="this.$isNotEmpty(resource.ext.repeatedLineCfg)">
                       <b-tag v-for="field in resource.ext.repeatedLineCfg.split(',')" :key="field">
                         {{ field }}
                       </b-tag>
                     </div>
+                    <b-empty v-else>暂无重复字段</b-empty>
                   </div>
                 </div>
               </div>
@@ -282,9 +283,10 @@
           </div>
         </b-collapse-wrap>
         <b-collapse-wrap title="关联同步配置" collapse>
-          <div v-if="resource.sync">
+          <div v-if="resource.sync&&resource.sync.length>0">
             <sync-svg :resource-name="resource.resourceName" :data="resource.sync"/>
           </div>
+          <b-empty v-else>暂无关联同步配置</b-empty>
         </b-collapse-wrap>
         <template slot="footer">
           <b-button @click="handleCancel">返 回</b-button>
@@ -606,7 +608,7 @@
         // 格式化items
         this.resource.items = item.fields.map(field => {
           return this.fieldsToInfoItem(field, this.resource.id)
-        }).filter(item => item.fieldName.indexOf('_id') === -1)
+        })
         // 选中后重新触发校验
         this.$refs.form.validateField('tableName')
         this.$refs.form.validateField('personClass')
