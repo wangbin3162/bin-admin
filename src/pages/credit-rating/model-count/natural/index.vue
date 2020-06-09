@@ -27,10 +27,10 @@
 
         <!-- 操作栏 -->
         <v-table-tool-bar>
-          <!-- <b-button type="primary" icon="ios-add-circle-outline"
-            @click="handleReCount">
-            重新计算
-          </b-button> -->
+          <b-button type="primary" icon="ios-add-circle-outline"
+            @click="handleReport">
+            生成报告
+          </b-button>
           <b-button plain type="primary" icon="md-list" @click="handleTempCount">
             模板计算
           </b-button>
@@ -82,8 +82,8 @@
     <detail v-if="isCheck"
       @close="handleCancel"
       :title="editTitle"
-      :id="detail.id"
-      :personId="detail.personId">>
+      :id="curRow.id"
+      :personId="curRow.personId">>
     </detail>
 
     <!-- 重新算分组件 -->
@@ -91,7 +91,10 @@
       @close="openReCount = false"
       @recount-success="handleReCountSuccess"
       :open="openReCount"
-      :personClass="personClass">
+      :optional="optional"
+      :personClass="personClass"
+      :personId="curRow.personId"
+      :personName="curRow.natBaseInfo.name">
     </re-count>
 
     <temp-count
@@ -135,12 +138,15 @@
     },
     data () {
       return {
+        optional: false,
         openReCount: false, // 打开re-count组件
         openTempCount: false, // 打开temp-count组件
         openPDF: false, // 打开p-d-f组件
         pdfBlob: null, // 存储re-count组件返回的pdfBlob
         personClass: 'A01',
-        detail: {}, // 存储行数据
+        curRow: {
+          natBaseInfo: {}
+        }, // 存储行数据
         listQuery: {
           name: '',
           modelId: '',
@@ -184,6 +190,11 @@
           return item.id === val
         }).ratingOptions
       },
+      // 生成报告按钮回调
+      handleReport () {
+        this.optional = true // 组件可选主体
+        this.openReCount = true
+      },
       // 模板计算按钮回调
       handleTempCount () {
         this.openTempCount = true
@@ -200,6 +211,8 @@
       },
       // 信用报告按钮回调
       handleCreditReport (row) {
+        this.optional = false // 组件不可选主体
+        this.curRow = row
         this.openReCount = true
       },
       // re-count组件回调

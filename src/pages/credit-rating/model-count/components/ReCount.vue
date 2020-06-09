@@ -11,7 +11,7 @@
           <b-form-item label="主体名称" prop="personId">
             <div flex>
               <b-input :value="name" disabled placeholder="请选择主体"></b-input>
-              <b-button type="primary" plain style="flex: 0 0 auto;"
+              <b-button type="primary" plain style="flex: 0 0 auto;" :disabled="!optional"
                 @click="handleSelectBtn">
                 选择
               </b-button>
@@ -73,9 +73,21 @@
       open: {
         type: Boolean
       },
+      optional: { // 是否可选主体，默认不可选
+        type: Boolean,
+        default: false
+      },
       personClass: { // 主体类别
         type: String,
         required: true
+      },
+      personId: { // 主体id，optional为false时使用
+        type: String,
+        default: null
+      },
+      personName: { // 主体名称，optional为false时使用
+        type: String,
+        default: null
       }
     },
     components: {
@@ -95,7 +107,7 @@
         },
         rules: {
           personId: [
-            { required: true, message: '请选择主体名称', trigger: 'change' }
+            { required: true, message: '请选择主体名称', trigger: 'blur' }
           ],
           modelId: [
             { required: true, message: '请选择方案名称', trigger: 'change' }
@@ -198,9 +210,15 @@
         }
       },
       init () {
+        if (!this.optional) { // 不可选则设置参数
+          this.form.personId = this.personId
+          this.name = this.personName
+        }
         this.getCreditReportList()
         const defaultModel = this.modelList.find(item => item.sysDefault === '1')
-        this.form.modelId = defaultModel.id
+        if (defaultModel) {
+          this.form.modelId = defaultModel.id
+        }
       }
     }
   }
