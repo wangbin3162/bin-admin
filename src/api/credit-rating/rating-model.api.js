@@ -173,9 +173,9 @@ export async function setStatus(id) {
         }
       })
       if (res.data.successful) {
-        resolve([true])
+        resolve()
       } else {
-        resolve([false, res.data.message])
+        reject(new Error(res.data.message))
       }
     } catch (error) {
       reject(error)
