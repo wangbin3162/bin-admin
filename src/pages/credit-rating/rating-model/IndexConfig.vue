@@ -45,12 +45,12 @@
                     :disabled="listCopy[index].indexType === 'Index'"></b-input>
                 </template>
 
-                <template v-slot:indexType="{ index }">
+                <template v-slot:indexType="{ row, index }">
                   <!-- 已提交的数据不允许修改性质 -->
                   <!-- Boolean(listCopy[index].id) 把id转为Boolean类型，提交过的数据id一定存在，未提交的则不存在 -->
                   <!-- Boolean(listCopy[index].uSelected) 用于新增时，如果已从指标选择组件选择指标，则不允许切换性质 -->
                   <b-select v-model="listCopy[index].indexType" append-to-body
-                    @on-change="handleIndexTypeChange($event, index)"
+                    @on-change="handleIndexTypeChange($event, index, row.level)"
                     :disabled="Boolean(listCopy[index].id)">
                     <b-option v-for="(value, key) in natureEnum" :key="key" :value="key">
                       {{ value }}
@@ -292,7 +292,7 @@
         })
       },
       // 性质下拉框change回调
-      handleIndexTypeChange (indexType, index) {
+      handleIndexTypeChange (indexType, index, level) {
         if (this.curNode.level >= 3) { // 用于更新第四层数据可展开列状态
           this.$nextTick(() => { // 更新展开列状态
             this.enableOrDisableExpanColumn(this.curNode.level + 1)
@@ -309,6 +309,8 @@
         this.listCopy[index].weight = 0
         if (indexType === 'Index') {
           this.listCopy[index].children = []
+          // 选择指标时自动打开选择指标弹框
+          this.handleSelectBtn(level, indexType, index)
         } else {
           this.listCopy[index].calIndexId = null
         }
