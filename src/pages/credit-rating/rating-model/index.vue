@@ -47,6 +47,7 @@
           <template v-slot:modelStatus="{ row }">
             <b-switch true-value="Y" false-value="D"
               :value="row.modelStatus"
+              inactive-color="#ff4949"
               @on-change="handleSwitchChange($event, row.id)"></b-switch>
           </template>
           <!-- 操作栏 -->
