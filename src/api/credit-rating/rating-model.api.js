@@ -42,7 +42,8 @@ export async function getRatingModelList(query) {
         method: 'get',
         params: {
           modelName: query.modelName,
-          bizType: query.bizType,
+          personClass: query.personClass,
+          modelStatus: query.modelStatus,
           size: query.size,
           page: query.page - 1,
           sort: 'createDate,desc'
