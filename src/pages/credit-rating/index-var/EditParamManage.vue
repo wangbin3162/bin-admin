@@ -1,51 +1,50 @@
 <template>
-  <div class="edit-param-manage">
-    <v-table-wrap>
-      <v-title-bar label="参数配置" class="mb-15"></v-title-bar>
-      <b-table :columns="columns" :data="list" size="small">
-        <template v-slot:paraName="{ index }">
-          <b-tooltip :content="list[index].paraNameMsg" max-width="200"
-                     :disabled="!list[index].paraNameError" :always="list[index].paraNameError">
-            <b-input v-model="list[index].paraName" :disabled="list[index].disabled"
-                     :class="{ error: list[index].paraNameError }"
-                     @on-blur="handleValidate(list[index], 'paraName')"></b-input>
-          </b-tooltip>
-        </template>
-        <template v-slot:paraCode="{ index }">
-          <b-tooltip :content="list[index].paraCodeMsg" max-width="200"
-                     :disabled="!list[index].paraCodeError" :always="list[index].paraCodeError">
-            <b-input v-model="list[index].paraCode" :disabled="list[index].disabled"
-                     :class="{ error: list[index].paraCodeError }"
-                     @on-blur="handleValidate(list[index], 'paraCode')"></b-input>
-          </b-tooltip>
-        </template>
-        <template v-slot:paraType="{ index }">
-          <b-tooltip :content="list[index].paraTypeMsg" max-width="200" style="width: 100%;"
-                     :disabled="!list[index].paraTypeError" :always="list[index].paraTypeError">
-            <b-select v-model="list[index].paraType" append-to-body
-                      :class="{ error: list[index].paraTypeError }"
-                      @on-change="handleValidate(list[index], 'paraType')">
-              <b-option v-for="item in paramTypeOptions" :key="item.value"
-                        :value="item.value">{{ item.label }}
-              </b-option>
-            </b-select>
-          </b-tooltip>
-        </template>
-        <template v-slot:paraDesc="{ index }">
-          <b-input v-model="list[index].paraDesc" :disabled="list[index].disabled"></b-input>
-        </template>
-        <template v-slot:orderNo="{ row }">
-          <v-sort-arrow @on-up="sortUp(row.orderNo)" @on-down="sortDn(row.orderNo)"></v-sort-arrow>
-        </template>
-        <template v-slot:action="{ row }">
-          <b-button type="text" :disabled="row.disabled" @click="remove(row.orderNo)">删除</b-button>
-        </template>
-      </b-table>
-      <b-button style="width: 100%; margin-top: 10px;" type="primary" plain
-                @click="add">+ 添加
-      </b-button>
-    </v-table-wrap>
-  </div>
+  <b-collapse-wrap title="参数配置" collapse class="edit-param-manage">
+    <b-table :columns="columns" :data="list" size="small">
+      <template v-slot:paraName="{ index }">
+        <b-tooltip :content="list[index].paraNameMsg" max-width="200"
+                  :disabled="!list[index].paraNameError" :always="list[index].paraNameError">
+          <b-input v-model="list[index].paraName" :disabled="list[index].disabled"
+                  :class="{ error: list[index].paraNameError }"
+                  @on-blur="handleValidate(list[index], 'paraName')"></b-input>
+        </b-tooltip>
+      </template>
+      <template v-slot:paraCode="{ index }">
+        <b-tooltip :content="list[index].paraCodeMsg" max-width="200"
+                  :disabled="!list[index].paraCodeError" :always="list[index].paraCodeError">
+          <b-input v-model="list[index].paraCode" :disabled="list[index].disabled"
+                  :class="{ error: list[index].paraCodeError }"
+                  @on-blur="handleValidate(list[index], 'paraCode')"></b-input>
+        </b-tooltip>
+      </template>
+      <template v-slot:paraType="{ index }">
+        <b-tooltip :content="list[index].paraTypeMsg" max-width="200" style="width: 100%;"
+                  :disabled="!list[index].paraTypeError" :always="list[index].paraTypeError">
+          <b-select v-model="list[index].paraType" append-to-body
+                    :class="{ error: list[index].paraTypeError }"
+                    @on-change="handleValidate(list[index], 'paraType')">
+            <b-option v-for="item in paramTypeOptions" :key="item.value"
+                      :value="item.value">{{ item.label }}
+            </b-option>
+          </b-select>
+        </b-tooltip>
+      </template>
+      <template v-slot:paraDesc="{ index }">
+        <b-input v-model="list[index].paraDesc" :disabled="list[index].disabled"></b-input>
+      </template>
+      <template v-slot:orderNo="{ row }">
+        <v-sort-arrow @on-up="sortUp(row.orderNo)" @on-down="sortDn(row.orderNo)"></v-sort-arrow>
+      </template>
+      <template v-slot:action="{ row }">
+        <b-button type="text" :disabled="row.disabled" @click="remove(row.orderNo)">删除</b-button>
+      </template>
+    </b-table>
+    <b-button
+      style="width: 100%; margin-top: 10px;"
+      type="primary" plain
+      @click="add">+ 添加
+    </b-button>
+  </b-collapse-wrap>
 </template>
 
 <script>

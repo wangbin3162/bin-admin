@@ -9,7 +9,7 @@
           <v-filter-item title="主体类型">
             <!-- <b-cascader :data="subjectType" v-model="listQuery.bizType"
               change-on-select></b-cascader> -->
-            <b-select v-model="listQuery.bizType" clearable>
+            <b-select v-model="listQuery.personClass" clearable>
               <b-option value="A01">自然人</b-option>
               <b-option value="A02">法人和其他组织</b-option>
             </b-select>
@@ -130,7 +130,7 @@
         editData: null, // 待编辑数据
         listQuery: {
           modelName: '',
-          bizType: [],
+          personClass: [],
           modelStatus: ''
         },
         columns: [
