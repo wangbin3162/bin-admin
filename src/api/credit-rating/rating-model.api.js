@@ -251,6 +251,7 @@ export async function getIndexModleTree(query) {
         params: {
           modelId: query.modelId,
           indexId: query.indexId,
+          indexName: query.indexName,
           indexType: query.indexType
         }
       })

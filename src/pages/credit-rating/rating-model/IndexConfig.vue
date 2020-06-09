@@ -146,6 +146,7 @@
         listQuery: {
           modelId: this.modelId,
           indexId: '',
+          indexName: '',
           indexType: 'Index'
         },
         list: [],
@@ -443,6 +444,7 @@
           size: 10,
           modelId: this.modelId,
           indexId: this.curNode.id,
+          indexName: '',
           indexType: 'Index'
         }
         this.searchList()
