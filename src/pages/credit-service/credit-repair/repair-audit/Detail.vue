@@ -78,7 +78,7 @@
                 </tr>
                 <tr>
                   <td>审核结果：</td>
-                  <td>{{ detail.x }}</td>
+                  <td>{{ detail.status=='2'?detail.dealMode =='2'? '同意修复':'拒绝修复':'' }}</td>
                   <td>审核意见：</td>
                   <td>{{ detail.approveDesc }}</td>
                 </tr>
