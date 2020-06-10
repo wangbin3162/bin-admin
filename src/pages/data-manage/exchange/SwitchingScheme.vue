@@ -75,7 +75,7 @@
             </b-col>
             <b-col span="12">
               <b-form-item label="运行周期" prop="cronStr">
-                <run-cycle :cron="scheme.cronStr"   @on-select="handleCronStr"></run-cycle>
+                <run-cycle v-model="scheme.cronStr"></run-cycle>
               </b-form-item>
             </b-col>
           </b-row>
@@ -223,7 +223,7 @@
         ruleValidate: {
           cfgName: [requiredRule],
           flowDirection: [{ required: true, message: '必填项', trigger: 'change' }],
-          cronStr: [requiredRule],
+          cronStr: [{ required: true, message: '必填项', trigger: 'blur,change' }],
           exchangeType: [{ required: true, message: '必填项', trigger: 'change' }],
           transmitKind: [{ required: true, message: '必填项', trigger: 'change' }],
           source: [{ required: true, message: '必填项', trigger: 'change' }],
@@ -291,7 +291,6 @@
       handleModify(row) {
         this.resetScheme()
         this.scheme = { ...this.scheme, ...row }
-        console.log(this.scheme)
         this.openEditPage('modify')
       },
       // 单个启用禁用
@@ -424,6 +423,10 @@
       },
       // 填充cronstr
       handleCronStr(cronStr) {
+        this.scheme.cronStr = cronStr
+      },
+      // 填充cronstr
+      handleCronChange(cronStr) {
         this.scheme.cronStr = cronStr
       },
       /* [数据接口] */
