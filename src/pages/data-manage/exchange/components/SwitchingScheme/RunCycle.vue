@@ -28,6 +28,11 @@
                 秒执行一次
               </b-radio>
             </b-radio-group>
+            <b-radio-group v-model="sec.flag" class="radio-container">
+              <b-radio label="default">
+               每秒
+              </b-radio>
+            </b-radio-group>
             <b-radio-group v-model="sec.flag"  class="radio-container">
               <b-radio label="time">指定时间</b-radio>
             </b-radio-group>
@@ -49,6 +54,11 @@
                   <b-input-number :max="59" :min="0" v-model="min.cycle"></b-input-number>
                 </template>
                 分执行一次
+              </b-radio>
+            </b-radio-group>
+            <b-radio-group v-model="min.flag" class="radio-container">
+              <b-radio label="default">
+                每分
               </b-radio>
             </b-radio-group>
             <b-radio-group v-model="min.flag"  class="radio-container">
@@ -74,6 +84,11 @@
                 时执行一次
               </b-radio>
             </b-radio-group>
+            <b-radio-group v-model="hou.flag" class="radio-container">
+              <b-radio label="default">
+                每小时
+              </b-radio>
+            </b-radio-group>
             <b-radio-group v-model="hou.flag"  class="radio-container">
               <b-radio label="time">指定时间</b-radio>
             </b-radio-group>
@@ -97,6 +112,11 @@
                 日执行一次
               </b-radio>
             </b-radio-group>
+            <b-radio-group v-model="day.flag" class="radio-container">
+              <b-radio label="default">
+                每天
+              </b-radio>
+            </b-radio-group>
             <b-radio-group v-model="day.flag"  class="radio-container">
               <b-radio label="time">指定时间</b-radio>
             </b-radio-group>
@@ -118,6 +138,11 @@
                   <b-input-number :max="59" :min="0" v-model="mon.cycle"></b-input-number>
                 </template>
                 月执行一次
+              </b-radio>
+            </b-radio-group>
+            <b-radio-group v-model="mon.flag" class="radio-container">
+              <b-radio label="default">
+                每月
               </b-radio>
             </b-radio-group>
             <b-radio-group v-model="mon.flag"  class="radio-container">
@@ -192,6 +217,8 @@
               } else {
                   cron += '* '
               }
+          } else if (obj.flag === 'default') {
+              cron += '* '
           } else {
               cron += obj.begin + '/' + obj.cycle + ' '
           }
