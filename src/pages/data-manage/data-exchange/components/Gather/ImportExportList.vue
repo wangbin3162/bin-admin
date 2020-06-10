@@ -5,9 +5,8 @@
         <!--查询条件-->
         <v-filter-bar>
           <v-filter-item title="类型">
-            <b-select v-model="handleType" @on-change="typeChange" >
-              <b-option value="import">导入记录</b-option>
-              <b-option value="export">导出记录</b-option>
+            <b-select v-model="listQuery.jobType" clearable>
+              <b-option v-for="(value,key) in jobTypeMap" :key="key" :value="key">{{ value }}</b-option>
             </b-select>
           </v-filter-item>
           <v-filter-item title="时间">
@@ -16,7 +15,7 @@
                            @on-change="dateChange"></b-date-picker>
           </v-filter-item>
           <v-filter-item title="状态">
-            <b-select v-model="listQuery.status" clearable >
+            <b-select v-model="listQuery.status" clearable>
               <b-option v-for="(value,key) in statusMap" :key="key" :value="key">{{ value }}</b-option>
             </b-select>
           </v-filter-item>
@@ -24,19 +23,24 @@
         </v-filter-bar>
         <!--中央表格-->
         <b-table :columns="columns" :data="list" :loading="listLoading">
+          <template v-slot:jobType="{row}">
+            <b-icon v-if="row.jobType==='EXPORT'" name="ios-log-out" size="22" color="#ff7072"/>
+            <b-icon v-if="row.jobType==='IMPORT'" name="ios-log-in" size="22" color="#74cf47"/>
+            {{ jobTypeMap[row.jobType] }}
+          </template>
           <template v-slot:jobStatus="{row}">
-            <b-tag v-if="row.jobStatus" :type="statusStyleMap[row.jobStatus]" >
+            <b-tag v-if="row.jobStatus" :type="statusStyleMap[row.jobStatus]" no-border dot
+                   :tag-style="{background:'transparent',color:'rgba(0,0,0,.65)'}">
               {{ statusMap[row.jobStatus] }}
             </b-tag>
-            <span v-else>-</span>
           </template>
           <!--操作栏-->
           <template v-slot:action="{row}">
-            <b-button v-if="handleType==='import'" type="text"
-                      @click="handleCheckImport(row.id)">
+            <b-button type="text" @click="handleCheckImport(row.id)">
               查看
             </b-button>
-            <b-button v-else type="text" :disabled="row.jobStatus!=='COMPLETED'"
+            <b-button v-if="jobTypeMap[row.jobType]===jobTypeMap.EXPORT" type="text"
+                      :disabled="row.jobStatus!=='COMPLETED'"
                       @click="handleDownloadExport(row.id)">
               下载
             </b-button>
@@ -48,59 +52,56 @@
       </v-table-wrap>
     </page-header-wrap>
     <page-header-wrap v-show="detailDialog" show-close @on-close="detailDialog=false" title="导入详情">
-      <v-edit-wrap>
-        <div slot="full">
-          <v-title-bar label="文件导入信息" class="mb-20"></v-title-bar>
-          <div class="detail" v-if="importDetail">
+      <v-edit-wrap transparent>
+        <b-collapse-wrap v-if="detail" :title="jobTypeMap[detail.jobType]+'信息'">
+          <div class="detail">
             <b-row>
               <b-col span="24">
-                <v-simple-label label="导入状态">
-                  <b-tag :type="statusStyleMap[importDetail.jobStatus]"
-                         :tag-style="{borderRadius: '30px'}">
-                    {{ statusMap[importDetail.jobStatus] }}
+                <v-simple-label label="状态">
+                  <b-tag :type="statusStyleMap[detail.jobStatus]" :tag-style="{borderRadius: '30px'}">
+                    {{ statusMap[detail.jobStatus] }}
                   </b-tag>
                 </v-simple-label>
               </b-col>
             </b-row>
             <b-row>
               <b-col span="6">
-                <v-simple-label label="创建用户">{{ importDetail.createName }}</v-simple-label>
+                <v-simple-label label="创建用户">{{ detail.createName }}</v-simple-label>
               </b-col>
               <b-col span="6">
-                <v-simple-label label="创建部门">{{ importDetail.createDeptName }}</v-simple-label>
+                <v-simple-label label="创建部门">{{ detail.createDeptName }}</v-simple-label>
               </b-col>
               <b-col span="6">
-                <v-simple-label label="导入时间">{{ importDetail.createDate }}</v-simple-label>
+                <v-simple-label label="导入时间">{{ detail.createDate }}</v-simple-label>
               </b-col>
               <b-col span="6">
-                <v-simple-label label="完成时间">{{ importDetail.finishDate }}</v-simple-label>
+                <v-simple-label label="完成时间">{{ detail.finishDate }}</v-simple-label>
               </b-col>
             </b-row>
             <b-row>
               <b-col span="6">
-                <v-simple-label label="数据总量">{{ importDetail.totalCount }}</v-simple-label>
+                <v-simple-label label="数据总量">{{ detail.totalCount }}</v-simple-label>
               </b-col>
               <b-col span="6">
                 <v-simple-label label="错误数据量">
-                  {{ importDetail.validationCount }}
-                  <b-button type="text" v-if="importDetail.validationCount>0"
-                            @click="handleDownloadImportFile(importDetail.batchInfoId,'error')">下载：错误数据
+                  {{ detail.errorCount }}
+                  <b-button type="text" v-if="detail.errorCount>0" @click="handleDownloadImportFile(detail.id)">
+                    下载：错误数据
                   </b-button>
                 </v-simple-label>
               </b-col>
               <b-col span="6">
-                <v-simple-label label="重复数据量">{{ importDetail.repeatCount }}</v-simple-label>
+                <v-simple-label label="重复数据量">{{ detail.repeatCount }}</v-simple-label>
               </b-col>
               <b-col span="6">
-                <v-simple-label label="入库数据量">{{ importDetail.cachedCount }}</v-simple-label>
+                <v-simple-label label="有效数据量">{{ detail.validCount }}</v-simple-label>
               </b-col>
             </b-row>
           </div>
-          <template v-if="errDataColumns.length>0">
-            <v-title-bar label="导入错误数据信息" class="mb-20"></v-title-bar>
-            <b-table :columns="errDataColumns" :data="errDataRows" size="small"></b-table>
-          </template>
-        </div>
+        </b-collapse-wrap>
+        <b-collapse-wrap title="错误数据信息" v-if="errDataColumns.length>0">
+          <b-table :columns="errDataColumns" :data="errDataRows" size="small"></b-table>
+        </b-collapse-wrap>
         <template slot="footer">
           <b-button @click="detailDialog=false">返 回</b-button>
         </template>
@@ -128,36 +129,7 @@
           endTime: '', // 结束时间
           status: ''
         },
-        statusMap: { COMPLETED: '已完成', STARTED: '正在进行中', FAILED: '失败', REPEATING: '重复性验证' },
-        statusStyleMap: { COMPLETED: 'primary', STARTED: 'warning', FAILED: 'danger', REPEATING: 'warning' },
-        handleType: 'import', // 操作类型，['import','export']
-        importDetail: null, // 文件导入信息详情
-        errDataColumns: [],
-        errDataRows: [] // 导入错误数据信息
-      }
-    },
-    computed: {
-      columns() {
-        if (this.handleType === 'import') {
-          return [
-            {
-              title: '序号',
-              type: 'index',
-              width: 70,
-              align: 'center',
-              indexMethod: (row) => {
-                return this.listQuery.size * (this.listQuery.page - 1) + row._index + 1
-              }
-            },
-            { title: '文件名', key: 'fileName' },
-            { title: '导入时间', key: 'createDate' },
-            { title: '完成时间', key: 'finishDate' },
-            { title: '导入组织', key: 'createDeptName' },
-            { title: '导入状态', slot: 'jobStatus', width: 100, align: 'center' },
-            { title: '操作', slot: 'action', width: 100, align: 'center' }
-          ]
-        }
-        return [
+        columns: [
           {
             title: '序号',
             type: 'index',
@@ -168,15 +140,18 @@
             }
           },
           { title: '任务名称', key: 'jobName' },
+          { title: '类型', slot: 'jobType', align: 'center' },
           { title: '创建时间', key: 'createDate' },
-          { title: '导出组织', key: 'createDeptName' },
-          { title: '导出状态', slot: 'jobStatus', width: 100, align: 'center' },
-          { title: '数据总量', key: 'totalCount', width: 100, align: 'center' },
-          { title: '任务下载', slot: 'action', width: 100, align: 'center' }
-        ]
-      },
-      jobType() {
-        return `${this.handleType.toUpperCase()}`
+          { title: '所属组织', key: 'createDeptName' },
+          { title: '状态', slot: 'jobStatus', width: 150 },
+          { title: '任务下载', slot: 'action', width: 100 }
+        ],
+        statusMap: { COMPLETED: '完成', STARTED: '正在进行中', FAILED: '失败', REPEATING: '重复性验证' },
+        statusStyleMap: { COMPLETED: 'success', STARTED: 'primary', FAILED: 'danger', REPEATING: 'warning' },
+        jobTypeMap: { IMPORT: '导入', EXPORT: '导出' },
+        detail: null, // 文件导入信息详情
+        errDataColumns: [],
+        errDataRows: [] // 导入错误数据信息
       }
     },
     methods: {
@@ -191,11 +166,6 @@
         this.visible = false
         this.$emit('on-close')
       },
-      // 操作类型改变事件
-      typeChange() {
-        this.listQuery.jobType = this.jobType
-        this.handleFilter()
-      },
       // 日期改变事件
       dateChange(date) {
         // 给开始和结束时间设置值
@@ -204,11 +174,10 @@
       },
       // filter-Bar:重置查询条件
       resetQuery() {
-        this.handleType = 'import'
         this.listQuery = {
           page: 1,
           size: 10,
-          jobType: this.jobType,
+          jobType: '',
           beginTime: '', // 开始时间
           endTime: '', // 结束时间
           status: ''
@@ -220,8 +189,7 @@
       // 查询方法
       searchList() {
         this.setListData()
-        let search = this.handleType === 'import' ? api.queryImportRecords : api.queryExportRecords
-        search(this.listQuery, this.resourceKey).then(response => {
+        api.exchangeQueryList(this.listQuery, this.resourceKey).then(response => {
           if (response.status === 200) {
             this.setListData({
               list: response.data.rows,
@@ -232,15 +200,15 @@
       },
       // 查看导入文件详情
       handleCheckImport(id) {
-        this.importDetail = null // 清空数据
+        this.detail = null // 清空数据
         this.errDataColumns = []
         this.errDataRows = []
         api.queryImportDetails(id).then(res => {
           if (res.data.code === '0') {
-            this.importDetail = res.data.data
+            this.detail = res.data.data
             this.detailDialog = true
             // 如果存在错误数据下载则再请求读取错误列表
-            if (this.importDetail.validationCount && this.importDetail.validationCount > 0) {
+            if (this.detail.errorCount && this.detail.errorCount > 0) {
               api.queryErrorExcelInfo(id).then(res => {
                 if (res.data.code === '0') {
                   let { columns, rows } = res.data.data
@@ -264,13 +232,13 @@
         })
         return arr
       },
-      // 下载导入文件 type={error或repeat}
-      handleDownloadImportFile(id, type) {
+      // 下载导入文件
+      handleDownloadImportFile(id) {
         if (!this.downloadImportEvent) {
           this.downloadImportEvent = this.$util.debounce((id) => {
-            api.downloadImport(id, type).then(res => {
+            api.downloadImport(id).then(res => {
               if (res.status === 200) {
-                Util.downloadFile(res.data, `${this.resourceName}-${type}.xlsx`)
+                Util.downloadFile(res.data, `${this.resourceName}-error.xlsx`)
               }
             })
           }, 1000)

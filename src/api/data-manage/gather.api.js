@@ -194,23 +194,11 @@ export function dataImport(resourceKey, uploadFile) {
   return requestPostFormData(url, data)
 }
 
-/* 查看批量导入记录 */
-export function queryImportRecords(query, resourceKey) {
+/* 查看批量导入/导出记录 */
+export function exchangeQueryList(query, resourceKey) {
   let { size, page, jobType, beginTime, endTime, status } = query
   return request({
-    url: '/management/importJob/queryImportRecords',
-    method: 'get',
-    params: {
-      resourceKey, size, page: page - 1, jobType, beginTime, endTime, status
-    }
-  })
-}
-
-/* 查看批量导出记录 */
-export function queryExportRecords(query, resourceKey) {
-  let { size, page, jobType, beginTime, endTime, status } = query
-  return request({
-    url: '/management/exportJob/queryExportRecords',
+    url: '/api/dir/exchange/query/list',
     method: 'get',
     params: {
       resourceKey, size, page: page - 1, jobType, beginTime, endTime, status
@@ -219,23 +207,23 @@ export function queryExportRecords(query, resourceKey) {
 }
 
 /* 查看导入详情 */
-export function queryImportDetails(comDataId) {
+export function queryImportDetails(id) {
   return request({
-    url: '/management/importJob/queryImportDetails',
+    url: '/api/dir/exchange/query/detail',
     method: 'get',
     params: {
-      comDataId
+      id
     }
   })
 }
 
 /* 查看错误报告 */
-export function queryErrorExcelInfo(comDataId) {
+export function queryErrorExcelInfo(id) {
   return request({
-    url: '/management/importJob/queryErrorExcelInfo',
+    url: '/api/dir/exchange/query/import/errorInfo',
     method: 'get',
     params: {
-      comDataId
+      id
     }
   })
 }
@@ -243,7 +231,7 @@ export function queryErrorExcelInfo(comDataId) {
 /* 下载导出文件 */
 export function downloadExport(id) {
   return request({
-    url: '/management/exportJob/downloadExportFile',
+    url: '/api/dir/exchange/query/export/download',
     method: 'get',
     responseType: 'blob',
     params: { id }
@@ -253,7 +241,7 @@ export function downloadExport(id) {
 /* 下载导入文件 */
 export function downloadImport(id, downloadType) {
   return request({
-    url: '/management/importJob/downloadExport',
+    url: '/api/dir/exchange/query/import/errorDownload',
     method: 'get',
     responseType: 'blob',
     params: { id, downloadType }
