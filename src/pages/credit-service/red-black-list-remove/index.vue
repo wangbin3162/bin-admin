@@ -1,0 +1,244 @@
+<template>
+  <div>
+    <page-header-wrap v-show="isNormal">
+      <v-table-wrap style="position: relative;">
+        <b-loading fix show-text="加载中...." v-if="loading"></b-loading>
+        <!-- tree -->
+        <b-tree slot="tree" :data="treeData" @on-select-change="handleSelectChange"></b-tree>
+
+        <div v-if="isEmpty">
+          <b-empty>
+            <span>暂无数据 </span>
+            <b-button type="text" size="small" v-if="treeData.length">去配置</b-button>
+          </b-empty>
+        </div>
+
+        <div v-else>
+          <!-- 查询条件 -->
+          <v-filter-bar @keyup-enter="handleFilter">
+            <v-filter-item title="主体名称">
+              <b-input v-model="listQuery.name" placeholder="请输入主体名称"></b-input>
+            </v-filter-item>
+            <!-- <v-filter-item title="采集部门">
+              <b-input v-model="listQuery.name" placeholder="请输入采集部门"></b-input>
+            </v-filter-item> -->
+            <v-filter-item @on-search="handleFilter" @on-reset="resetQuery"></v-filter-item>
+          </v-filter-bar>
+
+          <v-table-tool-bar>
+            <b-button type="primary">批量解除</b-button>
+            <b-button>模板下载</b-button>
+          </v-table-tool-bar>
+
+          <!-- table -->
+          <b-table :columns="columns" :data="list" :loading="listLoading">
+          </b-table>
+
+          <!-- 分页器 -->
+          <b-page :total="total" show-sizer :current.sync="listQuery.page"
+            @on-change="handleCurrentChange"
+            @on-page-size-change="handleSizeChange"></b-page>
+        </div>
+      </v-table-wrap>
+    </page-header-wrap>
+
+  </div>
+</template>
+
+<script>
+  import commonMixin from '../../../common/mixins/mixin'
+  import permission from '../../../common/mixins/permission'
+  import { oneOf } from 'bin-ui/src/utils/util'
+  import { Decode, MaskCode } from '../../../common/utils/secret'
+  import { getLeftTreeNode, getResourceInfo, getResourceList } from '../../../api/credit-service/red-blcak-list-remove.api'
+
+  export default {
+    name: 'RedBlackListRemove',
+    mixins: [commonMixin, permission],
+    components: {
+
+    },
+    data () {
+      return {
+        loading: false,
+        isEmpty: true,
+        treeData: [],
+        curNode: null, // 当前选中节点
+        listQuery: {
+          name: '',
+          resourceKey: ''
+        },
+        tableName: '',
+        curColumns: [], // 当前resourceKey对应的列
+        showColumns: [] // 展示的列
+      }
+    },
+    computed: {
+      // 当前资源是否是法人
+      isLeg() {
+        return this.tableName.includes('leg_')
+      },
+      columns () {
+        const res = []
+        this.showColumns.forEach(item => {
+          res.push({
+            title: item.fieldTitle, key: item.fieldName.toLowerCase(), tooltip: true
+          })
+        })
+        return res
+      }
+    },
+    async created () {
+      await this.getLeftTreeNode()
+      if (this.curNode.resourceKey) {
+        this.buildTable(this.curNode.resourceKey)
+      }
+    },
+    methods: {
+      // 树节点点击的回调
+      handleSelectChange (nodes, node) {
+        if (this.curNode.resourceKey === node.resourceKey) {
+          node.selected = true
+        } else {
+          // 如果点击的顶层节点为空则 this.isEmpty = true
+          if (node.root && !(node.children && node.children.length)) {
+            this.isEmpty = true
+          } else {
+            this.isEmpty = false
+          }
+          // 不是根节点则发起请求构建table
+          if (!node.root) {
+            this.buildTable(node.resourceKey)
+          }
+        }
+        this.curNode = node
+      },
+      resetQuery () {
+        this.listQuery = {
+          name: '',
+          page: 1,
+          size: 10
+        }
+        this.searchList()
+      },
+      async searchList () {
+        this.listLoading = true
+
+        let keyValues = null
+        let ops = null
+        if (this.listQuery.name) {
+          keyValues = this.isLeg ? { comp_name: this.listQuery.name } : { name: this.listQuery.name }
+          ops = this.isLeg ? { comp_name: 'LIKE' } : { name: 'LIKE' }
+        }
+
+        try {
+          const res = await getResourceList(this.listQuery, keyValues, ops)
+          this.setListData({
+            list: this.decodeAndMaskFormat(res.rows, true),
+            total: res.total
+          })
+        } catch (error) {
+          console.error(error)
+        }
+        this.listLoading = false
+      },
+      // 获取左侧树组件需要的数据并构建
+      async getLeftTreeNode () {
+        this.loading = true
+        try {
+          const res = await getLeftTreeNode()
+          // res.redList = []
+          // res.blackList = []
+          this.treeData = this.buildTree(res)
+        } catch (error) {
+          console.error(error)
+        }
+        this.loading = false
+      },
+      // 构建table列
+      async buildTableColumn (resourceKey) {
+        try {
+          const res = await getResourceInfo(resourceKey)
+          this.tableName = res.tableName
+          // 过滤掉person_id && 选择启用的
+          const columns = res.items.filter(item => item.fieldName.indexOf('_id') === -1 && item.status === 'use')
+          this.curColumns = columns
+          this.showColumns = columns.filter((item, index) => index < 7)
+        } catch (error) {
+          console.error(error)
+        }
+      },
+      // 构建table
+      async buildTable (resourceKey) {
+        try {
+          this.listQuery.resourceKey = resourceKey
+          await this.buildTableColumn(resourceKey)
+          await this.searchList()
+        } catch (error) {
+          console.error(error)
+        }
+      },
+      // 解码并掩码
+      decodeAndMaskFormat(arr, mask = false) {
+        let newArr = []
+        arr.forEach(item => {
+          let tmp = { ...item }
+          this.curColumns.forEach(field => {
+            if (field.isEncrypt === '1') { // 解密
+              tmp[field.fieldName] = Decode(item[field.fieldName])
+            }
+            if (mask && oneOf(field.maskModel, ['ID_CODE', 'MOBILE_PHONE'])) { // 掩码
+              tmp[field.fieldName] = MaskCode(tmp[field.fieldName], field.maskModel)
+            }
+          })
+          newArr.push(tmp)
+        })
+        return newArr
+      },
+      // 构建左侧树组件数据结构
+      buildTree (data) {
+        data.redList.forEach((item, index) => {
+          item.title = item.resourceName
+          if (index === 0) {
+            item.selected = true // 默认选中第一项
+            this.curNode = item // 选中后设置当前节点
+            this.isEmpty = false // 表示不为空
+          }
+        })
+        data.blackList.forEach((item, index) => {
+          item.title = item.resourceName
+          if (!data.redList.length && index === 0) {
+            item.selected = true // redList不存在的话默认选中blackList第一项
+            this.curNode = item // 选中后设置当前节点
+            this.isEmpty = false // 表示不为空
+          }
+        })
+
+        const nodes = [
+          {
+            resourceKey: 'custom-id-red',
+            root: true,
+            title: '红名单',
+            expand: true,
+            selected: !data.redList.length && !data.blackList.length, // redList、blackList都为空的话默认选中
+            children: data.redList
+          },
+          {
+            resourceKey: 'custom-id-black',
+            root: true,
+            title: '黑名单',
+            expand: true,
+            children: data.blackList
+          }
+        ]
+        // 顶层节点都为空的话则选中后设置当前节点
+        if (!data.redList.length && !data.blackList.length) {
+          this.curNode = nodes[0]
+          this.isEmpty = true
+        }
+
+        return nodes
+      }
+    }
+  }
+</script>

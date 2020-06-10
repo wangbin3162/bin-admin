@@ -95,6 +95,14 @@ export default {
           }
         }
       ]
+    },
+    {
+      path: 'redBlackListRemove',
+      name: 'RedBlackListRemove',
+      component: () => import(/* webpackChunkName: "RedBlackListRemove" */ '../../pages/credit-service/red-black-list-remove'),
+      meta: {
+        title: '红黑名单解除'
+      }
     }
   ]
 }
