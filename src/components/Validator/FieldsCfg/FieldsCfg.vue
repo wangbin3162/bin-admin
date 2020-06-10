@@ -7,7 +7,7 @@
         </b-tooltip>
       </v-title-bar>
       <!--信息项组件-->
-      <v-drag-items v-model="showData" no-data-text="暂无信息项" ref="dragItems"
+      <v-drag-items v-model="totalData" no-data-text="暂无信息项" ref="dragItems"
                     @on-drop="handleDrag" @on-select="handleSelect"/>
     </div>
     <div class="right-panel">
@@ -237,10 +237,6 @@
           default:
             return controlType
         }
-      },
-      // 过滤person_id
-      showData() {
-        return this.totalData.filter(item => item.fieldName.indexOf('_id') === -1)
       }
     },
     methods: {
