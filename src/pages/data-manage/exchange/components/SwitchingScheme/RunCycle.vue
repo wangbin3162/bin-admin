@@ -157,7 +157,7 @@
       return {
         toggle: false,
         dialogFormVisible: false,
-        crons: '',
+        cronStr: '',
         activeTab: 'sec',
         tabs: [
             { key: 'sec', title: '秒' },
@@ -174,6 +174,11 @@
       }
     },
     created() {
+    },
+    watch: {
+        cron: function () {
+            this.cronStr = this.cron
+        }
     },
     methods: {
       handleShowModal() {
@@ -193,10 +198,9 @@
           return cron
       },
       saveCron() {
-          this.crons = this.calCron
-          this.$emit('on-select', this.crons)
+          this.cronStr = this.calCron
+          this.$emit('on-select', this.cronStr)
           this.cronClear()
-          this.crons = ''
       },
       cronClear() {
           this.sec = { list: [], flag: 'time', begin: 1, cycle: 2 }
@@ -216,9 +220,6 @@
            cronStr = this.appendCron(this.mon, cronStr)
            cronStr += '?'
          return cronStr
-       },
-       cronStr() {
-           return  this.crons || this.cron
        }
     }
   }
