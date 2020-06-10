@@ -17,7 +17,7 @@
             <div class="inner" style="padding: 50px 40px;">
               <h2>数据可视化</h2>
               <p>Data visualization</p>
-              <a class="check" href>
+              <a class="check" href="/data" target="_blank">
                 <b-icon name="ios-arrow-round-forward"/>
                 查看
               </a>
@@ -96,7 +96,7 @@
     computed: {
       ...mapGetters(['queryData']),
       searchWrapStyle() {
-        return this.showList ? { padding: '50px' } : { padding: '70px 50px 140px' }
+        return this.showList ? { padding: '70px' } : { padding: '90px 50px 140px' }
       },
       searchSize() {
         return this.showList ? 'small' : 'default'
@@ -190,15 +190,20 @@
 <style scoped lang="stylus">
   .main-wrap {
     height: 100%;
-    background: url("../assets/images/banner-bg0.png") no-repeat 0 -635px;
+    background: url("../assets/images/banner-bg0.png") no-repeat 0 0;
     &.mini-wrap {
       background: url("../assets/images/banner-bg.png") no-repeat 0 -370px;
       animation: bg .4s ease-in-out forwards;
+      .search-wrap {
+        height: auto;
+        margin-bottom: 0;
+      }
     }
 
     .search-wrap {
       width: 1300px;
-      margin: 0 auto;
+      margin: 0 auto 32px;
+      height: 383px;
       transition: .3s;
       h2 {
         color: #fff;
