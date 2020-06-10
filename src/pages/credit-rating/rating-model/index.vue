@@ -46,8 +46,9 @@
           </template>
           <template v-slot:modelStatus="{ row }">
             <b-switch true-value="Y" false-value="D"
-              :value="row.modelStatus"
-              @on-change="handleSwitchChange($event, row.id)"></b-switch>
+              v-model="row.modelStatus"
+              inactive-color="#ff4949"
+              @on-change="handleSwitchChange($event, row)"></b-switch>
           </template>
           <!-- 操作栏 -->
           <template v-slot:action="{ row }">
@@ -250,26 +251,20 @@
         this.handleClose()
       },
       // 状态开关的回调
-      async handleSwitchChange (status, id) {
+      async handleSwitchChange (status, row) {
         try {
-          const [success, errorMessage] = await setStatus(id)
-          if (success) {
-            this.$message({
-              type: 'success',
-              content: '操作成功'
-            })
-          } else {
-            this.$notice.danger({
-            title: '操作失败',
-            desc: errorMessage
+          await setStatus(row.id)
+          this.$message({
+            type: 'success',
+            content: '操作成功'
           })
-          }
         } catch (error) {
+          row.modelStatus = 'D'
           this.$notice.danger({
             title: '操作失败',
             desc: error
           })
-          console.log(error)
+          console.error(error)
         }
       },
       // 设为默认的回调
