@@ -60,9 +60,12 @@
                      @on-change="emitValue"
           >
             <b-form-item label="信息项类型" class="bin-form-item-required">
-              <b-select v-model="totalData[currentIndex].required" @on-change="emitValue">
-                <b-option v-for="(value,key) in enumMap.required" :key="key" :value="key">{{ value }}</b-option>
-              </b-select>
+              <b-radio-group v-model="totalData[currentIndex].required" @on-change="emitValue">
+                <b-radio v-for="(value,key) in enumMap.required" :key="key" :label="key">{{ value }}</b-radio>
+              </b-radio-group>
+              <!--              <b-select v-model="totalData[currentIndex].required" @on-change="emitValue">-->
+              <!--                <b-option v-for="(value,key) in enumMap.required" :key="key" :value="key">{{ value }}</b-option>-->
+              <!--              </b-select>-->
             </b-form-item>
           </validator>
           <b-divider/>
@@ -88,8 +91,7 @@
             </b-col>
             <b-col span="8">
               <b-form-item label="是否加密">
-                <b-select v-model="totalData[currentIndex].isEncrypt" clearable @on-change="emitValue"
-                          :disabled="encryptDisabled">
+                <b-select v-model="totalData[currentIndex].isEncrypt" placeholder="" @on-change="emitValue" disabled>
                   <b-option v-for="(value,key) in enumMap.isEncrypt" :key="key" :value="key">{{ value }}</b-option>
                 </b-select>
               </b-form-item>
@@ -133,6 +135,7 @@
           { title: '标题', key: 'fieldTitle' }
         ],
         totalData: [],
+        personIds: [],
         currentIndex: -1,
         originalRules: null
       }
@@ -165,8 +168,8 @@
             })
             this.originalRules = obj
           }
-          this.totalData = this.formatItems(val)
-
+          this.personIds = val.filter(item => item.fieldName.indexOf('person_id') > -1)
+          this.totalData = this.formatItems(val).filter(item => item.fieldName.indexOf('person_id') === -1)
           if (this.totalData.length > 0 && this.currentIndex === -1) {
             this.currentIndex = 0
           }
@@ -179,14 +182,7 @@
       tokenizerDisabled() {
         if (this.currentIndex !== -1) {
           let item = this.totalData[this.currentIndex]
-          return item.dataType !== 'string' || item.validValue.length > 0
-        }
-        return false
-      },
-      // 是否加密禁用条件
-      encryptDisabled() {
-        if (this.currentIndex !== -1) {
-          return this.totalData[this.currentIndex].dataType !== 'string'
+          return item.dataType !== 'string' || (item.validValue && item.validValue.length > 0)
         }
         return false
       },
@@ -251,14 +247,14 @@
           // 如果已经有值
           if (item.tokenizer) {
             // 如果设置了有效值则必须为Y
-            if (item.validValue.length > 0) {
+            if (item.validValue && item.validValue.length > 0) {
               item.tokenizer = 'N'
             }
           } else {
             // 如果类型为字符型
             if (item.dataType === 'string') {
               // 如果有效值存在
-              item.tokenizer = item.validValue.length > 0 ? 'N' : ''
+              item.tokenizer = (item.validValue && item.validValue.length > 0) ? 'N' : ''
             } else {
               item.validValue = '' // 如果类型不是字符型，则有效值必须为空
               item.tokenizer = '' // 是否分词也必须为空
@@ -308,8 +304,8 @@
       },
       // 更新model value
       emitValue() {
-        this.$emit('input', this.totalData)
-        this.$emit('on-change', this.totalData)
+        this.$emit('input', this.totalData.concat(this.personIds))
+        this.$emit('on-change', this.totalData.concat(this.personIds))
       }
     }
   }

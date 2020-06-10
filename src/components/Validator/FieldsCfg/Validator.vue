@@ -2,10 +2,10 @@
   <div class="validator-wrap">
     <div class="mb-10">
       <b-row :gutter="15">
-        <b-col span="8" v-if="$slots.default">
+        <b-col span="10" v-if="$slots.default">
           <slot></slot>
         </b-col>
-        <b-col :span="$slots.default?16:24">
+        <b-col :span="$slots.default?14:24">
           <div style="width: 100%;line-height:32px;" flex="main:justify">
             <span>校验: </span>
             <div>
@@ -266,13 +266,6 @@
             <!--日期区间-->
             <template v-if="rule.name===RULE.timeBound">
               <div class="number">
-                <b-tooltip content="$now/yyyy-MM-dd/preField">
-                  <span class="param-tip">前置字段：</span>
-                </b-tooltip>
-                <b-input @drop.native="onDrop($event,index)" @dragover.native="allowDrop($event)"
-                         v-model.trim="checkRulesArr[index].time" size="mini" @on-change="emitValue"/>
-              </div>
-              <div class="number">
                 <span class="param-tip">比较模式：</span>
                 <b-select v-model="checkRulesArr[index].compareMode" size="mini" @on-change="emitValue">
                   <b-option value="gt">&gt;</b-option>
@@ -280,6 +273,13 @@
                   <b-option value="lt">&lt;</b-option>
                   <b-option value="le">&le;</b-option>
                 </b-select>
+              </div>
+              <div class="number">
+                <b-tooltip content="$now/yyyy-MM-dd/preField">
+                  <span class="param-tip">比较值/字段：</span>
+                </b-tooltip>
+                <b-input @drop.native="onDrop($event,index)" @dragover.native="allowDrop($event)"
+                         v-model.trim="checkRulesArr[index].time" size="mini" @on-change="emitValue"/>
               </div>
               <div class="info">
                 <span class="param-tip">错误提示：</span>

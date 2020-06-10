@@ -26,6 +26,26 @@ export default {
   methods: {
     // 根据元信息字段项转换成信息项对象
     fieldsToInfoItem(field, directoryId) {
+      if (field.fieldName.indexOf('person_id') > -1) {
+        return {
+          directoryId,
+          fieldName: field.fieldName, // 元信息名称（英文）
+          fieldTitle: field.fieldTitle, // 元信息标题
+          dataType: field.dataType, // 数据类型
+          dataLength: field.dataLength, // 数据长度
+          dataPrecision: field.dataPrecision, // 数据精度
+          openType: 'PUBLIC', // 信息项公开类型,默认社会公开
+          controlType: '', // 控件类型
+          fieldDesc: '', // 提示信息
+          validValue: '', // 有效值
+          maskModel: '', // 掩码方式
+          isEncrypt: '', // 是否加密
+          required: '', // 信息项类型，默认核心项
+          status: 'use', // 启用状态，默认启用
+          tokenizer: '', // 是否分词
+          checkRules: '[]'
+        }
+      }
       // 数据类型映射控件类型
       const dateTypeMapCtrl = {
         string: 'TEXT',
@@ -62,7 +82,7 @@ export default {
         fieldDesc: '', // 提示信息
         validValue: '', // 有效值
         maskModel: '', // 掩码方式
-        isEncrypt: '', // 是否加密
+        isEncrypt: field.isEncrypt ? field.isEncrypt : '', // 是否加密
         required: 'Y', // 信息项类型，默认核心项
         status: 'use', // 启用状态，默认启用
         tokenizer: '', // 是否分词
@@ -103,7 +123,7 @@ export default {
       this.rules = {}
       // 额外扩展id和person_id字段
       this.$set(this.form, 'id', '')
-      if (!['leg_base_info', 'nat_base_info', 'leg_id_info', 'nat_id_info'].includes(this.resource.tableName)) {
+      if (this.resource.tableName !== 'nat_base_info') {
         this.$set(this.form, 'person_id', '')
       }
       dynamicForm.forEach(item => {

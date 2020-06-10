@@ -88,7 +88,7 @@ export function isLetterW(str) {
 
 /*  中文、字母、数字、()、（）、/和下划线，且数字不能出现在首位的字符串 */
 export function isTitleNotStartNum(str) {
-  const reg = /^([^0-9])([\u4E00-\u9FA5]|[a-zA-Z0-9_\\/]|[()（）]+|_)*$/
+  const reg = /^([^0-9])([\u4E00-\u9FA5]|[a-zA-Z0-9_\\/\(\)\（\）\、])*$/
   return reg.test(str)
 }
 
