@@ -11,7 +11,7 @@
         <!-- tree -->
         <b-tree :data="treeData" slot="tree" @on-select-change="handTreeCurrentChange"></b-tree>
 
-        <b-row :gutter="15" style="max-height: 600px; overflow: auto;">
+        <b-row :gutter="15">
           <b-col :span="spanLeft">
             <!-- 查询 -->
             <v-filter-bar @keyup-enter="handleFilter">
@@ -23,9 +23,10 @@
               </v-filter-item>
               <v-filter-item @on-search="handleFilter" @on-reset="resetQuery"></v-filter-item>
             </v-filter-bar>
+
             <!-- table -->
             <div>
-              <b-table :columns="columns" :data="list"
+              <b-table ref="table" :columns="columns" :data="list"
                 :loading="listLoading"
                 :highlight-row="paraType === 'I'" size="small"
                 @on-current-change="handleCurrentRowChange">
@@ -43,12 +44,14 @@
                 </template>
               </b-table>
             </div>
+
             <!--下方分页器-->
             <b-page :total="total" size="small"
               :current.sync="listQuery.page"
               @on-change="handleCurrentChange"
               @on-page-size-change="handleSizeChange"></b-page>
           </b-col>
+
           <b-col v-if="!sourceRadioModel" :span="spanRight" class="card-con">
             <b-card head-tip>
               <template v-if="paraType === 'S'">
@@ -423,6 +426,10 @@
               list: response.data.rows,
               total: response.data.total
             })
+            // 默认选中第一行
+            this.$nextTick(() => {
+              this.$refs.table.clickCurrentRow(0)
+            })
           }
         })
       },
@@ -464,7 +471,10 @@
     //   padding: 14px 20px !important;
     // }
     .card-con .bin-card .bin-card__body {
-      padding: 4px;
+      padding-left: 4px;
+      padding-right: 4px;
+      max-height: 430px;
+      overflow: auto;
     }
   }
 </style>
