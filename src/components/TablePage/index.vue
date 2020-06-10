@@ -37,6 +37,9 @@
       },
       title: {
         type: String
+      },
+      categoryType: {
+        type: String
       }
     },
     data() {
@@ -81,7 +84,7 @@
       // 获取列表数据和page数据等基本数据
       fetchData() {
         this.loading = true
-        api.getQueryList(this.listQuery).then(res => {
+        api.getQueryList(this.listQuery, this.categoryType).then(res => {
           // 扩展columns
           this.columns = this.formatColumn(res.data.columns)
           this.list = res.data.rows
@@ -115,7 +118,7 @@
       },
       // 查看详情
       handleCheck(row) {
-        api.getQueryDetail(row.id, this.resourceKey, this.queryData.type).then(res => {
+        api.getQueryDetail(row.id, this.resourceKey, this.queryData.type, this.categoryType).then(res => {
           if (res.data.code === '0') {
             this.detailColumns = res.data.columns
             this.detailObj = res.data.data

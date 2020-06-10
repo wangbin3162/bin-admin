@@ -68,7 +68,7 @@
         <!--分类信息详情-->
         <transition name="fade-scale-move">
           <div class="info-box" v-if="classifyTabs">
-            <div class="classify"><span class="active">标准分类</span><span>大数据分类</span></div>
+            <div class="classify"><span :class="categoryType === 'BASE'? 'active' : '' " @click="chooseCategory('BASE')">标准分类</span><span  :class="categoryType === 'BG'? 'active' : '' "  @click="chooseCategory('BG')">大数据分类</span></div>
             <div class="tabs">
               <div v-for="tab in classifyTabs" :key="tab.id"
                    class="tab" :class="{'active':tab.code===activeCode}"
@@ -175,7 +175,7 @@
                     <title-bar class="mb-15" tip-pos="left" :font-size="18">
                       {{ item.resourceName }}(<span class="f-color-blue">{{ item.amount }}</span>)
                     </title-bar>
-                    <table-page :resource-key="item.resourceKey" :title="item.resourceName"></table-page>
+                    <table-page :resource-key="item.resourceKey" :title="item.resourceName" :categoryType="categoryType"></table-page>
                   </div>
                 </div>
               </transition>
@@ -220,7 +220,13 @@
               return 10 * (this.logPage - 1) + row._index + 1
             }
           },
-          { title: '查询原因', key: 'queryReason', align: 'center' },
+          { title: '查询原因',
+            key: 'queryReason',
+            align: 'center',
+            render: (h, params) => {
+               return h('span', this.reasonMap[params.row.queryReason] || '')
+            }
+          },
           { title: '查询人名称', key: 'createBy', align: 'center' },
           { title: '查询部门', key: 'createDept', align: 'center' },
           { title: '查询日期', key: 'queryDate', align: 'center' }
@@ -245,7 +251,9 @@
         resourcesText: '', // 缓存点击的分类信息名称
         resourcesData: [], // 点击查询资源信息列表数据绑定值
         showResources: false,
-        hideDetail: false
+        hideDetail: false,
+        categoryType: 'BASE', // 大类分为 BASE  BG
+        reasonMap: {}
       }
     },
     computed: {
@@ -285,7 +293,8 @@
       },
       // 当前开启的code值是否是基本信息或者户籍信息
       baseInfoActive() {
-        return this.activeFloatCode === 'C0102' || this.activeFloatCode === 'C0103'
+        return this.activeFloatCode === 'C0102' || this.activeFloatCode === 'C0103' || this.activeFloatCode === 'D0102' ||
+                this.activeFloatCode === 'D0103'
       }
     },
     created() {
@@ -376,25 +385,41 @@
         this.getPnAggsInfo().then(res => {
           this.pnInfo = { ...res }
         })
+        // 3.获取分类
+        this.getClassify()
+        // 4.获取查询原因分类
+        api.queryReason().then(resp => {
+            if (resp.data.code === '0') {
+                this.reasonMap = resp.data.data
+            }
+        })
+      },
+      // 选择分类
+      chooseCategory(type) {
+          this.categoryType = type
+          this.getClassify()
+      },
+      // 获取分类等信息
+      getClassify() {
         // 3.获取统计（聚集）查询接口（大小类）
-        api.getAggs(this.currentDetailId, this.type).then(res => {
-          if (res.data.code === '0') {
-            this.classifyTabs = res.data.data
-            // 扁平化子类别对象
-            this.classifyTabs.forEach(tab => {
-              this.classifyMap[tab.code] = tab.children
-            })
-            // 过滤法人目录中的自然人户籍信息
-            if (this.isLeg) {
-              this.classifyMap['C01'].splice(1, 3)
+        api.getAggs(this.currentDetailId, this.type, this.categoryType).then(res => {
+            if (res.data.code === '0') {
+                this.classifyTabs = res.data.data
+                // 扁平化子类别对象
+                this.classifyTabs.forEach(tab => {
+                    this.classifyMap[tab.code] = tab.children
+                })
+                // 过滤法人目录中的自然人户籍信息
+                if (this.isLeg) {
+                    this.classifyMap['C01'].splice(1, 3)
+                }
+                // 默认选中一个
+                if (this.classifyTabs.length > 0) {
+                    this.activeCode = this.classifyTabs[0].code
+                    // 默认选中第一个有数据的小类
+                    this.handleChooseFirst()
+                }
             }
-            // 默认选中一个
-            if (this.classifyTabs.length > 0) {
-              this.activeCode = this.classifyTabs[0].code
-              // 默认选中第一个有数据的小类
-              this.handleChooseFirst()
-            }
-          }
         })
         // 4.获取资源信息查询日志
         this.getQueryLogs()
@@ -480,7 +505,7 @@
           }
           this.showResources = false
           // 获取不同类别下的资源信息
-          api.getClassifyStat(this.currentDetailId, this.type, this.activeFloatCode)
+          api.getClassifyStat(this.currentDetailId, this.type, this.activeFloatCode, this.categoryType)
             .then(res => {
               if (res.data.code === '0') {
                 this.resourcesData = res.data.data

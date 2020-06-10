@@ -69,12 +69,12 @@ export function getPnStat(personId, type, pnType) {
 /**
  * 获取7大类别tab
  */
-export function getAggs(personId, type) {
+export function getAggs(personId, type, categoryType) {
   return request({
     url: '/api/docs/aggs',
     type: 'get',
     params: {
-      personId, type
+      personId, type, categoryType
     }
   })
 }
@@ -82,12 +82,12 @@ export function getAggs(personId, type) {
 /**
  * 指定类别下的资源信息接口
  */
-export function getClassifyStat(personId, type, classifyCode) {
+export function getClassifyStat(personId, type, classifyCode, categoryType) {
   return request({
     url: '/api/docs/classify/stat',
     type: 'get',
     params: {
-      personId, type, classifyCode
+      personId, type, classifyCode, categoryType
     }
   })
 }
@@ -95,7 +95,7 @@ export function getClassifyStat(personId, type, classifyCode) {
 /**
  * 获取资源信息列表
  */
-export function getQueryList(listQuery) {
+export function getQueryList(listQuery, categoryType) {
   return request({
     url: '/api/docs/query/list',
     type: 'get',
@@ -104,7 +104,8 @@ export function getQueryList(listQuery) {
       resourceKey: listQuery.resourceKey,
       type: listQuery.type,
       page: listQuery.page - 1,
-      size: listQuery.size
+      size: listQuery.size,
+      categoryType: categoryType
     }
   })
 }
@@ -112,12 +113,12 @@ export function getQueryList(listQuery) {
 /**
  * 获取资源信息列表详情
  */
-export function getQueryDetail(id, resourceKey, type) {
+export function getQueryDetail(id, resourceKey, type, categoryType) {
   return request({
     url: '/api/docs/query/detail',
     type: 'get',
     params: {
-      id, resourceKey, type
+      id, resourceKey, type, categoryType
     }
   })
 }
