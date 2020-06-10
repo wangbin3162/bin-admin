@@ -59,7 +59,7 @@
                 <span class="btn red mr-10" @click="handleClickAggs(ENUM.Positive)">正面信息 ({{ pnInfo.p }})</span>
                 <span class="btn black" @click="handleClickAggs(ENUM.Negative)">负面信息 ({{ pnInfo.n }})</span>
               </div>
-              <a href="#" class="download">
+              <a href="#" class="download" @click="handleDownloadExport()">
                 下载信用报告
               </a>
             </div>
@@ -68,7 +68,9 @@
         <!--分类信息详情-->
         <transition name="fade-scale-move">
           <div class="info-box" v-if="classifyTabs">
-            <div class="classify"><span :class="categoryType === 'BASE'? 'active' : '' " @click="chooseCategory('BASE')">标准分类</span><span  :class="categoryType === 'BG'? 'active' : '' "  @click="chooseCategory('BG')">大数据分类</span></div>
+            <div class="classify"><span :class="categoryType === 'BASE'? 'active' : '' "
+                                        @click="chooseCategory('BASE')">标准分类</span><span
+              :class="categoryType === 'BG'? 'active' : '' " @click="chooseCategory('BG')">大数据分类</span></div>
             <div class="tabs">
               <div v-for="tab in classifyTabs" :key="tab.id"
                    class="tab" :class="{'active':tab.code===activeCode}"
@@ -175,7 +177,8 @@
                     <title-bar class="mb-15" tip-pos="left" :font-size="18">
                       {{ item.resourceName }}(<span class="f-color-blue">{{ item.amount }}</span>)
                     </title-bar>
-                    <table-page :resource-key="item.resourceKey" :title="item.resourceName" :categoryType="categoryType"></table-page>
+                    <table-page :resource-key="item.resourceKey" :title="item.resourceName"
+                                :categoryType="categoryType"></table-page>
                   </div>
                 </div>
               </transition>
@@ -198,6 +201,7 @@
   import DetailPn from './DetailPn'
   import Keywords from '../components/Keywords/index'
   import TablePage from '../components/TablePage/index'
+  import Util from '../common/utils/util'
 
   export default {
     name: 'Detail',
@@ -220,11 +224,12 @@
               return 10 * (this.logPage - 1) + row._index + 1
             }
           },
-          { title: '查询原因',
+          {
+            title: '查询原因',
             key: 'queryReason',
             align: 'center',
             render: (h, params) => {
-               return h('span', this.reasonMap[params.row.queryReason] || '')
+              return h('span', this.reasonMap[params.row.queryReason] || '')
             }
           },
           { title: '查询人名称', key: 'createBy', align: 'center' },
@@ -294,7 +299,7 @@
       // 当前开启的code值是否是基本信息或者户籍信息
       baseInfoActive() {
         return this.activeFloatCode === 'C0102' || this.activeFloatCode === 'C0103' || this.activeFloatCode === 'D0102' ||
-                this.activeFloatCode === 'D0103'
+          this.activeFloatCode === 'D0103'
       }
     },
     created() {
@@ -338,6 +343,22 @@
       }
     },
     methods: {
+      // 下载导出文件
+      handleDownloadExport() {
+        if (!this.current) {
+          return
+        }
+        let id = this.current.id
+        let name = this.current.comp_name || this.current.name
+        if (!this.downloadEvent) { // 点击下载事件，需要函数防抖动
+          this.downloadEvent = this.$util.debounce((id, name) => {
+            api.downloadPdf(id).then(res => {
+              Util.downloadFile(res.data, `${name}-信用报告.pdf`)
+            })
+          }, 1000)
+        }
+        this.downloadEvent(id, name)
+      },
       handleCloseDetailPn() {
         this.hideDetail = false
         window.scrollTo(0, 0)
@@ -389,37 +410,37 @@
         this.getClassify()
         // 4.获取查询原因分类
         api.queryReason().then(resp => {
-            if (resp.data.code === '0') {
-                this.reasonMap = resp.data.data
-            }
+          if (resp.data.code === '0') {
+            this.reasonMap = resp.data.data
+          }
         })
       },
       // 选择分类
       chooseCategory(type) {
-          this.categoryType = type
-          this.getClassify()
+        this.categoryType = type
+        this.getClassify()
       },
       // 获取分类等信息
       getClassify() {
         // 3.获取统计（聚集）查询接口（大小类）
         api.getAggs(this.currentDetailId, this.type, this.categoryType).then(res => {
-            if (res.data.code === '0') {
-                this.classifyTabs = res.data.data
-                // 扁平化子类别对象
-                this.classifyTabs.forEach(tab => {
-                    this.classifyMap[tab.code] = tab.children
-                })
-                // 过滤法人目录中的自然人户籍信息
-                if (this.isLeg) {
-                    this.classifyMap['C01'].splice(1, 3)
-                }
-                // 默认选中一个
-                if (this.classifyTabs.length > 0) {
-                    this.activeCode = this.classifyTabs[0].code
-                    // 默认选中第一个有数据的小类
-                    this.handleChooseFirst()
-                }
+          if (res.data.code === '0') {
+            this.classifyTabs = res.data.data
+            // 扁平化子类别对象
+            this.classifyTabs.forEach(tab => {
+              this.classifyMap[tab.code] = tab.children
+            })
+            // 过滤法人目录中的自然人户籍信息
+            if (this.isLeg) {
+              this.classifyMap['C01'].splice(1, 3)
             }
+            // 默认选中一个
+            if (this.classifyTabs.length > 0) {
+              this.activeCode = this.classifyTabs[0].code
+              // 默认选中第一个有数据的小类
+              this.handleChooseFirst()
+            }
+          }
         })
         // 4.获取资源信息查询日志
         this.getQueryLogs()

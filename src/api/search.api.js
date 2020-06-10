@@ -7,7 +7,7 @@ import request from './request'
 export function queryReason() {
   return request({
     url: '/api/docs/queryByGroupCode?groupCode=queryReason',
-    type: 'get'
+    method: 'get'
   })
 }
 
@@ -17,7 +17,7 @@ export function queryReason() {
 export function getSearchList(listQuery) {
   return request({
     url: '/api/docs/search',
-    type: 'get',
+    method: 'get',
     params: {
       q: listQuery.q,
       type: listQuery.type,
@@ -33,7 +33,7 @@ export function getSearchList(listQuery) {
 export function getDetail(id, type, reason) {
   return request({
     url: '/api/docs/detail',
-    type: 'get',
+    method: 'get',
     params: {
       id, type, reason
     }
@@ -46,7 +46,7 @@ export function getDetail(id, type, reason) {
 export function getPnAggs(personId, type) {
   return request({
     url: '/api/docs/pn/aggs',
-    type: 'get',
+    method: 'get',
     params: {
       personId, type
     }
@@ -59,7 +59,7 @@ export function getPnAggs(personId, type) {
 export function getPnStat(personId, type, pnType) {
   return request({
     url: '/api/docs/pn/stat',
-    type: 'get',
+    method: 'get',
     params: {
       personId, type, pnType
     }
@@ -72,7 +72,7 @@ export function getPnStat(personId, type, pnType) {
 export function getAggs(personId, type, categoryType) {
   return request({
     url: '/api/docs/aggs',
-    type: 'get',
+    method: 'get',
     params: {
       personId, type, categoryType
     }
@@ -85,7 +85,7 @@ export function getAggs(personId, type, categoryType) {
 export function getClassifyStat(personId, type, classifyCode, categoryType) {
   return request({
     url: '/api/docs/classify/stat',
-    type: 'get',
+    method: 'get',
     params: {
       personId, type, classifyCode, categoryType
     }
@@ -98,7 +98,7 @@ export function getClassifyStat(personId, type, classifyCode, categoryType) {
 export function getQueryList(listQuery, categoryType) {
   return request({
     url: '/api/docs/query/list',
-    type: 'get',
+    method: 'get',
     params: {
       personId: listQuery.personId,
       resourceKey: listQuery.resourceKey,
@@ -116,7 +116,7 @@ export function getQueryList(listQuery, categoryType) {
 export function getQueryDetail(id, resourceKey, type, categoryType) {
   return request({
     url: '/api/docs/query/detail',
-    type: 'get',
+    method: 'get',
     params: {
       id, resourceKey, type, categoryType
     }
@@ -129,7 +129,7 @@ export function getQueryDetail(id, resourceKey, type, categoryType) {
 export function getCompList(fddbr, type) {
   return request({
     url: '/api/docs/compList',
-    type: 'get',
+    method: 'get',
     params: {
       fddbr, type
     }
@@ -142,7 +142,7 @@ export function getCompList(fddbr, type) {
 export function getStockRightStat(personId) {
   return request({
     url: '/api/docs/stockRightStat',
-    type: 'get',
+    method: 'get',
     params: {
       personId
     }
@@ -155,11 +155,25 @@ export function getStockRightStat(personId) {
 export function getQueryLogs(personId, page) {
   return request({
     url: '/api/docs/query/log',
-    type: 'get',
+    method: 'get',
     params: {
       personId,
       page: page - 1,
       size: 5
+    }
+  })
+}
+
+/**
+ * 下载信用报告
+ */
+export function downloadPdf(personId) {
+  return request({
+    url: '/api/eval/pdf/create',
+    method: 'post',
+    responseType: 'blob',
+    data: {
+      personId
     }
   })
 }
