@@ -87,3 +87,55 @@ export async function getResourceList(query, keyValues, ops) {
     }
   })
 }
+
+/**
+ * @author haodongdong
+ * @description 根据resourceKey下载模板
+ * @returns Promise
+ */
+export async function downloadTemplate(resourceKey) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/api/dir/gather/download/template',
+        method: 'get',
+        responseType: 'blob',
+        params: { resourceKey }
+      })
+      resolve(res.data)
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
+ * @description 根据resourceKey批量移除
+ * @returns Promise
+ */
+export async function batchRemove(params) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const data = new FormData()
+      data.append('resourceKey', params.resourceKey)
+      data.append('uploadFile', params.uploadFile)
+
+      const res = await request({
+        url: '/api/service/batchRelieve/startRelieve',
+        method: 'post',
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        },
+        data
+      })
+      if (res.data.successful) {
+        resolve()
+      } else {
+        reject(res.data.message)
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}

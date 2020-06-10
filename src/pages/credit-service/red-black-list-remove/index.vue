@@ -26,8 +26,10 @@
           </v-filter-bar>
 
           <v-table-tool-bar>
-            <b-button type="primary">批量解除</b-button>
-            <b-button>模板下载</b-button>
+            <batch-remove-btn :resourceKey="listQuery.resourceKey" @success="searchList">
+              批量解除
+            </batch-remove-btn>
+            <b-button :disabled="btnDisabled" @click="handleDownloadTemplate">模板下载</b-button>
           </v-table-tool-bar>
 
           <!-- table -->
@@ -49,17 +51,23 @@
   import commonMixin from '../../../common/mixins/mixin'
   import permission from '../../../common/mixins/permission'
   import { oneOf } from 'bin-ui/src/utils/util'
+  import Util from '../../../common/utils/util'
   import { Decode, MaskCode } from '../../../common/utils/secret'
-  import { getLeftTreeNode, getResourceInfo, getResourceList } from '../../../api/credit-service/red-blcak-list-remove.api'
+  import {
+    getLeftTreeNode, getResourceInfo,
+    getResourceList, downloadTemplate
+  } from '../../../api/credit-service/red-blcak-list-remove.api'
+  import BatchRemoveBtn from '../components/BatchRemoveBtn'
 
   export default {
     name: 'RedBlackListRemove',
     mixins: [commonMixin, permission],
     components: {
-
+      BatchRemoveBtn
     },
     data () {
       return {
+        btnDisabled: false,
         loading: false,
         isEmpty: true,
         treeData: [],
@@ -69,6 +77,7 @@
           resourceKey: ''
         },
         tableName: '',
+        resourceName: '',
         curColumns: [], // 当前resourceKey对应的列
         showColumns: [] // 展示的列
       }
@@ -121,6 +130,17 @@
         }
         this.searchList()
       },
+      // 模板下载按钮回调
+      async handleDownloadTemplate() {
+        try {
+          this.btnDisabled = true
+          const res = await downloadTemplate(this.listQuery.resourceKey)
+          Util.downloadFile(res, `${this.resourceName}.xlsx`)
+        } catch (error) {
+          console.error(error)
+        }
+        this.btnDisabled = false
+      },
       async searchList () {
         this.listLoading = true
 
@@ -138,6 +158,7 @@
             total: res.total
           })
         } catch (error) {
+          this.list = []
           console.error(error)
         }
         this.listLoading = false
@@ -160,6 +181,7 @@
         try {
           const res = await getResourceInfo(resourceKey)
           this.tableName = res.tableName
+          this.resourceName = res.resourceName
           // 过滤掉person_id && 选择启用的
           const columns = res.items.filter(item => item.fieldName.indexOf('_id') === -1 && item.status === 'use')
           this.curColumns = columns
