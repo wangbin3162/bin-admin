@@ -42,7 +42,7 @@
 <script>
   import commonMixin from '../../../../common/mixins/mixin'
   import permission from '../../../../common/mixins/permission'
-  import * as api from '../../../../api/data-analyze/da-business-temp.api'
+  import * as api from '../../../../api/analyze-engine/da-business-temp.api'
   import { deepCopy } from '../../../../common/utils/assist'
 
   export default {

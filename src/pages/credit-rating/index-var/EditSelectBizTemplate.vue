@@ -46,7 +46,7 @@
 <script>
   import commonMixin from '../../../common/mixins/mixin'
   import permission from '../../../common/mixins/permission'
-  import { getTemplateTree, getBusinessTemplateList } from '../../../api/data-analyze/da-business-temp.api.js'
+  import { getTemplateTree, getBusinessTemplateList } from '../../../api/analyze-engine/da-business-temp.api.js'
 
   export default {
     name: 'IndexVarEditSelectBizTemplate',

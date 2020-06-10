@@ -37,7 +37,7 @@
 <script>
   import commonMixin from '../../../../common/mixins/mixin'
   import permission from '../../../../common/mixins/permission'
-  import * as api from '../../../../api/data-analyze/da-inner-temp.api.js'
+  import * as api from '../../../../api/analyze-engine/da-inner-temp.api.js'
 
   export default {
     name: 'InnerTempChoose',

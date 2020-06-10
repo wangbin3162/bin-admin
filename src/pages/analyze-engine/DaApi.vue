@@ -94,11 +94,11 @@
 <script>
   import commonMixin from '../../common/mixins/mixin'
   import permission from '../../common/mixins/permission'
-  import * as api from '../../api/data-analyze/da-api.api'
+  import * as api from '../../api/analyze-engine/da-api.api'
   import { requiredRule } from '../../common/utils/validate'
   import { DaApiFields } from './components/DaApi'
   import TemplateChoose from './components/DaApi/TemplateChoose'
-  import { getInnerTempDetail } from '../../api/data-analyze/da-inner-temp.api'
+  import { getInnerTempDetail } from '../../api/analyze-engine/da-inner-temp.api'
 
   export default {
     name: 'DaTheme',

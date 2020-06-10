@@ -18,7 +18,7 @@
 <script>
   import commonMixin from '../../../../common/mixins/mixin'
   import permission from '../../../../common/mixins/permission'
-  import { getApiList } from '../../../../api/data-analyze/da-api.api'
+  import { getApiList } from '../../../../api/analyze-engine/da-api.api'
 
   export default {
     name: 'ApiChoose',

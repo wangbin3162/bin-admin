@@ -130,21 +130,13 @@
           status: ''
         },
         columns: [
-          {
-            title: '序号',
-            type: 'index',
-            width: 70,
-            align: 'center',
-            indexMethod: (row) => {
-              return this.listQuery.size * (this.listQuery.page - 1) + row._index + 1
-            }
-          },
+          { type: 'index', width: 70, align: 'center' },
           { title: '任务名称', key: 'jobName' },
           { title: '类型', slot: 'jobType', align: 'center' },
           { title: '创建时间', key: 'createDate' },
           { title: '所属组织', key: 'createDeptName' },
           { title: '状态', slot: 'jobStatus', width: 150 },
-          { title: '任务下载', slot: 'action', width: 100 }
+          { title: '操作', slot: 'action', width: 100 }
         ],
         statusMap: { COMPLETED: '完成', STARTED: '正在进行中', FAILED: '失败', REPEATING: '重复性验证' },
         statusStyleMap: { COMPLETED: 'success', STARTED: 'primary', FAILED: 'danger', REPEATING: 'warning' },
