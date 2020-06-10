@@ -6,12 +6,12 @@
         <div class="links">
           <div class="inner">
             <span class="item"><a href="" @click.stop.prevent="home">首页</a></span>
-            <span class="item"><a href="/dir/" target="_blank">数据治理</a></span>
+            <span class="item"><a href="/dir/#/dataManage/res/resInfo" target="_blank">数据治理</a></span>
             <span class="item"><a href="">大数据分析</a></span>
             <span class="item"><a href="">联合奖惩</a></span>
             <span class="item"><a href="">信用监管</a></span>
-            <span class="item"><a href="">信用评级</a></span>
-            <span class="item"><a href="">系统管理</a></span>
+            <span class="item"><a href="/dir/#/creditRating/ratingModel" target="_blank">信用评级</a></span>
+            <span class="item"><a href="/dir/#/sys/org/dept" target="_blank">系统管理</a></span>
           </div>
         </div>
         <div class="search-btn" v-if="showSearch" @click="changeDisplay(true)">
@@ -140,7 +140,7 @@
         align-items: center;
         top: 0;
         right: 0;
-        width: 880px;
+        width: 920px;
         height: 100%;
         background-color: #0f80e9; /* 不支持线性的时候显示 */
         background-image: linear-gradient(to right, #0f80e9, #0e89ea);

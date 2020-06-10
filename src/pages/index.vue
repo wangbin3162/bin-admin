@@ -24,11 +24,11 @@
             </div>
           </div>
           <div>
-            <div class="small-card analysis">
+            <div class="small-card analysis" @click="goTo('/dir/#/dataManage/dataExchange/gather')">
               <img src="../assets/images/analysis.png" alt="">
               <h2>我的采集</h2>
             </div>
-            <div class="small-card collection">
+            <div class="small-card collection" @click="goTo('/dir/#/dataManage/dataExchange/collectAnalysis')">
               <img src="../assets/images/collection.png" alt="">
               <h2>归集分析</h2>
             </div>
@@ -40,7 +40,7 @@
             <div class="inner">
               <h2>信用服务</h2>
               <p>Credit Service</p>
-              <a class="check" href>
+              <a class="check" href="/dir/#/creditService/creditDiff/diffApp" target="_blank">
                 <b-icon name="ios-arrow-round-forward"/>
                 查看
               </a>
@@ -51,7 +51,7 @@
             <div class="inner">
               <h2>交换监控</h2>
               <p>Exchange Monitor</p>
-              <a class="check" href>
+              <a class="check" href="/dir/#/dataManage/dataExchange/exchangeMonitor" target="_blank">
                 <b-icon name="ios-arrow-round-forward"/>
                 查看
               </a>
@@ -178,6 +178,10 @@
           this.showList = true
           this.loading = false
         })
+      },
+      // 跳转对应连接
+      goTo(url) {
+        this.$open(url, true)
       }
     }
   }
@@ -255,6 +259,7 @@
         }
       }
       .small-card {
+        cursor: pointer;
         width: 350px;
         height: 132px;
         display: flex;
