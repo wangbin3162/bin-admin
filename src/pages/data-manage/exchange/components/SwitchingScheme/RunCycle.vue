@@ -2,7 +2,7 @@
   <!--节点选择 for switching-scheme -->
   <div style="width: 100%;">
     <div flex>
-      <b-input :value="cronStr" placeholder="请输入运行周期"    clearable  flex-box="1"></b-input>
+      <b-input v-model="cronStr" placeholder="请输入运行周期"    clearable  flex-box="1"></b-input>
       <div >
         <b-button type="primary" @click="handleShowModal">
           选择
@@ -157,7 +157,7 @@
       return {
         toggle: false,
         dialogFormVisible: false,
-        cronStr: this.cron,
+        crons: '',
         activeTab: 'sec',
         tabs: [
             { key: 'sec', title: '秒' },
@@ -193,9 +193,10 @@
           return cron
       },
       saveCron() {
-          this.cronStr = this.calCron
-          this.$emit('on-select', this.cronStr)
+          this.crons = this.calCron
+          this.$emit('on-select', this.crons)
           this.cronClear()
+          this.crons = ''
       },
       cronClear() {
           this.sec = { list: [], flag: 'time', begin: 1, cycle: 2 }
@@ -215,6 +216,9 @@
            cronStr = this.appendCron(this.mon, cronStr)
            cronStr += '?'
          return cronStr
+       },
+       cronStr() {
+           return  this.crons || this.cron
        }
     }
   }

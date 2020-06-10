@@ -75,7 +75,7 @@
             </b-col>
             <b-col span="12">
               <b-form-item label="运行周期" prop="cronStr">
-                <run-cycle :cron="scheme.cronStr"  @on-select="handleCronStr"></run-cycle>
+                <run-cycle :cron="scheme.cronStr"   @on-select="handleCronStr"></run-cycle>
               </b-form-item>
             </b-col>
           </b-row>
@@ -291,6 +291,7 @@
       handleModify(row) {
         this.resetScheme()
         this.scheme = { ...this.scheme, ...row }
+        console.log(this.scheme)
         this.openEditPage('modify')
       },
       // 单个启用禁用
