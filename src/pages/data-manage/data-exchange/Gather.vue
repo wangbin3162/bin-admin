@@ -28,8 +28,7 @@
                   <svg-icon icon-class="check-data" style="width: 20px;height:20px;"/>
                 </span>
               </div>
-              <div class="status-icon" :class="{'active':res.gatherStatus}"
-                   :title="res.gatherStatus?'数据已填报':'您还未填报数据'">
+              <div class="status-icon" :class="{'active':res.gatherStatus}" :title="res.tip||''">
                 <svg-icon icon-class="dengpao" class="icon"/>
               </div>
             </div>

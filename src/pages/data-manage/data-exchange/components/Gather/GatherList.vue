@@ -4,7 +4,7 @@
                       show-close @on-close="handleClose">
       <v-table-wrap>
         <!--查询条件-->
-        <v-filter-bar>
+        <v-filter-bar @keyup-enter="handleFilter">
           <v-filter-item title="名称">
             <b-input v-model.trim="listQuery.name" placeholder="名称" clearable></b-input>
           </v-filter-item>
