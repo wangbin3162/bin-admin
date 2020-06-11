@@ -9,7 +9,9 @@
         <div v-if="isEmpty">
           <b-empty>
             <span>暂无数据 </span>
-            <b-button type="text" size="small" v-if="treeData.length">去配置</b-button>
+            <b-button type="text" size="small" v-if="treeData.length" @click="handleConfigBtn">
+              去配置
+            </b-button>
           </b-empty>
         </div>
 
@@ -148,6 +150,10 @@
           size: 10
         }
         this.searchList()
+      },
+      // 去配置按钮回调
+      handleConfigBtn () {
+        window.open('/#/sys/setting/dict')
       },
       // 模板下载按钮回调
       async handleDownloadTemplate() {
