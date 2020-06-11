@@ -51,11 +51,17 @@
             {{ personClassEnum[row.personClass] }}
           </template>
 
+          <template v-slot:sysDefault="{ row }">
+            {{ defaultEnum[row.sysDefault] }}
+          </template>
+
           <template v-slot:reportDefault="{ row }">
-            <b-switch :value="row.reportDefault" size="large"
-              true-value="Y" false-value="D" @on-change="handleSwitch($event, row.id)">
-              <span slot="open">启用</span>
-              <span slot="close">禁用</span>
+            <b-switch :value="row.reportDefault"
+              true-value="Y" false-value="D"
+              inactive-color="#ff4949"
+              @on-change="handleSwitch($event, row.id)">
+              <!-- <span slot="open">启用</span>
+              <span slot="close">禁用</span> -->
             </b-switch>
           </template>
 
@@ -129,8 +135,8 @@
 <script>
   import commonMixin from '../../../common/mixins/mixin'
   import permission from '../../../common/mixins/permission'
-  import { getEvalCommonStatus, getEvalReportType } from '../../../api/enum.api'
-  import { getCreditReportList, deleteCreditReport, changeStatus } from '../../../api/credit-rating/credit-report-config.api'
+  import { getEvalCommonStatus, getEvalReportType, getEvalSysDefault } from '../../../api/enum.api'
+  import { getCreditReportList, deleteCreditReport, changeStatus, setDefault } from '../../../api/credit-rating/credit-report-config.api'
   import { exportPDF } from '../../../api/import-export.api'
   import Edit from './Edit'
   import Detail from './Detail'
@@ -162,7 +168,8 @@
           { title: '报告名称', slot: 'reportName', align: 'center' },
           { title: '报告类型', slot: 'reportType', align: 'center' },
           { title: '主体类别', slot: 'personClass', align: 'center' },
-          { title: '启用/禁用', slot: 'reportDefault', align: 'center' },
+          { title: '默认方案', slot: 'sysDefault', align: 'center' },
+          { title: '状态', slot: 'reportDefault', align: 'center' },
           { title: '操作', slot: 'action', width: 210, align: 'center' }
         ]
       }
@@ -176,6 +183,9 @@
       },
       reportTypeEnum () {
         return this.$store.state.creditReportConfig.reportTypeEnum
+      },
+      defaultEnum () { // 缺省模型枚举
+        return this.$store.state.creditReportConfig.defaultEnum
       }
     },
     created () {
@@ -206,8 +216,14 @@
         this.openEditPage('modify')
       },
       // 设为默认按钮回调
-      handleDefault (row) {
-        console.log(row)
+      async handleDefault (row) {
+        try {
+          await setDefault(row.id)
+          this.searchList()
+          this.$message({ type: 'success', content: '操作成功' })
+        } catch (error) {
+          this.$notice.danger({ title: '操作失败', desc: error })
+        }
       },
       // 信息类按钮回调
       handleInfoClass (row) {
@@ -218,7 +234,7 @@
       async handleTempPre (row) {
         await this.exportPDF(row)
       },
-      // 启用禁用回调
+      // 状态switch开关回调
       async handleSwitch (value, id) {
         try {
           await changeStatus(id)
@@ -267,7 +283,10 @@
       // 获取需要的枚举值，并存入vuex
       async getEnum () {
         try {
-          const [reportDefaultEnum, reportTypeEnum] = await Promise.all([getEvalCommonStatus(), getEvalReportType()])
+          const [reportDefaultEnum, reportTypeEnum, defaultEnum] = await Promise.all([
+            getEvalCommonStatus(), getEvalReportType(), getEvalSysDefault()
+          ])
+          this.$store.commit('SET__DEFAULT_ENUM', defaultEnum)
           this.$store.commit('SET_PERSON_CLASS_ENUM', { // 此处主题类别就两种类型
             A01: '自然人',
             A02: '社会法人'
