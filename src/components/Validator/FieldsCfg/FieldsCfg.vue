@@ -91,7 +91,7 @@
             </b-col>
             <b-col span="8">
               <b-form-item label="是否加密">
-                <b-select v-model="totalData[currentIndex].isEncrypt" placeholder="" @on-change="emitValue" disabled>
+                <b-select v-model="totalData[currentIndex].isEncrypt" placeholder="" @on-change="emitValue">
                   <b-option v-for="(value,key) in enumMap.isEncrypt" :key="key" :value="key">{{ value }}</b-option>
                 </b-select>
               </b-form-item>
