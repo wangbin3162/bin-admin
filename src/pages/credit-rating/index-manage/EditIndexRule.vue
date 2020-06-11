@@ -16,6 +16,7 @@
             @on-blur="handleValidate(list[index], 'itemValue')"></b-input>
         </b-tooltip>
       </template>
+
       <template v-slot:itemDesc="{ index }">
         <b-tooltip
           max-width="200" placement="right"
@@ -27,6 +28,7 @@
             @on-blur="handleValidate(list[index], 'itemDesc')"></b-input>
         </b-tooltip>
       </template>
+
       <template v-slot:score="{ index }">
         <b-tooltip
           max-width="200" placement="right"
@@ -38,9 +40,11 @@
             @on-blur="handleValidate(list[index], 'score')"></b-input-number>
         </b-tooltip>
       </template>
+
       <template v-slot:sort>
         <v-sort-arrow></v-sort-arrow>
       </template>
+
       <template v-slot:action="{ index }">
         <b-button type="text" @click="addNext(index)">
           添加
@@ -58,22 +62,30 @@
           :content="list[index].upValueMsg"
           :disabled="!list[index].upValueError"
           :always="list[index].upValueError">
-          <b-input-number v-model="list[index].upValue" :min="0"
+
+          <b-input-number v-model="list[index].upValue" :min="0" :max="1000000000"
             :class="{ error: list[index].upValueError }"
-            @on-blur="handleValidate(list[index], 'upValue')"></b-input-number>
+            @on-blur="handleValidate(list[index], 'upValue')">
+          </b-input-number>
+
         </b-tooltip>
       </template>
+
       <template v-slot:dnValue="{ index }">
         <b-tooltip
           max-width="200" placement="right"
           :content="list[index].dnValueMsg"
           :disabled="!list[index].dnValueError"
           :always="list[index].dnValueError">
-          <b-input-number v-model="list[index].dnValue" :min="0"
+
+          <b-input-number v-model="list[index].dnValue" :min="0" :max="1000000000"
             :class="{ error: list[index].dnValueError }"
-            @on-blur="handleValidate(list[index], 'dnValue')"></b-input-number>
+            @on-blur="handleValidate(list[index], 'dnValue')">
+          </b-input-number>
+
         </b-tooltip>
       </template>
+
       <template v-slot:score="{ index }">
         <b-tooltip
           max-width="200" placement="right"
@@ -85,9 +97,11 @@
             @on-blur="handleValidate(list[index], 'score')"></b-input-number>
         </b-tooltip>
       </template>
+
       <template v-slot:sort="{ index }">
         <v-sort-arrow @on-up="up(index)" @on-down="dn(index)"></v-sort-arrow>
       </template>
+
       <template v-slot:action="{ index }">
         <b-button type="text" @click="addNext(index)">
           添加
@@ -132,8 +146,8 @@
         ],
         columnsN: [
           { type: 'index', width: 50 },
-          { title: '下限值（ \'(\' ）', slot: 'dnValue', align: 'center' },
-          { title: '上限值（ \']\' ）', slot: 'upValue', align: 'center' },
+          { title: '下限值 ] ', slot: 'dnValue', align: 'center' },
+          { title: '上限值 ( ', slot: 'upValue', align: 'center' },
           { title: '得分', slot: 'score', align: 'center' },
           { title: '排序', slot: 'sort', align: 'center' },
           { title: '操作', slot: 'action', align: 'center' }

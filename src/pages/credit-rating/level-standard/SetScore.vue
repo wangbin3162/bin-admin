@@ -8,22 +8,31 @@
               <b-input v-model="list[index].levelCode" :class="{ error: list[index].levelCodeError }"
                        @on-blur="handleLevelCodeBlur(list[index], 'levelCode')"></b-input>
             </template>
+
             <template v-slot:upScore="{ index }">
-              <b-input-number v-model="list[index].upScore" :class="{ error: list[index].upScoreError }"
-                              style="width: 100%;" :min="0"
-                              @on-blur="handleCommonBlur(list[index], 'upScore')"></b-input-number>
+              <b-input-number v-model="list[index].upScore" :min="0" :max="1000000000"
+                :class="{ error: list[index].upScoreError }"
+                style="width: 100%;"
+                @on-blur="handleCommonBlur(list[index], 'upScore')">
+              </b-input-number>
             </template>
+
             <template v-slot:dnScore="{ index }">
-              <b-input-number v-model="list[index].dnScore" :class="{ error: list[index].dnScoreError }"
-                              style="width: 100%;" :min="0"
-                              @on-blur="handleCommonBlur(list[index], 'dnScore')"></b-input-number>
+              <b-input-number v-model="list[index].dnScore" :min="0" :max="1000000000"
+                :class="{ error: list[index].dnScoreError }"
+                style="width: 100%;"
+                @on-blur="handleCommonBlur(list[index], 'dnScore')">
+              </b-input-number>
             </template>
+
             <template v-slot:levelDesc="{ index }">
               <b-input v-model="list[index].levelDesc"/>
             </template>
+
             <template v-slot:orderNo="{ row }">
               <v-sort-arrow @on-up="sortUp(row.orderNo)" @on-down="sortDn(row.orderNo)"/>
             </template>
+
             <template v-slot:action="{ row }">
               <b-button type="text" @click="addNext(row.orderNo)">添加</b-button>
               <b-button type="text" @click="remove(row.orderNo)">移除</b-button>
@@ -31,7 +40,7 @@
           </b-table>
 
           <b-button style="margin-top: 15px; width: 100%;" type="primary" plain @click="addLast()">+ 添加</b-button>
-          <p class="tip">标度，符合统计区间按最低值下限  ( ，最高值上限  ]  进行计算</p>
+          <p class="tip">标度，符合统计区间按最低值下限  ] ，最高值上限  (  进行计算</p>
         </div>
 
         <template slot="footer">
@@ -56,8 +65,8 @@
         columns: [
           { type: 'index', width: 50, align: 'center' },
           { title: '等级', slot: 'levelCode', width: 200 },
-          { title: '下限值 ( ', slot: 'dnScore', width: 120 },
-          { title: '上限值 ] ', slot: 'upScore', width: 120 },
+          { title: '下限值 ] ', slot: 'dnScore', width: 120 },
+          { title: '上限值 ( ', slot: 'upScore', width: 120 },
           { title: '描述', slot: 'levelDesc' },
           { title: '排序', slot: 'orderNo', width: 120, align: 'center' },
           { title: '操作', slot: 'action', width: 120 }
