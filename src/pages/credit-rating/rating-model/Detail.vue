@@ -1,13 +1,11 @@
 <template>
   <div class="raring-model-detail">
     <page-header-wrap :title="title" show-close @on-close="$emit('close')">
-      <v-edit-wrap>
-        <div slot="full" style="position: relative;">
+      <v-edit-wrap transparent>
+        <div style="position: relative;">
           <b-loading fix show-text="loading" v-if="loading"></b-loading>
-          <v-title-bar label="基本信息" class="mb-15"></v-title-bar>
-          <b-row type="flex" justify="center">
-            <b-col span="18">
-              <div>
+          <b-collapse-wrap title="基本信息" collapse>
+            <div>
                 <v-key-label label="模型名称" is-first is-half>{{ detailData.modelName }}</v-key-label>
                 <v-key-label label="模型编码" is-half>{{ detailData.modelCode }}</v-key-label>
                 <v-key-label label="主体类别" is-first is-half>{{ personClassEnum[detailData.personClass] }}</v-key-label>
@@ -24,11 +22,10 @@
                 </v-key-label> -->
                 <v-key-label label="描述" is-bottom>{{ detailData.modelDesc }}</v-key-label>
               </div>
-            </b-col>
-          </b-row>
+          </b-collapse-wrap>
 
-          <v-title-bar label="指标信息" class="mb-15"></v-title-bar>
-           <div flex>
+          <b-collapse-wrap title="指标信息" collapse>
+             <div flex>
             <!-- tree -->
             <div class="tree-con">
               <b-tree :data="treeData"
@@ -50,6 +47,7 @@
               </b-table>
             </div>
           </div>
+          </b-collapse-wrap>
         </div>
 
         <template slot="footer">

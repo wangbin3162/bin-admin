@@ -33,7 +33,9 @@
             <b-button type="text" @click="handleCheck(row.id)">{{ row.modelName }}</b-button>
           </template>
           <template v-slot:personClass="{ row }">
-            {{ personClassEnum[row.personClass]}}
+            <span :title="personClassEnum[row.personClass]" t-ellipsis>
+              {{ personClassEnum[row.personClass] }}
+            </span>
           </template>
           <template v-slot:ratingId="{ row }">
             <b-button type="text" @click="handleSetLevel(row)">{{ row.ratingName }} ></b-button>

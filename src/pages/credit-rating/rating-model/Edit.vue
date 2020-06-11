@@ -1,52 +1,54 @@
 <template>
   <div>
     <page-header-wrap :title="title" show-close @on-close="$emit('close')">
-      <v-edit-wrap>
-        <b-form ref="form" :model="form" :rules="rules" :label-width="100">
-          <b-row>
-            <b-col span="12">
-              <b-form-item label="模型名称" prop="modelName">
-                <b-input v-model="form.modelName" placeholder="请输入模型名称"></b-input>
-              </b-form-item>
-            </b-col>
-            <b-col span="12">
-              <b-form-item label="模型编码" prop="modelCode">
-                <b-input v-model="form.modelCode" placeholder="请输入模型编码"
-                  :disabled="codeDisabled"></b-input>
-              </b-form-item>
-            </b-col>
-          </b-row>
+      <v-edit-wrap transparent>
+        <b-collapse-wrap title="基本信息">
+          <b-form ref="form" :model="form" :rules="rules" :label-width="100">
+            <b-row>
+              <b-col span="12">
+                <b-form-item label="模型名称" prop="modelName">
+                  <b-input v-model="form.modelName" placeholder="请输入模型名称"></b-input>
+                </b-form-item>
+              </b-col>
+              <b-col span="12">
+                <b-form-item label="模型编码" prop="modelCode">
+                  <b-input v-model="form.modelCode" placeholder="请输入模型编码"
+                    :disabled="codeDisabled"></b-input>
+                </b-form-item>
+              </b-col>
+            </b-row>
 
-          <b-row>
-            <b-col span="12">
-              <b-form-item label="主体类别" prop="personClass">
-                <b-cascader v-if="!editData" v-model="personClass"
-                  :data="subjectType"
-                  change-on-select
-                  @on-change="handleSubjectChange"></b-cascader>
-                <b-input v-else
-                  :value="personClassEnum[form.personClass]"
-                  :disabled="editDisabled"></b-input>
-              </b-form-item>
-            </b-col>
-            <b-col span="12">
-              <b-form-item label="等级标准" prop="ratingId">
-                <div flex>
-                  <b-input :value="ratingName" placeholder="请选择" disabled></b-input>
-                  <b-button type="primary" plain @click="open = true">选择</b-button>
-                </div>
-              </b-form-item>
-            </b-col>
-          </b-row>
+            <b-row>
+              <b-col span="12">
+                <b-form-item label="主体类别" prop="personClass">
+                  <b-cascader v-if="!editData" v-model="personClass"
+                    :data="subjectType"
+                    change-on-select
+                    @on-change="handleSubjectChange"></b-cascader>
+                  <b-input v-else
+                    :value="personClassEnum[form.personClass]"
+                    :disabled="editDisabled"></b-input>
+                </b-form-item>
+              </b-col>
+              <b-col span="12">
+                <b-form-item label="等级标准" prop="ratingId">
+                  <div flex>
+                    <b-input :value="ratingName" placeholder="请选择" disabled></b-input>
+                    <b-button type="primary" plain @click="open = true">选择</b-button>
+                  </div>
+                </b-form-item>
+              </b-col>
+            </b-row>
 
-          <b-row>
-            <b-col span="24">
-              <b-form-item label="描述" prop="modelDesc">
-                <b-input type="textarea" v-model="form.modelDesc" placeholder="请输入描述"></b-input>
-              </b-form-item>
-            </b-col>
-          </b-row>
-        </b-form>
+            <b-row>
+              <b-col span="24">
+                <b-form-item label="描述" prop="modelDesc">
+                  <b-input type="textarea" v-model="form.modelDesc" placeholder="请输入描述"></b-input>
+                </b-form-item>
+              </b-col>
+            </b-row>
+          </b-form>
+        </b-collapse-wrap>
 
          <template slot="footer">
           <b-button @click="$emit('close')">取 消</b-button>
