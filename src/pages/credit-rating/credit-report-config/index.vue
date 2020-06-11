@@ -64,10 +64,6 @@
               修改
             </b-button>
             <b-divider type="vertical"></b-divider>
-            <b-button type="text" @click="handleInfoClass(row)">
-              信息类
-            </b-button>
-            <b-divider type="vertical"></b-divider>
             <b-button type="text" @click="handleTempPre(row)" :disabled="btnLoading">
               <template v-if="btnLoading">
                 <b-icon name="loading2" class="icon-is-rotating"></b-icon>生成中
@@ -77,10 +73,25 @@
               </template>
             </b-button>
             <b-divider type="vertical"></b-divider>
-            <b-button type="text" text-color="danger"
-              @click="handleRemove(row.id)">
-              删除
-            </b-button>
+            <b-dropdown append-to-body>
+              <b-button type="text">
+                更多
+                <b-icon name="ios-arrow-down"></b-icon>
+              </b-button>
+              <b-dropdown-menu slot="list">
+                <b-dropdown-item :style="colorPrimary" @click.native="handleDefault(row)">
+                  设为默认
+                </b-dropdown-item>
+
+                <b-dropdown-item :style="colorPrimary" @click.native="handleInfoClass(row)">
+                  信息类
+                </b-dropdown-item>
+
+                <b-dropdown-item :style="colorDanger" @click.native="handleRemove(row.id)">
+                  删除
+                </b-dropdown-item>
+              </b-dropdown-menu>
+            </b-dropdown>
           </template>
         </b-table>
         <!-- 分页器 -->
@@ -152,7 +163,7 @@
           { title: '报告类型', slot: 'reportType', align: 'center' },
           { title: '主体类别', slot: 'personClass', align: 'center' },
           { title: '启用/禁用', slot: 'reportDefault', align: 'center' },
-          { title: '操作', slot: 'action', width: 250, align: 'center' }
+          { title: '操作', slot: 'action', width: 210, align: 'center' }
         ]
       }
     },
@@ -193,6 +204,10 @@
       handleModify (row) {
         this.detail = row
         this.openEditPage('modify')
+      },
+      // 设为默认按钮回调
+      handleDefault (row) {
+        console.log(row)
       },
       // 信息类按钮回调
       handleInfoClass (row) {
