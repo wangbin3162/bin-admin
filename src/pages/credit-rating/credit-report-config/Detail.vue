@@ -1,34 +1,28 @@
 <template>
   <div class="level-standard-detail">
     <page-header-wrap :title="title" show-close @on-close="$emit('close')">
-      <v-edit-wrap>
-        <div slot="full" style="position: relative;">
-          <b-loading fix show-text="loading" v-if="loading"></b-loading>
-          <v-title-bar label="基本信息" class="mb-15"></v-title-bar>
-          <b-row type="flex" justify="center">
-            <b-col span="18">
-              <div>
-                <v-key-label label="报告名称" is-first is-half>{{ detailData.reportName }}</v-key-label>
-                <v-key-label label="报告类型" is-half>{{ reportTypeEnum[detailData.reportType] }}</v-key-label>
-                <v-key-label label="主体类型" is-first is-half>{{ personClassEnum[detailData.personClass] }}</v-key-label>
-                <v-key-label label="名称(市/区)" is-half>{{ detailData.unit }}</v-key-label>
-                <v-key-label label="联系电话" is-first is-half>{{ detailData.unitPhone }}</v-key-label>
-                <v-key-label label="邮箱" is-half>{{ detailData.unitEmail }}</v-key-label>
-                <v-key-label label="单位名称" is-first is-half>{{ detailData.unitName }}</v-key-label>
-                <v-key-label label="单位网址" is-half>{{ detailData.unitUrl }}</v-key-label>
-                <v-key-label label="单位地址">{{ detailData.unitAddress }}</v-key-label>
-                <v-key-label label="报告须知">{{ detailData.reportDesc }}</v-key-label>
-                <v-key-label label="水印图片" is-bottom>
-                  <div style="padding: 5px 0;">
-                    <img-upload moduleName="report"
-                      :echoId="detailData.reportWaterMark"
-                      :showModel="true"></img-upload>
-                  </div>
-                </v-key-label>
+      <v-edit-wrap transparent>
+        <b-collapse-wrap title="基本信息">
+          <div>
+            <v-key-label label="报告名称" is-first is-half>{{ detailData.reportName }}</v-key-label>
+            <v-key-label label="报告类型" is-half>{{ reportTypeEnum[detailData.reportType] }}</v-key-label>
+            <v-key-label label="主体类型" is-first is-half>{{ personClassEnum[detailData.personClass] }}</v-key-label>
+            <v-key-label label="名称(市/区)" is-half>{{ detailData.unit }}</v-key-label>
+            <v-key-label label="联系电话" is-first is-half>{{ detailData.unitPhone }}</v-key-label>
+            <v-key-label label="邮箱" is-half>{{ detailData.unitEmail }}</v-key-label>
+            <v-key-label label="单位名称" is-first is-half>{{ detailData.unitName }}</v-key-label>
+            <v-key-label label="单位网址" is-half>{{ detailData.unitUrl }}</v-key-label>
+            <v-key-label label="单位地址">{{ detailData.unitAddress }}</v-key-label>
+            <v-key-label label="报告须知">{{ detailData.reportDesc }}</v-key-label>
+            <v-key-label label="水印图片" is-bottom>
+              <div style="padding: 5px 0;">
+                <img-upload moduleName="report"
+                  :echoId="detailData.reportWaterMark"
+                  :showModel="true"></img-upload>
               </div>
-            </b-col>
-          </b-row>
-        </div>
+            </v-key-label>
+          </div>
+        </b-collapse-wrap>
 
         <template slot="footer">
           <b-button @click="$emit('close')">返 回</b-button>

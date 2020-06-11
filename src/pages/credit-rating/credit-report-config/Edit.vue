@@ -1,11 +1,10 @@
 <template>
   <div>
     <page-header-wrap :title="title" show-close @on-close="$emit('close')">
-      <v-edit-wrap>
-        <div slot="full">
-          <v-title-bar label="基本信息" class="mb-15"></v-title-bar>
+      <v-edit-wrap transparent>
+        <b-collapse-wrap title="基本信息">
           <b-form :model="form" ref="form" :rules="rules"
-            :label-width="100" label-position="left" style="padding: 0 100px;">
+            :label-width="100" label-position="right" style="padding: 0 100px;">
             <b-row :gutter="15">
               <b-col span="12">
                 <b-form-item label="报告名称" prop="reportName">
@@ -76,7 +75,8 @@
                 @clear="handleFileClear"></img-upload>
             </b-form-item>
           </b-form>
-        </div>
+        </b-collapse-wrap>
+
         <template slot="footer">
           <b-button @click="$emit('close')">取 消</b-button>
           <b-button type="primary" @click="handleSubmit" :loading="btnLoading">提 交</b-button>
