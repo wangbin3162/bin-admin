@@ -35,7 +35,7 @@
           </div>
         </div>
         <!--下方分页器-->
-        <b-page :total="total" :current.sync="listQuery.page" @on-change="handleCurrentChange"></b-page>
+        <b-page :total="total" :page-size="pageSizeOpts" :current.sync="listQuery.page" @on-change="handleCurrentChange"></b-page>
       </v-table-wrap>
     </page-header-wrap>
     <gather-list ref="gatherList" @on-close="handleCancel"></gather-list>
@@ -60,6 +60,7 @@
           page: 1,
           resourceName: ''
         },
+        pageSizeOpts:12,
         computedList: []
       }
     },
