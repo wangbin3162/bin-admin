@@ -31,16 +31,15 @@
           @on-page-size-change="handleSizeChange"></b-page>
       </v-table-wrap>
 
-      <v-edit-wrap v-if="isCheck">
-        <div slot="full" style="position: relative;">
-          <!-- <v-title-bar label="评分标准 详情" class="mb-15"></v-title-bar> -->
+      <v-table-wrap v-if="isCheck">
+        <div style="position: relative;">
           <b-table :columns="columnsLevel" :loading="levelLoading"
             :data="levelList" size="small"></b-table>
           <div flex="main:right" style="margin-top: 10px;">
             <b-button plain @click="handleCancel">返回</b-button>
           </div>
         </div>
-      </v-edit-wrap>
+      </v-table-wrap>
     </b-modal>
   </div>
 </template>

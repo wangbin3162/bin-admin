@@ -219,7 +219,6 @@
           }
           this.curColumns = columns
           this.showColumns = showColumns
-          console.log(this.showColumns)
         } catch (error) {
           console.error(error)
         }
