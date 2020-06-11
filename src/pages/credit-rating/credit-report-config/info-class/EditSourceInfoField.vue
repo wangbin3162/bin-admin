@@ -48,6 +48,7 @@
 
         <!-- 编辑用table -->
         <b-table v-else :key="isEdit" no-data-text="暂无已选字段"
+          :draggable="true" @on-drag-drop="handleDragDrop"
           :columns="columnsEdit" :data="listEdit"
           size="small" :loading="loading">
           <template v-slot:fieldTitle="{ index }">
@@ -100,7 +101,7 @@
         detail: {},
         list: [],
         columns: [
-          { type: 'index', width: 50, align: 'center' },
+          // { type: 'index', width: 50, align: 'center' },
           { title: '字段名称', key: 'fieldName', align: 'center' },
           { title: '字段标题', key: 'fieldTitle', align: 'center' },
           { title: '控件类型', slot: 'controlType', align: 'center' },
@@ -108,7 +109,7 @@
         ],
         listEdit: [], // 存储已选中用于编辑的信息项字段
         columnsEdit: [
-          { type: 'index', width: 50, align: 'center' },
+          // { type: 'index', width: 50, align: 'center' },
           { title: '字段名称', key: 'fieldName', align: 'center' },
           { title: '字段标题', slot: 'fieldTitle', align: 'center' },
           { title: '占满一行', slot: 'fullRow', align: 'center' },
@@ -160,6 +161,14 @@
           if (item.fieldName === row.fieldName) item.customSelected = false
         })
         this.listEdit.splice(index, 1) // 删除
+      },
+      // 编辑table拖拽的回调
+      handleDragDrop (index1, index2) {
+        this.listEdit.splice(
+          index2,
+          1,
+          ...this.listEdit.splice(index1, 1, this.listEdit[index2])
+        )
       },
       // input blur回调
       handleInputBlur (index) {
@@ -279,6 +288,7 @@
       },
       // 用于同步已选、占满一行
       asyncSelect (list) {
+        console.log(this.fieldMap)
         // 同步选择状态
         list.forEach(item => {
           const fieldObj = this.fieldMap.get(item.fieldName)
