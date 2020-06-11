@@ -15,7 +15,9 @@ export function getDeptList(query) {
     method: 'get',
     params: {
       parentId: query.parentId,
-      name: query.name
+      name: query.name,
+      page: query.page - 1,
+      size: query.size
     }
   })
 }

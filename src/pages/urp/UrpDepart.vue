@@ -17,7 +17,7 @@
           <b-button v-if="canCreate" type="primary" icon="ios-add-circle-outline" @click="handleCreate">新 增</b-button>
         </v-table-tool-bar>
         <!--中央表格-->
-        <b-table :columns="columns" :data="list" :loading="listLoading" height="450">
+        <b-table :columns="columns" :data="list" :loading="listLoading">
           <!--操作栏-->
           <template v-slot:action="scope">
             <b-button :disabled="!canRemove" type="text" text-color="danger" @click="handleRemove(scope.row)">
@@ -25,6 +25,9 @@
             </b-button>
           </template>
         </b-table>
+        <!--下方分页器-->
+        <b-page :total="total" :current.sync="listQuery.page" @on-change="handleCurrentChange">
+        </b-page>
       </v-table-wrap>
     </page-header-wrap>
     <urp-dept-select ref="deptChoose" multiple @on-choose="handleAddDeptList"/>
@@ -45,7 +48,9 @@
       return {
         listQuery: {
           name: '',
-          parentId: ''
+          parentId: '',
+          page: 1,
+          size: 10
         },
         treeData: [],
         columns: [
@@ -75,7 +80,9 @@
       resetQuery() {
         this.listQuery = {
           name: '',
-          parentId: this.currentTreeNode ? this.currentTreeNode.id : ''
+          parentId: this.currentTreeNode ? this.currentTreeNode.id : '',
+          page: 1,
+          size: 10
         }
         this.handleFilter()
       },
