@@ -80,7 +80,8 @@
             personClass: metadata.personClass,
             metadataCode: metadata.metadataCode,
             metadataKey: metadata.metadataKey,
-            fields: metadata.fields
+            fields: metadata.fields,
+            idsFlag: metadata.idsFlag
           })
         })
       },

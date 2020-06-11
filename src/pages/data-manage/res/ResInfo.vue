@@ -605,6 +605,7 @@
         this.resource.resourceName = item.metadataName // 元信息标题名带入资源名称
         this.resource.metadataCode = item.metadataCode // 元信息所属类目code
         this.resource.metadataKey = item.metadataKey // 资源标识符带入
+        this.resource.idsFlag = item.idsFlag // 多主体flag
         // 格式化items
         this.resource.items = item.fields.map(field => {
           return this.fieldsToInfoItem(field, this.resource.id)
