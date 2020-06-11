@@ -1,148 +1,144 @@
 <template>
   <div class="index-manage-edit">
     <page-header-wrap :title="title" show-close @on-close="$emit('close')">
-      <v-edit-wrap>
-        <div slot="full" style="position: relative;">
+
+      <b-collapse-wrap title="基本信息" collapse>
+        <v-edit-wrap style="position: relative;">
           <b-loading fix show-text="loading" v-if="editLoading"></b-loading>
-          <b-collapse v-model="collapseValue" simple>
-            <b-collapse-panel title="基本信息" name="index">
-              <b-form :model="form.index" ref="form" :rules="roles" label-position="top" :label-width="100">
-                <b-row :gutter="15">
-                  <b-col span="6">
-                    <b-form-item label="名称" prop="indexName">
-                      <b-input v-model="form.index.indexName" placeholder="请输入名称" clearable></b-input>
-                    </b-form-item>
-                  </b-col>
-                  <b-col span="6">
-                    <b-form-item label="编码" prop="indexCode">
-                      <b-input v-model="form.index.indexCode" placeholder="请输入编码" clearable :disabled="editData !== null"></b-input>
-                    </b-form-item>
-                  </b-col>
-                   <b-col span="6">
-                    <b-form-item label="指标性质" prop="indexKind">
-                      <b-select v-model="form.index.indexKind" @on-change="handleIndexRules">
-                        <b-option v-for="item in natureOptions" :key="item.value" :value="item.value">
-                          {{ item.label }}
-                        </b-option>
-                      </b-select>
-                    </b-form-item>
-                  </b-col>
-                  <b-col span="6">
-                    <b-form-item label="指标类型" prop="bizType">
-                      <b-cascader :data="cascadeData" v-model="cascadeModel" placeholder="请选择指标类型" disabled
-                        change-on-select @on-change="handleCascadeChange"></b-cascader>
-                    </b-form-item>
-                  </b-col>
-                </b-row>
-
-                <b-row :gutter="15">
-                  <b-col span="6">
-                    <b-form-item label="数据类型" prop="dataType">
-                      <b-select v-model="form.index.dataType" disabled>
-                        <b-option v-for="item in dataTypeOptions" :key="item.value" :value="item.value">
-                          {{ item.label }}
-                        </b-option>
-                      </b-select>
-                    </b-form-item>
-                  </b-col>
-                  <b-col span="6">
-                    <b-form-item label="计算类型" prop="calClass">
-                      <b-select v-model="form.index.calClass">
-                        <b-option v-for="item in calcTypeOptions" :key="item.value" :value="item.value">
-                          {{ item.label }}
-                        </b-option>
-                      </b-select>
-                    </b-form-item>
-                  </b-col>
-                  <b-col span="6">
-                    <b-form-item label="变量" prop="varId">
-                      <div flex style="width:100%;">
-                        <b-input :value="varName" placeholder="请选择变量" class="choose-btn"
-                          readonly disabled></b-input>
-                        <b-button type="primary" plain
-                          @click="openSelectVarHandler" style="flex: 0 0 auto;">
-                          选择
-                        </b-button>
-                      </div>
-                    </b-form-item>
-                  </b-col>
-                  <b-col span="6">
-                    <b-form-item label="标度" prop="indexScale">
-                      <b-select v-model="form.index.indexScale" @on-change="handleIndexRules">
-                        <b-option v-for="item in scaleOptions" :key="item.value" :value="item.value">
-                          {{ item.label }}
-                        </b-option>
-                      </b-select>
-                    </b-form-item>
-                  </b-col>
-                </b-row>
-
-                <b-row :gutter="15">
-                  <b-col span="6">
-                    <b-form-item label="有效期字段" prop="validParamName">
-                      <div flex style="width:100%;">
-                        <b-input :value="form.index.validParamName" disabled
-                          placeholder="请选择有效期字段" style="width: 100%;">
-                        </b-input>
-                        <b-button type="primary" plain
-                          style="flex: 0 0 auto;"
-                          @click="handleOpenSource">
-                            选择
-                          </b-button>
-                      </div>
-                    </b-form-item>
-                  </b-col>
-                  <b-col span="6">
-                    <b-form-item label="有效期" prop="validMonth">
-                      <div flex>
-                        <b-input-number v-model="form.index.validMonth" :max="12" :min="1" placeholder="请输入有效期" style="width: 100%;">
-                        </b-input-number>
-                        <b-button>月</b-button>
-                      </div>
-                    </b-form-item>
-                  </b-col>
-                </b-row>
-                <b-form-item label="描述" prop="desc">
-                  <b-input v-model="form.index.indexDesc" placeholder="请输入描述" type="textarea" :maxlength="100"></b-input>
+          <b-form :model="form.index" ref="form" :rules="roles" label-position="top" :label-width="100">
+            <b-row :gutter="15">
+              <b-col span="6">
+                <b-form-item label="名称" prop="indexName">
+                  <b-input v-model="form.index.indexName" placeholder="请输入名称" clearable></b-input>
                 </b-form-item>
-              </b-form>
+              </b-col>
+              <b-col span="6">
+                <b-form-item label="编码" prop="indexCode">
+                  <b-input v-model="form.index.indexCode" placeholder="请输入编码" clearable :disabled="editData !== null"></b-input>
+                </b-form-item>
+              </b-col>
+                <b-col span="6">
+                <b-form-item label="指标性质" prop="indexKind">
+                  <b-select v-model="form.index.indexKind" @on-change="handleIndexRules">
+                    <b-option v-for="item in natureOptions" :key="item.value" :value="item.value">
+                      {{ item.label }}
+                    </b-option>
+                  </b-select>
+                </b-form-item>
+              </b-col>
+              <b-col span="6">
+                <b-form-item label="指标类型" prop="bizType">
+                  <b-cascader :data="cascadeData" v-model="cascadeModel" placeholder="请选择指标类型" disabled
+                    change-on-select @on-change="handleCascadeChange"></b-cascader>
+                </b-form-item>
+              </b-col>
+            </b-row>
 
-              <edit-select-var :open="open" :radio="true" @close="open = false" @selected="handleVarChange"></edit-select-var>
-            </b-collapse-panel>
+            <b-row :gutter="15">
+              <b-col span="6">
+                <b-form-item label="数据类型" prop="dataType">
+                  <b-select v-model="form.index.dataType" disabled>
+                    <b-option v-for="item in dataTypeOptions" :key="item.value" :value="item.value">
+                      {{ item.label }}
+                    </b-option>
+                  </b-select>
+                </b-form-item>
+              </b-col>
+              <b-col span="6">
+                <b-form-item label="计算类型" prop="calClass">
+                  <b-select v-model="form.index.calClass">
+                    <b-option v-for="item in calcTypeOptions" :key="item.value" :value="item.value">
+                      {{ item.label }}
+                    </b-option>
+                  </b-select>
+                </b-form-item>
+              </b-col>
+              <b-col span="6">
+                <b-form-item label="变量" prop="varId">
+                  <div flex style="width:100%;">
+                    <b-input :value="varName" placeholder="请选择变量" class="choose-btn"
+                      readonly disabled></b-input>
+                    <b-button type="primary" plain
+                      @click="openSelectVarHandler" style="flex: 0 0 auto;">
+                      选择
+                    </b-button>
+                  </div>
+                </b-form-item>
+              </b-col>
+              <b-col span="6">
+                <b-form-item label="标度" prop="indexScale">
+                  <b-select v-model="form.index.indexScale" @on-change="handleIndexRules">
+                    <b-option v-for="item in scaleOptions" :key="item.value" :value="item.value">
+                      {{ item.label }}
+                    </b-option>
+                  </b-select>
+                </b-form-item>
+              </b-col>
+            </b-row>
 
-            <div class="line"></div>
+            <b-row :gutter="15">
+              <b-col span="6">
+                <b-form-item label="有效期字段" prop="validParamName">
+                  <div flex style="width:100%;">
+                    <b-input :value="form.index.validParamName" disabled
+                      placeholder="请选择有效期字段" style="width: 100%;">
+                    </b-input>
+                    <b-button type="primary" plain
+                      style="flex: 0 0 auto;"
+                      @click="handleOpenSource">
+                        选择
+                      </b-button>
+                  </div>
+                </b-form-item>
+              </b-col>
+              <b-col span="6">
+                <b-form-item label="有效期" prop="validMonth">
+                  <div flex>
+                    <b-input-number v-model="form.index.validMonth" :max="12" :min="1" placeholder="请输入有效期" style="width: 100%;">
+                    </b-input-number>
+                    <b-button>月</b-button>
+                  </div>
+                </b-form-item>
+              </b-col>
+            </b-row>
+            <b-form-item label="描述" prop="desc">
+              <b-input v-model="form.index.indexDesc" placeholder="请输入描述" type="textarea" :maxlength="100"></b-input>
+            </b-form-item>
+          </b-form>
 
-            <b-collapse-panel title="指标配置规则" name="rules">
-              <edit-index-rule ref="indexRule"
-                @data-change="handleIndexRulsChange"
-                :dataType="form.index.dataType"
-                :indexNature="form.index.indexKind"
-                :scale="form.index.indexScale"
-                :scaleEnum="scaleEnum"
-                :rules="indexRules">
-              </edit-index-rule>
-            </b-collapse-panel>
+          <template slot="footer">
+            <b-button @click="$emit('close')">取 消</b-button>
+            <b-button type="primary" @click="handleSubmit" :loading="btnLoading">提 交</b-button>
+          </template>
+        </v-edit-wrap>
+      </b-collapse-wrap>
 
-            <div class="line"></div>
+      <b-collapse-wrap title="指标配置规则" collapse :value="!editLoading">
+        <edit-index-rule ref="indexRule"
+          @data-change="handleIndexRulsChange"
+          :dataType="form.index.dataType"
+          :indexNature="form.index.indexKind"
+          :scale="form.index.indexScale"
+          :scaleEnum="scaleEnum"
+          :rules="indexRules">
+        </edit-index-rule>
+      </b-collapse-wrap>
 
-            <b-collapse-panel title="信息资源配置" name="resources">
-              <edit-source-info ref="sourceInfo"
-                @data-change="handleSourceChange"
-                :resources="resources"
-                :personClassEnum="personClassEnum"
-                :resPropertyEnum="resPropertyEnum"
-                :paramTypeEnum="paramTypeEnum">
-              </edit-source-info>
-            </b-collapse-panel>
-          </b-collapse>
-        </div>
-
-        <template slot="footer">
-          <b-button @click="$emit('close')">取 消</b-button>
-          <b-button type="primary" @click="handleSubmit" :loading="btnLoading">提 交</b-button>
-        </template>
-      </v-edit-wrap>
+      <b-collapse-wrap title="信息资源配置" collapse :value="!editLoading">
+        <edit-source-info ref="sourceInfo"
+          @data-change="handleSourceChange"
+          :resources="resources"
+          :personClassEnum="personClassEnum"
+          :resPropertyEnum="resPropertyEnum"
+          :paramTypeEnum="paramTypeEnum">
+        </edit-source-info>
+      </b-collapse-wrap>
     </page-header-wrap>
+
+    <edit-select-var
+      :open="open" :radio="true" @close="open = false"
+      @selected="handleVarChange">
+    </edit-select-var>
 
     <!-- 资源配置弹框 -->
     <source-info-select

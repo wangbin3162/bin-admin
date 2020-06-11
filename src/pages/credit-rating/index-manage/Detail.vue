@@ -1,71 +1,63 @@
 <template>
   <div class="index-manage-detail">
     <page-header-wrap :title="title" show-close @on-close="$emit('close')">
-      <v-edit-wrap>
-        <div slot="full" style="position: relative;">
-          <b-loading fix show-text="loading" v-if="loading"></b-loading>
-          <v-title-bar label="基本详情" class="mb-15"></v-title-bar>
-          <b-row type="flex" justify="center">
-            <b-col span="18">
-              <div>
-                <v-key-label label="指标名称" is-half is-first>
-                  {{ detail.indexName }}
-                </v-key-label>
-                <v-key-label label="指标编码" is-half>
-                  {{ detail.indexCode }}
-                </v-key-label>
-                <v-key-label label="指标性质" is-half is-first>
-                  {{ natureEnum[detail.indexKind] }}
-                </v-key-label>
-                <v-key-label label="指标类型" is-half>
-                  {{ detail.bizTypeName }}
-                </v-key-label>
-                <v-key-label label="数据类型" is-half is-first>
-                  {{ dataTypeEnum[detail.dataType] }}
-                </v-key-label>
-                <v-key-label label="计算类型" is-half>
-                  {{ calcTypeEnum[detail.calClass] }}
-                </v-key-label>
-                <v-key-label label="变量" is-half is-first>
-                  {{ detail.varName }}
-                </v-key-label>
-                <v-key-label label="标度" is-half>
-                  {{ scaleEnum[detail.indexScale] }}
-                </v-key-label>
-                <v-key-label label="有效期字段" is-half is-first>
-                  {{ detail.validParamName }}
-                </v-key-label>
-                <v-key-label label="有效期" is-half>
-                  {{ detail.validMonth }} 月
-                </v-key-label>
-                <v-key-label label="描述" is-bottom>
-                  {{ detail.indexDesc }}
-                </v-key-label>
-              </div>
-            </b-col>
-          </b-row>
-
-          <!-- <b-divider align="left">
-            <h4>指标配置</h4>
-          </b-divider> -->
-          <v-title-bar label="指标配置" class="mb-15"></v-title-bar>
-          <b-table :columns="columns" :data="rules" size="small"></b-table>
-
-          <!-- <b-divider align="left">
-            <h4>资源信息</h4>
-          </b-divider> -->
-          <v-title-bar label="资源信息" class="mb-15"></v-title-bar>
-          <b-table id="customTable" :columns="columnsSource" :data="resources">
-            <template v-slot:paraType="{ row }">
-              {{ paramTypeEnum[row.paraType] }}
-            </template>
-          </b-table>
-        </div>
-
+      <v-edit-wrap :transparent="true">
         <template slot="footer">
           <b-button @click="$emit('close')">返 回</b-button>
         </template>
       </v-edit-wrap>
+
+      <b-collapse-wrap title="基本详情" collapse>
+        <div style="position: relative;">
+          <b-loading fix show-text="loading" v-if="loading"></b-loading>
+          <v-key-label label="指标名称" is-half is-first>
+            {{ detail.indexName }}
+          </v-key-label>
+          <v-key-label label="指标编码" is-half>
+            {{ detail.indexCode }}
+          </v-key-label>
+          <v-key-label label="指标性质" is-half is-first>
+            {{ natureEnum[detail.indexKind] }}
+          </v-key-label>
+          <v-key-label label="指标类型" is-half>
+            {{ detail.bizTypeName }}
+          </v-key-label>
+          <v-key-label label="数据类型" is-half is-first>
+            {{ dataTypeEnum[detail.dataType] }}
+          </v-key-label>
+          <v-key-label label="计算类型" is-half>
+            {{ calcTypeEnum[detail.calClass] }}
+          </v-key-label>
+          <v-key-label label="变量" is-half is-first>
+            {{ detail.varName }}
+          </v-key-label>
+          <v-key-label label="标度" is-half>
+            {{ scaleEnum[detail.indexScale] }}
+          </v-key-label>
+          <v-key-label label="有效期字段" is-half is-first>
+            {{ detail.validParamName }}
+          </v-key-label>
+          <v-key-label label="有效期" is-half>
+            {{ detail.validMonth }} 月
+          </v-key-label>
+          <v-key-label label="描述" is-bottom>
+            {{ detail.indexDesc }}
+          </v-key-label>
+        </div>
+      </b-collapse-wrap>
+
+      <b-collapse-wrap title="指标配置" collapse :value="!loading">
+        <b-table :columns="columns" :data="rules" size="small"></b-table>
+      </b-collapse-wrap>
+
+      <b-collapse-wrap title="资源信息" collapse :value="!loading">
+        <b-table id="customTable" :columns="columnsSource" :data="resources">
+          <template v-slot:paraType="{ row }">
+            {{ paramTypeEnum[row.paraType] }}
+          </template>
+        </b-table>
+      </b-collapse-wrap>
+
     </page-header-wrap>
   </div>
 </template>
@@ -161,7 +153,7 @@
               const template = row.paraType === 'S' ? sourceInfoTemplate : infoItemTempLate
               return (
                 <div class="expandRow">
-                  <div class="header" flex="main:justify">
+                  <div class="headers" flex="main:justify">
                     <h4>
                       { row.paraType === 'S' ? '资源' : '信息项'}
                     </h4>
@@ -252,7 +244,7 @@
 <style lang="stylus">
 .index-manage-detail {
   .expandRow {
-    .header {
+    .headers {
       font-size: 13.5px;
       span {
         cursor: pointer;

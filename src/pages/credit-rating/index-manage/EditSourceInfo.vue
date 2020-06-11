@@ -140,7 +140,7 @@
               const template = row.paraType === 'S' ? sourceInfoTemplate : infoItemTempLate
               return (
                 <div class="expandRow">
-                  <div class="header" flex="main:justify">
+                  <div class="headers" flex="main:justify">
                     <h4>
                       { row.paraType === 'S' ? '所选资源信息' : '所选信息项'}
                     </h4>
@@ -329,7 +329,7 @@
 <style lang="stylus">
 .edit-source-info {
   .expandRow {
-    .header {
+    .headers {
       font-size: 13.5px;
       span {
         cursor: pointer;

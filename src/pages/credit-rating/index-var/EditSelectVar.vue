@@ -26,9 +26,11 @@
               <template v-slot:varType="{ row }">
                 {{ varTypeEnum[row.varType] }}
               </template>
+
               <template v-slot:dataType="{ row }">
                 {{ dataTypeEnum[row.dataType] }}
               </template>
+
               <template v-slot:action="{ row }">
                 <b-button v-if="!radio"
                   plain size="small"
@@ -36,16 +38,17 @@
                   @click="chooseOne(row)">
                   {{ checkRowSelected(row) ? '取消' : '选择' }}
                 </b-button>
+
                 <b-button v-else
                   type="primary" plain size="small"
-                  @click="handleRadio(row)">
+                  @click.stop="handleRadio(row)">
                   选择
                  </b-button>
               </template>
             </b-table>
           </b-col>
 
-          <b-col v-if="!radio" span="8">
+          <b-col v-if="!radio" span="8" class="card-con">
             <b-card class="box-card" head-tip
               header="已选变量">
               <b-tag type="info"
@@ -55,7 +58,7 @@
                 @on-close="handleCloseTag(index)">
                 {{tag.varName}}
               </b-tag>
-              <b-button type="primary" style="width: 100%;margin: 10px 0;"
+              <b-button type="primary" style="width: 100%; margin: 10px 0;"
                 v-if="selectedList.length"
                 @click="postSelectedList">
                 确定添加
@@ -101,12 +104,12 @@
           varType: ''
         },
         columns: [
-          { title: '变量名称', key: 'varName' },
-          { title: '变量编码', key: 'varCode' },
-          { title: '变量类型', slot: 'varType' },
-          { title: '数据类型', slot: 'dataType' },
-          { title: '模板内容', key: 'tplContent', ellipsis: true, tooltip: true },
-          { title: '描述', key: 'varDesc', ellipsis: true, tooltip: true },
+          { title: '变量名称', key: 'varName', ellipsis: true, tooltip: true, align: 'center' },
+          { title: '变量编码', key: 'varCode', align: 'center' },
+          { title: '变量类型', slot: 'varType', align: 'center' },
+          { title: '数据类型', slot: 'dataType', width: 90, align: 'center' },
+          // { title: '模板内容', key: 'tplContent', ellipsis: true, tooltip: true },
+          // { title: '描述', key: 'varDesc', ellipsis: true, tooltip: true },
           { title: '操作', slot: 'action', align: 'center' }
         ],
         varTypeEnum: {},
@@ -185,7 +188,7 @@
       init () {
         if (this.radio) { // 指标管理使用则是单选形式
           this.span = 24
-          this.width = '70%'
+          this.width = '73%'
         } else {
           this.span = 16
           this.width = '80%'
@@ -227,6 +230,17 @@
     }
   }
 </script>
+
+<style lang="stylus">
+  .select-var {
+    .card-con .bin-card .bin-card__body {
+      padding-left: 4px;
+      padding-right: 4px;
+      max-height: 430px;
+      overflow: auto;
+    }
+  }
+</style>
 
 <style lang="stylus" scoped>
   .select-var {
