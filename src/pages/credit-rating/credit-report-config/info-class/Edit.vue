@@ -1,10 +1,9 @@
 <template>
   <div class="credit-report-config-info-class-edit">
     <page-header-wrap :title="title" show-close @on-close="$emit('close')">
-      <v-edit-wrap>
-        <div slot="full" style="position: relative;">
+      <v-edit-wrap transparent>
+        <b-collapse-wrap title="基本信息" collapse style="position: relative;">
           <b-loading fix show-text="loading" v-if="loading"></b-loading>
-          <v-title-bar label="基本信息" class="mb-15"></v-title-bar>
           <b-form :model="form" ref="form" :rules="rules"
             :label-width="100" label-position="left" style="padding: 0 100px;">
             <b-row :gutter="15">
@@ -29,10 +28,10 @@
               </b-col>
             </b-row>
           </b-form>
+        </b-collapse-wrap>
 
-          <v-title-bar label="配置信用报告信息项" class="mb-15">
-            <b-button type="text" @click="handleAddSourceInfo">+ 添加资源信息</b-button>
-          </v-title-bar>
+        <b-collapse-wrap title="配置信用报告信息项" collapse :value="!loading">
+          <b-button slot="right" type="text" @click="handleAddSourceInfo">+ 添加资源信息</b-button>
 
           <b-table :columns="columns" :data="list" :show-header="false" size="small">
             <template v-slot:orderNo="{ index }">
@@ -44,7 +43,7 @@
               <b-button type="text" @click="handleEdit(index)">编辑</b-button>
             </template>
           </b-table>
-        </div>
+        </b-collapse-wrap>
 
         <template slot="footer">
           <b-button @click="$emit('close')">取 消</b-button>
