@@ -30,6 +30,22 @@
               批量解除
             </batch-remove-btn>
             <b-button :disabled="btnDisabled" @click="handleDownloadTemplate">模板下载</b-button>
+
+            <b-dropdown slot="right" trigger="custom" :visible="visible" @on-click-outside="visible = false">
+              <a href="javascript:void(0)" @click="visible = true">
+                下拉菜单
+                <b-icon name="ios-arrow-down"></b-icon>
+              </a>
+              <b-dropdown-menu slot="list" class="ml-10" style="max-height: 500px; overflow: auto;">
+                  <b-checkbox-group v-model="showColumns">
+                    <b-dropdown-item v-for="item in curColumns" :key="item.id">
+                      <b-checkbox :label="item.fieldName" style="display: block;">
+                        <span>{{ item.fieldTitle}}</span>
+                      </b-checkbox>
+                    </b-dropdown-item>
+                  </b-checkbox-group>
+              </b-dropdown-menu>
+            </b-dropdown>
           </v-table-tool-bar>
 
           <!-- table -->
@@ -67,6 +83,7 @@
     },
     data () {
       return {
+        visible: false,
         btnDisabled: false,
         loading: false,
         isEmpty: true,
@@ -89,10 +106,12 @@
       },
       columns () {
         const res = []
-        this.showColumns.forEach(item => {
-          res.push({
-            title: item.fieldTitle, key: item.fieldName.toLowerCase(), tooltip: true
-          })
+        this.curColumns.forEach(item => {
+          if (this.showColumns.includes(item.fieldName)) {
+            res.push({
+              title: item.fieldTitle, key: item.fieldName.toLowerCase(), tooltip: true
+            })
+          }
         })
         return res
       }
@@ -184,8 +203,17 @@
           this.resourceName = res.resourceName
           // 过滤掉person_id && 选择启用的
           const columns = res.items.filter(item => item.fieldName.indexOf('_id') === -1 && item.status === 'use')
+          const showColumns = []
+          for (let i = 0; i < columns.length; i++) {
+            if (i < 7) {
+              showColumns.push(columns[i].fieldName)
+            } else {
+              break
+            }
+          }
           this.curColumns = columns
-          this.showColumns = columns.filter((item, index) => index < 7)
+          this.showColumns = showColumns
+          console.log(this.showColumns)
         } catch (error) {
           console.error(error)
         }
