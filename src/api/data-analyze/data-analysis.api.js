@@ -1,5 +1,29 @@
 // 数据源管理
 import request from '../request'
+import qs from 'qs'
+
+/**
+ * @author haodongdong
+ * @description 获取资源列表
+ * @returns Promise
+ */
+export async function getResources() {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/api/dir/getResources',
+        method: 'get'
+      })
+      if (res.data.successful) {
+        resolve(res.data.data)
+      } else {
+        reject(res.data.message)
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
 
 /* 2.4.1 资源信息数量 */
 export function getTotalResource(query) {
@@ -74,8 +98,31 @@ export function getMonthData(query) {
     method: 'get',
     params: {
       createDept: query.departId,
-      startDate: '2019-01',
-      endDate: '2020-01'
+      startDate: query.startDate,
+      endDate: query.endDate
+    }
+  })
+}
+
+/**
+ * @author haodongdong
+ * @description 获取年度归集趋势
+ * @param {*} query
+ */
+export function getYearData(query) {
+  return request({
+    url: '/da/data/gather/ndxxgjqszy',
+    method: 'get',
+    params: {
+      createDept: query.departId,
+      startDate: query.startDate,
+      endDate: query.endDate
+      // resourceKeys: query.resourceKeys
+    },
+    paramsSerializer: params => {
+      return qs.stringify(params, {
+        indices: false
+      })
     }
   })
 }
