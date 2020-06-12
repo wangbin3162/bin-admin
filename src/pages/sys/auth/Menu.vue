@@ -209,6 +209,21 @@
     name: 'Menu',
     mixins: [commonMixin, permission],
     data() {
+      const validateMenuName = (rule, value, callback) => {
+        if (value.length >200) {
+          callback(new Error('菜单名称必须小于200个字符'))
+        } else {
+          api.oneMenuName(this.menu).then(response => {
+            if (response.data.data) {
+              callback(new Error('菜单名称重复'))
+            } else {
+              callback()
+            }
+          }).catch(() => {
+            callback(new Error('请求验证重复性出错'))
+          })
+        }
+      }
       const checkMenuPath = (rule, value, callback) => {
         if (value && validateRoutePath(value)) {
           callback(new Error('请输入正确的菜单路由(如:/ace ; /ace/menu)'))
@@ -234,7 +249,7 @@
         ],
         menu: null,
         ruleValidate: {
-          name: [requiredRule],
+          name: [requiredRule, { validator: validateMenuName, trigger: 'blur' }],
           path: [requiredRule, { validator: checkMenuPath, trigger: 'blur' }]
         },
         ynMap: { 'N': '否', 'Y': '是' }, // 默认值这里Y是可以删除，可删除状态及为禁用

@@ -432,6 +432,7 @@
               } else {
                 this.$notice.danger({ title: '任务启动失败', desc: res.data.message || '' })
               }
+              this.$modal.remove()
             })
           }
         })
