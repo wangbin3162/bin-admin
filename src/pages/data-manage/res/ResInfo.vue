@@ -784,7 +784,8 @@
           availableStatus: '',
           status: '',
           dirClassifyName: '',
-          items: []
+          items: [],
+          idsFlag: 0
         }
       },
       // tree:初始化树结构

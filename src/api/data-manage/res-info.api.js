@@ -88,7 +88,8 @@ export function createResInfo(res) {
       sharedMode: res.sharedMode, // 共享方式
       isOpen: res.isOpen, // 开放属性
       openCondition: res.openCondition, // 开放条件
-      items: items
+      items: items,
+      idsFlag: res.idsFlag
     }
   })
 }
@@ -119,7 +120,8 @@ export function modifyResInfo(res) {
       shareMode: res.shareMode, // 共享方式
       isOpen: res.isOpen, // 开放属性
       openCondition: res.openCondition, // 开放条件
-      items: items
+      items: items,
+      idsFlag: res.idsFlag
     }
   })
 }
