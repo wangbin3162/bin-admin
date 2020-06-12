@@ -116,7 +116,10 @@
               </b-form-item>
             </b-col>
           </b-row>
-          <b-form-item label="示例数据" prop="describe">
+          <b-form-item label="示例数据" prop="data">
+            <b-input v-model="content.data" type="textarea" :autosize="{minRows: 2,maxRows: 5}"></b-input>
+          </b-form-item>
+          <b-form-item label="描述" prop="describe">
             <b-input v-model="content.describe" type="textarea" :autosize="{minRows: 2,maxRows: 5}"></b-input>
           </b-form-item>
         </b-form>
