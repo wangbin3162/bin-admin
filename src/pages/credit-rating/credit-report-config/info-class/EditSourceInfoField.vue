@@ -300,8 +300,16 @@
             }
           }
         })
-        // 取出已选字段放入编辑列表
-        this.listEdit = this.filterSelected(list)
+        // 取出已选字段
+        const filterArr = this.filterSelected(list)
+        // 对已选字段按字符串顺序排序
+        const resArr = []
+        for (const key of this.fieldMap.keys()) {
+          const el = filterArr.find(item => key === item.fieldName)
+          if (el) resArr.push(el)
+        }
+        // 放入编辑列表
+        this.listEdit = resArr
       },
       // 过滤出已选择的字段存入listEdit，并且同步已选择的字段标题
       filterSelected (list) {
