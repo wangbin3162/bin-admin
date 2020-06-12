@@ -35,7 +35,8 @@
           </div>
         </div>
         <!--下方分页器-->
-        <b-page :total="total" :page-size="pageSizeOpts" :current.sync="listQuery.page" @on-change="handleCurrentChange"></b-page>
+        <b-page :total="total" :page-size="listQuery.size" :current.sync="listQuery.page"
+                @on-change="handleCurrentChange"></b-page>
       </v-table-wrap>
     </page-header-wrap>
     <gather-list ref="gatherList" @on-close="handleCancel"></gather-list>
@@ -60,7 +61,6 @@
           page: 1,
           resourceName: ''
         },
-        pageSizeOpts:12,
         computedList: []
       }
     },
@@ -99,6 +99,7 @@
       },
       // 查询方法
       handleFilter() {
+        this.listQuery.page = 1
         this.searchList()
       },
       // 查询所有列表
@@ -140,7 +141,7 @@
         .card-header {
           position: relative;
           font-size: 16px;
-          padding: 15px 15px 0 60px;
+          padding: 15px 50px 0 60px;
         }
         .create-date {
           font-size: 12px;

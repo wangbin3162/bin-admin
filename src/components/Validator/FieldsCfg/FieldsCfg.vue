@@ -42,11 +42,18 @@
           <valid-value v-model="totalData[currentIndex].validValue"
                        :show-valid-value="showValidValue" @on-change="emitValue"
           >
-            <b-form-item label="控件类型" class="bin-form-item-required">
-              <b-select v-model="totalData[currentIndex].controlType" @on-change="controlTypeChange">
-                <b-option v-for="(value,key) in controlTypeFilter" :key="key" :value="key">{{ value }}</b-option>
-              </b-select>
-            </b-form-item>
+            <b-col span="8">
+              <b-form-item label="控件类型" class="bin-form-item-required">
+                <b-select v-model="totalData[currentIndex].controlType" @on-change="controlTypeChange">
+                  <b-option v-for="(value,key) in controlTypeFilter" :key="key" :value="key">{{ value }}</b-option>
+                </b-select>
+              </b-form-item>
+            </b-col>
+            <b-col span="8">
+              <b-form-item label="字段长度" class="bin-form-item-required" v-if="totalData[currentIndex].dataLength">
+                <b-input :value="totalData[currentIndex].dataLength" readonly/>
+              </b-form-item>
+            </b-col>
           </valid-value>
           <b-divider/>
           <!--校验-->
