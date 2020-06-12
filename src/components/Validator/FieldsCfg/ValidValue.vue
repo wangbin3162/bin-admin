@@ -2,7 +2,9 @@
   <div class="valid-value-wrap">
     <div class="mb-10">
       <b-row :gutter="15">
-        <slot></slot>
+        <b-col span="8" v-if="$slots.default">
+          <slot></slot>
+        </b-col>
         <b-col :span="$slots.default?16:24" v-if="showValidValue">
           <div style="width: 100%;line-height:32px;" flex="main:justify">
             <span>有效值: </span>

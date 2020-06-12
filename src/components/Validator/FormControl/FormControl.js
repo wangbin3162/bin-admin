@@ -78,7 +78,7 @@ export default {
       case 'NUMBER_TEXT':
         node = h('b-input-number', {
           props: {
-            value: this.currentValue,
+            value: Number(this.currentValue),
             precision: this.dataPrecision,
             disabled: readonly,
             clearable: !readonly
