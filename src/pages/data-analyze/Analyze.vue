@@ -110,7 +110,7 @@
 
                 <div flex="main:justify cross:baseline">
                   <b-select style="width: 150px; margin-right: 30px;"
-                    size="mini" clearable filterable>
+                    size="mini" clearable filterable @on-change="handleResourceChange">
                     <b-option v-for="item in resources" :value="item.key" :key="item.key">
                       {{ item.text }}
                     </b-option>
@@ -166,6 +166,8 @@
         tab: 0,
         yearsText: [],
         resources: [],
+        resourceKeys: [],
+        date: new Date(),
         listQuery: {
           departId: '',
           month: '2019-01',
@@ -200,20 +202,8 @@
           }],
           dataset: formatDataSet(
             { xField: 'name', yField: 'value' },
-            [
-              { name: '1月', value: 220 },
-              { name: '2月', value: 315 },
-              { name: '3月', value: 434 },
-              { name: '4月', value: 386 },
-              { name: '5月', value: 409 },
-              { name: '6月', value: 378 },
-              { name: '7月', value: 533 },
-              { name: '8月', value: 820 },
-              { name: '9月', value: 1290 },
-              { name: '10月', value: 1330 },
-              { name: '11月', value: 901 },
-              { name: '12月', value: 1290 }
-            ])
+            []
+          )
         },
         smoothLineChartOption: {
           tooltip: { trigger: 'axis' },
@@ -233,23 +223,9 @@
           }],
           dataset: formatDataSet(
             { xField: 'name', yField: 'value' },
-            [
-              { name: '2020-01', value: 220 },
-              { name: '2020-02', value: 315 },
-              { name: '2020-03', value: 434 },
-              { name: '2020-04', value: 386 },
-              { name: '2020-05', value: 409 },
-              { name: '2020-06', value: 378 },
-              { name: '2020-07', value: 533 },
-              { name: '2020-08', value: 820 },
-              { name: '2020-09', value: 1290 },
-              { name: '2020-10', value: 1330 },
-              { name: '2020-11', value: 901 },
-              { name: '2020-12', value: 1290 }
-            ]
+            []
           )
         },
-        date: new Date(),
         columns: [
           { title: '资源信息', key: 'resourceName', tooltip: true },
           { title: '归集数量', key: 'count', width: 88, align: 'center' },
@@ -261,9 +237,7 @@
         yearSelect: ''
       }
     },
-    async created() {
-      this.getResources()
-      this.searchList()
+    created() {
       this.init()
     },
     methods: {
@@ -271,8 +245,18 @@
       resetListQuery() {
         this.listQuery.departId = this.$store.state.user.info.departId
       },
+      // 年度归集信息select回调
+      handleResourceChange (val) {
+        if (val) {
+          this.listQuery.resourceKeys = [val]
+        } else {
+          this.listQuery.resourceKeys = this.resourceKeys
+        }
+        this.getYearData(this.tab)
+      },
+      // 年度归集信息tab按钮回调
       handleTabBtn (curTab) {
-        this.tab = curTab
+        this.tab = curTab // curTab可用做计算之前的年份的偏移量
         this.getYearData(curTab)
       },
       // 查询所有列表
@@ -329,7 +313,7 @@
       // 2.4.7 月度信息归集趋势
       getMonthData () {
         // 取当前时间半年前
-        const [startDate, endDate] = this.timeHandler(180)
+        const [startDate, endDate] = this.timeHandler(150)
         this.listQuery.startDate = startDate
         this.listQuery.endDate = endDate
 
@@ -378,18 +362,69 @@
 
         return [startDate, endDate]
       },
+      // 获取部门资源列表 用于 select
       async getResources () {
         try {
           const res = await api.getResources()
           this.resources = res
+          this.resources.forEach(item => {
+            this.resourceKeys.push(item.key)
+          })
+          this.listQuery.resourceKeys = this.resourceKeys
         } catch (error) {
           console.error(error)
         }
       },
+      getRandom (start, end, fixed = 0) {
+        let differ = end - start
+        let random = Math.random()
+        return (start + differ * random).toFixed(fixed)
+      },
+      // 构建月度归集信息默认图表数据
+      buildDefaultDataMonth () {
+        const date = new Date()
+        const year = date.getFullYear()
+        const curMonth = date.getMonth() + 1
+
+        const dateArr = []
+        for (let i = 0; i < 6; i++) {
+          let monthStr = curMonth - i
+          let yearStr = date.getFullYear()
+          if (monthStr <= 0) {
+            yearStr -= 1
+            monthStr = 13 - 1
+          }
+          dateArr.push({
+            name: yearStr + '-' + monthStr,
+            value: this.getRandom(100, 2000)
+          })
+        }
+        dateArr.reverse()
+        this.lineChartOption.dataset = formatDataSet({ xField: 'name', yField: 'value' }, dateArr)
+      },
+      buildDefaultDataYear () {
+        // 构建年度归集信息默认图表数据
+        const date = new Date()
+        const dateArr = []
+        for (let i = 0; i < 12; i++) {
+          let monthStr = i + 1
+          if (monthStr < 10) monthStr = '0' + monthStr
+          dateArr.push({
+            name: date.getFullYear() + '-' + monthStr,
+            value: this.getRandom(100, 2000)
+          })
+        }
+        this.smoothLineChartOption.dataset = formatDataSet({ xField: 'name', yField: 'value' }, dateArr)
+      },
       // 一些初始化操作
-      init () {
+      async init () {
+        // 生成年度归集趋势的tab按钮
         const curYear = new Date().getFullYear()
         this.yearsText = [curYear, curYear - 1, curYear - 2]
+        this.buildDefaultDataYear()
+        this.buildDefaultDataMonth()
+        await this.getResources() // 获取部门资源，因为要构建resourceKeys参数，所以需要响应后再调用searchList()
+        this.searchList()
       }
     }
   }

@@ -116,8 +116,8 @@ export function getYearData(query) {
     params: {
       createDept: query.departId,
       startDate: query.startDate,
-      endDate: query.endDate
-      // resourceKeys: query.resourceKeys
+      endDate: query.endDate,
+      resourceKeys: query.resourceKeys
     },
     paramsSerializer: params => {
       return qs.stringify(params, {
