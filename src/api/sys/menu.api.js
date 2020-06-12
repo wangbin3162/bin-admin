@@ -93,3 +93,16 @@ export function changeDelFlag(menu) {
     }
   })
 }
+
+/* 同一父菜单下菜单名称是否唯一 */
+export function oneMenuName(menu) {
+  return request({
+    url: '/management/function/checkMenuNameExists',
+    method: 'get',
+    params: {
+      id: menu.id || '',
+      menuName: menu.name,
+      parentId: menu.parentId
+    }
+  })
+}
