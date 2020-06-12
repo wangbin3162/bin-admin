@@ -40,7 +40,7 @@
           </b-table>
 
           <b-button style="margin-top: 15px; width: 100%;" type="primary" plain @click="addLast()">+ 添加</b-button>
-          <p class="tip">标度，符合统计区间按最低值下限  ] ，最高值上限  (  进行计算</p>
+          <p class="tip">标度，符合统计区间按最低值下限  [ ，最高值上限  )  进行计算</p>
         </div>
 
         <template slot="footer">
@@ -65,8 +65,8 @@
         columns: [
           { type: 'index', width: 50, align: 'center' },
           { title: '等级', slot: 'levelCode', width: 200 },
-          { title: '下限值 ] ', slot: 'dnScore', width: 120 },
-          { title: '上限值 ( ', slot: 'upScore', width: 120 },
+          { title: '下限值 [ ', slot: 'dnScore', width: 120 },
+          { title: '上限值 ) ', slot: 'upScore', width: 120 },
           { title: '描述', slot: 'levelDesc' },
           { title: '排序', slot: 'orderNo', width: 120, align: 'center' },
           { title: '操作', slot: 'action', width: 120 }
