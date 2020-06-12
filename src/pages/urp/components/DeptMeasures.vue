@@ -251,7 +251,6 @@
       },
       // 清空已经选中的措施
       clearMeasures(memoType) {
-          debugger
           if (this.tiledMeasures.length > 0) {
             /* this.tiledMeasures.forEach((measure, index) => {
                  if (measure.measureType !== this.measureTypeMap[memoType]) {
