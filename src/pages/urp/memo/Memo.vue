@@ -29,7 +29,7 @@
           <!--操作栏-->
           <template v-slot:action="{row}">
             <!--如果可编辑且是禁用（可删除即为禁用）状态下不可编辑-->
-            <b-button :disabled="!canModify || row.memoStatus!=='0'" type="text" @click="handleModify(row)">
+            <b-button :disabled="!canModify" type="text" @click="handleModify(row)">
               修改
             </b-button>
             <!--是否有删除键-->
@@ -68,7 +68,7 @@
                   </b-col>
                   <b-col span="12">
                     <b-form-item label="备忘录类型" prop="memoType">
-                      <b-select v-model="memo.memoType" placeholder="全部" clearable  @on-change="memoTypeChange">
+                      <b-select v-model="memo.memoType" placeholder="全部" clearable  :disabled="dialogStatus === 'modify'"  @on-change="memoTypeChange">
                         <b-option v-for="(val,key) in memoTypeMap" :key="key" :value="key">{{ val }}</b-option>
                       </b-select>
                     </b-form-item>
