@@ -8,7 +8,7 @@
              :mask-closable="false" :body-styles="{padding:0}">
       <v-table-wrap>
         <!--查询条件-->
-        <v-filter-bar>
+        <v-filter-bar @keyup-enter="handleFilter">
           <v-filter-item title="备忘录名称">
             <b-input v-model.trim="listQuery.memoName" placeholder="请输入" clearable/>
           </v-filter-item>

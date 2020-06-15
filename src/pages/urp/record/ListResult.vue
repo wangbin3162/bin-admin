@@ -3,7 +3,7 @@
     <page-header-wrap v-show="isNormal">
       <v-table-wrap>
         <!--查询条件-->
-        <v-filter-bar>
+        <v-filter-bar @keyup-enter="handleFilter">
           <v-filter-item title="主体名称">
             <b-input v-model.trim="listQuery.name" placeholder="请输入" clearable/>
           </v-filter-item>
@@ -27,8 +27,8 @@
       </v-table-wrap>
     </page-header-wrap>
     <page-header-wrap v-show="isCheck" :title="editTitle" show-close @on-close="handleCancel">
-      <v-edit-wrap>
-        <div>
+      <v-edit-wrap transparent>
+        <b-collapse-wrap title="基本信息">
           <v-key-label label="备忘录名称">{{ record.memoName }}</v-key-label>
           <v-key-label label="主体名称">{{ record.name }}</v-key-label>
           <v-key-label label="证件号码">{{ record.idCode }}</v-key-label>
@@ -38,7 +38,7 @@
           <v-key-label label="反馈时间">{{ record.feedbackDate }}</v-key-label>
          <!-- <v-key-label label="反馈来源">{{ record.feedbackSource }}</v-key-label>-->
           <v-key-label label="措施内容" is-bottom>{{ record.measureContent}}</v-key-label>
-        </div>
+        </b-collapse-wrap>
         <template slot="footer">
           <b-button @click="handleCancel">返 回</b-button>
         </template>

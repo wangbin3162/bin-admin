@@ -1,54 +1,55 @@
 <template>
   <div class="repair-audit">
     <page-header-wrap :title="title" show-close @on-close="$emit('close')">
-      <v-edit-wrap>
-        <div slot="full" style="position: relative;">
-          <b-loading fix show-text="加载中...." v-if="loading"></b-loading>
-          <v-title-bar label="异议申请详情信息" tipPos="left" class="mb-20"></v-title-bar>
+      <v-edit-wrap transparent>
+        <b-collapse-wrap title="异议申请详情信息">
+          <div style="position: relative;">
+            <b-loading fix show-text="加载中...." v-if="loading"></b-loading>
 
-          <div class="con">
-            <table class="table">
-              <tr>
-                <td>申请目录：</td>
-                <td>{{ detail.resourceName }}</td>
-                <td>主体名称：</td>
-                <td>{{ detail.name }}</td>
-              </tr>
-              <tr>
-                <td>申请单位：</td>
-                <td>{{ detail.applyDeptName }}</td>
-                <td>申请人：</td>
-                <td>{{ detail.applyName }}</td>
-              </tr>
-            </table>
+            <div class="con">
+              <table class="table">
+                <tr>
+                  <td>申请目录：</td>
+                  <td>{{ detail.resourceName }}</td>
+                  <td>主体名称：</td>
+                  <td>{{ detail.name }}</td>
+                </tr>
+                <tr>
+                  <td>申请单位：</td>
+                  <td>{{ detail.applyDeptName }}</td>
+                  <td>申请人：</td>
+                  <td>{{ detail.applyName }}</td>
+                </tr>
+              </table>
+            </div>
+
+            <b-form :model="form" ref="form" :rules="rules" :label-width="100">
+              <b-form-item label="数据记录">
+                <b-input :value="detail.recordJson" type="textarea" :rows="4" disabled></b-input>
+                <b-button type="text" @click="open = true">
+                  查看详细
+                </b-button>
+              </b-form-item>
+
+              <b-form-item label="修复原因">
+                <b-input v-model="detail.repairCause" type="textarea" :rows="4" disabled></b-input>
+              </b-form-item>
+
+              <b-form-item label="修复内容">
+                <b-input v-model="detail.repairContent" type="textarea" :rows="4" disabled></b-input>
+              </b-form-item>
+
+              <b-form-item label="审核意见" prop="approveDesc">
+                <b-input v-model="form.approveDesc" type="textarea" :rows="4"></b-input>
+              </b-form-item>
+            </b-form>
+
+            <div flex="main:center">
+              <b-button type="primary" @click="handleSubmit('2')">同意修复</b-button>
+              <b-button type="primary" plain @click="handleSubmit('3')">拒绝修复</b-button>
+            </div>
           </div>
-
-          <b-form :model="form" ref="form" :rules="rules" :label-width="100">
-            <b-form-item label="数据记录">
-              <b-input :value="detail.recordJson" type="textarea" :rows="4" disabled></b-input>
-              <b-button type="text" @click="open = true">
-                查看详细
-              </b-button>
-            </b-form-item>
-
-            <b-form-item label="修复原因">
-              <b-input v-model="detail.repairCause" type="textarea" :rows="4" disabled></b-input>
-            </b-form-item>
-
-            <b-form-item label="修复内容">
-              <b-input v-model="detail.repairContent" type="textarea" :rows="4" disabled></b-input>
-            </b-form-item>
-
-            <b-form-item label="审核意见" prop="approveDesc">
-              <b-input v-model="form.approveDesc" type="textarea" :rows="4"></b-input>
-            </b-form-item>
-          </b-form>
-
-          <div flex="main:center">
-            <b-button type="primary" @click="handleSubmit('2')">同意修复</b-button>
-            <b-button type="primary" plain @click="handleSubmit('3')">拒绝修复</b-button>
-          </div>
-        </div>
+        </b-collapse-wrap>
 
         <template slot="footer">
           <b-button @click="$emit('close')">返 回</b-button>
