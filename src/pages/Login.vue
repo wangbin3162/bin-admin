@@ -115,7 +115,7 @@
       },
       loginSuccess(res) {
         if (res.data.code === '0') {
-          const token = res.data.data
+          const token = res.data.data.accessToken
           this.$store.dispatch('setToken', token).then(() => {
             // 重定向对象不存在则返回顶层路径
             this.$router.push('/')
