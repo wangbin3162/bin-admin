@@ -670,6 +670,11 @@
               })
               return
             }
+            // 判断是否有重复标题
+            if (this.checkSameFieldTitle(this.resource.items)) {
+              this.$message({ type: 'danger', content: '信息项包含重复标题，请重新设置后提交！' })
+              return
+            }
             this.btnLoading = true
             let status = this.resource.status
             // 这里修改的时候需要额外判断是否发布，如已经发布，则实际相当于copy一个新增，后台会将原有同名元信息设置为历史状态
@@ -686,6 +691,12 @@
             })
           }
         })
+      },
+      // 判断数组中是否有相同标题名称
+      checkSameFieldTitle(items) {
+        // 存储所有标题名称
+        let titles = items.map(i => i.fieldTitle)
+        return new Set(titles).size !== titles.length
       },
       /* [数据接口] */
       // 通用枚举
