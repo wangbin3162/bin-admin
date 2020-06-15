@@ -3,7 +3,7 @@
     <page-header-wrap v-show="isNormal">
       <v-table-wrap>
         <!-- 查询条件 -->
-        <v-filter-bar>
+        <v-filter-bar @keyup-enter="handleFilter">
           <v-filter-item title="异议编码">
             <b-input v-model="listQuery.searchCode" placeholder="请输入名称"></b-input>
           </v-filter-item>

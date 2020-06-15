@@ -3,7 +3,7 @@
     <page-header-wrap v-show="isNormal">
       <v-table-wrap>
         <!-- 查询条件 -->
-        <v-filter-bar @keydown.enter.native="handleFilter">
+        <v-filter-bar @keyup-enter="handleFilter">
           <v-filter-item title="资源名称">
             <b-input v-model="listQuery.resourceName" placeholder="请输入资源名称"></b-input>
           </v-filter-item>
