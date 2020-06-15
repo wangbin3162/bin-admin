@@ -2,11 +2,11 @@
   <div>
     <page-header-wrap v-show="isNormal">
       <v-table-wrap>
-        <v-filter-bar>
-          <v-filter-item title="方案名称">
+        <v-filter-bar @keyup-enter="handleFilter">
+          <v-filter-item title="方案名称" :span="4">
             <b-input v-model="listQuery.cfgName" placeholder="请输入节点名称" clearable></b-input>
           </v-filter-item>
-          <v-filter-item title="交换类型" :span="5">
+          <v-filter-item title="交换类型" :span="4">
             <b-select v-model="listQuery.exchangeType" clearable placeholder="全部">
               <b-option v-for="(value,key) in exchangeTypeMap" :key="key" :value="key">{{ value }}</b-option>
             </b-select>
@@ -16,7 +16,7 @@
               <b-option v-for="(value,key) in flowDirectionMap" :key="key" :value="key">{{ value }}</b-option>
             </b-select>
           </v-filter-item>
-          <v-filter-item title="状态" :span="4">
+          <v-filter-item title="方案状态" :span="4">
             <b-select v-model="listQuery.status" clearable placeholder="全部">
               <b-option v-for="(value,key) in exchangeStatusMap" :key="key" :value="key">{{ value }}</b-option>
             </b-select>
@@ -65,69 +65,71 @@
       </v-table-wrap>
     </page-header-wrap>
     <page-header-wrap v-show="isEdit" :title="editTitle" show-close @on-close="handleCancel">
-      <v-edit-wrap>
-        <b-form :model="scheme" ref="form" :rules="ruleValidate" :label-width="120">
-          <b-row>
-            <b-col span="12">
-              <b-form-item label="方案名称" prop="cfgName">
-                <b-input v-model="scheme.cfgName" placeholder="请输入方案名称" clearable></b-input>
-              </b-form-item>
-            </b-col>
-            <b-col span="12">
-              <b-form-item label="运行周期" prop="cronStr">
-                <run-cycle v-model="scheme.cronStr"></run-cycle>
-              </b-form-item>
-            </b-col>
-          </b-row>
-          <b-row>
-            <b-col span="12">
-              <b-form-item label="信息流向" prop="flowDirection">
-                <b-select v-model="scheme.flowDirection" append-to-body
-                          @on-change="flowDirectionChange">
-                  <b-option v-for="(value,key) in flowDirectionMap" :key="key" :value="key">{{ value }}</b-option>
-                </b-select>
-              </b-form-item>
-            </b-col>
-          </b-row>
-          <template v-if="scheme.flowDirection&&scheme.flowDirection.length>0">
-            <b-divider dashed></b-divider>
+      <v-edit-wrap transparent>
+        <b-collapse-wrap title="基本信息">
+          <b-form :model="scheme" ref="form" :rules="ruleValidate" :label-width="120">
             <b-row>
               <b-col span="12">
-                <b-form-item label="交换类型" prop="exchangeType">
-                  <b-select v-model="scheme.exchangeType"
-                            @on-change="changeTypeChange" :disabled="changeTypeDisable">
-                    <b-option v-for="(value,key) in exchangeTypeMap" :key="key" :value="key">{{ value }}</b-option>
-                  </b-select>
+                <b-form-item label="方案名称" prop="cfgName">
+                  <b-input v-model="scheme.cfgName" placeholder="请输入方案名称" clearable></b-input>
                 </b-form-item>
               </b-col>
               <b-col span="12">
-                <b-form-item label="传输方式" prop="transmitKind">
-                  <b-select v-model="scheme.transmitKind"
-                            :disabled="scheme.exchangeType==='AUTO'"
-                            @on-change="transmitKindChange">
-                    <b-option v-for="(value,key) in transmitKindMap" :key="key" :value="key">{{ value }}</b-option>
-                  </b-select>
+                <b-form-item label="运行周期" prop="cronStr">
+                  <run-cycle v-model="scheme.cronStr"></run-cycle>
                 </b-form-item>
               </b-col>
             </b-row>
             <b-row>
               <b-col span="12">
-                <b-form-item label="源节点" prop="source">
-                  <node-choose :value="scheme.source" :default-name="scheme.nameSource"
-                               :disabled-btn="disableSource"
-                               :node-type="sourceNodeType" @on-select="handleFillSource"></node-choose>
-                </b-form-item>
-              </b-col>
-              <b-col span="12">
-                <b-form-item label="目标节点" prop="target">
-                  <node-choose :value="scheme.target" :default-name="scheme.nameTarget"
-                               :disabled-btn="disableTarget"
-                               node-type="RDBMS" @on-select="handleFillTarget"></node-choose>
+                <b-form-item label="信息流向" prop="flowDirection">
+                  <b-select v-model="scheme.flowDirection" append-to-body
+                            @on-change="flowDirectionChange">
+                    <b-option v-for="(value,key) in flowDirectionMap" :key="key" :value="key">{{ value }}</b-option>
+                  </b-select>
                 </b-form-item>
               </b-col>
             </b-row>
-          </template>
-        </b-form>
+            <template v-if="scheme.flowDirection&&scheme.flowDirection.length>0">
+              <b-divider dashed></b-divider>
+              <b-row>
+                <b-col span="12">
+                  <b-form-item label="交换类型" prop="exchangeType">
+                    <b-select v-model="scheme.exchangeType"
+                              @on-change="changeTypeChange" :disabled="changeTypeDisable">
+                      <b-option v-for="(value,key) in exchangeTypeMap" :key="key" :value="key">{{ value }}</b-option>
+                    </b-select>
+                  </b-form-item>
+                </b-col>
+                <b-col span="12">
+                  <b-form-item label="传输方式" prop="transmitKind">
+                    <b-select v-model="scheme.transmitKind"
+                              :disabled="scheme.exchangeType==='AUTO'"
+                              @on-change="transmitKindChange">
+                      <b-option v-for="(value,key) in transmitKindMap" :key="key" :value="key">{{ value }}</b-option>
+                    </b-select>
+                  </b-form-item>
+                </b-col>
+              </b-row>
+              <b-row>
+                <b-col span="12">
+                  <b-form-item label="源节点" prop="source">
+                    <node-choose :value="scheme.source" :default-name="scheme.nameSource"
+                                 :disabled-btn="disableSource"
+                                 :node-type="sourceNodeType" @on-select="handleFillSource"></node-choose>
+                  </b-form-item>
+                </b-col>
+                <b-col span="12">
+                  <b-form-item label="目标节点" prop="target">
+                    <node-choose :value="scheme.target" :default-name="scheme.nameTarget"
+                                 :disabled-btn="disableTarget"
+                                 node-type="RDBMS" @on-select="handleFillTarget"></node-choose>
+                  </b-form-item>
+                </b-col>
+              </b-row>
+            </template>
+          </b-form>
+        </b-collapse-wrap>
         <!--保存提交-->
         <template slot="footer">
           <b-button @click="handleCancel">取 消</b-button>
@@ -136,47 +138,58 @@
       </v-edit-wrap>
     </page-header-wrap>
     <page-header-wrap v-show="isCheck" :title="editTitle" show-close @on-close="handleCancel">
-      <v-edit-wrap>
-        <b-row>
-          <b-col span="12">
-            <v-simple-label label="方案名称">{{ scheme.cfgName }}</v-simple-label>
-          </b-col>
-          <b-col span="12">
-            <v-simple-label label="方案编码">{{ scheme.cfgCode }}</v-simple-label>
-          </b-col>
-        </b-row>
-        <b-row>
-          <b-col span="12">
-            <v-simple-label label="交换类型">{{ exchangeTypeMap[scheme.exchangeType] }}</v-simple-label>
-          </b-col>
-          <b-col span="12">
-            <v-simple-label label="信息流向">{{ flowDirectionMap[scheme.flowDirection] }}</v-simple-label>
-          </b-col>
-        </b-row>
-        <b-row>
-          <b-col span="12">
-            <v-simple-label label="原节点">{{ scheme.source }}</v-simple-label>
-          </b-col>
-          <b-col span="12">
-            <v-simple-label label="传输方式">{{ transmitKindMap[scheme.transmitKind] }}</v-simple-label>
-          </b-col>
-        </b-row>
-        <b-row>
-          <b-col span="12">
-            <v-simple-label label="运行周期">{{ scheme.cronStr }}</v-simple-label>
-          </b-col>
-          <b-col span="12">
-            <v-simple-label label="目标节点">{{ scheme.target }}</v-simple-label>
-          </b-col>
-        </b-row>
-        <b-row>
-          <b-col span="12">
-            <v-simple-label label="状态">{{ exchangeStatusMap[scheme.status] }}</v-simple-label>
-          </b-col>
-          <b-col span="12">
-            <v-simple-label label="创建周期">{{ scheme.createDate }}</v-simple-label>
-          </b-col>
-        </b-row>
+      <v-edit-wrap transparent>
+        <b-collapse-wrap title="基本信息">
+          <div>
+            <flow-chart
+              :source="scheme.nameSource"
+              :target="scheme.nameTarget"
+              :flow-direction="flowDirectionMap[scheme.flowDirection]"
+              :transmit-kind="scheme.transmitKind"/>
+          </div>
+          <div>
+            <b-row>
+              <b-col span="12">
+                <v-simple-label label="方案名称">{{ scheme.cfgName }}</v-simple-label>
+              </b-col>
+              <b-col span="12">
+                <v-simple-label label="方案编码">{{ scheme.cfgCode }}</v-simple-label>
+              </b-col>
+            </b-row>
+            <b-row>
+              <b-col span="12">
+                <v-simple-label label="交换类型">{{ exchangeTypeMap[scheme.exchangeType] }}</v-simple-label>
+              </b-col>
+              <b-col span="12">
+                <v-simple-label label="信息流向">{{ flowDirectionMap[scheme.flowDirection] }}</v-simple-label>
+              </b-col>
+            </b-row>
+            <b-row>
+              <b-col span="12">
+                <v-simple-label label="原节点">{{ scheme.nameSource }}</v-simple-label>
+              </b-col>
+              <b-col span="12">
+                <v-simple-label label="传输方式">{{ transmitKindMap[scheme.transmitKind] }}</v-simple-label>
+              </b-col>
+            </b-row>
+            <b-row>
+              <b-col span="12">
+                <v-simple-label label="运行周期">{{ scheme.cronStr }}</v-simple-label>
+              </b-col>
+              <b-col span="12">
+                <v-simple-label label="目标节点">{{ scheme.nameTarget }}</v-simple-label>
+              </b-col>
+            </b-row>
+            <b-row>
+              <b-col span="12">
+                <v-simple-label label="状态">{{ exchangeStatusMap[scheme.status] }}</v-simple-label>
+              </b-col>
+              <b-col span="12">
+                <v-simple-label label="创建周期">{{ scheme.createDate }}</v-simple-label>
+              </b-col>
+            </b-row>
+          </div>
+        </b-collapse-wrap>
         <!--保存提交-->
         <template slot="footer">
           <b-button @click="handleCancel">取 消</b-button>
@@ -191,13 +204,13 @@
   import permission from '../../../common/mixins/permission'
   import * as api from '../../../api/data-manage/switching-scheme.api'
   import { getExchangeStatus, getExchangeType, getFlowDirection, getTransmitKind } from '../../../api/enum.api'
-  import { NodeChoose, RunCycle } from './components/SwitchingScheme'
+  import { NodeChoose, RunCycle, FlowChart } from './components/SwitchingScheme'
   import { getDefaultNode } from '../../../api/data-manage/switching-node.api'
   import { requiredRule } from '../../../common/utils/validate'
   // 非空字段提示
   export default {
     name: 'SwitchingScheme',
-    components: { NodeChoose, RunCycle },
+    components: { NodeChoose, RunCycle, FlowChart },
     mixins: [commonMixin, permission],
     data() {
       return {
