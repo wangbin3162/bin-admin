@@ -6,7 +6,7 @@
         <b-tree :data="treeData" slot="tree" :lock-select="lockTreeSelect"
                 @on-select-change="handTreeCurrentChange"></b-tree>
         <!--查询条件-->
-        <v-filter-bar>
+        <v-filter-bar @keyup-enter="handleFilter">
           <v-filter-item title="名称" label-pos="center">
             <b-input v-model.trim="listQuery.tableName" placeholder="英文名" clearable></b-input>
           </v-filter-item>
@@ -65,10 +65,8 @@
       </v-table-wrap>
     </page-header-wrap>
     <page-header-wrap v-show="isEdit" :title="editTitle" show-close @on-close="handleCancel">
-      <v-edit-wrap>
-        <!--信息项-->
-        <template slot="full">
-          <v-title-bar label="基本信息" class="mb-15"/>
+      <v-edit-wrap transparent>
+        <b-collapse-wrap title="基本信息" collapse>
           <b-form :model="metadata" ref="form" :rules="ruleValidate" label-position="top">
             <b-row :gutter="10">
               <b-col span="6">
@@ -101,18 +99,20 @@
               <b-input v-model="metadata.metadataDesc" placeholder="请输入摘要" type="textarea"></b-input>
             </b-form-item>
           </b-form>
-          <v-title-bar label="信息项" class="mt-10 mb-15">
+        </b-collapse-wrap>
+        <b-collapse-wrap title="信息项" v-if="this.$isNotEmpty(metadata.fields)">
+          <div slot="right">
             <b-button type="primary" transparent @click="handleAddPerson">添加主体</b-button>
             <b-button v-if="this.metadata.idsFlag>0" transparent type="danger" @click="handleClearPerson">
               清空多主体
             </b-button>
-          </v-title-bar>
+          </div>
           <!--信息项表格组件-->
           <meta-fields v-model="metadata.fields" v-if="metadata.personClass && metadata.fields"
                        :person-class="metadata.personClass"
                        :data-type-map="dataTypeMap"
                        @on-add-person="handleAddPerson"></meta-fields>
-        </template>
+        </b-collapse-wrap>
         <!--保存提交-->
         <template slot="footer">
           <b-button @click="handleCancel">取 消</b-button>
@@ -121,22 +121,21 @@
       </v-edit-wrap>
     </page-header-wrap>
     <page-header-wrap v-show="isCheck" :title="editTitle" show-close @on-close="handleCancel">
-      <v-edit-wrap v-if="metadata&&currentTreeNode">
-        <div>
-          <v-key-label label="类目类别" is-half is-first>{{ metadata.dirClassifyName }}</v-key-label>
-          <v-key-label label="英文名" is-half>{{ metadata.tableName }}</v-key-label>
-          <v-key-label label="名称" is-half is-first>{{ metadata.metadataName }}</v-key-label>
-          <v-key-label label="主体类别" is-half>{{ personClassMap[metadata.personClass] }}</v-key-label>
-          <v-key-label label="资源标识符" is-half is-first>{{ metadata.metadataKey }}</v-key-label>
-          <v-key-label label="状态" is-half>{{ statusMap[metadata.status] }}</v-key-label>
-          <v-key-label label="摘要" is-bottom>{{ metadata.metadataDesc }}</v-key-label>
-        </div>
-        <!--信息项-->
-        <template v-if="metadata.fields" slot="full">
-          <b-divider align="left">信息项</b-divider>
-          <!--max-height="432"-->
+      <v-edit-wrap transparent>
+        <b-collapse-wrap title="基本信息" collapse>
+          <div v-if="metadata">
+            <v-key-label label="类目类别" is-half is-first>{{ metadata.dirClassifyName }}</v-key-label>
+            <v-key-label label="英文名" is-half>{{ metadata.tableName }}</v-key-label>
+            <v-key-label label="名称" is-half is-first>{{ metadata.metadataName }}</v-key-label>
+            <v-key-label label="主体类别" is-half>{{ personClassMap[metadata.personClass] }}</v-key-label>
+            <v-key-label label="资源标识符" is-half is-first>{{ metadata.metadataKey }}</v-key-label>
+            <v-key-label label="状态" is-half>{{ statusMap[metadata.status] }}</v-key-label>
+            <v-key-label label="摘要" is-bottom>{{ metadata.metadataDesc }}</v-key-label>
+          </div>
+        </b-collapse-wrap>
+        <b-collapse-wrap title="信息项" collapse>
           <b-table disabled-hover :data="metadata.fields" :columns="fieldsColumns" size="small"></b-table>
-        </template>
+        </b-collapse-wrap>
         <!--保存提交-->
         <template slot="footer">
           <b-button @click="handleCancel">返 回</b-button>
@@ -221,8 +220,8 @@
           { title: '名称', key: 'fieldName' },
           { title: '标题', key: 'fieldTitle', tooltip: true },
           { title: '类型', key: 'dataType', width: 100, align: 'center' },
-          { title: '数据长度', key: 'dataLength', width: 80, align: 'center' },
-          { title: '数据精度', key: 'dataPrecision', width: 80, align: 'center' },
+          { title: '数据长度', key: 'dataLength', width: 100, align: 'center' },
+          { title: '数据精度', key: 'dataPrecision', width: 100, align: 'center' },
           { title: '备注', key: 'fieldDesc' }
         ],
         metadata: null,
@@ -292,7 +291,7 @@
             this.metadata.idsFlag = index
             const newList = res.data.data.map(item => ({
               fieldName: item.fieldName + index,
-              fieldTitle: item.fieldTitle,
+              fieldTitle: item.fieldTitle + index,
               dataType: item.dataType,
               dataLength: item.dataLength,
               controlType: item.controlType,
