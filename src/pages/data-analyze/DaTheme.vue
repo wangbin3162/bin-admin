@@ -10,6 +10,11 @@
           <v-filter-item title="主题编码">
             <b-input v-model.trim="listQuery.code" placeholder="请输入" clearable/>
           </v-filter-item>
+          <v-filter-item title="主题类别">
+            <b-select v-model="listQuery.category" clearable>
+              <b-option v-for="item in categoryOptions" :key="item.code" :value="item.code">{{item.name}}</b-option>
+            </b-select>
+          </v-filter-item>
           <!--添加查询按钮位置-->
           <v-filter-item @on-search="handleFilter" @on-reset="resetQuery"/>
         </v-filter-bar>
@@ -24,7 +29,7 @@
         <b-table :columns="columns" :data="list" :loading="listLoading">
           <template v-slot:category="{row}">{{categoryMap[row.category]}}</template>
           <template v-slot:url="{row}">
-            <b-button type="text" @click="handlePreview(row.url)"
+            <b-button type="text" @click="handlePreview(row.category,row.url)"
                       :disabled="!havePermission('preview') || row.url.length===0">预览
             </b-button>
           </template>
@@ -52,7 +57,7 @@
           <b-form-item label="主题编码" prop="code">
             <b-input v-model="theme.code" placeholder="请输入" clearable></b-input>
           </b-form-item>
-          <b-form-item label="主题类别" prop="url">
+          <b-form-item label="主题类别" prop="category">
             <b-select v-model="theme.category">
               <b-option v-for="item in categoryOptions" :key="item.code" :value="item.code">{{item.name}}</b-option>
             </b-select>
@@ -102,7 +107,8 @@
         dialogFormVisible: false,
         listQuery: {
           name: '',
-          code: ''
+          code: '',
+          category: ''
         },
         columns: [
           { type: 'index', width: 50, align: 'center' },
@@ -194,7 +200,8 @@
           page: 1,
           size: 10,
           name: '',
-          code: ''
+          code: '',
+          category: ''
         }
       },
       // 表单提交
@@ -218,7 +225,11 @@
         })
       },
       // 预览事件
-      handlePreview(path) {
+      handlePreview(category, path) {
+        if (category === 'dpzs' && path.indexOf('http') === 0) {
+          this.$open(path, true)
+          return
+        }
         this.$router.push(path)
       },
       // 查询所有列表

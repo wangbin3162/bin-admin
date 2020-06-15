@@ -9,6 +9,7 @@ export function getThemeList(query) {
       page: query.page - 1,
       name: query.name,
       code: query.code,
+      category: query.code,
       sort: 'createDate,desc'
     }
   })
