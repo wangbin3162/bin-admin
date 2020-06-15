@@ -137,63 +137,7 @@
             // model={{}} rules={this.jsxRules}
             render: (h, { index }) => {
               const row = this.listCopy[index]
-              return (
-                <div class="expand-row">
-                  <b-form>
-                    <b-row gutter={15}>
-                      <b-col span={12}>
-                        <b-form-item label="显示名称">
-                          <b-input value={row.displayName}
-                            onInput={
-                              val => { row.displayName = val }
-                            }></b-input>
-                        </b-form-item>
-                      </b-col>
-
-                      <b-col span={12}>
-                        <b-form-item label="布局方式">
-                          <b-select value={ row.layout }
-                            on-on-change={
-                              val => { row.layout = val }
-                            }>
-                            {
-                              Object.keys(this.reportLayoutTypeEnum).map(key => {
-                                return (
-                                  <b-option key={key} value={key}>
-                                    { this.reportLayoutTypeEnum[key] }
-                                  </b-option>
-                                )
-                              })
-                            }
-                          </b-select>
-                        </b-form-item>
-                      </b-col>
-
-                      <b-col span={24}>
-                        <b-form-item label="字段列表">
-                          <b-input disabled value={
-                            row.fieldNames
-                          }></b-input>
-                        </b-form-item>
-                      </b-col>
-
-                      <b-col span={24}>
-                        <b-form-item label="字段标题">
-                          <b-input disabled value={
-                            row.fieldTitles
-                          }></b-input>
-                        </b-form-item>
-                      </b-col>
-
-                      <b-col span={24}>
-                        <b-form-item label="数据过滤">
-                          <b-input></b-input>
-                        </b-form-item>
-                      </b-col>
-                    </b-row>
-                  </b-form>
-                </div>
-              )
+              return this.expandRender(h, row)
             }
           },
           { type: 'index', width: 50 },
@@ -215,6 +159,169 @@
       this.initEditData()
     },
     methods: {
+      expandRender (h, row) {
+        console.log(row)
+        const displayName = h(
+          'b-form-item',
+          {
+            props: {
+              label: '显示名称',
+              prop: 'displayName'
+            }
+          },
+          [h(
+            'b-input',
+            {
+              props: {
+                value: row.displayName
+              },
+              nativeOn: {
+                input (e) {
+                  row.displayName = e.target.value
+                }
+              }
+            }
+          )]
+        )
+        const layout = h(
+          'b-form-item',
+          {
+            props: {
+              label: '布局方式',
+              prop: 'layout'
+            }
+          },
+          [h(
+            'b-select',
+            {
+              props: {
+                value: row.layout,
+                appendToBody: true
+              },
+              on: {
+                'on-change' (val) {
+                  console.log(val)
+                  row.layout = val
+                }
+              }
+            },
+            Object.keys(this.reportLayoutTypeEnum).map(key => {
+              const text = this.reportLayoutTypeEnum[key]
+              return h(
+                'b-option',
+                {
+                  props: {
+                    key: key,
+                    value: key
+                  }
+                },
+                text
+              )
+            })
+          )]
+        )
+        const fieldNames = h(
+          'b-form-item',
+          {
+            props: {
+              label: '字段列表',
+              prop: 'fieldNames'
+            }
+          },
+          [h(
+            'b-input',
+            {
+              props: {
+                disabled: true,
+                value: row.fieldNames
+              }
+            }
+          )]
+        )
+        const fieldTitles = h(
+          'b-form-item',
+          {
+            props: {
+              label: '字段标题',
+              prop: 'fieldTitles'
+            }
+          },
+          [h(
+            'b-input',
+            {
+              props: {
+                disabled: true,
+                value: row.fieldTitles
+              }
+            }
+          )]
+        )
+        const fieldFilter = h(
+          'b-form-item',
+          {
+            props: {
+              label: '数据过滤'
+            }
+          },
+          [h(
+            'b-input',
+            {
+              props: {
+                value: row.fieldFilter
+              },
+              nativeOn: {
+                input (e) {
+                  row.fieldFilter = e.target.value
+                }
+              }
+            }
+          )]
+        )
+        const bForm = h(
+          'b-form',
+          {
+            props: {
+              model: row,
+              rules: this.jsxRules,
+              labelWidth: 100
+            }
+          },
+          [
+            h(
+              'b-row',
+              { props: { gutter: 15 } },
+              [
+                h(
+                  'b-col',
+                  { props: { span: 12 } },
+                  [displayName]
+                ),
+                h(
+                  'b-col',
+                  { props: { span: 12 } },
+                  [layout]
+                ),
+                h(
+                  'b-col',
+                  { props: { span: 24 } },
+                  [fieldNames]
+                ),
+                h(
+                  'b-col',
+                  { props: { span: 24 } },
+                  [fieldTitles]
+                ),
+                h(
+                  'b-col',
+                  { props: { span: 24 } },
+                  [fieldFilter]
+                )
+              ]
+            )
+          ]
+        )
+        return bForm
+      },
       // 添加资源信息按钮回调
       handleAddSourceInfo () {
         this.openSource = true
