@@ -8,7 +8,7 @@
     </div>
     <div class="layout-aside-children">
       <b-menu @on-select="handleMenuSelect" :theme="theme" class="aside-menu" v-show="sidebar"
-              style="width: 100%;"
+              style="width: 100%;" :open-names="openNames"
               :active-name="activeMenu" accordion ref="sideMenu">
         <template v-for="(menu, menuIndex) in navMenu">
           <menu-item v-if="!menu.children" :menu="menu" :key="menuIndex" :base-path="menu.path"></menu-item>
@@ -38,13 +38,15 @@
   import MenuItem from './MenuItem'
   import Submenu from './Submenu'
   import CollapsedMenu from './CollapsedMenu'
+  import { deepCopy } from '../../../common/utils/assist'
 
   export default {
     name: 'AsideMenu',
     components: { Submenu, MenuItem, CollapsedMenu },
     data() {
       return {
-        activeMenu: ''
+        activeMenu: '',
+        openNames: []
       }
     },
     computed: {
@@ -62,8 +64,15 @@
     watch: {
       $route: {
         handler: function (val) {
+          // 展开的菜单
+          this.openNames = []
+          for (let i = 0; i < val.matched.length - 1; i++) {
+            this.openNames.push(val.matched[i].path)
+          }
           this.$nextTick(() => {
+            // 选中的菜单
             this.activeMenu = val.path
+            this.$refs.sideMenu && this.$refs.sideMenu.updateOpened()
           })
         },
         immediate: true
