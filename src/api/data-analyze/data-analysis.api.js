@@ -31,7 +31,7 @@ export function getTotalResource(query) {
     url: '/da/data/gather/zyxxsl',
     method: 'get',
     params: {
-      createDept: query.departId
+      gatherDept: query.departId
     }
   })
 }
@@ -42,7 +42,7 @@ export function getTotalCount(query) {
     url: '/da/data/gather/sjgjzl',
     method: 'get',
     params: {
-      departId: query.departId
+      gatherDept: query.departId
     }
   })
 }
@@ -53,7 +53,7 @@ export function getCurMonthCount(query) {
     url: '/da/data/gather/bygjsjl',
     method: 'get',
     params: {
-      departId: query.departId
+      gatherDept: query.departId
     }
   })
 }
@@ -64,7 +64,7 @@ export function getPreMonthCount(query) {
     url: '/da/data/gather/sygjsjl',
     method: 'get',
     params: {
-      departId: query.departId
+      gatherDept: query.departId
     }
   })
 }
@@ -75,7 +75,7 @@ export function getCompleteRate(query) {
     url: '/da/data/gather/sjwzl',
     method: 'get',
     params: {
-      departId: query.departId
+      gatherDept: query.departId
     }
   })
 }
@@ -86,7 +86,7 @@ export function getCurCompleteRate(query) {
     url: '/da/data/gather/byxxgjtj',
     method: 'get',
     params: {
-      departId: query.departId
+      gatherDept: query.departId
     }
   })
 }
@@ -97,7 +97,7 @@ export function getMonthData(query) {
     url: '/da/data/gather/ydxxgjqs',
     method: 'get',
     params: {
-      createDept: query.departId,
+      gatherDept: query.departId,
       startDate: query.startDate,
       endDate: query.endDate
     }
@@ -114,7 +114,7 @@ export function getYearData(query) {
     url: '/da/data/gather/ndxxgjqszy',
     method: 'get',
     params: {
-      createDept: query.departId,
+      gatherDept: query.departId,
       startDate: query.startDate,
       endDate: query.endDate,
       resourceKeys: query.resourceKeys
@@ -133,7 +133,7 @@ export function getDataHistory(query) {
     url: '/da/data/gather/xxgjls',
     method: 'get',
     params: {
-      departId: query.departId,
+      gatherDept: query.departId,
       month: query.month
     }
   })
