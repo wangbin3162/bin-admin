@@ -1,91 +1,87 @@
 <template>
   <div class="repair-apply-detail">
     <page-header-wrap :title="title" show-close @on-close="$emit('close')">
-      <v-edit-wrap>
-        <div slot="full" style="position: relative;">
-          <b-loading fix show-text="加载中...." v-if="loading"></b-loading>
-          <b-collapse :value="['1', '2']" simple>
-            <b-collapse-panel title="修复主体详细" name="1">
-              <table class="table">
-                <tr>
-                  <td>主体名称：</td>
-                  <td>{{ detail.name }}</td>
-                  <td>主体标识：</td>
-                  <td>{{ detail.personId }}</td>
-                </tr>
-                <tr>
-                  <td>申请目录：</td>
-                  <td>{{ detail.resourceName }}</td>
-                  <td>目录标识：</td>
-                  <td>{{ detail.resourceKey }}</td>
-                </tr>
-                <tr>
-                  <td>数据记录：</td>
-                  <td colspan="3">
-                    <b-input type="textarea" :value="detail.recordJson" :rows="4" disabled></b-input>
-                    <b-button type="text" @click="open = true" v-if ="detail.dealMode !='2'">
-                      查看详细
-                    </b-button>
-                  </td>
-                </tr>
-              </table>
-            </b-collapse-panel>
+      <v-edit-wrap transparent>
+        <b-collapse-wrap title="修复主体详细" collapse>
+          <div style="position: relative;">
+            <b-loading fix show-text="加载中...." v-if="loading"></b-loading>
+            <table class="table">
+              <tr>
+                <td>主体名称：</td>
+                <td>{{ detail.name }}</td>
+                <td>主体标识：</td>
+                <td>{{ detail.personId }}</td>
+              </tr>
+              <tr>
+                <td>申请目录：</td>
+                <td>{{ detail.resourceName }}</td>
+                <td>目录标识：</td>
+                <td>{{ detail.resourceKey }}</td>
+              </tr>
+              <tr>
+                <td>数据记录：</td>
+                <td colspan="3">
+                  <b-input type="textarea" :value="detail.recordJson" :rows="4" disabled></b-input>
+                  <b-button type="text" @click="open = true" v-if ="detail.dealMode !='2'">
+                    查看详细
+                  </b-button>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </b-collapse-wrap>
 
-            <div class="line"></div>
-
-            <b-collapse-panel title="修复流程详细" name="2">
-              <table class="table">
-                <tr>
-                  <td>申请人姓名：</td>
-                  <td>{{ detail.applyName }}</td>
-                  <td>申请人部门：</td>
-                  <td>{{ detail.applyDeptName }}</td>
-                </tr>
-                <tr>
-                  <td>申请时间：</td>
-                  <td>{{ detail.applyDate }}</td>
-                  <td>资源表名：</td>
-                  <td>{{ detail.tableName }}</td>
-                </tr>
-                <tr>
-                  <td>流程状态：</td>
-                  <td>{{ statusEnum[detail.status] }}</td>
-                </tr>
-                <tr>
-                  <td>流程附件：</td>
-                  <td colspan="3">
-                    <div v-for="item in detail.attachments" :key="item.id">
-                      <attach-dl-btn
-                        :id="item.id"
-                        :fileName="item.fileName"
-                        btnType="text">
-                        {{ item.fileName }}
-                      </attach-dl-btn>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>修复原因：</td>
-                  <td>{{ detail.repairCause }}</td>
-                  <td>修复内容：</td>
-                  <td>{{ detail.repairContent }}</td>
-                </tr>
-                <tr>
-                  <td>审核人：</td>
-                  <td>{{ detail.approveUserName }}</td>
-                  <td>审核时间：</td>
-                  <td>{{ detail.approveDate }}</td>
-                </tr>
-                <tr>
-                  <td>审核结果：</td>
-                  <td>{{ detail.status=='2'?detail.dealMode =='2'? '同意修复':'拒绝修复':'' }}</td>
-                  <td>审核意见：</td>
-                  <td>{{ detail.approveDesc }}</td>
-                </tr>
-              </table>
-            </b-collapse-panel>
-          </b-collapse>
-        </div>
+        <b-collapse-wrap title="修复流程详细" collapse :value="!loading">
+          <table class="table">
+            <tr>
+              <td>申请人姓名：</td>
+              <td>{{ detail.applyName }}</td>
+              <td>申请人部门：</td>
+              <td>{{ detail.applyDeptName }}</td>
+            </tr>
+            <tr>
+              <td>申请时间：</td>
+              <td>{{ detail.applyDate }}</td>
+              <td>资源表名：</td>
+              <td>{{ detail.tableName }}</td>
+            </tr>
+            <tr>
+              <td>流程状态：</td>
+              <td>{{ statusEnum[detail.status] }}</td>
+            </tr>
+            <tr>
+              <td>流程附件：</td>
+              <td colspan="3">
+                <div v-for="item in detail.attachments" :key="item.id">
+                  <attach-dl-btn
+                    :id="item.id"
+                    :fileName="item.fileName"
+                    btnType="text">
+                    {{ item.fileName }}
+                  </attach-dl-btn>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>修复原因：</td>
+              <td>{{ detail.repairCause }}</td>
+              <td>修复内容：</td>
+              <td>{{ detail.repairContent }}</td>
+            </tr>
+            <tr>
+              <td>审核人：</td>
+              <td>{{ detail.approveUserName }}</td>
+              <td>审核时间：</td>
+              <td>{{ detail.approveDate }}</td>
+            </tr>
+            <tr>
+              <td>审核结果：</td>
+              <td>{{ detail.status=='2'?detail.dealMode =='2'? '同意修复':'拒绝修复':'' }}</td>
+              <td>审核意见：</td>
+              <td>{{ detail.approveDesc }}</td>
+            </tr>
+          </table>
+        </b-collapse-wrap>
 
         <template slot="footer">
           <b-button @click="$emit('close')">返 回</b-button>

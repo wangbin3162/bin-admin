@@ -1,9 +1,8 @@
 <template>
   <div>
     <page-header-wrap :title="title" show-close @on-close="$emit('close')">
-      <v-edit-wrap>
-        <div slot="full">
-          <v-title-bar label="基本信息" tipPos="left" class="mb-20"></v-title-bar>
+      <v-edit-wrap transparent>
+        <b-collapse-wrap title="基本信息">
           <b-form :model="form" ref="form" :rules="rules" :label-width="100">
             <b-row>
               <b-col span="12">
@@ -43,7 +42,7 @@
               <b-input v-model="form.bz" placeholder="请输入备注" type="textarea"></b-input>
             </b-form-item>
           </b-form>
-        </div>
+        </b-collapse-wrap>
 
         <template slot="footer">
           <b-button @click="$emit('close')">取 消</b-button>
