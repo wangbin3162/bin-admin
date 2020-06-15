@@ -5,7 +5,7 @@
 </template>
 
 <script>
-  import Analyze from './data-analyze/Analyze'
+  import Analyze from './data-analyze/theme-sample/Analyze'
 
   export default {
     name: 'Home',

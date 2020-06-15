@@ -72,6 +72,9 @@
                               :showText="false"></b-progress>
                 </span>
                 <span>再录{{counts.preCount - counts.curCount}}条就超过上月了哦，继续加油！</span>
+                <router-link to="/dataManage/dataExchange/gather"
+                             style="color:#fff;text-decoration: underline;padding-left: 30px;">去采集
+                </router-link>
               </div>
               <div class="trend">
                 <div class="chart-title">月度信息归集趋势</div>
@@ -110,7 +113,7 @@
 
                 <div flex="main:justify cross:baseline">
                   <b-select style="width: 150px; margin-right: 30px;"
-                    size="mini" clearable filterable @on-change="handleResourceChange">
+                            size="mini" clearable filterable @on-change="handleResourceChange">
                     <b-option v-for="item in resources" :value="item.key" :key="item.key">
                       {{ item.text }}
                     </b-option>
@@ -119,7 +122,7 @@
                   <div class="tab-wrapper">
                     <div flex="">
                       <div class="tab" v-for="(year, index) in yearsText" :key="index"
-                        @click="handleTabBtn(index)">
+                           @click="handleTabBtn(index)">
                         {{ year }}年
                       </div>
                     </div>
@@ -152,9 +155,9 @@
 </template>
 
 <script>
-  import commonMixin from '../../common/mixins/mixin'
-  import permission from '../../common/mixins/permission'
-  import * as api from '../../api/data-analyze/data-analysis.api'
+  import commonMixin from '../../../common/mixins/mixin'
+  import permission from '../../../common/mixins/permission'
+  import * as api from '../../../api/data-analyze/data-analysis.api'
   import { formatDataSet } from 'bin-charts/src/utils/util'
 
   require('bin-charts/src/theme/charts-theme')
@@ -246,7 +249,7 @@
         this.listQuery.departId = this.$store.state.user.info.departId
       },
       // 年度归集信息select回调
-      handleResourceChange (val) {
+      handleResourceChange(val) {
         if (val) {
           this.listQuery.resourceKeys = [val]
         } else {
@@ -255,7 +258,7 @@
         this.getYearData(this.tab)
       },
       // 年度归集信息tab按钮回调
-      handleTabBtn (curTab) {
+      handleTabBtn(curTab) {
         this.tab = curTab // curTab可用做计算之前的年份的偏移量
         this.getYearData(curTab)
       },
@@ -311,7 +314,7 @@
         this.getYearData()
       },
       // 2.4.7 月度信息归集趋势
-      getMonthData () {
+      getMonthData() {
         // 取当前时间半年前
         const [startDate, endDate] = this.timeHandler(150)
         this.listQuery.startDate = startDate
@@ -325,7 +328,7 @@
         })
       },
       // 获取年度归集趋势
-      getYearData (offset = 0) {
+      getYearData(offset = 0) {
         // 如果是当前年则取当前时间一年前
         let [startDate, endDate] = this.timeHandler(360)
         if (offset > 0) { // 不是当前年则取之前年份的01-12
@@ -343,7 +346,7 @@
         })
       },
       // 处理时间，取多天之前。例如一月前 30 三月前 90类似情况。
-      timeHandler (days) {
+      timeHandler(days) {
         let getDateStr = (date) => {
           const year = date.getFullYear()
           let month = date.getMonth() + 1
@@ -363,7 +366,7 @@
         return [startDate, endDate]
       },
       // 获取部门资源列表 用于 select
-      async getResources () {
+      async getResources() {
         try {
           const res = await api.getResources()
           this.resources = res
@@ -375,13 +378,13 @@
           console.error(error)
         }
       },
-      getRandom (start, end, fixed = 0) {
+      getRandom(start, end, fixed = 0) {
         let differ = end - start
         let random = Math.random()
         return (start + differ * random).toFixed(fixed)
       },
       // 构建月度归集信息默认图表数据
-      buildDefaultDataMonth () {
+      buildDefaultDataMonth() {
         const date = new Date()
         const year = date.getFullYear()
         const curMonth = date.getMonth() + 1
@@ -402,7 +405,7 @@
         dateArr.reverse()
         this.lineChartOption.dataset = formatDataSet({ xField: 'name', yField: 'value' }, dateArr)
       },
-      buildDefaultDataYear () {
+      buildDefaultDataYear() {
         // 构建年度归集信息默认图表数据
         const date = new Date()
         const dateArr = []
@@ -417,7 +420,7 @@
         this.smoothLineChartOption.dataset = formatDataSet({ xField: 'name', yField: 'value' }, dateArr)
       },
       // 一些初始化操作
-      async init () {
+      async init() {
         // 生成年度归集趋势的tab按钮
         const curYear = new Date().getFullYear()
         this.yearsText = [curYear, curYear - 1, curYear - 2]

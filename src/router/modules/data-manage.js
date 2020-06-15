@@ -98,12 +98,6 @@ export default {
           name: 'Gather',
           component: () => import(/* webpackChunkName: "res" */ '../../pages/data-manage/data-exchange/Gather'),
           meta: { title: '我的采集' }
-        },
-        {
-          path: 'collectAnalysis',
-          name: 'CollectAnalysis',
-          component: () => import(/* webpackChunkName: "res" */ '../../pages/data-manage/data-exchange/CollectAnalysis'),
-          meta: { title: '归集分析' }
         }
       ]
     }

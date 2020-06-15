@@ -10,12 +10,6 @@ export default {
   meta: { title: '数据分析', icon: 'ios-analytics' },
   children: [
     {
-      path: 'analyze',
-      name: 'Analyze',
-      component: () => import(/* webpackChunkName: "analysis" */ '../../pages/data-analyze/Analyze'),
-      meta: { title: '采集分析' }
-    },
-    {
       path: 'daTheme',
       name: 'DaTheme',
       component: () => import(/* webpackChunkName: "analysis" */ '../../pages/data-analyze/DaTheme'),
@@ -32,6 +26,30 @@ export default {
       name: 'FileClassify',
       component: () => import(/* webpackChunkName: "analysis" */ '../../pages/data-analyze/FileClassify'),
       meta: { title: '档案分类' }
+    },
+    {
+      path: 'themeSample',
+      name: 'ThemeSample',
+      component: {
+        render: h => {
+          return h('router-view')
+        }
+      },
+      meta: { title: '主题案例' },
+      children: [
+        {
+          path: 'analyze',
+          name: 'Analyze',
+          component: () => import(/* webpackChunkName: "themeSample" */ '../../pages/data-analyze/theme-sample/Analyze'),
+          meta: { title: '采集分析' }
+        },
+        {
+          path: 'collectAnalysis',
+          name: 'CollectAnalysis',
+          component: () => import(/* webpackChunkName: "themeSample" */ '../../pages/data-analyze/theme-sample/CollectAnalysis'),
+          meta: { title: '归集分析' }
+        }
+      ]
     }
   ]
 }
