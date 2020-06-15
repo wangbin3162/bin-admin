@@ -229,7 +229,8 @@
           fieldNames: '',
           fieldTitles: '',
           resProperty: '',
-          sortNum: 0
+          sortNum: 0,
+          classifyCode: this.currentTreeNode ? this.currentTreeNode.code : ''
         }
       },
       /* [数据接口] */

@@ -34,7 +34,8 @@ export function createDocs(doc) {
       fieldNames: doc.fieldNames,
       fieldTitles: doc.fieldTitles,
       resProperty: doc.resProperty,
-      sortNum: doc.sortNum
+      sortNum: doc.sortNum,
+      classifyCode: doc.classifyCode
     }
   })
 }
@@ -53,7 +54,8 @@ export function modifyDocs(doc) {
       fieldNames: doc.fieldNames,
       fieldTitles: doc.fieldTitles,
       resProperty: doc.resProperty,
-      sortNum: doc.sortNum
+      sortNum: doc.sortNum,
+      classifyCode: doc.classifyCode
     }
   })
 }
