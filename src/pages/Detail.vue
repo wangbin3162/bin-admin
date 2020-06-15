@@ -298,8 +298,8 @@
       },
       // 当前开启的code值是否是基本信息或者户籍信息
       baseInfoActive() {
-        return this.activeFloatCode === 'C0102' || this.activeFloatCode === 'C0103' || this.activeFloatCode === 'D0102' ||
-          this.activeFloatCode === 'D0103'
+        return this.activeFloatCode === 'C0102' || this.activeFloatCode === 'C0103' || this.activeFloatCode === 'D1100101' ||
+          this.activeFloatCode === 'D1200101'
       }
     },
     created() {
