@@ -35,7 +35,7 @@
 
             <b-dropdown slot="right" trigger="custom" :visible="visible" @on-click-outside="visible = false">
               <a href="javascript:void(0)" @click="visible = true">
-                下拉菜单
+                字段选择
                 <b-icon name="ios-arrow-down"></b-icon>
               </a>
               <b-dropdown-menu slot="list" class="ml-10" style="max-height: 500px; overflow: auto;">
