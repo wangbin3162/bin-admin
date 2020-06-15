@@ -436,6 +436,7 @@
         row.fieldNames = fieldNames
         row.fieldTitles = fieldTitles
         row.onelineNames = onelineNames
+        this.infoList[this.curIndex].customExpand = true
       },
       async handleSubmit () {
         this.form.items = this.infoList
