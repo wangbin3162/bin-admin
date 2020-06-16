@@ -48,8 +48,16 @@
             <b-button type="text" @click="handleCheck(row)">{{ row.legBaseInfo.compName }}</b-button>
           </template>
 
+          <template v-slot:idTypeName="{ row }">
+            <span t-ellipsis :title="row.legBaseInfo.idTypeName">
+              {{ row.legBaseInfo.idTypeName }}
+            </span>
+          </template>
+
           <template v-slot:idCode="{ row }">
-            {{ row.legBaseInfo.idCode }}
+            <span t-ellipsis :title="row.legBaseInfo.idCode">
+              {{ row.legBaseInfo.idCode }}
+            </span>
           </template>
 
           <template v-slot:createDate="{ row }">
@@ -144,8 +152,9 @@
         },
         columns: [
           { title: '名称', slot: 'compName' },
+          { title: '证件类型', slot: 'idTypeName', align: 'center' },
           {
-            title: '统一社会信用码',
+            title: '证件号码',
             slot: 'idCode',
             ellipsis: true,
             tooltip: true,
@@ -155,7 +164,7 @@
           { title: '等级标准', key: 'ratingName', align: 'center' },
           { title: '评价得分', key: 'score', align: 'center' },
           { title: '评价等级', key: 'levelCode', align: 'center' },
-          { title: '评价日期', slot: 'createDate', align: 'center' },
+          // { title: '评价日期', slot: 'createDate', align: 'center' },
           { title: '操作', slot: 'action', width: 120, align: 'center' }
         ],
         defaultModelId: null, // 存储默认模型id
