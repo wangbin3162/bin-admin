@@ -1,12 +1,11 @@
 <template>
   <div>
     <page-header-wrap :title="title" show-close @on-close="$emit('close')">
-      <v-edit-wrap>
-        <div slot="full">
-          <v-title-bar label="基本信息" tipPos="left" class="mb-20"></v-title-bar>
+      <v-edit-wrap transparent>
+        <b-collapse-wrap title="基本信息">
           <b-form :model="form" ref="form" :rules="rules" :label-width="100">
             <b-row>
-               <b-col span="24">
+              <b-col span="24">
                 <b-col span="12">
                   <b-form-item label="申请目录" prop="resourceKey">
                     <b-select v-model="form.resourceKey">
@@ -60,7 +59,7 @@
               <b-input v-model="form.repairContent" type="textarea" :rows="4"></b-input>
             </b-form-item>
           </b-form>
-        </div>
+        </b-collapse-wrap>
 
         <template slot="footer">
           <b-button @click="$emit('close')">取 消</b-button>

@@ -1,24 +1,20 @@
 <template>
   <div class="level-standard-detail">
     <page-header-wrap :title="title" show-close @on-close="$emit('close')">
-      <v-edit-wrap>
-        <div slot="full" style="position: relative;">
-          <b-loading fix show-text="loading" v-if="loading"></b-loading>
-          <v-title-bar label="等级详情" class="mb-15"></v-title-bar>
-          <b-row type="flex" justify="center">
-            <b-col span="18">
-              <div>
-                <v-key-label label="名称">{{ detailData.ratingName }}</v-key-label>
-                <v-key-label label="编码">{{ detailData.ratingCode }}</v-key-label>
-                <v-key-label label="分制">{{ pointsTypeEnum[detailData.points] }}</v-key-label>
-                <v-key-label label="描述" is-bottom>{{ detailData.ratingDesc }}</v-key-label>
-              </div>
-            </b-col>
-          </b-row>
+      <v-edit-wrap transparent>
+        <b-collapse-wrap title="基本信息" collapse>
+          <div style="position: relative;">
+            <b-loading fix show-text="loading" v-if="loading"></b-loading>
+            <v-key-label label="名称">{{ detailData.ratingName }}</v-key-label>
+            <v-key-label label="编码">{{ detailData.ratingCode }}</v-key-label>
+            <v-key-label label="分制">{{ pointsTypeEnum[detailData.points] }}</v-key-label>
+            <v-key-label label="描述" is-bottom>{{ detailData.ratingDesc }}</v-key-label>
+          </div>
+        </b-collapse-wrap>
 
-          <v-title-bar label="评分标准" class="mb-15"></v-title-bar>
+        <b-collapse-wrap title="评分标准" collaspe :value="!loading">
           <b-table :columns="columns" :data="detailData.items" size="small"></b-table>
-        </div>
+        </b-collapse-wrap>
 
         <template slot="footer">
           <b-button @click="$emit('close')">返 回</b-button>

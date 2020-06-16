@@ -3,7 +3,7 @@
     <page-header-wrap v-show="isNormal">
       <v-table-wrap>
         <!--查询条件-->
-        <v-filter-bar>
+        <v-filter-bar @keyup-enter="handleFilter">
           <v-filter-item title="备忘录名称">
             <b-input v-model.trim="listQuery.memoName" placeholder="请输入" clearable/>
           </v-filter-item>
@@ -51,65 +51,62 @@
       </v-table-wrap>
     </page-header-wrap>
     <page-header-wrap v-show="isEdit" :title="editTitle" show-close @on-close="handleCancel">
-      <v-edit-wrap>
-        <template slot="full">
-          <b-collapse v-model="infoOpen" simple>
-            <b-collapse-panel title="基础信息" name="1">
-              <b-form :model="memo" ref="form" :rules="ruleValidate" :label-width="130">
-                <b-form-item label="备忘录名称" prop="memoName">
-                  <b-input v-model="memo.memoName" placeholder="请输入备忘录名称" clearable/>
+      <v-edit-wrap transparent>
+        <b-collapse-wrap title="基本信息" collapse>
+          <b-form :model="memo" ref="form" :rules="ruleValidate" :label-width="130">
+            <b-form-item label="备忘录名称" prop="memoName">
+              <b-input v-model="memo.memoName" placeholder="请输入备忘录名称" clearable/>
+            </b-form-item>
+            <b-row :gutter="20">
+              <b-col span="12">
+                <b-form-item label="发起部门" prop="initiateDept">
+                  <urp-dept-select v-model="memo.initiateDept" :default-name="memo.initiateDeptName" show-btn
+                                    @on-choose="({departName})=>{memo.initiateDeptName=departName}"/>
                 </b-form-item>
-                <b-row :gutter="20">
-                  <b-col span="12">
-                    <b-form-item label="发起部门" prop="initiateDept">
-                      <urp-dept-select v-model="memo.initiateDept" :default-name="memo.initiateDeptName" show-btn
-                                       @on-choose="({departName})=>{memo.initiateDeptName=departName}"/>
-                    </b-form-item>
-                  </b-col>
-                  <b-col span="12">
-                    <b-form-item label="备忘录类型" prop="memoType">
-                      <b-select v-model="memo.memoType" placeholder="全部" clearable  :disabled="dialogStatus === 'modify'"  @on-change="memoTypeChange">
-                        <b-option v-for="(val,key) in memoTypeMap" :key="key" :value="key">{{ val }}</b-option>
-                      </b-select>
-                    </b-form-item>
-                  </b-col>
-                </b-row>
-                <b-row :gutter="20">
-                  <b-col span="12">
-                    <b-form-item label="备忘录状态" prop="memoStatus">
-                      <b-select v-model="memo.memoStatus" disabled>
-                        <b-option v-for="(val,key) in memoStatusMap" :key="key" :value="key">{{ val }}</b-option>
-                      </b-select>
-                    </b-form-item>
-                  </b-col>
-                  <b-col span="12">
-                    <b-form-item label="文号" prop="fileCode">
-                      <b-input v-model="memo.fileCode" placeholder="请输入文号" clearable/>
-                    </b-form-item>
-                  </b-col>
-                </b-row>
-                <b-row :gutter="20">
-                  <b-col span="12">
-                    <b-form-item label="签署日期" prop="signDate">
-                      <b-date-picker type="date" :value="memo.signDate"
-                                     @on-change="(date)=>{memo.signDate=date}"/>
-                    </b-form-item>
-                  </b-col>
-                  <b-col span="12">
-                    <b-form-item label="联合部门数" prop="unionNum">
-                      <b-input v-model="memo.unionNum" disabled/>
-                    </b-form-item>
-                  </b-col>
-                </b-row>
-              </b-form>
-            </b-collapse-panel>
-            <b-collapse-panel title="参与部门及关联措施" name="2">
-              <dept-measures ref="deptMeasures" :departs="departsBuffer" :dept-measures="deptMeasuresBuffer" :memoType="memo.memoType"
-                             @on-change="handleDeptMeasuresChange"/>
-            </b-collapse-panel>
-          </b-collapse>
-          <!-- <b-code-editor class="mt-20" v-if="isEdit" :value="JSON.stringify(memo,null,2)" readonly/>-->
-        </template>
+              </b-col>
+              <b-col span="12">
+                <b-form-item label="备忘录类型" prop="memoType">
+                  <b-select v-model="memo.memoType" placeholder="全部" clearable  :disabled="dialogStatus === 'modify'"  @on-change="memoTypeChange">
+                    <b-option v-for="(val,key) in memoTypeMap" :key="key" :value="key">{{ val }}</b-option>
+                  </b-select>
+                </b-form-item>
+              </b-col>
+            </b-row>
+            <b-row :gutter="20">
+              <b-col span="12">
+                <b-form-item label="备忘录状态" prop="memoStatus">
+                  <b-select v-model="memo.memoStatus" disabled>
+                    <b-option v-for="(val,key) in memoStatusMap" :key="key" :value="key">{{ val }}</b-option>
+                  </b-select>
+                </b-form-item>
+              </b-col>
+              <b-col span="12">
+                <b-form-item label="文号" prop="fileCode">
+                  <b-input v-model="memo.fileCode" placeholder="请输入文号" clearable/>
+                </b-form-item>
+              </b-col>
+            </b-row>
+            <b-row :gutter="20">
+              <b-col span="12">
+                <b-form-item label="签署日期" prop="signDate">
+                  <b-date-picker type="date" :value="memo.signDate"
+                                  @on-change="(date)=>{memo.signDate=date}"/>
+                </b-form-item>
+              </b-col>
+              <b-col span="12">
+                <b-form-item label="联合部门数" prop="unionNum">
+                  <b-input v-model="memo.unionNum" disabled/>
+                </b-form-item>
+              </b-col>
+            </b-row>
+          </b-form>
+        </b-collapse-wrap>
+        <b-collapse-wrap title="参与部门及关联措施" collapse>
+          <dept-measures ref="deptMeasures" :departs="departsBuffer" :dept-measures="deptMeasuresBuffer" :memoType="memo.memoType"
+                          @on-change="handleDeptMeasuresChange"/>
+        </b-collapse-wrap>
+
+        <!-- <b-code-editor class="mt-20" v-if="isEdit" :value="JSON.stringify(memo,null,2)" readonly/>-->
         <!--保存提交-->
         <template slot="footer">
           <b-button @click="handleCancel">取 消</b-button>
@@ -118,53 +115,45 @@
       </v-edit-wrap>
     </page-header-wrap>
     <page-header-wrap v-show="isCheck" :title="editTitle" show-close @on-close="handleCancel">
-      <div>
-        <b-collapse value="1" simple>
-          <b-collapse-panel title="基础信息" name="1">
-            <v-key-label label="备忘录名称">{{ memo.memoName }}</v-key-label>
-            <v-key-label label="发起部门" is-first is-half>{{ memo.initiateDeptName }}</v-key-label>
-            <v-key-label label="备忘录类型" is-half>{{ memoTypeMap[memo.memoType] }}</v-key-label>
-            <v-key-label label="备忘录状态" is-first is-half> {{ memoStatusMap[memo.memoStatus] }}</v-key-label>
-            <v-key-label label="文案号" is-half>{{ memo.fileCode }}</v-key-label>
-            <v-key-label label="签署日期" is-first is-half is-bottom>{{ memo.signDate }}</v-key-label>
-            <v-key-label label="联合部门数" is-half is-bottom>{{ memo.unionNum }}</v-key-label>
-          </b-collapse-panel>
-        </b-collapse>
-      </div>
-      <div style="margin-top: 20px;">
-        <b-collapse value="1" simple>
-          <b-collapse-panel title="参与部门及关联措施" name="1">
-            <div class="top-wrap" flex="box:first">
-              <div class="total" style="width: 280px;">参与部门({{ deptMeasuresBuffer.length }})</div>
-              <div class="total">处置措施<!--({{ allMeasures }})--></div>
-            </div>
-            <div class="dept-measures" flex="box:first">
-              <div class="departs">
-                <b-timeline>
-                  <b-anchor show-ink @on-select="handleSelectDept">
-                    <b-anchor-link v-for="dept in deptMeasuresBuffer" :key="dept.id"
-                                   :href="`#${dept.id}`" :title="dept.name"></b-anchor-link>
-                  </b-anchor>
-                </b-timeline>
+      <b-collapse-wrap title="基本信息" collapse>
+        <v-key-label label="备忘录名称">{{ memo.memoName }}</v-key-label>
+        <v-key-label label="发起部门" is-first is-half>{{ memo.initiateDeptName }}</v-key-label>
+        <v-key-label label="备忘录类型" is-half>{{ memoTypeMap[memo.memoType] }}</v-key-label>
+        <v-key-label label="备忘录状态" is-first is-half> {{ memoStatusMap[memo.memoStatus] }}</v-key-label>
+        <v-key-label label="文案号" is-half>{{ memo.fileCode }}</v-key-label>
+        <v-key-label label="签署日期" is-first is-half is-bottom>{{ memo.signDate }}</v-key-label>
+        <v-key-label label="联合部门数" is-half is-bottom>{{ memo.unionNum }}</v-key-label>
+      </b-collapse-wrap>
+      <b-collapse-wrap title="参与部门及关联措施" collapse>
+        <div class="top-wrap" flex="box:first">
+          <div class="total" style="width: 280px;">参与部门({{ deptMeasuresBuffer.length }})</div>
+          <div class="total">处置措施<!--({{ allMeasures }})--></div>
+        </div>
+        <div class="dept-measures" flex="box:first">
+          <div class="departs">
+            <b-timeline>
+              <b-anchor show-ink @on-select="handleSelectDept">
+                <b-anchor-link v-for="dept in deptMeasuresBuffer" :key="dept.id"
+                                :href="`#${dept.id}`" :title="dept.name"></b-anchor-link>
+              </b-anchor>
+            </b-timeline>
+          </div>
+          <div class="measures">
+            <div class="item" v-for="dept in deptMeasuresBuffer" :key="dept.id">
+              <div class="dept-name" :class="{'active':dept.id===activeDeptID}"
+                    :id="dept.id">
+                {{ dept.name }}
+                <span style="float: right;margin-right: 20px;font-size: 14px">{{dept.receiveStatus === '0' ? '未接收':'已接收' }}</span>
               </div>
-              <div class="measures">
-                <div class="item" v-for="dept in deptMeasuresBuffer" :key="dept.id">
-                  <div class="dept-name" :class="{'active':dept.id===activeDeptID}"
-                       :id="dept.id">
-                    {{ dept.name }}
-                    <span style="float: right;margin-right: 20px;font-size: 14px">{{dept.receiveStatus === '0' ? '未接收':'已接收' }}</span>
-                  </div>
-                  <div class="measure-item" v-for="measure in dept.measures"  :key="measure.id">
-                    <b-checkbox :value="measure.isUse==='1'" v-if="measure.isUse==='1'"  disabled>
-                      {{ measure.measureName }}
-                    </b-checkbox>
-                  </div>
-                </div>
+              <div class="measure-item" v-for="measure in dept.measures"  :key="measure.id">
+                <b-checkbox :value="measure.isUse==='1'" v-if="measure.isUse==='1'"  disabled>
+                  {{ measure.measureName }}
+                </b-checkbox>
               </div>
             </div>
-          </b-collapse-panel>
-        </b-collapse>
-      </div>
+          </div>
+        </div>
+      </b-collapse-wrap>
     </page-header-wrap>
   </div>
 </template>

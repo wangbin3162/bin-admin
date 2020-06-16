@@ -21,13 +21,10 @@
             <b-row>
               <b-col span="12">
                 <b-form-item label="主体类别" prop="personClass">
-                  <b-cascader v-if="!editData" v-model="personClass"
-                    :data="subjectType"
-                    change-on-select
-                    @on-change="handleSubjectChange"></b-cascader>
-                  <b-input v-else
-                    :value="personClassEnum[form.personClass]"
-                    :disabled="editDisabled"></b-input>
+                  <b-select v-model="form.personClass" :disabled="editDisabled">
+                    <b-option value="A01">自然人</b-option>
+                    <b-option value="A02">法人和其他组织</b-option>
+                  </b-select>
                 </b-form-item>
               </b-col>
               <b-col span="12">
@@ -126,47 +123,43 @@
       this.init()
     },
     methods: {
-      // 主题类别回调
-      handleSubjectChange (value) {
-        this.form.personClass = value[value.length - 1]
-      },
       // 等级标准选择的回调
       handleLevelSelected ({ id, ratingName }) {
         this.form.ratingId = id
         this.ratingName = ratingName
       },
       // 提交表单
-     async handleSubmit () {
-       try {
-         const valid = await this.$refs.form.validate()
-         if (valid) {
-           try {
-             this.btnLoading = true
-             const [success, errorMessage] = !this.editData ? await createRatingModel(this.form) : await updateRatingModel(this.form)
-             if (success) {
-               this.$message({
-                 type: 'success',
-                 content: '操作成功'
-               })
-               this.$emit('success')
-             } else {
-               this.$notice.danger({
-               title: '操作失败',
-               desc: errorMessage
-             })
-             }
-           } catch (error) {
-             this.$notice.danger({
-               title: '操作失败',
-               desc: error
-             })
-             console.log(error)
-           }
-           this.btnLoading = false
-         }
-       } catch (error) {
-         console.log(error)
-       }
+      async handleSubmit () {
+        try {
+          const valid = await this.$refs.form.validate()
+          if (valid) {
+            try {
+              this.btnLoading = true
+              const [success, errorMessage] = !this.editData ? await createRatingModel(this.form) : await updateRatingModel(this.form)
+              if (success) {
+                this.$message({
+                  type: 'success',
+                  content: '操作成功'
+                })
+                this.$emit('success')
+              } else {
+                this.$notice.danger({
+                title: '操作失败',
+                desc: errorMessage
+              })
+              }
+            } catch (error) {
+              this.$notice.danger({
+                title: '操作失败',
+                desc: error
+              })
+              console.log(error)
+            }
+            this.btnLoading = false
+          }
+        } catch (error) {
+          console.log(error)
+        }
       },
       // 针对编辑做初始化
       init () {

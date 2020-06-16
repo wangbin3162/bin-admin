@@ -3,7 +3,7 @@
     <page-header-wrap v-show="isNormal">
       <v-table-wrap>
         <!--查询条件-->
-        <v-filter-bar>
+        <v-filter-bar @keyup-enter="handleFilter">
           <v-filter-item title="措施名称">
             <b-input v-model.trim="listQuery.measureName" placeholder="请输入" clearable></b-input>
           </v-filter-item>
@@ -52,30 +52,32 @@
       </v-table-wrap>
     </page-header-wrap>
     <page-header-wrap v-show="isEdit" :title="editTitle" show-close @on-close="handleCancel">
-      <v-edit-wrap>
-        <b-form :model="measure" ref="form" :rules="ruleValidate" :label-width="130">
-          <b-form-item label="措施名称" prop="measureName">
-            <b-input v-model="measure.measureName" placeholder="请输入措施名称" clearable/>
-          </b-form-item>
-          <b-row>
-            <b-col span="12">
-              <b-form-item label="措施类型" prop="measureType">
-                <b-select v-model="measure.measureType" placeholder="请选择" clearable>
-                  <b-option v-for="(val,key) in measureTypeMap" :key="key" :value="key">{{ val }}</b-option>
-                </b-select>
-              </b-form-item>
-            </b-col>
-            <b-col span="12">
-              <b-form-item label="实施部门" prop="departId">
-                <urp-dept-select v-model="measure.departId" :default-name="measure.departName" show-btn
-                                 @on-choose="({departName})=>{measure.departName=departName}"/>
-              </b-form-item>
-            </b-col>
-          </b-row>
-          <b-form-item label="措施内容" prop="measureContent">
-            <b-input v-model="measure.measureContent" placeholder="请输入措施内容" type="textarea"/>
-          </b-form-item>
-        </b-form>
+      <v-edit-wrap transparent>
+        <b-collapse-wrap title="基本信息">
+          <b-form :model="measure" ref="form" :rules="ruleValidate" :label-width="130">
+            <b-form-item label="措施名称" prop="measureName">
+              <b-input v-model="measure.measureName" placeholder="请输入措施名称" clearable/>
+            </b-form-item>
+            <b-row>
+              <b-col span="12">
+                <b-form-item label="措施类型" prop="measureType">
+                  <b-select v-model="measure.measureType" placeholder="请选择" clearable>
+                    <b-option v-for="(val,key) in measureTypeMap" :key="key" :value="key">{{ val }}</b-option>
+                  </b-select>
+                </b-form-item>
+              </b-col>
+              <b-col span="12">
+                <b-form-item label="实施部门" prop="departId">
+                  <urp-dept-select v-model="measure.departId" :default-name="measure.departName" show-btn
+                                  @on-choose="({departName})=>{measure.departName=departName}"/>
+                </b-form-item>
+              </b-col>
+            </b-row>
+            <b-form-item label="措施内容" prop="measureContent">
+              <b-input v-model="measure.measureContent" placeholder="请输入措施内容" type="textarea"/>
+            </b-form-item>
+          </b-form>
+        </b-collapse-wrap>
         <!--保存提交-->
         <template slot="footer">
           <b-button @click="handleCancel">取 消</b-button>
@@ -84,14 +86,16 @@
       </v-edit-wrap>
     </page-header-wrap>
     <page-header-wrap v-show="isCheck" :title="editTitle" show-close @on-close="handleCancel">
-      <v-edit-wrap>
-        <div>
-          <v-key-label label="措施名称" label-width="150px">{{ measure.measureName }}</v-key-label>
-          <v-key-label label="措施类型" label-width="150px">{{ measureTypeMap[measure.measureType] }}</v-key-label>
-          <v-key-label label="实施部门" label-width="150px">{{ measure.departName }}</v-key-label>
-          <v-key-label label="创建部门" label-width="150px">{{ measure.createDeptName }}</v-key-label>
-          <v-key-label label="措施内容" label-width="150px" is-bottom>{{ measure.measureContent }}</v-key-label>
-        </div>
+      <v-edit-wrap transparent>
+        <b-collapse-wrap title="基本信息">
+          <div>
+            <v-key-label label="措施名称" label-width="150px">{{ measure.measureName }}</v-key-label>
+            <v-key-label label="措施类型" label-width="150px">{{ measureTypeMap[measure.measureType] }}</v-key-label>
+            <v-key-label label="实施部门" label-width="150px">{{ measure.departName }}</v-key-label>
+            <v-key-label label="创建部门" label-width="150px">{{ measure.createDeptName }}</v-key-label>
+            <v-key-label label="措施内容" label-width="150px" is-bottom>{{ measure.measureContent }}</v-key-label>
+          </div>
+        </b-collapse-wrap>
         <template slot="footer">
           <b-button @click="handleCancel">返 回</b-button>
         </template>
@@ -113,7 +117,7 @@
     mixins: [commonMixin, permission],
     data() {
       const validateMeasureName = (rule, value, callback) => {
-        if (value.length >512) {
+        if (value.length > 512) {
           callback(new Error('措施名称必须小于512个字符'))
         } else {
             api.oneMeasureName(this.measure).then(response => {

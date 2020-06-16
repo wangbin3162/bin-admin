@@ -20,7 +20,7 @@
           <b-row :gutter="15">
             <b-col span="16">
               <!--查询条件-->
-              <v-filter-bar>
+              <v-filter-bar @keyup-enter="handleFilter">
                 <v-filter-item title="部门名称" :span="12">
                   <b-input v-model.trim="listQuery.departName" placeholder="请输入" clearable></b-input>
                 </v-filter-item>
@@ -66,7 +66,7 @@
                   @on-select-change="handTreeCurrentChange"
                   @on-check-change="handleTreeCheck"/>
           <!--查询条件-->
-          <v-filter-bar>
+          <v-filter-bar @keyup-enter="handleFilter">
             <v-filter-item title="部门名称" :span="8">
               <b-input v-model.trim="listQuery.departName" placeholder="请输入" clearable></b-input>
             </v-filter-item>

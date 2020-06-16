@@ -206,7 +206,7 @@
       },
       // 详情按钮回调
       handleCheck (row) {
-        this.detail = row
+        this.curRow = row
         this.openEditPage('check')
       },
       // 信用报告按钮回调

@@ -33,16 +33,56 @@
         <b-collapse-wrap title="配置信用报告信息项" collapse :value="!loading">
           <b-button slot="right" type="text" @click="handleAddSourceInfo">+ 添加资源信息</b-button>
 
-          <b-table :columns="columns" :data="list" :show-header="false" size="small">
-            <template v-slot:orderNo="{ index }">
-              排序：<b-input-number v-model="listCopy[index].orderNo" :min="0"></b-input-number>
-            </template>
-
-            <template v-slot:action="{ index }">
+          <b-collapse-wrap v-model="item.customExpand" v-for="(item, index) in infoList" :key="item.resourceKey">
+            <div slot="title" style="font-size: 14px; padding: 10px;">
+              {{ item.resourceName }}
+            </div>
+            <div slot="right">
+              <span style="font-size: 14px;">排序：</span>
+              <b-input-number v-model="item.orderNo" :min="0" style="margin-right: 8px;"></b-input-number>
               <b-button type="text" text-color="danger" @click="handleRemove(index)">删除</b-button>
               <b-button type="text" @click="handleEdit(index)">编辑</b-button>
-            </template>
-          </b-table>
+              <b-button type="text" @click="item.customExpand = !item.customExpand">
+                {{ item.customExpand ? '收起' : '展开' }}
+              </b-button>
+            </div>
+            <div>
+              <b-form ref="expandForm" :model="item" :rules="infoRules" :label-width="100">
+                <b-row :gutter="15">
+                  <b-col span="12">
+                    <b-form-item label="显示名称" prop="displayName">
+                      <b-input v-model="item.displayName"></b-input>
+                    </b-form-item>
+                  </b-col>
+                  <b-col span="12">
+                    <b-form-item label="布局方式" prop="layout">
+                      <b-select v-model="item.layout">
+                        <b-option v-for="(value, key) in reportLayoutTypeEnum" :key="key" :value="key">
+                          {{ value }}
+                        </b-option>
+                      </b-select>
+                    </b-form-item>
+                  </b-col>
+                  <b-col span="24">
+                    <b-form-item label="字段列表" prop="fieldNames">
+                      <b-input v-model="item.fieldNames" disabled></b-input>
+                    </b-form-item>
+                  </b-col>
+                  <b-col span="24">
+                    <b-form-item label="字段标题" prop="fieldTitles">
+                      <b-input v-model="item.fieldTitles" disabled></b-input>
+                    </b-form-item>
+                  </b-col>
+                  <b-col span="24">
+                    <b-form-item label="数据过滤">
+                      <b-input v-model="item.fieldFilter"></b-input>
+                    </b-form-item>
+                  </b-col>
+                </b-row>
+              </b-form>
+            </div>
+          </b-collapse-wrap>
+
         </b-collapse-wrap>
 
         <template slot="footer">
@@ -114,7 +154,7 @@
             { type: 'integer', required: true, message: '必须为整数', trigger: 'blur' }
           ]
         },
-        jsxRules: {
+        infoRules: {
           displayName: [
             { required: true, message: '显示名称不能为空', trigger: 'blur' }
           ],
@@ -127,80 +167,8 @@
           fieldTitles: [
             { required: true, message: '字段标题不能为空', trigger: 'blur' }
           ]
-        }, // JSX内form用的验证规则
-        list: [],
-        listCopy: [],
-        columns: [
-          {
-            type: 'expand',
-            width: 50,
-            // model={{}} rules={this.jsxRules}
-            render: (h, { index }) => {
-              const row = this.listCopy[index]
-              return (
-                <div class="expand-row">
-                  <b-form>
-                    <b-row gutter={15}>
-                      <b-col span={12}>
-                        <b-form-item label="显示名称">
-                          <b-input value={row.displayName}
-                            onInput={
-                              val => { row.displayName = val }
-                            }></b-input>
-                        </b-form-item>
-                      </b-col>
-
-                      <b-col span={12}>
-                        <b-form-item label="布局方式">
-                          <b-select value={ row.layout }
-                            on-on-change={
-                              val => { row.layout = val }
-                            }>
-                            {
-                              Object.keys(this.reportLayoutTypeEnum).map(key => {
-                                return (
-                                  <b-option key={key} value={key}>
-                                    { this.reportLayoutTypeEnum[key] }
-                                  </b-option>
-                                )
-                              })
-                            }
-                          </b-select>
-                        </b-form-item>
-                      </b-col>
-
-                      <b-col span={24}>
-                        <b-form-item label="字段列表">
-                          <b-input disabled value={
-                            row.fieldNames
-                          }></b-input>
-                        </b-form-item>
-                      </b-col>
-
-                      <b-col span={24}>
-                        <b-form-item label="字段标题">
-                          <b-input disabled value={
-                            row.fieldTitles
-                          }></b-input>
-                        </b-form-item>
-                      </b-col>
-
-                      <b-col span={24}>
-                        <b-form-item label="数据过滤">
-                          <b-input></b-input>
-                        </b-form-item>
-                      </b-col>
-                    </b-row>
-                  </b-form>
-                </div>
-              )
-            }
-          },
-          { type: 'index', width: 50 },
-          { title: 'resourceName', key: 'resourceName', align: 'left' },
-          { title: 'orderNo', slot: 'orderNo', align: 'right' },
-          { title: 'Action', slot: 'action', width: 140, align: 'right' }
-        ]
+        }, // 信息项内form内form用验证规则
+        infoList: []
       }
     },
     computed: {
@@ -215,13 +183,178 @@
       this.initEditData()
     },
     methods: {
+      expandRender (h, row) {
+        // console.log(row)
+        // const displayName = h(
+        //   'b-form-item',
+        //   {
+        //     props: {
+        //       label: '显示名称',
+        //       prop: 'displayName'
+        //     }
+        //   },
+        //   [h(
+        //     'b-input',
+        //     {
+        //       props: {
+        //         value: row.displayName
+        //       },
+        //       nativeOn: {
+        //         input (e) {
+        //           row.displayName = e.target.value
+        //         }
+        //       }
+        //     }
+        //   )]
+        // )
+        // const layout = h(
+        //   'b-form-item',
+        //   {
+        //     props: {
+        //       label: '布局方式',
+        //       prop: 'layout'
+        //     }
+        //   },
+        //   [h(
+        //     'b-select',
+        //     {
+        //       props: {
+        //         value: row.layout,
+        //         appendToBody: true
+        //       },
+        //       on: {
+        //         'on-change' (val) {
+        //           console.log(val)
+        //           row.layout = val
+        //         }
+        //       }
+        //     },
+        //     Object.keys(this.reportLayoutTypeEnum).map(key => {
+        //       const text = this.reportLayoutTypeEnum[key]
+        //       return h(
+        //         'b-option',
+        //         {
+        //           props: {
+        //             value: key
+        //           },
+        //           key: key
+        //         },
+        //         text
+        //       )
+        //     })
+        //   )]
+        // )
+        // const fieldNames = h(
+        //   'b-form-item',
+        //   {
+        //     props: {
+        //       label: '字段列表',
+        //       prop: 'fieldNames'
+        //     }
+        //   },
+        //   [h(
+        //     'b-input',
+        //     {
+        //       props: {
+        //         disabled: true,
+        //         value: row.fieldNames
+        //       }
+        //     }
+        //   )]
+        // )
+        // const fieldTitles = h(
+        //   'b-form-item',
+        //   {
+        //     props: {
+        //       label: '字段标题',
+        //       prop: 'fieldTitles'
+        //     }
+        //   },
+        //   [h(
+        //     'b-input',
+        //     {
+        //       props: {
+        //         disabled: true,
+        //         value: row.fieldTitles
+        //       }
+        //     }
+        //   )]
+        // )
+        // const fieldFilter = h(
+        //   'b-form-item',
+        //   {
+        //     props: {
+        //       label: '数据过滤'
+        //     }
+        //   },
+        //   [h(
+        //     'b-input',
+        //     {
+        //       props: {
+        //         value: row.fieldFilter
+        //       },
+        //       nativeOn: {
+        //         input (e) {
+        //           row.fieldFilter = e.target.value
+        //         }
+        //       }
+        //     }
+        //   )]
+        // )
+        // const bForm = h(
+        //   'b-form',
+        //   {
+        //     props: {
+        //       model: row,
+        //       rules: this.jsxRules,
+        //       labelWidth: 100
+        //     },
+        //     ref: 'expandForm',
+        //     refInFor: true
+        //   },
+        //   [
+        //     h(
+        //       'b-row',
+        //       { props: { gutter: 15 } },
+        //       [
+        //         h(
+        //           'b-col',
+        //           { props: { span: 12 } },
+        //           [displayName]
+        //         ),
+        //         h(
+        //           'b-col',
+        //           { props: { span: 12 } },
+        //           [layout]
+        //         ),
+        //         h(
+        //           'b-col',
+        //           { props: { span: 24 } },
+        //           [fieldNames]
+        //         ),
+        //         h(
+        //           'b-col',
+        //           { props: { span: 24 } },
+        //           [fieldTitles]
+        //         ),
+        //         h(
+        //           'b-col',
+        //           { props: { span: 24 } },
+        //           [fieldFilter]
+        //         )
+        //       ]
+        //     )
+        //   ]
+        // )
+        // return bForm
+      },
       // 添加资源信息按钮回调
       handleAddSourceInfo () {
         this.openSource = true
       },
       // 资源选择组件选中的回调
       handleSourceSelected ({ resource, infoItems }) {
-        const exist = this.list.some(item => {
+        const exist = this.infoList.some(item => {
           return resource.resourceKey === item.resourceKey
         })
         if (exist) {
@@ -239,9 +372,10 @@
           })
 
           const obj = {
+            customExpand: true, // 自定义展开
             displayName: '',
             layout: '',
-            orderNo: this.list.length,
+            orderNo: this.infoList.length,
             categoryId: this.configId,
             resourceKey: resource.resourceKey,
             resourceName: resource.resourceName,
@@ -251,8 +385,7 @@
             onelineNames: '',
             fieldFilter: ''
           }
-          this.listCopy.push(obj)
-          this.list.push(JSON.parse(JSON.stringify(obj)))
+          this.infoList.push(obj)
         }
       },
       // 删除按钮的回调
@@ -263,8 +396,7 @@
           loading: true,
           okType: 'danger',
           onOk: () => {
-            this.list.splice(index, 1)
-            this.listCopy.splice(index, 1)
+            this.infoList.splice(index, 1)
             this.$modal.remove()
           }
         })
@@ -273,7 +405,7 @@
       handleEdit (index) {
         this.curIndex = index
 
-        const row = this.listCopy[index]
+        const row = this.infoList[index]
         const fieldMap = new Map()
         const fieldNamesList = row.fieldNames.split(',')
         const fieldTitlesList = row.fieldTitles.split(',')
@@ -300,15 +432,26 @@
       },
       // 资源编辑组件保存后的回调
       handleSave ({ fieldNames, fieldTitles, onelineNames }) {
-        const row = this.listCopy[this.curIndex]
+        const row = this.infoList[this.curIndex]
         row.fieldNames = fieldNames
         row.fieldTitles = fieldTitles
         row.onelineNames = onelineNames
+        this.infoList[this.curIndex].customExpand = true
       },
       async handleSubmit () {
-        this.form.items = this.listCopy
+        this.form.items = this.infoList
         const valid = await this.$refs.form.validate()
-        if (valid) {
+        const formsValid = [] // 验证展开项内的form
+        for (const item of this.$refs.expandForm) {
+          const valid = await item.validate()
+          formsValid.push(valid)
+        }
+        formsValid.forEach((item, index) => {
+          if (!item) { // 验证不通过时展开可能收起的内容
+            this.infoList[index].customExpand = true
+          }
+        })
+        if (valid && !formsValid.includes(false)) {
           try {
             this.btnLoading = true
             this.editData ? await updateInfoClass(this.form) : await createInfoClass(this.form)
@@ -326,8 +469,10 @@
         try {
           const res = await getInfoClassDetaiil(id)
           this.form = { ...this.form, ...res }
-          this.list = this.$util.deepClone(res.items)
-          this.listCopy = this.$util.deepClone(res.items)
+          this.infoList = this.$util.deepClone(res.items)
+          this.infoList.forEach(item => {
+            this.$set(item, 'customExpand', false)
+          })
         } catch (error) {
           console.error(error)
         }
@@ -344,9 +489,6 @@
 
 <style lang="stylus">
 .credit-report-config-info-class-edit {
-  .bin-table-expanded-cell { // 重写展开列默认样式
-    // background: #f0f2f5;
-    // background: #ffffff;
-  }
+
 }
 </style>

@@ -3,7 +3,7 @@
     <page-header-wrap v-show="isNormal">
       <v-table-wrap>
         <!--查询条件-->
-        <v-filter-bar>
+        <v-filter-bar @keyup-enter="handleFilter">
           <v-filter-item title="备忘录名称">
             <b-input v-model.trim="listQuery.memoName" placeholder="请输入" clearable/>
           </v-filter-item>
@@ -41,45 +41,47 @@
       </v-table-wrap>
     </page-header-wrap>
     <page-header-wrap v-show="isEdit" :title="editTitle" show-close @on-close="handleCancel">
-      <v-edit-wrap>
-        <b-form :model="mapping" ref="form" :rules="ruleValidate" :label-width="130">
-          <b-row :gutter="20">
-            <b-col span="12">
-              <b-form-item label="备忘录名称" prop="memoId">
-                <memo-select v-model="mapping.memoId" :default-name="mapping.memoName"
-                             @on-change="memo=>{ mapping.memoName = memo.memoName}"/>
-              </b-form-item>
-            </b-col>
-            <b-col span="12">
-              <b-form-item label="主体类型" prop="personClass">
-                <b-select v-model="mapping.personClass" clearable>
-                  <b-option v-for="(val,key) in personClassMap" :key="key" :value="key">{{ val }}</b-option>
-                </b-select>
-              </b-form-item>
-            </b-col>
-          </b-row>
-          <b-form-item label="映射类型" prop="isSys" class="bin-form-item-required">
-            <b-radio-group v-model="mapping.isSys" @on-change="handleIsSysChange">
-              <b-radio label="1">资源信息</b-radio>
-              <b-radio label="0">外部接口</b-radio>
-            </b-radio-group>
-          </b-form-item>
-          <b-row :gutter="20">
-            <b-col span="12">
-              <b-form-item label="资源信息" prop="resourceKey"
-                           :class="{'bin-form-item-required':mapping.isSys==='1'}">
-                <res-choose v-model="mapping.resourceKey" :default-name="mapping.resourceName"
-                            @on-change="res=>{ mapping.resourceName = res.resourceName}"/>
-              </b-form-item>
-            </b-col>
-            <b-col span="12">
-              <b-form-item label="接口标识" prop="ifcTagName"
-                           :class="{'bin-form-item-required':mapping.isSys==='0'}">
-                <ifc-tag-select v-model="mapping.ifcTagName"/>
-              </b-form-item>
-            </b-col>
-          </b-row>
-        </b-form>
+      <v-edit-wrap transparent>
+        <b-collapse-wrap title="基本信息">
+          <b-form :model="mapping" ref="form" :rules="ruleValidate" :label-width="130">
+            <b-row :gutter="20">
+              <b-col span="12">
+                <b-form-item label="备忘录名称" prop="memoId">
+                  <memo-select v-model="mapping.memoId" :default-name="mapping.memoName"
+                              @on-change="memo=>{ mapping.memoName = memo.memoName}"/>
+                </b-form-item>
+              </b-col>
+              <b-col span="12">
+                <b-form-item label="主体类型" prop="personClass">
+                  <b-select v-model="mapping.personClass" clearable>
+                    <b-option v-for="(val,key) in personClassMap" :key="key" :value="key">{{ val }}</b-option>
+                  </b-select>
+                </b-form-item>
+              </b-col>
+            </b-row>
+            <b-form-item label="映射类型" prop="isSys" class="bin-form-item-required">
+              <b-radio-group v-model="mapping.isSys" @on-change="handleIsSysChange">
+                <b-radio label="1">资源信息</b-radio>
+                <b-radio label="0">外部接口</b-radio>
+              </b-radio-group>
+            </b-form-item>
+            <b-row :gutter="20">
+              <b-col span="12">
+                <b-form-item label="资源信息" prop="resourceKey"
+                            :class="{'bin-form-item-required':mapping.isSys==='1'}">
+                  <res-choose v-model="mapping.resourceKey" :default-name="mapping.resourceName"
+                              @on-change="res=>{ mapping.resourceName = res.resourceName}"/>
+                </b-form-item>
+              </b-col>
+              <b-col span="12">
+                <b-form-item label="接口标识" prop="ifcTagName"
+                            :class="{'bin-form-item-required':mapping.isSys==='0'}">
+                  <ifc-tag-select v-model="mapping.ifcTagName"/>
+                </b-form-item>
+              </b-col>
+            </b-row>
+          </b-form>
+        </b-collapse-wrap>
         <!--<b-code-editor class="mt-20" v-if="isEdit" :value="JSON.stringify(mapping,null,2)" readonly/>-->
         <!--保存提交-->
         <template slot="footer">
