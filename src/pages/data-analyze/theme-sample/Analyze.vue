@@ -67,12 +67,13 @@
                 <span>本月已归集数据</span>
                 <span>
                   <b-progress :percent="counts.percent" color="#fff" bgColor="#ffffff55"
-                              :stroke-width="14"
-                              :showText="false"></b-progress>
+                    :stroke-width="14"
+                    :showText="false">
+                  </b-progress>
                 </span>
                 <span>再录{{counts.preCount - counts.curCount}}条就超过上月了哦，继续加油！</span>
-                <router-link to="/dataManage/dataExchange/gather"
-                             style="color:#fff;text-decoration: underline;padding-left: 30px;">去采集
+                <router-link to="/dataManage/dataExchange/gather" class="go-gather-btn">
+                  采 集 >
                 </router-link>
               </div>
               <div class="trend">
@@ -515,6 +516,16 @@
           font-size: 20px;
           font-weight: 700;
         }
+      }
+      .go-gather-btn {
+        width: 70px;
+        padding: 7px 0;
+        font-size: 13px;
+        color: #fff;
+        text-align: center;
+        border-radius: 30px;
+        background-color: #3b90e9;
+        margin-left: 27px;
       }
     }
     .trend {
