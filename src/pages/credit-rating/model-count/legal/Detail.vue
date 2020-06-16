@@ -233,7 +233,7 @@
       // 分页按钮切换回调
       handleCurrentChange (page) {
         this.query.page = page
-        this.getCreditInfo()
+        this.getCreditInfo(this.query)
       },
       // 获取法人详情
       async getLegalDetail (id) {

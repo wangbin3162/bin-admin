@@ -215,14 +215,14 @@
       }
     },
     created () {
-      this.getCreditInfo()
+      this.getCreditInfo(this.query)
       this.getNaturalDetail(this.id)
     },
     methods: {
       // 分页按钮切换回调
       handleCurrentChange (page) {
         this.query.page = page
-        this.getCreditInfo()
+        this.getCreditInfo(this.query)
       },
       // 获取自然人详情
       async getNaturalDetail (id) {
@@ -237,9 +237,9 @@
         this.loading = false
         this.collapseValue = ['baseInfo', 'countResInfo', 'creditInfo']
       },
-      async getCreditInfo () {
+      async getCreditInfo (query) {
         try {
-          const res = await getCreditInfo(this.query)
+          const res = await getCreditInfo(query)
           this.list = res.rows
           this.total = res.total
         } catch (error) {
