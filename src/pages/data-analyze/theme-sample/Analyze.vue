@@ -169,14 +169,13 @@
         tab: 0,
         yearsText: [],
         resources: [],
-        resourceKeys: [],
         date: new Date(),
         listQuery: {
           departId: '',
           month: '2019-01',
           startDate: '',
           endDate: '',
-          resourceKeys: []
+          resourceKeys: null
         },
         counts: {
           totalResource: '',
@@ -251,9 +250,9 @@
       // 年度归集信息select回调
       handleResourceChange(val) {
         if (val) {
-          this.listQuery.resourceKeys = [val]
+          this.listQuery.resourceKeys = val
         } else {
-          this.listQuery.resourceKeys = this.resourceKeys
+          this.listQuery.resourceKeys = null
         }
         this.getYearData(this.tab)
       },
@@ -370,10 +369,6 @@
         try {
           const res = await api.getResources()
           this.resources = res
-          this.resources.forEach(item => {
-            this.resourceKeys.push(item.key)
-          })
-          this.listQuery.resourceKeys = this.resourceKeys
         } catch (error) {
           console.error(error)
         }

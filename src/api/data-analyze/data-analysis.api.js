@@ -1,6 +1,13 @@
 // 数据源管理
 import request from '../request'
-import qs from 'qs'
+import store from '../../store'
+
+function isDomain () {
+  return store.state.user.info.departKind === 'DOMAIN'
+}
+function isAdmin () {
+  return store.state.user.info.roleCodes === 'ROLE_ADMIN'
+}
 
 /**
  * @author haodongdong
@@ -31,7 +38,8 @@ export function getTotalResource(query) {
     url: '/da/data/gather/zyxxsl',
     method: 'get',
     params: {
-      gatherDept: query.departId
+      gatherDept: isAdmin() ? null : query.departId,
+      isDomain: isDomain()
     }
   })
 }
@@ -42,7 +50,8 @@ export function getTotalCount(query) {
     url: '/da/data/gather/sjgjzl',
     method: 'get',
     params: {
-      gatherDept: query.departId
+      gatherDept: isAdmin() ? null : query.departId,
+      isDomain: isDomain()
     }
   })
 }
@@ -53,7 +62,8 @@ export function getCurMonthCount(query) {
     url: '/da/data/gather/bygjsjl',
     method: 'get',
     params: {
-      gatherDept: query.departId
+      gatherDept: isAdmin() ? null : query.departId,
+      isDomain: isDomain()
     }
   })
 }
@@ -64,7 +74,8 @@ export function getPreMonthCount(query) {
     url: '/da/data/gather/sygjsjl',
     method: 'get',
     params: {
-      gatherDept: query.departId
+      gatherDept: isAdmin() ? null : query.departId,
+      isDomain: isDomain()
     }
   })
 }
@@ -75,7 +86,8 @@ export function getCompleteRate(query) {
     url: '/da/data/gather/sjwzl',
     method: 'get',
     params: {
-      gatherDept: query.departId
+      gatherDept: isAdmin() ? null : query.departId,
+      isDomain: isDomain()
     }
   })
 }
@@ -86,7 +98,8 @@ export function getCurCompleteRate(query) {
     url: '/da/data/gather/byxxgjtj',
     method: 'get',
     params: {
-      gatherDept: query.departId
+      gatherDept: isAdmin() ? null : query.departId,
+      isDomain: isDomain()
     }
   })
 }
@@ -97,9 +110,10 @@ export function getMonthData(query) {
     url: '/da/data/gather/ydxxgjqs',
     method: 'get',
     params: {
-      gatherDept: query.departId,
+      gatherDept: isAdmin() ? null : query.departId,
       startDate: query.startDate,
-      endDate: query.endDate
+      endDate: query.endDate,
+      isDomain: isDomain()
     }
   })
 }
@@ -114,15 +128,11 @@ export function getYearData(query) {
     url: '/da/data/gather/ndxxgjqszy',
     method: 'get',
     params: {
-      gatherDept: query.departId,
+      gatherDept: isAdmin() ? null : query.departId,
       startDate: query.startDate,
       endDate: query.endDate,
-      resourceKeys: query.resourceKeys
-    },
-    paramsSerializer: params => {
-      return qs.stringify(params, {
-        indices: false
-      })
+      resourceKeys: query.resourceKeys,
+      isDomain: isDomain()
     }
   })
 }
@@ -133,8 +143,9 @@ export function getDataHistory(query) {
     url: '/da/data/gather/xxgjls',
     method: 'get',
     params: {
-      gatherDept: query.departId,
-      month: query.month
+      gatherDept: isAdmin() ? null : query.departId,
+      month: query.month,
+      isDomain: isDomain()
     }
   })
 }
