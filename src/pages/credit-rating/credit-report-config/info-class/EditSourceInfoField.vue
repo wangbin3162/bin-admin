@@ -1,12 +1,12 @@
 <template>
   <div class="edit-source-info-field">
     <b-modal v-model="showDialog"
-      title="编辑资源信息"
-      width="72%"
-      :styles="{ top: '5%'}"
-      :body-styles="{ padding: '10px' }"
-      footer-hide
-      @on-visible-change="handleVisibleChange">
+             title="编辑资源信息"
+             width="72%"
+             :styles="{ top: '5%'}"
+             :body-styles="{ padding: '10px' }"
+             footer-hide
+             @on-visible-change="handleVisibleChange">
       <b-table
         :columns="[
           { title: '资源名称', key: 'resourceName', align: 'center' },
@@ -30,8 +30,8 @@
       <div class="mb-15" style="max-height: 350px; overflow: auto;">
         <!-- 选择用table -->
         <b-table v-if="!isEdit" :key="isEdit"
-          :columns="columns" :data="list"
-          size="small" :loading="loading">
+                 :columns="columns" :data="list"
+                 size="small" :loading="loading">
           <template v-slot:controlType="{ row }">
             {{ fieldCtrlEnum[row.controlType] }}
           </template>
@@ -48,21 +48,20 @@
 
         <!-- 编辑用table -->
         <b-table v-else :key="isEdit" no-data-text="暂无已选字段"
-          :draggable="true" @on-drag-drop="handleDragDrop"
-          :columns="columnsEdit" :data="listEdit"
-          size="small" :loading="loading">
+                 draggable @on-drag-drop="handleDragDrop" row-key drag-handle=".drag-handle"
+                 :columns="columnsEdit" :data="listEdit"
+                 size="small" :loading="loading">
+          <template v-slot:dragSort>
+            <span class="drag-handle" style="cursor: move;">
+              <b-icon name="ios-move"/>
+            </span>
+          </template>
           <template v-slot:fieldTitle="{ index }">
             <b-input v-model="listEdit[index].fieldTitle" @on-blur="handleInputBlur(index)"></b-input>
           </template>
-
           <template v-slot:fullRow="{ index }">
             <b-checkbox v-model="listEdit[index].customFullRow"></b-checkbox>
           </template>
-
-          <template v-slot:dragSort>
-            <b-icon name="ios-move" style="cursor: move;"></b-icon>
-          </template>
-
           <template v-slot:action="{ index }">
             <b-button
               size="small" plain
@@ -95,7 +94,7 @@
       'resourceKey',
       'fieldMap' // 用于回显字段
     ],
-    data () {
+    data() {
       return {
         loading: false,
         isEdit: true, // 用于显示选择的table还是编辑的table
@@ -113,11 +112,10 @@
         ],
         listEdit: [], // 存储已选中用于编辑的信息项字段
         columnsEdit: [
-          { type: 'index', width: 50, align: 'center' },
+          { title: '排序', slot: 'dragSort', width: 70, align: 'center' },
           { title: '字段名称', key: 'fieldName', align: 'center' },
           { title: '字段标题', slot: 'fieldTitle', align: 'center' },
           { title: '占满一行', slot: 'fullRow', align: 'center' },
-          { title: '拖动排序', slot: 'dragSort', align: 'center' },
           { title: '操作', slot: 'action', align: 'center' }
         ]
       }
@@ -133,12 +131,12 @@
         }
       }
     },
-    created () {
+    created() {
       this.getEnum()
     },
     methods: {
       // b-modal组件的可视状态事件回调，用于初始化
-      handleVisibleChange (visible) {
+      handleVisibleChange(visible) {
         if (visible) {
           this.init()
         } else {
@@ -149,18 +147,18 @@
         }
       },
       // 添加字段按钮回调
-      handleSwitchTable () {
+      handleSwitchTable() {
         this.isEdit = !this.isEdit
       },
       // 选择按钮回调
-      handleSelectBtn (index) {
+      handleSelectBtn(index) {
         // 要注意bin-ui的table内容row的变化不会影响原本所在的data绑定值
         const row = this.list[index]
         row.customSelected = !row.customSelected
         this.listEdit = this.filterSelected(this.list)
       },
       // 取消按钮的回调
-      handleCancelBtn (index) {
+      handleCancelBtn(index) {
         const row = this.listEdit[index]
         this.list.forEach(item => { // 取消选择
           if (item.fieldName === row.fieldName) item.customSelected = false
@@ -168,22 +166,15 @@
         this.listEdit.splice(index, 1) // 删除
       },
       // 编辑table拖拽的回调
-      handleDragDrop (index1, index2) {
-        const startIndex = Number(index1)
-        const endIndex = Number(index2)
-        if (startIndex !== endIndex) {
-          console.log(startIndex, endIndex)
-          const arr = this.listEdit.splice(startIndex, 1)
-          console.log(this.listEdit)
-          this.listEdit.splice(endIndex, 0, ...arr)
-        }
+      handleDragDrop(index1, index2, newData) {
+        this.listEdit = newData
       },
       // input blur回调
-      handleInputBlur (index) {
+      handleInputBlur(index) {
         this.listEdit[index].fieldTitle = this.listEdit[index].fieldTitle.replace(',', '')
       },
       // 保存按钮回调
-      handleSaveBtn () {
+      handleSaveBtn() {
         const fieldNames = []
         const fieldTitles = []
         const onelineNames = []
@@ -279,7 +270,7 @@
         })
       },
       // 获取资源详情
-      async getResourceDetail (resourceKey) {
+      async getResourceDetail(resourceKey) {
         this.loading = true
         try {
           const res = await getResourceDetail(resourceKey)
@@ -295,7 +286,7 @@
         this.loading = false
       },
       // 用于同步已选、占满一行
-      asyncSelect (list) {
+      asyncSelect(list) {
         console.log(this.fieldMap)
         // 同步选择状态
         list.forEach(item => {
@@ -320,7 +311,7 @@
         this.listEdit = resArr
       },
       // 过滤出已选择的字段存入listEdit，并且同步已选择的字段标题
-      filterSelected (list) {
+      filterSelected(list) {
         const filteredList = JSON.parse(JSON.stringify(list.filter(item => item.customSelected)))
         filteredList.forEach(item => {
           const fieldObj = this.fieldMap.get(item.fieldName)
@@ -330,7 +321,7 @@
         })
         return filteredList
       },
-      async init () {
+      async init() {
         await this.getResourceDetail(this.resourceKey) // 获取详情、字段项
         this.asyncSelect(this.list) // 同步已选择的字段项
       }
@@ -339,20 +330,20 @@
 </script>
 
 <style lang="stylus" scoped>
-.edit-source-info-field {
-  .table {
-    width: 100%;
-    border-collapse:separate;
-    border-spacing:0px 10px;
+  .edit-source-info-field {
+    .table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0px 10px;
 
-    th {
-      height: 47px;
-      background: #fafafa;
-    }
+      th {
+        height: 47px;
+        background: #fafafa;
+      }
 
-    td {
-      text-align: center;
+      td {
+        text-align: center;
+      }
     }
   }
-}
 </style>
