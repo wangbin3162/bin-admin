@@ -182,7 +182,7 @@
           totalCount: '',
           monthCount: '',
           preMonthCount: '',
-          completeRate: '',
+          completeRate: 0.0,
           curCount: '',
           preCount: '',
           percent: 0.90
@@ -291,7 +291,7 @@
         // 2.4.5 数据完整率
         api.getCompleteRate(this.listQuery).then(res => {
           if (res.data.code === '0') {
-            this.counts.completeRate = res.data.data.completeRate
+            this.counts.completeRate = res.data.data.completeRate.toFixed(1)
           }
         })
         // 2.4.6 本月信息归集统计
