@@ -59,6 +59,10 @@
             <b-checkbox v-model="listEdit[index].customFullRow"></b-checkbox>
           </template>
 
+          <template v-slot:dragSort>
+            <b-icon name="ios-move" style="cursor: move;"></b-icon>
+          </template>
+
           <template v-slot:action="{ index }">
             <b-button
               size="small" plain
@@ -101,7 +105,7 @@
         detail: {},
         list: [],
         columns: [
-          // { type: 'index', width: 50, align: 'center' },
+          { type: 'index', width: 50, align: 'center' },
           { title: '字段名称', key: 'fieldName', align: 'center' },
           { title: '字段标题', key: 'fieldTitle', align: 'center' },
           { title: '控件类型', slot: 'controlType', align: 'center' },
@@ -109,10 +113,11 @@
         ],
         listEdit: [], // 存储已选中用于编辑的信息项字段
         columnsEdit: [
-          // { type: 'index', width: 50, align: 'center' },
+          { type: 'index', width: 50, align: 'center' },
           { title: '字段名称', key: 'fieldName', align: 'center' },
           { title: '字段标题', slot: 'fieldTitle', align: 'center' },
           { title: '占满一行', slot: 'fullRow', align: 'center' },
+          { title: '拖动排序', slot: 'dragSort', align: 'center' },
           { title: '操作', slot: 'action', align: 'center' }
         ]
       }
@@ -164,11 +169,14 @@
       },
       // 编辑table拖拽的回调
       handleDragDrop (index1, index2) {
-        this.listEdit.splice(
-          index2,
-          1,
-          ...this.listEdit.splice(index1, 1, this.listEdit[index2])
-        )
+        const startIndex = Number(index1)
+        const endIndex = Number(index2)
+        if (startIndex !== endIndex) {
+          console.log(startIndex, endIndex)
+          const arr = this.listEdit.splice(startIndex, 1)
+          console.log(this.listEdit)
+          this.listEdit.splice(endIndex, 0, ...arr)
+        }
       },
       // input blur回调
       handleInputBlur (index) {
