@@ -439,18 +439,23 @@
         this.infoList[this.curIndex].customExpand = true
       },
       async handleSubmit () {
-        this.form.items = this.infoList
-        const valid = await this.$refs.form.validate()
-        const formsValid = [] // 验证展开项内的form
-        for (const item of this.$refs.expandForm) {
-          const valid = await item.validate()
-          formsValid.push(valid)
-        }
-        formsValid.forEach((item, index) => {
-          if (!item) { // 验证不通过时展开可能收起的内容
-            this.infoList[index].customExpand = true
+        const valid = await this.$refs.form.validate() // 验证基本form
+        const formsValid = [] // 用于验证展开项内的form
+        if (this.infoList.length) { // 配置项存在则验证配置项内的form
+          for (const item of this.$refs.expandForm) {
+            const valid = await item.validate()
+            formsValid.push(valid)
           }
-        })
+          formsValid.forEach((item, index) => {
+            if (!item) { // 验证不通过时展开可能收起的内容
+              this.infoList[index].customExpand = true
+            }
+          })
+        } else {
+          formsValid.push(false)
+          this.$message({ type: 'warning', content: '请配置信用报告信息项' })
+        }
+        this.form.items = this.infoList
         if (valid && !formsValid.includes(false)) {
           try {
             this.btnLoading = true
