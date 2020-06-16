@@ -190,7 +190,7 @@ export async function getInfoClassList(query) {
 
 /**
  * @author haodongdong
- * @description 根据resourceKey获取资源详情
+ * @description 根据resourceKey获取资源详情，获取的items为过滤后已启用的字段。
  * @param {*} resourceKey
  * @returns Promise
  */

@@ -137,7 +137,8 @@
   import permission from '../../../common/mixins/permission'
   import { getClassifyTree } from '../../../api/data-manage/classify.api'
   import { getPersonClassTree } from '../../../api/data-manage/metadata.api'
-  import { getResInfoList, getResPropertyTree, getResDetail } from '../../../api/data-manage/res-info.api'
+  import { getResInfoList, getResPropertyTree } from '../../../api/data-manage/res-info.api'
+  import { getResourceDetail } from '../../../api/credit-rating/credit-report-config.api'
 
   export default {
     name: 'IndexManageEditSourceInfoSelect',
@@ -246,8 +247,8 @@
         this.curRow = row // 缓存资源信息当前行
         this.infoTableLoading = true
         // this.infoItemList = []
-        getResDetail(row.id).then(res => {
-          this.infoItemList = res.data.data.items
+        getResourceDetail(row.resourceKey).then(res => {
+          this.infoItemList = res.items
           this.infoItemList.forEach(item => { // 扩展用于处理选中效果的字段
             this.$set(item, 'customSelected', false)
           })
