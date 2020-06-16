@@ -62,7 +62,6 @@
             </template>
             <div flex="main:justify">
               <div class="summary" flex="dir:top">
-                <span class="tip">N</span>
                 <span>归集数据汇总</span>
                 <span><i class="summary-count">{{counts.curCount}}</i>条</span>
                 <span>本月已归集数据</span>
@@ -484,7 +483,7 @@
       width: 40%;
       margin: 20px;
       margin-top: 0;
-      padding-top: 40px;
+      padding-top: 15px;
       position: relative;
       .tip {
         position: absolute;
