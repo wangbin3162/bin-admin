@@ -203,7 +203,7 @@
       // 获取配置报告用于select
       async getCreditReportList () {
         try {
-          const res = await getCreditReportList({ size: 1000, page: 1 })
+          const res = await getCreditReportList({ size: 1000, page: 1, personClass: this.personClass })
           this.creditReportList = res.rows
         } catch (error) {
           console.error(error)
