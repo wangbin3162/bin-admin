@@ -175,7 +175,7 @@
           month: '2019-01',
           startDate: '',
           endDate: '',
-          resourceKeys: null
+          resourceKey: null
         },
         counts: {
           totalResource: '',
@@ -250,9 +250,9 @@
       // 年度归集信息select回调
       handleResourceChange(val) {
         if (val) {
-          this.listQuery.resourceKeys = val
+          this.listQuery.resourceKey = val
         } else {
-          this.listQuery.resourceKeys = null
+          this.listQuery.resourceKey = null
         }
         this.getYearData(this.tab)
       },
@@ -415,13 +415,13 @@
         this.smoothLineChartOption.dataset = formatDataSet({ xField: 'name', yField: 'value' }, dateArr)
       },
       // 一些初始化操作
-      async init() {
+      init() {
         // 生成年度归集趋势的tab按钮
         const curYear = new Date().getFullYear()
         this.yearsText = [curYear, curYear - 1, curYear - 2]
         this.buildDefaultDataYear()
         this.buildDefaultDataMonth()
-        await this.getResources() // 获取部门资源，因为要构建resourceKeys参数，所以需要响应后再调用searchList()
+        this.getResources()
         this.searchList()
       }
     }

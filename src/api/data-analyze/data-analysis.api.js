@@ -131,7 +131,7 @@ export function getYearData(query) {
       gatherDept: isAdmin() ? null : query.departId,
       startDate: query.startDate,
       endDate: query.endDate,
-      resourceKeys: query.resourceKeys,
+      resourceKey: query.resourceKey,
       isDomain: isDomain()
     }
   })
