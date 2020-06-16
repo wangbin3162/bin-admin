@@ -2,7 +2,7 @@
   <div>
     <page-header-wrap v-show="isNormal">
       <v-table-wrap>
-        <v-filter-bar>
+        <v-filter-bar @keyup-enter="handleFilter">
           <v-filter-item title="数据源名称">
             <b-input v-model="listQuery.dataSourceName" placeholder="请输入" clearable></b-input>
           </v-filter-item>
@@ -41,62 +41,64 @@
       </v-table-wrap>
     </page-header-wrap>
     <page-header-wrap v-show="isEdit" :title="editTitle" show-close @on-close="handleCancel">
-      <v-edit-wrap>
-        <b-form :model="ds" ref="form" :rules="ruleValidate" :label-width="120">
-          <b-row>
-            <b-col span="12">
-              <b-form-item label="数据源名称" prop="dataSourceName">
-                <b-input v-model="ds.dataSourceName" placeholder="请输入数据源名称" :maxlength="20" clearable></b-input>
-              </b-form-item>
-            </b-col>
-            <b-col span="12">
-              <b-form-item label="连接类型" prop="dbType">
-                <b-select v-model="ds.dbType" clearable>
-                  <b-option v-for="(value,key) in dsTypeMap" :key="key" :value="key">{{ value }}</b-option>
-                </b-select>
-              </b-form-item>
-            </b-col>
-          </b-row>
-          <b-row>
-            <b-col span="12">
-              <b-form-item label="连接驱动" prop="driverClass">
-                <b-input v-model="ds.driverClass" placeholder="请输入连接驱动" :maxlength="50" clearable></b-input>
-              </b-form-item>
-            </b-col>
-            <b-col span="12">
-              <b-form-item label="数据库名称" prop="dbName">
-                <b-input v-model="ds.dbName" placeholder="请输入数据库名称" :maxlength="20" clearable></b-input>
-              </b-form-item>
-            </b-col>
-          </b-row>
-          <b-row>
-            <b-col span="12">
-              <b-form-item label="主机IP地址" prop="host">
-                <b-input v-model="ds.host" placeholder="请输入主机地址" clearable :maxlength="20"></b-input>
-              </b-form-item>
-            </b-col>
-            <b-col span="12">
-              <b-form-item label="端口号" prop="port">
-                <b-input-number v-model="ds.port" :min="0" style="width: 100%;" :maxlength="6"></b-input-number>
-              </b-form-item>
-            </b-col>
-          </b-row>
-          <b-row>
-            <b-col span="12">
-              <b-form-item label="用户名" prop="userName">
-                <b-input v-model="ds.userName" placeholder="请输入用户名" clearable></b-input>
-              </b-form-item>
-            </b-col>
-            <b-col span="12">
-              <b-form-item label="密码" prop="password">
-                <b-input v-model="ds.password" placeholder="请输入密码" type="password" clearable></b-input>
-              </b-form-item>
-            </b-col>
-          </b-row>
-          <b-form-item>
-            <b-button type="primary" @click="checkLink">测试连接</b-button>
-          </b-form-item>
-        </b-form>
+      <v-edit-wrap transparent>
+        <b-collapse-wrap title="基本信息">
+          <b-form :model="ds" ref="form" :rules="ruleValidate" :label-width="120">
+            <b-row>
+              <b-col span="12">
+                <b-form-item label="数据源名称" prop="dataSourceName">
+                  <b-input v-model="ds.dataSourceName" placeholder="请输入数据源名称" :maxlength="20" clearable></b-input>
+                </b-form-item>
+              </b-col>
+              <b-col span="12">
+                <b-form-item label="连接类型" prop="dbType">
+                  <b-select v-model="ds.dbType" clearable>
+                    <b-option v-for="(value,key) in dsTypeMap" :key="key" :value="key">{{ value }}</b-option>
+                  </b-select>
+                </b-form-item>
+              </b-col>
+            </b-row>
+            <b-row>
+              <b-col span="12">
+                <b-form-item label="连接驱动" prop="driverClass">
+                  <b-input v-model="ds.driverClass" placeholder="请输入连接驱动" :maxlength="50" clearable></b-input>
+                </b-form-item>
+              </b-col>
+              <b-col span="12">
+                <b-form-item label="数据库名称" prop="dbName">
+                  <b-input v-model="ds.dbName" placeholder="请输入数据库名称" :maxlength="20" clearable></b-input>
+                </b-form-item>
+              </b-col>
+            </b-row>
+            <b-row>
+              <b-col span="12">
+                <b-form-item label="主机IP地址" prop="host">
+                  <b-input v-model="ds.host" placeholder="请输入主机地址" clearable :maxlength="20"></b-input>
+                </b-form-item>
+              </b-col>
+              <b-col span="12">
+                <b-form-item label="端口号" prop="port">
+                  <b-input-number v-model="ds.port" :min="0" style="width: 100%;" :maxlength="6"></b-input-number>
+                </b-form-item>
+              </b-col>
+            </b-row>
+            <b-row>
+              <b-col span="12">
+                <b-form-item label="用户名" prop="userName">
+                  <b-input v-model="ds.userName" placeholder="请输入用户名" clearable></b-input>
+                </b-form-item>
+              </b-col>
+              <b-col span="12">
+                <b-form-item label="密码" prop="password">
+                  <b-input v-model="ds.password" placeholder="请输入密码" type="password" clearable></b-input>
+                </b-form-item>
+              </b-col>
+            </b-row>
+            <b-form-item>
+              <b-button type="primary" @click="checkLink">测试连接</b-button>
+            </b-form-item>
+          </b-form>
+        </b-collapse-wrap>
         <!--保存提交-->
         <template slot="footer">
           <b-button @click="handleCancel">取 消</b-button>
@@ -105,17 +107,19 @@
       </v-edit-wrap>
     </page-header-wrap>
     <page-header-wrap v-show="isCheck" :title="editTitle" show-close @on-close="handleCancel">
-      <v-edit-wrap>
-        <v-key-label label="数据源名称" is-half is-first>{{ ds.dataSourceName }}</v-key-label>
-        <v-key-label label="连接类型" is-half>{{ ds.dbType }}</v-key-label>
-        <v-key-label label="数据库名称" is-half is-first>{{ ds.dbName }}</v-key-label>
-        <v-key-label label="连接驱动" is-half>{{ ds.driverClass }}</v-key-label>
-        <v-key-label label="主机地址" is-half is-first>{{ ds.host }}</v-key-label>
-        <v-key-label label="端口号" is-half>{{ ds.port }}</v-key-label>
-        <v-key-label label="用户名" is-bottom>{{ ds.userName }}</v-key-label>
-        <div class="pt-20">
-          <b-button type="primary" @click="checkLink">测试连接</b-button>
-        </div>
+      <v-edit-wrap transparent>
+        <b-collapse-wrap title="基本信息">
+          <v-key-label label="数据源名称" is-half is-first>{{ ds.dataSourceName }}</v-key-label>
+          <v-key-label label="连接类型" is-half>{{ ds.dbType }}</v-key-label>
+          <v-key-label label="数据库名称" is-half is-first>{{ ds.dbName }}</v-key-label>
+          <v-key-label label="连接驱动" is-half>{{ ds.driverClass }}</v-key-label>
+          <v-key-label label="主机地址" is-half is-first>{{ ds.host }}</v-key-label>
+          <v-key-label label="端口号" is-half>{{ ds.port }}</v-key-label>
+          <v-key-label label="用户名" is-bottom>{{ ds.userName }}</v-key-label>
+          <div class="pt-20">
+            <b-button type="primary" @click="checkLink">测试连接</b-button>
+          </div>
+        </b-collapse-wrap>
         <!--保存提交-->
         <template slot="footer">
           <b-button @click="handleCancel">返 回</b-button>
