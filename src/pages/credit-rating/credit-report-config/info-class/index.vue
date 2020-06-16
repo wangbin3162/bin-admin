@@ -1,6 +1,16 @@
 <template>
   <div>
-    <page-header-wrap title="信息类配置" show-close @on-close="$emit('close')" v-show="isNormal">
+    <page-header-wrap :title="`信息类配置（${reportName}）`" show-close @on-close="$emit('close')" v-show="isNormal">
+      <div slot="desc" flex="main:left">
+        <span>
+          <b-tag type="info" no-border size="mini">
+            {{ personClassEnum[personClass] }}
+          </b-tag>
+        </span>
+        <span>
+          <!-- <b-tag type="info" size="mini">{{ reportName }}</b-tag> -->
+        </span>
+      </div>
       <v-table-wrap>
         <!-- 查询条件 -->
         <v-filter-bar @keyup-enter="handleFilter">
@@ -67,7 +77,11 @@
   export default {
     name: 'CreditReportConfigInfoClass',
     mixins: [commonMixin, permission],
-    props: ['configId'], // 报告配置id
+    props: [
+      'configId',
+      'reportName',
+      'personClass'
+    ], // 报告配置id
     components: {
       Edit
       // Detail
@@ -91,6 +105,9 @@
       }
     },
     computed: {
+      personClassEnum () {
+        return this.$store.state.creditReportConfig.personClassEnum
+      },
       reportItemTypeEnum () {
         return this.$store.state.creditReportConfig.reportItemTypeEnum
       }

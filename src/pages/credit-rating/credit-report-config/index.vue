@@ -109,19 +109,21 @@
 
     <edit v-if="isEdit"
       :editData="detail"
-      @close="handleEditClose"
+      @close="handleClose"
       @success="searchList">
     </edit>
 
     <detail v-if="isCheck"
       :title="editTitle"
       :detail="detail"
-      @close="handleEditClose">
+      @close="handleClose">
     </detail>
 
     <info-class  v-if="dialogStatus === 'infoClass'"
-      @close="handleEditClose"
-      :configId="detail.id">
+      @close="handleClose"
+      :configId="detail.id"
+      :reportName="detail.reportName"
+      :personClass="detail.personClass">
     </info-class>
 
     <p-d-f
@@ -263,7 +265,7 @@
         })
       },
       // 编辑、信息类组件关闭回调
-      handleEditClose () {
+      handleClose () {
         this.detail = null
         this.handleCancel()
       },
@@ -289,7 +291,7 @@
           this.$store.commit('SET__DEFAULT_ENUM', defaultEnum)
           this.$store.commit('SET_PERSON_CLASS_ENUM', { // 此处主题类别就两种类型
             A01: '自然人',
-            A02: '社会法人'
+            A02: '法人和其他组织'
           })
           this.$store.commit('SET_REPORT_DEFAULT_ENUM', reportDefaultEnum)
           this.$store.commit('SET_REPORT_TYPE_ENUM', reportTypeEnum)
