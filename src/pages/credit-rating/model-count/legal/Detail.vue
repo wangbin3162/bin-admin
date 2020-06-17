@@ -14,10 +14,14 @@
               <tr>
                 <td>企业名称：</td>
                 <td>{{ detail.legBaseInfo.compName }}</td>
-                <td>统一社会信用代码：</td>
-                <td>{{ detail.legBaseInfo.idCode }}</td>
                 <td>住所：</td>
-                <td>{{ detail.legBaseInfo.zs }}</td>
+                <td colspan="3">{{ detail.legBaseInfo.zs }}</td>
+              </tr>
+              <tr>
+                <td>证件类型：</td>
+                <td>{{ detail.legBaseInfo.idTypeName }}</td>
+                <td>证件号码：</td>
+                <td>{{ detail.legBaseInfo.idCode }}</td>
               </tr>
               <tr>
                 <td>企业法人：</td>
@@ -130,7 +134,11 @@
               <td>{{ detail.modelName }}</td>
               <td>信用主体：</td>
               <td>{{ detail.legBaseInfo.compName }}</td>
-              <td>统一社会信用代码：</td>
+            </tr>
+            <tr>
+              <td>证件类型：</td>
+              <td>{{ detail.legBaseInfo.idTypeName }}</td>
+              <td>证件号码：</td>
               <td>{{ detail.legBaseInfo.idCode }}</td>
             </tr>
             <tr>
