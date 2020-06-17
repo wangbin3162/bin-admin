@@ -6,7 +6,7 @@
         <b-tree :data="treeData" slot="tree" :lock-select="lockTreeSelect"
                 @on-select-change="handTreeCurrentChange"></b-tree>
         <!--查询条件-->
-        <v-filter-bar>
+        <v-filter-bar @keyup-enter="handleFilter">
           <v-filter-item title="模板名称">
             <b-input v-model.trim="listQuery.tempName" placeholder="请输入" clearable></b-input>
           </v-filter-item>
@@ -53,68 +53,65 @@
       </v-table-wrap>
     </page-header-wrap>
     <page-header-wrap v-show="isEdit" :title="editTitle" show-close @on-close="handleCancel">
-      <v-edit-wrap>
-        <template slot="full">
-          <b-collapse value="1" simple>
-            <b-collapse-panel title="基础信息" name="1">
-              <b-row>
-                <b-col span="18">
-                  <b-form :model="template" ref="form" :rules="ruleValidate" :label-width="100">
-                    <b-row>
-                      <b-col span="12">
-                        <b-form-item label="模板名称" prop="tempName">
-                          <b-input v-model="template.tempName" placeholder="请输入模板名称" clearable></b-input>
-                        </b-form-item>
-                      </b-col>
-                      <b-col span="12">
-                        <b-form-item label="模板编码" prop="tempCode">
-                          <b-input v-model="template.tempCode" placeholder="编码为biz_开头" clearable
-                                   :disabled="dialogStatus==='modify'"></b-input>
-                        </b-form-item>
-                      </b-col>
-                    </b-row>
-                    <b-row>
-                      <b-col span="12">
-                        <b-form-item label="索引" prop="indices">
-                          <b-input v-model="template.indices" placeholder="多个索引以逗号(,)隔开" clearable></b-input>
-                        </b-form-item>
-                      </b-col>
-                      <b-col span="12">
-                        <b-form-item label="请求类型" prop="reqType">
-                          <b-select v-model="template.reqType">
-                            <b-option v-for="(value,key) in reqTypeMap" :value="key" :key="key">{{ value }}</b-option>
-                          </b-select>
-                        </b-form-item>
-                      </b-col>
-                    </b-row>
-                    <b-form-item v-if="isEdit" label="模板脚本" prop="tempSource">
-                      <b-code-editor v-model="template.tempSource" :lint="false" :auto-format="false"/>
+      <v-edit-wrap transparent>
+        <b-collapse-wrap title="基本信息" collapse>
+          <b-row>
+            <b-col span="18">
+              <b-form :model="template" ref="form" :rules="ruleValidate" :label-width="100">
+                <b-row>
+                  <b-col span="12">
+                    <b-form-item label="模板名称" prop="tempName">
+                      <b-input v-model="template.tempName" placeholder="请输入模板名称" clearable></b-input>
                     </b-form-item>
-                    <b-form-item label="模板说明" prop="tempDesc">
-                      <b-input v-model="template.tempDesc" placeholder="请输入模板说明" type="textarea" :rows="1"></b-input>
+                  </b-col>
+                  <b-col span="12">
+                    <b-form-item label="模板编码" prop="tempCode">
+                      <b-input v-model="template.tempCode" placeholder="编码为biz_开头" clearable
+                                :disabled="dialogStatus==='modify'"></b-input>
                     </b-form-item>
-                  </b-form>
-                </b-col>
-                <b-col span="4">
-                  <div style="padding:108px 0 0 20px;">
-                    <p>
-                      <b-button @click="handleOpenInner">提取内置模板</b-button>
-                    </p>
-                    <p>
-                      <b-button @click="extractParams" type="primary"
-                                transparent :disabled="template.tempSource.length===0"
-                                style="margin: 15px 0 0 0;">
-                        提取模板参数
-                      </b-button>
-                    </p>
-                  </div>
-                </b-col>
-              </b-row>
-            </b-collapse-panel>
-          </b-collapse>
-          <v-title-bar label="参数信息" class="mt-20 mb-15"/>
+                  </b-col>
+                </b-row>
+                <b-row>
+                  <b-col span="12">
+                    <b-form-item label="索引" prop="indices">
+                      <b-input v-model="template.indices" placeholder="多个索引以逗号(,)隔开" clearable></b-input>
+                    </b-form-item>
+                  </b-col>
+                  <b-col span="12">
+                    <b-form-item label="请求类型" prop="reqType">
+                      <b-select v-model="template.reqType">
+                        <b-option v-for="(value,key) in reqTypeMap" :value="key" :key="key">{{ value }}</b-option>
+                      </b-select>
+                    </b-form-item>
+                  </b-col>
+                </b-row>
+                <b-form-item v-if="isEdit" label="模板脚本" prop="tempSource">
+                  <b-code-editor v-model="template.tempSource" :lint="false" :auto-format="false"/>
+                </b-form-item>
+                <b-form-item label="模板说明" prop="tempDesc">
+                  <b-input v-model="template.tempDesc" placeholder="请输入模板说明" type="textarea" :rows="1"></b-input>
+                </b-form-item>
+              </b-form>
+            </b-col>
+            <b-col span="4">
+              <div style="padding:108px 0 0 20px;">
+                <p>
+                  <b-button @click="handleOpenInner">提取内置模板</b-button>
+                </p>
+                <p>
+                  <b-button @click="extractParams" type="primary"
+                            transparent :disabled="template.tempSource.length===0"
+                            style="margin: 15px 0 0 0;">
+                    提取模板参数
+                  </b-button>
+                </p>
+              </div>
+            </b-col>
+          </b-row>
+        </b-collapse-wrap>
+        <b-collapse-wrap title="参数信息" collapse>
           <temp-params v-model="params"/>
-        </template>
+        </b-collapse-wrap>
         <!--保存提交-->
         <template slot="footer">
           <b-button @click="handleCancel">取 消</b-button>

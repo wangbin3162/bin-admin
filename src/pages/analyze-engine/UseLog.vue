@@ -3,7 +3,7 @@
     <page-header-wrap v-show="isNormal">
       <v-table-wrap>
         <!--查询条件-->
-        <v-filter-bar>
+        <v-filter-bar @keyup-enter="handleFilter">
           <v-filter-item title="业务类型">
             <b-select v-model="listQuery.bizType" clearable>
               <b-option v-for="(value,key) in logTypeMap" :key="key" :value="key">{{ value }}</b-option>

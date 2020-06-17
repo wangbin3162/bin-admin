@@ -2,7 +2,7 @@
   <div>
     <page-header-wrap v-show="isNormal">
       <v-table-wrap>
-        <v-filter-bar>
+        <v-filter-bar @keyup-enter="handleFilter">
           <v-filter-item title="接口名称">
             <b-input v-model.trim="listQuery.name" placeholder="请输入" clearable></b-input>
           </v-filter-item>
@@ -36,51 +36,51 @@
       </v-table-wrap>
     </page-header-wrap>
     <page-header-wrap v-show="isEdit" :title="editTitle" show-close @on-close="handleCancel">
-      <v-edit-wrap>
-        <b-form :model="apiObj" ref="form" :rules="ruleValidate" :label-width="130">
-          <b-row>
-            <b-col span="8">
-              <b-form-item label="接口名称" prop="name">
-                <b-input v-model="apiObj.name" placeholder="请输入接口名称"></b-input>
-              </b-form-item>
-            </b-col>
-            <b-col span="8">
-              <b-form-item label="接口类型" prop="type">
-                <b-select v-model="apiObj.type">
-                  <b-option v-for="(value,key) in typeMap" :value="key" :key="key">{{ value }}</b-option>
-                </b-select>
-              </b-form-item>
-            </b-col>
-            <b-col span="8">
-              <b-form-item label="响应类型" prop="recordType">
-                <b-select v-model="apiObj.recordType">
-                  <b-option v-for="(value,key) in recordMap" :value="key" :key="key">{{ value }}</b-option>
-                </b-select>
-              </b-form-item>
-            </b-col>
-          </b-row>
-          <b-form-item v-if="apiObj.type === 'SQL'" label="sql语句" prop="sql">
-            <b-input v-model="apiObj.sql" placeholder="请输入sql语句" type="textarea"></b-input>
-          </b-form-item>
-          <b-form-item v-if="apiObj.type === 'URL'" label="url" prop="url">
-            <b-input v-model="apiObj.url" placeholder="请输入url"></b-input>
-          </b-form-item>
-          <b-form-item v-if="apiObj.type === 'TEMPLATE'" label="模板" prop="tempId">
-            <template-choose v-model="apiObj.tempId" @on-fields="handlePushFields"
-                             :default-name="tempName"></template-choose>
-          </b-form-item>
-          <b-form-item label="接口描述" prop="describe">
-            <b-input v-model="apiObj.describe" placeholder="请输入接口描述" type="textarea"></b-input>
-          </b-form-item>
-        </b-form>
+      <v-edit-wrap transparent>
+        <b-collapse-wrap title="基本信息" collapse>
+          <b-form :model="apiObj" ref="form" :rules="ruleValidate" :label-width="130">
+            <b-row>
+              <b-col span="8">
+                <b-form-item label="接口名称" prop="name">
+                  <b-input v-model="apiObj.name" placeholder="请输入接口名称"></b-input>
+                </b-form-item>
+              </b-col>
+              <b-col span="8">
+                <b-form-item label="接口类型" prop="type">
+                  <b-select v-model="apiObj.type">
+                    <b-option v-for="(value,key) in typeMap" :value="key" :key="key">{{ value }}</b-option>
+                  </b-select>
+                </b-form-item>
+              </b-col>
+              <b-col span="8">
+                <b-form-item label="响应类型" prop="recordType">
+                  <b-select v-model="apiObj.recordType">
+                    <b-option v-for="(value,key) in recordMap" :value="key" :key="key">{{ value }}</b-option>
+                  </b-select>
+                </b-form-item>
+              </b-col>
+            </b-row>
+            <b-form-item v-if="apiObj.type === 'SQL'" label="sql语句" prop="sql">
+              <b-input v-model="apiObj.sql" placeholder="请输入sql语句" type="textarea"></b-input>
+            </b-form-item>
+            <b-form-item v-if="apiObj.type === 'URL'" label="url" prop="url">
+              <b-input v-model="apiObj.url" placeholder="请输入url"></b-input>
+            </b-form-item>
+            <b-form-item v-if="apiObj.type === 'TEMPLATE'" label="模板" prop="tempId">
+              <template-choose v-model="apiObj.tempId" @on-fields="handlePushFields"
+                              :default-name="tempName"></template-choose>
+            </b-form-item>
+            <b-form-item label="接口描述" prop="describe">
+              <b-input v-model="apiObj.describe" placeholder="请输入接口描述" type="textarea"></b-input>
+            </b-form-item>
+          </b-form>
+        </b-collapse-wrap>
         <!--信息项-->
-        <template slot="full">
-          <v-title-bar label="参数信息" class="mb-15"/>
-          <!--信息项表格组件-->
+        <b-collapse-wrap title="参数信息" collapse>
           <da-api-fields v-model="apiObj.daParameters"
-                         :data-type-options="dataTypeOptions"
-          ></da-api-fields>
-        </template>
+            :data-type-options="dataTypeOptions">
+          </da-api-fields>
+        </b-collapse-wrap>
         <!--保存提交-->
         <template slot="footer">
           <b-button @click="handleCancel">取 消</b-button>

@@ -6,7 +6,7 @@
         <b-tree :data="treeData" slot="tree" :lock-select="lockTreeSelect"
                 @on-select-change="handTreeCurrentChange"></b-tree>
         <!--查询条件-->
-        <v-filter-bar>
+        <v-filter-bar @keyup-enter="handleFilter">
           <v-filter-item title="模板名称">
             <b-input v-model.trim="listQuery.tempName" placeholder="请输入" clearable></b-input>
           </v-filter-item>
@@ -38,9 +38,8 @@
       </v-table-wrap>
     </page-header-wrap>
     <page-header-wrap v-show="isEdit" :title="editTitle" show-close @on-close="handleCancel">
-      <v-edit-wrap>
-        <template slot="full">
-          <v-title-bar label="模板信息" class="mb-15"/>
+      <v-edit-wrap transparent>
+        <b-collapse-wrap title="基本信息" collapse>
           <b-row type="flex">
             <b-col span="18">
               <b-form :model="template" ref="form" :rules="ruleValidate" :label-width="100">
@@ -53,7 +52,7 @@
                   <b-col span="12">
                     <b-form-item label="模板编码" prop="tempCode">
                       <b-input v-model="template.tempCode" placeholder="编码为sys_开头" clearable
-                               :disabled="dialogStatus==='modify'"></b-input>
+                              :disabled="dialogStatus==='modify'"></b-input>
                     </b-form-item>
                   </b-col>
                 </b-row>
@@ -74,9 +73,10 @@
               </div>
             </b-col>
           </b-row>
-          <v-title-bar label="参数信息" class="mt-20 mb-15"/>
+        </b-collapse-wrap>
+        <b-collapse-wrap title="参数信息" collapse>
           <temp-params v-model="params"/>
-        </template>
+        </b-collapse-wrap>
         <!--保存提交-->
         <template slot="footer">
           <b-button @click="handleCancel">取 消</b-button>
