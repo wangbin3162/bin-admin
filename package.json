@@ -1,7 +1,7 @@
 {
-  "name": "bin-admin",
-  "version": "2.0.0",
-  "description": "后台管理系统精简版2.0",
+  "name": "bin-admin-pro",
+  "version": "3.0.0",
+  "description": "后台管理系统精简版3.0",
   "keywords": [
     "bin-ui",
     "bin",
@@ -19,7 +19,7 @@
   "license": "MIT",
   "scripts": {
     "serve": "vue-cli-service serve --open",
-    "build": "vue-cli-service build --report",
+    "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "dev:doc": "vuepress dev docs",
     "build:doc": "vuepress build docs"
@@ -27,9 +27,8 @@
   "dependencies": {
     "axios": "^0.19.0",
     "bin-animation": "^1.1.1",
-    "bin-ui": "^3.3.2",
+    "bin-ui": "^3.3.3",
     "core-js": "^2.6.5",
-    "dayjs": "^1.8.15",
     "good-storage": "^1.1.0",
     "js-cookie": "^2.2.0",
     "qs": "^6.7.0",

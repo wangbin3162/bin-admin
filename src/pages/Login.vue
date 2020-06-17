@@ -56,7 +56,7 @@
 
   export default {
     name: 'Login',
-    data () {
+    data() {
       return {
         verifyCodeUrl: '',
         timeInterval: null,
@@ -81,19 +81,19 @@
         loginLoading: false
       }
     },
-    created () {
+    created() {
       this.refreshCode()
       document.addEventListener('keyup', this.enter)
     },
     methods: {
       // enter键盘事件
-      enter (e) {
+      enter(e) {
         if (e.code === 'Enter') {
           this.submit()
         }
       },
       // 刷新验证码
-      refreshCode () {
+      refreshCode() {
         getVerifyCode().then(response => {
           if (response.status === 200) {
             this.verifyCodeUrl = 'data:image/png;base64,' + btoa(
@@ -107,7 +107,7 @@
         })
       },
       // 提交登录信息
-      submit () {
+      submit() {
         this.$refs.loginForm.validate((valid) => {
           if (valid) {
             this.loginLoading = true
@@ -121,12 +121,19 @@
           }
         })
       },
-      loginSuccess (res) {
+      loginSuccess(res) {
         if (res.data.code === '0') {
-          const token = res.data.data.accessToken
-          this.$store.dispatch('setToken', token).then(() => {
-            // 重定向对象不存在则返回顶层路径
-            this.$router.push('/')
+          const { accessToken, roles } = res.data.data
+          console.log(roles)
+          this.$store.dispatch('setToken', accessToken).then(() => {
+            // 只有档案管理员，进入信用档案，其余直接跳转至系统管理端
+            if (roles.indexOf('ROLE_DAGLY') > -1) {
+              console.log('档案管理员')
+              this.$router.push('/')
+            } else {
+              console.log('系统管理员或采集员')
+              this.$open('/dir/')
+            }
           })
         } else {
           this.$message({ content: res.data.message, type: 'danger' })
@@ -135,13 +142,13 @@
         this.loginLoading = false
       },
       // 登录失败
-      requestFailed (err) {
+      requestFailed(err) {
         this.loginLoading = false
         this.refreshCode()
         this.$message({ type: 'danger', content: ((err.response || {}).data || {}).message || '请求出现错误，请稍后再试' })
       }
     },
-    beforeDestroy () {
+    beforeDestroy() {
       document.removeEventListener('keyup', this.enter)
     }
   }

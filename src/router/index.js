@@ -7,8 +7,6 @@ import BinUI from 'bin-ui'
 import util from '../common/utils/util'
 import { ACCESS_TOKEN } from '../common/token-const'
 
-Vue.use(BinUI)
-
 Vue.use(VueRouter)
 
 // 导出路由 在 main.js 里使用
