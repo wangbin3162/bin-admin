@@ -16,7 +16,7 @@
           <img src="" alt="">
         </span>
           <span class="info" flex="dir:top">
-          <i>资源信息数量</i>
+          <i>数据归集总量</i>
           <i class="count">{{counts.totalCount}}</i>
         </span>
         </div>
@@ -25,7 +25,7 @@
           <img src="" alt="">
         </span>
           <span class="info" flex="dir:top">
-          <i>资源信息数量</i>
+          <i>本月归集数据量</i>
           <i class="count">{{counts.monthCount}}</i>
         </span>
         </div>
@@ -34,7 +34,7 @@
           <img src="" alt="">
         </span>
           <span class="info" flex="dir:top">
-          <i>资源信息数量</i>
+          <i>自然人数据总量</i>
           <i class="count">{{counts.zrpCount}}</i>
         </span>
         </div>
@@ -43,7 +43,7 @@
           <img src="" alt="">
         </span>
           <span class="info" flex="dir:top">
-          <i>资源信息数量</i>
+          <i>法人和其他组织数据总量</i>
           <i class="count">{{counts.foCount}}</i>
         </span>
         </div>
@@ -61,7 +61,7 @@
                 <!--  <b-option v-for="item in monthList" :value="item.value" :key="item.value">{{ item.label }}</b-option>-->
                 <!--</b-select>-->
                 <!--新添加滑块选择器-->
-              <GrooveSelect :year-list="yearList" @choose="choose" :selected="selected"></GrooveSelect>
+              <GrooveSelect></GrooveSelect>
             </span>
             </div>
             <div class="content" flex="main:justify">
@@ -556,10 +556,10 @@
           .icon {
             background-color: #ffffff44;
             display: inline-block;
-            width: 50px;
-            height: 50px;
+            min-width: 50px;
+            min-height: 50px;
             border-radius: 50%;
-            margin-right: 30px;
+            margin-right: 20px;
           }
           .count {
             padding-top: 10px;
@@ -605,7 +605,7 @@
         }
         .title {
           font-size: 18px
-          line-height: 40px
+          // line-height: 40px
           padding: 10px 20px
           font-weight: 700
           .text {

@@ -1,16 +1,14 @@
 <template>
-  <div class="groove">
-    <div class="sliding-block" :style="selected===0?'left: 0':selected===1?'left: 80px':selected===2?'left: 160px':''">
+  <div class="tab-wrapper">
+    <div flex>
+      <template v-for="(year, index) in yearsText">
+        <div class="tab" :class="{ actived: index === tab }"
+          :key="index" @click="handleClick(index)">
+          {{ year }}年
+        </div>
+      </template>
     </div>
-    <div class="btn-box" flex>
-      <div class="btn"
-           @click="choose(index)"
-           :class="selected === index ? 'selected':''"
-           v-for="(item, index) in yearList"
-           :key="item.value">
-        {{ item.label }}
-      </div>
-    </div>
+    <div class="slide" :style="{ left: tab * 70 + 'px'}"></div>
   </div>
 </template>
 
@@ -18,44 +16,59 @@
   export default {
     name: 'GrooveSelect',
     props: {
-      yearList: {},
-      selected: {}
+
+    },
+    data () {
+      return {
+        tab: 0,
+        yearsText: []
+      }
+    },
+    created () {
+      const curYear = new Date().getFullYear()
+      this.yearsText = [curYear, curYear - 1, curYear - 2]
     },
     methods: {
-      choose(index) {
-        this.$emit('choose', index)
+      handleClick (index) {
+        this.tab = index
+        this.$emit('tab-click', index)
       }
     }
   }
 </script>
 
 <style scoped lang="stylus">
-  .groove
-    top: 10px
-    width: 240px
-    position relative
-    background-color: #fff
-    border-radius: 15px
-    border: 1px solid rgba(240,239,252,.8)
-    .sliding-block
-      background-color: rgba(236,239,252,.8)
-      position absolute
-      top:0
-      left: 0
-      width: 80px
-      height: 30px
-      border-radius: 15px
-      transition ease-in-out .2s
-    .btn-box
-      position relative
-      .btn
-        font-size: 14px
-        cursor pointer
-        text-align center
-        line-height: 30px
-        width: 80px
-        height: 30px
-        color: rgba(0,0,0,0.65);
-      .selected
-        color #333
+  .tab-wrapper {
+    position: relative;
+    z-index: 1;
+    padding: 7px 0;
+    width: 210px;
+    border: 1px solid #DCDFE6;
+    border-radius: 30px;
+
+    .tab {
+      width: 70px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 400;
+      text-align: center;
+      border-radius: 30px;
+    }
+
+    .actived {
+      font-weight: 700;
+    }
+
+    .slide {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: -1;
+      width: 70px;
+      height: 33.6px;
+      border-radius: 30px;
+      background-color: rgba(233, 233, 255, 0.5);
+      transition: left 0.2s;
+    }
+  }
 </style>
