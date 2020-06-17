@@ -3,7 +3,7 @@
   <b-modal v-model="dialogFormVisible" title="选择自然人" width="860" append-to-body :mask-closable="false">
     <div style="padding: 0;">
       <!--查询条件-->
-      <v-filter-bar>
+      <v-filter-bar @keyup-enter="handleFilter">
         <v-filter-item title="名称">
           <b-input v-model.trim="listQuery.name" placeholder="输入名称" clearable></b-input>
         </v-filter-item>

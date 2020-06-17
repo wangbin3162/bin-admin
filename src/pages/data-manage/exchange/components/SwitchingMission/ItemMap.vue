@@ -1,8 +1,7 @@
 <template>
   <!--映射关系，for SwitchingMission.vue -->
-  <div>
-    <v-title-bar label="映射关系" tip-pos="left" class="mb-20"></v-title-bar>
-    <b-table disabled-hover :data="totalData"  :columns="fieldsColumns">
+  <b-collapse-wrap title="映射关系" collapse>
+    <b-table disabled-hover :data="totalData" :columns="fieldsColumns">
       <template v-slot:fieldTitle="scope">
         <b-input v-model="totalData[scope.index].fieldTitle" @on-change="emitValue"></b-input>
       </template>
@@ -29,7 +28,7 @@
         </b-switch>
       </template>
     </b-table>
-  </div>
+  </b-collapse-wrap>
 </template>
 
 <script>

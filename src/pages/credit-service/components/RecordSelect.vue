@@ -1,17 +1,17 @@
 <template>
   <div class="dir-select">
     <b-modal v-model="open"
-      title="选择目录"
-      footer-hide
-      :body-styles="{ padding: '5px' }"
-      width="70%"
-      @on-hidden="handleHidden">
+             title="选择目录"
+             footer-hide
+             :body-styles="{ padding: '5px' }"
+             width="70%"
+             @on-hidden="handleHidden">
       <div class="con">
         <div v-show="gatherVisible && isNormal">
           <v-table-wrap>
             <div flex="main:justify">
               <!--查询条件-->
-              <v-filter-bar style="width: 100%;">
+              <v-filter-bar @keyup-enter="handleFilter">
                 <v-filter-item title="名称">
                   <b-input v-model.trim="listQuery.name" placeholder="名称" clearable></b-input>
                 </v-filter-item>
@@ -25,7 +25,7 @@
                   <b-icon :name="visible?'ios-arrow-up':'ios-arrow-down'"></b-icon>
                 </b-button>
                 <b-dropdown-menu slot="list" v-click-out-side="clickOutSide"
-                                style="padding-left: 5px;width: auto;">
+                                 style="padding-left: 5px;width: auto;">
                   <b-checkbox-group v-model="showFields">
                     <b-checkbox v-for="col in columns" :key="col.id" :label="col.fieldName"
                                 style="display: block;margin-right: 0;">
@@ -45,7 +45,7 @@
             </b-table>
             <!--下方分页器-->
             <b-page :total="total" :current.sync="listQuery.page" size="small"
-              @on-change="handleCurrentChange" @on-page-size-change="handleSizeChange"></b-page>
+                    @on-change="handleCurrentChange" @on-page-size-change="handleSizeChange"></b-page>
           </v-table-wrap>
         </div>
 
@@ -53,8 +53,8 @@
         <div v-show="isCheck">
           <v-table-wrap v-if="gather" style="user-select: text;">
             <v-key-label v-for="(item,index) in columns" :key="index"
-              :label="item.fieldTitle"
-              :is-bottom="index===columns.length-1">
+                         :label="item.fieldTitle"
+                         :is-bottom="index===columns.length-1">
               <span v-if="item.controlType==='FILE_UPLOAD'">
                 <file-upload :value="gather[item.fieldName]" :resource-key="resource.resourceKey" is-show/>
               </span>
@@ -89,7 +89,7 @@
     components: {
       FileUpload
     },
-    data () {
+    data() {
       return {
         open: false, // 打开弹框
         gatherVisible: false,
@@ -148,23 +148,23 @@
     },
     methods: {
       // 弹框关闭动画结束回调
-      handleHidden () {
+      handleHidden() {
 
       },
       // 根据resourceKey获取资源信息，并打开弹框
-      async openModal () {
+      async openModal() {
         return new Promise(async (resolve, reject) => {
           try {
             const res = await api.getResourceInfo(this.resourceKey)
-              if (res.data.successful) {
-                let detail = res.data.data
-                let columns = detail.items.filter(i => i.id)
-                this.initForm(detail, columns)
-                this.open = true
-                resolve()
-              } else {
-                reject(new Error(res.data.message))
-              }
+            if (res.data.successful) {
+              let detail = res.data.data
+              let columns = detail.items.filter(i => i.id)
+              this.initForm(detail, columns)
+              this.open = true
+              resolve()
+            } else {
+              reject(new Error(res.data.message))
+            }
           } catch (error) {
             reject(error)
           }
@@ -219,7 +219,7 @@
         })
       },
       // 选择按钮回调
-      handleSelectBtn (row) {
+      handleSelectBtn(row) {
         this.$emit('selected', row)
         this.open = false // 关闭弹框
       },
@@ -270,11 +270,11 @@
 </script>
 
 <style lang="stylus" scoped>
-.dir-select {
-  .con {
-    min-height: 300px;
-    max-height: 500px;
-    overflow: auto;
+  .dir-select {
+    .con {
+      min-height: 300px;
+      max-height: 500px;
+      overflow: auto;
+    }
   }
-}
 </style>

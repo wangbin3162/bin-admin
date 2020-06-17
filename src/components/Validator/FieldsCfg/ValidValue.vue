@@ -77,7 +77,7 @@
     <b-modal v-model="chooseModal" title="选择系统字典" width="860" class="layout-inner" :mask-closable="false">
       <div>
         <!--查询条件-->
-        <v-filter-bar>
+        <v-filter-bar @keyup-enter="handleFilter">
           <v-filter-item title="字典名称">
             <b-input v-model.trim="listQuery.groupName" placeholder="请输入" clearable></b-input>
           </v-filter-item>

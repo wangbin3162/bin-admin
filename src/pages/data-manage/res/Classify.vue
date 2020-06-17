@@ -6,7 +6,7 @@
         <b-tree :data="treeData" slot="tree" :lock-select="lockTreeSelect"
                 @on-select-change="handTreeCurrentChange"></b-tree>
         <!--查询条件-->
-        <v-filter-bar>
+        <v-filter-bar @keyup-enter="handleFilter">
           <v-filter-item title="类目名称">
             <b-input v-model.trim="listQuery.classifyName" placeholder="请输入" clearable></b-input>
           </v-filter-item>
@@ -42,7 +42,7 @@
       <div class="p15">
         <b-form :model="classify" ref="form" :rules="ruleValidate" :label-width="100">
           <b-form-item label="父级类别">
-            <b-alert v-if="currentTreeNode" style="margin: 0;">{{currentTreeNode.title}}</b-alert>
+            <b-input v-if="currentTreeNode" :value="currentTreeNode.title" disabled/>
           </b-form-item>
           <b-form-item label="类目名称" prop="classifyName">
             <b-input v-model.trim="classify.classifyName" placeholder="请输入类目名称" clearable :maxlength="15"></b-input>

@@ -2,7 +2,8 @@
   <b-modal v-model="chooseDialog" title="选择角色">
     <div flex="cross:center">
       <span style="width: 70px;">角色名称</span>
-      <b-input v-model.trim="listQuery.name"  placeholder="角色名称" style="width: 280px;">
+      <b-input v-model.trim="listQuery.name" placeholder="角色名称" style="width: 280px;"
+               @on-keyup.enter="handleFilter">
         <b-icon name="ios-search" slot="suffix" @click.native="handleFilter" style="cursor: pointer;"></b-icon>
       </b-input>
     </div>
@@ -16,7 +17,7 @@
     <b-alert type="error" v-show="list.length===0" class="t-center">暂无角色</b-alert>
     <div slot="footer" class="t-center">
       <!--下方分页器-->
-      <b-page :total="total" :current.sync="listQuery.page"  @on-change="handleCurrentChange"></b-page>
+      <b-page :total="total" :current.sync="listQuery.page" @on-change="handleCurrentChange"></b-page>
     </div>
   </b-modal>
 </template>

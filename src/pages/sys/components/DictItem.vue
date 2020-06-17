@@ -3,7 +3,7 @@
     <page-header-wrap v-show="visible" show-close @on-close="close" :title="drawerTitle">
       <v-table-wrap>
         <!--查询条件-->
-        <v-filter-bar>
+        <v-filter-bar @keyup-enter="handleFilter">
           <v-filter-item title="字典项名称">
             <b-input v-model.trim="listQuery.itemName" placeholder="请输入" clearable></b-input>
           </v-filter-item>

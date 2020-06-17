@@ -1,7 +1,6 @@
 <template>
   <!--任务配置明细组件 for SwitchingMission.vue -->
-  <div>
-    <v-title-bar label="任务配置明细" tip-pos="left" class="mb-20"></v-title-bar>
+  <b-collapse-wrap title="任务配置明细" collapse>
     <b-form :model="current" :rules="ruleValidate" label-position="top">
       <b-row :gutter="20">
         <b-col span="6">
@@ -29,7 +28,7 @@
         <b-input v-model="current.templateFile" @on-change="emitValue"></b-input>
       </b-form-item>
     </b-form>
-  </div>
+  </b-collapse-wrap>
 </template>
 
 <script>

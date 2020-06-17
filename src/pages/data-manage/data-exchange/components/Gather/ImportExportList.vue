@@ -3,7 +3,7 @@
     <page-header-wrap v-show="visible && !detailDialog" show-close @on-close="close" title="导入/导出记录">
       <v-table-wrap>
         <!--查询条件-->
-        <v-filter-bar>
+        <v-filter-bar @keyup-enter="handleFilter">
           <v-filter-item title="类型">
             <b-select v-model="listQuery.jobType" clearable>
               <b-option v-for="(value,key) in jobTypeMap" :key="key" :value="key">{{ value }}</b-option>

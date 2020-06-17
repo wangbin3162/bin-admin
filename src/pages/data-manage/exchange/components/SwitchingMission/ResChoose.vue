@@ -13,7 +13,7 @@
         <b-tree :data="treeData" slot="tree" :lock-select="lockTreeSelect"
                 @on-select-change="handTreeCurrentChange"></b-tree>
         <!--查询条件-->
-        <v-filter-bar>
+        <v-filter-bar @keyup-enter="handleFilter">
           <v-filter-item title="资源名称" :span="12">
             <b-input v-model.trim="listQuery.resourceName" placeholder="资源名称(中文名)" clearable></b-input>
           </v-filter-item>

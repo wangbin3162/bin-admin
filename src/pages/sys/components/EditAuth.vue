@@ -2,23 +2,21 @@
   <!--编辑权限-->
   <page-header-wrap v-show="visible" show-close @on-close="close" title="编辑权限">
     <v-edit-wrap>
-      <template slot="full">
-        <b-alert>
-          <div flex="main:justify cross:center">
-            <div style="color:rgba(0,0,0,.85);font-size: 16px;">{{pageTitle}}</div>
-            <div>
-              <b-button type="text" @click="handleClose">全部收起</b-button>
-              <b-divider type="vertical"/>
-              <b-button type="text" @click="handleExpand">全部展开</b-button>
-            </div>
+      <b-alert>
+        <div flex="main:justify cross:center">
+          <div style="color:rgba(0,0,0,.85);font-size: 16px;">{{pageTitle}}</div>
+          <div>
+            <b-button type="text" @click="handleClose">全部收起</b-button>
+            <b-divider type="vertical"/>
+            <b-button type="text" @click="handleExpand">全部展开</b-button>
           </div>
-        </b-alert>
-        <div style="position: relative;">
-          <v-auth-tree ref="authTree" :data="treeData" show-checkbox/>
-
-          <b-loading fix v-show="treeLoading" show-text="权限加载中..."/>
         </div>
-      </template>
+      </b-alert>
+      <div style="position: relative;">
+        <v-auth-tree ref="authTree" :data="treeData" show-checkbox/>
+
+        <b-loading fix v-show="treeLoading" show-text="权限加载中..."/>
+      </div>
       <!--保存提交-->
       <template slot="footer">
         <b-button @click="close">取 消</b-button>

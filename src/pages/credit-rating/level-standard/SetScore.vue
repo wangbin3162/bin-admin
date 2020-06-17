@@ -1,48 +1,49 @@
 <template>
   <div class="level-standard-set-score">
     <page-header-wrap title="评分标准" show-close @on-close="$emit('close')">
-      <v-edit-wrap>
-        <div class="table-con" slot="full">
-          <b-table :columns="columns" :data="list" :loading="loading" size="small">
-            <template v-slot:levelCode="{ index }">
-              <b-input v-model="list[index].levelCode" :class="{ error: list[index].levelCodeError }"
-                       @on-blur="handleLevelCodeBlur(list[index], 'levelCode')"></b-input>
-            </template>
+      <v-edit-wrap transparent>
+        <b-collapse-wrap title="标准配置">
+          <div class="table-con">
+            <b-table :columns="columns" :data="list" :loading="loading" size="small">
+              <template v-slot:levelCode="{ index }">
+                <b-input v-model="list[index].levelCode" :class="{ error: list[index].levelCodeError }"
+                         @on-blur="handleLevelCodeBlur(list[index], 'levelCode')"></b-input>
+              </template>
 
-            <template v-slot:upScore="{ index }">
-              <b-input-number v-model="list[index].upScore" :min="0" :max="1000000000"
-                :class="{ error: list[index].upScoreError }"
-                style="width: 100%;"
-                @on-blur="handleCommonBlur(list[index], 'upScore')">
-              </b-input-number>
-            </template>
+              <template v-slot:upScore="{ index }">
+                <b-input-number v-model="list[index].upScore" :min="0" :max="1000000000"
+                                :class="{ error: list[index].upScoreError }"
+                                style="width: 100%;"
+                                @on-blur="handleCommonBlur(list[index], 'upScore')">
+                </b-input-number>
+              </template>
 
-            <template v-slot:dnScore="{ index }">
-              <b-input-number v-model="list[index].dnScore" :min="0" :max="1000000000"
-                :class="{ error: list[index].dnScoreError }"
-                style="width: 100%;"
-                @on-blur="handleCommonBlur(list[index], 'dnScore')">
-              </b-input-number>
-            </template>
+              <template v-slot:dnScore="{ index }">
+                <b-input-number v-model="list[index].dnScore" :min="0" :max="1000000000"
+                                :class="{ error: list[index].dnScoreError }"
+                                style="width: 100%;"
+                                @on-blur="handleCommonBlur(list[index], 'dnScore')">
+                </b-input-number>
+              </template>
 
-            <template v-slot:levelDesc="{ index }">
-              <b-input v-model="list[index].levelDesc"/>
-            </template>
+              <template v-slot:levelDesc="{ index }">
+                <b-input v-model="list[index].levelDesc"/>
+              </template>
 
-            <template v-slot:orderNo="{ row }">
-              <v-sort-arrow @on-up="sortUp(row.orderNo)" @on-down="sortDn(row.orderNo)"/>
-            </template>
+              <template v-slot:orderNo="{ row }">
+                <v-sort-arrow @on-up="sortUp(row.orderNo)" @on-down="sortDn(row.orderNo)"/>
+              </template>
 
-            <template v-slot:action="{ row }">
-              <b-button type="text" @click="addNext(row.orderNo)">添加</b-button>
-              <b-button type="text" @click="remove(row.orderNo)">移除</b-button>
-            </template>
-          </b-table>
+              <template v-slot:action="{ row }">
+                <b-button type="text" @click="addNext(row.orderNo)">添加</b-button>
+                <b-button type="text" @click="remove(row.orderNo)">移除</b-button>
+              </template>
+            </b-table>
 
-          <b-button style="margin-top: 15px; width: 100%;" type="primary" plain @click="addLast()">+ 添加</b-button>
-          <p class="tip">标度，符合统计区间按最低值下限  [ ，最高值上限  )  进行计算</p>
-        </div>
-
+            <b-button style="margin-top: 15px; width: 100%;" type="primary" plain @click="addLast()">+ 添加</b-button>
+            <p class="tip">标度，符合统计区间按最低值下限 [ ，最高值上限 ) 进行计算</p>
+          </div>
+        </b-collapse-wrap>
         <template slot="footer">
           <b-button @click="$emit('close')">取 消</b-button>
           <b-button type="primary" @click="submit">提 交</b-button>

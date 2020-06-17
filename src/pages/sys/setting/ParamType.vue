@@ -6,7 +6,7 @@
         <b-tree :data="treeData" slot="tree" :lock-select="lockTreeSelect" ref="tree"
                 @on-select-change="handTreeCurrentChange"></b-tree>
         <!--查询条件-->
-        <v-filter-bar>
+        <v-filter-bar @keyup-enter="handleFilter">
           <v-filter-item title="类别名称">
             <b-input v-model.trim="listQuery.typeName" placeholder="请输入" clearable></b-input>
           </v-filter-item>
@@ -39,36 +39,38 @@
       </v-table-wrap>
     </page-header-wrap>
     <page-header-wrap v-show="isEdit" :title="editTitle" show-close @on-close="handleCancel">
-      <v-edit-wrap>
-        <b-form :model="type" ref="form" :rules="ruleValidate" :label-width="130">
-          <b-row>
-            <b-col span="12">
-              <b-form-item label="类别名称" prop="typeName">
-                <b-input v-model="type.typeName" placeholder="请输入类别名称" clearable></b-input>
-              </b-form-item>
-            </b-col>
-            <b-col span="12">
-              <b-form-item label="类别编码" prop="typeCode">
-                <b-input v-model="type.typeCode" placeholder="请输入类别编码" clearable></b-input>
-              </b-form-item>
-            </b-col>
-          </b-row>
-          <b-row>
-            <b-col span="12">
-              <b-form-item label="父级类别">
-                <b-input v-if="currentTreeNode" :value="currentTreeNode.title" readonly></b-input>
-              </b-form-item>
-            </b-col>
-            <b-col span="12">
-              <b-form-item label="排序编号" prop="sortNum">
-                <b-input-number :min="0" v-model="type.sortNum" style="width: 100%;"></b-input-number>
-              </b-form-item>
-            </b-col>
-          </b-row>
-          <b-form-item label="描述" prop="desc">
-            <b-input v-model="type.desc" placeholder="请输入描述" type="textarea"></b-input>
-          </b-form-item>
-        </b-form>
+      <v-edit-wrap transparent>
+        <b-collapse-wrap title="基本信息">
+          <b-form :model="type" ref="form" :rules="ruleValidate" :label-width="130">
+            <b-row>
+              <b-col span="12">
+                <b-form-item label="类别名称" prop="typeName">
+                  <b-input v-model="type.typeName" placeholder="请输入类别名称" clearable></b-input>
+                </b-form-item>
+              </b-col>
+              <b-col span="12">
+                <b-form-item label="类别编码" prop="typeCode">
+                  <b-input v-model="type.typeCode" placeholder="请输入类别编码" clearable></b-input>
+                </b-form-item>
+              </b-col>
+            </b-row>
+            <b-row>
+              <b-col span="12">
+                <b-form-item label="父级类别">
+                  <b-input v-if="currentTreeNode" :value="currentTreeNode.title" readonly></b-input>
+                </b-form-item>
+              </b-col>
+              <b-col span="12">
+                <b-form-item label="排序编号" prop="sortNum">
+                  <b-input-number :min="0" v-model="type.sortNum" style="width: 100%;"></b-input-number>
+                </b-form-item>
+              </b-col>
+            </b-row>
+            <b-form-item label="描述" prop="desc">
+              <b-input v-model="type.desc" placeholder="请输入描述" type="textarea"></b-input>
+            </b-form-item>
+          </b-form>
+        </b-collapse-wrap>
         <!--保存提交-->
         <template slot="footer">
           <b-button @click="handleCancel">取 消</b-button>
@@ -125,9 +127,9 @@
         columns: [
           { type: 'index', width: 50, align: 'center' },
           { title: '类别名称', key: 'typeName' },
-          { title: '类别编码', key: 'typeCode', align: 'center' },
-          { title: '完整编码', key: 'route', align: 'center' },
-          { title: '排序编号', key: 'sortNum', align: 'center' },
+          { title: '类别编码', key: 'typeCode' },
+          { title: '完整编码', key: 'route' },
+          { title: '排序编号', key: 'sortNum', align: 'center', width: 100 },
           { title: '描述', key: 'desc', tooltip: true },
           { title: '操作', slot: 'action', width: 120 }
         ],

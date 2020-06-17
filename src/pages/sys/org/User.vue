@@ -6,14 +6,14 @@
         <b-tree :data="treeData" slot="tree" :lock-select="lockTreeSelect"
                 @on-select-change="handTreeCurrentChange"></b-tree>
         <!--查询条件-->
-        <v-filter-bar>
+        <v-filter-bar @keyup-enter="handleFilter">
           <v-filter-item title="登录名称">
             <b-input v-model.trim="listQuery.username" placeholder="请输入" clearable></b-input>
           </v-filter-item>
           <v-filter-item title="真实名称">
             <b-input v-model.trim="listQuery.realName" placeholder="请输入" clearable></b-input>
           </v-filter-item>
-          <v-filter-item title="禁用状态" width="160px">
+          <v-filter-item title="禁用状态" :span="4">
             <b-switch size="large" v-model="listQuery.status" :true-value="ENUM.DISABLE" :false-value="ENUM.ENABLE"
                       @on-change="handleFilter">
               <span slot="open">显示</span>
@@ -21,7 +21,7 @@
             </b-switch>
           </v-filter-item>
           <!--添加查询按钮位置-->
-          <v-filter-item @on-search="handleFilter" @on-reset="resetQuery"></v-filter-item>
+          <v-filter-item :span="6" @on-search="handleFilter" @on-reset="resetQuery"></v-filter-item>
         </v-filter-bar>
         <!--操作栏-->
         <v-table-tool-bar>
@@ -84,50 +84,52 @@
       </v-table-wrap>
     </page-header-wrap>
     <page-header-wrap v-show="isEdit" :title="editTitle" show-close @on-close="handleCancel">
-      <v-edit-wrap>
-        <b-form :model="user" ref="form" :rules="ruleValidate" :label-width="100">
-          <b-form-item label="所属组织">
-            <b-input v-if="currentTreeNode" :value="currentTreeNode.title" readonly></b-input>
-          </b-form-item>
-          <b-row>
-            <b-col span="12">
-              <b-form-item label="登录名称" prop="username">
-                <!--登录名称编辑时不可修改-->
-                <b-input v-model="user.username" placeholder="请输入登录名称" clearable
-                         :readonly="dialogStatus==='modify'"></b-input>
-              </b-form-item>
-            </b-col>
-            <b-col span="12">
-              <b-form-item label="真实名称" prop="realName">
-                <b-input v-model="user.realName" placeholder="请输入真实名称" clearable></b-input>
-              </b-form-item>
-            </b-col>
-          </b-row>
-          <b-row>
-            <b-col span="12">
-              <b-form-item label="手机号码" prop="mobile">
-                <b-input v-model="user.mobile" placeholder="请输入手机号码" clearable></b-input>
-              </b-form-item>
-            </b-col>
-            <b-col span="12">
-              <b-form-item label="电子邮件" prop="email">
-                <b-input v-model="user.email" placeholder="请输入邮箱" clearable></b-input>
-              </b-form-item>
-            </b-col>
-          </b-row>
-          <b-form-item label="角色">
-            <b-tag :key="role.id" v-for="role in user.roles"
-                   :closable="!isAdminRole(user)" @on-close="handleRemoveRole(role)">
-              {{ role.name }}
-            </b-tag>
-            <b-button type="primary" style="vertical-align: middle;" plain
-                      :disabled="isAdminRole(user)" @click="handleShowDialogChoose">选择角色
-            </b-button>
-          </b-form-item>
-          <b-form-item label="备注" prop="remark">
-            <b-input v-model="user.remark" placeholder="请输入备注" type="textarea"></b-input>
-          </b-form-item>
-        </b-form>
+      <v-edit-wrap transparent>
+        <b-collapse-wrap title="基本信息">
+          <b-form :model="user" ref="form" :rules="ruleValidate" :label-width="100">
+            <b-form-item label="所属组织">
+              <b-input v-if="currentTreeNode" :value="currentTreeNode.title" readonly></b-input>
+            </b-form-item>
+            <b-row>
+              <b-col span="12">
+                <b-form-item label="登录名称" prop="username">
+                  <!--登录名称编辑时不可修改-->
+                  <b-input v-model="user.username" placeholder="请输入登录名称" clearable
+                           :readonly="dialogStatus==='modify'"></b-input>
+                </b-form-item>
+              </b-col>
+              <b-col span="12">
+                <b-form-item label="真实名称" prop="realName">
+                  <b-input v-model="user.realName" placeholder="请输入真实名称" clearable></b-input>
+                </b-form-item>
+              </b-col>
+            </b-row>
+            <b-row>
+              <b-col span="12">
+                <b-form-item label="手机号码" prop="mobile">
+                  <b-input v-model="user.mobile" placeholder="请输入手机号码" clearable></b-input>
+                </b-form-item>
+              </b-col>
+              <b-col span="12">
+                <b-form-item label="电子邮件" prop="email">
+                  <b-input v-model="user.email" placeholder="请输入邮箱" clearable></b-input>
+                </b-form-item>
+              </b-col>
+            </b-row>
+            <b-form-item label="角色">
+              <b-tag :key="role.id" v-for="role in user.roles"
+                     :closable="!isAdminRole(user)" @on-close="handleRemoveRole(role)">
+                {{ role.name }}
+              </b-tag>
+              <b-button type="primary" style="vertical-align: middle;" plain
+                        :disabled="isAdminRole(user)" @click="handleShowDialogChoose">选择角色
+              </b-button>
+            </b-form-item>
+            <b-form-item label="备注" prop="remark">
+              <b-input v-model="user.remark" placeholder="请输入备注" type="textarea"></b-input>
+            </b-form-item>
+          </b-form>
+        </b-collapse-wrap>
         <!--保存提交-->
         <template slot="footer">
           <b-button @click="handleCancel">取 消</b-button>
@@ -136,21 +138,23 @@
       </v-edit-wrap>
     </page-header-wrap>
     <page-header-wrap v-show="isCheck" :title="editTitle" show-close @on-close="handleCancel">
-      <v-edit-wrap v-if="user&&currentTreeNode">
-        <div>
-          <v-key-label label="所属组织">{{ currentTreeNode.title }}</v-key-label>
-          <v-key-label label="登录名称">{{ user.username }}</v-key-label>
-          <v-key-label label="真实名称">{{ user.realName }}</v-key-label>
-          <v-key-label label="电话号码">{{ user.mobile | mobileFilter}}</v-key-label>
-          <v-key-label label="电子邮件">{{ user.email }}</v-key-label>
-          <v-key-label label="角色">
-            <template v-if="user.roles">
-              <b-tag type="info" v-for="role in user.roles" :key="role.id">{{ role.name }}</b-tag>
-            </template>
-            <span v-else>未选择</span>
-          </v-key-label>
-          <v-key-label label="备注" is-bottom>{{ user.remark }}</v-key-label>
-        </div>
+      <v-edit-wrap transparent>
+        <b-collapse-wrap title="基本信息" v-if="user&&currentTreeNode">
+          <div>
+            <v-key-label label="所属组织">{{ currentTreeNode.title }}</v-key-label>
+            <v-key-label label="登录名称">{{ user.username }}</v-key-label>
+            <v-key-label label="真实名称">{{ user.realName }}</v-key-label>
+            <v-key-label label="电话号码">{{ user.mobile | mobileFilter}}</v-key-label>
+            <v-key-label label="电子邮件">{{ user.email }}</v-key-label>
+            <v-key-label label="角色">
+              <template v-if="user.roles">
+                <b-tag type="info" v-for="role in user.roles" :key="role.id">{{ role.name }}</b-tag>
+              </template>
+              <span v-else>未选择</span>
+            </v-key-label>
+            <v-key-label label="备注" is-bottom>{{ user.remark }}</v-key-label>
+          </div>
+        </b-collapse-wrap>
         <template slot="footer">
           <b-button @click="handleCancel">返 回</b-button>
         </template>
@@ -185,7 +189,7 @@
     components: { RoleChoose, RecordList, VBatchExport, VDownloadTemplate, VBatchImport },
     data() {
       const validateUsername = (rule, value, callback) => {
-        if (value.length <= 3  || value.length >128) {
+        if (value.length <= 3 || value.length > 128) {
           callback(new Error('登录名必须大于3个字符且小于128个字符'))
         } else {
           if (isLetterW(value)) {

@@ -1,9 +1,8 @@
 <template>
   <page-header-wrap v-if="visible" :title="resource.resourceName"
                     show-close @on-close="handleClose">
-    <v-edit-wrap>
-      <template slot="full">
-        <v-title-bar :label="hasTestData?'修改示例数据':'新增示例数据'" class="mb-15"/>
+    <v-edit-wrap transparent>
+      <b-collapse-wrap :title="hasTestData?'修改示例数据':'新增示例数据'">
         <b-form :model="form" :rules="rules" ref="dynamicFormRef" label-position="top">
           <!--自定义form-item-->
           <form-item :key="item.id||index" v-for="(item,index) in dynamicForm"
@@ -25,7 +24,7 @@
             </form-control>
           </form-item>
         </b-form>
-      </template>
+      </b-collapse-wrap>
       <!--保存提交-->
       <template slot="footer">
         <b-button @click="handleClose">返 回</b-button>

@@ -6,7 +6,7 @@
         <b-tree :data="treeData" slot="tree" :lock-select="lockTreeSelect"
                 @on-select-change="handTreeCurrentChange"></b-tree>
         <!--查询条件-->
-        <v-filter-bar>
+        <v-filter-bar @keyup-enter="handleFilter">
           <v-filter-item title="参数名称">
             <b-input v-model.trim="listQuery.confName" placeholder="请输入" clearable></b-input>
           </v-filter-item>
@@ -50,81 +50,83 @@
       </v-table-wrap>
     </page-header-wrap>
     <page-header-wrap v-show="isEdit" :title="editTitle" show-close @on-close="handleCancel">
-      <v-edit-wrap>
-        <b-form :model="conf" ref="form" :rules="ruleValidate" :label-width="100">
-          <b-form-item label="所属类型" class="bin-form-item-required">
-            <b-input v-if="currentTreeNode" :value="currentTreeNode.title" disabled></b-input>
-          </b-form-item>
-          <b-row>
-            <b-col span="12">
-              <b-form-item label="参数名称" prop="confName">
-                <b-input v-model="conf.confName" placeholder="请输入参数名称" clearable></b-input>
-              </b-form-item>
-            </b-col>
-            <b-col span="12">
-              <b-form-item label="参数编码" prop="confCode">
-                <b-input v-model="conf.confCode" placeholder="请输入参数编码" clearable></b-input>
-              </b-form-item>
-            </b-col>
-          </b-row>
-          <b-row>
-            <b-col span="12">
-              <b-form-item label="取值类型" prop="valueMode" class="bin-form-item-required">
-                <b-select v-model="conf.valueMode">
-                  <b-option v-for="item in valueModeOptions" :key="item.value" :value="item.value">
-                    {{ item.label }}
-                  </b-option>
-                </b-select>
-              </b-form-item>
-            </b-col>
-            <b-col span="12">
-              <b-form-item label="排序编号" prop="sortNum">
-                <b-input-number :min="0" v-model="conf.sortNum" style="width: 100%;"></b-input-number>
-              </b-form-item>
-            </b-col>
-          </b-row>
-          <b-form-item label="描述" prop="desc">
-            <b-input v-model="conf.desc" placeholder="请输入描述" type="textarea"></b-input>
-          </b-form-item>
-          <template v-if="conf.valueMode===ENUM.RADIO||conf.valueMode===ENUM.CHECKBOX">
-            <b-divider align="left">{{ valueModeMap[conf.valueMode] }}参数</b-divider>
-            <b-table disabled-hover :data="conf.bufferValue" size="small"
-                     :columns="[
+      <v-edit-wrap transparent>
+        <b-collapse-wrap title="基本信息" collapse>
+          <b-form :model="conf" ref="form" :rules="ruleValidate" :label-width="100">
+            <b-form-item label="所属类型" class="bin-form-item-required">
+              <b-input v-if="currentTreeNode" :value="currentTreeNode.title" disabled></b-input>
+            </b-form-item>
+            <b-row>
+              <b-col span="12">
+                <b-form-item label="参数名称" prop="confName">
+                  <b-input v-model="conf.confName" placeholder="请输入参数名称" clearable></b-input>
+                </b-form-item>
+              </b-col>
+              <b-col span="12">
+                <b-form-item label="参数编码" prop="confCode">
+                  <b-input v-model="conf.confCode" placeholder="请输入参数编码" clearable></b-input>
+                </b-form-item>
+              </b-col>
+            </b-row>
+            <b-row>
+              <b-col span="12">
+                <b-form-item label="取值类型" prop="valueMode" class="bin-form-item-required">
+                  <b-select v-model="conf.valueMode">
+                    <b-option v-for="item in valueModeOptions" :key="item.value" :value="item.value">
+                      {{ item.label }}
+                    </b-option>
+                  </b-select>
+                </b-form-item>
+              </b-col>
+              <b-col span="12">
+                <b-form-item label="排序编号" prop="sortNum">
+                  <b-input-number :min="0" v-model="conf.sortNum" style="width: 100%;"></b-input-number>
+                </b-form-item>
+              </b-col>
+            </b-row>
+            <b-form-item label="描述" prop="desc">
+              <b-input v-model="conf.desc" placeholder="请输入描述" type="textarea"></b-input>
+            </b-form-item>
+          </b-form>
+        </b-collapse-wrap>
+        <b-collapse-wrap v-if="conf.valueMode===ENUM.RADIO||conf.valueMode===ENUM.CHECKBOX"
+                         :title="`${valueModeMap[conf.valueMode]}参数`" collapse>
+          <b-table disabled-hover :data="conf.bufferValue" size="small"
+                   :columns="[
                      { title: '显示', slot: 'label'},
                      { title: '值', slot: 'value' },
                      { title: '操作', slot: 'action', width: 160}]">
-              <template v-slot:label="scope">
-                <b-input v-if="scope.row.edit" clearable
-                         v-model="conf.bufferValue[scope.index].label" placeholder="显示文本"></b-input>
-                <span v-else>{{scope.row.label}}</span>
-              </template>
-              <template v-slot:value="scope">
-                <b-input v-if="scope.row.edit" clearable
-                         v-model="conf.bufferValue[scope.index].value" placeholder="显示文本"></b-input>
-                <span v-else>{{scope.row.value}}</span>
-              </template>
-              <template v-slot:action="scope">
-                <!--根据状态显示保存或删除编辑按钮-->
-                <b-button v-if="scope.row.edit" type="success" size="small"
-                          @click="saveRow(scope.row,scope.index)" transparent>
-                  保存
-                </b-button>
-                <!--根据状态显示保存或删除编辑按钮-->
-                <b-button v-else type="primary" transparent size="small"
-                          @click="conf.bufferValue[scope.index].edit = true">
-                  编辑
-                </b-button>
-                <b-button type="danger" size="small" transparent @click="removeBufferRow(scope.row)">移除</b-button>
-              </template>
-            </b-table>
-            <!--添加按钮-->
-            <b-button type="dashed" icon="ios-add-circle-outline"
-                      style="width: 100%;margin-top: 16px;margin-bottom: 18px;"
-                      :disabled="bufferValueIsEdit"
-                      @click="addBufferRow">添加参数
-            </b-button>
-          </template>
-        </b-form>
+            <template v-slot:label="scope">
+              <b-input v-if="scope.row.edit" clearable
+                       v-model="conf.bufferValue[scope.index].label" placeholder="显示文本"></b-input>
+              <span v-else>{{scope.row.label}}</span>
+            </template>
+            <template v-slot:value="scope">
+              <b-input v-if="scope.row.edit" clearable
+                       v-model="conf.bufferValue[scope.index].value" placeholder="显示文本"></b-input>
+              <span v-else>{{scope.row.value}}</span>
+            </template>
+            <template v-slot:action="scope">
+              <!--根据状态显示保存或删除编辑按钮-->
+              <b-button v-if="scope.row.edit" type="success" size="small"
+                        @click="saveRow(scope.row,scope.index)" transparent>
+                保存
+              </b-button>
+              <!--根据状态显示保存或删除编辑按钮-->
+              <b-button v-else type="primary" transparent size="small"
+                        @click="conf.bufferValue[scope.index].edit = true">
+                编辑
+              </b-button>
+              <b-button type="danger" size="small" transparent @click="removeBufferRow(scope.row)">移除</b-button>
+            </template>
+          </b-table>
+          <!--添加按钮-->
+          <b-button type="dashed" icon="ios-add-circle-outline"
+                    style="width: 100%;margin-top: 16px;margin-bottom: 18px;"
+                    :disabled="bufferValueIsEdit"
+                    @click="addBufferRow">添加参数
+          </b-button>
+        </b-collapse-wrap>
         <!--保存提交-->
         <template slot="footer">
           <b-button @click="handleCancel">取 消</b-button>
@@ -133,18 +135,20 @@
       </v-edit-wrap>
     </page-header-wrap>
     <page-header-wrap v-show="isCheck" :title="editTitle" show-close @on-close="handleCancel">
-      <v-edit-wrap>
-        <div v-if="currentTreeNode && conf">
-          <v-key-label label="所属类型" is-half is-first>{{ currentTreeNode.title }}</v-key-label>
-          <v-key-label label="参数名称" is-half>{{ conf.confName }}</v-key-label>
-          <v-key-label label="参数编码" is-half is-first>{{ conf.confCode }}</v-key-label>
-          <v-key-label label="完整编码" is-half>{{ conf.routeCode }}</v-key-label>
-          <v-key-label label="取值类型" is-half is-first>{{ valueModeMap[conf.valueMode] }}</v-key-label>
-          <v-key-label label="排序编号" is-half>{{ conf.sortNum }}</v-key-label>
-          <v-key-label label="参数值" is-half is-first>{{ conf.confValue }}</v-key-label>
-          <v-key-label label="取值范围" is-half>{{ conf.valueRange }}</v-key-label>
-          <v-key-label label="描述" is-bottom>{{ conf.desc }}</v-key-label>
-        </div>
+      <v-edit-wrap transparent>
+        <b-collapse-wrap title="基本信息" collapse>
+          <div v-if="currentTreeNode && conf">
+            <v-key-label label="所属类型" is-half is-first>{{ currentTreeNode.title }}</v-key-label>
+            <v-key-label label="参数名称" is-half>{{ conf.confName }}</v-key-label>
+            <v-key-label label="参数编码" is-half is-first>{{ conf.confCode }}</v-key-label>
+            <v-key-label label="完整编码" is-half>{{ conf.routeCode }}</v-key-label>
+            <v-key-label label="取值类型" is-half is-first>{{ valueModeMap[conf.valueMode] }}</v-key-label>
+            <v-key-label label="排序编号" is-half>{{ conf.sortNum }}</v-key-label>
+            <v-key-label label="参数值" is-half is-first>{{ conf.confValue }}</v-key-label>
+            <v-key-label label="取值范围" is-half>{{ conf.valueRange }}</v-key-label>
+            <v-key-label label="描述" is-bottom>{{ conf.desc }}</v-key-label>
+          </div>
+        </b-collapse-wrap>
         <template slot="footer">
           <b-button @click="handleCancel">取 消</b-button>
         </template>

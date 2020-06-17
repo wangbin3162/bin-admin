@@ -47,7 +47,7 @@
     <page-header-wrap v-show="batchDialog" :title="`${currentTreeNode?currentTreeNode.title:''}批量添加响应`"
                       show-close @on-close="batchDialog = false">
       <v-edit-wrap>
-        <template slot="full">
+        <div>
           <b-alert closable>手动输入或复制粘贴json文本至下面编辑框，确保无误后点击转换添加列表。<span slot="close">不再提示</span></b-alert>
           <b-code-editor v-if="batchDialog" v-model="batchStr" ref="codeEditor"/>
           <div class="p15 t-center">
@@ -62,7 +62,7 @@
                        :biz-id="listQuery.bizId"
                        :parent-id="currentTreeNode?currentTreeNode.id:''"
                        resp-kind="RECORD"/>
-        </template>
+        </div>
         <!--保存提交-->
         <div slot="footer">
           <b-button @click="batchDialog = false">取 消</b-button>

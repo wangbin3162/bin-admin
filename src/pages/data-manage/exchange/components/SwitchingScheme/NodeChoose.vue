@@ -14,7 +14,7 @@
              :mask-closable="false">
       <div>
         <!--查询条件-->
-        <v-filter-bar>
+        <v-filter-bar @keyup-enter="handleFilter">
           <v-filter-item title="节点名称">
             <b-input v-model="listQuery.nodeName" placeholder="请输入" clearable></b-input>
           </v-filter-item>

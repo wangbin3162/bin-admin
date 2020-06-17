@@ -67,27 +67,29 @@
     <page-header-wrap v-if="isEdit" :title="editTitle +' '+ resource.resourceName" show-close
                       @on-close="handleCancel">
       <!--为了触发重绘更新form字段设置 使用v-if-->
-      <v-edit-wrap>
-        <b-form :model="form" ref="dynamicFormRef" label-position="top" :rules="rules">
-          <form-item :key="item.id" v-for="item in dynamicForm"
-                     :label="item.fieldTitle"
-                     :prop="item.fieldName"
-                     :control-type="item.controlType">
-            <!--动态控件-->
-            <form-control v-model="form[item.fieldName]"
-                          :resource-key="resource.resourceKey"
-                          :control-type="item.controlType"
-                          :field-name="item.fieldName"
-                          :field-desc="item.fieldDesc"
-                          :field-title="item.fieldTitle"
-                          :data-length="item.dataLength"
-                          :data-precision="item.dataPrecision"
-                          :options="item.validOptions"
-                          :table-name="resource.tableName"
-                          @on-select="handleSelectNatLeg">
-            </form-control>
-          </form-item>
-        </b-form>
+      <v-edit-wrap transparent>
+        <b-collapse-wrap title="基本信息" collapse>
+          <b-form :model="form" ref="dynamicFormRef" label-position="top" :rules="rules">
+            <form-item :key="item.id" v-for="item in dynamicForm"
+                       :label="item.fieldTitle"
+                       :prop="item.fieldName"
+                       :control-type="item.controlType">
+              <!--动态控件-->
+              <form-control v-model="form[item.fieldName]"
+                            :resource-key="resource.resourceKey"
+                            :control-type="item.controlType"
+                            :field-name="item.fieldName"
+                            :field-desc="item.fieldDesc"
+                            :field-title="item.fieldTitle"
+                            :data-length="item.dataLength"
+                            :data-precision="item.dataPrecision"
+                            :options="item.validOptions"
+                            :table-name="resource.tableName"
+                            @on-select="handleSelectNatLeg">
+              </form-control>
+            </form-item>
+          </b-form>
+        </b-collapse-wrap>
         <!--保存提交-->
         <template slot="footer">
           <b-button @click="handleCancel">取 消</b-button>
@@ -96,15 +98,19 @@
       </v-edit-wrap>
     </page-header-wrap>
     <page-header-wrap v-show="isCheck" :title="resource.resourceName+' 详情'" show-close @on-close="handleCancel">
-      <v-edit-wrap v-if="gather" style="user-select: text;">
-        <v-key-label v-for="(item,index) in columns" :key="index"
-                     :label="item.fieldTitle"
-                     :is-bottom="index===columns.length-1">
+      <v-edit-wrap transparent>
+        <b-collapse-wrap title="基本信息" collapse>
+          <div style="user-select: text;" v-if="gather">
+            <v-key-label v-for="(item,index) in columns" :key="index"
+                         :label="item.fieldTitle"
+                         :is-bottom="index===columns.length-1">
           <span v-if="item.controlType==='FILE_UPLOAD'">
             <file-upload :value="gather[item.fieldName]" :resource-key="resource.resourceKey" is-show/>
           </span>
-          <span v-else>{{ gather[item.fieldName] }}</span>
-        </v-key-label>
+              <span v-else>{{ gather[item.fieldName] }}</span>
+            </v-key-label>
+          </div>
+        </b-collapse-wrap>
         <b-button slot="footer" @click="handleCancel">返 回</b-button>
       </v-edit-wrap>
     </page-header-wrap>

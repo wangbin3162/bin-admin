@@ -3,7 +3,7 @@
     <page-header-wrap v-show="isNormal">
       <v-table-wrap>
         <!--查询条件-->
-        <v-filter-bar>
+        <v-filter-bar @keyup-enter="handleFilter">
           <v-filter-item title="角色名称">
             <b-input v-model.trim="listQuery.name" placeholder="请输入" clearable></b-input>
           </v-filter-item>
@@ -48,53 +48,55 @@
       </v-table-wrap>
     </page-header-wrap>
     <page-header-wrap v-show="isEdit" :title="editTitle" show-close @on-close="handleCancel">
-      <v-edit-wrap>
-        <b-form :model="role" ref="form" :rules="ruleValidate" :label-width="100">
-          <b-row>
-            <b-col span="12">
-              <b-form-item label="角色名称" prop="name">
-                <b-input v-model="role.name" placeholder="请输入角色名称" clearable></b-input>
-              </b-form-item>
-            </b-col>
-            <b-col span="12">
-              <b-form-item label="角色编码" prop="code">
-                <b-input v-model="role.code" placeholder="请输入角色编码" clearable></b-input>
-              </b-form-item>
-            </b-col>
-          </b-row>
-          <b-row>
-            <b-col span="12">
-              <b-form-item label="父角色">
-                <div flex style="width:100%;">
-                  <b-input :value="role.parentName" readonly class="choose-btn"></b-input>
-                  <b-button v-if="role.parentId.length===0" slot="suffix" type="primary" plain
-                            @click="handleShowDialogChoose" style="flex: 0 0 auto;">
-                    选择
-                  </b-button>
-                  <b-button v-else type="danger" slot="suffix" plain style="flex: 0 0 auto;"
-                            @click="handleChooseOne({id:'',name:''})">清空
-                  </b-button>
-                </div>
-              </b-form-item>
-            </b-col>
-            <b-col span="12">
-              <b-form-item label="角色类型" prop="roleType">
-                <b-select v-model="role.roleType" placeholder="请选择角色类型">
-                  <b-option v-for="item in roleTypeOptions" :key="item.value" :value="item.value">
-                    {{ item.label }}
-                  </b-option>
-                </b-select>
-              </b-form-item>
-            </b-col>
-          </b-row>
-          <b-row>
-            <b-col span="12"></b-col>
-            <b-col span="12"></b-col>
-          </b-row>
-          <b-form-item label="描述" prop="desc">
-            <b-input v-model="role.desc" placeholder="请输入描述" type="textarea" :maxlength="100"></b-input>
-          </b-form-item>
-        </b-form>
+      <v-edit-wrap transparent>
+        <b-collapse-wrap title="基本信息">
+          <b-form :model="role" ref="form" :rules="ruleValidate" :label-width="100">
+            <b-row>
+              <b-col span="12">
+                <b-form-item label="角色名称" prop="name">
+                  <b-input v-model="role.name" placeholder="请输入角色名称" clearable></b-input>
+                </b-form-item>
+              </b-col>
+              <b-col span="12">
+                <b-form-item label="角色编码" prop="code">
+                  <b-input v-model="role.code" placeholder="请输入角色编码" clearable></b-input>
+                </b-form-item>
+              </b-col>
+            </b-row>
+            <b-row>
+              <b-col span="12">
+                <b-form-item label="父角色">
+                  <div flex style="width:100%;">
+                    <b-input :value="role.parentName" readonly class="choose-btn"></b-input>
+                    <b-button v-if="role.parentId.length===0" slot="suffix" type="primary" plain
+                              @click="handleShowDialogChoose" style="flex: 0 0 auto;">
+                      选择
+                    </b-button>
+                    <b-button v-else type="danger" slot="suffix" plain style="flex: 0 0 auto;"
+                              @click="handleChooseOne({id:'',name:''})">清空
+                    </b-button>
+                  </div>
+                </b-form-item>
+              </b-col>
+              <b-col span="12">
+                <b-form-item label="角色类型" prop="roleType">
+                  <b-select v-model="role.roleType" placeholder="请选择角色类型">
+                    <b-option v-for="item in roleTypeOptions" :key="item.value" :value="item.value">
+                      {{ item.label }}
+                    </b-option>
+                  </b-select>
+                </b-form-item>
+              </b-col>
+            </b-row>
+            <b-row>
+              <b-col span="12"></b-col>
+              <b-col span="12"></b-col>
+            </b-row>
+            <b-form-item label="描述" prop="desc">
+              <b-input v-model="role.desc" placeholder="请输入描述" type="textarea" :maxlength="100"></b-input>
+            </b-form-item>
+          </b-form>
+        </b-collapse-wrap>
         <!--保存提交-->
         <template slot="footer">
           <b-button @click="handleCancel">取 消</b-button>

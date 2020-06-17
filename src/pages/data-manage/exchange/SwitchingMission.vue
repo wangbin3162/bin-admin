@@ -5,7 +5,7 @@
         <!--树结构-->
         <b-tree :data="treeData" slot="tree" :lock-select="lockTreeSelect"
                 @on-select-change="handTreeCurrentChange"></b-tree>
-        <v-filter-bar>
+        <v-filter-bar @keyup-enter="handleFilter">
           <v-filter-item title="资源名称" :span="8">
             <b-input v-model="listQuery.resourceName" placeholder="请输入节点名称" clearable></b-input>
           </v-filter-item>
@@ -73,100 +73,101 @@
       </v-table-wrap>
     </page-header-wrap>
     <page-header-wrap v-show="isEdit" :title="editTitle" show-close @on-close="handleCancel">
-      <v-edit-wrap>
-        <template v-if="mission.exInfoDesc" slot="full">
-          <v-title-bar label="方案信息" tip-pos="left" class="mb-20"></v-title-bar>
-          <b-form :model="mission" ref="form" :rules="ruleValidate" label-position="top">
-            <b-row :gutter="20">
-              <b-col span="6">
-                <b-form-item label="方案名称" prop="cfgName">
-                  <b-input v-model="mission.cfgName" disabled></b-input>
-                </b-form-item>
-              </b-col>
-              <b-col span="6">
-                <b-form-item label="方案编码" prop="cfgCode">
-                  <b-input v-model="mission.cfgCode" disabled></b-input>
-                </b-form-item>
-              </b-col>
-              <b-col span="6">
-                <b-form-item label="资源名称" prop="resourceName">
-                  <b-input v-model="mission.resourceName" disabled></b-input>
-                </b-form-item>
-              </b-col>
-              <b-col span="6">
-                <b-form-item label="元信息名称" prop="metadataName">
-                  <b-input v-model="mission.metadataName" disabled></b-input>
-                </b-form-item>
-              </b-col>
-            </b-row>
-          </b-form>
+      <v-edit-wrap transparent>
+        <template v-if="mission.exInfoDesc">
+          <b-collapse-wrap title="方案信息" collapse>
+            <b-form :model="mission" ref="form" :rules="ruleValidate" label-position="top">
+              <b-row :gutter="20">
+                <b-col span="6">
+                  <b-form-item label="方案名称" prop="cfgName">
+                    <b-input v-model="mission.cfgName" disabled></b-input>
+                  </b-form-item>
+                </b-col>
+                <b-col span="6">
+                  <b-form-item label="方案编码" prop="cfgCode">
+                    <b-input v-model="mission.cfgCode" disabled></b-input>
+                  </b-form-item>
+                </b-col>
+                <b-col span="6">
+                  <b-form-item label="资源名称" prop="resourceName">
+                    <b-input v-model="mission.resourceName" disabled></b-input>
+                  </b-form-item>
+                </b-col>
+                <b-col span="6">
+                  <b-form-item label="元信息名称" prop="metadataName">
+                    <b-input v-model="mission.metadataName" disabled></b-input>
+                  </b-form-item>
+                </b-col>
+              </b-row>
+            </b-form>
+          </b-collapse-wrap>
           <!--任务配置明细组件-->
           <ex-info-cfg v-model="mission.exInfoDesc"></ex-info-cfg>
           <!--映射关系-->
-          <item-map v-model="mission.itemMap" slot="full"></item-map>
+          <item-map v-model="mission.itemMap"></item-map>
         </template>
         <!--新增和修改库对库模式-->
-        <template v-else slot="full">
-          <b-form :model="mission" ref="form" :rules="ruleValidate" label-position="top">
-            <b-row :gutter="20">
-              <b-col span="6">
-                <b-form-item v-if="isCollect" label="源资源" prop="nodeTableName">
-                  <b-input v-if="dialogStatus === 'modify'" v-model="mission.nodeTableName" disabled/>
-                  <data-source-table-choose v-else v-model="mission.nodeTableName"
-                                            :ds-id="sourceDataSource?sourceDataSource.id:''"
-                                            @on-change="handleTableChoose">
-                  </data-source-table-choose>
-                </b-form-item>
-                <b-form-item v-else label="源资源" prop="resourceKey">
-                  <b-input v-if="dialogStatus === 'modify'" v-model="mission.resourceName" disabled></b-input>
-                  <res-choose v-else v-model="mission.resourceKey" :default-name="mission.resourceName"
-                              :ds-id="sourceDataSource?sourceDataSource.id:''"
-                              @on-change="handleResourceChoose"></res-choose>
-                </b-form-item>
-              </b-col>
-              <b-col span="6">
-                <b-form-item v-if="isCollect" label="目标资源" prop="resourceKey">
-                  <b-input v-if="dialogStatus === 'modify'" v-model="mission.resourceName" disabled></b-input>
-                  <res-choose v-else v-model="mission.resourceKey" :default-name="mission.resourceName"
-                              :ds-id="sourceDataSource?sourceDataSource.id:''"
-                              @on-change="handleResourceChoose"></res-choose>
-                </b-form-item>
-                <b-form-item v-else label="目标资源" prop="nodeTableName">
-                  <b-input v-if="dialogStatus === 'modify'" v-model="mission.nodeTableName" disabled></b-input>
-                  <data-source-table-choose v-else v-model="mission.nodeTableName"
-                                            :ds-id="sourceDataSource?sourceDataSource.id:''"
-                                            @on-change="handleTableChoose">
-                  </data-source-table-choose>
-                </b-form-item>
-              </b-col>
-              <b-col span="6">
-                <b-form-item label="交换策略" prop="strategy">
-                  <b-select v-model="mission.strategy" @on-change="strategyChange" clearable>
-                    <b-option value="increment">增量</b-option>
-                    <b-option value="all">全量</b-option>
-                  </b-select>
-                </b-form-item>
-              </b-col>
-              <b-col span="6">
-                <b-form-item v-if="mission.strategy==='all'" label="是否清除源表" prop="clearSource">
-                  <div style="padding-top: 3px;">
-                    <b-switch v-model="mission.clearSource"
-                              true-value="y" false-value="n">
-                      <span slot="open">是</span>
-                      <span slot="close">否</span>
-                    </b-switch>
-                  </div>
-                </b-form-item>
-              </b-col>
-            </b-row>
-            <!-- <b-form-item label="交换参数" prop="sqlParameter">
-              <b-input type="textarea" v-model="mission.sqlParameter" placeholder="交换sql where条件"/>
-            </b-form-item> -->
-            <v-title-bar label="信息项映射" class="mb-15"></v-title-bar>
+        <template v-else>
+          <b-collapse-wrap title="基本信息" collapse>
+            <b-form :model="mission" ref="form" :rules="ruleValidate" label-position="top">
+              <b-row :gutter="20">
+                <b-col span="6">
+                  <b-form-item v-if="isCollect" label="源资源" prop="nodeTableName">
+                    <b-input v-if="dialogStatus === 'modify'" v-model="mission.nodeTableName" disabled/>
+                    <data-source-table-choose v-else v-model="mission.nodeTableName"
+                                              :ds-id="sourceDataSource?sourceDataSource.id:''"
+                                              @on-change="handleTableChoose">
+                    </data-source-table-choose>
+                  </b-form-item>
+                  <b-form-item v-else label="源资源" prop="resourceKey">
+                    <b-input v-if="dialogStatus === 'modify'" v-model="mission.resourceName" disabled></b-input>
+                    <res-choose v-else v-model="mission.resourceKey" :default-name="mission.resourceName"
+                                :ds-id="sourceDataSource?sourceDataSource.id:''"
+                                @on-change="handleResourceChoose"></res-choose>
+                  </b-form-item>
+                </b-col>
+                <b-col span="6">
+                  <b-form-item v-if="isCollect" label="目标资源" prop="resourceKey">
+                    <b-input v-if="dialogStatus === 'modify'" v-model="mission.resourceName" disabled></b-input>
+                    <res-choose v-else v-model="mission.resourceKey" :default-name="mission.resourceName"
+                                :ds-id="sourceDataSource?sourceDataSource.id:''"
+                                @on-change="handleResourceChoose"></res-choose>
+                  </b-form-item>
+                  <b-form-item v-else label="目标资源" prop="nodeTableName">
+                    <b-input v-if="dialogStatus === 'modify'" v-model="mission.nodeTableName" disabled></b-input>
+                    <data-source-table-choose v-else v-model="mission.nodeTableName"
+                                              :ds-id="sourceDataSource?sourceDataSource.id:''"
+                                              @on-change="handleTableChoose">
+                    </data-source-table-choose>
+                  </b-form-item>
+                </b-col>
+                <b-col span="6">
+                  <b-form-item label="交换策略" prop="strategy">
+                    <b-select v-model="mission.strategy" @on-change="strategyChange" clearable>
+                      <b-option value="increment">增量</b-option>
+                      <b-option value="all">全量</b-option>
+                    </b-select>
+                  </b-form-item>
+                </b-col>
+                <b-col span="6">
+                  <b-form-item v-if="mission.strategy==='all'" label="是否清除源表" prop="clearSource">
+                    <div style="padding-top: 3px;">
+                      <b-switch v-model="mission.clearSource"
+                                true-value="y" false-value="n">
+                        <span slot="open">是</span>
+                        <span slot="close">否</span>
+                      </b-switch>
+                    </div>
+                  </b-form-item>
+                </b-col>
+              </b-row>
+            </b-form>
+          </b-collapse-wrap>
+          <b-collapse-wrap title="信息项映射" collapse>
             <info-item-map :one-list="oneFields" :two-list="twoFields"
                            :value="mission.itemMap" @on-change="handleItemMap">
             </info-item-map>
-          </b-form>
+          </b-collapse-wrap>
         </template>
         <!--保存提交-->
         <template slot="footer">
@@ -176,29 +177,31 @@
       </v-edit-wrap>
     </page-header-wrap>
     <page-header-wrap v-show="isCheck" :title="`${mission.resourceName}/交换方案详情`" show-close @on-close="handleCancel">
-      <v-edit-wrap>
-        <b-row slot="full" :gutter="20">
-          <b-col span="12" v-if="sourceDataSource">
-            <v-title-bar label="源数据源信息" class="mb-15" tip-pos="left"/>
-            <v-key-label label="数据源名称">{{ sourceDataSource.dataSourceName }}</v-key-label>
-            <v-key-label label="数据库名称">{{ sourceDataSource.dbName }}</v-key-label>
-            <v-key-label label="连接接驱动">{{ sourceDataSource.driverClass }}</v-key-label>
-            <v-key-label label="连接类型">{{ sourceDataSource.dbType }}</v-key-label>
-            <v-key-label label="用户">{{ sourceDataSource.userName }}</v-key-label>
-            <v-key-label label="端口号">{{ sourceDataSource.port }}</v-key-label>
-            <v-key-label label="主机地址" is-bottom>{{ sourceDataSource.host }}</v-key-label>
-          </b-col>
-          <b-col span="12" v-if="targetDataSource">
-            <v-title-bar label="目标数据源信息" class="mb-15" tip-pos="left"/>
-            <v-key-label label="数据源名称">{{ targetDataSource.dataSourceName }}</v-key-label>
-            <v-key-label label="数据库名称">{{ targetDataSource.dbName }}</v-key-label>
-            <v-key-label label="连接接驱动">{{ targetDataSource.driverClass }}</v-key-label>
-            <v-key-label label="连接类型">{{ targetDataSource.dbType }}</v-key-label>
-            <v-key-label label="用户">{{ targetDataSource.userName }}</v-key-label>
-            <v-key-label label="端口号">{{ targetDataSource.port }}</v-key-label>
-            <v-key-label label="主机地址" is-bottom>{{ targetDataSource.host }}</v-key-label>
-          </b-col>
-        </b-row>
+      <v-edit-wrap transparent>
+        <b-collapse-wrap title="基本信息">
+          <b-row :gutter="20">
+            <b-col span="12" v-if="sourceDataSource">
+              <b-tag type="primary">源数据源信息</b-tag>
+              <v-key-label label="数据源名称">{{ sourceDataSource.dataSourceName }}</v-key-label>
+              <v-key-label label="数据库名称">{{ sourceDataSource.dbName }}</v-key-label>
+              <v-key-label label="连接接驱动">{{ sourceDataSource.driverClass }}</v-key-label>
+              <v-key-label label="连接类型">{{ sourceDataSource.dbType }}</v-key-label>
+              <v-key-label label="用户">{{ sourceDataSource.userName }}</v-key-label>
+              <v-key-label label="端口号">{{ sourceDataSource.port }}</v-key-label>
+              <v-key-label label="主机地址" is-bottom>{{ sourceDataSource.host }}</v-key-label>
+            </b-col>
+            <b-col span="12" v-if="targetDataSource">
+              <b-tag type="success">目标数据源信息</b-tag>
+              <v-key-label label="数据源名称">{{ targetDataSource.dataSourceName }}</v-key-label>
+              <v-key-label label="数据库名称">{{ targetDataSource.dbName }}</v-key-label>
+              <v-key-label label="连接接驱动">{{ targetDataSource.driverClass }}</v-key-label>
+              <v-key-label label="连接类型">{{ targetDataSource.dbType }}</v-key-label>
+              <v-key-label label="用户">{{ targetDataSource.userName }}</v-key-label>
+              <v-key-label label="端口号">{{ targetDataSource.port }}</v-key-label>
+              <v-key-label label="主机地址" is-bottom>{{ targetDataSource.host }}</v-key-label>
+            </b-col>
+          </b-row>
+        </b-collapse-wrap>
         <!--保存提交-->
         <template slot="footer">
           <b-button @click="handleCancel">取 消</b-button>

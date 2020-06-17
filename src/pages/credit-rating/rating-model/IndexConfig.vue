@@ -2,7 +2,7 @@
   <div class="index-config">
     <page-header-wrap title="模型指标" show-close @on-close="$emit('close')">
       <v-edit-wrap class="cover">
-        <div slot="full" flex>
+        <div flex>
           <!-- tree -->
           <div class="tree-con">
             <b-tree :data="treeData" slot="tree" :lock-select="false"

@@ -7,7 +7,7 @@
       <!--树结构-->
       <b-tree :data="treeData" slot="tree" @on-select-change="handTreeCurrentChange"/>
       <!--查询条件-->
-      <v-filter-bar>
+      <v-filter-bar @keyup-enter="handleFilter">
         <v-filter-item title="部门名称">
           <b-input v-model.trim="listQuery.departName" placeholder="请输入" clearable></b-input>
         </v-filter-item>

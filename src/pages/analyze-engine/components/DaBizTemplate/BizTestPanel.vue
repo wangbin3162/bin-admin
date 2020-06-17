@@ -3,33 +3,31 @@
     <page-header-wrap v-show="visible" show-close @on-close="close"
                       :title="`[${temp.tempName}] 测试`">
       <v-edit-wrap>
-        <template slot="full">
-          <b-row :gutter="20">
-            <b-col span="12">
-              <v-title-bar label="基础参数" class="mb-20"/>
-              <b-empty v-if="params.length===0">没有配置参数</b-empty>
-              <b-form v-else :model="form" ref="form" :label-width="100">
-                <b-form-item v-for="item in params" :key="item.paramCode"
-                             :label="item.paramName" :prop="item.paramCode"
-                             :rules="{ required: true, message: `${item.paramName}不能为空`, trigger: 'blur' }">
-                  <b-input v-model="form[item.paramCode]" clearable placeholder="请输入"/>
-                </b-form-item>
-                <b-form-item>
-                  <b-button type="primary" @click="handleTest" :loading="btnLoading">测 试</b-button>
-                </b-form-item>
-              </b-form>
-            </b-col>
-            <b-col span="12">
-              <v-title-bar label="执行结果" class="mb-20"/>
-              <div>
-                <div v-if="result">
-                  <b-code-editor :value="resultJson" readonly/>
-                </div>
-                <b-empty v-else>暂无执行结果</b-empty>
+        <b-row :gutter="20">
+          <b-col span="12">
+            <v-title-bar label="基础参数" class="mb-20"/>
+            <b-empty v-if="params.length===0">没有配置参数</b-empty>
+            <b-form v-else :model="form" ref="form" :label-width="100">
+              <b-form-item v-for="item in params" :key="item.paramCode"
+                           :label="item.paramName" :prop="item.paramCode"
+                           :rules="{ required: true, message: `${item.paramName}不能为空`, trigger: 'blur' }">
+                <b-input v-model="form[item.paramCode]" clearable placeholder="请输入"/>
+              </b-form-item>
+              <b-form-item>
+                <b-button type="primary" @click="handleTest" :loading="btnLoading">测 试</b-button>
+              </b-form-item>
+            </b-form>
+          </b-col>
+          <b-col span="12">
+            <v-title-bar label="执行结果" class="mb-20"/>
+            <div>
+              <div v-if="result">
+                <b-code-editor :value="resultJson" readonly/>
               </div>
-            </b-col>
-          </b-row>
-        </template>
+              <b-empty v-else>暂无执行结果</b-empty>
+            </div>
+          </b-col>
+        </b-row>
         <!--保存提交-->
         <div slot="footer">
           <b-button @click="close">取 消</b-button>

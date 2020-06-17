@@ -2,7 +2,7 @@
   <div class="res-detail-dialog">
     <page-header-wrap :title="'编辑 ' + diffDetail.resourceName">
       <v-edit-wrap>
-        <div slot="full" style="position: relative; min-height: 70vh;">
+        <div style="position: relative; min-height: 70vh;">
           <b-loading fix show-text="加载中...." v-if="loading"></b-loading>
           <b-form :model="form" ref="dynamicFormRef" label-position="top" :rules="rules">
             <form-item v-for="item in dynamicForm"
@@ -26,7 +26,6 @@
             </form-item>
           </b-form>
         </div>
-
         <!--保存提交-->
         <template slot="footer">
           <b-button @click="handleCancelBtn">取 消</b-button>

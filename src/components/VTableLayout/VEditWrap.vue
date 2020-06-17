@@ -1,7 +1,6 @@
 <template>
   <div class="edit-wrap" :class="{'transparent':transparent}">
     <slot></slot>
-    <slot name="full"></slot>
     <div class="edit-form-footer" :style="footerStyle">
       <slot name="footer"></slot>
     </div>

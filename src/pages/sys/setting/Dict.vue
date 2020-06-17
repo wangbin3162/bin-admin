@@ -3,7 +3,7 @@
     <page-header-wrap v-show="isNormal || isEdit">
       <v-table-wrap>
         <!--查询条件-->
-        <v-filter-bar>
+        <v-filter-bar @keyup-enter="handleFilter">
           <v-filter-item title="字典名称">
             <b-input v-model.trim="listQuery.groupName" placeholder="请输入" clearable></b-input>
           </v-filter-item>
@@ -23,7 +23,8 @@
           <template v-slot:dictType="scope">{{ dictTypeMap[scope.row.dictType] }}</template>
           <!--操作栏-->
           <template v-slot:item="scope">
-            <b-button :disabled="!havePermission('dictItem')" type="text" @click="handleDictItem(scope.row)">字典项</b-button>
+            <b-button :disabled="!havePermission('dictItem')" type="text" @click="handleDictItem(scope.row)">字典项
+            </b-button>
           </template>
           <!--操作栏-->
           <template v-slot:action="scope">
@@ -86,11 +87,11 @@
     data() {
       const validateStrFilter = (rule, value, callback) => {
         if (value.length > 0) {
-           if (value.indexOf('/') !== -1) {
-             callback(new Error('不能包含/字符'))
-           } else {
-             callback()
-           }
+          if (value.indexOf('/') !== -1) {
+            callback(new Error('不能包含/字符'))
+          } else {
+            callback()
+          }
         }
       }
       const validateDictGroupCode = (rule, value, callback) => {
@@ -135,8 +136,14 @@
         ],
         dict: null,
         ruleValidate: {
-          groupCode: [requiredRule, { validator: validateDictGroupCode, trigger: 'blur' }, { validator: validateStrFilter, trigger: 'blur' }],
-          groupName: [requiredRule, { validator: validateDictGroupName, trigger: 'blur' }, { validator: validateStrFilter, trigger: 'blur' }]
+          groupCode: [requiredRule, {
+            validator: validateDictGroupCode,
+            trigger: 'blur'
+          }, { validator: validateStrFilter, trigger: 'blur' }],
+          groupName: [requiredRule, {
+            validator: validateDictGroupName,
+            trigger: 'blur'
+          }, { validator: validateStrFilter, trigger: 'blur' }]
         },
         dictTypeMap: { 'SYS': '系统字典', 'EXT': '内部单选' }, // 默认值
         dialogFormVisible: false

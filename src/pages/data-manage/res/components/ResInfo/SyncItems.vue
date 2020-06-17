@@ -1,7 +1,6 @@
 <template>
-  <div>
-    <div v-if="hasMapList">
-      <v-title-bar label="配置映射" class="mb-15"/>
+  <div style="margin-top: 16px;">
+    <b-collapse-wrap v-if="hasMapList" title="配置映射" collapse>
       <b-table disabled-hover :data="mapList" :columns="mapColumns" size="small">
         <!--目标信息项-->
         <template v-slot:targetField="{row,index}">
@@ -67,9 +66,8 @@
                 style="width: 100%;margin-top: 16px;margin-bottom: 8px;"
                 @click="handleAdd('M')">添加配置映射
       </b-button>
-    </div>
-    <div v-if="hasConditionList">
-      <v-title-bar label="关联条件" class="mb-15"/>
+    </b-collapse-wrap>
+    <b-collapse-wrap v-if="hasConditionList" title="关联条件" collapse>
       <b-table disabled-hover :data="conditionList" :columns="conditionColumns" size="small">
         <!--目标信息项-->
         <template v-slot:targetField="{row,index}">
@@ -144,7 +142,7 @@
                 style="width: 100%;margin-top: 16px;margin-bottom: 8px;"
                 @click="handleAdd('C')">添加关联条件
       </b-button>
-    </div>
+    </b-collapse-wrap>
   </div>
 </template>
 

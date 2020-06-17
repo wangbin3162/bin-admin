@@ -38,7 +38,7 @@
             </div>
           </div>
         </div>
-        <v-filter-bar>
+        <v-filter-bar @keyup-enter="handleFilter">
           <v-filter-item title="任务名称">
             <b-input v-model="listQuery.taskName" placeholder="请输入" clearable></b-input>
           </v-filter-item>
@@ -97,7 +97,7 @@
             </b-col>-->
           </b-row>
         </b-alert>
-        <v-filter-bar>
+        <v-filter-bar @keyup-enter="handleFilter">
           <v-filter-item title="起始日期">
             <b-date-picker type="daterange" @on-change="dateChange" placement="bottom-start"
                            placeholder="选择日期范围" append-to-body></b-date-picker>

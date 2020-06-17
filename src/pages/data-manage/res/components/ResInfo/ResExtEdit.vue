@@ -86,27 +86,29 @@
       </v-table-wrap>
     </page-header-wrap>
     <page-header-wrap v-show="isEdit" :title="resourceName+' / '+editTitle" show-close @on-close="handleCancel">
-      <v-edit-wrap>
-        <b-form :model="sync" ref="form" :rules="syncRules" :label-width="85" class="p10">
-          <b-row :gutter="20">
-            <b-col span="12">
-              <b-form-item label="目标资源" prop="targetName">
-                <res-choose v-model="sync.targetKey" :defaultName="sync.targetName" @on-change="targetChange"/>
-              </b-form-item>
-            </b-col>
-            <b-col span="12">
-              <b-form-item label="同步类型" prop="syncType">
-                <b-select v-model="sync.syncType">
-                  <b-option v-for="(o,k) in syncEnum.type" :key="k" :value="k">{{ o }}</b-option>
-                </b-select>
-              </b-form-item>
-            </b-col>
-          </b-row>
-          <b-form-item label="备注" prop="remark">
-            <b-input v-model="sync.remark" type="textarea" :rows="1" placeholder="请输入备注"/>
-          </b-form-item>
-        </b-form>
-        <template slot="full" v-if="sync.targetName.length>0">
+      <v-edit-wrap transparent>
+        <b-collapse-wrap title="基本信息" collapse>
+          <b-form :model="sync" ref="form" :rules="syncRules" :label-width="85" class="p10">
+            <b-row :gutter="20">
+              <b-col span="12">
+                <b-form-item label="目标资源" prop="targetName">
+                  <res-choose v-model="sync.targetKey" :defaultName="sync.targetName" @on-change="targetChange"/>
+                </b-form-item>
+              </b-col>
+              <b-col span="12">
+                <b-form-item label="同步类型" prop="syncType">
+                  <b-select v-model="sync.syncType">
+                    <b-option v-for="(o,k) in syncEnum.type" :key="k" :value="k">{{ o }}</b-option>
+                  </b-select>
+                </b-form-item>
+              </b-col>
+            </b-row>
+            <b-form-item label="备注" prop="remark">
+              <b-input v-model="sync.remark" type="textarea" :rows="1" placeholder="请输入备注"/>
+            </b-form-item>
+          </b-form>
+        </b-collapse-wrap>
+        <template v-if="sync.targetName.length>0">
           <sync-items v-model="sync.items"
                       :sync-type="sync.syncType"
                       :target-fields="targetFields"

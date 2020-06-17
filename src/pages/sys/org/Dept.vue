@@ -6,10 +6,10 @@
         <b-tree :data="treeData" slot="tree" @on-select-change="handTreeCurrentChange"></b-tree>
         <!--查询条件-->
         <v-filter-bar @keyup-enter="handleFilter">
-          <v-filter-item title="部门名称">
-            <b-input v-model.trim="listQuery.departName" placeholder="请输入" clearable></b-input>
+          <v-filter-item title="部门名称" :span="8">
+            <b-input v-model.trim="listQuery.departName" placeholder="请输入" clearable/>
           </v-filter-item>
-          <v-filter-item title="禁用状态" width="160px">
+          <v-filter-item title="禁用状态" :span="4">
             <b-switch size="large" v-model="listQuery.status" :true-value="ENUM.DISABLE" :false-value="ENUM.ENABLE"
                       @on-change="handleFilter">
               <span slot="open">显示</span>

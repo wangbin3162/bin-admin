@@ -2,7 +2,7 @@
   <!--元信息选择 for ResInfo.vue -->
   <b-modal v-model="chooseDialog" title="选择元信息" width="860" :mask-closable="false">
     <!--查询条件-->
-    <v-filter-bar>
+    <v-filter-bar @keyup-enter="handleFilter">
       <v-filter-item title="元信息名称">
         <b-input v-model.trim="listQuery.tableName" placeholder="英文名" clearable></b-input>
       </v-filter-item>

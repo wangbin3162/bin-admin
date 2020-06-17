@@ -6,11 +6,11 @@
         <b-tree :data="treeData" slot="tree" :lock-select="lockTreeSelect"
                 @on-select-change="handTreeCurrentChange"></b-tree>
         <!--查询条件-->
-        <v-filter-bar>
-          <v-filter-item title="菜单名称">
+        <v-filter-bar @keyup-enter="handleFilter">
+          <v-filter-item title="菜单名称" :span="8">
             <b-input v-model.trim="listQuery.menuName" placeholder="请输入" clearable></b-input>
           </v-filter-item>
-          <v-filter-item title="禁用状态">
+          <v-filter-item title="禁用状态" :span="4">
             <b-switch size="large" v-model="listQuery.delFlag" :true-value="ENUM.Y" :false-value="ENUM.N"
                       @on-change="handleFilter">
               <span slot="open">显示</span>
@@ -64,55 +64,55 @@
       </v-table-wrap>
     </page-header-wrap>
     <page-header-wrap v-show="isEdit" :title="editTitle" show-close @on-close="handleCancel">
-      <v-edit-wrap>
-        <b-form :model="menu" ref="form" :rules="ruleValidate" :label-width="100">
-          <b-row>
-            <b-col span="12">
-              <b-form-item label="上级菜单" class="bin-form-item-required">
-                <b-input v-if="currentTreeNode" :value="currentTreeNode.title" readonly></b-input>
+      <v-edit-wrap transparent>
+        <b-collapse-wrap title="基本信息" collapse>
+          <b-form :model="menu" ref="form" :rules="ruleValidate" :label-width="100">
+            <b-row>
+              <b-col span="12">
+                <b-form-item label="上级菜单" class="bin-form-item-required">
+                  <b-input v-if="currentTreeNode" :value="currentTreeNode.title" readonly></b-input>
+                </b-form-item>
+              </b-col>
+              <b-col span="12">
+                <b-form-item label="菜单类型" class="bin-form-item-required">
+                  <b-select :value="menu.type">
+                    <b-option :value="menu.type">{{ menuTypeMap[menu.type] }}</b-option>
+                  </b-select>
+                </b-form-item>
+              </b-col>
+            </b-row>
+            <b-row>
+              <b-col span="12">
+                <b-form-item label="菜单名称" prop="name">
+                  <b-input v-model="menu.name" placeholder="请输入菜单名称" clearable></b-input>
+                </b-form-item>
+              </b-col>
+              <b-col span="12">
+                <b-form-item label="前端路由" prop="path">
+                  <b-input v-model="menu.path" placeholder="请输入前端路由" clearable></b-input>
+                </b-form-item>
+              </b-col>
+            </b-row>
+            <b-row>
+              <b-col span="12">
+                <b-form-item label="菜单路径" prop="url">
+                  <b-input v-model="menu.url" placeholder="请输入菜单路径" clearable></b-input>
+                </b-form-item>
+              </b-col>
+              <b-col span="12">
+                <b-form-item label="排序编号" prop="sortNum">
+                  <b-input-number :min="0" v-model="menu.sortNum" style="width: 100%;"></b-input-number>
+                </b-form-item>
+              </b-col>
+            </b-row>
+            <template v-if="menu.permissions&&menu.permissions.length===0">
+              <b-form-item label="动作菜单">
+                <b-button type="primary" plain round @click="initPermissions">初始化</b-button>
               </b-form-item>
-            </b-col>
-            <b-col span="12">
-              <b-form-item label="菜单类型" class="bin-form-item-required">
-                <b-select :value="menu.type">
-                  <b-option :value="menu.type">{{ menuTypeMap[menu.type] }}</b-option>
-                </b-select>
-              </b-form-item>
-            </b-col>
-          </b-row>
-          <b-row>
-            <b-col span="12">
-              <b-form-item label="菜单名称" prop="name">
-                <b-input v-model="menu.name" placeholder="请输入菜单名称" clearable></b-input>
-              </b-form-item>
-            </b-col>
-            <b-col span="12">
-              <b-form-item label="前端路由" prop="path">
-                <b-input v-model="menu.path" placeholder="请输入前端路由" clearable></b-input>
-              </b-form-item>
-            </b-col>
-          </b-row>
-          <b-row>
-            <b-col span="12">
-              <b-form-item label="菜单路径" prop="url">
-                <b-input v-model="menu.url" placeholder="请输入菜单路径" clearable></b-input>
-              </b-form-item>
-            </b-col>
-            <b-col span="12">
-              <b-form-item label="排序编号" prop="sortNum">
-                <b-input-number :min="0" v-model="menu.sortNum" style="width: 100%;"></b-input-number>
-              </b-form-item>
-            </b-col>
-          </b-row>
-          <template v-if="menu.permissions&&menu.permissions.length===0">
-            <b-form-item label="动作菜单">
-              <b-button type="primary" plain round @click="initPermissions">初始化</b-button>
-            </b-form-item>
-          </template>
-        </b-form>
-        <template v-if="menu.permissions&&menu.permissions.length!==0" slot="full">
-          <!--动作列表编辑框-->
-          <b-divider align="left">动作列表</b-divider>
+            </template>
+          </b-form>
+        </b-collapse-wrap>
+        <b-collapse-wrap title="动作列表" v-if="menu.permissions&&menu.permissions.length!==0" collapse>
           <b-table disabled-hover :data="menu.permissions" size="small"
                    :columns="[
                      { title: '动作名称', slot: 'name', width:200 },
@@ -156,7 +156,7 @@
                     style="width: 100%;margin-top: 16px;margin-bottom: 8px;"
                     @click="addBufferRow">添加动作
           </b-button>
-        </template>
+        </b-collapse-wrap>
         <!--保存提交-->
         <template slot="footer">
           <b-button @click="handleCancel">取 消</b-button>
@@ -165,19 +165,20 @@
       </v-edit-wrap>
     </page-header-wrap>
     <page-header-wrap v-show="isCheck" :title="editTitle" show-close @on-close="handleCancel">
-      <v-edit-wrap v-if="menu&&currentTreeNode">
-        <div>
-          <v-key-label label="上级菜单" is-half is-first>{{ currentTreeNode.title }}</v-key-label>
-          <v-key-label label="菜单名称" is-half>{{ menu.name }}</v-key-label>
-          <v-key-label label="菜单类型" is-half is-first>
-            <b-tag>{{ menuTypeMap[menu.type] }}</b-tag>
-          </v-key-label>
-          <v-key-label label="前端路由" is-half>{{ menu.path }}</v-key-label>
-          <v-key-label label="菜单路径" is-half is-first is-bottom>{{ menu.url }}</v-key-label>
-          <v-key-label label="排序编号" is-half is-bottom>{{ menu.sortNum }}</v-key-label>
-        </div>
-        <template v-if="menu.permissions.length>0" slot="full">
-          <b-divider align="left">动作列表</b-divider>
+      <v-edit-wrap transparent>
+        <b-collapse-wrap title="基本信息" collapse>
+          <div v-if="menu&&currentTreeNode">
+            <v-key-label label="上级菜单" is-half is-first>{{ currentTreeNode.title }}</v-key-label>
+            <v-key-label label="菜单名称" is-half>{{ menu.name }}</v-key-label>
+            <v-key-label label="菜单类型" is-half is-first>
+              <b-tag>{{ menuTypeMap[menu.type] }}</b-tag>
+            </v-key-label>
+            <v-key-label label="前端路由" is-half>{{ menu.path }}</v-key-label>
+            <v-key-label label="菜单路径" is-half is-first is-bottom>{{ menu.url }}</v-key-label>
+            <v-key-label label="排序编号" is-half is-bottom>{{ menu.sortNum }}</v-key-label>
+          </div>
+        </b-collapse-wrap>
+        <b-collapse-wrap title="动作列表" v-if="menu.permissions.length>0" collapse>
           <b-table disabled-hover :data="menu.permissions" size="small"
                    :columns="[
                      { title: '动作名称', key: 'name', width:200},
@@ -186,7 +187,7 @@
                      { title: '菜单路径', key: 'url' },
                      { title: '排序编号', key: 'sortNum', width:100}]">
           </b-table>
-        </template>
+        </b-collapse-wrap>
         <!--保存提交-->
         <template slot="footer">
           <b-button @click="handleCancel">返 回</b-button>
@@ -210,7 +211,7 @@
     mixins: [commonMixin, permission],
     data() {
       const validateMenuName = (rule, value, callback) => {
-        if (value.length >200) {
+        if (value.length > 200) {
           callback(new Error('菜单名称必须小于200个字符'))
         } else {
           api.oneMenuName(this.menu).then(response => {
