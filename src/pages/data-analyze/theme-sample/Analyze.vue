@@ -54,7 +54,7 @@
         <!--本月信息归集统计-->
         <div class="left">
           <b-card class="box-card" head-tip divider="no" :bordered="false" radius="10px"
-                  :body-style="{padding:0,height:'310px'}" shadow="never">
+            :body-style="{padding:0,height:'310px'}" shadow="never">
             <template v-slot:header>
               <div flex="main:justify cross:center">
                 <span class="title-text">本月信息归集统计</span>
@@ -71,7 +71,23 @@
                     :showText="false">
                   </b-progress>
                 </span>
-                <span>再录{{counts.preCount - counts.curCount}}条就超过上月了哦，继续加油！</span>
+
+                <span v-if="counts.curCount ===  0"
+                  t-ellipsis title="本月您还未填报数据。">
+                  本月您还未填报数据。
+                </span>
+                <span v-else-if="counts.curCount <  counts.preCount / 2"
+                  t-ellipsis title="本月上报数据未到一半，请注意填报。">
+                  本月上报数据未到一半，请注意填报。
+                </span>
+                <span v-else-if="counts.curCount >=  counts.preCount / 2 && counts.curCount < counts.preCount"
+                  t-ellipsis :title="`再录${counts.preCount - counts.curCount}条就赶超上月了哦，继续加油！`">
+                  再录{{counts.preCount - counts.curCount}}条就赶超上月了哦，继续加油！
+                </span>
+                <span v-else>
+                  恭喜您已完成哦！
+                </span>
+
                 <router-link to="/dataManage/dataExchange/gather" class="go-gather-btn">
                   采 集 >
                 </router-link>
@@ -297,8 +313,9 @@
         // 2.4.6 本月信息归集统计
         api.getCurCompleteRate(this.listQuery).then(res => {
           if (res.data.code === '0') {
-            this.counts.curCount = res.data.data.curCount
-            this.counts.preCount = res.data.data.preCount
+            this.counts.curCount = Number(res.data.data.curCount)
+            this.counts.preCount = Number(res.data.data.preCount)
+            this.counts.percent = Math.round(this.counts.curCount / this.counts.preCount * 100)
           }
         })
         // 2.4.10 信息归集历史
@@ -446,8 +463,8 @@
           .icon {
             background-color: #ffffff44;
             display: inline-block;
-            width: 50px;
-            height: 50px;
+            min-width: 50px;
+            min-height: 50px;
             border-radius: 50%;
             margin-right: 30px;
           }
@@ -505,7 +522,7 @@
         height: 50px;
       }
       span {
-        font-size: 14px;
+        font-size: 13px;
         padding-left: 30px;
         line-height: 34px;
         &:nth-child(1) {
@@ -524,7 +541,8 @@
         color: #fff;
         text-align: center;
         border-radius: 30px;
-        background-color: #3b90e9;
+        // background-color: #3b90e9;
+        background-color: rgba(64, 101, 224, 0.4)
         margin-left: 27px;
       }
     }
