@@ -2,7 +2,7 @@
   <div>
     <page-header-wrap v-show="isNormal">
       <v-table-wrap>
-        <v-filter-bar>
+        <v-filter-bar @keyup-enter="handleFilter">
           <v-filter-item title="节点名称">
             <b-input v-model="listQuery.nodeName" placeholder="请输入节点名称" clearable></b-input>
           </v-filter-item>
@@ -47,51 +47,53 @@
       </v-table-wrap>
     </page-header-wrap>
     <page-header-wrap v-show="isEdit" :title="editTitle" show-close @on-close="handleCancel">
-      <v-edit-wrap>
-        <b-form :model="exchangeNode" ref="form" :rules="ruleValidate" :label-width="120">
-          <b-row>
-            <b-col span="12">
-              <b-form-item label="节点名称" prop="nodeName">
-                <b-input v-model="exchangeNode.nodeName" placeholder="请输入节点名称" :maxlength="20" clearable></b-input>
-              </b-form-item>
-            </b-col>
-            <b-col span="12">
-              <b-form-item label="节点类型" prop="nodeType">
-                <b-select v-model="exchangeNode.nodeType" placeholder="全部"
-                          @on-change="handleNodeTypeChange">
-                  <b-option v-for="(value,key) in nodeTypeMap" :key="key" :value="key">{{ value }}</b-option>
-                </b-select>
-              </b-form-item>
-            </b-col>
-          </b-row>
-          <b-row>
-            <b-col span="12">
-              <b-form-item label="节点编码" prop="nodeCode">
-                <b-input v-model="exchangeNode.nodeCode" placeholder="请输入节点编码" :maxlength="20" clearable></b-input>
-              </b-form-item>
-            </b-col>
-            <b-col span="12">
-              <b-form-item label="节点描述" prop="nodeDesc">
-                <b-input v-model="exchangeNode.nodeDesc" placeholder="请输入节点描述" :maxlength="100" clearable></b-input>
-              </b-form-item>
-            </b-col>
-          </b-row>
-          <b-row>
-            <b-col span="12">
-              <b-form-item label="文件类型" prop="infoSource" v-if="exchangeNode.nodeType==='FILE'">
-                <b-select v-model="exchangeNode.infoSource" clearable>
-                  <b-option value="Excel" label="Excel"></b-option>
-                  <b-option value="txt" label="txt"></b-option>
-                  <b-option value="xml" label="xml"></b-option>
-                </b-select>
-              </b-form-item>
-              <b-form-item label="引用数据源" prop="infoSource" v-else>
-                <data-source-choose v-model="exchangeNode.infoSource"
-                                    :default-name="exchangeNode.nameSource"></data-source-choose>
-              </b-form-item>
-            </b-col>
-          </b-row>
-        </b-form>
+      <v-edit-wrap transparent>
+        <b-collapse-wrap title="基本信息">
+          <b-form :model="exchangeNode" ref="form" :rules="ruleValidate" :label-width="120">
+            <b-row>
+              <b-col span="12">
+                <b-form-item label="节点名称" prop="nodeName">
+                  <b-input v-model="exchangeNode.nodeName" placeholder="请输入节点名称" :maxlength="20" clearable></b-input>
+                </b-form-item>
+              </b-col>
+              <b-col span="12">
+                <b-form-item label="节点类型" prop="nodeType">
+                  <b-select v-model="exchangeNode.nodeType" placeholder="全部"
+                            @on-change="handleNodeTypeChange">
+                    <b-option v-for="(value,key) in nodeTypeMap" :key="key" :value="key">{{ value }}</b-option>
+                  </b-select>
+                </b-form-item>
+              </b-col>
+            </b-row>
+            <b-row>
+              <b-col span="12">
+                <b-form-item label="节点编码" prop="nodeCode">
+                  <b-input v-model="exchangeNode.nodeCode" placeholder="请输入节点编码" :maxlength="20" clearable></b-input>
+                </b-form-item>
+              </b-col>
+              <b-col span="12">
+                <b-form-item label="节点描述" prop="nodeDesc">
+                  <b-input v-model="exchangeNode.nodeDesc" placeholder="请输入节点描述" :maxlength="100" clearable></b-input>
+                </b-form-item>
+              </b-col>
+            </b-row>
+            <b-row>
+              <b-col span="12">
+                <b-form-item label="文件类型" prop="infoSource" v-if="exchangeNode.nodeType==='FILE'">
+                  <b-select v-model="exchangeNode.infoSource" clearable>
+                    <b-option value="Excel" label="Excel"></b-option>
+                    <b-option value="txt" label="txt"></b-option>
+                    <b-option value="xml" label="xml"></b-option>
+                  </b-select>
+                </b-form-item>
+                <b-form-item label="引用数据源" prop="infoSource" v-else>
+                  <data-source-choose v-model="exchangeNode.infoSource"
+                                      :default-name="exchangeNode.nameSource"></data-source-choose>
+                </b-form-item>
+              </b-col>
+            </b-row>
+          </b-form>
+        </b-collapse-wrap>
         <!--保存提交-->
         <template slot="footer">
           <b-button @click="handleCancel">取 消</b-button>
@@ -100,26 +102,18 @@
       </v-edit-wrap>
     </page-header-wrap>
     <page-header-wrap v-show="isCheck" :title="editTitle" show-close @on-close="handleCancel">
-      <v-edit-wrap>
-        <v-title-bar label="节点详情" class="mb-15"></v-title-bar>
-        <div style="user-select:text;">
-          <v-key-label label="节点名称" is-half is-first>{{ exchangeNode.nodeName }}</v-key-label>
-          <v-key-label label="节点类型" is-half>{{ exchangeNode.nodeType }}</v-key-label>
-          <v-key-label label="节点编码" is-half is-first is-bottom>{{ exchangeNode.nodeCode }}</v-key-label>
-          <v-key-label label="节点描述" is-half is-bottom>{{ exchangeNode.nodeDesc }}</v-key-label>
-        </div>
-        <template v-if="exchangeNode.dataSourceDto">
-          <v-title-bar label="数据源详情" class="mt-15 mb-15"></v-title-bar>
+      <v-edit-wrap transparent>
+        <b-collapse-wrap title="基本信息">
           <div style="user-select:text;">
-            <v-key-label label="数据源名称" is-half is-first>{{ exchangeNode.dataSourceDto.dataSourceName }}</v-key-label>
-            <v-key-label label="连接类型" is-half>{{ exchangeNode.dataSourceDto.dbType }}</v-key-label>
-            <v-key-label label="数据库名称" is-half is-first>{{ exchangeNode.dataSourceDto.dbName }}</v-key-label>
-            <v-key-label label="连接驱动" is-half>{{ exchangeNode.dataSourceDto.driverClass }}</v-key-label>
-            <v-key-label label="主机地址" is-half is-first>{{ exchangeNode.dataSourceDto.host }}</v-key-label>
-            <v-key-label label="端口号" is-half>{{ exchangeNode.dataSourceDto.port }}</v-key-label>
-            <v-key-label label="用户名" is-bottom>{{ exchangeNode.dataSourceDto.userName }}</v-key-label>
+            <v-key-label label="节点名称" is-half is-first>{{ exchangeNode.nodeName }}</v-key-label>
+            <v-key-label label="节点类型" is-half>{{ exchangeNode.nodeType }}</v-key-label>
+            <v-key-label label="节点编码" is-half is-first is-bottom>{{ exchangeNode.nodeCode }}</v-key-label>
+            <v-key-label label="节点描述" is-half is-bottom>{{ exchangeNode.nodeDesc }}</v-key-label>
           </div>
-        </template>
+        </b-collapse-wrap>
+        <b-collapse-wrap title="数据源详情" v-if="exchangeNode.dataSourceDto">
+          <source-info v-bind="exchangeNode.dataSourceDto"/>
+        </b-collapse-wrap>
         <!--保存提交-->
         <template slot="footer">
           <b-button @click="handleCancel">取 消</b-button>
@@ -135,11 +129,11 @@
   import * as api from '../../../api/data-manage/switching-node.api'
   import { getExchangeNodeType } from '../../../api/enum.api'
   import { requiredRule } from '../../../common/utils/validate'
-  import { DataSourceChoose } from './components/SwitchingNode'
+  import { DataSourceChoose, SourceInfo } from './components/SwitchingNode'
 
   export default {
     name: 'SwitchingNode',
-    components: { DataSourceChoose },
+    components: { DataSourceChoose, SourceInfo },
     mixins: [commonMixin, permission],
     data() {
       return {
@@ -172,6 +166,14 @@
       this.getEnum()
       this.resetNode()
       this.searchList()
+    },
+    computed: {
+      dbType() {
+        if (this.exchangeNode && this.exchangeNode.dataSourceDto) {
+          return this.exchangeNode.dataSourceDto.dbType.toLowerCase()
+        }
+        return null
+      }
     },
     methods: {
       // filter-Bar:重置查询条件

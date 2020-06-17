@@ -37,6 +37,8 @@ const err = (error) => {
           }, 1500)
         })
       }
+    } else if (error.response.status === 413) {
+      BinUI.Message.message({ content: '上传文件过大！', type: 'danger' })
     } else {
       BinUI.Message.message({ content: data.message, type: 'danger' })
     }
@@ -86,7 +88,7 @@ export default service
  * @param url
  * @param data
  */
-export function requestPost (url, data) {
+export function requestPost(url, data) {
   return service({
     url: url,
     method: 'post',
@@ -104,7 +106,7 @@ export function requestPost (url, data) {
  * @param url
  * @param data
  */
-export function requestPostFormData (url, data) {
+export function requestPostFormData(url, data) {
   return service({
     url: url,
     method: 'post',
@@ -119,13 +121,13 @@ export function requestPostFormData (url, data) {
  * @param name 参数名
  * @param value 参数值
  */
-export function appendFormData (formData, name, value) {
+export function appendFormData(formData, name, value) {
   if (value != null) {
     formData.append(name, value)
   }
 }
 
-export function requestGetDownloadProcess (url, data, downloadProcess) {
+export function requestGetDownloadProcess(url, data, downloadProcess) {
   return service({
     timeout: 10000 * 60, // 请求超时时间
     url: url,
