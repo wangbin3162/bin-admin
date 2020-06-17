@@ -54,14 +54,14 @@
         <b-col span="16">
           <div class="area mb-20">
             <div class="title">
-              <span class="text">月度信息归集趋势</span>
+              <span class="text">年度信息归集趋势</span>
               <span class="float-right pr-12">
                 <!--保留select下拉选择备份-->
                   <!--<b-select style="width:100px" v-model="monthMsgSelect" clearable>-->
                   <!--  <b-option v-for="item in monthList" :value="item.value" :key="item.value">{{ item.label }}</b-option>-->
                   <!--</b-select>-->
                   <!--新添加滑块选择器-->
-                <GrooveSelect></GrooveSelect>
+                <GrooveSelect @tab-click="handleTabClick"></GrooveSelect>
               </span>
             </div>
             <div class="content" flex="main:justify">
@@ -75,7 +75,7 @@
               <div class="title">
                 <span class="text">资源信息分类统计</span>
                 <span class="float-right pr-12">
-                <b-select style="width:100px" v-model="crowdSelect" clearable>
+                <b-select style="width:100px" v-model="crowdSelect" @on-change="handleResChange" clearable>
                   <b-option v-for="item in crowdList" :value="item.value" :key="item.value">{{ item.label }}</b-option>
                 </b-select>
               </span>
@@ -90,7 +90,7 @@
               <div class="title">
                 <span class="text">月度部门归集统计</span>
                 <span class="float-right pr-12">
-              <b-select style="width:100px" v-model="monthDeptSelect" clearable>
+              <b-select style="width:100px" v-model="monthDeptSelect" @on-change="handleMonDepChange" clearable>
                 <b-option v-for="item in monthList" :value="item.value" :key="item.value">{{ item.label }}</b-option>
               </b-select>
             </span>
@@ -148,7 +148,7 @@
             <div class="title" flex="main:justify">
               <span class="text">未填报部门</span>
               <span class="float-right pr-12">
-              <b-select style="width:100px" v-model="monthUnGetSelect" clearable>
+              <b-select style="width:100px" v-model="monthUnGetSelect" @no-change="handleUnDepChange" clearable>
                 <b-option v-for="item in monthList" :value="item.value"
                           :key="item.value">{{ item.label }}</b-option>
               </b-select>
@@ -208,10 +208,195 @@
           sbCount: '',
           hlCount: ''
         },
-        lineSmoothChartOption: {},
-        lineChartOption: {},
-        barChartOption: {},
-        pieChartOption: {},
+        lineSmoothChartOption: {
+          tooltip: { trigger: 'axis' },
+            color: ['#3cd7c1', '#a2a4fe', '#6fcafa', '#18e5e6', '#1ed1b8'],
+            grid: {
+              left: '6%',
+              right: '3%'
+            },
+            legend: {},
+            xAxis: {
+              type: 'category',
+              boundaryGap: false,
+              splitLine: { show: true },
+              axisLabel: { formatter: '{value} 月' }
+            },
+            yAxis: {
+              type: 'value',
+              splitLine: { show: true }
+            },
+            series: [
+              {
+                smooth: true,
+                type: 'line',
+                showSymbol: false,
+                areaStyle: { opacity: 0.45 }
+              },
+              {
+                smooth: true,
+                type: 'line',
+                showSymbol: false,
+                areaStyle: { opacity: 0.45 }
+              }
+            ],
+            dataset: { source: [
+              ['month', '自然人', '法人及其他组织'],
+              ['1', '0', '0'],
+              ['2', '0', '0'],
+              ['3', '0', '0'],
+              ['4', '0', '0'],
+              ['5', '0', '0'],
+              ['6', '0', '0'],
+              ['7', '0', '0'],
+              ['8', '0', '0'],
+              ['9', '0', '0'],
+              ['10', '0', '0'],
+              ['11', '0', '0'],
+              ['12', '0', '0']
+            ] }
+        },
+        lineChartOption: {
+          tooltip: { trigger: 'axis' },
+            xAxis: {
+              type: 'category',
+              boundaryGap: false,
+              axisLine: {
+                lineStyle: {
+                  color: '#b8b8b8'
+                }
+              },
+              axisLabel: {
+                color: '#333'
+              },
+              splitLine: {
+                show: true,
+                lineStyle: {
+                  color: '#eee'
+                }
+              }
+            },
+            yAxis: {
+              type: 'value',
+              axisLine: {
+                lineStyle: {
+                  color: '#b8b8b8'
+                }
+              },
+              axisLabel: {
+                color: '#333'
+              },
+              splitLine: {
+                show: true,
+                lineStyle: {
+                  color: '#eee'
+                }
+              }
+            },
+            series: { type: 'line', areaStyle: { opacity: 0.45 }, color: '#a2a4fe' },
+            dataset: { source: [
+              ['departName', 'value'],
+              ['部门1', '0'],
+              ['部门2', '0'],
+              ['部门3', '0'],
+              ['部门4', '0']
+            ] }
+        },
+        barChartOption: {
+          color: '#3cd7c1',
+            tooltip: {
+              trigger: 'axis',
+              axisPointer: {
+                type: 'shadow'
+              }
+            },
+            grid: {
+              left: '6%',
+              right: '6%',
+              bottom: '3%',
+              containLabel: true
+            },
+            xAxis: {
+              type: 'value',
+              axisLine: {
+                lineStyle: {
+                  color: '#b8b8b8'
+                }
+              },
+              axisLabel: {
+                color: '#333'
+              }
+            },
+            yAxis: {
+              type: 'category',
+              axisLine: {
+                lineStyle: {
+                  color: '#b8b8b8'
+                }
+              },
+              axisLabel: {
+                color: '#333'
+              }
+            },
+            series: {
+              type: 'bar'
+            },
+            dataset: { source: [
+              ['resourceName', 'value'],
+              ['基本信息', '0'],
+              ['业务信息', '0'],
+              ['司法信息', '0'],
+              ['行政执法信息', '0'],
+              ['公共事业信息', '0'],
+              ['信用评级信息', '0'],
+              ['其他信息', '0']
+            ] }
+        },
+        pieChartOption: {
+          tooltip: {
+              trigger: 'item',
+              formatter: '{a} <br/>{b}: {c} ({d}%)'
+            },
+            grid: {
+              left: '10%',
+              right: '10%',
+              bottom: '20%',
+              top: '20%'
+            },
+            series: [
+              {
+                color: ['#607de6', '#92d2fa'],
+                type: 'pie',
+                selectedMode: 'single',
+                radius: [0, '30%'],
+                label: {
+                  formatter: '{b}\n{c}',
+                  position: 'inner'
+                },
+                labelLine: {
+                  show: false
+                },
+                data: [
+                  { name: '自然人', value: '0' },
+                  { name: '法人和其他组织', value: '0' }
+                ]
+              },
+              {
+                color: ['#4065e0', '#6ac3f7'],
+                type: 'pie',
+                radius: ['40%', '60%'],
+                label: {
+                  formatter: '{b}\n{c}'
+                },
+                data: [
+                  { name: '基础信息', value: '0' },
+                  { name: '行政信息', value: '0' },
+                  { name: '基础信息', value: '0' },
+                  { name: '行政信息', value: '0' }
+                ]
+              }
+            ]
+        },
         monthDepartColumns: [
           { title: '部门', key: 'departName' },
           { title: '归集数量', key: 'value' }
@@ -285,6 +470,22 @@
           return reArr
         }
       },
+      // 年度信息归集趋势 年份按钮切换回调
+      handleTabClick (curTabIndex) {
+        this.getYearCollectData(curTabIndex)
+      },
+      // 资源信息分类统计 select 回调
+      handleResChange (val) {
+        console.log(val)
+      },
+      // 月度部门归集统计 select 回调
+      handleMonDepChange (val) {
+        console.log(val)
+      },
+      // 未填报部门 select 回调
+      handleUnDepChange (val) {
+        console.log(val)
+      },
       // 查询所有列表
       searchList() {
         this.resetListQuery()
@@ -325,122 +526,13 @@
         ]).then(res => {
           // 月度信息归集趋势
           const dataset = formatSeries({ xField: 'month', yField: 'value', seriesField: 'legend' }, res[0].data.data)
-          this.lineSmoothChartOption = {
-            tooltip: { trigger: 'axis' },
-            // color: ['#4065e0', '#35a4ff', '#6fcafa', '#18e5e6', '#1ed1b8'],
-            color: ['#3cd7c1', '#a2a4fe', '#6fcafa', '#18e5e6', '#1ed1b8'],
-            legend: {},
-            xAxis: {
-              type: 'category',
-              boundaryGap: false,
-              splitLine: { show: true },
-              axisLabel: { formatter: '{value} 月' }
-            },
-            yAxis: {
-              type: 'value',
-              splitLine: { show: true }
-            },
-            series: [
-              {
-                smooth: true,
-                type: 'line',
-                showSymbol: false,
-                areaStyle: { opacity: 0.45 }
-              },
-              {
-                smooth: true,
-                type: 'line',
-                showSymbol: false,
-                areaStyle: { opacity: 0.45 }
-              }
-            ],
-            dataset
-          }
+          this.lineSmoothChartOption.dataset = dataset
 
           // 部门数据归集统计
-          this.lineChartOption = {
-            tooltip: { trigger: 'axis' },
-            xAxis: {
-              type: 'category',
-              boundaryGap: false,
-              axisLine: {
-                lineStyle: {
-                  color: '#b8b8b8'
-                }
-              },
-              axisLabel: {
-                color: '#333'
-              },
-              splitLine: {
-                show: true,
-                lineStyle: {
-                  color: '#eee'
-                }
-              }
-            },
-            yAxis: {
-              type: 'value',
-              axisLine: {
-                lineStyle: {
-                  color: '#b8b8b8'
-                }
-              },
-              axisLabel: {
-                color: '#333'
-              },
-              splitLine: {
-                show: true,
-                lineStyle: {
-                  color: '#eee'
-                }
-              }
-            },
-            series: { type: 'line', areaStyle: { opacity: 0.45 }, color: '#a2a4fe' },
-            dataset: formatDataSet({ xField: 'departName', yField: 'value' }, res[1].data.data)
-          }
+          this.lineChartOption.dataset = formatDataSet({ xField: 'departName', yField: 'value' }, res[1].data.data)
 
           // 资源信息分类统计
-          this.barChartOption = {
-            color: '#3cd7c1',
-            tooltip: {
-              trigger: 'axis',
-              axisPointer: {
-                type: 'shadow'
-              }
-            },
-            grid: {
-              left: '6%',
-              right: '6%',
-              bottom: '3%',
-              containLabel: true
-            },
-            xAxis: {
-              type: 'value',
-              axisLine: {
-                lineStyle: {
-                  color: '#b8b8b8'
-                }
-              },
-              axisLabel: {
-                color: '#333'
-              }
-            },
-            yAxis: {
-              type: 'category',
-              axisLine: {
-                lineStyle: {
-                  color: '#b8b8b8'
-                }
-              },
-              axisLabel: {
-                color: '#333'
-              }
-            },
-            series: {
-              type: 'bar'
-            },
-            dataset: formatDataSet({ xField: 'resourceName', yField: 'value' }, res[2].data.data)
-          }
+          this.barChartOption.dataset = formatDataSet({ xField: 'resourceName', yField: 'value' }, res[2].data.data)
 
           // 主体及资源数据分析
           let subjects = []
@@ -449,18 +541,7 @@
           res[3].data.data.forEach(item => item.data.forEach(
             item => subjectItems.push(item))
           )
-          this.pieChartOption = {
-            tooltip: {
-              trigger: 'item',
-              formatter: '{a} <br/>{b}: {c} ({d}%)'
-            },
-            grid: {
-              left: '10%',
-              right: '10%',
-              bottom: '20%',
-              top: '20%'
-            },
-            series: [
+          this.pieChartOption.series = [
               {
                 color: ['#607de6', '#92d2fa'],
                 type: 'pie',
@@ -485,7 +566,6 @@
                 data: subjectItems
               }
             ]
-          }
         })
       },
       // async 获取表数据
@@ -514,6 +594,14 @@
             { departId: 'aabbcc', departName: '市发改委' },
             { departId: 'aabbcc', departName: '市发改委' }
           ]
+        })
+      },
+      // 获取年度信息归集趋势
+      getYearCollectData (offset = 0) {
+        const year = new Date().getFullYear() - offset
+        api.getYearCollectData(year).then(res => {
+          const dataset = formatSeries({ xField: 'month', yField: 'value', seriesField: 'legend' }, res.data.data)
+          this.lineSmoothChartOption.dataset = dataset
         })
       },
       // 临时设置departId
