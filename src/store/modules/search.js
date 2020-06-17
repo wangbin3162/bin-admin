@@ -15,9 +15,6 @@ export default {
   actions: {
     setQuery({ commit }, query) {
       commit('SET_QUERY', query)
-    },
-    resetQuery({ commit }) {
-      commit('SET_QUERY', { type: '1', reason: '', q: '', id: '' })
     }
   }
 }

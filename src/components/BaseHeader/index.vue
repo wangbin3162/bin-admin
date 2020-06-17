@@ -1,19 +1,19 @@
 <template>
   <div class="header-wrap" :class="{'detail':showSearch}">
     <div class="header-inner" flex="main:justify cross:center">
-      <img src="../../assets/images/logo-white.png" height="90" width="320" alt="logo"/>
+      <img src="../../assets/images/logo-white.png" @click="home" alt="logo" class="logo"/>
       <div class="info" flex="cross:center" v-if="userRoles">
-        <div class="links">
-          <div class="inner">
-            <span class="item"><a href="" @click.stop.prevent="home">首页</a></span>
-            <span class="item"><a href="/dir/#/dataManage/res/resInfo" target="_blank">数据治理</a></span>
-            <span class="item"><a href="">大数据分析</a></span>
-            <span class="item"><a href="">联合奖惩</a></span>
-            <span class="item"><a href="">信用监管</a></span>
-            <span class="item"><a href="/dir/#/creditRating/ratingModel" target="_blank">信用评级</a></span>
-            <span class="item"><a href="/dir/#/sys/org/dept" target="_blank">系统管理</a></span>
-          </div>
-        </div>
+        <!--        <div class="links">-->
+        <!--          <div class="inner">-->
+        <!--            <span class="item"><a href="" @click.stop.prevent="home">首页</a></span>-->
+        <!--            <span class="item"><a href="/dir/#/dataManage/res/resInfo" target="_blank">数据治理</a></span>-->
+        <!--            <span class="item"><a href="">大数据分析</a></span>-->
+        <!--            <span class="item"><a href="">联合奖惩</a></span>-->
+        <!--            <span class="item"><a href="">信用监管</a></span>-->
+        <!--            <span class="item"><a href="/dir/#/creditRating/ratingModel" target="_blank">信用评级</a></span>-->
+        <!--            <span class="item"><a href="/dir/#/sys/org/dept" target="_blank">系统管理</a></span>-->
+        <!--          </div>-->
+        <!--        </div>-->
         <div class="search-btn" v-if="showSearch" @click="changeDisplay(true)">
           <img src="../../assets/images/search.png" height="24" width="24" alt="icon" title="查询"/>
         </div>
@@ -73,7 +73,6 @@
     },
     methods: {
       home() {
-        this.$store.dispatch('resetQuery')
         this.$emit('on-home')
         this.$router.push('/index')
       },
@@ -94,13 +93,19 @@
   .header-wrap {
     background: rgba(16, 103, 222, 0.5);
     box-shadow: 0 0 8px rgba(143, 143, 143, 0.51);
+    height: 64px;
     &.detail {
       background: rgba(16, 103, 222, 0.5) url("../../assets/images/header-bg.png") no-repeat center top;
     }
     .header-inner {
       position: relative;
       width: 1300px;
+      height: 100%;
       margin: 0 auto;
+      .logo {
+        cursor: pointer;
+        height: 100%;
+      }
       .links {
         .inner {
           text-align: right;

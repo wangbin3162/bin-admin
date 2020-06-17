@@ -2,62 +2,69 @@
   <base-layout>
     <div class="main-wrap" :class="{'mini-wrap':showList}">
       <base-header @on-home="handleHome"></base-header>
-      <div class="search-wrap" :style="searchWrapStyle">
+      <div class="search-wrap">
         <h2 v-show="!showList">综合信用查询</h2>
         <base-search v-model="query" :size="searchSize" @on-search="handleSearch" @on-clear="handleClear"></base-search>
       </div>
+      <!--查询列表结果-->
       <transition name="fade-scale-move">
-        <base-list v-show="showList" :total="total" :data="searchList" :mapping="mapping"
-                   :loading="loading"
+        <base-list v-show="showList"
+                   :total="total" :data="searchList"
+                   :mapping="mapping" :loading="loading"
+                   :current-type="query.type"
                    @on-check-detail="handleCheckDetail"></base-list>
       </transition>
       <div v-show="!showList" class="center-banner">
-        <div flex="main:justify" class="mb-10">
-          <div class="card data">
-            <div class="inner" style="padding: 50px 40px;">
-              <h2>数据可视化</h2>
-              <p>Data visualization</p>
-              <a class="check" href="/data" target="_blank">
-                <b-icon name="ios-arrow-round-forward"/>
-                查看
-              </a>
+        <b-row :gutter="20">
+          <b-col :span="6">
+            <div class="card">
+              <div class="inner">
+                <img src="../assets/images/bigdata.png" alt="bigdata">
+                <h2>数据可视化</h2>
+                <a class="check" href="/data" target="_blank">
+                  <b-icon name="ios-arrow-round-forward"/>
+                  查询
+                </a>
+              </div>
             </div>
-          </div>
-          <div>
-            <div class="small-card analysis" @click="goTo('/dir/#/dataManage/dataExchange/gather')">
-              <img src="../assets/images/analysis.png" alt="">
-              <h2>我的采集</h2>
+          </b-col>
+          <b-col :span="6">
+            <div class="card">
+              <div class="inner">
+                <img src="../assets/images/service.png" alt="service">
+                <h2>信用服务</h2>
+                <a class="check" href="" target="_blank">
+                  <b-icon name="ios-arrow-round-forward"/>
+                  查询
+                </a>
+              </div>
             </div>
-            <div class="small-card collection" @click="goTo('/dir/#/dataManage/dataExchange/collectAnalysis')">
-              <img src="../assets/images/collection.png" alt="">
-              <h2>归集分析</h2>
+          </b-col>
+          <b-col :span="6">
+            <div class="card">
+              <div class="inner">
+                <img src="../assets/images/exchange.png" alt="exchange">
+                <h2>信用监管</h2>
+                <a class="check" href="" target="_blank">
+                  <b-icon name="ios-arrow-round-forward"/>
+                  查询
+                </a>
+              </div>
             </div>
-          </div>
-        </div>
-        <div flex="main:justify">
-          <div class="card service" flex="main:justify cross:center">
-            <img src="../assets/images/service.png" alt=""/>
-            <div class="inner">
-              <h2>信用服务</h2>
-              <p>Credit Service</p>
-              <a class="check" href="/dir/#/creditService/creditDiff/diffApp" target="_blank">
-                <b-icon name="ios-arrow-round-forward"/>
-                查看
-              </a>
+          </b-col>
+          <b-col :span="6">
+            <div class="card">
+              <div class="inner">
+                <img src="../assets/images/joint.png" alt="joint">
+                <h2>联合奖惩</h2>
+                <a class="check" href="" target="_blank">
+                  <b-icon name="ios-arrow-round-forward"/>
+                  查询
+                </a>
+              </div>
             </div>
-          </div>
-          <div class="card exchange" flex="main:justify cross:center">
-            <img src="../assets/images/exchange.png" alt=""/>
-            <div class="inner">
-              <h2>交换监控</h2>
-              <p>Exchange Monitor</p>
-              <a class="check" href="/dir/#/dataManage/dataExchange/exchangeMonitor" target="_blank">
-                <b-icon name="ios-arrow-round-forward"/>
-                查看
-              </a>
-            </div>
-          </div>
-        </div>
+          </b-col>
+        </b-row>
       </div>
       <div class="page-wrap">
         <b-page :total="total" :current.sync="listQuery.page" v-if="total>listQuery.size"
@@ -71,6 +78,7 @@
   import BaseList from '../components/BaseList/index'
   import { mapGetters } from 'vuex'
   import { getSearchList } from '../api/search.api'
+  import { isNotEmpty } from '../common/utils/assist'
 
   export default {
     name: 'index',
@@ -82,9 +90,9 @@
           size: 10
         },
         query: {
-          q: '',
+          q: '1',
           type: '',
-          reason: '1'
+          reason: ''
         },
         showList: false,
         loading: false,
@@ -95,9 +103,6 @@
     },
     computed: {
       ...mapGetters(['queryData']),
-      searchWrapStyle() {
-        return this.showList ? { padding: '70px' } : { padding: '90px 50px 140px' }
-      },
       searchSize() {
         return this.showList ? 'small' : 'default'
       }
@@ -115,27 +120,22 @@
         let { q, reason, type } = this.$route.query
         // 判断是否携带参数，如有参数则缓存vuex，如无参数则默认退回首页
         if (q && reason && type) {
-          this.$store.dispatch('setQuery', { q, reason, type })
+          this.query = Object.assign({}, { q, reason, type })
         }
-        this.query = Object.assign({}, this.query, this.queryData)
-        if (this.query.q.length > 0 && this.query.reason.length > 0) {
+        if (isNotEmpty(this.query.q) && isNotEmpty(this.query.reason)) {
           this.searchListData()
         }
       },
       handleSearch() {
         if (this.query.reason.length === 0) {
-          this.$message({ type: 'danger', content: '查询原因必须选择！' })
+          this.$message({ type: 'danger', content: '请选择查询原因！' })
           return
         }
         if (this.query.q.length === 0) {
           this.$message({ type: 'danger', content: '请输入查询条件！' })
           return
         }
-        let query = {
-          q: this.query.q,
-          type: this.query.type,
-          reason: this.query.reason
-        }
+        let { query } = this
         // 判断地址栏请求是否和现有输入的相同，如相同则重新查询，否则重定向地址栏后再拉取数据
         let { q, reason, type } = this.$route.query
         if (q === query.q && reason === query.reason && type === query.type) {
@@ -148,7 +148,7 @@
         this.searchList = []
         this.showList = false
         this.total = 0
-        this.$store.dispatch('setQuery', { q: '', reason: '', type: '1' })
+        this.query = { q: '', reason: '', type: '1' }
         this.$router.replace({ name: 'index' })
       },
       // 页码改变
@@ -178,128 +178,7 @@
           this.showList = true
           this.loading = false
         })
-      },
-      // 跳转对应连接
-      goTo(url) {
-        this.$open(url, true)
       }
     }
   }
 </script>
-
-<style scoped lang="stylus">
-  .main-wrap {
-    height: 100%;
-    background: url("../assets/images/banner-bg0.png") no-repeat 0 0;
-    &.mini-wrap {
-      background: url("../assets/images/banner-bg.png") no-repeat 0 -370px;
-      animation: bg .4s ease-in-out forwards;
-      .search-wrap {
-        height: auto;
-        margin-bottom: 0;
-      }
-    }
-
-    .search-wrap {
-      width: 1300px;
-      margin: 0 auto 32px;
-      height: 383px;
-      transition: .3s;
-      h2 {
-        color: #fff;
-        text-align: center;
-        font-weight: 400;
-        font-size: 34px;
-        letter-spacing: 4px;
-      }
-    }
-    .center-banner {
-      width: 1300px;
-      margin: 0 auto;
-      .card {
-        padding: 24px;
-        background: #fff;
-        .inner {
-          h2 {
-            font-weight: normal;
-            font-size: 18px;
-            color: rgba(0, 0, 0, .85);
-          }
-          p {
-            color: rgba(0, 0, 0, .45);
-            margin: .7em 0;
-          }
-          .check {
-            display: inline-block;
-            margin-top: 1.5em;
-            background: #1089ff;
-            color: #fff;
-            padding: 6px 15px;
-            border-radius: 15px;
-            .iconfont {
-              font-size: 18px;
-              vertical-align: -1px;
-            }
-          }
-        }
-        &.data {
-          width: 942px;
-          background: #fff url("../assets/images/bigdata.png") no-repeat 500px bottom;
-        }
-        &.service {
-          width: 646px;
-          height: 180px;
-          background: #fff url("../assets/images/service.png") no-repeat 30px bottom;
-          .inner {
-            width: 265px;
-          }
-        }
-        &.exchange {
-          width: 646px;
-          height: 180px;
-          background: #fff url("../assets/images/exchange.png") no-repeat 30px bottom;
-          .inner {
-            width: 265px;
-          }
-        }
-      }
-      .small-card {
-        cursor: pointer;
-        width: 350px;
-        height: 132px;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        h2 {
-          color: #fff;
-          padding-top: 16px;
-          font-weight: normal;
-        }
-        &.analysis {
-          margin-bottom: 8px;
-          background: url("../assets/images/analysis-bg.png")
-        }
-        &.collection {
-          background: url("../assets/images/collection-bg.png")
-        }
-      }
-    }
-  }
-
-  .page-wrap {
-    width: 1300px;
-    margin: 0 auto;
-    text-align: right;
-    padding: 20px 0;
-  }
-
-  @keyframes bg {
-    0% {
-      background-position: 0 -370px;
-    }
-    100% {
-      background-position: 0 -90px;
-    }
-  }
-</style>

@@ -10,6 +10,7 @@ import TopSearch from '../components/TopSearch/index'
 import TitleBar from '../components/TitleBar/index'
 import KeyLabelWrap from '../components/KeyLabel/KeyLabelWrap'
 import KeyLabel from '../components/KeyLabel/KeyLabel'
+import { isEmpty, isNotEmpty } from '../common/utils/assist'
 
 export default {
   async install(Vue, options) {
@@ -36,6 +37,9 @@ export default {
     // 全局通信
     Vue.prototype.$EventBus = new Vue()
 
+    // 全局函数，为空和不为空的判断
+    Vue.prototype.$isEmpty = isEmpty
+    Vue.prototype.$isNotEmpty = isNotEmpty
     /**
      * 全局枚举
      */

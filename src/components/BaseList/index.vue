@@ -42,13 +42,13 @@
     props: {
       data: {
         type: Array,
-        default () {
+        default() {
           return []
         }
       },
       mapping: {
         type: Object,
-        default () {
+        default() {
           return {}
         }
       },
@@ -56,15 +56,14 @@
         type: Number,
         default: 0
       },
-      loading: Boolean
-    },
-    computed: {
-      currentType () {
-        return this.$store.state.search.query.type
+      loading: Boolean,
+      currentType: {
+        type: String,
+        default: '1'
       }
     },
     methods: {
-      handleCheck (id) {
+      handleCheck(id) {
         this.$emit('on-check-detail', id)
       }
     }
