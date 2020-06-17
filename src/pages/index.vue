@@ -76,9 +76,8 @@
 
 <script>
   import BaseList from '../components/BaseList/index'
-  import { mapGetters } from 'vuex'
   import { getSearchList } from '../api/search.api'
-  import { isNotEmpty } from '../common/utils/assist'
+  import { isEmpty, isNotEmpty } from '../common/utils/assist'
 
   export default {
     name: 'index',
@@ -102,7 +101,6 @@
       }
     },
     computed: {
-      ...mapGetters(['queryData']),
       searchSize() {
         return this.showList ? 'small' : 'default'
       }
@@ -127,11 +125,11 @@
         }
       },
       handleSearch() {
-        if (this.query.reason.length === 0) {
+        if (isEmpty(this.query.reason)) {
           this.$message({ type: 'danger', content: '请选择查询原因！' })
           return
         }
-        if (this.query.q.length === 0) {
+        if (isEmpty(this.query.q)) {
           this.$message({ type: 'danger', content: '请输入查询条件！' })
           return
         }

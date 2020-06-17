@@ -96,6 +96,9 @@
     height: 64px;
     &.detail {
       background: rgba(16, 103, 222, 0.5) url("../../assets/images/header-bg.png") no-repeat center top;
+      .search-wrap{
+
+      }
     }
     .header-inner {
       position: relative;
@@ -141,7 +144,6 @@
       .search-wrap {
         position: absolute;
         display: flex;
-        justify-content: right;
         align-items: center;
         top: 0;
         right: 0;

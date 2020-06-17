@@ -86,10 +86,8 @@
 <style scoped lang="stylus">
   .top-search {
     width: 840px;
-
     .type-wrap {
       margin-bottom: 5px;
-
       span {
         display: inline-block;
         padding: 0 12px;
@@ -98,7 +96,6 @@
         color: #b8d7ff;
         cursor: pointer;
         transition: .3s;
-
         &.active {
           color: #fff;
           font-weight: bold;
@@ -111,10 +108,8 @@
         position: relative;
         width: 750px;
         display: flex;
-
         label {
           flex: 1;
-
           input {
             width: 100%;
             height: 32px;
@@ -131,7 +126,6 @@
             outline: 0;
           }
         }
-
         .search-btn {
           width: 72px;
           cursor: pointer;
@@ -144,7 +138,6 @@
           border-bottom-right-radius: 4px;
           border-top-right-radius: 4px;
         }
-
         .clear-btn {
           position: absolute;
           display: none;
@@ -153,12 +146,10 @@
           font-size: 16px;
           cursor: pointer;
         }
-
         &:hover .clear-btn {
           display: block;
         }
       }
-
       .back {
         cursor: pointer;
         line-height: 32px;

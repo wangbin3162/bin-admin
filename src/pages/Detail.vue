@@ -1,6 +1,6 @@
 <template>
   <base-layout>
-    <div class="main-wrap" v-show="!hideDetail">
+    <div class="detail-wrapper" v-show="!hideDetail">
       <base-header show-search v-model="topSearchToggle">
         <top-search v-model="query" @on-search="handleSearch" @on-back="topSearchToggle=false"></top-search>
       </base-header>
@@ -195,13 +195,13 @@
 </template>
 
 <script>
-  import { mapGetters } from 'vuex'
   import * as api from '../api/search.api'
   import animations from 'bin-animation'
   import DetailPn from './DetailPn'
   import Keywords from '../components/Keywords/index'
   import TablePage from '../components/TablePage/index'
   import Util from '../common/utils/util'
+  import { isEmpty } from '../common/utils/assist'
 
   export default {
     name: 'Detail',
@@ -209,6 +209,7 @@
     data() {
       return {
         topSearchToggle: false,
+        currentDetailId: '',
         query: {
           q: '',
           type: '',
@@ -262,13 +263,12 @@
       }
     },
     computed: {
-      ...mapGetters(['currentDetailId', 'queryData']),
       type() {
-        return this.queryData.type
+        return this.query.type
       },
       // 当前是否是法人
       isLeg() {
-        return this.queryData.type === this.ENUM.Leg
+        return this.query.type === this.ENUM.Leg
       },
       keyword() {
         if (this.isLeg) {
@@ -306,8 +306,8 @@
       const { id, reason, type } = this.$route.query
       // 判断是否携带参数，如有参数则缓存vuex，如无参数则默认退回首页
       if (id && reason && type) {
+        this.currentDetailId = id
         this.query = Object.assign(this.query, { reason, type })
-        this.$store.dispatch('setQuery', { id, reason, type })
         this.getDetailData()
       } else {
         this.$router.push({ name: 'index' })
@@ -365,13 +365,11 @@
       },
       // 顶部查询事件
       handleSearch() {
-        if (this.query.q.length === 0) {
+        if (isEmpty(this.query.q)) {
           this.$message({ type: 'danger', content: '请输入查询条件！' })
           return
         }
-        let query = { id: '', q: this.query.q, type: this.query.type, reason: this.query.reason }
-        this.$store.dispatch('setQuery', query)
-        this.$router.push('/index')
+        this.$router.replace({ name: 'index', query: this.query })
       },
       // 字段显示函数
       fieldShow(name) {
@@ -388,7 +386,7 @@
       // 获取详情数据
       getDetailData() {
         // 1.获取顶部详情数据填充
-        api.getDetail(this.currentDetailId, this.type, this.queryData.reason).then(res => {
+        api.getDetail(this.currentDetailId, this.type, this.query.reason).then(res => {
           if (res.data.code === '0') {
             this.current = res.data.data
             this.mapping = res.data.mapping
@@ -546,299 +544,3 @@
     }
   }
 </script>
-
-<style scoped lang="stylus">
-  .detail-wrap {
-    width: 1300px;
-    margin: 20px auto;
-  }
-
-  .top-box {
-    position: relative;
-    background: #fff;
-    border: 1px solid #f3f6fc;
-    border-radius: 10px;
-    margin-bottom: 20px;
-
-    &.faren {
-      background: #fff url("../assets/images/faren-bg.png") no-repeat 0 0;
-    }
-
-    &.ziranren {
-      background: #fff url("../assets/images/ziranren-bg.png") no-repeat 0 0;
-    }
-
-    .inner {
-      padding: 30px 42px;
-      border-bottom: 1px solid #f3f6fc;
-    }
-
-    .search-count {
-      background: #f3f6fc url("../assets/images/query-bg.png") no-repeat center 5px;
-      padding: 30px 10px 10px;
-      border-radius: 5px;
-      font-size: 12px;
-      text-align: center;
-      color: #445e83;
-      max-width: 100px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .right {
-      padding: 0 40px;
-
-      .icon {
-        padding-left: 40px;
-        background-repeat: no-repeat;
-        background-position: 0 0;
-        line-height: 24px;
-        background-image: url("../assets/images/icon-1.png")
-
-        &.icon-1 {
-          background-image: url("../assets/images/icon-1.png")
-        }
-
-        &.icon-2 {
-          background-image: url("../assets/images/icon-2.png")
-        }
-
-        &.icon-3 {
-          background-image: url("../assets/images/icon-3.png")
-        }
-
-        &.icon-4 {
-          background-image: url("../assets/images/icon-4.png")
-        }
-
-        &.icon-5 {
-          background-image: url("../assets/images/icon-5.png")
-        }
-
-        &.icon-6 {
-          background-image: url("../assets/images/icon-6.png")
-        }
-
-        &.icon-7 {
-          background-image: url("../assets/images/icon-7.png")
-        }
-
-        &.icon-8 {
-          background-image: url("../assets/images/icon-8.png")
-        }
-
-        &.icon-9 {
-          background-image: url("../assets/images/icon-9.png")
-        }
-      }
-    }
-
-    .title-name {
-      margin: 0 0 20px;
-      font-weight: 500;
-      color: #042f63;
-      font-size: 24px;
-
-      .status {
-        position: relative;
-        top: 2px;
-        display: inline-block;
-        vertical-align: top;
-        font-size: 15px;
-        font-weight: normal;
-        color: #36d8da;
-        border: 1px solid #36d8da;
-        border-radius: 4px;
-        padding: 2px 5px;
-      }
-    }
-
-    .pn-box {
-      padding: 15px 42px;
-    }
-
-    .btn {
-      display: inline-block;
-      cursor: pointer;
-      line-height: 45px;
-      border-radius: 20px;
-      padding: 0 20px 0 40px;
-      background-color: #f9f9f9;
-      background-repeat: no-repeat;
-      background-position: 12px 7px;
-      color: #445e83;
-
-      &.red {
-        background-image url("../assets/images/redname.png");
-      }
-
-      &.black {
-        background-image url("../assets/images/blackname.png");
-      }
-    }
-
-    .download {
-      background: #f8fbfd url("../assets/images/icon-download.png") no-repeat 15px 2px;
-      line-height: 45px;
-      border-radius: 20px;
-      padding: 0 20px 0 60px;
-      color: #1f7af6;
-    }
-  }
-
-  .info-box {
-    position: relative;
-    background: #fff;
-    border: 1px solid #eee;
-    border-radius: 10px;
-
-    .classify {
-      padding: 0 35px;
-
-      span {
-        position: relative;
-        display: inline-block;
-        line-height: 54px;
-        padding: 0 15px;
-        color: #8294b1;
-        font-size: 16px;
-        cursor: pointer;
-
-        &:after {
-          position: absolute;
-          display: none;
-          content: '';
-          bottom: 0;
-          left: 50%;
-          width: 30px;
-          height: 2px;
-          margin-left: -15px;
-          background #2f8bfd;
-        }
-
-        &.active {
-          color: #042f63;
-          font-weight: bold;
-
-          &:after {
-            display: block;
-          }
-        }
-      }
-    }
-
-    .tabs {
-      padding: 10px 20px;
-      background #f3f6fc;
-      text-align: right;
-
-      .tab {
-        display: inline-block;
-        cursor: pointer;
-        padding: 10px 22px;
-        border-radius: 20px;
-        color: #445e83;
-        margin-left: 6px;
-
-        &.active {
-          background-color: #1f7af6;
-          color: #fff;
-        }
-      }
-    }
-
-    .float-tab {
-      position: absolute;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      top: 54px;
-      left: 0;
-      width: 120px;
-      margin-left: -121px;
-      border-bottom-left-radius: 10px;
-      border-top-left-radius: 10px;
-      overflow: hidden;
-
-      .item {
-        background: #fafcff;
-        width: 100%;
-        padding: 10px 12px;
-        text-align: center;
-        border-bottom: 1px solid #eeeeee;
-        font-size: 12px;
-        color: #aeb8c7;
-
-        p {
-          margin: 0;
-          line-height: 25px;
-        }
-
-        &.normal {
-          color: #445e83;
-          cursor: pointer;
-        }
-
-        &.active {
-          color: #ffffff;
-          background: #1f7af6;
-        }
-      }
-    }
-
-    .classify-box {
-      padding: 20px 46px;
-      min-height: 800px;
-    }
-  }
-
-  .classify-box {
-    .comp-list {
-      min-height: 240px;
-
-      .title {
-        margin: 0;
-        text-align: center;
-        line-height: 40px;
-        background: #fbfbfa;
-        font-weight: normal;
-        color: #445e83;
-      }
-
-      .left, .right {
-        border: 1px solid #f5f7fd;
-        border-radius: 15px;
-        overflow: hidden;
-      }
-
-      .left {
-        width: 382px;
-
-        .list {
-          p {
-            margin: 0;
-            line-height: 25px;
-          }
-        }
-      }
-
-      .right {
-        width: 800px;
-      }
-
-      .org-tag {
-        padding: 12px 22px;
-        border-radius: 20px;
-        color: #fff;
-        cursor: pointer;
-        background: #63c6fa;
-      }
-    }
-
-    .page-wrap {
-      padding: 15px 0;
-      text-align: right;
-    }
-  }
-</style>
