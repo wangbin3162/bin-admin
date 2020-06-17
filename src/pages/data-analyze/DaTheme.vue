@@ -3,7 +3,7 @@
     <page-header-wrap v-show="isNormal || isEdit">
       <v-table-wrap>
         <!--查询条件-->
-        <v-filter-bar @keyup.native.enter="handleFilter">
+        <v-filter-bar @keyup-enter="handleFilter">
           <v-filter-item title="主题名称">
             <b-input v-model.trim="listQuery.name" placeholder="请输入" clearable/>
           </v-filter-item>

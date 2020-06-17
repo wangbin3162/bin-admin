@@ -6,7 +6,7 @@
         <b-tree :data="treeData" slot="tree" @on-select-change="handTreeCurrentChange"
                 :lock-select="lockTreeSelect"></b-tree>
         <!--查询条件-->
-        <v-filter-bar>
+        <v-filter-bar @keyup-enter="handleFilter">
           <v-filter-item title="名称">
             <b-input v-model.trim="listQuery.name" placeholder="请输入" clearable></b-input>
           </v-filter-item>
@@ -65,64 +65,66 @@
       </v-table-wrap>
     </page-header-wrap>
     <page-header-wrap v-show="isEdit" :title="editTitle" show-close @on-close="handleCancel">
-      <v-edit-wrap>
-        <b-form :model="content" ref="form" :rules="ruleValidate" :label-width="100">
-          <b-row>
-            <b-col span="12">
-              <b-form-item label="名称" prop="name">
-                <b-input v-model="content.name"></b-input>
-              </b-form-item>
-            </b-col>
-            <b-col span="12">
-              <b-form-item label="编码" prop="code">
-                <b-input v-model="content.code"></b-input>
-              </b-form-item>
-            </b-col>
-          </b-row>
-          <b-row>
-            <b-col span="12">
-              <b-form-item label="类型" prop="type">
-                <b-cascader :data="contentTypeMap" v-model="content.type"/>
-              </b-form-item>
-            </b-col>
-            <b-col span="12">
-              <b-form-item label="数据来源" prop="toggle">
-                <b-select v-model="content.toggle">
-                  <b-option value="ON">动态数据</b-option>
-                  <b-option value="OFF">静态数据</b-option>
-                </b-select>
-              </b-form-item>
-            </b-col>
-          </b-row>
-          <b-row>
-            <b-col span="12">
-              <b-form-item label="所属主题" prop="themeCode">
-                <div flex style="width:100%;">
-                  <b-input v-model="content.themeName" disabled></b-input>
-                  <b-button type="primary" @click="handleShowThemeChoose"
-                            style="flex:0 0 auto;margin-left:0;font-size: 12px;">选择主题
-                  </b-button>
-                </div>
-              </b-form-item>
-            </b-col>
-            <b-col span="12">
-              <b-form-item label="接口" prop="apiId">
-                <div flex style="width:100%;">
-                  <b-input v-model="content.apiName" disabled></b-input>
-                  <b-button type="primary" @click="handleShowApiChoose"
-                            style="flex:0 0 auto;margin-left:0;font-size: 12px;">选择接口
-                  </b-button>
-                </div>
-              </b-form-item>
-            </b-col>
-          </b-row>
-          <b-form-item label="示例数据" prop="data">
-            <b-input v-model="content.data" type="textarea" :autosize="{minRows: 2,maxRows: 5}"></b-input>
-          </b-form-item>
-          <b-form-item label="描述" prop="describe">
-            <b-input v-model="content.describe" type="textarea" :autosize="{minRows: 2,maxRows: 5}"></b-input>
-          </b-form-item>
-        </b-form>
+      <v-edit-wrap transparent>
+        <b-collapse-wrap title="基本信息">
+          <b-form :model="content" ref="form" :rules="ruleValidate" :label-width="100">
+            <b-row>
+              <b-col span="12">
+                <b-form-item label="名称" prop="name">
+                  <b-input v-model="content.name"></b-input>
+                </b-form-item>
+              </b-col>
+              <b-col span="12">
+                <b-form-item label="编码" prop="code">
+                  <b-input v-model="content.code"></b-input>
+                </b-form-item>
+              </b-col>
+            </b-row>
+            <b-row>
+              <b-col span="12">
+                <b-form-item label="类型" prop="type">
+                  <b-cascader :data="contentTypeMap" v-model="content.type"/>
+                </b-form-item>
+              </b-col>
+              <b-col span="12">
+                <b-form-item label="数据来源" prop="toggle">
+                  <b-select v-model="content.toggle">
+                    <b-option value="ON">动态数据</b-option>
+                    <b-option value="OFF">静态数据</b-option>
+                  </b-select>
+                </b-form-item>
+              </b-col>
+            </b-row>
+            <b-row>
+              <b-col span="12">
+                <b-form-item label="所属主题" prop="themeCode">
+                  <div flex style="width:100%;">
+                    <b-input v-model="content.themeName" disabled></b-input>
+                    <b-button type="primary" @click="handleShowThemeChoose"
+                              style="flex:0 0 auto;margin-left:0;font-size: 12px;">选择主题
+                    </b-button>
+                  </div>
+                </b-form-item>
+              </b-col>
+              <b-col span="12">
+                <b-form-item label="接口" prop="apiId">
+                  <div flex style="width:100%;">
+                    <b-input v-model="content.apiName" disabled></b-input>
+                    <b-button type="primary" @click="handleShowApiChoose"
+                              style="flex:0 0 auto;margin-left:0;font-size: 12px;">选择接口
+                    </b-button>
+                  </div>
+                </b-form-item>
+              </b-col>
+            </b-row>
+            <b-form-item label="示例数据" prop="data">
+              <b-input v-model="content.data" type="textarea" :autosize="{minRows: 2,maxRows: 5}"></b-input>
+            </b-form-item>
+            <b-form-item label="描述" prop="describe">
+              <b-input v-model="content.describe" type="textarea" :autosize="{minRows: 2,maxRows: 5}"></b-input>
+            </b-form-item>
+          </b-form>
+        </b-collapse-wrap>
         <!--保存提交-->
         <template slot="footer">
           <b-button @click="handleCancel">取 消</b-button>
