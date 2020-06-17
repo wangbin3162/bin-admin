@@ -40,7 +40,7 @@
 <script>
   import commonMixin from '../../../../common/mixins/mixin'
   import permission from '../../../../common/mixins/permission'
-  import { getItemsWithId, getResInfoList } from '../../../../api/data-manage/res-info.api'
+  import { getItemsForClassify, getResInfoList } from '../../../../api/data-manage/res-info.api'
   import { getClassifyTree } from '../../../../api/data-manage/classify.api'
   // 通用资源信息选择框
   export default {
@@ -72,6 +72,7 @@
           resourceName: '', // 资源名称(中文名)
           resProperty: '', // 资源性质
           availableStatus: 'available', // 可用状态
+          isOpen: '1',
           status: 'audited'// 状态
         },
         treeDataSource: {},
@@ -108,6 +109,7 @@
           resourceName: '', // 资源名称(中文名)
           resProperty: '', // 资源性质
           availableStatus: 'available', // 可用状态
+          isOpen: '1',
           status: 'audited'// 状态
         }
         this.handleFilter()
@@ -131,7 +133,7 @@
       // 获取items
       async getItems(resourceKey) {
         try {
-          let res = await getItemsWithId(resourceKey)
+          let res = await getItemsForClassify(resourceKey)
           return res.data
         } catch (e) {
           return []

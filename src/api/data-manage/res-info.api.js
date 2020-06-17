@@ -14,6 +14,7 @@ export function getResInfoList(query) {
       status: query.status,
       availableStatus: query.availableStatus,
       resProperty: query.resProperty,
+      isOpen: query.isOpen || '',
       sort: 'resourceKey,desc'
     }
   })
@@ -34,6 +35,17 @@ export function getFields(resourceKey) {
 export function getItemsWithId(resourceKey) {
   return request({
     url: '/api/dir/itemsWithId',
+    method: 'get',
+    params: {
+      resourceKey
+    }
+  })
+}
+
+/* 获取资源信息字段列表[修改列表接口] */
+export function getItemsForClassify(resourceKey) {
+  return request({
+    url: '/api/dir/itemsForClassify',
     method: 'get',
     params: {
       resourceKey
