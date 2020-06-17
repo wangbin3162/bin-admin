@@ -126,10 +126,6 @@
         <b-collapse-wrap title="方案计算结果" collapse :value="!loading">
           <table class="table">
             <tr>
-              <td>ID：</td>
-              <td>{{ detail.id }}</td>
-            </tr>
-            <tr>
               <td>所属方案：</td>
               <td>{{ detail.modelName }}</td>
               <td>信用主体：</td>
@@ -152,7 +148,7 @@
               <td></td>
               <td>评级日期：</td>
               <td>
-                {{ $util.parseTime(detail.createDate, '{h}:{i}:{s} {h}:{i}:{s}') }}
+                {{ $util.parseTime(detail.createDate, '{y}-{m}-{d} {h}:{i}:{s}') }}
               </td>
             </tr>
             <tr>
