@@ -56,13 +56,13 @@
             <div class="title">
               <span class="text">月度信息归集趋势</span>
               <span class="float-right pr-12">
-              <!--保留select下拉选择备份-->
-                <!--<b-select style="width:100px" v-model="monthMsgSelect" clearable>-->
-                <!--  <b-option v-for="item in monthList" :value="item.value" :key="item.value">{{ item.label }}</b-option>-->
-                <!--</b-select>-->
-                <!--新添加滑块选择器-->
-              <GrooveSelect></GrooveSelect>
-            </span>
+                <!--保留select下拉选择备份-->
+                  <!--<b-select style="width:100px" v-model="monthMsgSelect" clearable>-->
+                  <!--  <b-option v-for="item in monthList" :value="item.value" :key="item.value">{{ item.label }}</b-option>-->
+                  <!--</b-select>-->
+                  <!--新添加滑块选择器-->
+                <GrooveSelect></GrooveSelect>
+              </span>
             </div>
             <div class="content" flex="main:justify">
               <div class="trend mg-0-auto">
@@ -149,7 +149,7 @@
               <span class="text">未填报部门</span>
               <span class="float-right pr-12">
               <b-select style="width:100px" v-model="monthUnGetSelect" clearable>
-                <b-option v-for="item in monthList.slice(0,6)" :value="item.value"
+                <b-option v-for="item in monthList" :value="item.value"
                           :key="item.value">{{ item.label }}</b-option>
               </b-select>
             </span>
@@ -191,6 +191,7 @@
 
   export default {
     name: 'CollectAnalysis',
+    components: { GrooveSelect },
     data() {
       return {
         listQuery: {
@@ -258,8 +259,6 @@
           { value: '2020-3', label: '2月' },
           { value: '2020-4', label: '3月' }
         ],
-        selected: '', // 三选按钮
-        yearList: [],
         unGetDeparts: [
           { departId: 'aabbcc', departName: '市发改委' }
         ],
@@ -268,16 +267,12 @@
     },
     created() {
       this.searchList()
-      this.createYearList()
       this.listQuery.month = this.newMonth(1)
     },
     mounted() {
       this.monthList = this.newMonth(3)
     },
     methods: {
-      choose(index) {
-        this.selected = index
-      },
       // 生成当前年月
       newMonth(param = 1) {
         if (param === 1) {
@@ -289,15 +284,6 @@
           arr.forEach((item) => reArr.push({ value: getDate(item), label: (new Date().getMonth() + item - 1 + '月') }))
           return reArr
         }
-      },
-      // 生成近三年列表
-      createYearList() {
-        this.yearList = []
-        let arr = [0, 1, 2]
-        let year = new Date().getFullYear()
-        arr.forEach(
-          item => this.yearList.push({ label: year - item + '年', value: year - item })
-        )
       },
       // 查询所有列表
       searchList() {
@@ -341,7 +327,8 @@
           const dataset = formatSeries({ xField: 'month', yField: 'value', seriesField: 'legend' }, res[0].data.data)
           this.lineSmoothChartOption = {
             tooltip: { trigger: 'axis' },
-            color: ['#4065e0', '#35a4ff', '#6fcafa', '#18e5e6', '#1ed1b8'],
+            // color: ['#4065e0', '#35a4ff', '#6fcafa', '#18e5e6', '#1ed1b8'],
+            color: ['#3cd7c1', '#a2a4fe', '#6fcafa', '#18e5e6', '#1ed1b8'],
             legend: {},
             xAxis: {
               type: 'category',
@@ -408,13 +395,13 @@
                 }
               }
             },
-            series: { type: 'line', areaStyle: { opacity: 0.45 }, color: '#4065e0' },
+            series: { type: 'line', areaStyle: { opacity: 0.45 }, color: '#a2a4fe' },
             dataset: formatDataSet({ xField: 'departName', yField: 'value' }, res[1].data.data)
           }
 
           // 资源信息分类统计
           this.barChartOption = {
-            color: '#48c9b0',
+            color: '#3cd7c1',
             tooltip: {
               trigger: 'axis',
               axisPointer: {
@@ -533,8 +520,7 @@
       resetListQuery() {
         this.listQuery.departId = this.$store.state.user.info.departId
       }
-    },
-    components: { GrooveSelect }
+    }
   }
 </script>
 
