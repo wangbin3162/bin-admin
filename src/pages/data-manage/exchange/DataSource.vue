@@ -95,7 +95,9 @@
               </b-col>
             </b-row>
             <b-form-item>
-              <b-button type="primary" @click="checkLink">测试连接</b-button>
+              <b-button type="primary" :loading="linkStatus" @click="checkLink">
+                {{ linkStatus?'正在连接...':'测试连接' }}
+              </b-button>
             </b-form-item>
           </b-form>
         </b-collapse-wrap>
@@ -109,15 +111,11 @@
     <page-header-wrap v-show="isCheck" :title="editTitle" show-close @on-close="handleCancel">
       <v-edit-wrap transparent>
         <b-collapse-wrap title="基本信息">
-          <v-key-label label="数据源名称" is-half is-first>{{ ds.dataSourceName }}</v-key-label>
-          <v-key-label label="连接类型" is-half>{{ ds.dbType }}</v-key-label>
-          <v-key-label label="数据库名称" is-half is-first>{{ ds.dbName }}</v-key-label>
-          <v-key-label label="连接驱动" is-half>{{ ds.driverClass }}</v-key-label>
-          <v-key-label label="主机地址" is-half is-first>{{ ds.host }}</v-key-label>
-          <v-key-label label="端口号" is-half>{{ ds.port }}</v-key-label>
-          <v-key-label label="用户名" is-bottom>{{ ds.userName }}</v-key-label>
-          <div class="pt-20">
-            <b-button type="primary" @click="checkLink">测试连接</b-button>
+          <source-info v-bind="ds"/>
+          <div style="padding: 8px;">
+            <b-button type="primary" :loading="linkStatus" @click="checkLink">
+              {{ linkStatus?'正在连接...':'测试连接' }}
+            </b-button>
           </div>
         </b-collapse-wrap>
         <!--保存提交-->
@@ -135,9 +133,11 @@
   import { requiredRule } from '../../../common/utils/validate'
   import { getDataSourceType } from '../../../api/enum.api'
   import * as api from '../../../api/data-manage/data-source.api'
+  import SourceInfo from './components/SwitchingNode/SourceInfo'
 
   export default {
     name: 'DataSource',
+    components: { SourceInfo },
     mixins: [commonMixin, permission],
     data() {
       return {
@@ -166,7 +166,8 @@
           userName: [requiredRule],
           password: [requiredRule]
         },
-        dsTypeMap: {}
+        dsTypeMap: {},
+        linkStatus: false
       }
     },
     created() {
@@ -242,12 +243,16 @@
       },
       // 测试连接
       checkLink() {
+        this.linkStatus = true
         api.linkCheck(this.ds).then(res => {
-          if (res.data.code === '0') {
-            this.$alert({ type: 'success', title: '测试连接', content: '测试连接成功' })
-          } else {
-            this.$alert({ type: 'danger', title: '测试连接', content: '测试连接失败' })
-          }
+          setTimeout(() => {
+            if (res.data.code === '0') {
+              this.$alert({ type: 'success', title: '测试连接', content: '测试连接成功。' })
+            } else {
+              this.$alert({ type: 'danger', title: '测试连接', content: '测试连接失败，请检查配置信息。' })
+            }
+            this.linkStatus = false
+          }, 2000)
         })
       },
       /* [数据接口] */

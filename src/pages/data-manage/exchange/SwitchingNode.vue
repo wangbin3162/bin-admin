@@ -112,39 +112,7 @@
           </div>
         </b-collapse-wrap>
         <b-collapse-wrap title="数据源详情" v-if="exchangeNode.dataSourceDto">
-          <div class="source-wrap">
-            <div class="logo">
-              <img v-if="dbType==='kingbase'"
-                   src="../../../assets/images/db/kingbase.png" alt="kingbase">
-
-              <img v-if="dbType==='mysql'"
-                   src="../../../assets/images/db/mysql.png" alt="mysql">
-
-              <img v-if="dbType==='oracle'"
-                   src="../../../assets/images/db/oracle.png" alt="oracle">
-
-              <img v-if="dbType==='postgresql'"
-                   src="../../../assets/images/db/postgresql.png" alt="postgresql">
-
-              <img v-if="dbType==='sqlserver'"
-                   src="../../../assets/images/db/sqlserver.png" alt="sqlserver">
-            </div>
-            <div class="info">
-              <div flex="box:mean">
-                <v-simple-label label="数据源名称">{{ exchangeNode.dataSourceDto.dataSourceName }}</v-simple-label>
-                <v-simple-label label="连接类型">{{ exchangeNode.dataSourceDto.dbType }}</v-simple-label>
-              </div>
-              <div flex="box:mean">
-                <v-simple-label label="数据库名称">{{ exchangeNode.dataSourceDto.dbName }}</v-simple-label>
-                <v-simple-label label="连接驱动">{{ exchangeNode.dataSourceDto.driverClass }}</v-simple-label>
-              </div>
-              <div flex="box:mean">
-                <v-simple-label label="主机地址">{{ exchangeNode.dataSourceDto.host }}</v-simple-label>
-                <v-simple-label label="端口号">{{ exchangeNode.dataSourceDto.port }}</v-simple-label>
-              </div>
-              <v-simple-label label="用户名">{{ exchangeNode.dataSourceDto.userName }}</v-simple-label>
-            </div>
-          </div>
+          <source-info v-bind="exchangeNode.dataSourceDto"/>
         </b-collapse-wrap>
         <!--保存提交-->
         <template slot="footer">
@@ -161,11 +129,11 @@
   import * as api from '../../../api/data-manage/switching-node.api'
   import { getExchangeNodeType } from '../../../api/enum.api'
   import { requiredRule } from '../../../common/utils/validate'
-  import { DataSourceChoose } from './components/SwitchingNode'
+  import { DataSourceChoose, SourceInfo } from './components/SwitchingNode'
 
   export default {
     name: 'SwitchingNode',
-    components: { DataSourceChoose },
+    components: { DataSourceChoose, SourceInfo },
     mixins: [commonMixin, permission],
     data() {
       return {
@@ -328,30 +296,3 @@
     }
   }
 </script>
-
-<style lang="stylus" scoped>
-  .source-wrap {
-    display: flex;
-    margin: 8px;
-    border: 1px solid #eeeeee;
-    box-shadow: 0 0 5px #eeeeee;
-    user-select: text;
-    .logo {
-      width: 211px;
-      height: 170px;
-      background: #fafafa;
-      border-right: 1px solid #eeeeee;
-      img {
-        width: 100%;
-      }
-    }
-    .info {
-      padding: 16px;
-      height: 170px;
-      flex: 1;
-      .key-label {
-        padding-bottom: 4px;
-      }
-    }
-  }
-</style>
