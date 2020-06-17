@@ -54,8 +54,8 @@
                 {{currentTreeNode.code}}
               </b-tag>
               <div flex-box="1">
-                <b-input v-model.trim="classify.classifyCode" placeholder="请输入类目编码(不超过2个字符)" clearable
-                         :maxlength="2" :disabled="dialogStatus==='modify'"/>
+                <b-input v-model.trim="classify.classifyCode" placeholder="请输入类目编码(不超过8个字符)" clearable
+                         :maxlength=8  :disabled="dialogStatus==='modify'"/>
               </div>
             </div>
           </b-form-item>
