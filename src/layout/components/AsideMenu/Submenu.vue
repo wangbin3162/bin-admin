@@ -35,7 +35,7 @@
       }
     },
     methods: {
-      resolvePath(routePath) {
+      resolvePath (routePath) {
         return path.resolve(this.basePath, routePath)
       }
     }
