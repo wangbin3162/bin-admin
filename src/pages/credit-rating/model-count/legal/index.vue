@@ -29,15 +29,16 @@
             生成报告
           </b-button>
           <b-button plain type="primary" icon="md-list" @click="handleTempCount">
-            模板计算
+            批量导入计算
           </b-button>
-          <temp-dl-btn :personClass="personClass">
-            模板下载
-          </temp-dl-btn>
 
           <template slot="right">
+            <temp-dl-btn type="text" :personClass="personClass">
+              模板下载
+            </temp-dl-btn>
+            <b-divider type="vertical"></b-divider>
             <b-button type="text" @click="handleRecord">
-              模板计算记录
+              导入记录
             </b-button>
           </template>
         </v-table-tool-bar>

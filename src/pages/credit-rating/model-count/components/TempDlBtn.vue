@@ -1,5 +1,5 @@
 <template>
-  <b-button plain icon="ios-arrow-round-down" @click="clickHandler">
+  <b-button :type="type" plain @click="clickHandler">
     <slot>模板下载</slot>
   </b-button>
 </template>
@@ -10,7 +10,16 @@
 
   export default {
     name: 'TempDlBtn',
-    props: ['personClass'],
+    props: {
+      personClass: {
+        type: String,
+        required: true
+      },
+      type: {
+        type: String,
+        default: ''
+      }
+    },
     data () {
       return {
 
