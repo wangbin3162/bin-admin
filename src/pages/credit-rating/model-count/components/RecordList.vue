@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-header-wrap v-show="visible && !detailDialog" show-close @on-close="close" title="导入/导出记录">
+    <page-header-wrap v-show="visible && !detailDialog" show-close @on-close="close" title="导入记录">
       <v-table-wrap>
         <!--查询条件-->
         <v-filter-bar @keyup-enter="handleFilter">
@@ -50,7 +50,7 @@
     <!--详情列表-->
     <page-header-wrap v-show="detailDialog" show-close @on-close="detailDialog=false" title="导入详情">
       <v-edit-wrap transparent>
-        <b-collapse-wrap title="文件导入信息" collapse>
+        <b-collapse-wrap title="文件导入信息">
           <div class="detail" v-if="importDetail">
             <b-row>
               <b-col span="24">
@@ -92,9 +92,9 @@
             </b-row>
           </div>
         </b-collapse-wrap>
-        <b-collapse-wrap title="导入错误数据信息" collapse v-if="errDataRows.length>0">
+        <!-- <b-collapse-wrap title="导入错误数据信息" collapse v-if="errDataRows.length>0">
           <b-table :columns="errDataColumns" :data="errDataRows" size="small"></b-table>
-        </b-collapse-wrap>
+        </b-collapse-wrap> -->
         <template slot="footer">
           <b-button @click="detailDialog=false">返 回</b-button>
         </template>
