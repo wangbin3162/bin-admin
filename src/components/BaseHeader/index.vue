@@ -93,7 +93,7 @@
   .header-wrap {
     background: rgba(16, 103, 222, 0.5);
     box-shadow: 0 0 8px rgba(143, 143, 143, 0.51);
-    height: 64px;
+    height: 80px;
     &.detail {
       background: rgba(16, 103, 222, 0.5) url("../../assets/images/header-bg.png") no-repeat center top;
       .search-wrap{

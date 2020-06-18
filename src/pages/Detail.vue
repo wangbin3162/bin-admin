@@ -68,9 +68,12 @@
         <!--分类信息详情-->
         <transition name="fade-scale-move">
           <div class="info-box" v-if="classifyTabs">
-            <div class="classify"><span :class="categoryType === 'BASE'? 'active' : '' "
-                                        @click="chooseCategory('BASE')">标准分类</span><span
-              :class="categoryType === 'BG'? 'active' : '' " @click="chooseCategory('BG')">大数据分类</span></div>
+            <div class="classify">
+              <span :class="categoryType === 'BASE'? 'active' : '' "
+                    @click="chooseCategory('BASE')">标准分类</span>
+              <span :class="categoryType === 'BG'? 'active' : '' "
+                    @click="chooseCategory('BG')">大数据分类</span>
+            </div>
             <div class="tabs">
               <div v-for="tab in classifyTabs" :key="tab.id"
                    class="tab" :class="{'active':tab.code===activeCode}"
@@ -212,8 +215,8 @@
         currentDetailId: '',
         query: {
           q: '',
-          type: '',
-          reason: '1'
+          type: '1',
+          reason: ''
         },
         logColumns: [
           {
@@ -264,11 +267,11 @@
     },
     computed: {
       type() {
-        return this.query.type
+        return this.$route.query.type
       },
       // 当前是否是法人
       isLeg() {
-        return this.query.type === this.ENUM.Leg
+        return this.$route.query.type === this.ENUM.Leg
       },
       keyword() {
         if (this.isLeg) {
@@ -298,8 +301,8 @@
       },
       // 当前开启的code值是否是基本信息或者户籍信息
       baseInfoActive() {
-        return this.activeFloatCode === 'C0102' || this.activeFloatCode === 'C0103' || this.activeFloatCode === 'D1100101' ||
-          this.activeFloatCode === 'D1200101'
+        return this.activeFloatCode === 'C0102' || this.activeFloatCode === 'C0103' || this.activeFloatCode === 'D01100101' ||
+          this.activeFloatCode === 'D01200101'
       }
     },
     created() {
@@ -349,15 +352,16 @@
           return
         }
         let id = this.current.id
-        let name = this.current.comp_name || this.current.name
+        let name = this.isLeg ? this.current.comp_name : this.current.name
+        let personClass = this.isLeg ? 'A02' : 'A01'
         if (!this.downloadEvent) { // 点击下载事件，需要函数防抖动
-          this.downloadEvent = this.$util.debounce((id, name) => {
-            api.downloadPdf(id).then(res => {
+          this.downloadEvent = this.$util.debounce((id, personClass, name) => {
+            api.downloadPdf(id, personClass).then(res => {
               Util.downloadFile(res.data, `${name}-信用报告.pdf`)
             })
           }, 1000)
         }
-        this.downloadEvent(id, name)
+        this.downloadEvent(id, personClass, name)
       },
       handleCloseDetailPn() {
         this.hideDetail = false

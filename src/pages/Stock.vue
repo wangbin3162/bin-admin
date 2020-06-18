@@ -120,7 +120,6 @@
 </template>
 
 <script>
-  import { mapGetters } from 'vuex'
   import { on, off } from 'bin-ui/src/utils/dom'
   import { SvgTitle, SvgArrow, SvgNode, SvgLeaf } from '../components/SvgNode'
   import { getCompList, getStockRightStat } from '../api/search.api'
@@ -163,11 +162,8 @@
     created() {
       const { id, reason, type, title } = this.$route.query
       // 判断是否携带参数，如有参数则缓存vuex，如无参数则默认退回首页
-      if (title) {
-        this.title = title
-      }
+      this.title = title || '标题'
       if (id && reason && type) {
-        this.$store.dispatch('setQuery', { id, reason, type })
         this.getStockData()
       } else {
         this.$router.push({ name: 'index' })
@@ -177,7 +173,9 @@
       this.resizeSvgSize()
     },
     computed: {
-      ...mapGetters(['queryData']),
+      queryData() {
+        return this.$route.query
+      },
       wrapTrans() {
         return `translate(${this.transformData.x},${this.transformData.y}) scale(${this.scale})`
       },
@@ -198,9 +196,9 @@
         this.$router.push({
           name: 'Detail',
           query: {
-            id: this.$route.query.id,
-            type: this.$route.query.type,
-            reason: this.$route.query.reason
+            id: this.queryData.id,
+            type: this.queryData.type,
+            reason: this.queryData.reason
           }
         })
       },

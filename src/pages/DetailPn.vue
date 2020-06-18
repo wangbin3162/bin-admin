@@ -160,10 +160,3 @@
     }
   }
 </script>
-
-<style scoped lang="stylus">
-  .full-screen-wrapper {
-    .top-box {
-    }
-  }
-</style>

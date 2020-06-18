@@ -13,8 +13,5 @@ export default {
     }
   },
   actions: {
-    setQuery({ commit }, query) {
-      commit('SET_QUERY', query)
-    }
   }
 }

@@ -167,13 +167,14 @@ export function getQueryLogs(personId, page) {
 /**
  * 下载信用报告
  */
-export function downloadPdf(personId) {
+export function downloadPdf(personId, personClass) {
   return request({
     url: '/api/eval/pdf/create',
     method: 'post',
     responseType: 'blob',
     data: {
-      personId
+      personId,
+      personClass
     }
   })
 }

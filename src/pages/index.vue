@@ -89,8 +89,8 @@
           size: 10
         },
         query: {
-          q: '1',
-          type: '',
+          q: '',
+          type: '1',
           reason: ''
         },
         showList: false,

@@ -25,7 +25,6 @@
 </template>
 
 <script>
-  import { mapGetters } from 'vuex'
   import * as api from '../../api/search.api'
 
   export default {
@@ -61,7 +60,9 @@
       }
     },
     computed: {
-      ...mapGetters(['queryData']),
+      queryData() {
+        return this.$route.query
+      },
       modalTitle() {
         return this.title ? this.title + ' - 详情' : '信息详情'
       }
@@ -138,10 +139,9 @@
   }
 </script>
 
-<style scoped lang="stylus">
+<style lang="stylus">
   .table-page-wrap {
     padding-bottom: 20px;
-
     .page {
       padding: 15px 0;
       text-align: right;
