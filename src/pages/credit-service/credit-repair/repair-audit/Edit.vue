@@ -1,8 +1,8 @@
 <template>
   <div class="repair-audit">
-    <page-header-wrap :title="title" show-close @on-close="$emit('close')">
+    <page-header-wrap title="信用修复审核" show-close @on-close="$emit('close')">
       <v-edit-wrap transparent>
-        <b-collapse-wrap title="异议申请详情信息">
+        <b-collapse-wrap title="信用修复审核信息">
           <div style="position: relative;">
             <b-loading fix show-text="加载中...." v-if="loading"></b-loading>
 
