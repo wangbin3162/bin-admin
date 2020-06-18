@@ -13,7 +13,7 @@
       <template v-slot:action="{ row, index }">
         <b-button v-if="row.paraType !== 'C'"
           type="text" @click="openSourceInfoSelect(row, index)">
-          + 配置资源
+          + 配置
         </b-button>
       </template>
     </b-table>

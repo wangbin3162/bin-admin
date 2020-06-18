@@ -145,6 +145,7 @@
       @close="openSource = false"
       @choose-sin="handleSourceChooseSin"
       :open="openSource"
+      :filterFieldType="filterFieldType"
       paraType="I">
     </source-info-select>
   </div>
@@ -186,6 +187,7 @@
         collapseValue: ['index', 'rules', 'resources'], // 控制手风琴展开
         open: false, // 选择变量弹框
         openSource: false, // 选择资源弹框
+        filterFieldType: '', // 选择资源弹框需要过滤信息项的字段，'' 或者 null则不过滤
         cascadeData: [], // 指标类型级联数据
         cascadeModel: [], // 用于级联绑定
         varName: '', // 变量名称 用于显示
@@ -268,10 +270,12 @@
       },
       // 有效期字段选择按钮
       handleOpenSource () {
+        this.filterFieldType = 'date'
         this.openSource = true
       },
       // 有效期选择组件的回调
       handleSourceChooseSin ({ fieldName }) {
+        this.filterFieldType = ''
         this.form.index.validParamName = fieldName
       },
       // 指标规则组件内数据变化事件

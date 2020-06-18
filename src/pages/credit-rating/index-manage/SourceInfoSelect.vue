@@ -59,9 +59,8 @@
                   <span>已选资源信息</span>
                 </div>
 
-                <b-tag type="info"
-                  :key="index"
-                  v-for="(tag,index) in selectedList"
+                <b-tag v-for="(tag, index) in selectedList" :key="index"
+                  type="info" size="small"
                   closable
                   @on-close="handleCloseTag(index)">
                   {{tag.resourceName}}
@@ -80,12 +79,22 @@
                   <span>选择信息项(点击选择)</span>
                 </div>
 
-                <b-tag type="info" style="cursor: pointer; margin: 4px;"
-                  v-for="item in infoItemList"
-                  :key="item.id"
-                  @on-click="handleRaiod(item)">
-                  {{ item.fieldTitle }}
-                </b-tag>
+                <template v-if="needFilter">
+                  <b-tag v-for="item in infoItemList" :key="item.id"
+                    type="info" size="small"
+                    class="default-tag" :class="{ 'disabled-tag': filterFieldType !== item.dataType}"
+                    @on-click="handleRaiod(item)">
+                    {{ item.fieldTitle }}
+                  </b-tag>
+                </template>
+                <template v-else>
+                  <b-tag v-for="item in infoItemList" :key="item.id"
+                    type="info" size="small" class="default-tag"
+                    @on-click="handleRaiod(item)">
+                    {{ item.fieldTitle }}
+                  </b-tag>
+                </template>
+                <!-- #dfdfdf #fafafa -->
               </template>
 
               <!-- 为信息项模式且信息项需要多选则启用此块逻辑 -->
@@ -99,32 +108,15 @@
                 </div>
                 <p v-if="infoItemList.length" style="margin: 5px;">点击以下标签多选：</p>
 
-                <b-tag
-                  style="cursor: pointer; margin: 4px;"
+                <b-tag v-for="item in infoItemList" :key="item.id"
                   :type="item.customSelected ? 'primary' : 'info'"
-                  v-for="item in infoItemList"
-                  :key="item.id"
+                  style="cursor: pointer; margin: 4px;" size="small"
                   @on-click="handleMulSelect(item)">
                   {{ item.fieldTitle }}
                 </b-tag>
               </template>
             </b-card>
 
-            <!-- <div v-else class="card-con">
-                <b-card head-tip header="选择信息项">
-                  <b-table :data="infoItemList" :columns="columnsInfo"
-                    :loading="infoTableLoading" height="400">
-                    <template v-slot:dataType="{ row }">
-                      {{ dataTypeMap[row.dataType] }}
-                    </template>
-                    <template v-slot:action="{ row }">
-                      <b-button type="text" @click="handleRaiod(row)">
-                        选择
-                      </b-button>
-                    </template>
-                  </b-table>
-                </b-card>
-              </div> -->
           </b-col>
         </b-row>
       </v-table-wrap>
@@ -157,6 +149,10 @@
       infoMulModel: { // 信息项模式时，信息项是单选还是多选模式
         type: Boolean,
         default: false
+      },
+      filterFieldType: { // 信息项需要过滤的字段类型
+        type: String,
+        default: ''
       }
     },
     data () {
@@ -205,6 +201,13 @@
           // 设置一个空的setter函数，用于处理弹框组件关闭时设置绑定的数据的行为
           this.$emit('close')
         }
+      },
+      needFilter () { // 根据props参数判断是否需要过滤字段
+        let res = false
+        if (this.filterFieldType) {
+          res = true
+        }
+        return res
       }
     },
     created () {
@@ -482,6 +485,14 @@
 
 <style lang="stylus" scoped>
   .source-select {
-
+    .default-tag {
+      cursor: pointer; margin: 4px;
+    }
+    .disabled-tag {
+      pointer-events: none;
+      color: #dfdfdf
+      background-color: #fafafa;
+      border-color: #ebeef5;
+    }
   }
 </style>
