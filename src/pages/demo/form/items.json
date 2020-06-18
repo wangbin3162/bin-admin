@@ -16,6 +16,7 @@
     "isEncrypt": "",
     "fieldSort": 0,
     "status": "use",
+    "dataLength": 64,
     "tokenizer": "N"
   },
   {
@@ -34,6 +35,7 @@
     "openType": "PUBLIC",
     "isEncrypt": "",
     "fieldSort": 1,
+    "dataLength": 3,
     "status": "use",
     "tokenizer": "N"
   },
@@ -53,6 +55,7 @@
     "openType": "PUBLIC",
     "isEncrypt": "1",
     "fieldSort": 2,
+    "dataLength": 64,
     "status": "use",
     "tokenizer": "N"
   },
@@ -65,6 +68,7 @@
     "dataType": "text",
     "required": "G",
     "validValue": "",
+    "dataLength": 200,
     "checkRules": "[]",
     "params": null,
     "controlType": "TEXTAREA",
@@ -89,6 +93,7 @@
     "openType": "PUBLIC",
     "isEncrypt": "",
     "fieldSort": 10,
+    "dataLength": 64,
     "status": "use",
     "tokenizer": "N"
   },
@@ -109,6 +114,7 @@
     "isEncrypt": "",
     "fieldSort": 11,
     "status": "use",
-    "tokenizer": ""
+    "tokenizer": "",
+    "dataLength": 64
   }
 ]

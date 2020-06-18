@@ -1883,15 +1883,16 @@ bin-code-editor@^0.8.0:
     jsonlint "^1.6.3"
     script-loader "^0.7.2"
 
-bin-ui@^3.3.2:
-  version "3.3.2"
-  resolved "https://registry.npmjs.org/bin-ui/-/bin-ui-3.3.2.tgz#b67f70c60627d91d85770d8c1f40a380d5c752f5"
-  integrity sha512-3o2MvG9UIoBpkxTSUMb0BxWn0c6kRY62Qu4GcMMwfrjM6Zo1fuzoda2nFYFglsymOnTxlY6dsxOF17g8Qrq4Zw==
+bin-ui@^3.3.3:
+  version "3.3.3"
+  resolved "https://registry.npmjs.org/bin-ui/-/bin-ui-3.3.3.tgz#b292cba41f88e8deb74dd45c72fb4d36a6d2c870"
+  integrity sha512-7gVxt9sXmugIAYl+VeN5gRJnKM28HMky/FLYd1HZ7CXZiSww9uVhJpSMQf0ZI+/lwYr1j2474HOe6bUHB4ufYw==
   dependencies:
     async-validator "^1.11.5"
     js-calendar "^1.2.3"
     popper.js "^1.15.0"
     resize-observer-polyfill "^1.5.1"
+    sortablejs "^1.10.2"
     tinycolor2 "^1.4.1"
 
 binary-extensions@^1.0.0:
@@ -8564,7 +8565,7 @@ sort-keys@^2.0.0:
   dependencies:
     is-plain-obj "^1.0.0"
 
-sortablejs@^1.10.1:
+sortablejs@^1.10.1, sortablejs@^1.10.2:
   version "1.10.2"
   resolved "https://registry.npmjs.org/sortablejs/-/sortablejs-1.10.2.tgz#6e40364d913f98b85a14f6678f92b5c1221f5290"
   integrity sha512-YkPGufevysvfwn5rfdlGyrGjt7/CRHwvRPogD/lC+TnvcN29jDpCifKP+rBqf+LRldfXSTh+0CGLcSg0VIxq3A==

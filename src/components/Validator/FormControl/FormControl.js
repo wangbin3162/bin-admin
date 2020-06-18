@@ -78,7 +78,7 @@ export default {
       case 'NUMBER_TEXT':
         node = h('b-input-number', {
           props: {
-            value: this.currentValue,
+            value: this.currentValue ? Number(this.currentValue) : null,
             precision: this.dataPrecision,
             disabled: readonly,
             clearable: !readonly
@@ -232,10 +232,10 @@ export default {
             ...{
               'xk_xdr_shxym': codes.idShxym, // 统一社会信用代码
               'xk_xdr_gszc': codes.idGszc, // 工商注册号
-              'xk_xdr_zzjg': codes.idShxym, // 组织机构代码
-              'xk_xdr_swdj': codes.idShxym, // 税务登记号
-              'xk_xdr_sydw': codes.idShxym, // 事业单位证书号
-              'xk_xdr_shzz': codes.idShxym // 社会组织登记号
+              'xk_xdr_zzjg': codes.idZzjg, // 组织机构代码
+              'xk_xdr_swdj': codes.idSwdj, // 税务登记号
+              'xk_xdr_sydw': codes.idSydw, // 事业单位证书号
+              'xk_xdr_shzz': codes.idShzz // 社会组织登记号
             }
           }
         }
@@ -245,10 +245,10 @@ export default {
             ...{
               'cf_xdr_shxym': codes.idShxym, // 统一社会信用代码
               'cf_xdr_gszc': codes.idGszc, // 工商注册号
-              'cf_xdr_zzjg': codes.idShxym, // 组织机构代码
-              'cf_xdr_swdj': codes.idShxym, // 税务登记号
-              'cf_xdr_sydw': codes.idShxym, // 事业单位证书号
-              'cf_xdr_shzz': codes.idShxym // 社会组织登记号
+              'cf_xdr_zzjg': codes.idZzjg, // 组织机构代码
+              'cf_xdr_swdj': codes.idSwdj, // 税务登记号
+              'cf_xdr_sydw': codes.idSydw, // 事业单位证书号
+              'cf_xdr_shzz': codes.idShzz // 社会组织登记号
             }
           }
         }

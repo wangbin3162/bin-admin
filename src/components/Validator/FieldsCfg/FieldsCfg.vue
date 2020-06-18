@@ -81,7 +81,7 @@
           </b-form-item>
           <!--分词，加密，掩码-->
           <b-row :gutter="15">
-            <b-col span="8">
+            <b-col span="6">
               <b-form-item label="是否分词">
                 <b-select v-model="totalData[currentIndex].tokenizer" clearable @on-change="emitValue"
                           :disabled="tokenizerDisabled">
@@ -89,14 +89,19 @@
                 </b-select>
               </b-form-item>
             </b-col>
-            <b-col span="8">
+            <b-col span="6">
+              <b-form-item label="字段长度" v-if="totalData[currentIndex].dataLength">
+                <b-input :value="totalData[currentIndex].dataLength" readonly/>
+              </b-form-item>
+            </b-col>
+            <b-col span="6">
               <b-form-item label="是否加密">
-                <b-select v-model="totalData[currentIndex].isEncrypt" placeholder="" @on-change="emitValue" disabled>
+                <b-select v-model="totalData[currentIndex].isEncrypt" placeholder="" @on-change="emitValue" clearable>
                   <b-option v-for="(value,key) in enumMap.isEncrypt" :key="key" :value="key">{{ value }}</b-option>
                 </b-select>
               </b-form-item>
             </b-col>
-            <b-col span="8">
+            <b-col span="6">
               <b-form-item label="掩码方式">
                 <b-select v-model="totalData[currentIndex].maskModel" clearable @on-change="emitValue">
                   <b-option v-for="(value,key) in enumMap.maskModel" :key="key" :value="key">{{ value }}</b-option>

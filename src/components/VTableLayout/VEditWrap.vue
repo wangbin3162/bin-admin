@@ -1,9 +1,6 @@
 <template>
   <div class="edit-wrap" :class="{'transparent':transparent}">
     <slot></slot>
-    <div class="full" v-if="$slots.full">
-      <slot slot="full"></slot>
-    </div>
     <div class="edit-form-footer" :style="footerStyle">
       <slot name="footer"></slot>
     </div>

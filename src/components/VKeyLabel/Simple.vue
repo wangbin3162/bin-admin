@@ -1,6 +1,6 @@
 <template>
   <div class="key-label">
-    <div class="inner" flex="box:first cross:center">
+    <div class="inner" flex="box:first">
       <span class="key">{{ label }}</span>
       <span class="label"><slot>文字</slot></span>
     </div>

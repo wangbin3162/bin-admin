@@ -239,7 +239,7 @@ export const validatorBuild = {
             // console.log('time is date string')
           } else {
             let preField = obj[opts.time]// 前置字段当前值
-            otherTime = validateDate(preField) ? new Date(preField) : null
+            otherTime = validateDate(preField) ? new Date(preField.replace(/-/g, '/')) : null
             // console.log('time is field[' + opts.time + ']:' + preField)
           }
         }
