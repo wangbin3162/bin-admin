@@ -1,15 +1,10 @@
 <template>
   <div>
-    <page-header-wrap :title="`信息类配置（${reportName}）`" show-close @on-close="$emit('close')" v-show="isNormal">
-      <div slot="desc" flex="main:left">
-        <span>
-          <b-tag type="info" no-border size="mini">
-            {{ personClassEnum[personClass] }}
-          </b-tag>
-        </span>
-        <span>
-          <!-- <b-tag type="info" size="mini">{{ reportName }}</b-tag> -->
-        </span>
+    <page-header-wrap :title="`信息分类（${reportName}）`" show-close @on-close="$emit('close')" v-show="isNormal">
+      <div slot="desc" >
+        <b-tag type="info" no-border size="mini">
+          {{ personClassEnum[personClass] }}
+        </b-tag>
       </div>
       <v-table-wrap>
         <!-- 查询条件 -->
@@ -57,13 +52,11 @@
     <edit v-if="isEdit"
       :configId="configId"
       :editData="detail"
+      :reportName="reportName"
+      :personClass="personClass"
       @close="handleEditClose"
       @success="searchList"></edit>
 
-    <!-- <detail v-if="isCheck"
-      :title="editTitle"
-      :detail="detail"
-      @close="handleEditClose"></detail> -->
   </div>
 </template>
 
@@ -84,7 +77,6 @@
     ], // 报告配置id
     components: {
       Edit
-      // Detail
     },
     data () {
       return {

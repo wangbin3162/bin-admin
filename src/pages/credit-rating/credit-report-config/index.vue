@@ -90,7 +90,7 @@
                 </b-dropdown-item>
 
                 <b-dropdown-item :style="colorPrimary" @click.native="handleInfoClass(row)">
-                  信息类
+                  信息分类
                 </b-dropdown-item>
 
                 <b-dropdown-item :style="colorDanger" @click.native="handleRemove(row.id)">

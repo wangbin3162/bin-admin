@@ -1,6 +1,11 @@
 <template>
   <div class="credit-report-config-info-class-edit">
-    <page-header-wrap :title="title" show-close @on-close="$emit('close')">
+    <page-header-wrap :title="`信息分类（${reportName}）`" show-close @on-close="$emit('close')">
+      <div slot="desc" >
+        <b-tag type="info" no-border size="mini">
+          {{ personClassEnum[personClass] }}
+        </b-tag>
+      </div>
       <v-edit-wrap transparent>
         <b-collapse-wrap title="基本信息" collapse style="position: relative;">
           <b-loading fix show-text="loading" v-if="loading"></b-loading>
@@ -121,7 +126,9 @@
     props: [
       'configId', // 报告配置id
       'title',
-      'editData'
+      'editData',
+      'reportName',
+      'personClass'
     ],
     components: {
       SourceInfoSelect,
@@ -177,6 +184,9 @@
       },
       reportLayoutTypeEnum () {
         return this.$store.state.creditReportConfig.reportLayoutTypeEnum
+      },
+      personClassEnum () {
+        return this.$store.state.creditReportConfig.personClassEnum
       }
     },
     created () {
