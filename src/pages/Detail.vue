@@ -67,7 +67,7 @@
         </transition>
         <!--分类信息详情-->
         <transition name="fade-scale-move">
-          <div class="info-box" v-if="classifyTabs">
+          <div class="info-box clear-fix" v-if="classifyTabs&&current">
             <div class="classify">
               <span :class="categoryType === 'BASE'? 'active' : '' "
                     @click="chooseCategory('BASE')">标准分类</span>
@@ -89,7 +89,7 @@
                 <p>{{ tab.amount }}</p>
               </div>
             </div>
-            <div class="classify-box" v-if="current">
+            <div class="classify-box">
               <!--基本信息图-->
               <div v-show="baseInfoActive">
                 <!--公司列表和股权穿透图 v-if="compList.length>0"-->
@@ -417,7 +417,7 @@
           }
         })
       },
-      // 选择分类
+      // 选择标准分类或大数据分类
       chooseCategory(type) {
         this.categoryType = type
         this.getClassify()
@@ -503,7 +503,7 @@
           pnDetail.open(pnType, tabs)
         }
       },
-      // 更改主体类别事件
+      // 选择小类别更改主体类别事件
       handleChangeAgg(code) {
         if (this.activeCode !== code) {
           this.activeCode = code
@@ -516,7 +516,9 @@
         let tabs = this.classifyMap[this.activeCode]
         // 查找到第一个有amount数据的tab
         let first = tabs.find(tab => tab.amount > 0)// 子类别选中
-        this.handleChangeClassifyCode(first)
+        if (first) {
+          this.handleChangeClassifyCode(first)
+        }
       },
       // 子类别改变事件
       handleChangeClassifyCode(tab) {
