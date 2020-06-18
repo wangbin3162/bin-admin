@@ -245,14 +245,12 @@
       checkLink() {
         this.linkStatus = true
         api.linkCheck(this.ds).then(res => {
-          setTimeout(() => {
-            if (res.data.code === '0') {
-              this.$alert({ type: 'success', title: '测试连接', content: '测试连接成功。' })
-            } else {
-              this.$alert({ type: 'danger', title: '测试连接', content: '测试连接失败，请检查配置信息。' })
-            }
-            this.linkStatus = false
-          }, 2000)
+          if (res.data.code === '0') {
+            this.$alert({ type: 'success', title: '测试连接', content: '测试连接成功。' })
+          } else {
+            this.$alert({ type: 'danger', title: '测试连接', content: '测试连接失败，请检查配置信息。' })
+          }
+          this.linkStatus = false
         })
       },
       /* [数据接口] */

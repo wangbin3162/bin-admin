@@ -6,25 +6,31 @@
         <b-row :gutter="20">
           <b-col span="12">
             <v-title-bar label="基础参数" class="mb-20"/>
-            <b-empty v-if="params.length===0">没有配置参数</b-empty>
+            <b-empty v-if="this.$isEmpty(params)">无参数</b-empty>
             <b-form v-else :model="form" ref="form" :label-width="100">
               <b-form-item v-for="item in params" :key="item.paramCode"
                            :label="item.paramName" :prop="item.paramCode"
                            :rules="{ required: true, message: `${item.paramName}不能为空`, trigger: 'blur' }">
                 <b-input v-model="form[item.paramCode]" clearable placeholder="请输入"/>
               </b-form-item>
-              <b-form-item>
-                <b-button type="primary" @click="handleTest" :loading="btnLoading">测 试</b-button>
-              </b-form-item>
             </b-form>
+
+            <div :style="btnLeft">
+              <b-button type="primary" @click="handleTest" dashed
+                        :loading="btnLoading"
+                        style="width: 100%;">
+                测 试
+              </b-button>
+            </div>
           </b-col>
           <b-col span="12">
             <v-title-bar label="执行结果" class="mb-20"/>
-            <div>
+            <div style="position: relative;">
               <div v-if="result">
                 <b-code-editor :value="resultJson" readonly/>
               </div>
               <b-empty v-else>暂无执行结果</b-empty>
+              <b-loading v-show="btnLoading" fix show-text="正在请求测试..."></b-loading>
             </div>
           </b-col>
         </b-row>
@@ -41,7 +47,7 @@
   import commonMixin from '../../../../common/mixins/mixin'
   import permission from '../../../../common/mixins/permission'
   import * as api from '../../../../api/analyze-engine/da-business-temp.api'
-  import { deepCopy } from '../../../../common/utils/assist'
+  import { deepCopy, isEmpty } from '../../../../common/utils/assist'
 
   export default {
     name: 'BizTestPanel',
@@ -67,6 +73,11 @@
           return JSON.stringify(this.result, null, 2)
         } catch (e) {
           return ''
+        }
+      },
+      btnLeft() {
+        return {
+          paddingLeft: isEmpty(this.params) ? '0' : '100px'
         }
       }
     },
@@ -100,21 +111,26 @@
         this.params = []
       },
       handleTest() {
+        if (isEmpty(this.params) && !this.$refs.form) {
+          this.testApi()
+          return
+        }
         this.$refs.form.validate((valid) => {
           if (valid) {
-            this.btnLoading = true
-            let bizId = this.temp.id
-            let params = this.form
-            api.testBusinessTemplate(bizId, params).then(res => {
-              if (res.status === 200) {
-                this.result = res.data
-                this.btnLoading = false
-              }
-            }).catch(err => {
-              this.btnLoading = false
-              this.$notice.danger({ title: '错误', desc: err.message })
-            })
+            this.testApi()
           }
+        })
+      },
+      testApi() {
+        this.btnLoading = true
+        let bizId = this.temp.id
+        let params = this.form
+        api.testBusinessTemplate(bizId, params).then(res => {
+          this.result = res.data
+          this.btnLoading = false
+        }).catch(err => {
+          this.btnLoading = false
+          this.$notice.danger({ title: '错误', desc: err.message })
         })
       }
     }
