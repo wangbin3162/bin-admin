@@ -1,7 +1,7 @@
 <template>
   <div class="dir-select">
     <b-modal v-model="open"
-             title="选择目录"
+             title="选择记录"
              footer-hide
              :body-styles="{ padding: '5px' }"
              width="70%"
