@@ -38,8 +38,6 @@
               <tr>
                 <td>出生日期：</td>
                 <td>{{ detail.natBaseInfo.csrq }}</td>
-                <td>人员识别号：</td>
-                <td>{{ detail.natBaseInfo.idTypeName }}</td>
               </tr>
               <tr>
                 <td>户籍地派出所：</td>
