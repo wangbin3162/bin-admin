@@ -81,7 +81,7 @@
                 <v-simple-label label="计算结果">
                   {{ importDetail.validationCount }}
                   <b-button type="text" v-if="importDetail.validationCount > 0"
-                            @click="handleDownloadExport(importDetail.batchInfoId,importDetail.uploadDate,'导入记录-计算结果')">
+                    @click="handleDownloadExport(importDetail.batchInfoId, importDetail.uploadDate, '导入记录-计算结果')">
                     下载：计算结果
                   </b-button>
                 </v-simple-label>
@@ -266,9 +266,8 @@
       },
       // 下载导出文件
       handleDownloadExport(id, time, title = '') {
-        const type = this.typeFrom === 'user' ? '用户' : '部门'
         const parseTime = this.$util.parseTime(time, '{y}{m}{d}')
-        const fileName = `${type}${title}${parseTime}.xlsx`
+        const fileName = `${title}${parseTime}.xlsx`
         if (!this.downloadEvent) { // 点击下载事件，需要函数防抖动
           this.downloadEvent = this.$util.debounce((id, fileName) => {
             downloadExport(id).then(res => {
