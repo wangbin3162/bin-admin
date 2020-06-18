@@ -316,31 +316,33 @@
         this.$router.push({ name: 'index' })
       }
     },
+    mounted() {
+      // 创建动画
+      animations.create({
+        name: 'move',
+        animation: {
+          '0%': {
+            transform: 'translate3d(-30%, 0, 0)',
+            opacity: 0
+          },
+          '100%': {
+            transform: 'translate3d(0, 0, 0)',
+            opacity: 1
+          }
+        },
+        presets: {
+          duration: 400,
+          easing: 'ease-in-out'
+        }
+      })
+    },
     watch: {
       floatTabs() {
         let el = this.$refs['floatTable']
         if (el) {
-          // 创建动画
-          animations.create({
-            name: 'move',
-            animation: {
-              '0%': {
-                transform: 'translate3d(-30%, 0, 0)',
-                opacity: 0
-              },
-              '100%': {
-                transform: 'translate3d(0, 0, 0)',
-                opacity: 1
-              }
-            },
-            presets: {
-              duration: 400,
-              easing: 'ease-in-out'
-            }
-          })
           // 运行动画
           animations.run(el, 'move', () => {
-            animations.remove('move')
+            el.style.animation = ''
           })
         }
       }
