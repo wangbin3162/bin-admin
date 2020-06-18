@@ -153,13 +153,8 @@
         this.form.reportWaterMark = ''
       },
       async handleSubmit () {
-        let imgValid = true
-        if (this.form.reportWaterMark === '') {
-          imgValid = false
-          this.$message({ type: 'warning', content: '请上传水印图片。' })
-        }
         const valid = await this.$refs.form.validate()
-        if (imgValid && valid) {
+        if (valid) {
           try {
             this.btnLoading = true
             this.editData ? await updateCreditReport(this.form) : await createCreditReport(this.form)
