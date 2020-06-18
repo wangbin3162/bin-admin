@@ -1,9 +1,6 @@
 <template>
   <div class="index-manage-index-rule">
     <!-- <b-code-editor :value="JSON.stringify(this.list)"></b-code-editor> -->
-    <!-- <b-alert >
-      标度为{{ scaleEnum[scale] }}
-    </b-alert> -->
     <b-table v-if="isStringType" :columns="columnsS" :data="list">
       <template v-slot:itemValue="{ index }">
         <b-tooltip
@@ -56,21 +53,6 @@
     </b-table>
 
     <b-table v-else :columns="columnsN" :data="list">
-      <template v-slot:upValue="{ index }">
-        <b-tooltip
-          max-width="200" placement="right"
-          :content="list[index].upValueMsg"
-          :disabled="!list[index].upValueError"
-          :always="list[index].upValueError">
-
-          <b-input-number v-model="list[index].upValue" :min="0" :max="1000000000"
-            :class="{ error: list[index].upValueError }"
-            @on-blur="handleValidate(list[index], 'upValue')">
-          </b-input-number>
-
-        </b-tooltip>
-      </template>
-
       <template v-slot:dnValue="{ index }">
         <b-tooltip
           max-width="200" placement="right"
@@ -78,9 +60,24 @@
           :disabled="!list[index].dnValueError"
           :always="list[index].dnValueError">
 
-          <b-input-number v-model="list[index].dnValue" :min="0" :max="1000000000"
+          <b-input-number v-model="list[index].dnValue" :max="1000000000"
             :class="{ error: list[index].dnValueError }"
             @on-blur="handleValidate(list[index], 'dnValue')">
+          </b-input-number>
+
+        </b-tooltip>
+      </template>
+
+      <template v-slot:upValue="{ index }">
+        <b-tooltip
+          max-width="200" placement="right"
+          :content="list[index].upValueMsg"
+          :disabled="!list[index].upValueError"
+          :always="list[index].upValueError">
+
+          <b-input-number v-model="list[index].upValue" :max="1000000000"
+            :class="{ error: list[index].upValueError }"
+            @on-blur="handleUpValueBlur(index, 'upValue')">
           </b-input-number>
 
         </b-tooltip>
@@ -161,8 +158,8 @@
     },
     watch: {
       rules: {
-        handler () {
-          this.initArr(this.indexNature, this.scale)
+        handler (newVal, oldVal) {
+          this.initArr(this.indexNature, this.scale, newVal)
         },
         immediate: true
       },
@@ -182,7 +179,7 @@
       addNext(index) {
         const curScaleLength = this.scale === 'F' ? 5 : 10
         if (this.list.length < curScaleLength) { // 数组长度小于当前标度长度才允许添加
-          const obj = this.initObj(this.indexNature)
+          const obj = this.initObj(this.indexNature, this.list[index])
           this.list.splice(index + 1, 0, obj)
           this.resetOrderNo(this.list)
         }
@@ -217,12 +214,23 @@
           }
         })
       },
-      // 输入框blur回调
+      // 输入框blur回调, 验证函数
       async handleValidate(row, key) {
         try {
           await this.isRequired(row, key)
         } catch (error) {
           this.$log.pretty('验证失败', error, 'warning')
+        }
+      },
+      // 上限值blur回调
+      async handleUpValueBlur (index, key) {
+        try {
+          const curEl = this.list[index]
+          await this.handleValidate(curEl, key)
+          const nextEl = this.list[index + 1]
+          if (nextEl) nextEl.dnValue = curEl.upValue // 存在下一个元素则给下一个元素填入下限值
+        } catch (error) {
+          console.error(error)
         }
       },
       // 验证所有
@@ -243,24 +251,28 @@
         })
       },
       // 根据指标性质、标度初始化数组
-      initArr (indexNature, scale) {
+      initArr (indexNature, scale, rules = []) {
         let list = []
         const num = scale === 'F' ? 5 : 10 // 判断标度确定数组构建数量
         for (let i = 0; i < num; i++) {
           const obj = this.initObj(indexNature) // 根据性质返回对应数据结构
           obj.orderNo = i // 添加排序字段
-          obj.score = num - i // 添加默认分数
+          obj.score = i + 1 // 添加默认分数
           list.push(obj)
         }
-        if (this.rules.length > 0 && this.editDataInitFlag === false) {
+        if (rules.length > 0 && this.editDataInitFlag === false) {
           // 此段if只用在编辑的时候取一次可能存在的rules用作初始化
-          list = JSON.parse(JSON.stringify(this.rules))
+          list = JSON.parse(JSON.stringify(rules))
           this.editDataInitFlag = true
         }
         this.list = list
       },
-      // 根据指标性质返回对应的数据结构
-      initObj (indexNature) {
+      /**
+       * @description 根据指标性质返回对应的数据结构
+       * @param {*} indexNature
+       * @param {*} preEl 前一个元素，如果传递则用于生成下一个元素的下限值。
+       */
+      initObj (indexNature, preEl = null) {
         // 字符串使用的结构
         const objS = {
           orderNo: 0,
@@ -275,7 +287,13 @@
           dnValue: null, // 下限
           score: null
         }
-        const obj = indexNature === 'Q' ? objS : objN // 判断是定性还是定量
+        let obj = null
+        if (indexNature === 'Q') { // 判断是定性还是定量
+          obj = objS
+        } else {
+          obj = objN
+          if (preEl) obj.dnValue = preEl.upValue // 填入下限值
+        }
         return obj
       },
       // 重新设置orderNo， 使其等于当前下标

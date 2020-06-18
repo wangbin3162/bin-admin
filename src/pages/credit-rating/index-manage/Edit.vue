@@ -113,7 +113,7 @@
         </v-edit-wrap>
       </b-collapse-wrap>
 
-      <b-collapse-wrap title="指标配置规则" collapse :value="!editLoading">
+      <b-collapse-wrap title="指标配置" collapse :value="!editLoading">
         <edit-index-rule ref="indexRule"
           @data-change="handleIndexRulsChange"
           :dataType="form.index.dataType"
@@ -124,7 +124,7 @@
         </edit-index-rule>
       </b-collapse-wrap>
 
-      <b-collapse-wrap title="信息资源配置" collapse :value="!editLoading">
+      <b-collapse-wrap title="参数配置" collapse :value="!editLoading">
         <edit-source-info ref="sourceInfo"
           @data-change="handleSourceChange"
           :resources="resources"
