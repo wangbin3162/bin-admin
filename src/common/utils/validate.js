@@ -214,21 +214,22 @@ export function verifyRegNo(regNo) {
 /* 校验组织机构代码 */
 export function verifyOrgNo(orgNo) {
   const CVAL = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-  const regex = /^[0-9A-Z]{8}[0-9X]$/
+  const regex = /^[0-9A-Z]{8}-?[0-9X]$/
   const MD = [3, 7, 9, 10, 5, 8, 4, 2]
   const CC = '0123456789X0'
 
   // 编码校验
   function checkCode(code) {
     code = String(code)
+    let str = code.replace('-', '')
     let sum = 0
     let a
     for (let i = 0; i < 8; i++) {
-      a = CVAL.indexOf(code[i])
+      a = CVAL.indexOf(str[i])
       sum += a * MD[i]
     }
     sum %= 11
-    return CC[11 - sum] === code[8]
+    return CC[11 - sum] === str[8]
   }
 
   return regex.test(orgNo) && checkCode(orgNo)

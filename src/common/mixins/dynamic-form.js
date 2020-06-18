@@ -128,7 +128,7 @@ export default {
       }
       dynamicForm.forEach(item => {
         // 1、先根据filedName扩展form对象
-        this.$set(this.form, item.fieldName.toLowerCase(), item.dataType === 'number' ? 0 : '')
+        this.$set(this.form, item.fieldName.toLowerCase(), item.dataType === 'number' ? null : '')
         // 2、如果当前字段名称为多主体id_name1 id_name 后为索引，则需要额外添加person_id[index]
         if (item.fieldName.indexOf('id_name') === 0) {
           let index = item.fieldName.slice(7)
