@@ -30,15 +30,17 @@
         <!--中央表格-->
         <b-table :columns="columns" :data="list" :loading="listLoading">
           <!--名称-->
-          <template v-slot:tableName="scope">
-            <b-button type="text" @click="handleCheck(scope.row)">{{ scope.row.tableName }}</b-button>
+          <template #tableName="{row}">
+            <b-button type="text" @click="handleCheck(row)" t-ellipsis="">{{ row.tableName }}</b-button>
           </template>
           <!--主体类别-->
-          <template v-slot:personClass="scope">{{ personClassMap[scope.row.personClass] }}</template>
+          <template #personClass="{row}">{{ personClassMap[row.personClass] }}</template>
           <!--状态-->
-          <template v-slot:status="scope">{{ statusMap[scope.row.status] }}</template>
+          <template #status="{row}">
+            <b-tag no-border :type="statusStyleMap[row.status]">{{ statusMap[row.status] }}</b-tag>
+          </template>
           <!--操作栏-->
-          <template v-slot:action="{row}">
+          <template #action="{row}">
             <template v-if="row.status==='edit'||row.status==='audited'">
               <b-button :disabled="!canModify" type="text" @click="handleModify(row)">
                 修改
@@ -231,6 +233,7 @@
           personClass: [{ required: true, message: '主体类别必选', trigger: 'change' }]
         },
         statusMap: { 'edit': '草稿', 'audited': '发布', 'closed': '关闭' },
+        statusStyleMap: { 'edit': 'info', 'audited': 'success', 'closed': 'danger' },
         statusOptions: [],
         dataTypeMap: enumObj.dataType,
         personClassMap: {},

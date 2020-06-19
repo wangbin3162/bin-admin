@@ -41,9 +41,7 @@
           <template v-slot:personClass="{row}">{{ personClassMap[row.personClass] }}</template>
           <template v-slot:resProperty="{row}">{{ resPropertyMap[row.resProperty] }}</template>
           <template v-slot:status="{row}">
-            <b-tag no-border font-size="14px" :type="row.status==='audited'?'success':'info'">
-              {{ resStatusMap[row.status] }}
-            </b-tag>
+            <b-tag no-border :type="statusStyleMap[row.status]">{{ resStatusMap[row.status] }}</b-tag>
           </template>
           <template v-slot:availableStatus="{row}">
             <b-tooltip
@@ -419,6 +417,7 @@
         availableStatusMap: { available: '可用', notavailable: '不可用' }, // 可用状态映射 #static
         availableStatusStyleMap: { available: '#52c41a', notavailable: '#f5222d' },
         resStatusMap: { edit: '草稿', audited: '已发布', closed: '已删除' }, // 资源状态映射 #static
+        statusStyleMap: { edit: 'info', audited: 'success', closed: 'danger' },
         shareMap: { PUBLIC: '共享', PRIVATE: '不共享', DEPART_RANGE: '有条件共享' }, // 共享属性 #static
         openMap: { '1': '是', '0': '否' }, // 开放属性#static
         updateMap: {
