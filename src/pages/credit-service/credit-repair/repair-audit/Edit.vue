@@ -27,7 +27,7 @@
               <b-form-item label="数据记录">
                 <b-code-editor
                     v-if="detail.recordJson"
-                    :value="JSON.stringify(JSON.parse(detail.recordJson), null, 2)">
+                    :value="JSON.stringify(JSON.parse(detail.recordJson), null, 2)" readonly>
                   </b-code-editor>
                 <b-button type="text" @click="open = true">
                   查看详细

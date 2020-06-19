@@ -23,7 +23,7 @@
                 <td colspan="3">
                   <b-code-editor
                     v-if="detail.recordJson"
-                    :value="JSON.stringify(JSON.parse(detail.recordJson), null, 2)">
+                    :value="JSON.stringify(JSON.parse(detail.recordJson), null, 2)" readonly>
                   </b-code-editor>
                   <b-button type="text" @click="open = true" v-if ="detail.dealMode !='2'">
                     查看详细
