@@ -51,22 +51,47 @@
                 {{ item.customExpand ? '收起' : '展开' }}
               </b-button>
             </div>
+
             <div>
               <b-form ref="expandForm" :model="item" :rules="infoRules" :label-width="100">
                 <b-row :gutter="15">
-                  <b-col span="12">
-                    <b-form-item label="显示名称" prop="displayName">
-                      <b-input v-model="item.displayName"></b-input>
-                    </b-form-item>
-                  </b-col>
-                  <b-col span="12">
-                    <b-form-item label="布局方式" prop="layout">
-                      <b-select v-model="item.layout">
-                        <b-option v-for="(value, key) in reportLayoutTypeEnum" :key="key" :value="key">
-                          {{ value }}
-                        </b-option>
-                      </b-select>
-                    </b-form-item>
+                  <b-col span="24">
+                    <div flex>
+                      <div flex-box="1">
+                        <b-form-item label="显示名称" prop="displayName">
+                          <b-input v-model="item.displayName"></b-input>
+                        </b-form-item>
+                      </div>
+                      <div style="width: 30%;">
+                        <b-form-item label="布局方式" prop="layout">
+                          <!-- <b-select v-model="item.layout">
+                            <b-option v-for="(value, key) in reportLayoutTypeEnum" :key="key" :value="key">
+                              {{ value }}
+                            </b-option>
+                          </b-select> -->
+                          <div class="img-btn">
+                            <span class="btn-con" @click="item.layout = 'FORM'">
+                              <span class="img-con">
+                                <img src="../../../../assets/images/credit-rating/icon_form.png">
+                                <b-icon v-if="item.layout === 'FORM'" class="icon" name="ios-checkmark" size="30" color="#1890ff"></b-icon>
+                              </span>
+                              <span class="text">
+                                {{ reportLayoutTypeEnum.FORM }}
+                              </span>
+                            </span>
+                            <span class="btn-con" @click="item.layout = 'LIST'">
+                              <span class="img-con">
+                                <img src="../../../../assets/images/credit-rating/icon_list.png">
+                                <b-icon v-if="item.layout === 'LIST'" class="icon" name="ios-checkmark" size="30" color="#1890ff"></b-icon>
+                              </span>
+                              <span class="text">
+                                {{ reportLayoutTypeEnum.LIST }}
+                              </span>
+                            </span>
+                          </div>
+                        </b-form-item>
+                      </div>
+                    </div>
                   </b-col>
                   <b-col span="24">
                     <b-form-item label="字段列表" prop="fieldNames">
@@ -384,7 +409,7 @@
           const obj = {
             customExpand: true, // 自定义展开
             displayName: '',
-            layout: '',
+            layout: 'FORM',
             orderNo: this.infoList.length,
             categoryId: this.configId,
             resourceKey: resource.resourceKey,
@@ -504,6 +529,35 @@
 
 <style lang="stylus">
 .credit-report-config-info-class-edit {
+  .img-btn {
+    display: flex;
+    justify-content: space-around;
 
+    .btn-con {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+
+      .img-con {
+        display: flex;
+        position: relative;
+        transition: all 0.4s;
+
+        .icon {
+          position: absolute;
+          bottom: -5px;
+          right: 0;
+        }
+      }
+      .text {
+        margin-left: 10px;
+      }
+    }
+    .btn-con:hover {
+      .img-con {
+        box-shadow: 0 2px 7px 0 rgba(121, 187, 255, 1);
+      }
+    }
+  }
 }
 </style>
