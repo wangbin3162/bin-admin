@@ -1,6 +1,6 @@
 <template>
   <!--联合部门编辑-->
-  <b-modal v-model="editModal" title="联合部门编辑" width="840">
+  <b-modal v-model="editModal" title="联合部门编辑" width="840" :mask-closable="false">
     <div flex="box:mean" style="border: 1px solid #d9d9d9;">
       <div style="border-right: 1px solid #d9d9d9;">
         <div style="padding: 10px; border-bottom: 1px solid #d9d9d9;">联合部门</div>

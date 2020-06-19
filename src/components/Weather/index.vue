@@ -3,8 +3,10 @@
     <div class="weather-inner">
       <span>{{time}}</span>
       <span>{{city}}</span>
-      <span>{{weather}}</span>
-      <img v-if="weatherImg" :src="weatherImg" class="weather-img" alt="weather" style="height:24px;">
+      <b-tooltip v-if="weather&&weatherImg" :content="weather" placement="bottom" theme="light"
+                 style="height:24px;line-height: 24px;">
+        <img :src="weatherImg" class="weather-img" alt="weather" style="height:24px;">
+      </b-tooltip>
     </div>
   </div>
 </template>
@@ -26,7 +28,7 @@
       }
     },
     created() {
-      this.time = this.$util.parseTime(new Date(), '{y}-{m}-{d}')
+      this.time = this.$util.parseTime(new Date(), '{y}-{m}-{d} 周{a}')
       jsonp('https://api.map.baidu.com/location/ip', { ak: this.AK }).then(resp => {
         if (resp.status === 0) {
           this.city = resp.content.address_detail.city
@@ -38,9 +40,10 @@
           }).then(data => {
             if (data.status === 'success') {
               let weatherData = data.results[0].weather_data[0]
-              this.weather = weatherData.weather
-              // 设置图片
               let hours = new Date().getHours()
+              // 设置天气
+              this.weather = `${weatherData.weather}，${weatherData.wind}，气温 ${weatherData.temperature}`
+              // 设置图片
               this.weatherImg = (hours > 6 && hours < 18) ? weatherData.dayPictureUrl : weatherData.nightPictureUrl
             }
           })
