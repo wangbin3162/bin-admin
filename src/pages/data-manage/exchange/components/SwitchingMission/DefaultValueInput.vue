@@ -19,7 +19,8 @@
         </b-tag>
       </div>
       <div style="width: calc(100% - 80px);">
-        <b-input v-if="value.type==='default'" v-model="inputValue.value" size="small" placeholder="输入默认值"
+        <b-input v-if="value.type==='default' || value.type==='el'" v-model="inputValue.value" size="small"
+                 :placeholder="value.type==='default' ? '请输入默认值' : '请输入表达式'"
                  @on-change="emitValue"/>
         <b-input v-else :value="inputValue.showValue" size="small" readonly/>
       </div>
@@ -55,7 +56,7 @@
           value: '', // 实际值
           showValue: '' // 显示值
         },
-        typeMap: { dept: '部门', user: '用户', default: '自定义' }
+        typeMap: { dept: '部门', user: '用户',el: "表达式",default: '自定义' }
       }
     },
     watch: {
@@ -72,7 +73,7 @@
         this.inputValue.type = type
         this.inputValue.value = ''
         this.inputValue.showValue = ''
-        if (type !== 'default') {
+        if (type !== 'default' && type !== 'el') {
           const ref = `${type}Choose`
           this.$refs[ref] && this.$refs[ref].open()
         }
