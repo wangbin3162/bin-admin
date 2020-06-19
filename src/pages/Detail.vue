@@ -59,7 +59,7 @@
                 <span class="btn red mr-10" @click="handleClickAggs(ENUM.Positive)">正面信息 ({{ pnInfo.p }})</span>
                 <span class="btn black" @click="handleClickAggs(ENUM.Negative)">负面信息 ({{ pnInfo.n }})</span>
               </div>
-              <a href="#" class="download" @click="handleDownloadExport()">
+              <a class="download" @click.stop.prevent="handleDownloadExport()">
                 下载信用报告
               </a>
             </div>
