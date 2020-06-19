@@ -25,7 +25,7 @@
         <!--中央表格-->
         <b-table :columns="columns" :data="list" :loading="listLoading">
           <template v-slot:jobStatus="{row}">
-            <b-tag v-if="row.jobStatus" :type="statusStyleMap[row.jobStatus]">
+            <b-tag no-border v-if="row.jobStatus" :type="statusStyleMap[row.jobStatus]">
               {{ statusMap[row.jobStatus] }}
             </b-tag>
             <span v-else>-</span>

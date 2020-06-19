@@ -148,7 +148,7 @@
             <v-key-label label="电子邮件">{{ user.email }}</v-key-label>
             <v-key-label label="角色">
               <template v-if="user.roles">
-                <b-tag type="info" v-for="role in user.roles" :key="role.id">{{ role.name }}</b-tag>
+                <b-tag v-for="role in user.roles" :key="role.id">{{ role.name }}</b-tag>
               </template>
               <span v-else>未选择</span>
             </v-key-label>

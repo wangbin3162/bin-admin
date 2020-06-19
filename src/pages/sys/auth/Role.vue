@@ -18,9 +18,10 @@
         </v-table-tool-bar>
         <!--中央表格-->
         <b-table :columns="columns" :data="list" :loading="listLoading">
-          <template v-slot:roleType="scope">
-            <b-tag v-if="scope.row.roleType===ENUM.I" type="primary">{{ roleTypeMap[scope.row.roleType] }}</b-tag>
-            <b-tag v-else type="warning">{{ roleTypeMap[scope.row.roleType] }}</b-tag>
+          <template v-slot:roleType="{row}">
+            <b-tag no-border :type="row.roleType===ENUM.I?'primary':'warning'">
+              {{ roleTypeMap[row.roleType] }}
+            </b-tag>
           </template>
           <!--角色授权栏-->
           <template v-slot:auth="scope">
