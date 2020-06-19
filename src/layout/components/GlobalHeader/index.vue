@@ -6,6 +6,7 @@
       </div>
       <div style="flex: 1 1 0;"></div>
       <div class="global-header-right">
+        <weather/>
         <div class="dropdown-trigger" @click="themeModal=true">
           <b-icon name="ios-color-palette" size="20"></b-icon>
         </div>
@@ -115,10 +116,11 @@
   import UserAvatar from './UserAvatar'
   import { modifyPwd } from '../../../api/login.api'
   import { verifyPassword } from '../../../common/utils/validate'
+  import Weather from '../../../components/Weather/index'
 
   export default {
     name: 'GlobalHeader',
-    components: { HeaderMenu, UserAvatar },
+    components: { Weather, HeaderMenu, UserAvatar },
     data() {
       const checkPwd = (rule, value, callback) => {
         if (!value) {
