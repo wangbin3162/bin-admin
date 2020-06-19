@@ -25,7 +25,10 @@
 
             <b-form :model="form" ref="form" :rules="rules" :label-width="100">
               <b-form-item label="数据记录">
-                <b-input :value="detail.recordJson" type="textarea" :rows="4" disabled></b-input>
+                <b-code-editor
+                    v-if="detail.recordJson"
+                    :value="JSON.stringify(JSON.parse(detail.recordJson), null, 2)">
+                  </b-code-editor>
                 <b-button type="text" @click="open = true">
                   查看详细
                 </b-button>

@@ -21,7 +21,10 @@
               <tr>
                 <td>数据记录：</td>
                 <td colspan="3">
-                  <b-input type="textarea" :value="detail.recordJson" :rows="4" disabled></b-input>
+                  <b-code-editor
+                    v-if="detail.recordJson"
+                    :value="JSON.stringify(JSON.parse(detail.recordJson), null, 2)">
+                  </b-code-editor>
                   <b-button type="text" @click="open = true" v-if ="detail.dealMode !='2'">
                     查看详细
                   </b-button>
