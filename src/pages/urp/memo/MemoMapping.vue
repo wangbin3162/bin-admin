@@ -128,7 +128,7 @@
           } else {
             api.oneResource(this.mapping).then(response => {
               if (response.data.data) {
-                callback(new Error('资源信息已被占用'))
+                callback(new Error('该资源信息所属的元信息已经配置过'))
               } else {
                 callback()
               }
