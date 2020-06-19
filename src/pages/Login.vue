@@ -115,10 +115,17 @@
       },
       loginSuccess(res) {
         if (res.data.code === '0') {
-          const token = res.data.data.accessToken
-          this.$store.dispatch('setToken', token).then(() => {
-            // 重定向对象不存在则返回顶层路径
-            this.$router.push('/')
+          const { accessToken, roles } = res.data.data
+          console.log(roles)
+          this.$store.dispatch('setToken', accessToken).then(() => {
+            // 只有档案管理员，进入信用档案，其余直接跳转至系统管理端
+            if (roles.indexOf('ROLE_DAGLY') > -1) {
+              console.log('系统管理员或采集员')
+              this.$open('/')
+            } else {
+              console.log('档案管理员')
+              this.$router.push('/')
+            }
           })
         } else {
           this.$message({ content: res.data.message, type: 'danger' })
