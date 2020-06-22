@@ -128,7 +128,7 @@
                     </div>
                   </div>
                 </template>
-                <div class="pl-10 pr-10">
+                <div class="pl-20 pr-20">
                   <b-table :columns="newDepartColumns" :data="[]" size="small"></b-table>
                 </div>
               </b-card>
@@ -147,7 +147,7 @@
                 </div>
               </div>
             </template>
-            <div class="pl-10 pr-10">
+            <div class="pl-20 pr-20">
               <b-table :columns="infoCollectionColumns" :data="infoCollectionData" size="small" class="mb-10" ></b-table>
             </div>
           </b-card>

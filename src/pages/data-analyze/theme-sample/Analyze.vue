@@ -56,7 +56,7 @@
           <b-card class="box-card" head-tip divider="no" :bordered="false" radius="10px"
             :body-style="{padding:0,height:'310px'}" shadow="never">
             <template v-slot:header>
-              <div flex="main:justify cross:center">
+              <div flex="main:justify cross:center" class="header-height">
                 <span class="title-text">本月信息归集统计</span>
               </div>
             </template>
@@ -106,9 +106,9 @@
         <!--信息归集日历-->
         <div class="right">
           <b-card class="box-card" head-tip divider="no" :bordered="false" radius="10px"
-                  :body-style="{padding:0,height:'310px'}" shadow="never">
+            :body-style="{padding:0,height:'310px'}" shadow="never">
             <template v-slot:header>
-              <div flex="main:justify cross:center">
+              <div flex="main:justify cross:center" class="header-height">
                 <span class="title-text">信息归集日历</span>
               </div>
             </template>
@@ -124,11 +124,10 @@
         <!-- 年度信息归集趋势-->
         <div class="left">
           <b-card class="box-card" head-tip divider="no" :bordered="false" radius="10px"
-                  :body-style="{padding:0,height:'310px'}" shadow="never">
+            :body-style="{padding:0,height:'310px'}" shadow="never">
             <template v-slot:header>
-              <div flex="main:justify cross:center">
+              <div flex="main:justify cross:center" class="header-height">
                 <span class="title-text">年度信息归集趋势</span>
-
                 <div flex="main:justify cross:baseline">
                   <b-select style="width: 150px; margin-right: 30px;"
                             size="mini" clearable filterable @on-change="handleResourceChange">
@@ -150,9 +149,9 @@
         <!--信息归集历史-->
         <div class="right">
           <b-card class="box-card" head-tip divider="no" :bordered="false" radius="10px"
-                  :body-style="{height:'310px'}" shadow="never">
+            :body-style="{ padding: 0, height:'310px'}" shadow="never">
             <template v-slot:header>
-              <div flex="main:justify cross:center">
+              <div flex="main:justify cross:center" class="header-height">
                 <span class="title-text">信息归集记录</span>
                 <div>
                   <span class="mr-10">{{ $util.parseTime(curDate, '{y}-{m}-{d}') }}</span>
@@ -160,7 +159,9 @@
                 </div>
               </div>
             </template>
-            <b-table :columns="columns" :data="historyList" size="small"></b-table>
+            <div class="pl-20 pr-20">
+              <b-table :columns="columns" :data="historyList" size="small"></b-table>
+            </div>
           </b-card>
         </div>
       </div>
@@ -566,6 +567,9 @@
         width: 180px;
         text-align center;
       }
+    }
+    .header-height {
+      height: 31.6px;
     }
     .card-layout {
       display: flex;
