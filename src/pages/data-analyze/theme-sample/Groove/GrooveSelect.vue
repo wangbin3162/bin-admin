@@ -43,7 +43,7 @@
     z-index: 1;
     padding: 7px 0;
     width: 210px;
-    border: 1px solid #DCDFE6;
+    // border: 1px solid #DCDFE6;
     border-radius: 30px;
 
     .tab {

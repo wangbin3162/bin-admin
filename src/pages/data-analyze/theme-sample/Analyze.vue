@@ -7,7 +7,7 @@
             <img src="" alt="">
           </span>
           <span class="info" flex="dir:top">
-            <i>资源信息数量</i>
+            <i t-ellipsis title="资源信息数量（条）">资源信息数量（条）</i>
             <i class="count">{{counts.totalResource}}</i>
           </span>
         </div>
@@ -16,7 +16,7 @@
             <img src="" alt="">
           </span>
           <span class="info" flex="dir:top">
-            <i>数据归集总量</i>
+            <i t-ellipsis title="数据归集总量（条）">数据归集总量（条）</i>
             <i class="count">{{counts.totalCount}}</i>
           </span>
         </div>
@@ -25,7 +25,7 @@
             <img src="" alt="">
           </span>
           <span class="info" flex="dir:top">
-            <i>本月归集数据量</i>
+            <i t-ellipsis title="本月归集数据量（条）">本月归集数据量（条）</i>
             <i class="count">{{counts.monthCount}}</i>
           </span>
         </div>
@@ -34,7 +34,7 @@
             <img src="" alt="">
           </span>
           <span class="info" flex="dir:top">
-            <i>上月归集数据量</i>
+            <i t-ellipsis title="自然人数据总量（人）">上月归集数据量（人）</i>
             <i class="count">{{counts.preMonthCount}}</i>
           </span>
         </div>
@@ -112,7 +112,7 @@
             </template>
             <div flex="main:center">
               <b-calendar mini :body-style="{border:'none'}" style="padding: 0 0 15px;"
-                          :day-style="{border:'none',borderRadius:'4px'}">
+                :day-style="{border:'none',borderRadius:'4px'}" @on-select-day="HandleCalendarChange">
               </b-calendar>
             </div>
           </b-card>
@@ -151,7 +151,11 @@
                   :body-style="{height:'310px'}" shadow="never">
             <template v-slot:header>
               <div flex="main:justify cross:center">
-                <span class="title-text">信息归集历史</span>
+                <span class="title-text">信息归集记录</span>
+                <div>
+                  <span class="mr-10">{{ $util.parseTime(curDate, '{y}-{m}-{d}') }}</span>
+                  <b-button type="text" @click="modal = true">更多>></b-button>
+                </div>
               </div>
             </template>
             <b-table :columns="columns" :data="historyList" size="small"></b-table>
@@ -181,7 +185,7 @@
         tab: 0,
         yearsText: [],
         resources: [],
-        date: new Date(),
+        curDate: new Date(),
         listQuery: {
           departId: '',
           month: '2019-01',
@@ -242,8 +246,8 @@
         },
         columns: [
           { title: '资源信息', key: 'resourceName', tooltip: true },
-          { title: '归集数量', key: 'count', width: 88, align: 'center' },
-          { title: '归集日期', key: 'date', width: 110 }
+          { title: '归集数量', key: 'count', align: 'center' }
+          // { title: '归集日期', key: 'date', width: 110 }
         ],
         historyList: [],
         resourceList: [],
@@ -258,6 +262,11 @@
       // 临时设置departId
       resetListQuery() {
         this.listQuery.departId = this.$store.state.user.info.departId
+      },
+      // 日历切换事件
+      HandleCalendarChange (date) {
+        console.log(date)
+        this.curDate = date.date
       },
       // 年度归集信息select回调
       handleResourceChange(val) {
@@ -456,6 +465,9 @@
           padding: 20px;
           color: #fff;
           border-radius: 8px;
+          .info {
+            overflow: hidden;
+          }
           .icon {
             background-color: #ffffff44;
             display: inline-block;
