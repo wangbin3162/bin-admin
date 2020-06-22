@@ -64,36 +64,11 @@
         </b-table>
       </div>
     </div>
-    <!--    <div>-->
-    <!--      <b-code-editor :value="JSON.stringify(itemMaps,null,2)" readonly/>-->
-    <!--    </div>-->
+    <div>
+      <b-code-editor :value="JSON.stringify(itemMaps,null,2)" readonly/>
+    </div>
     <!--添加字典项配置弹窗-->
-    <b-modal v-model="dialogFormVisible" width="800" title="配置映射">
-      <template>
-        <div style="padding: 0 140px 5px 5px;" flex="box:mean">
-          <span class="mr-15">源值</span><span>目标值</span>
-        </div>
-        <div flex="box:last" v-for="(item,index) in dictMaps" :key="index" class="mb-5">
-          <b-input class="mr-10" v-model="item.sourceKey" placeholder="请输入键"/>
-          <b-input v-model="item.sourceValue" placeholder="请输入值"/>
-          <!--操作栏-->
-          <div style="width: 140px;text-align: center;">
-            <b-button type="danger" icon="ios-remove-circle" transparent
-                      @click="removeBufferRow(item)">移除
-            </b-button>
-          </div>
-        </div>
-        <div class="pt-20">
-          <b-button type="dashed" icon="ios-add-circle-outline" @click="addBufferRow">
-            添加配置
-          </b-button>
-        </div>
-      </template>
-      <div slot="footer">
-        <b-button @click="dialogFormVisible = false">取 消</b-button>
-        <b-button type="primary" @click="confSave">确 定</b-button>
-      </div>
-    </b-modal>
+    <dict-edit-dialog ref="dictEditDialog" @on-save="confSave"/>
   </div>
 </template>
 
@@ -101,10 +76,11 @@
   import commonMixin from '../../../../../common/mixins/mixin'
   import DefaultValueInput from './DefaultValueInput'
   import { deepCopy } from '../../../../../common/utils/assist'
+  import DictEditDialog from './DictEditDialog'
 
   export default {
     name: 'InfoItemMap',
-    components: { DefaultValueInput },
+    components: { DictEditDialog, DefaultValueInput },
     mixins: [commonMixin],
     props: {
       value: {
@@ -193,11 +169,7 @@
         fields1: [],
         fields2: [],
         itemMaps: [],
-        dictMaps: [
-          { sourceKey: '', sourceValue: '' }
-        ],
         conf: {},
-        dialogFormVisible: false, // 编辑页是否显示
         currentRow1Index: -1, // 第一个表格选中的行索引
         currentRow1: null, // 第一个表格选中的行
         currentRow2: null // 第2个表格选中的行
@@ -206,26 +178,13 @@
     methods: {
       editDict(row, index) {
         this.conf = { ...row }
-        if (this.itemMaps[index].dictMap) {
-          this.dictMaps = deepCopy(this.itemMaps[index].dictMap)
-        } else {
-          this.dictMaps = [{ sourceKey: '', sourceValue: '' }]
-        }
-        this.dialogFormVisible = true
+        let maps = this.itemMaps[index].dictMap
+          ? deepCopy(this.itemMaps[index].dictMap) : [{ sourceKey: '', sourceValue: '' }]
+        this.$refs.dictEditDialog.open(maps)
       },
-      // 添加一行选项
-      addBufferRow() {
-        this.dictMaps.push({ sourceKey: '', sourceValue: '' })
-      },
-      // 删除一行
-      removeBufferRow(item) {
-        let index = this.dictMaps.indexOf(item)
-        this.dictMaps.splice(index, 1)
-      },
-      // 保存配置
-      confSave() {
-        this.itemMaps[this.conf._index].dictMap = deepCopy(this.dictMaps)
-        this.dialogFormVisible = false
+      // 保存字典配置
+      confSave(dict) {
+        this.itemMaps[this.conf._index].dictMap = deepCopy(dict)
         // 更新响应值
         this.emitValue()
       },
