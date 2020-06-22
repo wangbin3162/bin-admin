@@ -88,9 +88,11 @@
                   恭喜您已完成哦！
                 </span>
 
-                <router-link to="/dataManage/dataExchange/gather" class="go-gather-btn">
-                  采 集 >
-                </router-link>
+                <span class="pr-20" style="text-align: right;">
+                  <router-link to="/dataManage/dataExchange/gather" class="go-gather-btn">
+                    采 集 >
+                  </router-link>
+                </span>
               </div>
               <div class="trend">
                 <div class="chart-title">月度信息归集趋势</div>
@@ -543,15 +545,13 @@
         }
       }
       .go-gather-btn {
+        display: inline-block;
         width: 70px;
-        padding: 7px 0;
         font-size: 13px;
         color: #fff;
         text-align: center;
         border-radius: 30px;
-        // background-color: #3b90e9;
         background-color: rgba(64, 101, 224, 0.4)
-        margin-left: 27px;
       }
     }
     .trend {
