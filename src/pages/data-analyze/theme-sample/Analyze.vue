@@ -506,14 +506,14 @@
       font-weight: 500;
     }
     .summary {
-      background-color: #1fadf7;
-      color #ffffff;
-      border-radius: 8px;
+      padding-top: 15px;
+      position: relative;
       width: 40%;
       margin: 20px;
       margin-top: 0;
-      padding-top: 15px;
-      position: relative;
+      background-color: #1fadf7;
+      color #ffffff;
+      border-radius: 8px;
       .tip {
         position: absolute;
         top: 10px;

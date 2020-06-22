@@ -46,11 +46,11 @@
         </div>
       </b-collapse-wrap>
 
-      <b-collapse-wrap title="指标配置" collapse :value="!loading">
+      <b-collapse-wrap title="规则配置" collapse :value="!loading">
         <b-table :columns="columns" :data="rules" size="small"></b-table>
       </b-collapse-wrap>
 
-      <b-collapse-wrap title="资源信息" collapse :value="!loading">
+      <b-collapse-wrap title="参数配置" collapse :value="!loading">
         <b-table id="customTable" :columns="columnsSource" :data="resources">
           <template v-slot:paraType="{ row }">
             {{ paramTypeEnum[row.paraType] }}

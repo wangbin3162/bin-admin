@@ -403,7 +403,7 @@
           { title: '部门名称', key: 'departName' },
           { title: '归集数量（个）', key: 'value', align: 'left' },
           { title: '归集次数（次）', key: 'trend', align: 'left' },
-          { title: '占比', slot: 'percent', align: 'center', width: 170 }
+          { title: '占比', slot: 'percent', align: 'center' }
         ],
         departSumData: [], // 部门数据归集分析
         newDepartColumns: [ // 最新提报部门
