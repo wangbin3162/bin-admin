@@ -184,7 +184,7 @@
 
 <script>
   import * as api from '../../../api/data-manage/collect-analysis.api.js'
-  import GrooveSelect from '../../data-manage/data-exchange/components/Groove/GrooveSelect'
+  import GrooveSelect from './Groove/GrooveSelect'
   import { formatDataSet, formatSeries } from 'bin-charts/src/utils/util'
 
   require('bin-charts/src/theme/charts-theme')

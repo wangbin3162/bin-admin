@@ -64,9 +64,9 @@
         </b-table>
       </div>
     </div>
-    <div>
-      <b-code-editor :value="JSON.stringify(itemMaps,null,2)" readonly/>
-    </div>
+    <!--    <div>-->
+    <!--      <b-code-editor :value="JSON.stringify(itemMaps,null,2)" readonly/>-->
+    <!--    </div>-->
     <!--添加字典项配置弹窗-->
     <dict-edit-dialog ref="dictEditDialog" @on-save="confSave"/>
   </div>

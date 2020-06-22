@@ -25,6 +25,11 @@
               <b-option v-for="item in sourceFieldsOptions" :key="item" :value="item">{{item}}</b-option>
             </b-select>
             <span v-else>名称：{{ row.sourceField }}</span>
+
+            <b-tooltip v-if="row.edit" content="字典项" theme="light"
+                       style="padding: 4px 8px 0;">
+              <b-button type="text" icon="ios-options" @click="editDict(row,index)" :icon-style="{fontSize:'20px'}"/>
+            </b-tooltip>&nbsp;
           </template>
           <template v-else>
             <b-row :gutter="10" v-if="row.edit">
@@ -62,7 +67,7 @@
           </div>
         </template>
       </b-table>
-      <b-button type="dashed" icon="ios-add-circle-outline"
+      <b-button type="primary" icon="ios-add-circle-outline" dashed
                 style="width: 100%;margin-top: 16px;margin-bottom: 8px;"
                 @click="handleAdd('M')">添加配置映射
       </b-button>
@@ -138,19 +143,24 @@
           </div>
         </template>
       </b-table>
-      <b-button type="dashed" icon="ios-add-circle-outline"
+      <b-button type="primary" icon="ios-add-circle-outline" dashed
                 style="width: 100%;margin-top: 16px;margin-bottom: 8px;"
                 @click="handleAdd('C')">添加关联条件
       </b-button>
     </b-collapse-wrap>
+
+    <!--添加字典项配置弹窗-->
+    <dict-edit-dialog ref="dictEditDialog" @on-save="confSave"/>
   </div>
 </template>
 
 <script>
   import { deepCopy } from '../../../../../common/utils/assist'
+  import DictEditDialog from '../../../exchange/components/SwitchingMission/DictEditDialog'
 
   export default {
     name: 'SyncItems',
+    components: { DictEditDialog },
     props: {
       value: {
         type: Array,
@@ -282,6 +292,22 @@
       }
     },
     methods: {
+      editDict(row, index) {
+        this.conf = { ...row }
+        let maps = []
+        if (this.mapList[index].dictMap) {
+          maps = deepCopy(this.mapList[index].dictMap)
+        } else {
+          this.$set(this.mapList[index], 'dictMap', maps)
+        }
+        this.$refs.dictEditDialog.open(maps)
+      },
+      // 保存字典配置
+      confSave(dict) {
+        this.mapList[this.conf._index].dictMap = deepCopy(dict)
+        // 更新响应值
+        this.emitValue()
+      },
       // 添加项
       handleAdd(type) {
         let newRow = {
@@ -296,7 +322,7 @@
         }
         // 添加映射值
         if (type === 'M') {
-          this.mapList.push(newRow)
+          this.mapList.push({ ...newRow, dictMap: [] })
           this.handleEdit(this.mapList.length - 1, type)
         } else { // 添加关联条件
           this.conditionList.push({ ...newRow, condition: '' })

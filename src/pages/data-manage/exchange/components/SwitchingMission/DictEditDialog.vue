@@ -16,7 +16,7 @@
         </div>
       </div>
       <div class="pt-20">
-        <b-button type="dashed" icon="ios-add-circle-outline" @click="addBufferRow">
+        <b-button type="primary" dashed icon="ios-add-circle-outline" @click="addBufferRow">
           添加配置
         </b-button>
       </div>
