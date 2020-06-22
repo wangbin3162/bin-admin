@@ -105,3 +105,14 @@ export function changeStatus(id, status) {
     }
   })
 }
+
+/* 获取目标资源信息项 */
+export function queryTargetItems(resourceKey) {
+  return request({
+    url: '/api/dir/exchange/items',
+    method: 'get',
+    params: {
+      resourceKey
+    }
+  })
+}

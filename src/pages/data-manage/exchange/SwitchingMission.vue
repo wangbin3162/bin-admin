@@ -217,7 +217,6 @@
   import * as api from '../../../api/data-manage/switching-mission.api'
   import { getAvailableStatus, getExchangeType, getFlowDirection } from '../../../api/enum.api'
   import { getTablesFields } from '../../../api/data-manage/data-source.api'
-  import { getFields } from '../../../api/data-manage/res-info.api'
   import { requiredRule } from '../../../common/utils/validate'
   import { ExInfoCfg, ItemMap, ResChoose, DataSourceTableChoose, InfoItemMap } from './components/SwitchingMission'
   import { getExchangeTree } from '../../../api/data-manage/switching-scheme.api'
@@ -386,7 +385,7 @@
               }
             })
             // 获取resFields
-            getFields(resourceKey).then(res => {
+            api.queryTargetItems(resourceKey).then(res => {
               if (res.status === 200) {
                 this.resFields = res.data.map(item => {
                   return {
