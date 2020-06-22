@@ -89,6 +89,16 @@
                   </b-select>
                 </b-form-item>
               </b-col>
+              <b-col span="12">
+                <b-form-item label="所属部门" prop="cfgDeptName">
+                  <div flex>
+                    <b-input v-model="scheme.cfgDeptName" readonly placeholder="请选择所属部门" clearable></b-input>
+                    <b-button type="primary" @click="handleShowModal">
+                      选择
+                    </b-button>
+                  </div>
+                </b-form-item>
+              </b-col>
             </b-row>
             <template v-if="scheme.flowDirection&&scheme.flowDirection.length>0">
               <b-divider dashed></b-divider>
@@ -196,6 +206,7 @@
         </template>
       </v-edit-wrap>
     </page-header-wrap>
+    <dept-choose ref="deptChoose" @on-change="handleChooseDept"/>
   </div>
 </template>
 
@@ -207,10 +218,11 @@
   import { NodeChoose, RunCycle, FlowChart } from './components/SwitchingScheme'
   import { getDefaultNode } from '../../../api/data-manage/switching-node.api'
   import { requiredRule } from '../../../common/utils/validate'
+  import DeptChoose from './components/SwitchingMission/DeptChoose'
   // 非空字段提示
   export default {
     name: 'SwitchingScheme',
-    components: { NodeChoose, RunCycle, FlowChart },
+    components: { NodeChoose, RunCycle, FlowChart, DeptChoose },
     mixins: [commonMixin, permission],
     data() {
       return {
@@ -235,6 +247,7 @@
         scheme: null, // 方案
         ruleValidate: {
           cfgName: [requiredRule],
+          cfgDeptName: [{ required: true, message: '必填项', trigger: 'change' }],
           flowDirection: [{ required: true, message: '必填项', trigger: 'change' }],
           cronStr: [{ required: true, message: '必填项', trigger: 'blur,change' }],
           exchangeType: [{ required: true, message: '必填项', trigger: 'change' }],
@@ -317,6 +330,9 @@
             this.$message({ type: 'danger', content: '操作失败' })
           }
         })
+      },
+      handleShowModal() {
+        this.$refs.deptChoose && this.$refs.deptChoose.open()
       },
       // 表单提交
       handleSubmit() {
@@ -483,8 +499,16 @@
           target: '',
           cronStr: '',
           nameSource: '',
-          nameTarget: ''
+          nameTarget: '',
+          cfgDept: '',
+          cfgDeptName: ''
         }
+      },
+      // 选择部门
+      handleChooseDept(dept) {
+        // 没有选过值，关闭，则重置为自定义，否则跳过
+        this.scheme.cfgDept = dept.id
+        this.scheme.cfgDeptName = dept.value
       },
       // 查询所有列表
       searchList() {
