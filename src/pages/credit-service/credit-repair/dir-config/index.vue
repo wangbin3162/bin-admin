@@ -115,14 +115,11 @@
           okType: 'danger',
           onOk: async () => {
             try {
-              const [success, errorMsg] = await deleteDirConfig(id)
-              if (success) {
-                this.$message({ type: 'success', content: '操作成功' })
-                this.searchList()
-              } else {
-                this.$notice.danger({ title: '操作错误', desc: errorMsg })
-              }
+              await deleteDirConfig(id)
+              this.$message({ type: 'success', content: '操作成功' })
+              this.searchList()
             } catch (error) {
+              console.error(error)
               this.$notice.danger({ title: '操作错误', desc: error })
             }
             this.$modal.remove()
