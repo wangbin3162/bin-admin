@@ -82,6 +82,9 @@
 
             if (res.data.code !== '0') {
               this.$notice.danger({ title: '操作错误', desc: res.data.message })
+            } else {
+              this.$emit('close')
+              this.$message({ type: 'success', content: '操作成功' })
             }
           } catch (error) {
             console.error(error)
