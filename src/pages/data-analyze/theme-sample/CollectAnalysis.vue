@@ -3,201 +3,192 @@
     <div class="header mb-20">
       <div class="msg-tips" flex="main:justify">
         <div class="tip-item" flex>
-        <span class="icon">
-          <img src="" alt="">
-        </span>
+          <span class="icon">
+            <img src="" alt="">
+          </span>
           <span class="info" flex="dir:top">
-          <i>资源信息数量</i>
-          <i class="count">{{counts.totalResource}}</i>
-        </span>
+            <i t-ellipsis title="资源信息数量（条）">资源信息数量（条）</i>
+            <i class="count">{{counts.totalResource}}</i>
+          </span>
         </div>
         <div class="tip-item" flex>
-        <span class="icon">
-          <img src="" alt="">
-        </span>
+          <span class="icon">
+            <img src="" alt="">
+          </span>
           <span class="info" flex="dir:top">
-          <i>数据归集总量</i>
-          <i class="count">{{counts.totalCount}}</i>
-        </span>
+            <i t-ellipsis title="数据归集总量（条）">数据归集总量（条）</i>
+            <i class="count">{{counts.totalCount}}</i>
+          </span>
         </div>
         <div class="tip-item" flex>
-        <span class="icon">
-          <img src="" alt="">
-        </span>
+          <span class="icon">
+            <img src="" alt="">
+          </span>
           <span class="info" flex="dir:top">
-          <i>本月归集数据量</i>
-          <i class="count">{{counts.monthCount}}</i>
-        </span>
+            <i t-ellipsis title="本月归集数据量（条）">本月归集数据量（条）</i>
+            <i class="count">{{counts.monthCount}}</i>
+          </span>
         </div>
         <div class="tip-item" flex>
-        <span class="icon">
-          <img src="" alt="">
-        </span>
+          <span class="icon">
+            <img src="" alt="">
+          </span>
           <span class="info" flex="dir:top">
-          <i>自然人数据总量</i>
-          <i class="count">{{counts.zrpCount}}</i>
-        </span>
+            <i t-ellipsis title="自然人数据总量（人）">自然人数据总量（人）</i>
+            <i class="count">{{counts.zrpCount}}</i>
+          </span>
         </div>
         <div class="tip-item" flex>
-        <span class="icon">
-          <img src="" alt="">
-        </span>
+          <span class="icon">
+            <img src="" alt="">
+          </span>
           <span class="info" flex="dir:top">
-          <i>法人和其他组织数据总量</i>
-          <i class="count">{{counts.foCount}}</i>
-        </span>
+            <i t-ellipsis title="法人和其他组织数据总量（个）">法人和其他组织数据总量（个）</i>
+            <i class="count">{{counts.foCount}}</i>
+          </span>
         </div>
       </div>
     </div>
     <div class="main">
-      <b-row :gutter="20">
-        <b-col span="16">
-          <div class="area mb-20">
-            <div class="title">
-              <span class="text">年度信息归集趋势</span>
-              <span class="float-right pr-12">
-                <!--保留select下拉选择备份-->
-                  <!--<b-select style="width:100px" v-model="monthMsgSelect" clearable>-->
-                  <!--  <b-option v-for="item in monthList" :value="item.value" :key="item.value">{{ item.label }}</b-option>-->
-                  <!--</b-select>-->
-                  <!--新添加滑块选择器-->
-                <GrooveSelect @tab-click="handleTabClick"></GrooveSelect>
-              </span>
-            </div>
-            <div class="content" flex="main:justify">
-              <div class="trend mg-0-auto">
-                <b-charts :options="lineSmoothChartOption" theme="charts-theme" height="280px"></b-charts>
-              </div>
-            </div>
-          </div>
-          <div class="mb-20" flex="main:justify">
-            <div class="area" style="width: calc(100% - 345px);">
-              <div class="title">
-                <span class="text">资源信息分类统计</span>
-                <span class="float-right pr-12">
-                <b-select style="width:100px" v-model="crowdSelect" @on-change="handleResChange" clearable>
-                  <b-option v-for="item in crowdList" :value="item.value" :key="item.value">{{ item.label }}</b-option>
-                </b-select>
-              </span>
-              </div>
-              <div class="content" flex="main:justify">
-                <div class="trend">
-                  <b-charts :options="barChartOption" height="280px"></b-charts>
+      <div class="card-layout mb-20">
+        <div class="left">
+          <b-card head-tip divider="no" :bordered="false" radius="10px"
+            :body-style="{ padding: 0, height: '310px' }" shadow="never">
+            <template v-slot:header>
+              <div flex="main:justify cross:center" class="header-height">
+                <span class="title-text">部门数据归集统计分析</span>
+                <div flex="cross:center">
+                  <quick-date-select @tab-click="handleTabClick"></quick-date-select>
+                  <!-- 如果追加appendToBody的话第一次点击会直接关闭 -->
+                  <b-date-picker type="daterange" placement="bottom-end"
+                    class="ml-10 mr-10" size="small"
+                    placeholder="请选择">
+                   </b-date-picker>
+                  <b-button type="text" @click="modal = true">更多>></b-button>
                 </div>
               </div>
+            </template>
+            <div class="pl-15 pr-15">
+              <b-table :columns="departSumColumns" :data="departSumData">
+                <template v-slot:percent="{ row }">
+                  {{ row.percent }}%
+                  <b-progress :percent="row.percent"
+                    :showText="false">
+                  </b-progress>
+                </template>
+              </b-table>
             </div>
-            <div class="area" style="width: 325px;">
-              <div class="title">
-                <span class="text">月度部门归集统计</span>
-                <span class="float-right pr-12">
-              <b-select style="width:100px" v-model="monthDeptSelect" @on-change="handleMonDepChange" clearable>
-                <b-option v-for="item in monthList" :value="item.value" :key="item.value">{{ item.label }}</b-option>
-              </b-select>
-            </span>
+          </b-card>
+        </div>
+        <div class="right">
+          <b-card head-tip divider="no" :bordered="false" radius="10px"
+            :body-style="{ padding:0, height:'310px' }" shadow="never">
+            <template v-slot:header>
+              <div flex="main:justify cross:center" class="header-height">
+                <span class="title-text">信息归集日历</span>
               </div>
-              <div class="content">
-                <b-table :columns="monthDepartColumns" :data="monthDepartData"></b-table>
-              </div>
+            </template>
+            <div flex="main:center">
+              <b-calendar mini :body-style="{ border: 'none' }" style="padding: 0 0 15px;"
+                :day-style="{ border:'none', borderRadius:'4px' }" @on-select-day="HandleCalendarChange">
+              </b-calendar>
+            </div>
+          </b-card>
+        </div>
+      </div>
+      <div class="card-layout mb-20">
+        <div class="left">
+          <div flex="main:justify">
+            <div style="width: calc(100% - 345px);">
+              <b-card head-tip divider="no" :bordered="false" radius="10px"
+                :body-style="{ padding: 0, height: '310px' }" shadow="never">
+                <template v-slot:header>
+                  <div flex="main:justify cross:center" class="header-height">
+                    <span class="title-text">资源信息分类统计</span>
+                    <div>
+                      <b-button type="info" plain round size="small" icon="ios-switch">
+                        法人
+                      </b-button>
+                    </div>
+                  </div>
+                </template>
+                <div>
+                  <b-charts :options="barChartOption" height="280px"></b-charts>
+                </div>
+              </b-card>
+            </div>
+            <div style="width: 325px;">
+              <b-card head-tip divider="no" :bordered="false" radius="10px"
+                :body-style="{ padding: 0, height: '310px' }" shadow="never">
+                <template v-slot:header>
+                  <div flex="main:justify cross:center" class="header-height">
+                    <span class="title-text">最新提报部门</span>
+                    <div>
+                      <b-button type="text" @click="modal = true">更多>></b-button>
+                    </div>
+                  </div>
+                </template>
+                <div class="pl-10 pr-10">
+                  <b-table :columns="newDepartColumns" :data="[]" size="small"></b-table>
+                </div>
+              </b-card>
             </div>
           </div>
-          <div class="mb-20">
-            <div class="area">
-              <div class="title">
-                <span class="text">部门数据归集统计分析</span>
-                <span class="float-right">
-                <b-button type="text" @click="modal = true">更多>></b-button>
-              </span>
+        </div>
+        <div class="right">
+          <b-card head-tip divider="no" :bordered="false" radius="10px"
+            :body-style="{ padding: 0, height: '310px' }" shadow="never">
+            <template v-slot:header>
+              <div flex="main:justify cross:center" class="header-height">
+                <span class="title-text">信息归集记录</span>
+                <div>
+                  <span class="mr-10">{{ $util.parseTime(curDate, '{y}-{m}-{d}') }}</span>
+                  <b-button type="text" @click="modal = true">更多>></b-button>
+                </div>
               </div>
-              <div class="p15">
-                <b-table :columns="departSumColumns" :data="departSumData" stripe border></b-table>
-              </div>
+            </template>
+            <div class="pl-10 pr-10">
+              <b-table :columns="infoCollectionColumns" :data="infoCollectionData" size="small" class="mb-10" ></b-table>
             </div>
+          </b-card>
+        </div>
+      </div>
+      <b-card head-tip divider="no" :bordered="false" radius="10px"
+        :body-style="{ padding: 0, height: '310px' }" shadow="never">
+        <template v-slot:header>
+          <div flex="cross:center" class="header-height">
+            <span class="title-text">资源信息归集趋势</span>
           </div>
-        </b-col>
-        <b-col span="8">
-          <div class="area mb-20">
-            <div class="title" flex="main:justify">
-              <span class="text">本月数据分析</span>
-            </div>
-            <div class="current-tip p15" flex="main:justify; box:mean">
-              <div class="current-tip-item" flex="dir:top">
-                <span class="g-font">数据归集量</span>
-                <span class="b-num">{{counts.gjCount}}</span>
-              </div>
-              <div class="border-right"></div>
-              <div class="current-tip-item" flex="dir:top">
-                <span class="g-font">数据归集量</span>
-                <span class="b-num">{{counts.sbCount}}</span>
-              </div>
-              <div class="border-right"></div>
-              <div class="current-tip-item" flex="dir:top">
-                <span class="g-font">数据归集量</span>
-                <span class="b-num">{{counts.hlCount}}</span>
-              </div>
-            </div>
-          </div>
-          <div class="area mb-20">
-            <div class="title" flex="main:justify">
-              <span class="text">按部门数据归集统计</span>
-            </div>
-            <div class="trend p15">
-              <b-charts height="280px" theme="charts-theme" :options="lineChartOption"/>
-            </div>
-          </div>
-          <div class="area mb-20">
-            <div class="title" flex="main:justify">
-              <span class="text">未填报部门</span>
-              <span class="float-right pr-12">
-              <b-select style="width:100px" v-model="monthUnGetSelect" @no-change="handleUnDepChange" clearable>
-                <b-option v-for="item in monthList" :value="item.value"
-                          :key="item.value">{{ item.label }}</b-option>
-              </b-select>
-            </span>
-            </div>
-            <div class="resource-list">
-              <p>资源信息</p>
-              <ul class="list">
-                <li class="list-item" v-for="(item, index) in unGetDeparts.slice(0,6)" :key="index">{{ item.departName
-                  }}
-                </li>
-              </ul>
-            </div>
-          </div>
-          <div class="area mb-20">
-            <div class="title" flex="main:justify">
-              <span class="text">主体及资源数据分类数据分析</span>
-            </div>
-            <div class="trend p15">
-              <b-charts :options="pieChartOption" height="280px"></b-charts>
-            </div>
-          </div>
-        </b-col>
-      </b-row>
+        </template>
+        <div style="width: 100%; height: 100%; position: relative;">
+          <b-charts :options="lineSmoothChartOption" theme="charts-theme" height="280px"></b-charts>
+        </div>
+      </b-card>
     </div>
-    <b-modal v-model="modal" footer-hide>
-      <p>我是弹窗内容...</p>
-      <p>我是弹窗内容...</p>
-      <p>我是弹窗内容...</p>
+    <b-modal v-model="modal" footer-hide title="部门数据归集统计分析" width="60%">
+      <b-table :columns="columns" :data="list" size="small" class="mb-10" >
+      </b-table>
     </b-modal>
   </div>
 </template>
 
 <script>
   import * as api from '../../../api/data-manage/collect-analysis.api.js'
-  import GrooveSelect from './Groove/GrooveSelect'
+  import QuickDateSelect from '../components/QuickDateSelect'
   import { formatDataSet, formatSeries } from 'bin-charts/src/utils/util'
 
   require('bin-charts/src/theme/charts-theme')
 
   export default {
     name: 'CollectAnalysis',
-    components: { GrooveSelect },
+    components: { QuickDateSelect },
     data() {
       return {
         listQuery: {
           departId: '',
           month: '2019-01'
         },
+        curDate: new Date(),
         counts: {
           totalResource: '',
           totalCount: '',
@@ -212,10 +203,14 @@
           tooltip: { trigger: 'axis' },
             color: ['#3cd7c1', '#a2a4fe', '#6fcafa', '#18e5e6', '#1ed1b8'],
             grid: {
+              top: '12%',
               left: '6%',
-              right: '3%'
+              right: '3%',
+              bottom: '12%'
             },
-            legend: {},
+            legend: {
+              // bottom: 0
+            },
             xAxis: {
               type: 'category',
               boundaryGap: false,
@@ -223,8 +218,12 @@
               axisLabel: { formatter: '{value} 月' }
             },
             yAxis: {
+              name: '（个）        ',
               type: 'value',
-              splitLine: { show: true }
+              splitLine: { show: true },
+              nameTextStyle: {
+                color: '#000000'
+              }
             },
             series: [
               {
@@ -311,9 +310,10 @@
               }
             },
             grid: {
-              left: '6%',
-              right: '6%',
-              bottom: '3%',
+              top: '3%',
+              left: '3%',
+              right: '3%',
+              bottom: '1%',
               containLabel: true
             },
             xAxis: {
@@ -397,55 +397,29 @@
               }
             ]
         },
-        monthDepartColumns: [
-          { title: '部门', key: 'departName' },
-          { title: '归集数量', key: 'value' }
+        columns: [], // 弹框通用
+        list: [], // 弹框通用
+        departSumColumns: [ // 部门数据归集分析
+          { title: '部门名称', key: 'departName' },
+          { title: '归集数量（个）', key: 'value', align: 'left' },
+          { title: '归集次数（次）', key: 'trend', align: 'left' },
+          { title: '占比', slot: 'percent', align: 'center', width: 170 }
         ],
-        monthDepartData: [],
-        departSumColumns: [
-          { title: '部门', key: 'departName', width: 300 },
-          { title: '归集数量', key: 'value' },
-          { title: '占比', key: 'percent' },
-          {
-            title: '趋势分析',
-            key: 'trend',
-            render: (h, params) => {
-              return h('b-button', {
-                props: {
-                  type: 'primary',
-                  size: 'mini',
-                  plain: true
-                },
-                nativeOn: {
-                  click: (e) => {
-                    this.modal = true
-                    console.log(e)
-                  }
-                }
-              }, '趋势')
-            }
-          }
+        departSumData: [], // 部门数据归集分析
+        newDepartColumns: [ // 最新提报部门
+          { title: '部门名称', key: 'departName' },
+          { title: '资源信息', key: 'value', align: 'right' }
         ],
-        departSumData: [
-          { departName: '部门1', value: 1200, percent: '10%' },
-          { departName: '部门1', value: 1200, percent: '10%' },
-          { departName: '部门1', value: 1200, percent: '10%' },
-          { departName: '部门1', value: 1200, percent: '10%' },
-          { departName: '部门1', value: 1200, percent: '10%' },
-          { departName: '部门1', value: 1200, percent: '10%' }
+        newDepartData: [], // 最新提报部门
+        infoCollectionColumns: [ // 信息归集记录
+          { title: '资源名称', key: '' },
+          { title: '归集数量（个）', key: '', align: 'right' }
         ],
-        crowdSelect: '',
-        crowdList: [{ label: '自然人', value: 'zrp' }, { label: '法人或其他', value: 'fo' }],
-        monthMsgSelect: '',
-        monthDeptSelect: '',
-        monthUnGetSelect: '',
+        infoCollectionData: [], // 信息归集记录
         monthList: [
           { value: '2020-2', label: '1月' },
           { value: '2020-3', label: '2月' },
           { value: '2020-4', label: '3月' }
-        ],
-        unGetDeparts: [
-          { departId: 'aabbcc', departName: '市发改委' }
         ],
         modal: false
       }
@@ -473,6 +447,11 @@
       // 年度信息归集趋势 年份按钮切换回调
       handleTabClick (curTabIndex) {
         this.getYearCollectData(curTabIndex)
+      },
+      // 日历切换事件
+      HandleCalendarChange (date) {
+        console.log(date)
+        this.curDate = date.date
       },
       // 资源信息分类统计 select 回调
       handleResChange (val) {
@@ -581,19 +560,10 @@
             total += parseInt(item.value)
           })
           this.departSumData.forEach(item => {
-            item.percent = parseInt(item.value / total * 100) + '%'
+            item.percent = parseInt(item.value / total * 100)
           })
           // 月度部门归集统计
-          this.monthDepartData = res[1].data.data
-          // 未填报部门
-          this.unGetDeparts = [
-            { departId: 'aabbcc', departName: '市发改委' },
-            { departId: 'aabbcc', departName: '环保办' },
-            { departId: 'aabbcc', departName: '市发改委' },
-            { departId: 'aabbcc', departName: '环保办' },
-            { departId: 'aabbcc', departName: '市发改委' },
-            { departId: 'aabbcc', departName: '市发改委' }
-          ]
+          // this.monthDepartData = res[1].data.data
         })
       },
       // 获取年度信息归集趋势
@@ -627,6 +597,11 @@
           padding: 20px;
           color: #fff;
           border-radius: 8px;
+
+          .info {
+            overflow: hidden;
+          }
+
           .icon {
             background-color: #ffffff44;
             display: inline-block;
@@ -635,11 +610,13 @@
             border-radius: 50%;
             margin-right: 20px;
           }
+
           .count {
             padding-top: 10px;
             font-size: 26px;
             font-weight: 700;
           }
+
           &:nth-child(1) {
             background-color: #4065e0;
           }
@@ -661,6 +638,7 @@
     .main {
       width: 100%
       height: 100%
+
       .area {
         border-radius: 8px
         background-color: #fff
@@ -679,7 +657,6 @@
         }
         .title {
           font-size: 18px
-          // line-height: 40px
           padding: 10px 20px
           font-weight: 700
           .text {
@@ -746,6 +723,20 @@
           width: 180px
           text-align center
         }
+      }
+    }
+    .header-height {
+      height: 31.6px;
+    }
+    .card-layout {
+      display: flex;
+      justify-content: space-between;
+
+      .left {
+        width: calc(100% - 400px)
+      }
+      .right {
+        width: 380px;
       }
     }
   }
