@@ -68,8 +68,24 @@ export default {
         datetime: 'change',
         text: 'blur'
       }[field.dataType]
-      // eslint-disable-next-line no-useless-escape
-      const requireRuleStr = `[{\"name\":\"$required\",\"message\":\"${field.fieldTitle}必填\",\"type\":\"${typeMap}\",\"trigger\":\"${triggerMap}\"}]`
+      const requireRule = {
+        'name': '$required',
+        'message': `${field.fieldTitle}必填`,
+        'type': typeMap,
+        'trigger': triggerMap
+      }
+      const lengthRule = {
+        'name': '$length',
+        'min': null,
+        'max': field.dataLength,
+        'message': '长度必须在指定的范围内',
+        'type': typeMap,
+        'trigger': triggerMap
+      }
+      let rules = [requireRule]
+      if (field.dataType === 'string') {
+        rules.push(lengthRule)
+      }
       return {
         directoryId,
         fieldName: field.fieldName, // 元信息名称（英文）
@@ -86,7 +102,7 @@ export default {
         required: 'Y', // 信息项类型，默认核心项
         status: 'use', // 启用状态，默认启用
         tokenizer: '', // 是否分词
-        checkRules: requireRuleStr
+        checkRules: JSON.stringify(rules)
       }
     },
     // 选择法人,自然人事件

@@ -56,6 +56,7 @@
                      :control-type="totalData[currentIndex].controlType"
                      :data-type="totalData[currentIndex].dataType"
                      :required="totalData[currentIndex].required"
+                     :data-length="totalData[currentIndex].dataLength"
                      :original-rules="originalRules"
                      @on-change="emitValue"
           >
