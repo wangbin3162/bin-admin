@@ -192,12 +192,26 @@
         this.resourceName = params.resourceName
         api.getItemsWithId(this.resourceKey).then(res => {
           this.items = res.data || []
+          this.checkItems = this.filterRepeatedItems(this.config.repeatedLineCfg, this.items)
         })
         this.targetFields = []
-        this.checkItems = this.config.repeatedLineCfg ? this.config.repeatedLineCfg.split(',') : []
         // 查询数据关联同步列表
         this.searchList()
         this.visible = true
+      },
+      // 过滤重复字段列表，去除已删除的
+      filterRepeatedItems(repeatedLineCfg, items) {
+        let arr = []
+        if (repeatedLineCfg) {
+          let temp = repeatedLineCfg.split(',')
+          temp.forEach(item => {
+            let hasIndex = items.findIndex(i => i.fieldName === item)
+            if (hasIndex > -1) {
+              arr.push(item)
+            }
+          })
+        }
+        return arr
       },
       handleClose() {
         this.visible = false
