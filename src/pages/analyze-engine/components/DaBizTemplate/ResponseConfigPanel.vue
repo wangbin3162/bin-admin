@@ -381,7 +381,7 @@
             // 根据返回的数组格式化为树结构的格式，并追加parents用于级联选择和展开
             this.treeData = tree ? tree.map(item => {
               return this.treeMapper(item, null,
-                ['bizId', 'parentId', 'respKind', 'keyName', 'keyAlias', 'keyPatch', 'dataType'],
+                ['bizId', 'parentId', 'respKind', 'keyName', 'keyAlias', 'keyPath', 'dataType'],
                 'keyName')
             }) : []
             if (this.treeData.length > 0) {
