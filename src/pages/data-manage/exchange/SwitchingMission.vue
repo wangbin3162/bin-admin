@@ -45,8 +45,13 @@
           <template v-slot:changeType="{row}">{{ exchangeTypeMap[row.changeType] }}</template>
           <template v-slot:transmitKind="{row}">{{ transmitKindMap[row.transmitKind] }}</template>
           <template v-slot:availableStatus="{row}">
-            <span v-if="row.availableStatus==='available'" :style="colorSuccess">可用</span>
-            <span v-else :style="colorDanger">不可用</span>
+            <b-tooltip
+              :content="row.availableStatus === 'available' ? '资源信息状态正常' : '资源信息已重新发布'"
+              theme="light" max-width="200" style="padding-top: 3px;">
+              <b-icon
+                :name="row.availableStatus==='available'?'ios-checkmark-circle-outline':'ios-close-circle-outline'"
+                size="20" :color="availableStatusStyleMap[row.availableStatus]"/>
+            </b-tooltip>
           </template>
           <!--有效状态-->
           <template v-slot:status="{row}">
@@ -243,7 +248,7 @@
           { title: '交换方案', slot: 'cfgName', width: 90, align: 'center' },
           { title: '信息流向', slot: 'flowDirection', align: 'center', width: 90 },
           { title: '交换类型', slot: 'changeType', align: 'center', width: 90 },
-          { title: '可用状态', slot: 'availableStatus', width: 90, align: 'center' },
+          { title: '资源状态', slot: 'availableStatus', width: 90, align: 'center' },
           { title: '启用/禁用', slot: 'status', align: 'center', width: 100 },
           { title: '操作', slot: 'action', width: 150 }
         ],
@@ -263,8 +268,9 @@
         resFields: [], // 资源列表
         flowDirectionMap: { COLLECT: '归集', SUBMIT: '上报', SHARE: '共享' }, // 信息流向
         exchangeTypeMap: { MANUAL: '人工交换', AUTO: '自动交换' }, // 交换类型
-        availableStatusMap: { available: '可用', not_available: '不可用' }, // 有效状态
-        statusMap: { 'enable': '启用', 'disable': '禁用' }
+        availableStatusMap: { available: '可用', not_available: '已变更' }, // 有效状态
+        statusMap: { 'enable': '启用', 'disable': '禁用' },
+        availableStatusStyleMap: { available: '#52c41a', notavailable: '#f5222d' }
       }
     },
     created() {
