@@ -77,20 +77,6 @@
                 </b-form-item>
               </b-col>
             </b-row> -->
-            <b-row v-else>
-              <b-col span="24">
-                <b-form-item label="el表达式" prop="tplContent" :rules="{ required: true, message: 'el表达式不能为空', trigger: 'blur' }">
-                  <div flex>
-                    <b-code-editor mode="" :readonly="true" :lint="false" v-model="form.tplContent">
-                    </b-code-editor>
-                    <b-button type="primary" plain size="small" style="margin-left: 5px;"
-                      @click="openElVar = true">
-                      操作
-                    </b-button>
-                  </div>
-                </b-form-item>
-              </b-col>
-            </b-row>
             <b-form-item label="描述" prop="varDesc">
               <b-input v-model="form.varDesc" placeholder="请输入描述" type="textarea" :rows="4"></b-input>
             </b-form-item>
@@ -102,14 +88,6 @@
           @el-change="elText => form.tplContent = elText"
           :initData="elExpreData">
         </edit-el-var>
-
-        <edit-el-var-modal
-          @var-change="handleVarChange"
-          @el-change="elText => form.tplContent = elText"
-          @close="openElVar = false"
-          :open="openElVar"
-          :initData="elExpreData">
-        </edit-el-var-modal>
 
         <!-- 一般变量时，选择模板带过来的参数不可改动与删除 -->
         <!-- 复合变量时，新增的参数不可在选择变量带过来的参数中 -->
@@ -145,7 +123,6 @@
   import EditSelectVar from './EditSelectVar'
   import EditParamManage from './EditParamManage'
   import EditElVar from './EditElVar'
-  import EditElVarModal from './EditElVarModal'
 
   export default {
     name: 'IndexVarEdit',
@@ -161,8 +138,7 @@
       EditSelectBizTemplate,
       EditSelectVar,
       EditParamManage,
-      EditElVar,
-      EditElVarModal
+      EditElVar
     },
     data () {
       return {
