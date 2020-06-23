@@ -1,7 +1,7 @@
 <template>
   <div>
     <page-header-wrap :title="title" show-close @on-close="$emit('close')">
-      <v-edit-wrap>
+      <v-edit-wrap transparent>
         <b-collapse-wrap title="基本信息" collapse>
           <b-form :model="form" ref="form" :rules="rules" :label-width="100">
             <b-row>
@@ -51,7 +51,7 @@
               </b-col>
               <b-col span="12"></b-col>
             </b-row>
-            <b-row v-else>
+            <!-- <b-row v-else>
               <b-col span="24">
                 <b-form-item label="已选变量">
                   <b-tag color="#409EFF" dot closable
@@ -76,6 +76,20 @@
                   </b-input>
                 </b-form-item>
               </b-col>
+            </b-row> -->
+            <b-row v-else>
+              <b-col span="24">
+                <b-form-item label="el表达式" prop="tplContent" :rules="{ required: true, message: 'el表达式不能为空', trigger: 'blur' }">
+                  <div flex>
+                    <b-code-editor mode="" :readonly="true" :lint="false" v-model="form.tplContent">
+                    </b-code-editor>
+                    <b-button type="primary" plain size="small" style="margin-left: 5px;"
+                      @click="openElVar = true">
+                      操作
+                    </b-button>
+                  </div>
+                </b-form-item>
+              </b-col>
             </b-row>
             <b-form-item label="描述" prop="varDesc">
               <b-input v-model="form.varDesc" placeholder="请输入描述" type="textarea" :rows="4"></b-input>
@@ -83,8 +97,22 @@
           </b-form>
         </b-collapse-wrap>
 
+        <edit-el-var ref="elVar" v-if="form.varType === 'Complex'"
+          @var-change="handleVarChange"
+          @el-change="elText => form.tplContent = elText"
+          :initData="elExpreData">
+        </edit-el-var>
+
+        <edit-el-var-modal
+          @var-change="handleVarChange"
+          @el-change="elText => form.tplContent = elText"
+          @close="openElVar = false"
+          :open="openElVar"
+          :initData="elExpreData">
+        </edit-el-var-modal>
+
         <!-- 一般变量时，选择模板带过来的参数不可改动与删除 -->
-        <!-- 复合变量时，新增的参数不可再选择变量带过来的参数中 -->
+        <!-- 复合变量时，新增的参数不可在选择变量带过来的参数中 -->
         <edit-param-manage ref="paramManage"
           :paramTypeOptions="paramTypeOptions"
           :params="params"
@@ -112,10 +140,12 @@
 <script>
   import commonMixin from '../../../common/mixins/mixin'
   import permission from '../../../common/mixins/permission'
+  import { createIndexVar, updateIndexVar } from '../../../api/credit-rating/index-var.api'
   import EditSelectBizTemplate from './EditSelectBizTemplate'
   import EditSelectVar from './EditSelectVar'
   import EditParamManage from './EditParamManage'
-  import { createIndexVar, updateIndexVar } from '../../../api/credit-rating/index-var.api'
+  import EditElVar from './EditElVar'
+  import EditElVarModal from './EditElVarModal'
 
   export default {
     name: 'IndexVarEdit',
@@ -130,7 +160,9 @@
     components: {
       EditSelectBizTemplate,
       EditSelectVar,
-      EditParamManage
+      EditParamManage,
+      EditElVar,
+      EditElVarModal
     },
     data () {
       return {
@@ -163,8 +195,10 @@
         },
         openBelongType: false,
         openSelectVar: false,
+        openElVar: false,
         params: [], // 存储模板选择组件选中的参数列表params
-        tempVarCodeList: [] // 存储变量选择组件选中的变量
+        tempVarCodeList: [], // 存储变量选择组件选中的变量
+        elExpreData: null
       }
     },
     created () {
@@ -192,6 +226,10 @@
         this.form = { ...this.form, ...tempObj }
         this.params = tempObj.params
       },
+      // el表达式组件var-change事件回调
+      handleVarChange (indexVarCodeList) {
+        this.tempVarCodeList = indexVarCodeList
+      },
       // 变量选择组件选中回调
       handleVarChooseMul (tempVarCodeList) {
         // 业务相同的变量只允许选择一次，所以这里做个去重处理
@@ -215,12 +253,20 @@
         this.form.tplContent = strArr.join('')
       },
       async handleSubmit () {
-        if (this.form.varType === 'Complex') {
+        let valid3 = true
+        if (this.form.varType === 'Complex') { // 符合变量时做特殊处理与验证
           this.form.tplId = this.tempVarCodeList.join()
+          // if (this.form.tplContent === '') {
+          //   this.$message({ type: 'warning', content: 'el表达式不能为空' })
+          //   valid3 = await this.$refs.elVar.validate()
+          // }
         }
         // paramManage.validateAll()用于验证参数管理
-        const [valid1, valid2] = await Promise.all([this.$refs.form.validate(), this.$refs.paramManage.validateAll()])
-        if (valid1 && valid2) {
+        const [valid1, valid2] = await Promise.all([
+          this.$refs.form.validate(),
+          this.$refs.paramManage.validateAll()
+        ])
+        if (valid1 && valid2 && valid3) {
           const [success, errorMsg] = this.editData ? await updateIndexVar(this.form) : await createIndexVar(this.form)
           if (success) {
             this.$message({ type: 'success', content: '操作成功' })
@@ -239,6 +285,11 @@
           if (this.form.varType === 'Complex') {
             // 如果是符合变量那么需要把tplId还原成数组用于渲染已选变量tag
             this.tempVarCodeList = this.form.tplId.length > 0 ? this.form.tplId.split(',') : []
+            // 初始化编辑时el表达式组件需要的参数
+            this.elExpreData = {
+              tempVarCodeList: this.tempVarCodeList,
+              elText: this.form.tplContent
+            }
           }
         }
       }
