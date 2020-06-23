@@ -116,9 +116,9 @@
                       :val-type-options="syncEnum.valType"
                       :condition-options="syncEnum.condition"/>
         </template>
-        <div>
+        <!--<div>
           <b-code-editor :value="JSON.stringify(sync,null,2)" readonly/>
-        </div>
+        </div>-->
         <!--保存提交-->
         <template slot="footer">
           <b-button @click="handleCancel">取 消</b-button>

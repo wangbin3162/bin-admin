@@ -31,6 +31,16 @@
               <b-button type="text" icon="ios-options" @click="editDict(row,index)" :icon-style="{fontSize:'20px'}"/>
             </b-tooltip>&nbsp;
           </template>
+          <template v-else-if="row.valType==='EL'">
+            <b-row :gutter="10" v-if="row.edit">
+              <b-col span="10">
+                <b-input v-model="mapList[index].paramValue" size="small" clearable placeholder="表达式"/>
+              </b-col>
+            </b-row>
+            <div v-else>
+              表达式：<span>{{ row.paramValue }}</span>
+            </div>
+          </template>
           <template v-else>
             <b-row :gutter="10" v-if="row.edit">
               <b-col span="10">
@@ -93,7 +103,7 @@
         <!--值选项-->
         <template v-slot:valType="{row,index}">
           <b-select v-if="row.edit" v-model="conditionList[index].valType" size="small" append-to-body>
-            <b-option v-for="(o,k) in valTypeOptions" :key="k" :value="k">{{ o }}</b-option>
+            <b-option v-for="(o,k) in valTypeOptions" :key="k" :value="k" v-if="k !== 'EL'">{{ o }}</b-option>
           </b-select>
           <span v-else>{{ valTypeOptions[row.valType] }}</span>
         </template>
