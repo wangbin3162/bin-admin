@@ -16,8 +16,8 @@
       <div v-if="toggle">
         <template>
           <b-tabs v-model="activeTab" :data="tabs"></b-tabs>
-          <div v-show="activeTab==='sec'" class="tab-container" >
-            <b-radio-group v-model="sec.flag" class="radio-container"  v-if="false">
+          <div v-show="activeTab==='sec'" class="tab-container">
+            <b-radio-group v-model="sec.flag" class="radio-container" v-if="false">
               <b-radio label="range">
                 从
                 <template>
@@ -30,7 +30,7 @@
                 秒执行一次
               </b-radio>
             </b-radio-group>
-            <b-radio-group v-model="sec.flag" class="radio-container"   v-if="false">
+            <b-radio-group v-model="sec.flag" class="radio-container" v-if="false">
               <b-radio label="default">
                 每秒
               </b-radio>
@@ -45,7 +45,7 @@
             </b-checkbox-group>
           </div>
           <div v-show="activeTab==='min'" class="tab-container">
-            <b-radio-group v-model="min.flag" class="radio-container"  v-if="false">
+            <b-radio-group v-model="min.flag" class="radio-container" v-if="false">
               <b-radio label="range">
                 从
                 <template>
@@ -58,7 +58,7 @@
                 分执行一次
               </b-radio>
             </b-radio-group>
-            <b-radio-group v-model="min.flag" class="radio-container"   v-if="false">
+            <b-radio-group v-model="min.flag" class="radio-container" v-if="false">
               <b-radio label="default">
                 每分
               </b-radio>
@@ -73,7 +73,7 @@
             </b-checkbox-group>
           </div>
           <div v-show="activeTab==='hou'" class="tab-container">
-            <b-radio-group v-model="hou.flag" class="radio-container"  v-if="false">
+            <b-radio-group v-model="hou.flag" class="radio-container" v-if="false">
               <b-radio label="range">
                 从
                 <template>
@@ -86,7 +86,7 @@
                 时执行一次
               </b-radio>
             </b-radio-group>
-            <b-radio-group v-model="hou.flag" class="radio-container"  v-if="false">
+            <b-radio-group v-model="hou.flag" class="radio-container" v-if="false">
               <b-radio label="default">
                 每小时
               </b-radio>
@@ -101,7 +101,7 @@
             </b-checkbox-group>
           </div>
           <div v-show="activeTab==='day'" class="tab-container">
-            <b-radio-group v-model="day.flag" class="radio-container"  v-if="false">
+            <b-radio-group v-model="day.flag" class="radio-container" v-if="false">
               <b-radio label="range">
                 从
                 <template>
@@ -129,7 +129,7 @@
             </b-checkbox-group>
           </div>
           <div v-show="activeTab==='mon'" class="tab-container">
-            <b-radio-group v-model="mon.flag" class="radio-container"  v-if="false">
+            <b-radio-group v-model="mon.flag" class="radio-container" v-if="false">
               <b-radio label="range">
                 从
                 <template>
@@ -197,11 +197,11 @@
                     {key: 'day', title: '日'},
                     {key: 'mon', title: '月'}
                 ],
-                sec: {key: 'sec',list: [0], flag: 'time', begin: 1, cycle: 2},
-                min: {key: 'min',list: [0], flag: 'time', begin: 1, cycle: 2},
-                hou: {key: 'hou',list: [1], flag: 'time', begin: 1, cycle: 2},
-                day: {key: 'day',list: [], flag: 'time', begin: 1, cycle: 2},
-                mon: {key: 'mon',list: [], flag: 'time', begin: 1, cycle: 2}
+                sec: {key: 'sec', list: [0], flag: 'time', begin: 1, cycle: 2},
+                min: {key: 'min', list: [0], flag: 'time', begin: 1, cycle: 2},
+                hou: {key: 'hou', list: [1], flag: 'time', begin: 1, cycle: 2},
+                day: {key: 'day', list: [], flag: 'time', begin: 1, cycle: 2},
+                mon: {key: 'mon', list: [], flag: 'time', begin: 1, cycle: 2}
             }
         },
         created() {
@@ -226,7 +226,7 @@
                     } else {
                         if (obj.key === 'sec' || obj.key === 'min' || obj.key === 'hou') {
                             cron += '0 '
-                        }else {
+                        } else {
                             cron += '* '
                         }
 
@@ -245,11 +245,11 @@
                 this.cronClear()
             },
             cronClear() {
-                this.sec = {key: 'sec',list: [0], flag: 'time', begin: 1, cycle: 2}
-                this.min = {key: 'min',list: [0], flag: 'time', begin: 1, cycle: 2}
-                this.hou = {key: 'hou',list: [1], flag: 'time', begin: 1, cycle: 2}
-                this.day = {key: 'day',list: [], flag: 'time', begin: 1, cycle: 2}
-                this.mon = {key: 'mon',list: [], flag: 'time', begin: 1, cycle: 2}
+                this.sec = {key: 'sec', list: [0], flag: 'time', begin: 1, cycle: 2}
+                this.min = {key: 'min', list: [0], flag: 'time', begin: 1, cycle: 2}
+                this.hou = {key: 'hou', list: [1], flag: 'time', begin: 1, cycle: 2}
+                this.day = {key: 'day', list: [], flag: 'time', begin: 1, cycle: 2}
+                this.mon = {key: 'mon', list: [], flag: 'time', begin: 1, cycle: 2}
             }
         },
         computed: {

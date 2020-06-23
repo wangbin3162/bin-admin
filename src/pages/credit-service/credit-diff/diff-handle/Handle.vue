@@ -58,7 +58,7 @@
           </table>
         </b-collapse-wrap>
 
-        <b-collapse-wrap title="方案计算结果信息" collapse>
+        <b-collapse-wrap title="异议处理" collapse>
           <b-form ref="form" :model="form" :rules="rules" :label-width="100">
             <b-form-item label="处理结果" prop="dealResult">
               <b-radio-group v-model="form.dealResult">

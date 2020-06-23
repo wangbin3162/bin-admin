@@ -51,7 +51,8 @@ export function createScheme(scheme) {
       transmitKind: scheme.transmitKind,
       source: scheme.source,
       target: scheme.target,
-      cronStr: scheme.cronStr
+      cronStr: scheme.cronStr,
+      cfgDept: scheme.cfgDept
     }
   })
 }
@@ -70,7 +71,8 @@ export function modifyScheme(scheme) {
       transmitKind: scheme.transmitKind,
       source: scheme.source,
       target: scheme.target,
-      cronStr: scheme.cronStr
+      cronStr: scheme.cronStr,
+      cfgDept: scheme.cfgDept
     }
   })
 }

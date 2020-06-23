@@ -34,7 +34,7 @@
                 <template v-slot:resProperty="{row}">{{ resPropertyMap[row.resProperty] }}</template>
                 <template v-slot:action="{ row }">
                   <b-button v-if="sourceRadioModel" type="primary" plain size="small"
-                    @click="handleRadioBtn(row)">
+                    @click.stop="handleRadioBtn(row)">
                     选择
                   </b-button>
                   <b-button v-else :type="checkRowSelected(row) ? 'danger' : 'primary'" plain size="small"
@@ -133,7 +133,7 @@
   import { getResourceDetail } from '../../../api/credit-rating/credit-report-config.api'
 
   export default {
-    name: 'IndexManageEditSourceInfoSelect',
+    name: 'SourceInfoSelect',
     mixins: [commonMixin, permission],
     props: {
       open: {

@@ -7,7 +7,7 @@
             <img src="" alt="">
           </span>
           <span class="info" flex="dir:top">
-            <i>资源信息数量</i>
+            <i t-ellipsis title="资源信息数量（条）">资源信息数量（条）</i>
             <i class="count">{{counts.totalResource}}</i>
           </span>
         </div>
@@ -16,7 +16,7 @@
             <img src="" alt="">
           </span>
           <span class="info" flex="dir:top">
-            <i>数据归集总量</i>
+            <i t-ellipsis title="数据归集总量（条）">数据归集总量（条）</i>
             <i class="count">{{counts.totalCount}}</i>
           </span>
         </div>
@@ -25,7 +25,7 @@
             <img src="" alt="">
           </span>
           <span class="info" flex="dir:top">
-            <i>本月归集数据量</i>
+            <i t-ellipsis title="本月归集数据量（条）">本月归集数据量（条）</i>
             <i class="count">{{counts.monthCount}}</i>
           </span>
         </div>
@@ -34,7 +34,7 @@
             <img src="" alt="">
           </span>
           <span class="info" flex="dir:top">
-            <i>上月归集数据量</i>
+            <i t-ellipsis title="自然人数据总量（人）">上月归集数据量（人）</i>
             <i class="count">{{counts.preMonthCount}}</i>
           </span>
         </div>
@@ -56,7 +56,7 @@
           <b-card class="box-card" head-tip divider="no" :bordered="false" radius="10px"
             :body-style="{padding:0,height:'310px'}" shadow="never">
             <template v-slot:header>
-              <div flex="main:justify cross:center">
+              <div flex="main:justify cross:center" class="header-height">
                 <span class="title-text">本月信息归集统计</span>
               </div>
             </template>
@@ -88,9 +88,11 @@
                   恭喜您已完成哦！
                 </span>
 
-                <router-link to="/dataManage/dataExchange/gather" class="go-gather-btn">
-                  采 集 >
-                </router-link>
+                <span class="pr-20" style="text-align: right;">
+                  <router-link to="/dataManage/dataExchange/gather" class="go-gather-btn">
+                    采 集 >
+                  </router-link>
+                </span>
               </div>
               <div class="trend">
                 <div class="chart-title">月度信息归集趋势</div>
@@ -104,15 +106,15 @@
         <!--信息归集日历-->
         <div class="right">
           <b-card class="box-card" head-tip divider="no" :bordered="false" radius="10px"
-                  :body-style="{padding:0,height:'310px'}" shadow="never">
+            :body-style="{padding:0,height:'310px'}" shadow="never">
             <template v-slot:header>
-              <div flex="main:justify cross:center">
+              <div flex="main:justify cross:center" class="header-height">
                 <span class="title-text">信息归集日历</span>
               </div>
             </template>
             <div flex="main:center">
               <b-calendar mini :body-style="{border:'none'}" style="padding: 0 0 15px;"
-                          :day-style="{border:'none',borderRadius:'4px'}">
+                :day-style="{border:'none',borderRadius:'4px'}" @on-select-day="HandleCalendarChange">
               </b-calendar>
             </div>
           </b-card>
@@ -122,11 +124,10 @@
         <!-- 年度信息归集趋势-->
         <div class="left">
           <b-card class="box-card" head-tip divider="no" :bordered="false" radius="10px"
-                  :body-style="{padding:0,height:'310px'}" shadow="never">
+            :body-style="{padding:0,height:'310px'}" shadow="never">
             <template v-slot:header>
-              <div flex="main:justify cross:center">
+              <div flex="main:justify cross:center" class="header-height">
                 <span class="title-text">年度信息归集趋势</span>
-
                 <div flex="main:justify cross:baseline">
                   <b-select style="width: 150px; margin-right: 30px;"
                             size="mini" clearable filterable @on-change="handleResourceChange">
@@ -148,13 +149,19 @@
         <!--信息归集历史-->
         <div class="right">
           <b-card class="box-card" head-tip divider="no" :bordered="false" radius="10px"
-                  :body-style="{height:'310px'}" shadow="never">
+            :body-style="{ padding: 0, height:'310px'}" shadow="never">
             <template v-slot:header>
-              <div flex="main:justify cross:center">
-                <span class="title-text">信息归集历史</span>
+              <div flex="main:justify cross:center" class="header-height">
+                <span class="title-text">信息归集记录</span>
+                <div>
+                  <span class="mr-10">{{ $util.parseTime(curDate, '{y}-{m}-{d}') }}</span>
+                  <b-button type="text" @click="modal = true">更多>></b-button>
+                </div>
               </div>
             </template>
-            <b-table :columns="columns" :data="historyList" size="small"></b-table>
+            <div class="pl-20 pr-20">
+              <b-table :columns="columns" :data="historyList" size="small"></b-table>
+            </div>
           </b-card>
         </div>
       </div>
@@ -181,7 +188,7 @@
         tab: 0,
         yearsText: [],
         resources: [],
-        date: new Date(),
+        curDate: new Date(),
         listQuery: {
           departId: '',
           month: '2019-01',
@@ -242,8 +249,8 @@
         },
         columns: [
           { title: '资源信息', key: 'resourceName', tooltip: true },
-          { title: '归集数量', key: 'count', width: 88, align: 'center' },
-          { title: '归集日期', key: 'date', width: 110 }
+          { title: '归集数量', key: 'count', align: 'center' }
+          // { title: '归集日期', key: 'date', width: 110 }
         ],
         historyList: [],
         resourceList: [],
@@ -258,6 +265,11 @@
       // 临时设置departId
       resetListQuery() {
         this.listQuery.departId = this.$store.state.user.info.departId
+      },
+      // 日历切换事件
+      HandleCalendarChange (date) {
+        console.log(date)
+        this.curDate = date.date
       },
       // 年度归集信息select回调
       handleResourceChange(val) {
@@ -456,6 +468,9 @@
           padding: 20px;
           color: #fff;
           border-radius: 8px;
+          .info {
+            overflow: hidden;
+          }
           .icon {
             background-color: #ffffff44;
             display: inline-block;
@@ -491,14 +506,14 @@
       font-weight: 500;
     }
     .summary {
-      background-color: #1fadf7;
-      color #ffffff;
-      border-radius: 8px;
+      padding-top: 15px;
+      position: relative;
       width: 40%;
       margin: 20px;
       margin-top: 0;
-      padding-top: 15px;
-      position: relative;
+      background-color: #1fadf7;
+      color #ffffff;
+      border-radius: 8px;
       .tip {
         position: absolute;
         top: 10px;
@@ -531,15 +546,13 @@
         }
       }
       .go-gather-btn {
+        display: inline-block;
         width: 70px;
-        padding: 7px 0;
         font-size: 13px;
         color: #fff;
         text-align: center;
         border-radius: 30px;
-        // background-color: #3b90e9;
         background-color: rgba(64, 101, 224, 0.4)
-        margin-left: 27px;
       }
     }
     .trend {
@@ -554,6 +567,9 @@
         width: 180px;
         text-align center;
       }
+    }
+    .header-height {
+      height: 31.6px;
     }
     .card-layout {
       display: flex;
