@@ -171,9 +171,9 @@
           <v-simple-label label="错误报告" v-if="batchDetail.errorCount!==0">
             <span class="link" @click="handleDownloadError(batchDetail.id)">下载</span>
           </v-simple-label>
-          <v-simple-label label="重复报告" v-if="batchDetail.repeatCount!==0">
+          <!--<v-simple-label label="重复报告" v-if="batchDetail.repeatCount!==0">
             <span class="link" @click="handleDownloadRepeat(batchDetail.id)">下载</span>
-          </v-simple-label>
+          </v-simple-label>-->
         </div>
         </div>
         <div v-else>
@@ -243,9 +243,12 @@
         dirBatchList: [], // 当前页面显示的数据列表
         dirBatchColumns: [
           { type: 'index', width: 50, align: 'center' },
+          { title: '作业ID', width: 100, key: 'jobId', align: 'center' },
           { title: '起始时间', key: 'createDate' },
           { title: '结束时间', key: 'finishDate' },
-          { title: '耗时', key: 'duration', width: 100 },
+          { title: '耗时', key: 'duration', align: 'center' },
+          { title: '资源信息key', key: 'resourceKey', width:200, align: 'center' },
+          { title: '交换部门', key: 'cfgDeptName', align: 'center' },
           { title: '任务状态', slot: 'jobStatus', width: 100, align: 'center' },
           { title: '数据总量', key: 'totalCount', width: 100, align: 'center' },
           { title: '失败数量', key: 'errorCount', width: 100, align: 'center' },
