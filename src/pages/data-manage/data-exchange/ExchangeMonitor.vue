@@ -160,6 +160,7 @@
           <v-simple-label label="结束日期">{{ batchDetail.finishDate }}</v-simple-label>
           <v-simple-label label="总耗时">{{ batchDetail.duration }}</v-simple-label>
         </div>
+        <div v-if="batchDetail.jobStatus!=='FAILED'">
         <div flex="box:mean">
           <v-simple-label label="交换数据总量">{{ batchDetail.totalCount }}</v-simple-label>
           <v-simple-label label="入库有效数量">{{ batchDetail.validCount}}</v-simple-label>
@@ -173,6 +174,10 @@
           <v-simple-label label="重复报告" v-if="batchDetail.repeatCount!==0">
             <span class="link" @click="handleDownloadRepeat(batchDetail.id)">下载</span>
           </v-simple-label>
+        </div>
+        </div>
+        <div v-else>
+          <v-simple-label label="错误信息"><b-input v-model="batchDetail.jobMessage" type="textarea" :rows="4" disabled></b-input></v-simple-label>
         </div>
       </template>
       <div slot="footer">
