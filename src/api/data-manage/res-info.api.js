@@ -34,7 +34,7 @@ export function getFields(resourceKey) {
 /* 获取资源信息字段列表[修改列表接口] */
 export function getItemsWithId(resourceKey) {
   return request({
-    url: '/api/dir/itemsWithId',
+    url: '/api/dir/itemsWithIdForRepeat',
     method: 'get',
     params: {
       resourceKey
