@@ -167,13 +167,20 @@
           <v-simple-label label="验证无效数量">{{ batchDetail.errorCount }}</v-simple-label>
           <v-simple-label label="验证重复数量">{{ batchDetail.repeatCount }}</v-simple-label>
         </div>
+        <div flex="box:mean" v-if="batchDetail.jobStatus ==='COMPLETED'">
+          <v-simple-label label="ES数据同步">
+            <b-tag :type="statusStyleMap[batchDetail.jobStatus]"
+                   :tag-style="{borderRadius: '30px'}">
+            {{ jobStatusMap[batchDetail.esSyncStatus] }}
+          </b-tag>
+          </v-simple-label>
+          <v-simple-label label="开始日期">{{ batchDetail.finishDate}}</v-simple-label>
+          <v-simple-label label="同步数据总量">{{ batchDetail.esSyncCount}}</v-simple-label>
+        </div>
         <div flex="box:mean">
           <v-simple-label label="错误报告" v-if="batchDetail.errorCount!==0">
             <span class="link" @click="handleDownloadError(batchDetail.id)">下载</span>
           </v-simple-label>
-          <!--<v-simple-label label="重复报告" v-if="batchDetail.repeatCount!==0">
-            <span class="link" @click="handleDownloadRepeat(batchDetail.id)">下载</span>
-          </v-simple-label>-->
         </div>
         </div>
         <div v-else>
@@ -216,7 +223,7 @@
         ],
         availableStatusMap: { available: '有效', notavailable: '无效' }, // 有效状态
         lastJobStatusMap: { COMPLETED: '成功', FAILED: '失败', RUNNING: '运行中' },
-        jobStatusMap: { COMPLETED: '完成', FAILED: '失败', STARTED: '运行中', REPEATING: '重复校验' }, //  任务状态
+        jobStatusMap: { COMPLETED: '完成', FAILED: '失败', STARTED: '运行中' }, //  任务状态
         statusStyleMap: {
           COMPLETED: 'success',
           STARTED: 'primary',
@@ -246,8 +253,7 @@
           { title: '作业ID', width: 100, key: 'jobId', align: 'center' },
           { title: '起始时间', key: 'createDate' },
           { title: '结束时间', key: 'finishDate' },
-          { title: '耗时', key: 'duration', align: 'center' },
-          { title: '资源信息key', key: 'resourceKey', width:200, align: 'center' },
+          { title: '总耗时', key: 'duration', align: 'center' },
           { title: '交换部门', key: 'cfgDeptName', align: 'center' },
           { title: '任务状态', slot: 'jobStatus', width: 100, align: 'center' },
           { title: '数据总量', key: 'totalCount', width: 100, align: 'center' },
