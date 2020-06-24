@@ -34,7 +34,7 @@
           <template v-else-if="row.valType==='EL'">
             <b-row :gutter="10" v-if="row.edit">
               <b-col span="10">
-                <b-input v-model="mapList[index].paramValue" size="small" clearable placeholder="表达式"/>
+                <b-input v-model="mapList[index].paramValue" size="small" clearable placeholder="表达式,例: #name"/>
               </b-col>
             </b-row>
             <div v-else>
