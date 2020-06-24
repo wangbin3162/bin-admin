@@ -20,7 +20,7 @@
       </div>
       <div style="width: calc(100% - 80px);">
         <b-input v-if="value.type==='default' || value.type==='el'" v-model="inputValue.value" size="small"
-                 :placeholder="value.type==='default' ? '请输入默认值' : '请输入表达式'"
+                 :placeholder="value.type==='default' ? '请输入默认值' : '请输入表达式,例: #name'"
                  @on-change="emitValue"/>
         <b-input v-else :value="inputValue.showValue" size="small" readonly/>
       </div>
