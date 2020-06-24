@@ -82,6 +82,15 @@ export function removeContent(content) {
   return requestPost('/da/content/remove', { id: content.id })
 }
 
+/* 内容接口测试 */
+export function testContent(themeCode, contentCode, params) {
+  return request({
+    url: `da/data/${themeCode}/${contentCode}`,
+    method: 'get',
+    params
+  })
+}
+
 /* 批量打开 */
 export function batchOn(ids) {
   return request({

@@ -1,17 +1,17 @@
 <template>
   <div>
     <page-header-wrap v-show="visible" show-close @on-close="close"
-                      :title="`[${temp.tempName}] 测试`">
+                      :title="`[${content.name}] 测试`">
       <v-edit-wrap>
         <b-row :gutter="20">
           <b-col span="12">
             <v-title-bar label="基础参数" class="mb-20"/>
             <b-empty v-if="this.$isEmpty(params)">无参数</b-empty>
             <b-form v-else :model="form" ref="form" :label-width="100">
-              <b-form-item v-for="item in params" :key="item.paramCode"
-                           :label="item.paramName" :prop="item.paramCode"
-                           :rules="{ required: true, message: `${item.paramName}不能为空`, trigger: 'blur' }">
-                <b-input v-model="form[item.paramCode]" clearable placeholder="请输入"/>
+              <b-form-item v-for="item in params" :key="item.fieldName"
+                           :label="item.name" :prop="item.fieldName"
+                           :rules="{ required: true, message: `${item.name}不能为空`, trigger: 'blur' }">
+                <b-input v-model="form[item.fieldName]" clearable placeholder="请输入"/>
               </b-form-item>
             </b-form>
 
@@ -46,16 +46,16 @@
 <script>
   import commonMixin from '../../../../common/mixins/mixin'
   import permission from '../../../../common/mixins/permission'
-  import * as api from '../../../../api/analyze-engine/da-business-temp.api'
   import { deepCopy, isEmpty } from '../../../../common/utils/assist'
+  import { testContent } from '../../../../api/data-analyze/da-content.api'
 
   export default {
-    name: 'BizTestPanel',
+    name: 'ContentTestPanel',
     mixins: [commonMixin, permission],
     data() {
       return {
         visible: false,
-        temp: null,
+        content: null,
         params: null,
         form: {},
         result: null
@@ -82,12 +82,12 @@
       }
     },
     methods: {
-      open(template, params) {
-        this.temp = deepCopy(template)
+      open(content, params) {
+        this.content = deepCopy(content)
         this.params = deepCopy(params)
         // 转换params为form表单对象
         this.params.forEach(p => {
-          this.$set(this.form, p.paramCode, p.defaultVal)
+          this.$set(this.form, p.fieldName, p.defaultValue)
         })
         this.visible = true
         this.$refs.form && this.$refs.form.resetFields()
@@ -99,15 +99,18 @@
         this.$emit('on-close')
       },
       reset() {
-        this.temp = {
+        this.content = {
           id: '',
-          tempCode: '',
-          tempType: '',
-          tempName: '',
-          tempSource: '',
-          reqType: '',
-          tempDesc: '',
-          indices: ''
+          themeCode: '',
+          name: '',
+          code: '',
+          describe: '',
+          data: '',
+          apiId: '',
+          toggle: 'OFF',
+          type: [],
+          apiName: '',
+          themeName: ''
         }
         this.params = []
       },
@@ -124,9 +127,9 @@
       },
       testApi() {
         this.btnLoading = true
-        let bizId = this.temp.id
+        let { themeCode, code: contentCode } = this.content
         let params = this.form
-        api.testBusinessTemplate(bizId, params).then(res => {
+        testContent(themeCode, contentCode, params).then(res => {
           this.result = res.data
           this.btnLoading = false
         }).catch(err => {

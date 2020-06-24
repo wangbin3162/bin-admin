@@ -20,6 +20,7 @@
         <v-table-tool-bar>
           <b-button type="primary" v-if="canCreate"
                     icon="ios-add-circle-outline"
+                    :disabled="currentTreeNode&&currentTreeNode.id==='top'"
                     @click="handleCreate">新 增
           </b-button>
           <template slot="right" v-if="hasBatchOperate">
@@ -44,18 +45,26 @@
             </b-switch>
           </template>
           <!--操作栏-->
-          <template v-slot:action="scope">
-            <b-button type="text" :disabled="!canModify" @click="handleModify(scope.row)">修改</b-button>
-            <template v-if="havePermission('respCfg')">
-              <b-divider type="vertical"/>
-              <b-button type="text" text-color="warning"
-                        @click="handleConfig(scope.row)">配置响应
-              </b-button>
-            </template>
+          <template v-slot:action="{row}">
+            <b-button type="text" :disabled="!canModify" @click="handleModify(row)">修改</b-button>
             <b-divider type="vertical"/>
-            <b-button type="text" text-color="danger"
-                      :disabled="!canRemove" @click="handleRemove(scope.row)">删除
-            </b-button>
+            <b-dropdown append-to-body @on-click="(name)=>{handleCommand(name,row)}">
+              <b-button type="text">更多
+                <b-icon name="ios-arrow-down"/>
+              </b-button>
+              <b-dropdown-menu slot="list">
+                <b-dropdown-item :disabled="!havePermission('respCfg')" :style="colorSuccess" name="cfg">
+                  配置响应
+                </b-dropdown-item>
+                <b-dropdown-item :disabled="!havePermission('test')" :style="colorWarning" name="test"
+                                 v-if="row.toggle==='ON'">
+                  测试
+                </b-dropdown-item>
+                <b-dropdown-item :disabled="!canRemove" :style="colorDanger" name="remove">
+                  删除
+                </b-dropdown-item>
+              </b-dropdown-menu>
+            </b-dropdown>
           </template>
         </b-table>
         <!--下方分页器-->
@@ -67,58 +76,51 @@
     <page-header-wrap v-show="isEdit" :title="editTitle" show-close @on-close="handleCancel">
       <v-edit-wrap transparent>
         <b-collapse-wrap title="基本信息">
-          <b-form :model="content" ref="form" :rules="ruleValidate" :label-width="100">
-            <b-row>
-              <b-col span="12">
+          <b-form :model="content" ref="form" :rules="ruleValidate" label-position="top">
+            <b-row :gutter="20">
+              <b-col span="6">
+                <b-form-item label="所属主题" prop="themeCode">
+                  <b-input v-model="content.themeName" disabled/>
+                </b-form-item>
+              </b-col>
+              <b-col span="6">
                 <b-form-item label="名称" prop="name">
                   <b-input v-model="content.name"></b-input>
                 </b-form-item>
               </b-col>
-              <b-col span="12">
+              <b-col span="6">
                 <b-form-item label="编码" prop="code">
                   <b-input v-model="content.code"></b-input>
                 </b-form-item>
               </b-col>
-            </b-row>
-            <b-row>
-              <b-col span="12">
+              <b-col span="6">
                 <b-form-item label="类型" prop="type">
                   <b-cascader :data="contentTypeMap" v-model="content.type"/>
                 </b-form-item>
               </b-col>
-              <b-col span="12">
-                <b-form-item label="数据来源" prop="toggle">
-                  <b-select v-model="content.toggle">
-                    <b-option value="ON">动态数据</b-option>
-                    <b-option value="OFF">静态数据</b-option>
-                  </b-select>
-                </b-form-item>
-              </b-col>
             </b-row>
-            <b-row>
-              <b-col span="12">
-                <b-form-item label="所属主题" prop="themeCode">
-                  <div flex style="width:100%;">
-                    <b-input v-model="content.themeName" disabled></b-input>
-                    <b-button type="primary" @click="handleShowThemeChoose"
-                              style="flex:0 0 auto;margin-left:0;font-size: 12px;">选择主题
-                    </b-button>
-                  </div>
+            <b-row :gutter="20">
+              <b-col span="6">
+                <b-form-item label="数据来源" prop="toggle">
+                  <b-radio-group v-model="content.toggle">
+                    <b-radio label="ON">
+                      <span>动态数据</span>
+                    </b-radio>
+                    <b-radio label="OFF">
+                      <span>静态数据</span>
+                    </b-radio>
+                  </b-radio-group>
                 </b-form-item>
               </b-col>
-              <b-col span="12">
-                <b-form-item label="接口" prop="apiId">
-                  <div flex style="width:100%;">
-                    <b-input v-model="content.apiName" disabled></b-input>
-                    <b-button type="primary" @click="handleShowApiChoose"
-                              style="flex:0 0 auto;margin-left:0;font-size: 12px;">选择接口
-                    </b-button>
-                  </div>
+              <b-col span="6">
+                <b-form-item label="接口" prop="apiId" v-if="content.toggle==='ON'">
+                  <api-choose v-model="content.apiId" :default-name="content.apiName"
+                              @on-change="({name})=>this.apiName=name"/>
                 </b-form-item>
               </b-col>
             </b-row>
             <b-form-item label="示例数据" prop="data">
-              <b-input v-model="content.data" type="textarea" :autosize="{minRows: 2,maxRows: 5}"></b-input>
+              <b-code-editor v-if="isEdit&&content" v-model="content.data"/>
             </b-form-item>
             <b-form-item label="描述" prop="describe">
               <b-input v-model="content.describe" type="textarea" :autosize="{minRows: 2,maxRows: 5}"></b-input>
@@ -134,30 +136,53 @@
       </v-edit-wrap>
     </page-header-wrap>
     <page-header-wrap v-show="isCheck" :title="editTitle" show-close @on-close="handleCancel">
-      <v-edit-wrap>
-        <div class="p20">
-          <v-key-label label="名称">{{ content.name }}</v-key-label>
-          <v-key-label label="编码">{{ content.code }}</v-key-label>
-          <v-key-label label="类型">{{ typeMap[content.category] +
-            (content.subCategory? ' / '+chartTypeMap[content.subCategory]:'')}}
-          </v-key-label>
-          <v-key-label label="数据来源">{{ content.toggle==='ON'?'动态数据':'静态数据' }}</v-key-label>
-          <v-key-label label="所属主题">{{ content.themeName }}</v-key-label>
-          <v-key-label label="接口">{{ content.apiName }}</v-key-label>
-          <v-key-label label="静态数据">{{ content.data }}</v-key-label>
-          <v-key-label label="备注" is-bottom>{{ content.describe }}</v-key-label>
-        </div>
+      <v-edit-wrap transparent>
+        <b-collapse-wrap title="基本信息">
+          <b-row>
+            <b-col span="12">
+              <v-simple-label label="名称">{{ content.name }}</v-simple-label>
+            </b-col>
+            <b-col span="12">
+              <v-simple-label label="编码">{{ content.code }}</v-simple-label>
+            </b-col>
+          </b-row>
+          <b-row>
+            <b-col span="12">
+              <v-simple-label label="类型">
+                {{ typeMap[content.category] + (content.subCategory? ' / '+chartTypeMap[content.subCategory]:'')}}
+              </v-simple-label>
+            </b-col>
+            <b-col span="12">
+              <v-simple-label label="数据来源">{{ content.toggle==='ON'?'动态数据':'静态数据' }}</v-simple-label>
+            </b-col>
+          </b-row>
+          <b-row>
+            <b-col span="12">
+              <v-simple-label label="所属主题">{{ content.themeName }}</v-simple-label>
+            </b-col>
+            <b-col span="12">
+              <v-simple-label label="接口">{{ content.apiName }}</v-simple-label>
+            </b-col>
+          </b-row>
+          <b-row>
+            <b-col span="224">
+              <v-simple-label label="静态数据">{{ content.data }}</v-simple-label>
+            </b-col>
+          </b-row>
+          <b-row>
+            <b-col span="24">
+              <v-simple-label label="备注">{{ content.describe }}</v-simple-label>
+            </b-col>
+          </b-row>
+        </b-collapse-wrap>
         <!--保存提交-->
         <template slot="footer">
           <b-button @click="handleCancel">取 消</b-button>
         </template>
       </v-edit-wrap>
     </page-header-wrap>
-    <!--选择接口弹窗-->
-    <api-choose ref="apiChoose" @on-choose="handleChooseApi"></api-choose>
-    <!--选择主题弹窗-->
-    <theme-choose ref="themeChoose" @on-choose="handleChooseTheme"></theme-choose>
     <response-config-panel ref="resConfigPanel" @on-close="handleCancel"/>
+    <content-test-panel ref="testPanel" @on-close="handleCancel"/>
   </div>
 </template>
 
@@ -167,13 +192,14 @@
   import * as api from '../../api/data-analyze/da-content.api'
   import { getThemeTree } from '../../api/data-analyze/da-theme.api'
   import ApiChoose from './components/DaContent/ApiChoose'
-  import ThemeChoose from './components/DaContent/ThemeChoose'
   import { requiredRule } from '../../common/utils/validate'
   import ResponseConfigPanel from '../analyze-engine/components/DaBizTemplate/ResponseConfigPanel'
+  import { getApiDetail } from '../../api/analyze-engine/da-api.api'
+  import ContentTestPanel from './components/DaContent/ContentTestPanel'
 
   export default {
     name: 'Content',
-    components: { ResponseConfigPanel, ApiChoose, ThemeChoose },
+    components: { ContentTestPanel, ResponseConfigPanel, ApiChoose },
     mixins: [commonMixin, permission],
     data() {
       return {
@@ -188,7 +214,7 @@
           { title: '编码', key: 'code', align: 'center' },
           { title: '主题', key: 'themeCode', align: 'center', width: 90 },
           { title: '数据来源', slot: 'toggle', align: 'center' },
-          { title: '操作', slot: 'action', width: 190 }
+          { title: '操作', slot: 'action', width: 150 }
         ],
         contentTypeMap: [],
         typeMap: {},
@@ -200,7 +226,7 @@
           type: [{ required: true, message: '必填项', trigger: 'change', type: 'array' }],
           toggle: [{ required: true, message: '必填项', trigger: 'change' }],
           themeCode: [{ required: true, message: '必填项', trigger: 'change' }],
-          apiId: [{ required: true, message: '必填项', trigger: 'change' }]
+          apiId: [{ required: true, message: '必填项', trigger: 'change,blur' }]
         },
         statusMap: { 'I': '初始', 'Y': '启用', 'D': '禁用' },
         apiModel: true
@@ -252,14 +278,8 @@
           node.selected = true
         }
         this.currentTreeNode = node
-        this.listQuery.themeCode = node.id
-        this.listQuery.page = 1
-        this.current = 1
-        if (this.dialogFormVisible) { // 如果打开了右侧编辑区域则不需要查询，并且需要缓存当前树节点，需要修改父节点id
-          this.content.themeCode = node.id
-        } else {
-          this.handleFilter()
-        }
+        this.listQuery.themeCode = node.code
+        this.handleFilter()
       },
       // filter-Bar:重置查询条件
       resetQuery() {
@@ -268,7 +288,7 @@
           size: 10,
           name: '',
           code: '',
-          themeCode: this.currentTreeNode ? this.currentTreeNode.id : ''
+          themeCode: this.currentTreeNode ? this.currentTreeNode.code : ''
         }
         this.handleFilter()
       },
@@ -299,7 +319,7 @@
         }
         this.openEditPage('modify')
       },
-      // 根据状态或者是资源标识符来获取fields
+      // 获取内容详情
       getContentDetail(callBack) {
         api.getContentDetail(this.content.id).then(res => {
           if (res.data.code === '0') {
@@ -308,19 +328,28 @@
           }
         })
       },
-      // 弹窗选择角色
-      handleShowDialogChoose() {
-        this.$refs.roleChoose && this.$refs.roleChoose.open()
+      // 更多操作点击事件
+      handleCommand(name, row) {
+        switch (name) {
+          case 'cfg':
+            this.handleConfig(row)
+            break
+          case 'test':
+            this.handleTest(row)
+            break
+          case 'remove':
+            this.handleRemove(row)
+            break
+        }
       },
-      // 选中一个接口
-      handleChooseApi(item) {
-        this.content.apiId = item.id
-        this.content.apiName = item.name
-      },
-      // 选中一个主题
-      handleChooseTheme(item) {
-        this.content.themeCode = item.code
-        this.content.themeName = item.name
+      // 测试
+      handleTest(row) {
+        // 获取api的对应参数列表
+        getApiDetail(row.apiId).then(res => {
+          let params = res.data.data
+          this.dialogStatus = 'test'
+          this.$refs.testPanel && this.$refs.testPanel.open(row, params)
+        })
       },
       // 表单提交
       handleSubmit(cfgFlag) {
@@ -394,7 +423,7 @@
       resetContent() {
         this.content = {
           id: '',
-          themeCode: this.currentTreeNode ? this.currentTreeNode.id : '',
+          themeCode: this.currentTreeNode ? this.currentTreeNode.code : '',
           name: '',
           code: '',
           describe: '',
@@ -403,7 +432,7 @@
           toggle: 'OFF',
           type: [],
           apiName: '',
-          themeName: ''
+          themeName: this.currentTreeNode ? this.currentTreeNode.title : ''
         }
       },
       // tree:初始化树结构
@@ -413,6 +442,7 @@
         getThemeTree().then(response => {
           const list = response.data.data || []
           let root = {
+            id: 'top',
             code: '',
             name: '所有主题',
             children: list
@@ -420,7 +450,8 @@
 
           let mapper = node => {
             return {
-              id: node.code,
+              id: node.id,
+              code: node.code,
               title: node.name,
               children: (node.children && node.children.map(mapper)) || []
             }
@@ -429,8 +460,6 @@
           this.treeData.push(data)
           if (this.treeData.length > 0) {
             this.currentTreeNode = this.treeData[0]
-            this.listQuery.parentId = this.currentTreeNode.id
-            // 这里要注意，扩展响应式属性需要这么写
             this.$set(this.treeData[0], 'selected', true)
             this.$set(this.treeData[0], 'expand', true)
             this.resetQuery()
@@ -448,12 +477,6 @@
             })
           }
         })
-      },
-      handleShowApiChoose() {
-        this.$refs.apiChoose && this.$refs.apiChoose.open()
-      },
-      handleShowThemeChoose() {
-        this.$refs.themeChoose && this.$refs.themeChoose.open()
       },
       handleBatchOff() {
         let selections = this.$refs.table.getSelection()

@@ -1,18 +1,25 @@
 <template>
-  <b-modal v-model="chooseDialog" title="选择接口" width="500px" min-height="400px">
-    <b-table :columns="columns" :data="list" size="small">
-      <!--操作栏-->
-      <template v-slot:action="scope">
-        <b-button type="text" @click="handleChoose(scope.row)">
-          选择
-        </b-button>
-      </template>
-    </b-table>
-    <div slot="footer" class="t-center">
-      <b-page :total="total" :current.sync="listQuery.page"
-              @on-change="handleCurrentChange"></b-page>
-    </div>
-  </b-modal>
+  <div flex style="width:100%;">
+    <b-input v-model="current" placeholder="选择接口" readonly clearable
+             @on-clear="handleClear"></b-input>
+    <b-button type="primary" @click="open" plain
+              style="flex:0 0 auto;margin-left:0;font-size: 12px;">选择
+    </b-button>
+    <b-modal v-model="chooseDialog" title="选择接口" width="500px" min-height="400px">
+      <b-table :columns="columns" :data="list" size="small">
+        <!--操作栏-->
+        <template v-slot:action="scope">
+          <b-button type="text" @click="handleChoose(scope.row)">
+            选择
+          </b-button>
+        </template>
+      </b-table>
+      <div slot="footer" class="t-center">
+        <b-page :total="total" :current.sync="listQuery.page"
+                @on-change="handleCurrentChange"></b-page>
+      </div>
+    </b-modal>
+  </div>
 </template>
 
 <script>
@@ -30,10 +37,29 @@
         },
         chooseDialog: false,
         columns: [
-          { title: '接口名称', key: 'name', align: 'center' },
-          { title: '操作', slot: 'action', align: 'center' }
+          { title: '接口名称', key: 'name' },
+          { title: '操作', slot: 'action', align: 'center', width: 120 }
         ],
-        list: []
+        list: [],
+        current: ''
+      }
+    },
+    props: {
+      value: {
+        type: String,
+        default: ''
+      },
+      defaultName: {
+        type: String,
+        default: ''
+      }
+    },
+    watch: {
+      defaultName: {
+        handler(val) {
+          this.current = val
+        },
+        immediate: true
       }
     },
     methods: {
@@ -54,10 +80,18 @@
           }
         })
       },
-      // 选中一个角色
+      // 选中一个
       handleChoose(item) {
+        this.current = item.name
         this.chooseDialog = false
-        this.$emit('on-choose', { id: item.id, name: item.name })
+        this.$emit('input', item.id)
+        this.$emit('on-change', { id: item.id, name: item.name })
+      },
+      // 清空时触发调用
+      handleClear() {
+        this.current = ''
+        this.$emit('input', '')
+        this.$emit('on-change', { id: '', name: '' })
       }
     }
   }
