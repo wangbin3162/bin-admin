@@ -8,7 +8,7 @@
           </span>
           <span class="info" flex="dir:top">
             <i t-ellipsis title="资源信息数量（条）">资源信息数量（条）</i>
-            <i class="count">{{counts.totalResource}}</i>
+            <i class="count">{{counts.cnt}}</i>
           </span>
         </div>
         <div class="tip-item" flex>
@@ -64,12 +64,12 @@
                     class="ml-10 mr-10" size="small"
                     placeholder="请选择">
                    </b-date-picker>
-                  <b-button type="text" @click="modal = true">更多>></b-button>
+                  <b-button type="text" @click="handleMoreBtn('aaa')">更多>></b-button>
                 </div>
               </div>
             </template>
             <div class="pl-15 pr-15">
-              <b-table :columns="departSumColumns" :data="departSumData">
+              <b-table :columns="bmsjgjfxColumns" :data="bmsjgjfxData">
                 <template v-slot:percent="{ row }">
                   {{ row.percent }}%
                   <b-progress :percent="row.percent"
@@ -106,8 +106,9 @@
                   <div flex="main:justify cross:center" class="header-height">
                     <span class="title-text">资源信息分类统计</span>
                     <div>
-                      <b-button type="info" plain round size="small" icon="ios-switch">
-                        法人
+                      <b-button type="info" plain round size="small" icon="ios-switch"
+                        @click="handlePersonClassBtn">
+                        {{ query.personClass === 'nat' ? '自然人' : '法人' }}
                       </b-button>
                     </div>
                   </div>
@@ -124,12 +125,24 @@
                   <div flex="main:justify cross:center" class="header-height">
                     <span class="title-text">最新提报部门</span>
                     <div>
-                      <b-button type="text" @click="modal = true">更多>></b-button>
+                      <b-button type="text" @click="handleMoreBtn('zxtbbm')">更多>></b-button>
                     </div>
                   </div>
                 </template>
                 <div class="pl-20 pr-20">
-                  <b-table :columns="newDepartColumns" :data="[]" size="small"></b-table>
+                  <b-table :columns="zxtbbmColumns" :data="zxtbbmData" size="small">
+                    <template v-slot:departId="{ row }">
+                      <div class="t-ellipsis" :title="compTransferEnum[row.departId]">
+                        {{ compTransferEnum[row.departId] }}
+                      </div>
+                    </template>
+
+                    <template v-slot:resourceKey="{ row }">
+                      <div class="t-ellipsis" :title="directoryTransferEnum[row.resourceKey]">
+                        {{ directoryTransferEnum[row.resourceKey] }}
+                      </div>
+                    </template>
+                  </b-table>
                 </div>
               </b-card>
             </div>
@@ -142,13 +155,23 @@
               <div flex="main:justify cross:center" class="header-height">
                 <span class="title-text">信息归集记录</span>
                 <div>
-                  <span class="mr-10">{{ $util.parseTime(curDate, '{y}-{m}-{d}') }}</span>
-                  <b-button type="text" @click="modal = true">更多>></b-button>
+                  <span class="mr-10">{{ curDate }}</span>
+                  <b-button type="text" @click="handleMoreBtn('xxgjjl')">更多>></b-button>
                 </div>
               </div>
             </template>
             <div class="pl-20 pr-20">
-              <b-table :columns="infoCollectionColumns" :data="infoCollectionData" size="small" class="mb-10" ></b-table>
+              <b-table :columns="xxgjjlColumns" :data="xxgjjlData.slice(1)" size="small" class="mb-10" :loading="xxgjjlLoading">
+                <template v-slot:resourceKey="{ row }">
+                  <div class="t-ellipsis" :title="directoryTransferEnum[row.resourceKey]">
+                    {{ directoryTransferEnum[row.resourceKey] }}
+                  </div>
+                </template>
+
+                <template v-slot:count="{ row }">
+                  {{ row.count }}
+                </template>
+              </b-table>
             </div>
           </b-card>
         </div>
@@ -156,8 +179,15 @@
       <b-card head-tip divider="no" :bordered="false" radius="10px"
         :body-style="{ padding: 0, height: '310px' }" shadow="never">
         <template v-slot:header>
-          <div flex="cross:center" class="header-height">
+          <div flex="main:justify cross:center" class="header-height">
             <span class="title-text">资源信息归集趋势</span>
+
+            <div>
+              <b-date-picker type="daterange" placement="bottom-end" placeholder="Select date"
+                :value="resInfoDate"
+                format="yyyy-MM" @on-change="handleResDateChange">
+              </b-date-picker>
+            </div>
           </div>
         </template>
         <div style="width: 100%; height: 100%; position: relative;">
@@ -184,20 +214,25 @@
     components: { QuickDateSelect },
     data() {
       return {
-        listQuery: {
-          departId: '',
-          month: '2019-01'
+        directoryTransferEnum: {}, // 资源信息枚举
+        compTransferEnum: {}, // 部门信息枚举
+        departTabDate: [], // 部门数据归集统计分析tab时间数据
+        departDate: [], // 部门数据归集统计分析日期选择框
+        curDate: this.$util.parseTime(new Date(), '{y}-{m}-{d}'),
+        resInfoDate: [], // 资源信息归集趋势日期选择框
+        query: {
+          startDate: '',
+          endDate: '',
+          pageSize: 5,
+          pageNo: 1,
+          personClass: 'nat'
         },
-        curDate: new Date(),
         counts: {
-          totalResource: '',
+          cnt: '',
           totalCount: '',
           monthCount: '',
           zrpCount: '',
-          foCount: '',
-          gjCount: '',
-          sbCount: '',
-          hlCount: ''
+          foCount: ''
         },
         lineSmoothChartOption: {
           tooltip: { trigger: 'axis' },
@@ -399,37 +434,31 @@
         },
         columns: [], // 弹框通用
         list: [], // 弹框通用
-        departSumColumns: [ // 部门数据归集分析
+        bmsjgjfxColumns: [ // 部门数据归集分析
           { title: '部门名称', key: 'departName' },
           { title: '归集数量（个）', key: 'value', align: 'left' },
-          { title: '归集次数（次）', key: 'trend', align: 'left' },
+          { title: '完整率(%)', key: 'trend', align: 'left' },
           { title: '占比', slot: 'percent', align: 'center' }
         ],
-        departSumData: [], // 部门数据归集分析
-        newDepartColumns: [ // 最新提报部门
-          { title: '部门名称', key: 'departName' },
-          { title: '资源信息', key: 'value', align: 'right' }
+        bmsjgjfxData: [], // 部门数据归集分析
+        zxtbbmColumns: [ // 最新提报部门
+          { title: '部门名称', slot: 'departId' },
+          { title: '资源信息', slot: 'resourceKey', align: 'right' }
         ],
-        newDepartData: [], // 最新提报部门
-        infoCollectionColumns: [ // 信息归集记录
-          { title: '资源名称', key: '' },
-          { title: '归集数量（个）', key: '', align: 'right' }
+        zxtbbmData: [], // 最新提报部门
+        xxgjjlColumns: [ // 信息归集记录
+          { title: '资源名称', slot: 'resourceKey' },
+          { title: '归集数量（个）', slot: 'count', align: 'right' }
         ],
-        infoCollectionData: [], // 信息归集记录
-        monthList: [
-          { value: '2020-2', label: '1月' },
-          { value: '2020-3', label: '2月' },
-          { value: '2020-4', label: '3月' }
-        ],
+        xxgjjlData: [], // 信息归集记录
+        bmsjgjfxLoading: false,
+        zxtbbmLoadig: false,
+        xxgjjlLoading: false,
         modal: false
       }
     },
     created() {
-      this.searchList()
-      this.listQuery.month = this.newMonth(1)
-    },
-    mounted() {
-      this.monthList = this.newMonth(3)
+      this.init()
     },
     methods: {
       // 生成当前年月
@@ -444,139 +473,206 @@
           return reArr
         }
       },
+      // 更多按钮回调
+      handleMoreBtn (type) {
+        console.log(type)
+        // switch (type) {
+        //   case 'aaa':
+
+        //     break
+        //   case 'xxgjjl':
+        //     this.columns = this.
+        //     .break
+        //   case 'zxtbbm':
+
+        //     break
+
+        //   default:
+        //     break
+        // }
+        // this.modal = true
+      },
       // 年度信息归集趋势 年份按钮切换回调
       handleTabClick (curTabIndex) {
-        this.getYearCollectData(curTabIndex)
+        let dateArr = []
+        if (curTabIndex === 0) {
+          dateArr = this.timeHandler(7, '{y}-{m}-{d}')
+        }
+        if (curTabIndex === 1) {
+          dateArr = this.timeHandler(30, '{y}-{m}-{d}')
+        }
+        if (curTabIndex === 2) {
+          dateArr = this.timeHandler(365, '{y}-{m}-{d}')
+        }
+        console.log(dateArr)
       },
       // 日历切换事件
       HandleCalendarChange (date) {
-        console.log(date)
-        this.curDate = date.date
+        this.curDate = this.$util.parseTime(date.date, '{y}-{m}-{d}')
+        this.query.startDate = this.curDate
+        this.getXxgjjl(this.query)
       },
-      // 资源信息分类统计 select 回调
-      handleResChange (val) {
-        console.log(val)
+      // 资源信息分类统计 类别按钮回调
+      handlePersonClassBtn () {
+        if (this.query.personClass === 'nat') {
+          this.query.personClass = 'leg'
+        } else {
+          this.query.personClass = 'nat'
+        }
       },
-      // 月度部门归集统计 select 回调
-      handleMonDepChange (val) {
-        console.log(val)
+      // 资源信息归集趋势时间选择器回调
+      handleResDateChange (date) {
+        if (date[0] === '' && date[1] === '') {
+          date = this.timeHandler(365)
+          this.resInfoDate = date
+        }
+        this.query.startDate = date[0]
+        this.query.endDate = date[1]
+        this.getResInfoCollection(this.query)
       },
-      // 未填报部门 select 回调
-      handleUnDepChange (val) {
-        console.log(val)
-      },
-      // 查询所有列表
-      searchList() {
-        this.resetListQuery()
-        this.getBaseData()
-        this.getChartData()
-        this.getTableData()
-      },
-      // async 获取基础数据
+      // 获取基础数据
       getBaseData() {
         Promise.all([
           api.getClassifyDataCount(),
           api.getClassifyTotalCount(),
           api.getClassifyMonthCount(),
           api.getClassifyZrpCount(),
-          api.getClassifyFoCount(),
-          api.getMonthCollectData(this.newMonth())
-        ]).then(res => {
+          api.getClassifyFoCount()
+        ]).then(([zyxxsl, sjgjzl, bygjsjl, zrpcount, focount]) => {
           // 顶部数据
           this.counts = {
-            totalResource: res[0].data.data.totalResource,
-            totalCount: res[1].data.data.totalCount,
-            monthCount: res[2].data.data.monthCount,
-            zrpCount: res[3].data.data.zrpCount,
-            foCount: res[4].data.data.foCount,
-            gjCount: res[5].data.data.gjCount,
-            sbCount: res[5].data.data.sbCount,
-            hlCount: res[5].data.data.hlCount
+            cnt: zyxxsl.data.data.cnt,
+            totalCount: sjgjzl.data.data.totalCount,
+            monthCount: bygjsjl.data.data.monthCount,
+            zrpCount: zrpcount.data.data.zrpCount,
+            foCount: focount.data.data.foCount
           }
         })
       },
-      // async 获取图表数据
+      // 获取图表数据
       getChartData() {
-        Promise.all([
-          api.getYearCollectData(),
-          api.getDeptCollectData(),
-          api.getResourceData(),
-          api.getSubjectData()
-        ]).then(res => {
-          // 月度信息归集趋势
-          const dataset = formatSeries({ xField: 'month', yField: 'value', seriesField: 'legend' }, res[0].data.data)
-          this.lineSmoothChartOption.dataset = dataset
-
-          // 部门数据归集统计
-          this.lineChartOption.dataset = formatDataSet({ xField: 'departName', yField: 'value' }, res[1].data.data)
-
-          // 资源信息分类统计
-          this.barChartOption.dataset = formatDataSet({ xField: 'resourceName', yField: 'value' }, res[2].data.data)
-
-          // 主体及资源数据分析
-          let subjects = []
-          let subjectItems = []
-          res[3].data.data.forEach(item => subjects.push({ name: item.name, value: item.value }))
-          res[3].data.data.forEach(item => item.data.forEach(
-            item => subjectItems.push(item))
-          )
-          this.pieChartOption.series = [
-              {
-                color: ['#607de6', '#92d2fa'],
-                type: 'pie',
-                selectedMode: 'single',
-                radius: [0, '30%'],
-                label: {
-                  formatter: '{b}\n{c}',
-                  position: 'inner'
-                },
-                labelLine: {
-                  show: false
-                },
-                data: subjects
-              },
-              {
-                color: ['#4065e0', '#6ac3f7'],
-                type: 'pie',
-                radius: ['40%', '60%'],
-                label: {
-                  formatter: '{b}\n{c}'
-                },
-                data: subjectItems
-              }
-            ]
-        })
+        // 获取资源信息分类统计
+        this.query.startDate = this.resInfoDate[0]
+        this.query.endDate = this.resInfoDate[1]
+        this.query.personClass = 'nat'
+        this.getResInfoClassif(this.query)
+        // 获取资源信息归集趋势
+        this.query.startDate = this.resInfoDate[0]
+        this.query.endDate = this.resInfoDate[1]
+        this.getResInfoCollection(this.query)
       },
-      // async 获取表数据
-      getTableData() {
-        Promise.all([
-          api.getDeptCollectData(),
-          api.getMonthDeptCollectData(this.newMonth())
-        ]).then(res => {
-          // 按部门数据归集统计
-          this.departSumData = res[0].data.data
-          let total = 0
-          this.departSumData.forEach(item => {
-            total += parseInt(item.value)
+      // 获取资源信息分类统计图表数据
+      async getResInfoClassif (query) {
+        try {
+          const res = await api.getZyxxfltjsj(query)
+          const resEnum = {
+            C01: '基本信息',
+            C02: '业务信息',
+            C03: '司法信息',
+            C04: '行政执法信息',
+            C05: '公用事业信息',
+            C06: '信用评价信息',
+            C07: '其他信息'
+          }
+          res.forEach(item => {
+            item.left = resEnum[item.left]
           })
-          this.departSumData.forEach(item => {
-            item.percent = parseInt(item.value / total * 100)
-          })
-          // 月度部门归集统计
-          // this.monthDepartData = res[1].data.data
-        })
+          this.barChartOption.dataset = formatDataSet({ xField: 'left', yField: 'count' }, res)
+        } catch (error) {
+          console.error(error)
+        }
       },
-      // 获取年度信息归集趋势
-      getYearCollectData (offset = 0) {
-        const year = new Date().getFullYear() - offset
-        api.getYearCollectData(year).then(res => {
-          const dataset = formatSeries({ xField: 'month', yField: 'value', seriesField: 'legend' }, res.data.data)
+      // 获取资源信息归集趋势图标数据
+      async getResInfoCollection (query) {
+        try {
+          const [fr, zrr] = await Promise.all([
+            api.getFrzzxxgjqs(query),
+            api.getZrpxxgjqs(query)
+          ])
+          const source = [
+            {
+              legend: '自然人',
+              data: zrr
+            },
+            {
+              legend: '法人及其他组织',
+              data: fr
+            }
+          ]
+          const dataset = formatSeries({ xField: 'month', yField: 'count', seriesField: 'legend' }, source)
           this.lineSmoothChartOption.dataset = dataset
-        })
+        } catch (error) {
+          console.error(error)
+        }
       },
-      // 临时设置departId
-      resetListQuery() {
-        this.listQuery.departId = this.$store.state.user.info.departId
+      // 获取表数据
+      async getTableData() {
+        this.getBmsjgjfx(this.query)
+        // this.getZxtbbm(this.query)
+      },
+      async getBmsjgjfx (query) {
+        this.bmsjgjfxLoading = true
+        try {
+          const res = await api.getBmsjgjfx(query)
+          console.log(res)
+          this.bmsjgjfxData = res
+        } catch (error) {
+          console.error(error)
+        }
+        this.bmsjgjfxLoading = false
+      },
+      // 获取信息归集记录
+      async getXxgjjl (query) {
+        this.xxgjjlLoading = true
+        try {
+          const res = await api.getXxgjjl(query)
+          this.xxgjjlData = res
+        } catch (error) {
+          console.error(error)
+        }
+        this.xxgjjlLoading = false
+      },
+      // 获取最新提报部门
+      async getZxtbbm (query) {
+        this.zxtbbmLoadig = true
+        try {
+          const res = await api.getZxtbbm(query)
+          this.zxtbbmData = res
+        } catch (error) {
+          console.error(error)
+        }
+        this.zxtbbmLoadig = false
+      },
+      async getEnum () {
+        try {
+          const [res, comp] = await Promise.all([
+            api.getDirectoryTransfer(),
+            api.getCompTransfer()
+          ])
+          this.directoryTransferEnum = res
+          this.compTransferEnum = comp
+        } catch (error) {
+          console.error(error)
+        }
+      },
+      // 处理时间，取多天之前。例如一月前 30 三月前 90类似情况。
+      timeHandler(days, mode = '{y}-{m}') {
+        const start = new Date()
+        const end = new Date()
+        start.setTime(start.getTime() - 3600 * 1000 * 24 * days)
+
+        const startDate = this.$util.parseTime(start, mode)
+        const endDate = this.$util.parseTime(end, mode)
+
+        return [startDate, endDate]
+      },
+      // 查询所有列表
+      async init() {
+        this.resInfoDate = this.timeHandler(365)
+        await this.getEnum()
+        this.getBaseData()
+        this.getTableData()
+        this.getChartData()
       }
     }
   }

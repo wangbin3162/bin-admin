@@ -1,5 +1,18 @@
 // 类目管理
 import request from '../request'
+import store from '../../store'
+
+function isDomain() {
+  return store.state.user.info.departKind === 'DOMAIN'
+}
+
+function isAdmin() {
+  return store.state.user.info.roleCodes === 'ROLE_ADMIN'
+}
+
+function getDepartId() {
+  return store.state.user.info.departId
+}
 
 // 2.5.1 获取资源信息数量
 export function getClassifyDataCount() {
@@ -85,5 +98,225 @@ export function getSubjectData () {
   return request({
     url: '/da/data/collect/ztzysjfx',
     method: 'get'
+  })
+}
+
+/**
+ * @author haodongdong
+ * @description 获取部门数据归集统计分析
+ * @returns Promise
+ */
+export async function getBmsjgjfx(query) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/da/data/api/bmsjgjfx',
+        method: 'get',
+        params: {
+          // startDate: query.startDate,
+          // pageSize: query.pageSize
+          startDate: '2019-06-01',
+          endDate: '2020-06-01',
+          pageSize: 5
+        }
+      })
+      if (res.data.successful) {
+        resolve(res.data.data)
+      } else {
+        reject(res.data.message)
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
+ * @description 获取信息归集记录
+ * @returns Promise
+ */
+export async function getXxgjjl (query) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/da/data/collect/xxgjjl',
+        method: 'get',
+        params: {
+          startDate: query.startDate,
+          pageSize: query.pageSize
+        }
+      })
+      if (res.data.successful) {
+        resolve(res.data.data)
+      } else {
+        reject(res.data.message)
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
+ * @description 获取最新提报部门
+ * @returns Promise
+ */
+export async function getZxtbbm(query) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/da/data/collect/zxtbbm',
+        method: 'get',
+        params: {
+          startDate: '2020-06-01',
+          endDate: '2020-06-31',
+          pageSize: query.pageSize,
+          pageNo: query.pageNo - 1
+        }
+      })
+      if (res.data.successful) {
+        resolve(res.data.data)
+      } else {
+        reject(res.data.message)
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
+ * @description 资源信息分类统计
+ * @returns Promise
+ */
+export async function getZyxxfltjsj(query) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/da/data/collect/zyxxfltjsj',
+        method: 'get',
+        params: {
+          gatherDept: isAdmin() ? null : getDepartId(),
+          isDomain: isDomain(),
+          startDate: query.startDate,
+          endDate: query.endDate,
+          personClass: query.personClass
+        }
+      })
+      if (res.data.successful) {
+        resolve(res.data.data.content)
+      } else {
+        reject(res.data.message)
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
+ * @description 自然人资源信息归集趋势
+ * @returns Promise
+ */
+export async function getZrpxxgjqs(query) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/da/data/collect/zrpxxgjqs',
+        method: 'get',
+        params: {
+          gatherDept: isAdmin() ? null : getDepartId(),
+          isDomain: isDomain(),
+          startDate: query.startDate,
+          endDate: query.endDate
+        }
+      })
+      if (res.data.successful) {
+        resolve(res.data.data)
+      } else {
+        reject(res.data.message)
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
+ * @description 法人资源信息归集趋势
+ * @returns Promise
+ */
+export async function getFrzzxxgjqs(query) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/da/data/collect/frzzxxgjqs',
+        method: 'get',
+        params: {
+          gatherDept: isAdmin() ? null : getDepartId(),
+          isDomain: isDomain(),
+          startDate: query.startDate,
+          endDate: query.endDate
+        }
+      })
+      if (res.data.successful) {
+        resolve(res.data.data)
+      } else {
+        reject(res.data.message)
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
+ * @description 获取所有资源信息的resourceKey、resourceName
+ * @returns Promise
+ */
+export async function getDirectoryTransfer() {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/da/data/api/directoryTransfer',
+        method: 'get'
+      })
+      if (res.data.successful) {
+        resolve(res.data.data)
+      } else {
+        reject(res.data.message)
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
+ * @description 获取所有所有部门信息
+ * @returns Promise
+ */
+export async function getCompTransfer() {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/da/data/api/compTransfer',
+        method: 'get'
+      })
+      if (res.data.successful) {
+        resolve(res.data.data)
+      } else {
+        reject(res.data.message)
+      }
+    } catch (error) {
+      reject(error)
+    }
   })
 }
