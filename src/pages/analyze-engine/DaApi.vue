@@ -157,9 +157,6 @@
           }
         })
       },
-      handleChooseTheme(item) {
-        this.apiObj.tempId = item.id
-      },
       // 弹窗提示是否删除
       handleRemove(row) {
         let apiObj = { ...row }
