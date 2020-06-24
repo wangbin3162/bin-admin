@@ -49,7 +49,7 @@
           <template v-slot:action="scope">
             <b-button type="text" @click="handleCheck(scope.row)">查看</b-button>
             <b-button type="text" @click="handleModify(scope.row)" :disabled="!canModify">修改</b-button>
-            <b-button type="text" text-color="danger" @click="handleRemove(scope.row)" :disabled="!canModify">
+            <b-button type="text" text-color="danger" @click="handleRemove(scope.row)" :disabled="!canRemove">
               删除
             </b-button>
             <template v-if="scope.row.version&&scope.row.version>0">
@@ -140,7 +140,7 @@
     <!--批量导入/导出记录模块 -->
     <import-export-list ref="importExportList" @on-close="handleCancel"/>
     <!--修改历史弹窗-->
-    <gather-history ref="gatherHistory"/>
+    <gather-history ref="gatherHistory" @on-close="handleCancel"/>
   </div>
 </template>
 
@@ -380,7 +380,8 @@
       },
       // ===========列表-查看历史============ //
       handleHistory(row) {
-        this.$refs.gatherHistory && this.$refs.gatherHistory.open(row.id)
+        this.dialogStatus = 'historyList'
+        this.$refs.gatherHistory && this.$refs.gatherHistory.open(row, this.dynamicForm)
       },
       // ===========数据操作-查询动态采集列表============ //
       searchList() {

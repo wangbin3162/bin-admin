@@ -33,6 +33,7 @@
               </div>
             </div>
           </div>
+          <b-loading v-if="listLoading" fix/>
         </div>
         <!--下方分页器-->
         <b-page :total="total" :page-size="listQuery.size" :current.sync="listQuery.page"
@@ -126,6 +127,7 @@
     background: #ffffff;
   }
   .gather-wrap {
+    position: relative;
     padding: 10px;
     display: flex;
     flex-wrap: wrap;
