@@ -12,7 +12,7 @@
               <v-filter-item title="变量名">
                 <b-input v-model="listQuery.varName" placeholder="请输入变量名" clearable></b-input>
               </v-filter-item>
-              <v-filter-item title="变量类型">
+              <v-filter-item title="变量类型" v-if="radio">
                 <b-select v-model="listQuery.varType" clearable>
                   <b-option v-for="item in varTypeOptions" :key="item.value"
                     :value="item.value">{{ item.label }}
@@ -32,20 +32,23 @@
               </template>
 
               <template v-slot:action="{ row }">
-                <b-button v-if="!radio"
+                <b-button v-if="radio"
+                type="primary" plain size="small"
+                @click.stop="handleRadio(row)">
+                选择
+                </b-button>
+
+                <b-button v-else
                   plain size="small"
                   :type="checkRowSelected(row) ? 'danger' : 'primary'"
                   @click="chooseOne(row)">
                   {{ checkRowSelected(row) ? '取消' : '选择' }}
                 </b-button>
-
-                <b-button v-else
-                  type="primary" plain size="small"
-                  @click.stop="handleRadio(row)">
-                  选择
-                 </b-button>
               </template>
             </b-table>
+             <!-- 分页器 -->
+            <b-page :total="total" :current.sync="listQuery.page" size="small"
+              @on-change="handleCurrentChange"/>
           </b-col>
 
           <b-col v-if="!radio" span="8" class="card-con">
@@ -67,9 +70,6 @@
           </b-col>
         </b-row>
 
-        <!-- 分页器 -->
-        <b-page :total="total" :current.sync="listQuery.page" size="small"
-          @on-change="handleCurrentChange"/>
       </v-table-wrap>
     </b-modal>
   </div>
@@ -98,7 +98,6 @@
       return {
         width: '80%',
         span: 16,
-        varCodeList: [],
         listQuery: {
           varName: '',
           varType: ''
@@ -136,10 +135,10 @@
     methods: {
       handleVisibleChange(visible) {
         if (visible) {
+          if (!this.radio) this.listQuery.varType = 'Common' // 多选时默认获取一般变量
           this.searchList()
         } else {
           this.list = []
-          this.varCodeList = []
           this.selectedList = []
         }
       },
@@ -209,7 +208,8 @@
         if (index === -1) {
           this.selectedList.push({
             varName: row.varName,
-            varCode: row.varCode
+            varCode: row.varCode,
+            params: row.params
           })
         } else {
           this.selectedList.splice(index, 1)
@@ -221,10 +221,7 @@
       },
       // 确认选择按钮回调，向外发送处理后的数据，多选
       postSelectedList () {
-        for (const item of this.selectedList) {
-          this.varCodeList.push(item.varCode)
-        }
-        this.$emit('choose-mul', this.varCodeList)
+        this.$emit('choose-mul', this.selectedList)
         this.showDialog = false // 关闭弹框
       }
     }

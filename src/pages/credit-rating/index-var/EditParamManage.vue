@@ -71,23 +71,24 @@
           { title: '参数编码', slot: 'paraCode' },
           { title: '参数类型', slot: 'paraType' },
           { title: '描述', slot: 'paraDesc' },
-          { title: '排序', slot: 'orderNo' },
-          { title: '操作', slot: 'action', width: 120 }
+          // { title: '排序', slot: 'orderNo' },
+          { title: '来源', key: 'paraSource' },
+          { title: '操作', slot: 'action', width: 70 }
         ]
       }
     },
     watch: {
       params: {
         handler(newVal, oldVal) { // 观察params变化维护list状态
-          // 在这里分离person_id
-          this.listCache = [] // 清空缓存的person_id数据
           const arr = JSON.parse(JSON.stringify(newVal))
+          // 在这里分离person_id
+          // this.listCache = [] // 清空缓存的person_id数据
           const index = arr.findIndex(item => {
             return item.paraCode === 'person_id'
           })
           if (index > -1) { // 取出并缓存paraCode为person_id的数据
             const obj = arr.splice(index, 1)[0]
-            this.listCache.push(obj)
+            // this.listCache.push(obj)
           }
 
           const list = [...arr]
@@ -101,9 +102,9 @@
       },
       list: { // 观察list，有变化则发送携带新值的事件
         handler(newVal, oldVal) {
-          // 在这里组合person_id
           let list = [...newVal]
-          if (this.listCache.length) list = [...this.listCache, ...newVal]
+          // 在这里组合person_id
+          // if (this.listCache.length) list = [...this.listCache, ...newVal]
 
           list.forEach(item => {
             // 禅道bug 13979会引起paraType为uundefined
@@ -259,7 +260,7 @@
             for (const item of this.list) {
               for (const key in item) {
                 if (item.hasOwnProperty(key)) {
-                  if (key !== 'paraDesc') await this.isRequired(item, key)
+                  if (key !== 'paraDesc' && key !== 'paraSource') await this.isRequired(item, key)
                   if (key === 'paraName' || key === 'paraCode') await this.isUnique(item, key)
                   if (key === 'paraCode') {
                     await this.notPersonId(item, key)
@@ -270,6 +271,7 @@
             }
             resolve(true)
           } catch (error) {
+            console.warning(error)
             resolve(false)
           }
         })

@@ -13,11 +13,11 @@
             <div>
               <b-empty v-if="tempVarCodeList.length === 0">暂无已选变量</b-empty>
               <template v-else>
-                <b-tag v-for="(item, index) in tempVarCodeList" :key="item" closable
+                <b-tag v-for="(varCode, index) in tempVarCodeList" :key="varCode" closable
                   type="info" size="small" class="tag"
                   @on-close="handleTagClose(index)"
-                  @on-click="handleTagClick(item)">
-                  {{ item }}
+                  @on-click="handleTagClick(varCode)">
+                  {{ varCode }}
                 </b-tag>
               </template>
             </div>
@@ -137,7 +137,18 @@
       },
       // 变量选择组件回调
       handleVarChooseMul (tempVarCodeList) {
-        this.tempVarCodeList = [...new Set([...this.tempVarCodeList, ...tempVarCodeList])]
+        const params = []
+        tempVarCodeList.forEach(newItem => {
+          const isExistVarCode = this.tempVarCodeList.find(varCode => varCode === newItem.varCode)
+          if (!isExistVarCode) this.tempVarCodeList.push(newItem.varCode)
+
+          newItem.params.forEach(newParam => { // 查找选中的变量是否包含相同的参数
+            console.log(newParam.paraCode)
+            const isExistParam = params.find(oldParam => oldParam.paraCode === newParam.paraCode)
+            if (!isExistParam) params.push(newParam)
+          })
+        })
+        console.log(params)
       },
       // tag关闭回调
       handleTagClose (index) {
