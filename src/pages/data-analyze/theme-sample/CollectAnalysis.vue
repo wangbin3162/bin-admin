@@ -4,7 +4,7 @@
       <div class="msg-tips" flex="main:justify">
         <div class="tip-item" flex>
           <span class="icon">
-            <img src="" alt="">
+            <img src="../../../assets/images/big-data-icon/icon_xxsl.png" alt="">
           </span>
           <span class="info" flex="dir:top">
             <i t-ellipsis title="资源信息数量（条）">资源信息数量（条）</i>
@@ -13,7 +13,7 @@
         </div>
         <div class="tip-item" flex>
           <span class="icon">
-            <img src="" alt="">
+            <img src="../../../assets/images/big-data-icon/icon_gjzl.png" alt="">
           </span>
           <span class="info" flex="dir:top">
             <i t-ellipsis title="数据归集总量（条）">数据归集总量（条）</i>
@@ -22,7 +22,7 @@
         </div>
         <div class="tip-item" flex>
           <span class="icon">
-            <img src="" alt="">
+            <img src="../../../assets/images/big-data-icon/icon_gjsj.png" alt="">
           </span>
           <span class="info" flex="dir:top">
             <i t-ellipsis title="本月归集数据量（条）">本月归集数据量（条）</i>
@@ -31,7 +31,7 @@
         </div>
         <div class="tip-item" flex>
           <span class="icon">
-            <img src="" alt="">
+            <img src="../../../assets/images/big-data-icon/icon_sjzl.png" alt="">
           </span>
           <span class="info" flex="dir:top">
             <i t-ellipsis title="自然人数据总量（人）">自然人数据总量（人）</i>
@@ -40,7 +40,7 @@
         </div>
         <div class="tip-item" flex>
           <span class="icon">
-            <img src="" alt="">
+            <img src="../../../assets/images/big-data-icon/icon_frsjzl.png" alt="">
           </span>
           <span class="info" flex="dir:top">
             <i t-ellipsis title="法人和其他组织数据总量（个）">法人和其他组织数据总量（个）</i>
@@ -58,18 +58,25 @@
               <div flex="main:justify cross:center" class="header-height">
                 <span class="title-text">部门数据归集统计分析</span>
                 <div flex="cross:center">
-                  <quick-date-select @tab-click="handleTabClick"></quick-date-select>
+                  <quick-date-select @tab-click="handleTabClick" :selected="tabSelected"></quick-date-select>
                   <!-- 如果追加appendToBody的话第一次点击会直接关闭 -->
                   <b-date-picker type="daterange" placement="bottom-end"
                     class="ml-10 mr-10" size="small"
+                    format="yyyy-MM-dd" @on-change="handleDepartDateChange"
                     placeholder="请选择">
                    </b-date-picker>
-                  <b-button type="text" @click="handleMoreBtn('aaa')">更多>></b-button>
+                  <b-button type="text" :disabled="bmsjgjfxLoading" @click="handleMoreBtn('bmsjgjfx', '部门数据归集统计分析')">更多>></b-button>
                 </div>
               </div>
             </template>
             <div class="pl-15 pr-15">
-              <b-table :columns="bmsjgjfxColumns" :data="bmsjgjfxData">
+              <b-table :columns="bmsjgjfxColumns" :data="bmsjgjfxData.slice(2, 7)" :loading="bmsjgjfxLoading">
+                <template v-slot:departId="{ row }">
+                  <div class="t-ellipsis" :title="compTransferEnum[row.departId]">
+                    {{ compTransferEnum[row.departId] }}
+                  </div>
+                </template>
+
                 <template v-slot:percent="{ row }">
                   {{ row.percent }}%
                   <b-progress :percent="row.percent"
@@ -125,12 +132,12 @@
                   <div flex="main:justify cross:center" class="header-height">
                     <span class="title-text">最新提报部门</span>
                     <div>
-                      <b-button type="text" @click="handleMoreBtn('zxtbbm')">更多>></b-button>
+                      <b-button type="text" :disabled="zxtbbmLoadig" @click="handleMoreBtn('zxtbbm', '最新提报部门')">更多>></b-button>
                     </div>
                   </div>
                 </template>
                 <div class="pl-20 pr-20">
-                  <b-table :columns="zxtbbmColumns" :data="zxtbbmData" size="small">
+                  <b-table :columns="zxtbbmColumns" :data="zxtbbmData.slice(0, 6)" size="small" :loading="zxtbbmLoadig">
                     <template v-slot:departId="{ row }">
                       <div class="t-ellipsis" :title="compTransferEnum[row.departId]">
                         {{ compTransferEnum[row.departId] }}
@@ -156,12 +163,12 @@
                 <span class="title-text">信息归集记录</span>
                 <div>
                   <span class="mr-10">{{ curDate }}</span>
-                  <b-button type="text" @click="handleMoreBtn('xxgjjl')">更多>></b-button>
+                  <b-button type="text" :disabled="xxgjjlLoading" @click="handleMoreBtn('xxgjjl', '信息归集记录')">更多>></b-button>
                 </div>
               </div>
             </template>
             <div class="pl-20 pr-20">
-              <b-table :columns="xxgjjlColumns" :data="xxgjjlData.slice(1)" size="small" class="mb-10" :loading="xxgjjlLoading">
+              <b-table :columns="xxgjjlColumns" :data="xxgjjlData.slice(1, 7)" size="small" class="mb-10" :loading="xxgjjlLoading">
                 <template v-slot:resourceKey="{ row }">
                   <div class="t-ellipsis" :title="directoryTransferEnum[row.resourceKey]">
                     {{ directoryTransferEnum[row.resourceKey] }}
@@ -195,17 +202,42 @@
         </div>
       </b-card>
     </div>
-    <b-modal v-model="modal" footer-hide title="部门数据归集统计分析" width="60%">
-      <b-table :columns="columns" :data="list" size="small" class="mb-10" >
+    <b-modal v-model="modal" footer-hide :title="title" width="60%">
+      <b-table :columns="columns" :data="list" size="small" class="mb-10" max-height="500">
+        <template v-slot:departId="{ row }">
+          <div class="t-ellipsis" :title="row.departId === 'other' ? '其他' : compTransferEnum[row.departId]">
+            {{ row.departId === 'other' ? '其他' : compTransferEnum[row.departId] }}
+          </div>
+        </template>
+
+        <template v-slot:resourceKey="{ row }">
+          <div class="t-ellipsis" :title="directoryTransferEnum[row.resourceKey]">
+            {{ directoryTransferEnum[row.resourceKey] }}
+          </div>
+        </template>
+
+        <template v-slot:percent="{ row }">
+          {{ row.percent }}%
+          <b-progress :percent="row.percent"
+            :showText="false">
+          </b-progress>
+        </template>
+
+        <template v-slot:count="{ row }">
+          {{ row.count }}
+        </template>
       </b-table>
     </b-modal>
   </div>
 </template>
 
 <script>
-  import * as api from '../../../api/data-manage/collect-analysis.api.js'
-  import QuickDateSelect from '../components/QuickDateSelect'
   import { formatDataSet, formatSeries } from 'bin-charts/src/utils/util'
+  import { getTimeRange } from '../../../common/utils/util'
+
+  import * as api from '../../../api/data-manage/collect-analysis.api.js'
+
+  import QuickDateSelect from '../components/QuickDateSelect'
 
   require('bin-charts/src/theme/charts-theme')
 
@@ -216,15 +248,15 @@
       return {
         directoryTransferEnum: {}, // 资源信息枚举
         compTransferEnum: {}, // 部门信息枚举
-        departTabDate: [], // 部门数据归集统计分析tab时间数据
+        commonDate: [], // 部门数据归集统计分析、资源信息分类统计、最新提报部门使用的时间参数
         departDate: [], // 部门数据归集统计分析日期选择框
         curDate: this.$util.parseTime(new Date(), '{y}-{m}-{d}'),
         resInfoDate: [], // 资源信息归集趋势日期选择框
+        tabSelected: 2,
         query: {
           startDate: '',
           endDate: '',
-          pageSize: 5,
-          pageNo: 1,
+          pageSize: 20,
           personClass: 'nat'
         },
         counts: {
@@ -253,7 +285,7 @@
               axisLabel: { formatter: '{value} 月' }
             },
             yAxis: {
-              name: '（个）        ',
+              name: '（条）        ',
               type: 'value',
               splitLine: { show: true },
               nameTextStyle: {
@@ -434,10 +466,11 @@
         },
         columns: [], // 弹框通用
         list: [], // 弹框通用
-        bmsjgjfxColumns: [ // 部门数据归集分析
-          { title: '部门名称', key: 'departName' },
-          { title: '归集数量（个）', key: 'value', align: 'left' },
-          { title: '完整率(%)', key: 'trend', align: 'left' },
+        bmsjgjfxParams: {}, // 存储部门数据归集统计分析需要用到的参数
+        bmsjgjfxColumns: [ // 部门数据归集分析统计
+          { title: '部门名称', slot: 'departId' },
+          { title: '归集数量（条）', key: 'count', align: 'left' },
+          { title: '完整率(%)', key: 'wzl', align: 'left' },
           { title: '占比', slot: 'percent', align: 'center' }
         ],
         bmsjgjfxData: [], // 部门数据归集分析
@@ -448,12 +481,13 @@
         zxtbbmData: [], // 最新提报部门
         xxgjjlColumns: [ // 信息归集记录
           { title: '资源名称', slot: 'resourceKey' },
-          { title: '归集数量（个）', slot: 'count', align: 'right' }
+          { title: '归集数量（条）', slot: 'count', align: 'right' }
         ],
         xxgjjlData: [], // 信息归集记录
         bmsjgjfxLoading: false,
         zxtbbmLoadig: false,
         xxgjjlLoading: false,
+        title: '',
         modal: false
       }
     },
@@ -461,76 +495,132 @@
       this.init()
     },
     methods: {
-      // 生成当前年月
-      newMonth(param = 1) {
-        if (param === 1) {
-          return new Date().getFullYear() + '-' + (new Date().getMonth() + 1)
-        } else if (param === 3) {
-          let getDate = (length) => new Date().getFullYear() + '-' + (new Date().getMonth() + length)
-          let arr = [0, 1, 2]
-          let reArr = []
-          arr.forEach((item) => reArr.push({ value: getDate(item), label: (new Date().getMonth() + item - 1 + '月') }))
-          return reArr
-        }
-      },
-      // 更多按钮回调
-      handleMoreBtn (type) {
-        console.log(type)
-        // switch (type) {
-        //   case 'aaa':
+      /**
+       * @author haodongdong
+       * @description 更多按钮回调
+       * @param {string} type 用于确认是哪个模块的更多按钮
+       * @param {string} title 用于设置打开的弹框标题
+       */
+      handleMoreBtn (type, title) {
+        let list = []
+        switch (type) {
+          case 'bmsjgjfx':
+            this.columns = this.bmsjgjfxColumns
+            list = this.bmsjgjfxData.slice(2)
+            if (this.bmsjgjfxData.length > 22) {
+              list.push({
+                departId: 'other',
+                count: this.bmsjgjfxData[1].otherNum,
+                wzl: '',
+                percent: Number(((this.bmsjgjfxData[1].otherNum / this.bmsjgjfxData[0].totalNum) * 100).toFixed(2))
+              })
+            }
+            break
+          case 'zxtbbm':
+            this.columns = this.zxtbbmColumns
+            list = this.zxtbbmData
+            break
+          case 'xxgjjl':
+            this.columns = this.xxgjjlColumns
+            list = this.xxgjjlData.slice(1)
+            break
 
-        //     break
-        //   case 'xxgjjl':
-        //     this.columns = this.
-        //     .break
-        //   case 'zxtbbm':
-
-        //     break
-
-        //   default:
-        //     break
-        // }
-        // this.modal = true
+          default:
+            break
+        }
+        this.title = title
+        this.list = list
+        this.modal = true
       },
-      // 年度信息归集趋势 年份按钮切换回调
-      handleTabClick (curTabIndex) {
-        let dateArr = []
-        if (curTabIndex === 0) {
-          dateArr = this.timeHandler(7, '{y}-{m}-{d}')
-        }
-        if (curTabIndex === 1) {
-          dateArr = this.timeHandler(30, '{y}-{m}-{d}')
-        }
-        if (curTabIndex === 2) {
-          dateArr = this.timeHandler(365, '{y}-{m}-{d}')
-        }
-        console.log(dateArr)
+      /**
+       * @author haodongdong
+       * @description 部门数据归集统计分析 tab切换按钮回调，设置时间后调用uniteRequest发起需更新的请求
+       * @param {Object} dateObj 组件返回一个日期相关的对象
+       * @param {string} dateObj.startDateStr 开始时间的日期字符串 默认为yyyy-mm-dd
+       * @param {string} dateObj.endDateStr 结束时间的日期字符串 默认为yyyy-mm-dd
+       */
+      handleTabClick ({ startDateStr, endDateStr }) {
+        this.commonDate = [startDateStr, endDateStr]
+        this.uniteRequest(this.commonDate)
       },
-      // 日历切换事件
+      /**
+       * @author haodongdong
+       * @description 部门数据归集统计分析 时间选择器回调，
+       * @param {Array} date 组件返回的一个包含开始时间与结束时间字符串的数组，下标0为开始时间，1为结束时间。型式为['yyyy-mm-dd', 'yyyy-mm-dd']
+       */
+      handleDepartDateChange (date) {
+        if (date[0] === '' && date[1] === '') {
+          date = this.timeHandler(365, '{y}-{m}-{d}')
+          this.tabSelected = 2
+        } else {
+          this.tabSelected = -1
+        }
+        this.commonDate = date
+        this.uniteRequest(this.commonDate)
+      },
+      /**
+       * @author haodongdong
+       * @description 统一请求部门数据归集统计分析、资源信息分类统计、最新提报部门
+       * @param {Array} dateArr 包含开始与结束时间字符串的数组。['yyyy-mm-dd', 'yyyy-mm-dd']
+       */
+      uniteRequest (dateArr) {
+        const [startDate, endDate] = dateArr
+        const params = {
+          startDate,
+          endDate,
+          pageSize: this.query.pageSize,
+          pageNo: 1
+        }
+        this.getBmsjgjfx(params)
+        this.getResInfoClassif(params)
+        this.getZxtbbm(params)
+      },
+      /**
+       * @author haodongdong
+       * @description 日历组件日期变更事件
+       * @param {Object} dateObj 组件返回的一个包含多种日期参数的对象
+       * @param {Date} dateObj.date js的标准日期对象
+       */
       HandleCalendarChange (date) {
         this.curDate = this.$util.parseTime(date.date, '{y}-{m}-{d}')
         this.query.startDate = this.curDate
         this.getXxgjjl(this.query)
       },
-      // 资源信息分类统计 类别按钮回调
+      /**
+       * @author haodongdong
+       * @description 资源信息分类统计 法人、自然人类别按钮回调，用于切换不同类型的查询。
+       */
       handlePersonClassBtn () {
         if (this.query.personClass === 'nat') {
           this.query.personClass = 'leg'
         } else {
           this.query.personClass = 'nat'
         }
+        this.getResInfoClassif({
+          startDate: this.commonDate[0],
+          endDate: this.commonDate[1],
+          personClass: this.query.personClass
+        })
       },
-      // 资源信息归集趋势时间选择器回调
+      /**
+       * @author haodongdong
+       * @description 资源信息归集趋势 时间选择器回调
+       * @param {Array} date 包含开始与结束时间字符串的数组。['yyyy-mm', 'yyyy-mm']
+       */
       handleResDateChange (date) {
         if (date[0] === '' && date[1] === '') {
           date = this.timeHandler(365)
           this.resInfoDate = date
         }
-        this.query.startDate = date[0]
-        this.query.endDate = date[1]
-        this.getResInfoCollection(this.query)
+        this.getResInfoCollection({
+          startDate: date[0],
+          endDate: date[1]
+        })
       },
-      // 获取基础数据
+      /**
+       * @author haodongdong
+       * @description 获取t头部磁力块基础数据
+       */
       getBaseData() {
         Promise.all([
           api.getClassifyDataCount(),
@@ -549,19 +639,31 @@
           }
         })
       },
-      // 获取图表数据
+      /**
+       * @author haodongdong
+       * @description 用于初始获取模块内图表数据
+       */
       getChartData() {
         // 获取资源信息分类统计
-        this.query.startDate = this.resInfoDate[0]
-        this.query.endDate = this.resInfoDate[1]
-        this.query.personClass = 'nat'
-        this.getResInfoClassif(this.query)
+        this.getResInfoClassif({
+          startDate: this.commonDate[0],
+          endDate: this.commonDate[1],
+          personClass: 'nat'
+        })
         // 获取资源信息归集趋势
-        this.query.startDate = this.resInfoDate[0]
-        this.query.endDate = this.resInfoDate[1]
-        this.getResInfoCollection(this.query)
+        this.getResInfoCollection({
+          startDate: this.resInfoDate[0],
+          endDate: this.resInfoDate[1]
+        })
       },
-      // 获取资源信息分类统计图表数据
+      /**
+       * @author haodongdong
+       * @description 获取资源信息分类统计图表数据
+       * @param {Object} query 查询参数对象
+       * @param {string} query.startDate 开始时间 yyyy-mm-dd
+       * @param {string} query.endDate 结束时间 yyyy-mm-dd
+       * @param {string} query.personClass 主体类别，nat 自然人 leg 法人
+       */
       async getResInfoClassif (query) {
         try {
           const res = await api.getZyxxfltjsj(query)
@@ -582,7 +684,13 @@
           console.error(error)
         }
       },
-      // 获取资源信息归集趋势图标数据
+      /**
+       * @author haodongdong
+       * @description 获取资源信息归集趋势图表数据，会分别请求法人、自然人的趋势数据
+       * @param {Object} query 查询参数对象
+       * @param {string} query.startDate 开始时间 yyyy-mm
+       * @param {string} query.endDate 结束时间 yyyy-mm
+       */
       async getResInfoCollection (query) {
         try {
           const [fr, zrr] = await Promise.all([
@@ -605,23 +713,58 @@
           console.error(error)
         }
       },
-      // 获取表数据
+      /**
+       * @author haodongdong
+       * @description 获取模块内初始表格数据，只请求部门数据归集统计分析、最新提报部门。信息归集记录由日历组件事件默认发出请求。
+       * @param {Object} query 查询参数对象
+       * @param {string} query.startDate 开始时间 yyyy-mm
+       * @param {string} query.endDate 结束时间 yyyy-mm
+       */
       async getTableData() {
-        this.getBmsjgjfx(this.query)
-        // this.getZxtbbm(this.query)
+        this.getBmsjgjfx({
+          startDate: this.commonDate[0],
+          endDate: this.commonDate[1],
+          pageSize: this.query.pageSize
+        })
+        this.getZxtbbm({
+          startDate: this.commonDate[0],
+          endDate: this.commonDate[1],
+          pageSize: this.query.pageSize,
+          pageNo: 1
+        })
       },
+      /**
+       * @author haodongdong
+       * @description 获取部门数据归集统计分析
+       * @param {Object} query 查询参数
+       * @param {string} query.startDate 开始时间 yyyy-mm-dd
+       * @param {string} query.endDate 结束时间 yyyy-mm-dd
+       * @param {number} query.pageSize 获取多少条
+       */
       async getBmsjgjfx (query) {
         this.bmsjgjfxLoading = true
         try {
           const res = await api.getBmsjgjfx(query)
-          console.log(res)
-          this.bmsjgjfxData = res
+          const totalNum = res[0].totalNum
+          this.bmsjgjfxData = res.map((item, index) => {
+            if (index > 1) {
+              item.wzl = item.wzl.toFixed(2) + '%'
+              item.percent = Number(((item.count / totalNum) * 100).toFixed(2))
+            }
+            return item
+          })
         } catch (error) {
           console.error(error)
         }
         this.bmsjgjfxLoading = false
       },
-      // 获取信息归集记录
+      /**
+       * @author haodongdong
+       * @description 获取信息归集记录
+       * @param {Object} query 查询参数
+       * @param {string} query.startDate 开始时间 yyyy-mm-dd
+       * @param {number} query.pageSize 获取多少条
+       */
       async getXxgjjl (query) {
         this.xxgjjlLoading = true
         try {
@@ -632,7 +775,15 @@
         }
         this.xxgjjlLoading = false
       },
-      // 获取最新提报部门
+      /**
+       * @author haodongdong
+       * @description 获取最新提报部门
+       * @param {Object} query 查询参数
+       * @param {string} query.startDate 开始时间 yyyy-mm-dd
+       * @param {string} query.endDate 结束时间 yyyy-mm-dd
+       * @param {number} query.pageSize 获取多少条
+       * @param {number} query.pageNo 获取第几页
+       */
       async getZxtbbm (query) {
         this.zxtbbmLoadig = true
         try {
@@ -643,6 +794,10 @@
         }
         this.zxtbbmLoadig = false
       },
+      /**
+       * @author haodongdong
+       * @description 获取部门、资源枚举值。用于取出部门、资源名称
+       */
       async getEnum () {
         try {
           const [res, comp] = await Promise.all([
@@ -655,21 +810,28 @@
           console.error(error)
         }
       },
-      // 处理时间，取多天之前。例如一月前 30 三月前 90类似情况。
+      /**
+       * @author haodongdong
+       * @description 时间处理函数，获取某个范围的开始与结束时间的字符串
+       * @param {number} 间隔天数
+       * @param {string} [mode = {y}-{m}] 返回的时间字符串格式
+       * @returns {[startDateStr, endDateStr]}
+       */
       timeHandler(days, mode = '{y}-{m}') {
-        const start = new Date()
-        const end = new Date()
-        start.setTime(start.getTime() - 3600 * 1000 * 24 * days)
-
-        const startDate = this.$util.parseTime(start, mode)
-        const endDate = this.$util.parseTime(end, mode)
-
-        return [startDate, endDate]
+        const { startDateStr, endDateStr } = getTimeRange(days, mode)
+        return [startDateStr, endDateStr]
       },
-      // 查询所有列表
+      /**
+       * @author haodongdong
+       * @description 初始化函数，处理初始时间参数后统一调用数据接口
+       */
       async init() {
+        // 初始化查询做需要的时间参数
+        this.commonDate = this.timeHandler(365, '{y}-{m}-{d}')
         this.resInfoDate = this.timeHandler(365)
+        // 获取对应枚举
         await this.getEnum()
+        // 获取初始数据
         this.getBaseData()
         this.getTableData()
         this.getChartData()
@@ -700,7 +862,9 @@
 
           .icon {
             background-color: #ffffff44;
-            display: inline-block;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             min-width: 50px;
             min-height: 50px;
             border-radius: 50%;

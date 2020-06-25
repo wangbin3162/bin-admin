@@ -144,8 +144,32 @@ export function getDataHistory(query) {
     method: 'get',
     params: {
       gatherDept: isAdmin() ? null : query.departId,
-      month: query.month,
-      isDomain: isDomain()
+      isDomain: isDomain(),
+      startDate: query.startDate,
+      pageSize: query.pageSize
+    }
+  })
+}
+
+/**
+ * @author haodongdong
+ * @description 获取所有资源信息的resourceKey、resourceName
+ * @returns Promise
+ */
+export async function getDirectoryTransfer() {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/da/data/api/directoryTransfer',
+        method: 'get'
+      })
+      if (res.data.successful) {
+        resolve(res.data.data)
+      } else {
+        reject(res.data.message)
+      }
+    } catch (error) {
+      reject(error)
     }
   })
 }

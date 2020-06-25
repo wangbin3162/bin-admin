@@ -110,14 +110,12 @@ export async function getBmsjgjfx(query) {
   return new Promise(async (resolve, reject) => {
     try {
       const res = await request({
-        url: '/da/data/api/bmsjgjfx',
+        url: '/da/data/collect/bmsjgjfx',
         method: 'get',
         params: {
-          // startDate: query.startDate,
-          // pageSize: query.pageSize
-          startDate: '2019-06-01',
-          endDate: '2020-06-01',
-          pageSize: 5
+          startDate: query.startDate,
+          endDate: query.endDate,
+          pageSize: query.pageSize
         }
       })
       if (res.data.successful) {
@@ -170,8 +168,8 @@ export async function getZxtbbm(query) {
         url: '/da/data/collect/zxtbbm',
         method: 'get',
         params: {
-          startDate: '2020-06-01',
-          endDate: '2020-06-31',
+          startDate: query.startDate,
+          endDate: query.endDate,
           pageSize: query.pageSize,
           pageNo: query.pageNo - 1
         }

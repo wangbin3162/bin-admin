@@ -8,19 +8,33 @@
         </div>
       </template>
     </div>
-    <div class="slide" :style="{ left: tab * 50 + 'px'}"></div>
+    <div v-if="tab > -1" class="slide" :style="{ left: tab * 50 + 'px'}"></div>
   </div>
 </template>
 
 <script>
+  import { getTimeRange } from '../../../common/utils/util'
+
   export default {
     name: 'QuickDateSelect',
     props: {
-
+      selected: {
+        type: Number,
+        default: 2
+      },
+      dateMode: {
+        type: String,
+        default: '{y}-{m}-{d}'
+      }
+    },
+    watch: {
+      selected (newVal) {
+        this.tab = newVal
+      }
     },
     data () {
       return {
-        tab: 0,
+        tab: this.selected,
         dateText: [
           '本周',
           '本月',
@@ -34,7 +48,17 @@
     methods: {
       handleClick (index) {
         this.tab = index
-        this.$emit('tab-click', index)
+        let res = {}
+        if (index === 0) {
+          res = getTimeRange(7, this.dateMode)
+        }
+        if (index === 1) {
+          res = getTimeRange(30, this.dateMode)
+        }
+        if (index === 2) {
+          res = getTimeRange(365, this.dateMode)
+        }
+        this.$emit('tab-click', { ...res, index })
       }
     }
   }

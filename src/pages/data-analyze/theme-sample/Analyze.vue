@@ -4,7 +4,7 @@
       <div class="msg-tips" flex="main:justify">
         <div class="tip-item" flex>
           <span class="icon">
-            <img src="" alt="">
+            <img src="../../../assets/images/big-data-icon/icon_xxsl.png" alt="">
           </span>
           <span class="info" flex="dir:top">
             <i t-ellipsis title="资源信息数量（条）">资源信息数量（条）</i>
@@ -13,7 +13,7 @@
         </div>
         <div class="tip-item" flex>
           <span class="icon">
-            <img src="" alt="">
+            <img src="../../../assets/images/big-data-icon/icon_gjzl.png" alt="">
           </span>
           <span class="info" flex="dir:top">
             <i t-ellipsis title="数据归集总量（条）">数据归集总量（条）</i>
@@ -22,7 +22,7 @@
         </div>
         <div class="tip-item" flex>
           <span class="icon">
-            <img src="" alt="">
+            <img src="../../../assets/images/big-data-icon/icon_gjsj.png" alt="">
           </span>
           <span class="info" flex="dir:top">
             <i t-ellipsis title="本月归集数据量（条）">本月归集数据量（条）</i>
@@ -31,7 +31,7 @@
         </div>
         <div class="tip-item" flex>
           <span class="icon">
-            <img src="" alt="">
+            <img src="../../../assets/images/big-data-icon/icon_sjzl.png" alt="">
           </span>
           <span class="info" flex="dir:top">
             <i t-ellipsis title="自然人数据总量（人）">上月归集数据量（人）</i>
@@ -40,7 +40,7 @@
         </div>
         <div class="tip-item" flex>
           <span class="icon">
-            <img src="" alt="">
+            <img src="../../../assets/images/big-data-icon/icon_frsjzl.png" alt="">
           </span>
           <span class="info" flex="dir:top">
             <i>数据完整率</i>
@@ -131,8 +131,8 @@
                 <div flex="main:justify cross:baseline">
                   <b-select style="width: 150px; margin-right: 30px;"
                             size="mini" clearable filterable @on-change="handleResourceChange">
-                    <b-option v-for="item in resources" :value="item.key" :key="item.key">
-                      {{ item.text }}
+                    <b-option v-for="(value, key) in directoryTransferEnum" :value="key" :key="key">
+                      {{ value }}
                     </b-option>
                   </b-select>
                   <!-- 年份切换tab -->
@@ -154,18 +154,31 @@
               <div flex="main:justify cross:center" class="header-height">
                 <span class="title-text">信息归集记录</span>
                 <div>
-                  <span class="mr-10">{{ $util.parseTime(curDate, '{y}-{m}-{d}') }}</span>
-                  <b-button type="text" @click="modal = true">更多>></b-button>
+                  <span class="mr-10">{{ curDate }}</span>
+                  <b-button type="text" @click="handleMoreBtn">更多>></b-button>
                 </div>
               </div>
             </template>
             <div class="pl-20 pr-20">
-              <b-table :columns="columns" :data="historyList" size="small"></b-table>
+              <b-table :columns="columns" :data="historyList.slice(0, 6)" size="small" :loading="loading">
+                <template v-slot:resourceKey="{ row }">
+                  {{ directoryTransferEnum[row.resourceKey] }}
+                </template>
+              </b-table>
             </div>
           </b-card>
         </div>
       </div>
     </div>
+    <b-modal v-model="modal" footer-hide title="信息归集记录" width="60%">
+      <b-table :columns="columns" :data="moreList" size="small" class="mb-10" max-height="500">
+        <template v-slot:resourceKey="{ row }">
+          <div class="t-ellipsis" :title="directoryTransferEnum[row.resourceKey]">
+            {{ directoryTransferEnum[row.resourceKey] }}
+          </div>
+        </template>
+      </b-table>
+    </b-modal>
   </div>
 </template>
 
@@ -185,13 +198,12 @@
     },
     data() {
       return {
-        tab: 0,
+        directoryTransferEnum: {}, // 资源信息枚举
         yearsText: [],
         resources: [],
-        curDate: new Date(),
+        curDate: null,
         listQuery: {
           departId: '',
-          month: '2019-01',
           startDate: '',
           endDate: '',
           resourceKey: null
@@ -248,14 +260,13 @@
           )
         },
         columns: [
-          { title: '资源信息', key: 'resourceName', tooltip: true },
-          { title: '归集数量', key: 'count', align: 'center' }
-          // { title: '归集日期', key: 'date', width: 110 }
+          { title: '资源信息', slot: 'resourceKey', tooltip: true },
+          { title: '归集数量（条）', key: 'count', align: 'center' }
         ],
+        loading: false,
         historyList: [],
-        resourceList: [],
-        yearList: [],
-        yearSelect: ''
+        moreList: [],
+        modal: false
       }
     },
     created() {
@@ -268,8 +279,17 @@
       },
       // 日历切换事件
       HandleCalendarChange (date) {
-        console.log(date)
-        this.curDate = date.date
+        this.curDate = this.$util.parseTime(date.date, '{y}-{m}-{d}')
+        // 2.4.10 信息归集历史
+        this.getDataHistory({
+          startDate: this.curDate,
+          pageSize: 20
+        })
+      },
+      // 更多按钮回调
+      handleMoreBtn () {
+        this.moreList = this.historyList.slice(0)
+        this.modal = true
       },
       // 年度归集信息select回调
       handleResourceChange(val) {
@@ -321,21 +341,30 @@
         // 2.4.6 本月信息归集统计
         api.getCurCompleteRate(this.listQuery).then(res => {
           if (res.data.code === '0') {
-            this.counts.curCount = Number(res.data.data.curCount)
-            this.counts.preCount = Number(res.data.data.preCount)
+            const [{ count: preCount }, { count: curCount }] = res.data.data
+            this.counts.preCount = Number(preCount)
+            this.counts.curCount = Number(curCount)
             this.counts.percent = Math.round(this.counts.curCount / this.counts.preCount * 100)
-          }
-        })
-        // 2.4.10 信息归集历史
-        api.getDataHistory(this.listQuery).then(res => {
-          if (res.data.code === '0') {
-            this.historyList = res.data.data.rows
+            if (this.counts.percent > 100) this.counts.percent = 100
           }
         })
         // 2.4.7 月度信息归集趋势
         this.getMonthData()
         // 年度信息归集趋势
         this.getYearData()
+      },
+      // 获取信息归集记录
+      async getDataHistory (query) {
+        this.loading = true
+        try {
+          const res = await api.getDataHistory(query)
+          if (res.data.successful) {
+            this.historyList = res.data.data
+          }
+        } catch (error) {
+          console.error(error)
+        }
+        this.loading = false
       },
       // 2.4.7 月度信息归集趋势
       getMonthData() {
@@ -389,15 +418,6 @@
 
         return [startDate, endDate]
       },
-      // 获取部门资源列表 用于 select
-      async getResources() {
-        try {
-          const res = await api.getResources()
-          this.resources = res
-        } catch (error) {
-          console.error(error)
-        }
-      },
       getRandom(start, end, fixed = 0) {
         let differ = end - start
         let random = Math.random()
@@ -439,14 +459,23 @@
         }
         this.smoothLineChartOption.dataset = formatDataSet({ xField: 'name', yField: 'value' }, dateArr)
       },
+      /**
+       * @author haodongdong
+       * @description 获取部资源枚举值。用于取出资源名称
+       */
+      async getEnum () {
+        try {
+          const res = await api.getDirectoryTransfer()
+          this.directoryTransferEnum = res
+        } catch (error) {
+          console.error(error)
+        }
+      },
       // 一些初始化操作
-      init() {
-        // 生成年度归集趋势的tab按钮
-        const curYear = new Date().getFullYear()
-        this.yearsText = [curYear, curYear - 1, curYear - 2]
+      async init() {
+        await this.getEnum()
         this.buildDefaultDataYear()
         this.buildDefaultDataMonth()
-        this.getResources()
         this.searchList()
       }
     }
@@ -473,7 +502,9 @@
           }
           .icon {
             background-color: #ffffff44;
-            display: inline-block;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             min-width: 50px;
             min-height: 50px;
             border-radius: 50%;
