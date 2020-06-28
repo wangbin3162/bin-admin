@@ -18,11 +18,14 @@
           </b-dropdown>
         </b-tag>
       </div>
-      <div style="width: calc(100% - 80px);">
+      <div style="width: calc(100% - 120px);" flex>
         <b-input v-if="value.type==='default' || value.type==='el'" v-model="inputValue.value" size="small"
                  :placeholder="value.type==='default' ? '请输入默认值' : '请输入表达式,例: #name'"
                  @on-change="emitValue"/>
         <b-input v-else :value="inputValue.showValue" size="small" readonly/>
+        <b-icon   v-if="value.type==='el'" name="ios-help"  size="24" color="#1089ff"
+                :title="`例:\n 1)常量: 1 ， 'a'\n 2)取值: #name ， #num1+#num2  \n 3)默认函数: 截取长度 #name.substring(0,1) , 替换字符 #name.replace('a','b') \n 4)数学公式: T(Math).abs(#num)  `"/>
+
       </div>
     </div>
     <dept-choose ref="deptChoose" @on-change="handleChooseDept"/>

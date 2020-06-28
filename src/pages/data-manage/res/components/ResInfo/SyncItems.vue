@@ -32,14 +32,22 @@
             </b-tooltip>&nbsp;
           </template>
           <template v-else-if="row.valType==='EL'">
-            <b-row :gutter="10" v-if="row.edit">
-              <b-col span="10">
+            <b-row :gutter="10" >
+              <b-col span="10" v-if="row.edit">
                 <b-input v-model="mapList[index].paramValue" size="small" clearable placeholder="表达式,例: #name"/>
               </b-col>
+              <b-col span="6" v-else style="height: 28px; padding: 4px;">
+                表达式：<span >{{ row.paramValue }}</span>
+              </b-col>
+              <b-col span="4">
+                <template>
+                  <div>
+                      <b-icon name="ios-help"  size="24" color="#1089ff"
+                              :title="`例:\n 1)常量: 1 ， 'a'\n 2)取值: #name ， #num1+#num2  \n 3)默认函数: 截取长度 #name.substring(0,1) , 替换字符 #name.replace('a','b') \n 4)数学公式: T(Math).abs(#num)  `"/>
+                  </div>
+                </template>
+              </b-col>
             </b-row>
-            <div v-else>
-              表达式：<span>{{ row.paramValue }}</span>
-            </div>
           </template>
           <template v-else>
             <b-row :gutter="10" v-if="row.edit">
