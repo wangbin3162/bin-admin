@@ -1,92 +1,77 @@
 <template>
-  <!-- <b-collapse-wrap title="变量计算" collapse class="edit-el-var">
-  </b-collapse-wrap> -->
   <div class="edit-el-var">
-    <!-- <div class="mb-10" flex="main:justify">
-      <h4>EL表达式</h4>
+    <b-form-item label="el表达式" prop="tplContent" :rules="{ required: true, message: 'el表达式不能为空', trigger: 'blur' }">
+      <b-code-editor ref="editor" mode="" :readonly="true" :lint="false" v-model="elText">
+      </b-code-editor>
+    </b-form-item>
 
-      <span>
-        <b-button type="text"
-          @click="handleBackspaceBtn"
-          @mousedown.native="handleMouseDown"
-          @mouseup.native="handleMouseUp">
-          退格
-        </b-button>
-        <b-button type="text" text-color="danger" @click="handleClearBtn">清空</b-button>
-      </span>
-    </div> -->
+    <b-form-item>
+      <div class="con">
+        <div class="left">
+          <div style="width: 100%;">
+            <!-- <div class="mb-20">
+              <h4 class="mb-10">条件</h4>
+              <div flex>
+                <div class="btn-group" style="width: 80%;">
+                  <b-button-group class="row" style="display: flex" v-for="(row, index) in btnList.slice(0, 2)" :key="index">
+                    <b-button v-for="(btn, index) in row" :key="index"
+                      type="default" class="btn" style="flex: 1"
+                      @click="handleBtn(btn)">
+                      {{ btn }}
+                    </b-button>
+                  </b-button-group>
+                </div>
+                <b-button type="default" style="margin-left: -1px; width: 20%; height: 79px;"
+                  @click="handleBtn('=')">
+                  =
+                </b-button>
+              </div>
+            </div> -->
+            <div class="mb-20">
+              <div class="mb-10" flex="main:justify">
+                <h4 >操作面板</h4>
 
-    <b-form ref="form" :model="form">
-      <b-form-item prop="tplContent" :rules="{ required: true, message: 'el表达式不能为空', trigger: 'blur' }">
-        <b-code-editor ref="editor" mode="" :readonly="true" :lint="false" v-model="form.elText">
-        </b-code-editor>
-      </b-form-item>
-    </b-form>
-    <div class="con">
-      <div class="left">
-        <div style="width: 100%;">
-          <!-- <div class="mb-20">
-            <h4 class="mb-10">条件</h4>
-            <div flex>
-              <div class="btn-group" style="width: 80%;">
-                <b-button-group class="row" style="display: flex" v-for="(row, index) in btnList.slice(0, 2)" :key="index">
+                <span>
+                  <b-button type="text" text-color="danger" @click="handleClearBtn">清空</b-button>
+                </span>
+              </div>
+              <div class="btn-group">
+                <b-button-group class="row" v-for="(row, index) in btnList" :key="index">
                   <b-button v-for="(btn, index) in row" :key="index"
-                    type="default" class="btn" style="flex: 1"
-                    @click="handleBtn(btn)">
+                    type="default" class="btn"
+                    @click="handleBtn(btn)"
+                    @mousedown.native="handleMouseDown(btn)"
+                    @mouseup.native="handleMouseUp(btn)">
                     {{ btn }}
                   </b-button>
                 </b-button-group>
               </div>
-              <b-button type="default" style="margin-left: -1px; width: 20%; height: 79px;"
-                @click="handleBtn('=')">
-                =
+            </div>
+          </div>
+        </div>
+        <div class="right">
+          <div class="var-select-con">
+            <div flex="main:justify">
+              <h4 class="mb-10">变量</h4>
+              <b-button type="text" plain style="margin-left: 5px;" size="small" @click="open = true">
+                选择
               </b-button>
             </div>
-          </div> -->
-          <div class="mb-20">
-            <div class="mb-10" flex="main:justify">
-              <h4 >操作面板</h4>
-
-              <span>
-                <b-button type="text" text-color="danger" @click="handleClearBtn">清空</b-button>
-              </span>
-            </div>
-            <div class="btn-group">
-              <b-button-group class="row" v-for="(row, index) in btnList" :key="index">
-                <b-button v-for="(btn, index) in row" :key="index"
-                  type="default" class="btn"
-                  @click="handleBtn(btn)"
-                  @mousedown.native="handleMouseDown(btn)"
-                  @mouseup.native="handleMouseUp(btn)">
-                  {{ btn }}
-                </b-button>
-              </b-button-group>
+            <div>
+              <b-empty v-if="tempVarCodeList.length === 0">暂无已选变量</b-empty>
+              <template v-else>
+                <b-tag v-for="(varCode, index) in tempVarCodeList" :key="varCode" closable
+                  :type="isCustcom(varCode) ? 'info' : 'primary'" size="small" class="tag"
+                  @on-close="handleTagClose(index)"
+                  @on-click="handleTagClick(varCode)">
+                  {{ varCode }}
+                </b-tag>
+              </template>
             </div>
           </div>
         </div>
       </div>
-      <div class="right">
-        <div class="var-select-con">
-          <div flex="main:justify">
-            <h4 class="mb-10">变量</h4>
-            <b-button type="text" plain style="margin-left: 5px;" size="small" @click="open = true">
-              选择
-            </b-button>
-          </div>
-          <div>
-            <b-empty v-if="tempVarCodeList.length === 0">暂无已选变量</b-empty>
-            <template v-else>
-              <b-tag v-for="(varCode, index) in tempVarCodeList" :key="varCode" closable
-                :type="isCustcom(varCode) ? 'info' : 'primary'" size="small" class="tag"
-                @on-close="handleTagClose(index)"
-                @on-click="handleTagClick(varCode)">
-                {{ varCode }}
-              </b-tag>
-            </template>
-          </div>
-        </div>
-      </div>
-    </div>
+    </b-form-item>
 
     <!-- 返回的参数：变量编码 -->
     <edit-select-var :open="open" @close="open = false"
@@ -101,7 +86,8 @@
   export default {
     name: 'EditElVar',
     props: [
-      'initData'
+      'initData',
+      'params'
     ],
     components: {
       EditSelectVar
@@ -111,9 +97,7 @@
         timer: null,
         open: false,
         curCursor: 0, // 表达式输入框当前光标位置
-        form: {
-          elText: '#{}'
-        },
+        elText: '#{}',
         varMap: new Map(),
         customVarParamsMap: new Map(), // 存储由参数配置组件（EditParamManage）自定义添加的参数
         tempVarCodeList: [],
@@ -137,7 +121,7 @@
         })
         this.$emit('var-change', res)
       },
-      'form.elText': {
+      'elText': {
         handler (newVal, oldVal) {
           this.$emit('el-change', newVal)
         },
@@ -188,9 +172,9 @@
         const elArr = this.tempVarCodeList.splice(index, 1)
 
         const reg = new RegExp(' ' + elArr[0] + ' ', 'g')
-        const str = this.form.elText.replace(reg, '')
+        const str = this.elText.replace(reg, '')
         this.editor.setValue(str)
-        this.editor.setCursor(0, this.form.elText.length - 1)
+        this.editor.setCursor(0, this.elText.length - 1)
 
         this.varMap.delete(elArr[0]) // 删除map中对应的变量
         this.buildResData() // 根据varMap构建返回数据
@@ -264,7 +248,8 @@
         if (this.initData) {
           this.tempVarCodeList = this.initData.tempVarCodeList
           this.editor.setValue(this.initData.elText)
-          this.editor.setCursor(0, this.form.elText.length - 1)
+          this.editor.setCursor(0, this.elText.length - 1)
+          console.log(this.initData.tempVarCodeList)
         } else {
           this.editor.setCursor(0, 2)
         }
