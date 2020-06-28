@@ -97,7 +97,7 @@
   import commonMixin from '../../../common/mixins/mixin'
   import permission from '../../../common/mixins/permission'
   import * as api from '../../../api/urp/memo-mapping.api'
-  import ResChoose from '../../data-manage/res/components/ResInfo/ResChoose'
+  import ResChoose from '../../../pages/urp/memo/ResChoose'
   import MemoSelect from '../components/MemoSelect'
   import IfcTagSelect from '../components/IfcTagSelect'
 
