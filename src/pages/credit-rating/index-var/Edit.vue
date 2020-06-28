@@ -101,6 +101,7 @@
           :paramTypeOptions="paramTypeOptions"
           :params="params"
           :tempVarCodeList="tempVarCodeList"
+          :varType="form.varType"
           @params-change="params => form.params = params">
         </edit-param-manage>
 

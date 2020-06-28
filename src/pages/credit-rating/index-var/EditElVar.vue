@@ -77,7 +77,7 @@
             <b-empty v-if="tempVarCodeList.length === 0">暂无已选变量</b-empty>
             <template v-else>
               <b-tag v-for="(varCode, index) in tempVarCodeList" :key="varCode" closable
-                type="info" size="small" class="tag"
+                :type="isCustcom(varCode) ? 'info' : 'primary'" size="small" class="tag"
                 @on-close="handleTagClose(index)"
                 @on-click="handleTagClick(varCode)">
                 {{ varCode }}
@@ -91,6 +91,7 @@
     <!-- 返回的参数：变量编码 -->
     <edit-select-var :open="open" @close="open = false"
       @choose-mul="handleVarChooseMul"></edit-select-var>
+
   </div>
 </template>
 
@@ -113,8 +114,9 @@
         form: {
           elText: '#{}'
         },
-        tempVarCodeList: [],
         varMap: new Map(),
+        customVarParamsMap: new Map(), // 存储由参数配置组件（EditParamManage）自定义添加的参数
+        tempVarCodeList: [],
         varParams: [],
         editor: null,
         btnList: [
@@ -128,7 +130,12 @@
     },
     watch: {
       tempVarCodeList (newVal, oldVal) {
-        this.$emit('var-change', JSON.parse(JSON.stringify(newVal)))
+        const res = []
+        const originList = JSON.parse(JSON.stringify(newVal))
+        originList.forEach(paraCode => {
+          if (!this.customVarParamsMap.get(paraCode)) res.push(paraCode) // 不是自定义参数则压入
+        })
+        this.$emit('var-change', res)
       },
       'form.elText': {
         handler (newVal, oldVal) {
@@ -144,7 +151,17 @@
       }
     },
     created () {
+      this.$EventBus.$on('IndexVarEditParamManage-selected', param => {
+        this.customVarParamsMap.set(param.paraCode, param)
 
+        const customVarObj = {
+          varCode: param.paraCode,
+          params: [this.customVarParamsMap.get(param.paraCode)]
+        }
+
+        this.varMap.set(customVarObj.varCode, customVarObj)
+        this.buildResData()
+      })
     },
     mounted () {
       this.$nextTick(() => {
@@ -214,14 +231,12 @@
         const varParams = []
         for (const item of this.varMap.values()) {
           tempVarCodeList.push(item.varCode)
-          // 遍历获取的变量数组
-          // 每个变量元素都含有param
-          // 含有的param可能相同
-          // 只存入唯一的param
-          // 记录相同的param所属变量的varCode
           item.params.forEach(newParam => {
-            newParam.paraSource = item.varCode
+            if (!newParam.custcom) newParam.paraSource = item.varCode // 不是自定义参数则添加来源
+            newParam.disabled = true // 在map中的数据都设置禁用属性，不允许参数配置组件修改
+
             const isExistParam = varParams.find(oldParam => oldParam.paraCode === newParam.paraCode)
+            console.log(isExistParam)
             // 存在则给paraSource追加所属的varCode，不存在则新增
             if (isExistParam) {
               isExistParam.paraSource += ',' + newParam.paraSource
@@ -232,6 +247,16 @@
         }
         this.tempVarCodeList = tempVarCodeList
         this.varParams = varParams
+      },
+      /**
+       * @author haodongdong
+       * @description 检查是否是自定义变量
+       * @param {String} paraCode 参数编码
+       */
+      isCustcom (paraCode) {
+        let res = false
+        if (this.customVarParamsMap.get(paraCode)) res = true
+        return res
       },
       init () {
         this.editor = this.$refs.editor.jsonEditor
