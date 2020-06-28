@@ -1,28 +1,31 @@
 <template>
-  <b-collapse-wrap title="变量计算" collapse class="edit-el-var">
+  <!-- <b-collapse-wrap title="变量计算" collapse class="edit-el-var">
+  </b-collapse-wrap> -->
+  <div class="edit-el-var">
+    <!-- <div class="mb-10" flex="main:justify">
+      <h4>EL表达式</h4>
+
+      <span>
+        <b-button type="text"
+          @click="handleBackspaceBtn"
+          @mousedown.native="handleMouseDown"
+          @mouseup.native="handleMouseUp">
+          退格
+        </b-button>
+        <b-button type="text" text-color="danger" @click="handleClearBtn">清空</b-button>
+      </span>
+    </div> -->
+
+    <b-form ref="form" :model="form">
+      <b-form-item prop="tplContent" :rules="{ required: true, message: 'el表达式不能为空', trigger: 'blur' }">
+        <b-code-editor ref="editor" mode="" :readonly="true" :lint="false" v-model="form.elText">
+        </b-code-editor>
+      </b-form-item>
+    </b-form>
     <div class="con">
       <div class="left">
         <div style="width: 100%;">
-          <div class="mb-20">
-            <div flex="main:justify">
-              <h4 class="mb-10">变量</h4>
-              <b-button type="text" plain style="margin-left: 5px;" size="small" @click="open = true">
-                选择
-              </b-button>
-            </div>
-            <div>
-              <b-empty v-if="tempVarCodeList.length === 0">暂无已选变量</b-empty>
-              <template v-else>
-                <b-tag v-for="(varCode, index) in tempVarCodeList" :key="varCode" closable
-                  type="info" size="small" class="tag"
-                  @on-close="handleTagClose(index)"
-                  @on-click="handleTagClick(varCode)">
-                  {{ varCode }}
-                </b-tag>
-              </template>
-            </div>
-          </div>
-          <div class="mb-20">
+          <!-- <div class="mb-20">
             <h4 class="mb-10">条件</h4>
             <div flex>
               <div class="btn-group" style="width: 80%;">
@@ -39,14 +42,22 @@
                 =
               </b-button>
             </div>
-          </div>
+          </div> -->
           <div class="mb-20">
-            <h4 class="mb-10">运算符号</h4>
+            <div class="mb-10" flex="main:justify">
+              <h4 >操作面板</h4>
+
+              <span>
+                <b-button type="text" text-color="danger" @click="handleClearBtn">清空</b-button>
+              </span>
+            </div>
             <div class="btn-group">
-              <b-button-group class="row" v-for="(row, index) in btnList.slice(2)" :key="index">
+              <b-button-group class="row" v-for="(row, index) in btnList" :key="index">
                 <b-button v-for="(btn, index) in row" :key="index"
                   type="default" class="btn"
-                  @click="handleBtn(btn)">
+                  @click="handleBtn(btn)"
+                  @mousedown.native="handleMouseDown(btn)"
+                  @mouseup.native="handleMouseUp(btn)">
                   {{ btn }}
                 </b-button>
               </b-button-group>
@@ -55,33 +66,32 @@
         </div>
       </div>
       <div class="right">
-        <div class="mb-10" flex="main:justify">
-          <h4>EL表达式</h4>
-
-          <span>
-            <b-button type="text"
-              @click="handleBackspaceBtn"
-              @mousedown.native="handleMouseDown"
-              @mouseup.native="handleMouseUp">
-              退格
+        <div class="var-select-con">
+          <div flex="main:justify">
+            <h4 class="mb-10">变量</h4>
+            <b-button type="text" plain style="margin-left: 5px;" size="small" @click="open = true">
+              选择
             </b-button>
-            <b-button type="text" text-color="danger" @click="handleClearBtn">清空</b-button>
-          </span>
+          </div>
+          <div>
+            <b-empty v-if="tempVarCodeList.length === 0">暂无已选变量</b-empty>
+            <template v-else>
+              <b-tag v-for="(varCode, index) in tempVarCodeList" :key="varCode" closable
+                type="info" size="small" class="tag"
+                @on-close="handleTagClose(index)"
+                @on-click="handleTagClick(varCode)">
+                {{ varCode }}
+              </b-tag>
+            </template>
+          </div>
         </div>
-
-        <b-form ref="form" :model="form">
-          <b-form-item prop="elText" :rules="{ required: true, message: 'el表达式不能为空', trigger: 'blur' }">
-            <b-code-editor ref="editor" mode="" :readonly="true" :lint="false" v-model="form.elText">
-            </b-code-editor>
-          </b-form-item>
-        </b-form>
       </div>
     </div>
 
     <!-- 返回的参数：变量编码 -->
     <edit-select-var :open="open" @close="open = false"
       @choose-mul="handleVarChooseMul"></edit-select-var>
-  </b-collapse-wrap>
+  </div>
 </template>
 
 <script>
@@ -104,14 +114,15 @@
           elText: '#{}'
         },
         tempVarCodeList: [],
+        varMap: new Map(),
+        varParams: [],
         editor: null,
         btnList: [
-          ['<', '>', ':', '!'],
-          ['?', '&', '|', '#'],
-          ['{', '7', '8', '9', '+'],
-          ['}', '4', '5', '6', '-'],
-          ['(', '1', '2', '3', '*'],
-          [')', '0', '.', '%', '/']
+          ['(', ')', '\'', '#', '←', '/'],
+          ['{', '}', '7', '8', '9', '*'],
+          ['<', '>', '4', '5', '6', '-'],
+          [':', '!', '1', '2', '3', '+'],
+          ['?', '&', '0', '.', '%', '=']
         ]
       }
     },
@@ -119,8 +130,17 @@
       tempVarCodeList (newVal, oldVal) {
         this.$emit('var-change', JSON.parse(JSON.stringify(newVal)))
       },
-      'form.elText' (newVal, oldVal) {
-        this.$emit('el-change', newVal)
+      'form.elText': {
+        handler (newVal, oldVal) {
+          this.$emit('el-change', newVal)
+        },
+        immediate: true
+      },
+      varParams: {
+        handler (newVal, oldVal) {
+          this.$emit('var-params-change', this.$util.deepClone(newVal))
+        },
+        deep: true
       }
     },
     created () {
@@ -133,43 +153,45 @@
     },
     methods: {
       handleBtn (str) {
-        this.editor.replaceSelection(str)
+        if (str === '←') {
+          this.editor.execCommand('delCharBefore')
+        } else {
+          this.editor.replaceSelection(str)
+        }
       },
       // 变量选择组件回调
-      handleVarChooseMul (tempVarCodeList) {
-        const params = []
-        tempVarCodeList.forEach(newItem => {
-          const isExistVarCode = this.tempVarCodeList.find(varCode => varCode === newItem.varCode)
-          if (!isExistVarCode) this.tempVarCodeList.push(newItem.varCode)
-
-          newItem.params.forEach(newParam => { // 查找选中的变量是否包含相同的参数
-            console.log(newParam.paraCode)
-            const isExistParam = params.find(oldParam => oldParam.paraCode === newParam.paraCode)
-            if (!isExistParam) params.push(newParam)
-          })
+      handleVarChooseMul (varList) {
+        varList.forEach(newItem => {
+          this.varMap.set(newItem.varCode, newItem)
         })
-        console.log(params)
+        this.buildResData()
       },
       // tag关闭回调
       handleTagClose (index) {
         const elArr = this.tempVarCodeList.splice(index, 1)
+
         const reg = new RegExp(' ' + elArr[0] + ' ', 'g')
         const str = this.form.elText.replace(reg, '')
         this.editor.setValue(str)
         this.editor.setCursor(0, this.form.elText.length - 1)
+
+        this.varMap.delete(elArr[0]) // 删除map中对应的变量
+        this.buildResData() // 根据varMap构建返回数据
       },
       // tag点击回调
       handleTagClick (text) {
         this.editor.replaceSelection(` ${text} `)
       },
       // 退格按钮的回调
-      handleBackspaceBtn () {
-        this.editor.execCommand('delCharBefore')
+      handleBackspaceBtn (str) {
+        if (str === '←') this.editor.execCommand('delCharBefore')
       },
-      handleMouseDown () {
-        this.timer = setInterval(() => {
-          this.editor.execCommand('delCharBefore')
-        }, 100)
+      handleMouseDown (str) {
+        if (str === '←') {
+          this.timer = setInterval(() => {
+            this.editor.execCommand('delCharBefore')
+          }, 70)
+        }
       },
       handleMouseUp () {
         clearInterval(this.timer)
@@ -181,6 +203,35 @@
       },
       validate () {
         this.$refs.form.validate()
+      },
+      /**
+       * @author haodongdong
+       * @description 根据选择的变量构建需要返回出组件的外的数据
+       */
+      buildResData () {
+        // 产生本身tag的list
+        const tempVarCodeList = []
+        const varParams = []
+        for (const item of this.varMap.values()) {
+          tempVarCodeList.push(item.varCode)
+          // 遍历获取的变量数组
+          // 每个变量元素都含有param
+          // 含有的param可能相同
+          // 只存入唯一的param
+          // 记录相同的param所属变量的varCode
+          item.params.forEach(newParam => {
+            newParam.paraSource = item.varCode
+            const isExistParam = varParams.find(oldParam => oldParam.paraCode === newParam.paraCode)
+            // 存在则给paraSource追加所属的varCode，不存在则新增
+            if (isExistParam) {
+              isExistParam.paraSource += ',' + newParam.paraSource
+            } else {
+              varParams.push(newParam)
+            }
+          })
+        }
+        this.tempVarCodeList = tempVarCodeList
+        this.varParams = varParams
       },
       init () {
         this.editor = this.$refs.editor.jsonEditor
@@ -210,14 +261,16 @@
 
 <style lang="stylus" scoped>
   .edit-el-var {
+
     .con {
       display: flex
+      // border: 1px solid #f0f0f0;
 
       .left {
         display: flex;
         flex-direction: column;
         align-items: center;
-        width: 40%;
+        width: 50%;
         padding-right: 16px;
         border-right: 1px solid #f0f0f0;
 
@@ -226,11 +279,13 @@
           flex-direction: column;
 
           .row {
+            display: flex;
+
             &:not(:first-child) {
               margin-top: -1px;
             }
             .btn {
-              width: 20%;
+              flex: 1;
               height: 40px;
             }
           }

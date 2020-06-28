@@ -51,6 +51,18 @@
               </b-col>
               <b-col span="12"></b-col>
             </b-row>
+            <b-row v-if="form.varType === 'Complex'">
+              <b-col span="24">
+                <b-form-item label="el表达式" prop="tplContent">
+                  <edit-el-var ref="elVar"
+                    @var-change="handleVarChange"
+                    @el-change="elText => form.tplContent = elText"
+                    @var-params-change="handleVarParamsChange"
+                    :initData="elExpreData">
+                  </edit-el-var>
+                </b-form-item>
+              </b-col>
+            </b-row>
             <!-- <b-row v-else>
               <b-col span="24">
                 <b-form-item label="已选变量">
@@ -82,12 +94,6 @@
             </b-form-item>
           </b-form>
         </b-collapse-wrap>
-
-        <edit-el-var ref="elVar" v-if="form.varType === 'Complex'"
-          @var-change="handleVarChange"
-          @el-change="elText => form.tplContent = elText"
-          :initData="elExpreData">
-        </edit-el-var>
 
         <!-- 一般变量时，选择模板带过来的参数不可改动与删除 -->
         <!-- 复合变量时，新增的参数不可在选择变量带过来的参数中 -->
@@ -167,6 +173,9 @@
           ],
           tplId: [
             { required: true, message: '请选择业务模板', trigger: 'blur' }
+          ],
+          tplContent: [
+            { required: true, message: ' ', trigger: 'blur' }
           ]
         },
         openBelongType: false,
@@ -205,6 +214,11 @@
       // el表达式组件var-change事件回调
       handleVarChange (indexVarCodeList) {
         this.tempVarCodeList = indexVarCodeList
+      },
+      // el表达式组件var-params-change事件回调
+      handleVarParamsChange (varParams) {
+        console.log(varParams)
+        this.params = varParams
       },
       // 变量选择组件选中回调
       handleVarChooseMul (tempVarCodeList) {

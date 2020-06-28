@@ -72,7 +72,7 @@
           { title: '参数类型', slot: 'paraType' },
           { title: '描述', slot: 'paraDesc' },
           // { title: '排序', slot: 'orderNo' },
-          { title: '来源', key: 'paraSource' },
+          { title: '来源', key: 'paraSource', ellipsis: true, tooltip: true },
           { title: '操作', slot: 'action', width: 70 }
         ]
       }
@@ -154,6 +154,7 @@
           paraCode: '',
           paraDesc: '',
           paraType: '',
+          paraSource: null,
           orderNo: this.list.length + 1
         })
       },
