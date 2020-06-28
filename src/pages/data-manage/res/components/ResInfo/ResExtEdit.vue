@@ -404,7 +404,7 @@
   .field-item {
     display: inline-block;
     width: 25%;
-    padding: 5px 0;
+    padding: 5px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis
