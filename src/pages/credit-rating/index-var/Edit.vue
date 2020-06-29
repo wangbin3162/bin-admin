@@ -190,7 +190,6 @@
       },
       // el表达式组件var-params-change事件回调
       handleVarParamsChange (varParams) {
-        console.log(varParams)
         this.params = varParams
       },
       // 变量选择组件选中回调
@@ -251,6 +250,7 @@
             // 初始化编辑时el表达式组件需要的参数
             this.elExpreData = {
               tempVarCodeList: this.tempVarCodeList,
+              params: this.params,
               elText: this.form.tplContent
             }
           }

@@ -86,8 +86,7 @@
   export default {
     name: 'EditElVar',
     props: [
-      'initData',
-      'params'
+      'initData'
     ],
     components: {
       EditSelectVar
@@ -136,6 +135,7 @@
     },
     created () {
       this.$EventBus.$on('IndexVarEditParamManage-selected', param => {
+        // 把自定义参数存入customVarParamsMap，用于判断tempVarCodeList中的数据是否是自定义参数。
         this.customVarParamsMap.set(param.paraCode, param)
 
         const customVarObj = {
@@ -216,11 +216,12 @@
         for (const item of this.varMap.values()) {
           tempVarCodeList.push(item.varCode)
           item.params.forEach(newParam => {
-            if (!newParam.custcom) newParam.paraSource = item.varCode // 不是自定义参数则添加来源
-            newParam.disabled = true // 在map中的数据都设置禁用属性，不允许参数配置组件修改
+            // 不是自定义参数则添加来源
+            if (!newParam.custom) newParam.paraSource = item.varCode
+            // 在map中的数据都设置禁用属性，不允许参数配置组件修改
+            newParam.disabled = true
 
             const isExistParam = varParams.find(oldParam => oldParam.paraCode === newParam.paraCode)
-            console.log(isExistParam)
             // 存在则给paraSource追加所属的varCode，不存在则新增
             if (isExistParam) {
               isExistParam.paraSource += ',' + newParam.paraSource
@@ -249,7 +250,42 @@
           this.tempVarCodeList = this.initData.tempVarCodeList
           this.editor.setValue(this.initData.elText)
           this.editor.setCursor(0, this.elText.length - 1)
-          console.log(this.initData.tempVarCodeList)
+          const params = [] // 存放还原多来源参数后的param
+          const paramsCopy = this.$util.deepClone(this.initData.params)
+          // 还原多来源参数为与来源一对一形式的param，如果为其中由自定义参数则直接还原为对应的变量对象存入map
+          paramsCopy.forEach(param => {
+            // 不为null表示非自定义参数，用于还原多来源参数
+            if (param.paraSource) {
+              const paraSourceArr = param.paraSource.split(',')
+              paraSourceArr.forEach(paraSource => {
+                const copy = this.$util.deepClone(param)
+                copy.paraSource = paraSource
+                params.push(copy)
+              })
+            } else {
+              // 这里构建自定义参数的map
+              param.custom = true
+              const customVarObj = {
+                varCode: param.paraCode,
+                params: [param]
+              }
+              this.customVarParamsMap.set(param.paraCode, param)
+              this.varMap.set(customVarObj.varCode, customVarObj)
+            }
+          })
+          // 还原非自定义param为对应于变量的对象，存入map
+          this.tempVarCodeList.forEach(varCode => {
+            const varParams = []
+            params.forEach(param => { // 查找属于当前varCode变量的param，然后存入数组
+              if (param.paraSource === varCode) varParams.push(param)
+            })
+            const varObj = {
+              varCode,
+              params: varParams
+            }
+            this.varMap.set(varObj.varCode, varObj)
+          })
+          this.buildResData()
         } else {
           this.editor.setCursor(0, 2)
         }

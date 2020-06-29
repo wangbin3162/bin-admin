@@ -1,7 +1,7 @@
 <template>
   <div>
     <page-header-wrap :title="title" show-close @on-close="$emit('close')">
-      <v-edit-wrap style="position: relative;">
+      <v-edit-wrap style="position: relative;" transparent>
         <b-loading fix show-text="loading" v-if="loading"></b-loading>
         <b-collapse-wrap title="基本信息" collapse>
           <div>

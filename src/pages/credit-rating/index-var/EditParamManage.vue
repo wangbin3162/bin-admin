@@ -148,7 +148,7 @@
           paraType: '',
           paraSource: null,
           orderNo: this.list.length + 1,
-          custcom: true // 表示自定义参数
+          custom: true // 表示自定义参数
         })
       },
       // 移除一行
