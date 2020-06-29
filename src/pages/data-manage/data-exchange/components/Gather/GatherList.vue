@@ -302,7 +302,6 @@
         if (!this.downloadEvent) { // 点击下载事件，需要函数防抖动
           this.downloadEvent = this.$util.debounce((resource) => {
             api.downloadTemplate(resource.resourceKey).then(res => {
-              console.log(res.data)
               if (res.status === 200) {
                 Util.downloadFile(res.data, `${resource.resourceName}.xlsx`)
               }
@@ -341,7 +340,6 @@
         api.show(row.id, this.resource.resourceKey).then(res => {
           if (res.data.code === '0') {
             this.gather = this.decodeFormObj(res.data.data)
-            console.log(this.gather)
             this.openEditPage('check')
           }
         })
