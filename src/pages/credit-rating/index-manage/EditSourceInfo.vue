@@ -1,23 +1,90 @@
 <template>
   <div class="edit-source-info">
     <b-alert v-if="valid" type="warning">有暂未配置的资源或常量缺省值，请配置后提交。</b-alert>
-    <b-table id="customTable" :columns="columns" :data="listCopy">
-      <template v-slot:paraType="{ row }">
-        {{ paramTypeEnum[row.paraType] }}
-      </template>
+    <div class="main-con">
+      <div class="left">
+        <b-card header="参数" head-tip shadow="never" :bordered="false">
+          <template v-if="resources.length > 0">
+            <b-table ref="table" :columns="columns" :data="list" :show-header="false" size="small"
+              highlight-row @on-current-change="currentRowChange">
+              <template v-slot:columnA="{ row }">
+                <div class="title-con">
+                  <h4>{{ row.paraName }}</h4>
+                  <span t-ellipsis :title="row.paraDesc" class="desc">{{ row.paraDesc }}参数描述</span>
+                </div>
+              </template>
 
-      <template v-slot:defaultValue="{ index }">
-        <b-input v-model="list[index].defaultValue"></b-input>
-      </template>
+              <template v-slot:columnB="{ row, index }">
+               <template v-if="list[index].paraType === 'C'">
+                  <b-tooltip v-if="list[index].defaultValue === ''" appendToBody content="未配置缺省值">
+                    <b-icon name="ios-alert" color="#ff4d4f"></b-icon>
+                  </b-tooltip>
+               </template>
 
-      <template v-slot:action="{ row, index }">
-        <b-button v-if="row.paraType !== 'C'"
-          type="text" @click="openSourceInfoSelect(row, index)">
-          + 配置
-        </b-button>
-      </template>
-    </b-table>
+               <template v-else>
+                  <b-tooltip v-if="list[index].paraValue === ''" appendToBody content="未配置资源或信息项">
+                    <b-icon name="ios-alert" color="#ff4d4f"></b-icon>
+                  </b-tooltip>
+               </template>
 
+                <b-button type="primary" plain style="width: 90px;">
+                  {{ paramTypeEnum[row.paraType] }}
+                </b-button>
+              </template>
+            </b-table>
+          </template>
+        </b-card>
+      </div>
+
+      <div class="right">
+        <b-card header="相关配置" head-tip shadow="never" :bordered="false">
+          <template v-if="resources.length > 0">
+            <div class="mb-10">
+              <h4 class="mb-5">缺省值</h4>
+              <b-input v-model="list[rowIndex].defaultValue" :disabled="!isEdit"></b-input>
+            </div>
+
+            <template v-if="!isConst">
+              <div v-if="isEdit" flex="main:justify cross:center" class="mb-10">
+                <b-button type="info" plain size="small">
+                  <template v-if="isSource">所选资源信息</template>
+                  <template v-if="isInfo">所选信息项</template>
+                </b-button>
+                <div>
+                  <b-button type="text" icon="ios-trash" v-if="isSource" @click="clearAll(rowIndex)">清空</b-button>
+                  <b-button type="text" icon="ios-settings" @click="open = true">配置</b-button>
+                </div>
+              </div>
+
+              <b-table :columns="columnsConfig" :data="listConfig" size="small">
+                <template v-slot:personClass="{ row }">
+                  <div t-ellipsis :title="personClassEnum[row.personClass]">
+                    {{ personClassEnum[row.personClass] }}
+                  </div>
+                </template>
+
+                <template v-slot:resProperty="{ row }">
+                  <div t-ellipsis :title="resPropertyEnum[row.resProperty]">
+                    {{ resPropertyEnum[row.resProperty] }}
+                  </div>
+                </template>
+
+                <template v-slot:dataType="{ row }">
+                  <div t-ellipsis :title="dataTypeCustomEnum[row.dataType]">
+                    {{ dataTypeCustomEnum[row.dataType] }}
+                  </div>
+                </template>
+
+                <template v-slot:action="{ row }">
+                  <b-button v-if="isSource" type="text" @click="remove(row.resourceKey)">移除</b-button>
+                  <b-button v-if="isInfo" type="text" @click="open = true">更新</b-button>
+                </template>
+              </b-table>
+            </template>
+          </template>
+        </b-card>
+      </div>
+    </div>
     <!-- 资源配置弹框 -->
     <source-info-select
       @close="open = false"
@@ -40,6 +107,10 @@
     props: {
       resources: {
         type: Array
+      },
+      mode: {
+        type: String,
+        default: 'edit'
       },
       personClassEnum: {
         type: Object
@@ -66,102 +137,14 @@
           datetime: '日期时间型',
           text: '备注型'
         },
-        map: new Map(),
         open: false, // 配置资源弹框
-        list: [], // 渲染table的list
-        listCopy: [],
+        list: [],
         columns: [
-          {
-            type: 'expand',
-            width: 50,
-            className: 'expand-custom-column', // 用于查找需要点击的列的自定义class
-            render: (h, { row, index }) => {
-              // 这里渲染函数如果添加参数，则jsx内的class会脱离于当前样式作用域 <style lang="stylus" scoped>
-              // 需要去除scoped样式才生效
-              let sourceInfoTemplate = <div class="table-con">
-                    <b-row class="title">
-                      <b-col span={5}>资源名称</b-col>
-                      <b-col span={5}>主体类别</b-col>
-                      <b-col span={5}>资源性质</b-col>
-                      <b-col span={5}>描述</b-col>
-                      <b-col span={4}></b-col>
-                    </b-row>
-
-                    <div class="row">
-                      {
-                        Object.keys(this.list[index].source).map(key => {
-                          return (
-                            <b-row>
-                              <b-col span={5}>{ this.list[index].source[key].resourceName }</b-col>
-                              <b-col span={5}>{ this.personClassEnum[this.list[index].source[key].personClass] }</b-col>
-                              <b-col span={5}>{ this.resPropertyEnum[this.list[index].source[key].resProperty] }</b-col>
-                              <b-col span={5}>
-                                { this.list[index].source[key].resourceDesc === '' ? '暂无描述' : this.list[index].source[key].resourceDesc}
-                              </b-col>
-                              <b-col span={4} style="text-align: right">
-                                <b-button type="text" size="mini" onClick={() => this.remove(key)}>移除</b-button>
-                              </b-col>
-                            </b-row>
-                          )
-                        })
-                      }
-                    </div>
-                  </div>
-              let infoItemTempLate = <div class="table-con">
-                  <b-row class="title">
-                    <b-col span={5}>信息项名称</b-col>
-                    <b-col span={5}>标题</b-col>
-                    <b-col span={5}>数据类型</b-col>
-                    <b-col span={5}>所属资源</b-col>
-                    <b-col span={4}></b-col>
-                  </b-row>
-
-                  <div class="row">
-                    {
-                      Object.keys(this.list[index].info).map(key => {
-                        return (
-                          <b-row>
-                            <b-col span={5}>{this.list[index].info[key].fieldName}</b-col>
-                            <b-col span={5}>{this.list[index].info[key].fieldTitle}</b-col>
-                            <b-col span={5}>{this.dataTypeCustomEnum[this.list[index].info[key].dataType]}</b-col>
-                            <b-col span={5}>{this.list[index].info[key].resourceName}</b-col>
-                            <b-col span={4} style="text-align: right">
-                              <b-button type="text" size="mini"
-                                onClick={() => this.openSourceInfoSelect(row, index)}>
-                                更新
-                              </b-button>
-                            </b-col>
-                          </b-row>
-                        )
-                      })
-                    }
-                  </div>
-                </div>
-              const template = row.paraType === 'S' ? sourceInfoTemplate : infoItemTempLate
-              return (
-                <div class="expandRow">
-                  <div class="headers" flex="main:justify">
-                    <h4>
-                      { row.paraType === 'S' ? '所选资源信息' : '所选信息项'}
-                    </h4>
-                    {
-                      row.paraType === 'S'
-                      ? <span onClick={() => this.clearAll(index)}><b-icon name="ios-trash"></b-icon> 清空</span>
-                      : ''
-                    }
-                  </div>
-                  { template }
-                </div>
-              )
-            }
-          },
-          { type: 'index', width: 50, align: 'center' },
-          { title: '参数名称', key: 'paraName', align: 'center' },
-          { title: '参数类型', slot: 'paraType', align: 'center' },
-          { title: '参数描述', key: 'paraDesc', align: 'center', ellipsis: true, tooltip: true },
-          { title: '缺省值', slot: 'defaultValue', align: 'center' },
-          { title: '配置', slot: 'action', align: 'center' }
+          { title: 'columnA', slot: 'columnA', align: 'left' },
+          { title: 'columnB', slot: 'columnB', align: 'right' }
         ],
+        columnsConfig: [],
+        listConfig: [],
         paraType: null, // 配置资源弹框组件使用，参数类型
         rowId: null, // 存储点击配置资源行的id
         rowIndex: 0, // 当前行index
@@ -172,12 +155,11 @@
       resources: { // 观察变量选择带来的参数变动
         handler (newVal, oldVal) {
           this.list = this.initList(newVal)
-          // table的展示绑定listCopy，内部的数据交互绑定list，避免响应式操作重新渲染table
-          this.listCopy = JSON.parse(JSON.stringify(this.list))
-          this.$nextTick(() => { // 数据变动后获取需要点击的dom元素，并默认展开第1行
-            this.getExpandColumn()
-            this.hackClick(0)
-          })
+          if (this.list.length) {
+            this.$nextTick(() => {
+              this.$refs.table.clickCurrentRow(0)
+            })
+          }
         },
         immediate: true
       },
@@ -189,45 +171,75 @@
         deep: true
       }
     },
+    computed: {
+      isEdit () {
+        return this.mode === 'edit'
+      },
+      isSource () {
+        return this.paraType === 'S'
+      },
+      isInfo () {
+        return this.paraType === 'I'
+      },
+      isConst () {
+        return this.paraType === 'C'
+      }
+    },
     created () {
 
     },
     methods: {
-      // 配置资源按钮回调
-      openSourceInfoSelect (row, index) {
-        this.rowIndex = index // 保存点击行的index
-        this.rowId = row.id // 当前行唯一参数编码
-        this.paraType = row.paraType
-        this.open = true
+      // 参数table当前行选中回调
+      currentRowChange (curRow, oldRow, index) {
+        this.paraType = curRow.paraType
+        this.rowIndex = index
+        if (curRow.paraType === 'I') {
+          this.columnsConfig = [
+            { title: '名称', key: 'fieldName', ellipsis: true, tooltip: true },
+            { title: '标题', key: 'fieldTitle', ellipsis: true, tooltip: true },
+            { title: '数据类型', slot: 'dataType' },
+            { title: '所属资源', key: 'resourceName', ellipsis: true, tooltip: true }
+          ]
+        } else if (curRow.paraType === 'S') {
+          this.columnsConfig = [
+            { title: '资源名称', key: 'resourceName', ellipsis: true, tooltip: true },
+            { title: '主体类别', slot: 'personClass', ellipsis: true, tooltip: true },
+            { title: '资源性质', slot: 'resProperty', ellipsis: true, tooltip: true }
+          ]
+        }
+        if (this.isEdit) this.columnsConfig.push({ title: '操作', slot: 'action', width: 70 })
+        this.listConfig = this.buildListConfig(curRow)
       },
       // 资源组件 多选回调
       handleChooseMul (arr) {
         const row = this.list[this.rowIndex]
-        let resourceKeyList = []
+        let originResKeyList = []
         if (row.paraValue.length > 0) { // 字符串不为空的话则还原resourceKey数组
-          resourceKeyList = row.paraValue.split(',') // 取出原有的resourceKey
+          originResKeyList = row.paraValue.split(',') // 取出原有的resourceKey
         }
+
         const resKeyList = [] // 存放已选择的resourceKey
         for (const item of arr) {
           resKeyList.push(item.resourceKey)
         }
+
         // 去重后把数据填充到对应row的字段中
-        row.paraValue = [...new Set([...resourceKeyList, ...resKeyList])].join(',')
+        row.paraValue = [...new Set([...originResKeyList, ...resKeyList])].join(',')
+
+        // 更新数据
         for (const item of arr) {
-          this.$delete(row.source, item.resourceKey) // 删除可能存在的原有key
-          this.$set(row.source, item.resourceKey, item) // 设置新数据
+          row.source[item.resourceKey] = item
         }
-        this.hackClick(this.rowIndex) // 回调后展开对应行
+        this.listConfig = this.buildListConfig(row)
       },
       // 资源组件 单选回调
       handleChooseSin ({ fieldName, fieldTitle, dataType, resourceName, resourceKey }) {
         // 把数据填充到对应row的字段中
-        const obj = this.list[this.rowIndex]
-        // 用于更新显示，不为空的时候删除原有字段，用于设置新字段
-        if (obj.paraValue !== '') this.$delete(obj.info, obj.paraValue)
-        obj.paraValue = `${fieldName}:${resourceKey}` // 更新提交的字段
-        this.$set(obj.info, obj.paraValue, { fieldName, fieldTitle, dataType, resourceName }) // 更新显示信息
-        this.hackClick(this.rowIndex) // 回调后展开对应行
+        const row = this.list[this.rowIndex]
+        row.paraValue = `${fieldName}:${resourceKey}` // 更新提交的字段
+        row.info = {}
+        row.info[row.paraValue] = { fieldName, fieldTitle, dataType, resourceName }
+        this.listConfig = this.buildListConfig(row)
       },
       // 初始化需要的数据结构
       initList (resources) {
@@ -246,53 +258,63 @@
           if (item.info === undefined) {
             item.info = {}
           }
-          if (item.paraType === 'I') {
-            this.map.set(item.id, item.info) // 构建map，用于保存对应行所获取的resourceKey
-          } else {
-            this.map.set(item.id, item.source) // 构建map，用于保存对应行所获取的resourceKey
-          }
         }
         list = list.filter(item => item.paraCode !== 'person_id') // 过滤掉paraCode为person_id的数据
         return list
       },
+      /**
+       * @author haodongdong
+       * @description 清空按钮的回调
+       * @param {number} index 当前参数选中行的index
+       */
       clearAll (index) {
         const row = this.list[index]
         if (row.paraType === 'S') {
           row.paraValue = ''
           row.source = {}
         }
+        this.listConfig = this.buildListConfig(row)
       },
+      /**
+       * @author haodongdong
+       * @description 移除按钮的回调
+       * @param {string} resourceKey
+       */
       remove (resourceKey) {
         const row = this.list[this.rowIndex]
-        this.$delete(row.source, resourceKey) // 删除对应显示数据
+        // 删除对应显示数据
+        this.$delete(row.source, resourceKey)
+        // 删除row.paraValue中对应的resourceKey
         const resourceKeyList = row.paraValue.split(',')
         const index = resourceKeyList.indexOf(resourceKey)
         if (index > -1) resourceKeyList.splice(index, 1)
         row.paraValue = resourceKeyList.join(',')
+        // 更新列表
+        this.listConfig = this.buildListConfig(row)
       },
-      // 获取用于点击的可展开列的dom元素集合
-      getExpandColumn () {
-        this.domList = []
-        const table = document.getElementById('customTable')
-        const expandColumnList = table.getElementsByClassName('expand-custom-column')
-        for (const item of expandColumnList) {
-          const el = item.getElementsByTagName('div')[0].getElementsByTagName('div')[0]
-          this.domList.push(el)
+      /**
+       * @author haodongdong
+       * @description 构建右侧相关配置所需要的列表
+       * @param {Object} row 左侧参数table的行数据
+       * @param {string} row.paraType 参数类型
+       * @param {Object} row.info 携带的信息项对象
+       * @param {Object} row.source 携带的资源对象
+       * @returns {Array} table使用的list
+       */
+      buildListConfig (row) {
+        let obj = {}
+        const listConfig = []
+        if (row.paraType === 'I') {
+          obj = row.info
+        } else if (row.paraType === 'S') {
+          obj = row.source
         }
-        this.domList.shift() // 去除标题中的列
-      },
-      // hack的方式，使用原生js的click()主动触发对应行的展开操作
-      hackClick (index) {
-        if (this.domList.length > 0) {
-          // 阻止bin-ui自身的报错，猜测可能是bin-in的dom渲染没有结束
-          // 或者是任务队列没执行完触发click导致没获取的需要的数据而json报错
-          setTimeout(() => {
-            const el = this.domList[index]
-            const str = el.className
-            // 已展开则不点击
-            if (!str.includes('bin-table-cell-expand-expanded')) el.click()
-          }, 0)
-        }
+        Object.keys(obj).forEach(key => {
+          // 扩展resourceKey属性，用于移除操作
+          if (row.paraType === 'S') obj[key].resourceKey = key
+          listConfig.push(obj[key])
+        })
+        return listConfig
       },
       // 用于给父级组件验证是否配置资源
       validate () {
@@ -326,33 +348,28 @@
   }
 </script>
 
-<style lang="stylus">
-.edit-source-info {
-  .expandRow {
-    .headers {
-      font-size: 13.5px;
-      span {
-        cursor: pointer;
-      }
-      .not-clear {
-        cursor: not-allowed;
-        color: #C0C4CC;
-      }
-    }
-    .table-con {
-      margin-top: 10px;
-      font-size: 13px;
+<style lang="stylus" scoped>
+ .edit-source-info {
+   .main-con {
+     display: flex;
 
-      .title {
-        color: #909399;
-      }
-      .row {
-        margin-top: 7px;
-      }
-    }
-  }
-  td.bin-table-expanded-cell {
-    background: #f0f2f5;
-  }
-}
+     .left {
+       width: 50%;
+       border: 1px solid #f0f0f0;
+
+       .title-con {
+         .desc {
+           font-size: 13px;
+           color: #bfbfbf;
+         }
+       }
+     }
+
+     .right {
+       flex: 1;
+       border: 1px solid #f0f0f0;
+       border-left: 0px;
+     }
+   }
+ }
 </style>

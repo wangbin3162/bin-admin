@@ -51,11 +51,13 @@
       </b-collapse-wrap>
 
       <b-collapse-wrap title="参数配置" collapse :value="!loading">
-        <b-table id="customTable" :columns="columnsSource" :data="resources">
-          <template v-slot:paraType="{ row }">
-            {{ paramTypeEnum[row.paraType] }}
-          </template>
-        </b-table>
+        <edit-source-info ref="sourceInfo"
+          mode="show"
+          :resources="resources"
+          :personClassEnum="personClassEnum"
+          :resPropertyEnum="resPropertyEnum"
+          :paramTypeEnum="paramTypeEnum">
+        </edit-source-info>
       </b-collapse-wrap>
 
     </page-header-wrap>
@@ -64,6 +66,7 @@
 
 <script>
   import { getIndeManageDetail } from '../../../api/credit-rating/index-manage.api'
+  import EditSourceInfo from './EditSourceInfo'
 
   export default {
     name: 'IndexManageDetail',
@@ -78,6 +81,9 @@
       'resPropertyEnum',
       'paramTypeEnum'
     ],
+    components: {
+      EditSourceInfo
+    },
     data () {
       return {
         loading: false,
@@ -94,81 +100,6 @@
         rules: [],
         resources: [],
         columns: [],
-        columnsSource: [
-          {
-            type: 'expand',
-            width: 50,
-            className: 'expand-custom-column', // 用于查找需要点击的列的自定义class
-            render: (h, { row, index }) => {
-              // 这里渲染函数如果添加参数，则jsx内的class会脱离于当前样式作用域 <style lang="stylus" scoped>
-              // 需要去除scoped样式才生效
-              let sourceInfoTemplate = <div class="table-con">
-                    <b-row class="title">
-                      <b-col span={6}>资源名称</b-col>
-                      <b-col span={6}>主体类别</b-col>
-                      <b-col span={6}>资源性质</b-col>
-                      <b-col span={6}>描述</b-col>
-                    </b-row>
-
-                    <div class="body">
-                      {
-                        Object.keys(row.source).map(key => {
-                          return (
-                            <b-row class="row">
-                              <b-col span={6}>{ row.source[key].resourceName }</b-col>
-                              <b-col span={6}>{ this.personClassEnum[row.source[key].personClass] }</b-col>
-                              <b-col span={6}>{ this.resPropertyEnum[row.source[key].resProperty] }</b-col>
-                              <b-col span={6}>
-                                { row.source[key].resourceDesc === '' ? '暂无描述' : row.source[key].resourceDesc}
-                              </b-col>
-                            </b-row>
-                          )
-                        })
-                      }
-                    </div>
-                  </div>
-              let infoItemTempLate = <div class="table-con">
-                  <b-row class="title">
-                    <b-col span={6}>信息项名称</b-col>
-                    <b-col span={6}>标题</b-col>
-                    <b-col span={6}>数据类型</b-col>
-                    <b-col span={6}>所属资源</b-col>
-                  </b-row>
-
-                  <div class="body">
-                    {
-                      Object.keys(row.info).map(key => {
-                        return (
-                          <b-row class="row">
-                            <b-col span={6}>{row.info[key].fieldName}</b-col>
-                            <b-col span={6}>{row.info[key].fieldTitle}</b-col>
-                            <b-col span={6}>{this.dataTypeCustomEnum[row.info[key].dataType]}</b-col>
-                            <b-col span={6}>{row.info[key].resourceName}</b-col>
-                          </b-row>
-                        )
-                      })
-                    }
-                  </div>
-                </div>
-              const template = row.paraType === 'S' ? sourceInfoTemplate : infoItemTempLate
-              return (
-                <div class="expandRow">
-                  <div class="headers" flex="main:justify">
-                    <h4>
-                      { row.paraType === 'S' ? '资源' : '信息项'}
-                    </h4>
-                  </div>
-                  { template }
-                </div>
-              )
-            }
-          },
-          { type: 'index', width: 50, align: 'center' },
-          { title: '参数名称', key: 'paraName', align: 'center' },
-          { title: '参数类型', slot: 'paraType', align: 'center' },
-          { title: '参数描述', key: 'paraDesc', align: 'center', ellipsis: true, tooltip: true },
-          { title: '缺省值', key: 'defaultValue', align: 'center' }
-        ],
         domList: []
       }
     },
@@ -184,10 +115,6 @@
           this.detail = index
           this.rules = rules
           this.resources = resources
-          this.$nextTick(() => {
-            this.getExpandColumn()
-            this.hackClick(0)
-          })
         } catch (error) {
           console.error(error)
           this.$notice.danger({ title: '加载详情失败', desc: error })
@@ -207,34 +134,10 @@
         } else {
           this.columns = [
             { type: 'index', width: 50 },
-            { title: '指标值', key: 'itemValue', align: 'center' },
-            { title: '指标描述', key: 'itemDesc', align: 'center' },
+            { title: '下限值 [ ', key: 'dnValue', align: 'center' },
+            { title: '上限值 ) ', key: 'upValue', align: 'center' },
             { title: '得分', key: 'score', align: 'center' }
           ]
-        }
-      },
-      // 获取用于点击的可展开列的dom元素集合
-      getExpandColumn () {
-        this.domList = []
-        const table = document.getElementById('customTable')
-        const expandColumnList = table.getElementsByClassName('expand-custom-column')
-        for (const item of expandColumnList) {
-          const el = item.getElementsByTagName('div')[0].getElementsByTagName('div')[0]
-          this.domList.push(el)
-        }
-        this.domList.shift() // 去除标题中的列
-      },
-      // hack的方式，使用原生js的click()主动触发对应行的展开操作
-      hackClick (index) {
-        if (this.domList.length > 0) {
-          // 阻止bin-ui自身的报错，猜测可能是bin-in的dom渲染没有结束
-          // 或者是任务队列没执行完触发click导致没获取的需要的数据而json报错
-          setTimeout(() => {
-            const el = this.domList[index]
-            const str = el.className
-            // 已展开则不点击
-            if (!str.includes('bin-table-cell-expand-expanded')) el.click()
-          }, 0)
         }
       }
     }
