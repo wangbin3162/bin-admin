@@ -121,7 +121,7 @@
           <b-row>
             <b-col span="8">
               <v-simple-label label="ES数据同步">
-                <b-tag :type="ExchangeInstance.statusStyleMap[batchDetail.jobStatus]"
+                <b-tag :type="ExchangeInstance.statusStyleMap[batchDetail.esSyncStatus]"
                        :tag-style="{borderRadius: '30px'}">
                   {{ jobStatusMap[batchDetail.esSyncStatus] }}
                 </b-tag>
@@ -134,6 +134,9 @@
               <v-simple-label label="同步数据总量">{{ batchDetail.esSyncCount}}</v-simple-label>
             </b-col>
           </b-row>
+          <v-simple-label label="错误信息" v-if="batchDetail.esSyncStatus ==='FAILED'">
+            <b-input v-model="batchDetail.esSyncMessage" type="textarea" :rows="4" disabled></b-input>
+          </v-simple-label>
         </b-collapse-wrap>
         <b-button slot="footer" @click="handleCancel">返 回</b-button>
       </v-edit-wrap>
