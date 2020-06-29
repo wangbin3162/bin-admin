@@ -4,39 +4,47 @@
       <template v-slot:paraName="{ index }">
         <b-tooltip :content="list[index].paraNameMsg" max-width="200"
                   :disabled="!list[index].paraNameError" :always="list[index].paraNameError">
+
           <b-input v-model="list[index].paraName" :disabled="list[index].disabled"
-                  :class="{ error: list[index].paraNameError }"
-                  @on-blur="handleValidate(list[index], 'paraName')"></b-input>
+            :class="{ error: list[index].paraNameError }"
+            @on-blur="handleValidate(list[index], 'paraName')">
+          </b-input>
+
         </b-tooltip>
       </template>
       <template v-slot:paraCode="{ index }">
         <b-tooltip :content="list[index].paraCodeMsg" max-width="200"
                   :disabled="!list[index].paraCodeError" :always="list[index].paraCodeError">
+
           <b-input v-model="list[index].paraCode" :disabled="list[index].disabled"
-                  :class="{ error: list[index].paraCodeError }"
-                  @on-blur="handleValidate(list[index], 'paraCode')"></b-input>
+            :class="{ error: list[index].paraCodeError }"
+            @on-blur="handleValidate(list[index], 'paraCode')">
+          </b-input>
+
         </b-tooltip>
       </template>
       <template v-slot:paraType="{ index }">
         <b-tooltip :content="list[index].paraTypeMsg" max-width="200" style="width: 100%;"
                   :disabled="!list[index].paraTypeError" :always="list[index].paraTypeError">
+
           <b-select v-model="list[index].paraType" append-to-body
-                    :class="{ error: list[index].paraTypeError }"
-                    @on-change="handleValidate(list[index], 'paraType')">
+            :disabled="list[index].disabled"
+            :class="{ error: list[index].paraTypeError }"
+            @on-change="handleValidate(list[index], 'paraType')">
             <b-option v-for="item in paramTypeOptions" :key="item.value"
-                      :value="item.value">{{ item.label }}
+              :value="item.value">{{ item.label }}
             </b-option>
           </b-select>
+
         </b-tooltip>
       </template>
       <template v-slot:paraDesc="{ index }">
         <b-input v-model="list[index].paraDesc" :disabled="list[index].disabled"></b-input>
       </template>
-      <template v-slot:orderNo="{ row }">
-        <v-sort-arrow @on-up="sortUp(row.orderNo)" @on-down="sortDn(row.orderNo)"></v-sort-arrow>
-      </template>
-      <template v-slot:action="{ row }">
+      <template v-slot:action="{ row, index }">
         <b-button type="text" :disabled="row.disabled" @click="remove(row.orderNo)">删除</b-button>
+        <b-button v-if="varType === 'Complex' && row.paraSource === null"
+          type="text" :disabled="row.disabled" @click="handleSelectedBtn(index)">选择</b-button>
       </template>
     </b-table>
     <b-button
@@ -51,10 +59,13 @@
   export default {
     name: 'IndexVarEditParamManage',
     props: {
-      paramTypeOptions: {
+      varType: {
+        type: String // 用于控制是否table显示来源字段
+      },
+      params: { // 用于回显的初始化
         type: Array
       },
-      params: {
+      paramTypeOptions: { // 用于渲染参数类型的option
         type: Array
       },
       tempVarCodeList: {
@@ -63,31 +74,45 @@
     },
     data() {
       return {
-        listCache: [], // 用于缓存person_id的数据
         list: [],
-        columns: [
-          { type: 'index', width: 50, align: 'center' },
-          { title: '参数名称', slot: 'paraName' },
-          { title: '参数编码', slot: 'paraCode' },
-          { title: '参数类型', slot: 'paraType' },
-          { title: '描述', slot: 'paraDesc' },
-          { title: '排序', slot: 'orderNo' },
-          { title: '操作', slot: 'action', width: 120 }
-        ]
+        columns: []
       }
     },
     watch: {
+      varType: {
+        handler (newVal, oldVal) {
+          if (newVal === 'Common') {
+            this.columns = [
+              { type: 'index', width: 50, align: 'center' },
+              { title: '参数名称', slot: 'paraName' },
+              { title: '参数编码', slot: 'paraCode' },
+              { title: '参数类型', slot: 'paraType' },
+              { title: '描述', slot: 'paraDesc' },
+              { title: '操作', slot: 'action', width: 70 }
+            ]
+          } else if (newVal === 'Complex') {
+            this.columns = [
+              { type: 'index', width: 50, align: 'center' },
+              { title: '参数名称', slot: 'paraName' },
+              { title: '参数编码', slot: 'paraCode' },
+              { title: '参数类型', slot: 'paraType' },
+              { title: '描述', slot: 'paraDesc' },
+              { title: '来源', key: 'paraSource', ellipsis: true, tooltip: true },
+              { title: '操作', slot: 'action', width: 120 }
+            ]
+          }
+        },
+        immediate: true
+      },
       params: {
         handler(newVal, oldVal) { // 观察params变化维护list状态
-          // 在这里分离person_id
-          this.listCache = [] // 清空缓存的person_id数据
           const arr = JSON.parse(JSON.stringify(newVal))
+          // 在这里分离person_id
           const index = arr.findIndex(item => {
             return item.paraCode === 'person_id'
           })
           if (index > -1) { // 取出并缓存paraCode为person_id的数据
             const obj = arr.splice(index, 1)[0]
-            this.listCache.push(obj)
           }
 
           const list = [...arr]
@@ -95,15 +120,13 @@
             const item = list[i]
             item.orderNo = i + 1
           }
-          this.list = this.sort(list)
+          this.list = list
         },
         immediate: true
       },
       list: { // 观察list，有变化则发送携带新值的事件
         handler(newVal, oldVal) {
-          // 在这里组合person_id
           let list = [...newVal]
-          if (this.listCache.length) list = [...this.listCache, ...newVal]
 
           list.forEach(item => {
             // 禅道bug 13979会引起paraType为uundefined
@@ -116,36 +139,6 @@
       }
     },
     methods: {
-      // 上升一行
-      sortUp(orderNo) {
-        const curIndex = this.list.findIndex(item => {
-          return item.orderNo === orderNo
-        })
-        if (curIndex !== 0) { // 不是第一个元素的话，则寻找上一个元素然后交换orderNo
-          const curEl = this.list[curIndex] // 当前元素
-          const preEl = this.list[curIndex - 1] // 上一个元素
-          const curOrderNo = curEl.orderNo // 缓存当前元素orderNo
-          curEl.orderNo = preEl.orderNo // 交换
-          preEl.orderNo = curOrderNo // 交换
-          // 重新排序
-          this.sort(this.list)
-        }
-      },
-      // 下降一行
-      sortDn(orderNo) {
-        const curIndex = this.list.findIndex(item => {
-          return item.orderNo === orderNo
-        })
-        if (curIndex !== this.list.length - 1) { // 不是最后一个元素的话，则寻找下一个元素然后交换orderNo
-          const curEl = this.list[curIndex] // 当前元素
-          const nextEl = this.list[curIndex + 1] // 下一个元素
-          const curOrderNo = curEl.orderNo // 缓存当前元素orderNo
-          curEl.orderNo = nextEl.orderNo // 交换
-          nextEl.orderNo = curOrderNo // 交换
-          // 重新排序
-          this.sort(this.list)
-        }
-      },
       // 添加一行
       add() {
         this.list.push({
@@ -153,7 +146,9 @@
           paraCode: '',
           paraDesc: '',
           paraType: '',
-          orderNo: this.list.length + 1
+          paraSource: null,
+          orderNo: this.list.length + 1,
+          custom: true // 表示自定义参数
         })
       },
       // 移除一行
@@ -167,11 +162,15 @@
         })
         this.list.splice(index, 1)
       },
-      // 按照orderNo升序排序
-      sort(list) {
-        return list.sort((pre, next) => {
-          return Number(pre.orderNo) - Number(next.orderNo)
-        })
+      /**
+       * @author haodongdong
+       * @description 选择按钮的回调，选择后发送事件，由EditElVar组件响应。
+       * @param {Object} row 当前行的数据
+       */
+      async handleSelectedBtn (index) {
+        const row = this.list[index]
+        const valid = await this.validateAll([row])
+        if (valid) this.$EventBus.$emit('IndexVarEditParamManage-selected', row)
       },
       // 名称与编码的blur回调，验证非空、唯一、 不在变量列表中
       async handleValidate(row, key) {
@@ -253,13 +252,13 @@
         })
       },
       // 验证全部字段项, 提供给组件外提交表单前使用
-      validateAll() {
+      async validateAll (list = this.list) {
         return new Promise(async (resolve, reject) => {
           try {
-            for (const item of this.list) {
+            for (const item of list) {
               for (const key in item) {
                 if (item.hasOwnProperty(key)) {
-                  if (key !== 'paraDesc') await this.isRequired(item, key)
+                  if (key !== 'paraDesc' && key !== 'paraSource') await this.isRequired(item, key)
                   if (key === 'paraName' || key === 'paraCode') await this.isUnique(item, key)
                   if (key === 'paraCode') {
                     await this.notPersonId(item, key)
@@ -270,6 +269,7 @@
             }
             resolve(true)
           } catch (error) {
+            console.warn(error)
             resolve(false)
           }
         })

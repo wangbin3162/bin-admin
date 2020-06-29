@@ -51,43 +51,21 @@
               </b-col>
               <b-col span="12"></b-col>
             </b-row>
-            <!-- <b-row v-else>
+            <b-row v-if="form.varType === 'Complex'">
               <b-col span="24">
-                <b-form-item label="已选变量">
-                  <b-tag color="#409EFF" dot closable
-                    v-for="(item, index) in tempVarCodeList" :key="item"
-                    @on-close="handleTagClose(index)"
-                    @on-click="handleTagClick(item)">
-                    {{ item }}
-                  </b-tag>
-                  <b-button type="primary" plain style="margin-left: 5px;"
-                    @click="openSelectVarHandler">
-                    选择
-                  </b-button>
-                </b-form-item>
-                <b-form-item label="表达式" prop="tplContent"
-                  :rules=" { required: true, message: '请输入el表达式', trigger: 'blur' }">
-                  <b-input v-model="form.tplContent"
-                    element-id="elInput"
-                    type="textarea"
-                    :rows="4"
-                    style="max-width: 93%;"
-                    placeholder="请输入el表达式">
-                  </b-input>
-                </b-form-item>
+                <edit-el-var ref="elVar"
+                  @var-change="handleVarChange"
+                  @el-change="elText => form.tplContent = elText"
+                  @var-params-change="handleVarParamsChange"
+                  :initData="elExpreData">
+                </edit-el-var>
               </b-col>
-            </b-row> -->
+            </b-row>
             <b-form-item label="描述" prop="varDesc">
               <b-input v-model="form.varDesc" placeholder="请输入描述" type="textarea" :rows="4"></b-input>
             </b-form-item>
           </b-form>
         </b-collapse-wrap>
-
-        <edit-el-var ref="elVar" v-if="form.varType === 'Complex'"
-          @var-change="handleVarChange"
-          @el-change="elText => form.tplContent = elText"
-          :initData="elExpreData">
-        </edit-el-var>
 
         <!-- 一般变量时，选择模板带过来的参数不可改动与删除 -->
         <!-- 复合变量时，新增的参数不可在选择变量带过来的参数中 -->
@@ -95,6 +73,7 @@
           :paramTypeOptions="paramTypeOptions"
           :params="params"
           :tempVarCodeList="tempVarCodeList"
+          :varType="form.varType"
           @params-change="params => form.params = params">
         </edit-param-manage>
 
@@ -168,6 +147,9 @@
           tplId: [
             { required: true, message: '请选择业务模板', trigger: 'blur' }
           ]
+          // tplContent: [
+          //   { required: true, message: ' ', trigger: 'blur' }
+          // ]
         },
         openBelongType: false,
         openSelectVar: false,
@@ -205,6 +187,10 @@
       // el表达式组件var-change事件回调
       handleVarChange (indexVarCodeList) {
         this.tempVarCodeList = indexVarCodeList
+      },
+      // el表达式组件var-params-change事件回调
+      handleVarParamsChange (varParams) {
+        this.params = varParams
       },
       // 变量选择组件选中回调
       handleVarChooseMul (tempVarCodeList) {
@@ -264,6 +250,7 @@
             // 初始化编辑时el表达式组件需要的参数
             this.elExpreData = {
               tempVarCodeList: this.tempVarCodeList,
+              params: this.params,
               elText: this.form.tplContent
             }
           }
