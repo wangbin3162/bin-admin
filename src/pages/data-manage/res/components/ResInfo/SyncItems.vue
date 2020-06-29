@@ -43,7 +43,7 @@
                 <template>
                   <div>
                       <b-icon name="ios-help"  size="24" color="#1089ff"
-                              :title="`例:\n 1)常量: 1 ， 'a'\n 2)取值: #name ， #num1+#num2  \n 3)默认函数: 截取长度 #name.substring(0,1) , 替换字符 #name.replace('a','b') \n 4)数学公式: T(Math).abs(#num)  `"/>
+                              :title="`例:\n 1)常量: 1 ， 'a'\n 2)取值: #name ， #num1+#num2  \n 3)默认函数: 截取长度 #name.substring(0,1) , 替换字符 #name.replace('a','b') \n 4)数学计算: T(Math).abs(#num)  `"/>
                   </div>
                 </template>
               </b-col>
