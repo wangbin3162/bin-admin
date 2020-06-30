@@ -65,13 +65,13 @@
             </b-switch>
           </template>
 
-          <template v-slot:action="{ row }">
+          <template v-slot:action="{ row, index }">
             <b-button type="text" @click="handleModify(row)">
               修改
             </b-button>
             <b-divider type="vertical"></b-divider>
-            <b-button type="text" @click="handleTempPre(row)" :disabled="btnLoading">
-              <template v-if="btnLoading">
+            <b-button type="text" @click="handleTempPre(row, index)" :disabled="btnLoading && curRowIndex === index">
+              <template v-if="btnLoading && curRowIndex === index">
                 <b-icon name="loading2" class="icon-is-rotating"></b-icon>生成中
               </template>
               <template v-else>
@@ -157,6 +157,7 @@
     data () {
       return {
         btnLoading: false,
+        curRowIndex: null,
         detail: null, // 存储行数据
         openPDF: false, // 打开p-d-f组件
         pdfBlob: null, // 存储re-count组件返回的pdfBlob
@@ -233,7 +234,8 @@
         this.dialogStatus = 'infoClass'
       },
       // 模板预览按钮回调
-      async handleTempPre (row) {
+      async handleTempPre (row, index) {
+        this.curRowIndex = index
         await this.exportPDF(row)
       },
       // 状态switch开关回调
