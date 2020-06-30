@@ -10,7 +10,9 @@
               <template v-slot:columnA="{ row }">
                 <div class="title-con">
                   <h4>{{ row.paraName }}</h4>
-                  <span t-ellipsis :title="row.paraDesc" class="desc">{{ row.paraDesc }}参数描述</span>
+                  <span t-ellipsis :title="row.paraDesc" class="desc">
+                    {{ row.paraDesc ? row.paraDesc: '暂无描述' }}
+                  </span>
                 </div>
               </template>
 
@@ -40,8 +42,8 @@
         <b-card header="相关配置" head-tip shadow="never" :bordered="false">
           <template v-if="resources.length > 0">
             <div class="mb-10">
-              <h4 class="mb-5">缺省值</h4>
-              <b-input v-model="list[rowIndex].defaultValue" :disabled="!isEdit"></b-input>
+              <h4 class="">缺省值</h4>
+              <b-input v-model="list[rowIndex].defaultValue" :disabled="!isEdit" size="small"></b-input>
             </div>
 
             <template v-if="!isConst">

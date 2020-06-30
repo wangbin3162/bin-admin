@@ -512,7 +512,7 @@
           }
           .count {
             padding-top: 10px;
-            font-size: 26px;
+            font-size: 22px;
             font-weight: 700;
           }
           &:nth-child(1) {

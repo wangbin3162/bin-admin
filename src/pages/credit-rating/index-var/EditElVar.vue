@@ -9,24 +9,6 @@
       <div class="con">
         <div class="left">
           <div style="width: 100%;">
-            <!-- <div class="mb-20">
-              <h4 class="mb-10">条件</h4>
-              <div flex>
-                <div class="btn-group" style="width: 80%;">
-                  <b-button-group class="row" style="display: flex" v-for="(row, index) in btnList.slice(0, 2)" :key="index">
-                    <b-button v-for="(btn, index) in row" :key="index"
-                      type="default" class="btn" style="flex: 1"
-                      @click="handleBtn(btn)">
-                      {{ btn }}
-                    </b-button>
-                  </b-button-group>
-                </div>
-                <b-button type="default" style="margin-left: -1px; width: 20%; height: 79px;"
-                  @click="handleBtn('=')">
-                  =
-                </b-button>
-              </div>
-            </div> -->
             <div class="mb-20">
               <div class="mb-10" flex="main:justify">
                 <h4 >操作面板</h4>
