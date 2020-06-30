@@ -406,6 +406,7 @@
               }
             },
             series: {
+              name: '数量',
               type: 'bar'
             },
             dataset: { source: [
@@ -873,7 +874,7 @@
 
           .count {
             padding-top: 10px;
-            font-size: 26px;
+            font-size: 22px;
             font-weight: 700;
           }
 
