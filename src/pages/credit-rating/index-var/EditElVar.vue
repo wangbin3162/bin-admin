@@ -1,7 +1,7 @@
 <template>
   <div class="edit-el-var">
     <b-form-item label="el表达式" prop="tplContent" :rules="{ required: true, message: 'el表达式不能为空', trigger: 'blur' }">
-      <b-code-editor ref="editor" mode="" :readonly="true" :lint="false" v-model="elText">
+      <b-code-editor ref="editor" mode="" :readonly="true" :lint="false" v-model="elText" height="100px">
       </b-code-editor>
     </b-form-item>
 
