@@ -99,7 +99,6 @@
         }
       }
       &-right {
-        padding-right: 16px;
         .dropdown-trigger {
           display: inline-block;
           height: 100%;
@@ -121,7 +120,7 @@
       &-main {
         display: flex;
         height: 64px;
-        padding-left: 24px;
+        padding: 0 16px;
         &.wide {
           max-width: 1200px;
           margin: auto;
@@ -154,6 +153,10 @@
           background: #1890ff;
         }
       }
+      .bin-menu-wrapper {
+        height: 64px;
+        line-height: 64px;
+      }
     }
   }
   &-main {
@@ -179,7 +182,6 @@
     }
   }
 }
-
 
 // 主题弹窗样式
 .setting-panel {
@@ -211,6 +213,103 @@
   padding: 12px 0;
 }
 
+// 顶部菜单样式
+.header-menu {
+  height: 64px;
+  .bin-tabs-wrapper {
+    height: 64px;
+    .nav-wrapper {
+      height: 64px;
+      bottom: 0;
+      &.is-scrollable {
+        .nav-next, .nav-prev {
+          line-height: 64px;
+        }
+      }
+    }
+    &.card {
+      border: none;
+      .tab-list {
+        border: none;
+      }
+      .tab-item {
+        box-sizing: border-box;
+        border: none;
+        height: 64px;
+        line-height: 64px;
+        > i {
+          font-size: 18px;
+        }
+        &.active {
+          border-bottom: 2px solid #0d85ff;
+        }
+      }
+    }
+  }
+}
+
+// 左侧菜单抽屉样式
+.menu-panel {
+  padding: 24px 0;
+  .group-container {
+    margin-bottom: 12px;
+  }
+  .side-nav-title {
+    margin: 6px 0;
+    padding: 0 12px;
+    color: #2a3040;
+    font-size: 16px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    .iconfont {
+      font-weight: normal;
+      vertical-align: -1px;
+    }
+  }
+  .side-nav-items {
+    font-size: 14px;
+    font-weight: normal;
+    line-height: 1.5;
+  }
+  .side-nav-group {
+    padding: 8px 0 8px 24px;
+    font-size: 14px;
+    color: #999;
+    margin: 0;
+  }
+  .side-nav-menu {
+    cursor: pointer;
+    display: block;
+    position: relative;
+    padding: 8px 24px 8px 40px;
+    color: #3f536e;
+    font-size: 14px;
+    transition: .3s;
+    &.not-group {
+      padding: 8px 24px;
+    }
+    &:hover {
+      color: #2d8cf0;
+      background: #f0faff;
+    }
+
+    &.active {
+      color: #2d8cf0;
+      background: #f0faff;
+      &::after {
+        content: "";
+        display: block;
+        width: 3px;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        background: #2d8cf0;
+      }
+    }
+  }
+}
 // 全局收起菜单样式
 .collased-menu-dropdown {
   width: 100%;

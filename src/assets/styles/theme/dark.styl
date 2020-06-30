@@ -1,7 +1,50 @@
-$color-primary = #1890ff;
+$color-primary = #0d85ff;
 $font-base = #aeaeae;
 
 .theme-dark {
+  // 顶部菜单样式
+  .header-menu {
+    height: 64px;
+    .bin-tabs-wrapper {
+      height: 64px;
+      .nav-wrapper {
+        height: 64px;
+        bottom: 0;
+        &.is-scrollable {
+          .nav-next, .nav-prev {
+            color: $font-base;
+            line-height: 64px;
+          }
+        }
+      }
+      &.card {
+        border: none;
+        .tab-list {
+          border: none;
+        }
+        .tab-item {
+          background: transparent;
+          color: rgba(255, 255, 255, .65);
+          > i {
+            color: rgba(255, 255, 255, .65);
+          }
+          &:hover {
+            color: #fff;
+            > i {
+              color: #fff;
+            }
+          }
+          &.active {
+            border: none;
+            color: #fff;
+            > i {
+              color: #fff;
+            }
+          }
+        }
+      }
+    }
+  }
   .menu-dropdown {
     background: #001529;
     .drop-menu-a, .bin-dropdown-item {

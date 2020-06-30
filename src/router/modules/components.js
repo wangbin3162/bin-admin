@@ -4,7 +4,7 @@ export default {
   path: '/components',
   component: layout,
   redirect: { name: 'JsonEditorDemo' },
-  meta: { title: '组件', icon: 'ios-cube' },
+  meta: { title: '内置组件', icon: 'ios-cube' },
   children: [
     {
       path: 'jsonEditor',

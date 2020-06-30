@@ -22,6 +22,27 @@ export const asyncRouterMap = [
   formDemo,
   errorPage,
   nested,
+  {
+    path: '/test',
+    name: 'test',
+    redirect: 'noRedirect',
+    meta: { title: '测试菜单', icon: 'ios-git-merge' },
+    component: layout,
+    children: [
+      {
+        path: 'test1',
+        component: () => import('../pages/demo/nested/menu1/index'), // Parent router-view
+        name: 'test1',
+        meta: { title: 'test1' }
+      },
+      {
+        path: 'test2',
+        name: 'test2',
+        component: () => import('../pages/demo/nested/menu2/index'),
+        meta: { title: 'test2' }
+      }
+    ]
+  },
   { path: '*', redirect: '/404', hidden: true }
 ]
 

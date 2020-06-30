@@ -11,7 +11,7 @@ export default {
       path: 'menu1',
       component: () => import('../../pages/demo/nested/menu1/index'), // Parent router-view
       name: 'menu1',
-      meta: { title: '菜单1' },
+      meta: { title: '菜单1', icon: 'ios-git-merge' },
       children: [
         {
           path: 'menu1-1',

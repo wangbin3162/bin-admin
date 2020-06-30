@@ -7,28 +7,28 @@
                 :lock-select="lockTreeSelect"></b-tree>
         <!--查询条件-->
         <v-filter-bar>
-          <v-filter-item title="用户名称">
+          <v-filter-item title="用户名称" :span="8">
             <b-input v-model.trim="listQuery.name" placeholder="请输入部门名称" clearable></b-input>
           </v-filter-item>
-          <v-filter-item title="地址">
+          <v-filter-item title="地址" :span="8">
             <b-input v-model.trim="listQuery.address" placeholder="请输入" clearable></b-input>
           </v-filter-item>
+          <!--添加查询按钮位置-->
+          <v-filter-item @on-search="handleFilter" @on-reset="resetQuery"
+                         :show-toggle="true" :is-opened="filterOpened" @on-toggle="filterOpened=!filterOpened"
+          ></v-filter-item>
           <template v-if="filterOpened">
-            <v-filter-item title="显示禁用">
+            <v-filter-item title="显示禁用" :span="8">
               <b-switch size="large" v-model="listQuery.delFlag" true-value="Y" false-value="N"
                         @on-change="handleFilter">
                 <span slot="open">显示</span>
                 <span slot="close">隐藏</span>
               </b-switch>
             </v-filter-item>
-            <v-filter-item title="年龄">
+            <v-filter-item title="年龄" :span="8">
               <b-input v-model.trim="listQuery.age" placeholder="请输入" clearable></b-input>
             </v-filter-item>
           </template>
-          <!--添加查询按钮位置-->
-          <v-filter-item @on-search="handleFilter" @on-reset="resetQuery"
-                         :show-toggle="true" :is-opened="filterOpened" @on-toggle="filterOpened=!filterOpened"
-          ></v-filter-item>
         </v-filter-bar>
         <!--操作栏-->
         <v-table-tool-bar>
