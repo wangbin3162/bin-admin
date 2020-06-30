@@ -2,10 +2,10 @@
   <div class="validator-wrap">
     <div class="mb-10">
       <b-row :gutter="15">
-        <b-col span="10" v-if="$slots.default">
+        <b-col span="12" v-if="$slots.default">
           <slot></slot>
         </b-col>
-        <b-col :span="$slots.default?14:24">
+        <b-col :span="$slots.default?12:24">
           <div style="width: 100%;line-height:32px;" flex="main:justify">
             <span>校验: </span>
             <div>
