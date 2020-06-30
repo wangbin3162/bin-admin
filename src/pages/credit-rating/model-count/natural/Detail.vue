@@ -3,107 +3,25 @@
     <page-header-wrap :title="title" show-close @on-close="$emit('close')">
       <v-edit-wrap transparent>
         <b-collapse-wrap title="自然人详情" collapse>
-          <div style="position: relative;">
+          <div style="position: relative; min-height: 200px;">
             <b-loading fix show-text="加载中...." v-if="loading"></b-loading>
+
             <table class="table">
-              <tr>
-                <td colspan="6">
-                  <h4>基本信息</h4>
-                </td>
-              </tr>
-              <tr>
-                <td>姓名：</td>
-                <td>{{ detail.natBaseInfo.name }}</td>
-                <td>性别：</td>
-                <td>{{ detail.natBaseInfo.xb }}</td>
-                <td>民族：</td>
-                <td>{{ detail.natBaseInfo.mz }}</td>
-              </tr>
-                <tr>
-                <td>曾用名：</td>
-                <td></td>
-                <td>证件类型：</td>
-                <td>{{ detail.natBaseInfo.idTypeName }}</td>
-                <td>证件号码</td>
-                <td>{{ detail.natBaseInfo.idCode }}</td>
-              </tr>
-              <tr>
-                <td>外文姓：</td>
-                <td>{{ detail.natBaseInfo.wwx }}</td>
-                <td>外文名：</td>
-                <td>{{ detail.natBaseInfo.wwm }}</td>
-                <td>国籍地区：</td>
-                <td>{{ detail.natBaseInfo.gjdq }}</td>
-              </tr>
-              <tr>
-                <td>出生日期：</td>
-                <td>{{ detail.natBaseInfo.csrq }}</td>
-              </tr>
-              <tr>
-                <td>户籍地派出所：</td>
-                <td></td>
-                <td>所属辖区编码：</td>
-                <td></td>
-                <td>户籍地派出所编码：</td>
-                <td></td>
-              </tr>
-              <tr>
-                <td>户籍地址：</td>
-                <td>{{ detail.natBaseInfo.hjdz }}</td>
-                <td>居住地址：</td>
-                <td>{{ detail.natBaseInfo.hjdz }}</td>
-                <td>户籍号码：</td>
-                <td>{{ detail.natBaseInfo.hh }}</td>
-              </tr>
-              <tr>
-                <td>签发机关：</td>
-                <td>{{ detail.natBaseInfo.qfjg }}</td>
-                <td>签发日期：</td>
-                <td>{{ detail.natBaseInfo.qfrq }}</td>
-                <td>登记状态：</td>
-                <td>{{ detail.natBaseInfo.djzt }}</td>
-              </tr>
-              <tr>
-                <!-- <td>汉语拼音：</td>
-                <td></td>
-                <td>拼音字母：</td>
-                <td></td> -->
-                <td>与户主关系</td>
-                <td>{{ detail.natBaseInfo.yhzgx }}</td>
-              </tr>
-              <!-- <tr>
-                <td>户主标志：</td>
-                <td></td>
-                <td>户口类型：</td>
-                <td></td>
-                <td>户籍号码：</td>
-                <td>{{ detail.natBaseInfo.hh }}</td>
-              </tr> -->
-              <!-- <tr>
-                <td>户籍地门牌号：</td>
-                <td></td>
-                <td>宗教信仰：</td>
-                <td></td>
-              </tr> -->
-              <tr>
-                <td colspan="6">
-                  <b-divider></b-divider>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <h4 style="font-size: 14px;">系统信息</h4>
-                </td>
-              </tr>
-              <tr>
-                <td>采集人员：</td>
-                <td>{{ detail.natBaseInfo.createName }}</td>
-                <td>采集部门：</td>
-                <td>{{ detail.natBaseInfo.createDeptName }}</td>
-                <td>采集时间：</td>
-                <td>
-                  {{ $util.parseTime(detail.natBaseInfo.createDate, '{y}-{m}-{d} {h}:{i}:{s}') }}
-                </td>
+              <tr v-for="(row, index) in fieldList" :key="index">
+                <template v-for="col in row">
+                  <td :key="col.fieldName">
+                    {{ col.fieldTitle}}
+                  </td>
+
+                  <td :key="col.fieldName + '2'" :colspan="row.length < 2 ? 3 : 1">
+                    {{ baseInfo[col.fieldName] }}
+                  </td>
+
+                  <!-- <template v-if="row.length < 2">
+                    <td :key="col.fieldName + '3'"></td>
+                    <td :key="col.fieldName + '4'"></td>
+                  </template> -->
+                </template>
               </tr>
             </table>
           </div>
@@ -112,40 +30,34 @@
         <b-collapse-wrap title="方案计算结果" collapse :value="!loading">
           <table class="table">
             <tr>
+              <td>信用主体：</td>
+              <td>{{ baseInfo.name }}</td>
               <td>所属方案：</td>
               <td>{{ detail.modelName }}</td>
-              <td>信用主体：</td>
-              <td>{{ detail.natBaseInfo.name }}</td>
-              <td>证件号码：</td>
-              <td>{{ detail.natBaseInfo.idCode }}</td>
             </tr>
             <tr>
               <td>信用级别：</td>
               <td>{{ detail.levelCode }}</td>
               <td>方案得分：</td>
               <td>{{ detail.score }}</td>
-              <td>结果状态：</td>
-              <td></td>
             </tr>
             <tr>
               <td>评级人员：</td>
-              <td></td>
+              <td>{{ detail.createName }}</td>
               <td>评级部门：</td>
-              <td></td>
-              <td>评级日期：</td>
-              <td>
-                {{ $util.parseTime(detail.createDate, '{y}-{m}:{d} {h}:{i}:{s}') }}
-              </td>
+              <td>{{ detail.createDeptName }}</td>
             </tr>
             <tr>
-              <td>评级描述：</td>
-              <td></td>
+              <td>评级日期：</td>
+              <td colspan="3">
+                {{ $util.parseTime(new Date(detail.createDate), '{y}-{m}-{d} {h}:{i}:{s}') }}
+              </td>
             </tr>
           </table>
         </b-collapse-wrap>
 
         <b-collapse-wrap title="信用信息详情" collapse :value="!loading">
-          <b-row class="mb-15">
+          <!-- <b-row class="mb-15">
             <b-col span="12" class="field">
               <label>信用主体：</label>
               <p class="con">{{ detail.natBaseInfo.name }}</p>
@@ -158,7 +70,7 @@
               <label>信用级别：</label>
               <p class="con">{{ detail.levelCode }}</p>
             </b-col>
-          </b-row>
+          </b-row> -->
 
           <b-table :columns="columns" :data="list" size="small" class="mb-15">
           </b-table>
@@ -178,22 +90,26 @@
 </template>
 
 <script>
-  import { getCreditInfo, getNaturalDetail } from '../../../../api/credit-rating/model-count.api'
+  import { Decode, MaskCode } from '../../../../common/utils/secret'
+  import {
+    getCreditInfo, getNaturalDetail,
+    getResourceDetailField, getDetailContent
+  } from '../../../../api/credit-rating/model-count.api'
 
   export default {
     name: 'ModelCountNaturalDetail',
     props: [
-      'title',
       'id',
-      'personId'
+      'title',
+      'personId',
+      'resourceKey'
     ],
     data () {
       return {
         loading: false,
-        collapseValue: [], // 控制手风琴展开
-        detail: {
-          natBaseInfo: {}
-        },
+        fieldList: [], // 字段列表
+        baseInfo: {}, // 法人主体详情
+        detail: {},
         query: {
           id: this.id,
           page: 1
@@ -211,6 +127,7 @@
     created () {
       this.getCreditInfo(this.query)
       this.getNaturalDetail(this.id)
+      this.getBaseInfo(this.personId, this.resourceKey)
     },
     methods: {
       // 分页按钮切换回调
@@ -239,6 +156,40 @@
         } catch (error) {
           console.error(error)
         }
+      },
+      /**
+       * @author haodongdong
+       * @description 根据主体id，resourceKey获取对应详情字段与详情信息
+       * @param {string} id 主体id
+       * @param {string} resourceKey 资源key
+       * @returns {Promise}
+       */
+      async getBaseInfo (id, resourceKey) {
+        this.loading = true
+        try {
+          const [fieldList, baseInfo] = await Promise.all([
+            getResourceDetailField(resourceKey),
+            getDetailContent(id, resourceKey)
+          ])
+
+          // 删除掉person_id字段
+          const index = fieldList.findIndex(item => item.fieldName === 'person_id')
+          fieldList.splice(index, 1)
+
+          const list = []
+          for (let i = 0; i < fieldList.length; i++) {
+            const el = fieldList[i]
+            if (i % 2 === 0) list.push(fieldList.slice(i, i + 2))
+            if (el.isEncrypt === '1') baseInfo[el.fieldName] = Decode(baseInfo[el.fieldName])
+            if (el.maskModel) baseInfo[el.fieldName] = MaskCode(baseInfo[el.fieldName], el.maskModel)
+          }
+
+          this.fieldList = list
+          this.baseInfo = baseInfo
+        } catch (error) {
+          console.error(error)
+        }
+        this.loading = false
       }
     }
   }
@@ -247,15 +198,43 @@
 <style lang="stylus" scoped>
   .model-count-legal-detaiil {
     .table {
-      width: 100%;
-      font-size: 13px;
       border-collapse: collapse;
+      margin: 0 auto;
+      text-align: center;
+      width: 100%;
 
-      td {
+      td, th {
+        border: 1px solid #cad9ea;
+        border: 1px solid #e8eaec;
+        color: #666;
         height: 40px;
-        width: 16.6%;
-        padding: 5px 12px
       }
+      td:nth-child(odd), th:nth-child(odd) {
+        width: 20%;
+        padding-right: 15px;
+        text-align: right;
+        background: #f5fafa;
+        background: #fafafa;
+      }
+      td:nth-child(even), th:nth-child(even) {
+        width: 30%;
+        padding: 5px;
+        padding-left: 10px;
+        text-align: left;
+        background: #ffffff;
+      }
+      tr:hover {
+        td {
+          background: #f4f5f6;
+          transition: background 0.7s;
+        }
+      }
+      // tr:nth-child(odd) {
+      //   background: #f5fafa;
+      // }
+      // tr:nth-child(even) {
+      //   background: #ffffff;
+      // }
     }
 
     .field {

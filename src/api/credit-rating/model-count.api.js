@@ -241,3 +241,61 @@ export async function templateCount(params) {
     }
   })
 }
+
+/**
+ * @author haodongdong
+ * @description 根据resourceKey获取资源详情，获取的items为过滤后已启用的字段。
+ * @param {string} resourceKey
+ * @returns {Promise}
+ */
+export async function getResourceDetailField(resourceKey) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/api/dir/detailByResourceKey',
+        method: 'get',
+        params: {
+          resourceKey
+        }
+      })
+      if (res.data.successful) {
+        resolve(res.data.data.items)
+      } else {
+        reject(new Error(res.data.message))
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
+ * @description 获取对应主体的对应资源的详情信息
+ * @param {string} id 主体id
+ * @param {string} resourceKey 资源key
+ * @returns {Promise}
+ */
+export async function getDetailContent(id, resourceKey) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/api/dir/gather/show',
+        method: 'post',
+        data: {
+          resourceKey,
+          keyValues: {
+            id
+          }
+        }
+      })
+      if (res.data.successful) {
+        resolve(res.data.data)
+      } else {
+        reject(new Error(res.data.message))
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}

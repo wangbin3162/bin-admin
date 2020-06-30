@@ -81,9 +81,10 @@
 
     <detail v-if="isCheck"
       @close="handleCancel"
-      :title="editTitle"
       :id="curRow.id"
-      :personId="curRow.personId">
+      :title="editTitle"
+      :personId="curRow.personId"
+      :resourceKey="curRow.legBaseInfo.resourceKey">
     </detail>
 
     <!-- 重新算分组件 -->
