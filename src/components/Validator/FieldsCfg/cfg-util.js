@@ -154,7 +154,7 @@ export const validatorBuild = {
         let preFieldValue = opts.preFieldValue// 前置字段需要匹配的值
         console.log(preField, preFieldValue)
         if ((isEmpty(preField) && isEmpty(preFieldValue)) || (preField === preFieldValue) ||
-          (preField.toString() === preFieldValue)) {
+          (preField.toString().includes(preFieldValue))) {
           if (isEmpty(value)) callback(new Error(opts.message))
         }
         callback()
@@ -172,7 +172,7 @@ export const validatorBuild = {
         let preField = obj[opts.preField]// 前置字段当前值
         let preFieldValue = opts.preFieldValue// 前置字段需要匹配的值
         if ((isEmpty(preField) && isEmpty(preFieldValue)) || (preField === preFieldValue) ||
-          (preField.toString() === preFieldValue)) {
+          (preField.toString().includes(preFieldValue))) {
           if (isNotEmpty(value)) callback(new Error(opts.message))
         }
         callback()
@@ -189,7 +189,7 @@ export const validatorBuild = {
       validator: (rule, value, callback) => {
         let preField = obj[opts.preField]// 前置字段当前值
         let preFieldValue = opts.preFieldValue// 前置字段需要匹配的值
-        if ((preField === preFieldValue) || (preField && (preField.toString() === preFieldValue))) {
+        if ((preField === preFieldValue) || (preField && (preField.toString().includes(preFieldValue)))) {
           if (value === opts.notValue || value.toString() === opts.notValue) {
             callback(new Error(opts.message))
           }

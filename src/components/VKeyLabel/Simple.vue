@@ -31,7 +31,7 @@
       color: rgba(0, 0, 0, .85);
       font-weight: 400;
       font-size: 14px;
-      line-height: 1.5;
+      line-height: 32px;
       white-space: nowrap;
       &:after {
         position: relative;
@@ -43,7 +43,7 @@
     .label {
       color: rgba(0, 0, 0, .65);
       font-size: 14px;
-      line-height: 1.5;
+      line-height: 32px;
       user-select: text;
     }
   }

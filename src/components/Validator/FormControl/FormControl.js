@@ -185,7 +185,9 @@ export default {
         node = h('file-upload', {
           props: {
             value: this.currentValue,
-            resourceKey: this.resourceKey
+            resourceKey: this.resourceKey,
+            tip: '不能上传大于100M的文件',
+            maxSize: 100 * 1024
           },
           on: { input: this.handleInput }
         })

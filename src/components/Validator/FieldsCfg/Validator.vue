@@ -2,10 +2,10 @@
   <div class="validator-wrap">
     <div class="mb-10">
       <b-row :gutter="15">
-        <b-col span="10" v-if="$slots.default">
+        <b-col span="12" v-if="$slots.default">
           <slot></slot>
         </b-col>
-        <b-col :span="$slots.default?14:24">
+        <b-col :span="$slots.default?12:24">
           <div style="width: 100%;line-height:32px;" flex="main:justify">
             <span>校验: </span>
             <div>
@@ -333,7 +333,8 @@
       },
       originalRules: { // 存储原始配置校验参数
         type: Object
-      }
+      },
+      dataLength: Number
     },
     data() {
       return {
@@ -558,8 +559,22 @@
         this.checkRulesArr = []
         if (this.required === 'Y') {
           this.setRules(RULE.required)
+          this.addLengthRule()
         } else {
+          this.addLengthRule()
           this.emitEmptyValue()
+        }
+      },
+      // 根据数据类型自动添加长度校验
+      addLengthRule() {
+        if (this.dataType === 'string') {
+          this.checkRulesArr.push({
+            name: RULE.length,
+            min: null,
+            max: this.dataLength,
+            message: '长度必须在指定的范围内',
+            ...this.normalCfg
+          })
         }
       },
       // 更新model value

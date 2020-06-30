@@ -17,6 +17,7 @@
                   @click="handleUpload">上传
         </b-button>
       </div>
+      <div v-if="tip&&fileList.length===0" class="file-tip">{{tip}}</div>
       <ul class="file-list">
         <li v-for="(file,index) in fileList" :key="index" class="file-item upload">
         <span :class="['file-name',{success:file.id&&result}]" @click="handleDownload(file.id,file.name)">
@@ -63,6 +64,10 @@
       },
       isShow: {
         type: Boolean
+      },
+      tip: String,
+      maxSize: { // kb
+        type: Number
       }
     },
     data() {
@@ -125,7 +130,15 @@
           return
         }
         // 转换文件列表对象为数组
-        this.fileList = Array.prototype.slice.call(files)
+        let oldList = Array.prototype.slice.call(files)
+        if (this.maxSize && this.maxSize !== 0) {
+          this.fileList = oldList.filter(i => i.size < this.maxSize * 1024)
+          if (this.fileList.length !== oldList.length) {
+            this.$message({ type: 'warning', content: '超出最大限制的文件已被过滤！' })
+          }
+        } else {
+          this.fileList = oldList
+        }
         if (this.fileList.length === 0) {
           this.emitValue('')
         }
@@ -193,15 +206,23 @@
   .file-upload input[type="file"] {
     display: none;
   }
+  .file-tip {
+    width: 100%;
+    padding: 4px 22px 0 4px;
+    margin-top: 4px;
+    color: #515a6e;
+    line-height: 1.5em;
+    font-size: 12px;
+  }
   .file-list {
-    margin-top: 8px;
+    margin-top: 4px;
   }
   .file-item {
     position: relative;
     width: 100%;
     padding: 4px 22px 4px 4px;
     color: #515a6e;
-    border-radius: 4px;
+    border-radius: 2px;
     line-height: 1.5em;
     font-size: 12px;
     -webkit-transition: background-color 0.2s ease-in-out;
