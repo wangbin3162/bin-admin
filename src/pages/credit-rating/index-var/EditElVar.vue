@@ -34,7 +34,7 @@
         <div class="right">
           <div class="var-select-con">
             <div flex="main:justify">
-              <h4 class="mb-10">变量</h4>
+              <h4 class="mb-10">已选变量</h4>
               <b-button type="text" plain style="margin-left: 5px;" size="small" @click="open = true">
                 选择
               </b-button>
@@ -75,7 +75,8 @@
     },
     data () {
       return {
-        timer: null,
+        setTimer: null,
+        intTimer: null,
         open: false,
         curCursor: 0, // 表达式输入框当前光标位置
         elText: '#{}',
@@ -145,6 +146,7 @@
       // 变量选择组件回调
       handleVarChooseMul (varList) {
         varList.forEach(newItem => {
+          newItem.params.forEach(param => { delete param.id }) // 后端要求处理id
           this.varMap.set(newItem.varCode, newItem)
         })
         this.buildResData()
@@ -171,13 +173,16 @@
       },
       handleMouseDown (str) {
         if (str === '←') {
-          this.timer = setInterval(() => {
-            this.editor.execCommand('delCharBefore')
-          }, 70)
+          this.setTimer = setTimeout(() => {
+            this.intTimer = setInterval(() => {
+              this.editor.execCommand('delCharBefore')
+            }, 70)
+          }, 300)
         }
       },
       handleMouseUp () {
-        clearInterval(this.timer)
+        clearTimeout(this.setTimer)
+        clearInterval(this.intTimer)
       },
       // 清空按钮回调
       handleClearBtn () {

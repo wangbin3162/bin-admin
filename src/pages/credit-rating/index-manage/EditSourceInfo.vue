@@ -1,6 +1,6 @@
 <template>
   <div class="edit-source-info">
-    <b-alert v-if="valid" type="warning">有暂未配置的资源或常量缺省值，请配置后提交。</b-alert>
+    <!-- <b-alert v-if="valid" type="warning">有暂未配置的资源或常量缺省值，请配置后提交。</b-alert> -->
     <div class="main-con">
       <div class="left">
         <b-card header="参数" head-tip shadow="never" :bordered="false">
@@ -327,7 +327,8 @@
               if (item.paraValue === '') {
                 this.valid = true
                 this.$notice.warning({
-                  title: '有未配置的资源，请配置后提交。'
+                  title: '有暂未配置的参数',
+                  desc: '有暂未配置的参数或常量缺省值，请配置后提交。'
                 })
                 resolve(false)
                 break

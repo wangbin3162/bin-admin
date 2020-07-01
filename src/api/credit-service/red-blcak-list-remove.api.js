@@ -81,7 +81,11 @@ export async function getResourceList(query, keyValues, ops) {
         method: 'post',
         data
       })
-      resolve(res.data)
+      if (res.data.successful !== undefined && !res.data.successful) {
+        reject(new Error(res.data.message))
+      } else {
+        resolve(res.data)
+      }
     } catch (error) {
       reject(error)
     }

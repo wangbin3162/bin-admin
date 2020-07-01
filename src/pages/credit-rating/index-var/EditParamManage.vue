@@ -2,7 +2,7 @@
   <b-collapse-wrap title="参数配置" collapse class="edit-param-manage">
     <b-table :columns="columns" :data="list" size="small">
       <template v-slot:paraName="{ index }">
-        <b-tooltip :content="list[index].paraNameMsg" max-width="200"
+        <b-tooltip :content="list[index].paraNameMsg" max-width="200" appendToBody
                   :disabled="!list[index].paraNameError" :always="list[index].paraNameError">
 
           <b-input v-model="list[index].paraName" :disabled="list[index].disabled"
@@ -13,7 +13,7 @@
         </b-tooltip>
       </template>
       <template v-slot:paraCode="{ index }">
-        <b-tooltip :content="list[index].paraCodeMsg" max-width="200"
+        <b-tooltip :content="list[index].paraCodeMsg" max-width="200" appendToBody
                   :disabled="!list[index].paraCodeError" :always="list[index].paraCodeError">
 
           <b-input v-model="list[index].paraCode" :disabled="list[index].disabled"
@@ -24,11 +24,11 @@
         </b-tooltip>
       </template>
       <template v-slot:paraType="{ index }">
-        <b-tooltip :content="list[index].paraTypeMsg" max-width="200" style="width: 100%;"
+        <b-tooltip :content="list[index].paraTypeMsg" max-width="200" style="width: 100%;" appendToBody
                   :disabled="!list[index].paraTypeError" :always="list[index].paraTypeError">
 
           <b-select v-model="list[index].paraType" append-to-body
-            :disabled="list[index].disabled"
+            :disabled="varType === 'Complex' && list[index].disabled"
             :class="{ error: list[index].paraTypeError }"
             @on-change="handleValidate(list[index], 'paraType')">
             <b-option v-for="item in paramTypeOptions" :key="item.value"
@@ -107,6 +107,7 @@
       params: {
         handler(newVal, oldVal) { // 观察params变化维护list状态
           const arr = JSON.parse(JSON.stringify(newVal))
+          console.log(arr)
           // 在这里分离person_id
           const index = arr.findIndex(item => {
             return item.paraCode === 'person_id'
@@ -146,8 +147,8 @@
           paraCode: '',
           paraDesc: '',
           paraType: '',
-          paraSource: null,
           orderNo: this.list.length + 1,
+          paraSource: null,
           custom: true // 表示自定义参数
         })
       },
@@ -220,13 +221,13 @@
           }
         })
       },
-      // 判断是否存在于已选变量列表中 tempVarCodeList
+      // 判断自定义添加的参数是否存在于已选变量列表中 tempVarCodeList
       notInclude(row, key) {
         return new Promise((resolve, reject) => {
           const unique = !this.tempVarCodeList.some(item => {
             return item === row[key]
           })
-          if (!unique) {
+          if (!unique && row.paraSource === null) { // paraSource === null表示为自定义添加的参数
             this.$set(row, key + 'Error', true)
             this.$set(row, key + 'Msg', `值 ${row[key]} 已存在于【已选变量】中，请重新填写`)
             reject(new Error(`值 ${row[key]} 已存在于已选变量中`))
