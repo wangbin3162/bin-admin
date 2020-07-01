@@ -183,7 +183,7 @@
             total: res.total
           })
         } catch (error) {
-          this.list = []
+          this.$notice.danger({ title: '请求失败', desc: error })
           console.error(error)
         }
         this.listLoading = false
