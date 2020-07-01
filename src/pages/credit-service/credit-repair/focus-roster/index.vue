@@ -15,6 +15,12 @@
 
         <!-- table -->
         <b-table :columns="columns" :data="list" :loading="listLoading">
+          <template v-slot:name="{ row }">
+            <b-button type="text" t-ellipsis :title="row.name" @click="handleNameBtn(row)">
+              {{ row.name }}
+            </b-button>
+          </template>
+
           <template v-slot:dealMode="{ row }">
             {{ dealModeEnum[row.dealMode] || '申请修复' }}
           </template>
@@ -41,6 +47,13 @@
       :title="editTitle"
       :detail="curRow">
     </detail>
+
+    <base-info v-if="dialogStatus === 'baseInfo'"
+      @close="handleClose"
+      :title="curRow.name"
+      :personId="curRow.personId"
+      :resourceKey="curRow.resourceKey">
+    </base-info>
   </div>
 </template>
 
@@ -49,12 +62,14 @@
   import permission from '../../../../common/mixins/permission'
   import { getFocusRosterList } from '../../../../api/credit-service/credit-repair.api'
   import Detail from './Detail'
+  import BaseInfo from './BaseInfo'
 
   export default {
     name: 'FocusRoster',
     mixins: [commonMixin, permission],
     components: {
-      Detail
+      Detail,
+      BaseInfo
     },
     data () {
       return {
@@ -67,7 +82,7 @@
         },
         columns: [
           { type: 'index', width: 50, align: 'center' },
-          { title: '主体名称', key: 'name' },
+          { title: '主体名称', slot: 'name' },
           { title: '录入类型', key: 'lrlx' },
           { title: '资源目录', key: 'resourceName' },
           { title: '关注时间', key: 'lrrq' },
@@ -98,6 +113,15 @@
           resourceName: ''
         }
         this.searchList()
+      },
+      /**
+       * @author haodongdong
+       * @description 主题名称按钮回调
+       * @param {Object} row 当前行数据
+       */
+      handleNameBtn (row) {
+        this.curRow = row
+        // this.dialogStatus = 'baseInfo'
       },
       // 查看按钮回调
       handleCheck (row) {
