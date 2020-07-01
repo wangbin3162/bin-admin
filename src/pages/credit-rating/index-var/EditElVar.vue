@@ -146,6 +146,7 @@
       // 变量选择组件回调
       handleVarChooseMul (varList) {
         varList.forEach(newItem => {
+          newItem.params.forEach(param => { delete param.id }) // 后端要求处理id
           this.varMap.set(newItem.varCode, newItem)
         })
         this.buildResData()
