@@ -75,7 +75,8 @@
     },
     data () {
       return {
-        timer: null,
+        setTimer: null,
+        intTimer: null,
         open: false,
         curCursor: 0, // 表达式输入框当前光标位置
         elText: '#{}',
@@ -171,13 +172,16 @@
       },
       handleMouseDown (str) {
         if (str === '←') {
-          this.timer = setInterval(() => {
-            this.editor.execCommand('delCharBefore')
-          }, 70)
+          this.setTimer = setTimeout(() => {
+            this.intTimer = setInterval(() => {
+              this.editor.execCommand('delCharBefore')
+            }, 70)
+          }, 300)
         }
       },
       handleMouseUp () {
-        clearInterval(this.timer)
+        clearTimeout(this.setTimer)
+        clearInterval(this.intTimer)
       },
       // 清空按钮回调
       handleClearBtn () {
