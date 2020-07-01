@@ -5,15 +5,15 @@
       :width="640"
       :styles="{ top: '5%'}"
       footer-hide
-      :body-styles="{ padding: '5px' }"
+      :body-styles="{ padding: '15px' }"
       @on-visible-change="handleVisibleChange">
       <b-loading fix show-text="加载中...." v-if="loading"></b-loading>
       <div class="table-con">
-        <table>
+        <table class="table">
           <tr v-for="item in detailArr" :key="item.label">
-            <td>
+            <th>
               {{ item.label }}：
-            </td>
+            </th>
             <td>
               {{ item.value }}
             </td>
@@ -63,6 +63,7 @@
           this.loading = false
         }
       },
+
       async getData () {
         this.loading = true
         try {
@@ -92,6 +93,7 @@
         }
         this.loading = false
       },
+
       init () {
         this.getData()
       }
@@ -108,13 +110,35 @@
 
     table {
       width: 100%;
-      font-size: 13px;
       border-collapse: collapse;
+      margin: 0 auto;
+      // font-size: 13px;
 
-      td {
+      td, th {
+        border: 1px solid #cad9ea;
+        border: 1px solid #e8eaec;
+        color: #666;
         height: 40px;
-        width: 50%;
-        padding: 5px 12px
+      }
+      td:nth-child(odd), th:nth-child(odd) {
+        width: 20%;
+        padding-right: 15px;
+        text-align: right;
+        background: #f5fafa;
+        background: #fafafa;
+      }
+      td:nth-child(even), th:nth-child(even) {
+        width: 30%;
+        padding: 5px;
+        padding-left: 10px;
+        text-align: left;
+        background: #ffffff;
+      }
+      tr:hover {
+        td {
+          background: #f4f5f6;
+          transition: background 0.7s;
+        }
       }
     }
   }
