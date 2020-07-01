@@ -1,6 +1,7 @@
 <template>
   <div>
-    <page-header-wrap v-show="historyDialog" show-close @on-close="close" title="查看历史">
+    <page-header-wrap v-show="historyDialog" show-close @on-close="close"
+                      :title="(current.comp_name||current.name)+'查看历史'">
       <v-edit-wrap transparent>
         <b-collapse-wrap title="版本比对">
           <div class="history-panel">
@@ -229,7 +230,7 @@
             tmp[key] = obj[key]
             if (format) {
               if (field.isEncrypt === '1') { // 解密
-                tmp[key] = Decode()
+                tmp[key] = Decode(tmp[key])
                 // console.log('解码后：' + value)
               }
               if (oneOf(field.maskModel, ['ID_CODE', 'MOBILE_PHONE'])) { // 掩码
