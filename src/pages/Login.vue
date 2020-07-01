@@ -8,7 +8,7 @@
     </div>
     <div class="main-wrap">
       <div class="header-inner">
-        <img src="../assets/images/logo-white.png" height="90" width="320" alt="logo" class="link"/>
+        <img src="../assets/images/login/logo-white.png" height="90" width="320" alt="logo" class="link"/>
       </div>
       <!--登录框-->
       <div class="content" flex="main:right cross:center">
@@ -20,18 +20,21 @@
           <b-form class="login-form" ref="loginForm" label-position="top"
                   :rules="rules" :model="formLogin">
             <b-form-item prop="username">
-              <b-input type="text" v-model="formLogin.username" placeholder="请输入用户名">
+              <b-input type="text" v-model="formLogin.username" placeholder="请输入用户名"
+                       @on-keyup.enter="submit">
                 <img src="../assets/images/login/User.png" height="30" width="30" alt="user" slot="prefix"/>
               </b-input>
             </b-form-item>
             <b-form-item prop="password">
-              <b-input type="password" v-model="formLogin.password" placeholder="请输入密码">
+              <b-input type="password" v-model="formLogin.password" placeholder="请输入密码"
+                       @on-keyup.enter="submit">
                 <img src="../assets/images/login/Key.png" height="30" width="30" alt="key" slot="prefix"/>
               </b-input>
             </b-form-item>
             <b-form-item prop="captcha">
               <div class="captcha">
-                <b-input type="text" v-model="formLogin.captcha" :maxlength="4" placeholder="验证码" flex-box="1">
+                <b-input type="text" v-model="formLogin.captcha" :maxlength="4" placeholder="验证码"
+                         @on-keyup.enter="submit">
                   <img src="../assets/images/login/keycode.png" height="30" width="30" alt="key" slot="prefix"/>
                 </b-input>
                 <img :src="verifyCodeUrl" class="login-code" @click="refreshCode" title="点击刷新" alt="code">
@@ -47,7 +50,10 @@
         </div>
       </div>
     </div>
-    <base-footer></base-footer>
+    <div class="page-footer">
+      <p>技术支持：徐州金蝶软件有限公司</p>
+      <p>copyright:2016-2020 Kingdee All Rights Reserved</p>
+    </div>
   </div>
 </template>
 
@@ -83,15 +89,8 @@
     },
     created() {
       this.refreshCode()
-      document.addEventListener('keyup', this.enter)
     },
     methods: {
-      // enter键盘事件
-      enter(e) {
-        if (e.code === 'Enter') {
-          this.submit()
-        }
-      },
       // 刷新验证码
       refreshCode() {
         getVerifyCode().then(response => {
@@ -147,9 +146,6 @@
         this.refreshCode()
         this.$message({ type: 'danger', content: ((err.response || {}).data || {}).message || '请求出现错误，请稍后再试' })
       }
-    },
-    beforeDestroy() {
-      document.removeEventListener('keyup', this.enter)
     }
   }
 </script>
@@ -159,7 +155,7 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    height: 100%;
+    min-height: 100vh;
     overflow: auto;
     // 层
     .layer {
@@ -323,8 +319,57 @@
       }
     }
   }
+  .page-footer {
+    background: #0b1c24;
+    padding: 30px;
+    text-align: center;
+    P {
+      font-size: 14px;
+      line-height: 32px;
+      color: #989797;
+    }
+  }
   .header-inner {
     width: 1300px;
     margin: 0 auto;
   }
+</style>
+
+<style lang="stylus">
+  // 登录页面输入框样式调整
+  .login-form {
+    .bin-input {
+      border: none;
+      border-bottom: 1px solid #dcdee2;
+      border-radius: 0;
+      outline: 0;
+      height: 48px;
+      box-shadow: none;
+      &:focus {
+        border-bottom: 1px solid #6ac9f8;
+      }
+    }
+    .bin-form-item-error .bin-input {
+      box-shadow: none;
+      border-top: none;
+      border-left: none;
+      border-right: none;
+      &:focus {
+        box-shadow: none;
+        border-bottom: 1px solid #f5222d;
+      }
+    }
+    .bin-input-with-prefix {
+      padding-left: 58px;
+    }
+    .bin-input-prefix {
+      width: 50px;
+      padding-top: 10px;
+    }
+    .bin-form-item-content {
+      position: relative;
+      line-height: 60px;
+    }
+  }
+
 </style>

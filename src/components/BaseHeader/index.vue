@@ -1,7 +1,7 @@
 <template>
   <div class="header-wrap" :class="{'detail':showSearch}">
     <div class="header-inner" flex="main:justify cross:center">
-      <img src="../../assets/images/logo-white.png" @click="home" alt="logo" class="logo"/>
+      <img src="../../assets/images/login/logo-white.png" @click="home" alt="logo" class="logo"/>
       <div class="info" flex="cross:center" v-if="userRoles">
         <!--        <div class="links">-->
         <!--          <div class="inner">-->
