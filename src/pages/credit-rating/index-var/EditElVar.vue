@@ -34,7 +34,7 @@
         <div class="right">
           <div class="var-select-con">
             <div flex="main:justify">
-              <h4 class="mb-10">变量</h4>
+              <h4 class="mb-10">已选变量</h4>
               <b-button type="text" plain style="margin-left: 5px;" size="small" @click="open = true">
                 选择
               </b-button>
