@@ -152,7 +152,7 @@ export const validatorBuild = {
       validator: (rule, value, callback) => {
         let preField = obj[opts.preField]// 前置字段当前值
         let preFieldValue = opts.preFieldValue// 前置字段需要匹配的值
-        console.log(preField, preFieldValue)
+        // console.log(preField, preFieldValue)
         if ((isEmpty(preField) && isEmpty(preFieldValue)) || (preField === preFieldValue) ||
           (preField.toString().includes(preFieldValue))) {
           if (isEmpty(value)) callback(new Error(opts.message))
