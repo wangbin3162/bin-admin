@@ -75,65 +75,39 @@
         loading: false,
         searchList: [],
         total: 0,
-        memoList5: [
-          {
-            id: '06c5fa1ba3d64e1990ce469a90a46fc9',
-            memoName: '联合公安局奖励的备忘录',
-            createDate: '2020-05-15 09:57:13'
-          },
-          {
-            id: '0ae843540e0344b89a103cabfb6b30e1',
-            memoName: '1111',
-            createDate: '2020-05-15 09:57:13'
-          },
-          {
-            id: '34dd346dc1ba401e85a1a8a6d6940da6',
-            memoName: '0519法人惩戒备忘录',
-            createDate: '2020-05-15 09:57:13'
-          },
-          {
-            id: 'ad19ede4a33047ad963dd3a68333499f',
-            memoName: '我是惩戒激励备忘录',
-            createDate: '2020-05-15 09:57:13'
-          },
-          {
-            id: '32710d21aa5a432080c802d26b344000',
-            memoName: '激励备忘录',
-            createDate: '2020-05-15 09:57:13'
-          }
-        ],
-        listResult5: [
-          {
-            id: '06c5fa1ba3d64e1990ce469a90a46fc9',
-            name: '孙菲菲'
-          },
-          {
-            id: '0ae843540e0344b89a103cabfb6b30e1',
-            name: '孙菲菲'
-          },
-          {
-            id: '34dd346dc1ba401e85a1a8a6d6940da6',
-            name: '王军'
-          },
-          {
-            id: 'ad19ede4a33047ad963dd3a68333499f',
-            name: '张三'
-          },
-          {
-            id: '32710d21aa5a432080c802d26b344000',
-            name: '李四'
-          }
-        ]
+        memoList5: [],
+        listResult5: []
       }
     },
     created() {
-      api.getUrpCounts().then(resp => {
-        this.urpCount = resp
-      })
+      this.getUrpCount()
+      this.queryHomeMemoAndResult()
     },
     methods: {
+      // 查询主体列表
       handleSearch() {
-        console.log('search:', this.query)
+        api.getUrpList(this.query).then(resp => {
+          console.log(resp)
+        })
+      },
+      // 初始化首页的统计计数
+      getUrpCount() {
+        api.getUrpCounts().then(resp => {
+          this.urpCount = resp
+        })
+      },
+      // 查询首页的前五条备忘录和惩戒激励记录
+      queryHomeMemoAndResult() {
+        this.memoList5 = []
+        this.listResult5 = []
+        api.getMemoList({ memoName: '', memoType: '', page: 1, size: 5 })
+          .then(resp => {
+            this.memoList5 = resp.data.rows
+          })
+        api.getListResult({ name: '', idCode: '', page: 1, size: 5 })
+          .then(resp => {
+            this.listResult5 = resp.data.rows
+          })
       }
     }
   }

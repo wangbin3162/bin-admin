@@ -20,3 +20,43 @@ export function getUrpCounts() {
     }).catch(error => reject(new Error(error.message || '条数统计获取失败')))
   })
 }
+
+/* 模糊查询主体列表 */
+export function getUrpList(query) {
+  return request({
+    url: '/api/urpService/list',
+    method: 'post',
+    data: {
+      keyword: query.keyword,
+      type: query.type
+    }
+  })
+}
+
+/* 备忘录列表 */
+export function getMemoList(query) {
+  return request({
+    url: '/api/urpMemo/search',
+    method: 'get',
+    params: {
+      memoName: query.memoName,
+      memoType: query.memoType,
+      page: query.page - 1,
+      size: query.size
+    }
+  })
+}
+
+/* 惩戒激励记录列表 */
+export function getListResult(query) {
+  return request({
+    url: 'api/urp/listResult/search',
+    method: 'get',
+    params: {
+      name: query.name,
+      idCode: query.idCode,
+      page: query.page - 1,
+      size: query.size
+    }
+  })
+}
