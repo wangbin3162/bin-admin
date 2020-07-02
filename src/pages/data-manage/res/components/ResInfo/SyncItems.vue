@@ -221,7 +221,7 @@
           { type: 'index', width: 50, align: 'center' },
           { title: '目标信息项', slot: 'targetField', width: 150 },
           { title: '值选项', slot: 'valType', width: 150 },
-          { title: '值', slot: 'value' },
+          { title: '源值', slot: 'value' },
           { title: '操作', slot: 'action', width: 150 }
         ],
         mapList: [], // 配置映射列表
@@ -230,7 +230,7 @@
           { title: '目标信息项', slot: 'targetField', width: 150 },
           { title: '条件', slot: 'condition', width: 150 },
           { title: '值选项', slot: 'valType', width: 150 },
-          { title: '值', slot: 'value' },
+          { title: '源值', slot: 'value' },
           { title: '操作', slot: 'action', width: 150 }
         ],
         conditionList: [] // 关联条件列表
