@@ -1,9 +1,8 @@
 <template>
   <div>
-    <page-header-wrap v-show="historyDialog" show-close @on-close="close"
-                      :title="(current.comp_name||current.name)+'查看历史'">
+    <page-header-wrap v-show="historyDialog" show-close @on-close="close" title="查看历史">
       <v-edit-wrap transparent>
-        <b-collapse-wrap title="版本比对">
+        <b-collapse-wrap :title="'版本比对 ' + (current.comp_name||current.name)">
           <div class="history-panel">
             <div class="left-fields">
               <v-title-bar label="历史版本">
