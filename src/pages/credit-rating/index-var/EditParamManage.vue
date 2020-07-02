@@ -2,8 +2,10 @@
   <b-collapse-wrap title="参数配置" collapse class="edit-param-manage">
     <b-table :columns="columns" :data="list" size="small">
       <template v-slot:paraName="{ index }">
-        <b-tooltip :content="list[index].paraNameMsg" max-width="200" appendToBody
-                  :disabled="!list[index].paraNameError" :always="list[index].paraNameError">
+        <b-tooltip max-width="200" appendToBody
+          :content="list[index].paraNameMsg"
+          :disabled="!list[index].paraNameError"
+          :always="list[index].paraNameError">
 
           <b-input v-model="list[index].paraName" :disabled="list[index].disabled"
             :class="{ error: list[index].paraNameError }"
@@ -12,9 +14,12 @@
 
         </b-tooltip>
       </template>
+
       <template v-slot:paraCode="{ index }">
-        <b-tooltip :content="list[index].paraCodeMsg" max-width="200" appendToBody
-                  :disabled="!list[index].paraCodeError" :always="list[index].paraCodeError">
+        <b-tooltip max-width="200" appendToBody
+          :content="list[index].paraCodeMsg"
+          :disabled="!list[index].paraCodeError"
+          :always="list[index].paraCodeError">
 
           <b-input v-model="list[index].paraCode" :disabled="list[index].disabled"
             :class="{ error: list[index].paraCodeError }"
@@ -23,12 +28,15 @@
 
         </b-tooltip>
       </template>
+
       <template v-slot:paraType="{ index }">
-        <b-tooltip :content="list[index].paraTypeMsg" max-width="200" style="width: 100%;" appendToBody
-                  :disabled="!list[index].paraTypeError" :always="list[index].paraTypeError">
+        <b-tooltip max-width="200" appendToBody style="width: 100%;"
+          :content="list[index].paraTypeMsg"
+          :disabled="!list[index].paraTypeError"
+          :always="list[index].paraTypeError">
 
           <b-select v-model="list[index].paraType" append-to-body
-            :disabled="varType === 'Complex' && list[index].disabled"
+            :disabled="isEdit || (varType === 'Complex' && !list[index].custom) || (varType ==='Complex' && list[index].customSelected)"
             :class="{ error: list[index].paraTypeError }"
             @on-change="handleValidate(list[index], 'paraType')">
             <b-option v-for="item in paramTypeOptions" :key="item.value"
@@ -38,19 +46,22 @@
 
         </b-tooltip>
       </template>
+
       <template v-slot:paraDesc="{ index }">
         <b-input v-model="list[index].paraDesc" :disabled="list[index].disabled"></b-input>
       </template>
+
       <template v-slot:action="{ row, index }">
-        <b-button type="text" :disabled="row.disabled" @click="remove(row.orderNo)">删除</b-button>
+        <b-button type="text" :disabled="row.disabled" @click="remove(index)">删除</b-button>
         <b-button v-if="varType === 'Complex' && row.paraSource === null"
           type="text" :disabled="row.disabled" @click="handleSelectedBtn(index)">选择</b-button>
       </template>
     </b-table>
-    <b-button
-      style="width: 100%; margin-top: 10px;"
-      type="primary" plain
-      @click="add">+ 添加
+
+    <b-button style="width: 100%; margin-top: 10px;"
+      type="primary" plain :disabled="isEdit"
+      @click="add">
+      + 添加
     </b-button>
   </b-collapse-wrap>
 </template>
@@ -62,7 +73,7 @@
       varType: {
         type: String // 用于控制是否table显示来源字段
       },
-      params: { // 用于回显的初始化
+      params: {
         type: Array
       },
       paramTypeOptions: { // 用于渲染参数类型的option
@@ -70,6 +81,10 @@
       },
       tempVarCodeList: {
         type: Array
+      },
+      isEdit: { // 用于判断当前是否是编辑状态
+        type: Boolean,
+        default: false
       }
     },
     data() {
@@ -105,9 +120,12 @@
         immediate: true
       },
       params: {
+        /**
+         * @author haodongdong
+         * @description 观察传递过来的params，构建需要渲染的列表数据。
+         */
         handler(newVal, oldVal) { // 观察params变化维护list状态
           const arr = JSON.parse(JSON.stringify(newVal))
-          console.log(arr)
           // 在这里分离person_id
           const index = arr.findIndex(item => {
             return item.paraCode === 'person_id'
@@ -117,10 +135,11 @@
           }
 
           const list = [...arr]
-          for (let i = 0; i < list.length; i++) { // 给传递过来的参数添加初始排序字段
+          for (let i = 0; i < list.length; i++) {
             const item = list[i]
-            item.orderNo = i + 1
+            item.disabled = true // 传递过来的params默认都为disabled
           }
+
           this.list = list
         },
         immediate: true
@@ -129,11 +148,6 @@
         handler(newVal, oldVal) {
           let list = [...newVal]
 
-          list.forEach(item => {
-            // 禅道bug 13979会引起paraType为uundefined
-            // 原因为b-select组件如果绑定的值为''、null，则组件会把绑定的值设为undefined
-            if (item.paraType === undefined) item.paraType = ''
-          })
           this.$emit('params-change', list)
         },
         deep: true
@@ -147,20 +161,12 @@
           paraCode: '',
           paraDesc: '',
           paraType: '',
-          orderNo: this.list.length + 1,
           paraSource: null,
           custom: true // 表示自定义参数
         })
       },
       // 移除一行
-      remove(orderNo) {
-        // 大于当前orderNo的其他元素的orderNo - 1
-        for (const item of this.list) { // 防止addLast()插入元素的orderNo小于之前的元素
-          if (item.orderNo > orderNo) item.orderNo -= 1
-        }
-        const index = this.list.findIndex(item => {
-          return item.orderNo === orderNo
-        })
+      remove(index) {
         this.list.splice(index, 1)
       },
       /**
@@ -171,7 +177,10 @@
       async handleSelectedBtn (index) {
         const row = this.list[index]
         const valid = await this.validateAll([row])
-        if (valid) this.$EventBus.$emit('IndexVarEditParamManage-selected', row)
+        if (valid) {
+          row.customSelected = true // 扩展自定义参数表示为已选择的, 用于参数类型selecte判断是否禁用
+          this.$EventBus.$emit('IndexVarEditParamManage-selected', row)
+        }
       },
       // 名称与编码的blur回调，验证非空、唯一、 不在变量列表中
       async handleValidate(row, key) {
@@ -203,13 +212,9 @@
       // 判断唯一值
       isUnique(row, key) {
         return new Promise((resolve, reject) => {
-          const unique = !this.list.some(item => {
-            if (item.orderNo !== row.orderNo) { // 使用orderNo作为唯一值排除自己
-              return item[key] === row[key]
-            } else {
-              return false
-            }
-          })
+          const arr = this.list.filter(item => item[key] === row[key])
+          const unique = arr.length < 2 // 存在1个以上说明不唯一
+
           if (!unique) {
             this.$set(row, key + 'Error', true)
             this.$set(row, key + 'Msg', `值 ${row[key]} 已存在，请重新填写`)

@@ -20,7 +20,7 @@
             <b-row>
               <b-col span="12">
                 <b-form-item label="变量类型" prop="varType">
-                  <b-select v-model="form.varType" @on-change="handleVarTypeChange">
+                  <b-select v-model="form.varType" @on-change="handleVarTypeChange" :disabled="editData !== null">
                     <b-option v-for="item in varTypeOptions" :key="item.value"
                       :value="item.value">{{ item.label }}</b-option>
                   </b-select>
@@ -28,7 +28,7 @@
               </b-col>
               <b-col span="12">
                 <b-form-item label="数据类型" prop="dataType">
-                  <b-select v-model="form.dataType">
+                  <b-select v-model="form.dataType" :disabled="editData !== null">
                     <b-option v-for="item in dataTypeOptions" :key="item.value"
                       :value="item.value">{{ item.label }}</b-option>
                   </b-select>
@@ -42,7 +42,7 @@
                   <div flex style="width:100%;">
                     <b-input class="choose-btn" :value="form.tplContent" placeholder="请选择业务模板"
                       disabled readonly></b-input>
-                    <b-button slot="suffix" type="primary" plain
+                    <b-button slot="suffix" type="primary" plain :disabled="editData !== null"
                       @click="openBelongTypeHandler" style="flex: 0 0 auto;">
                       选择
                     </b-button>
@@ -71,9 +71,10 @@
         <!-- 复合变量时，新增的参数不可在选择变量带过来的参数中 -->
         <edit-param-manage ref="paramManage"
           :paramTypeOptions="paramTypeOptions"
-          :params="params"
           :tempVarCodeList="tempVarCodeList"
           :varType="form.varType"
+          :params="params"
+          :isEdit="editData !== null"
           @params-change="params => form.params = params">
         </edit-param-manage>
 
@@ -147,9 +148,6 @@
           tplId: [
             { required: true, message: '请选择业务模板', trigger: 'blur' }
           ]
-          // tplContent: [
-          //   { required: true, message: ' ', trigger: 'blur' }
-          // ]
         },
         openBelongType: false,
         openSelectVar: false,
@@ -215,20 +213,15 @@
         this.form.tplContent = strArr.join('')
       },
       async handleSubmit () {
-        let valid3 = true
-        if (this.form.varType === 'Complex') { // 符合变量时做特殊处理与验证
+        if (this.form.varType === 'Complex') { // 复合变量时做特殊处理提交的参数
           this.form.tplId = this.tempVarCodeList.join()
-          // if (this.form.tplContent === '') {
-          //   this.$message({ type: 'warning', content: 'el表达式不能为空' })
-          //   valid3 = await this.$refs.elVar.validate()
-          // }
         }
         // paramManage.validateAll()用于验证参数管理
         const [valid1, valid2] = await Promise.all([
           this.$refs.form.validate(),
           this.$refs.paramManage.validateAll()
         ])
-        if (valid1 && valid2 && valid3) {
+        if (valid1 && valid2) {
           const [success, errorMsg] = this.editData ? await updateIndexVar(this.form) : await createIndexVar(this.form)
           if (success) {
             this.$message({ type: 'success', content: '操作成功' })

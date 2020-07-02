@@ -35,15 +35,18 @@
           <div class="var-select-con">
             <div flex="main:justify">
               <h4 class="mb-10">已选变量</h4>
-              <b-button type="text" plain style="margin-left: 5px;" size="small" @click="open = true">
+              <b-button type="text" plain style="margin-left: 5px;" size="small"
+                @click="open = true" :disabled="initData !== null">
                 选择
               </b-button>
             </div>
             <div>
               <b-empty v-if="tempVarCodeList.length === 0">暂无已选变量</b-empty>
               <template v-else>
-                <b-tag v-for="(varCode, index) in tempVarCodeList" :key="varCode" closable
-                  :type="isCustcom(varCode) ? 'info' : 'primary'" size="small" class="tag"
+                <b-tag v-for="(varCode, index) in tempVarCodeList" :key="varCode"
+                  :type="isCustcom(varCode) ? 'info' : 'primary'"
+                  size="small" class="tag"
+                  :closable="initData === null"
                   @on-close="handleTagClose(index)"
                   @on-click="handleTagClick(varCode)">
                   {{ varCode }}
@@ -123,7 +126,7 @@
 
         const customVarObj = {
           varCode: param.paraCode,
-          params: [this.customVarParamsMap.get(param.paraCode)]
+          params: [param]
         }
 
         this.varMap.set(customVarObj.varCode, customVarObj)
@@ -200,6 +203,7 @@
         // 产生本身tag的list
         const tempVarCodeList = []
         const varParams = []
+
         for (const item of this.varMap.values()) {
           tempVarCodeList.push(item.varCode)
           item.params.forEach(newParam => {
@@ -217,6 +221,7 @@
             }
           })
         }
+
         this.tempVarCodeList = tempVarCodeList
         this.varParams = varParams
       },
@@ -234,9 +239,11 @@
         this.editor = this.$refs.editor.jsonEditor
 
         if (this.initData) {
-          this.tempVarCodeList = this.initData.tempVarCodeList
           this.editor.setValue(this.initData.elText)
           this.editor.setCursor(0, this.elText.length - 1)
+
+          this.tempVarCodeList = this.initData.tempVarCodeList
+
           const params = [] // 存放还原多来源参数后的param
           const paramsCopy = this.$util.deepClone(this.initData.params)
           // 还原多来源参数为与来源一对一形式的param，如果为其中由自定义参数则直接还原为对应的变量对象存入map
@@ -260,6 +267,7 @@
               this.varMap.set(customVarObj.varCode, customVarObj)
             }
           })
+
           // 还原非自定义param为对应于变量的对象，存入map
           this.tempVarCodeList.forEach(varCode => {
             const varParams = []
@@ -272,7 +280,6 @@
             }
             this.varMap.set(varObj.varCode, varObj)
           })
-          this.buildResData()
         } else {
           this.editor.setCursor(0, 2)
         }
