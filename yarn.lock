@@ -1871,10 +1871,10 @@ bin-animation@^1.1.1:
   dependencies:
     babel-runtime "^6.26.0"
 
-bin-ui@^3.3.3:
-  version "3.3.3"
-  resolved "https://registry.npmjs.org/bin-ui/-/bin-ui-3.3.3.tgz#b292cba41f88e8deb74dd45c72fb4d36a6d2c870"
-  integrity sha512-7gVxt9sXmugIAYl+VeN5gRJnKM28HMky/FLYd1HZ7CXZiSww9uVhJpSMQf0ZI+/lwYr1j2474HOe6bUHB4ufYw==
+bin-ui@^3.4.5:
+  version "3.4.5"
+  resolved "https://registry.npmjs.org/bin-ui/-/bin-ui-3.4.5.tgz#c2dbd71e538444b511140a49cb1bd25383a27747"
+  integrity sha512-cFuuEWaNRsubsBM7B3maw87NgS3GZExbGU9DDXNE6zHWMWU86v3tYx/tqCH4oXvtt+0UqI2TmBUTjaJ0UldwfA==
   dependencies:
     async-validator "^1.11.5"
     js-calendar "^1.2.3"

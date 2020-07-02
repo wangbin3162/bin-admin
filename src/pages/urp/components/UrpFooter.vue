@@ -7,7 +7,7 @@
 
 <script>
   export default {
-    name: 'BaseFooter'
+    name: 'UrpFooter'
   }
 </script>
 
@@ -15,9 +15,9 @@
   .footer {
     padding: 30px;
     text-align: center;
-    color: #636363;
+    color: rgb(102, 102, 102);
     font-size: 14px;
-    background-color:  #0b1c24;
+    background-color: rgb(233, 233, 233);
     line-height: 26px;
   }
 </style>

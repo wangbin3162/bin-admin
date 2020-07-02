@@ -57,10 +57,10 @@
               <div class="inner">
                 <img src="../assets/images/joint.png" alt="joint">
                 <h2>联合奖惩</h2>
-                <a class="check" href="" target="_blank">
+                <router-link tag="a" class="check" to="/urp/index" target="_blank">
                   <b-icon name="ios-arrow-round-forward"/>
                   查询
-                </a>
+                </router-link>
               </div>
             </div>
           </b-col>

@@ -36,6 +36,12 @@ export const constantRouterMap = [
     meta: { title: '股权结构图' }
   },
   {
+    path: '/urp/index',
+    name: 'UrpIndex',
+    component: () => import(/* webpackChunkName: "list" */ '../pages/urp/UrpIndex'),
+    meta: { title: '联合奖惩首页' }
+  },
+  {
     path: '/401',
     component: () => import(/* webpackChunkName: "error" */ '../pages/error/Error401.vue')
   },

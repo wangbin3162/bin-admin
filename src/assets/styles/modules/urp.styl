@@ -1,0 +1,184 @@
+.urp-main-wrap {
+  height: 100%;
+  background: #f7f7f7 url("../images/urp/banner.png") no-repeat 0 0;
+  transition: background .3s;
+  &.mini-wrap {
+    background-position: 0 -90px;
+    .search-wrap {
+      height: 150px;
+      margin-bottom: 0;
+    }
+  }
+  .search-wrap {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+    width: 1300px;
+    margin: 0 auto 24px;
+    height: 314px;
+    transition: .3s;
+    .input-wrap {
+      display flex;
+      .bin-select {
+        .bin-select-selection-focused,
+        .bin-select-selection:hover {
+          border-color: #d9d9d9;
+        }
+      }
+      .bin-select-large.bin-select-single .bin-select-selection .bin-select-selected-value {
+        padding-left: 16px;
+        font-size: 14px;
+      }
+      .bin-input-wrapper {
+        width: calc(100% - 200px);
+        .bin-input:focus, .bin-input:hover {
+          border-color: #d9d9d9;
+          box-shadow: none;
+        }
+        .bin-input-large {
+          font-size: 14px;
+        }
+      }
+    }
+  }
+
+  // 首页计数部分
+  .card-container {
+    width: 1300px;
+    margin: 0 auto 24px;
+    .card {
+      position: relative;
+      box-sizing: border-box;
+      width: 235px;
+      height: 120px;
+      border-radius: 10px;
+      padding: 30px;
+      color: #fff;
+      h2 {
+        font-weight: normal;
+        margin-bottom: 12px;
+        span {
+          font-size: 28px;
+          margin-right: 4px;
+        }
+      }
+      &:after {
+        content: '';
+        position: absolute;
+        top: 30px;
+        right: 30px;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background-color: rgba(102, 102, 102, 0.2);
+        background-image: url("../images/urp/icon1.png");
+        background-repeat: no-repeat;
+        background-position: 0 0;
+      }
+      &.card1 {
+        background-color: #47c7e5;
+      }
+      &.card2 {
+        background-color: #fc7095;
+        &:after {
+          background-image: url("../images/urp/icon2.png");
+        }
+      }
+      &.card3 {
+        background-color: #647aff;
+        &:after {
+          background-image: url("../images/urp/icon3.png");
+        }
+      }
+      &.card4 {
+        background-color: #f7c755;
+        &:after {
+          background-image: url("../images/urp/icon4.png");
+        }
+      }
+      &.card5 {
+        background-color: #6898f0;
+        &:after {
+          background-image: url("../images/urp/icon5.png");
+        }
+      }
+    }
+  }
+
+  // 首页备忘录记录
+  .memo-container {
+    width: 1300px;
+    margin: 0 auto 24px;
+    .block {
+      box-sizing: border-box;
+      padding: 16px 24px;
+      background-color: #fff;
+      .title {
+        padding: 6px 0 10px;
+        .label {
+          font-size: 16px;
+          font-weight: bold;
+        }
+        .more {
+          color: #999;
+          cursor: pointer;
+          .iconfont {
+            vertical-align: -1px;
+          }
+          &:hover {
+            color: #0d85ff;
+          }
+        }
+      }
+      .link {
+        position: relative;
+        display: flex;
+        padding-left: 24px;
+        height: 35px;
+        line-height: 35px;
+        font-size: 12px;
+        .label {
+          flex: auto;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          color: #666666;
+        }
+        .date {
+          text-align: right;
+          width: 150px;
+          flex: 0 0 150px;
+          color: #aaa;
+        }
+        &:before {
+          content: '';
+          position: absolute;
+          top: 14px;
+          left: 0;
+          width: 8px;
+          height: 8px;
+          background-color: #aaa;
+        }
+        &:hover {
+          .label, .date {
+            color: #0d85ff;
+          }
+          &:before {
+            background-color: #0d85ff;
+          }
+        }
+      }
+      &.memos {
+        width: 896px;
+      }
+      &.results {
+        width: 380px;
+        .link {
+          cursor: unset;
+        }
+      }
+    }
+  }
+}
