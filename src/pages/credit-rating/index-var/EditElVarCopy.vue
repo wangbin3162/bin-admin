@@ -1,22 +1,8 @@
 <template>
   <div class="edit-el-var">
-    <b-form-item label="el表达式" prop="tplContent" :rules="{ required: true, message: 'el表达式不能为空', trigger: 'blur' }"
-      flex="cross:center">
-      <!-- <b-code-editor ref="editor" mode="" :readonly="true" :lint="false" v-model="elText" height="100px">
-      </b-code-editor> -->
-      <div class="el-exp">
-        <draggable
-          v-model="elList"
-          v-bind="dragOptions"
-          @start="drag = true"
-          @end="drag = false"
-          @choose="handleDragChoose">
-
-          <transition-group type="transition" :name="!drag ? 'flip-list' : null">
-            <span v-for="item in elList" :key="item.id" :class="{ actived: item.actived}">{{ item.label }}</span>
-          </transition-group>
-        </draggable>
-      </div>
+    <b-form-item label="el表达式" prop="tplContent" :rules="{ required: true, message: 'el表达式不能为空', trigger: 'blur' }">
+      <b-code-editor ref="editor" mode="" :readonly="true" :lint="false" v-model="elText" height="100px">
+      </b-code-editor>
     </b-form-item>
 
     <b-form-item>
@@ -31,15 +17,14 @@
                   <b-button type="text" text-color="danger" @click="handleClearBtn">清空</b-button>
                 </span>
               </div>
-
               <div class="btn-group">
-                <b-button-group class="row" v-for="(row, index) in btnListEvo" :key="index">
+                <b-button-group class="row" v-for="(row, index) in btnList" :key="index">
                   <b-button v-for="(btn, index) in row" :key="index"
                     type="default" class="btn"
                     @click="handleBtn(btn)"
                     @mousedown.native="handleMouseDown(btn)"
                     @mouseup.native="handleMouseUp(btn)">
-                    {{ btn.label }}
+                    {{ btn }}
                   </b-button>
                 </b-button-group>
               </div>
@@ -81,7 +66,6 @@
 </template>
 
 <script>
-  import draggable from 'vuedraggable'
   import EditSelectVar from './EditSelectVar'
 
   export default {
@@ -90,22 +74,14 @@
       'initData'
     ],
     components: {
-      draggable,
       EditSelectVar
     },
     data () {
       return {
-        drag: false,
         setTimer: null,
         intTimer: null,
         open: false,
         curCursor: 0, // 表达式输入框当前光标位置
-        curElListIndex: 1,
-        elList: [
-          { id: 1, label: '#', color: null, actived: false },
-          { id: 2, label: '{', color: null, actived: true },
-          { id: 3, label: '}', color: null, actived: false }
-        ],
         elText: '#{}',
         varMap: new Map(),
         customVarParamsMap: new Map(), // 存储由参数配置组件（EditParamManage）自定义添加的参数
@@ -118,48 +94,6 @@
           ['<', '>', '4', '5', '6', '-'],
           [':', '!', '1', '2', '3', '+'],
           ['?', '&', '0', '.', '%', '=']
-        ],
-        btnListEvo: [
-          [
-            { label: '(', color: null, actived: false },
-            { label: ')', color: null, actived: false },
-            { label: '\'', color: null, actived: false },
-            { label: '#', color: null, actived: false },
-            { label: '←', color: null, actived: false },
-            { label: '/', color: null, actived: false }
-          ],
-          [
-            { label: '{', color: null, actived: false },
-            { label: '}', color: null, actived: false },
-            { label: '7', color: null, actived: false },
-            { label: '8', color: null, actived: false },
-            { label: '9', color: null, actived: false },
-            { label: '*', color: null, actived: false }
-          ],
-          [
-            { label: '<', color: null, actived: false },
-            { label: '>', color: null, actived: false },
-            { label: '4', color: null, actived: false },
-            { label: '5', color: null, actived: false },
-            { label: '6', color: null, actived: false },
-            { label: '-', color: null, actived: false }
-          ],
-          [
-            { label: ':', color: null, actived: false },
-            { label: '!', color: null, actived: false },
-            { label: '1', color: null, actived: false },
-            { label: '2', color: null, actived: false },
-            { label: '3', color: null, actived: false },
-            { label: '+', color: null, actived: false }
-          ],
-          [
-            { label: '?', color: null, actived: false },
-            { label: '&', color: null, actived: false },
-            { label: '0', color: null, actived: false },
-            { label: '.', color: null, actived: false },
-            { label: '%', color: null, actived: false },
-            { label: '=', color: null, actived: false }
-          ]
         ]
       }
     },
@@ -172,13 +106,9 @@
         })
         this.$emit('var-change', res)
       },
-      elList: {
-        handler (newVal, oldeVal) {
-          const strArr = []
-          console.log(newVal)
-          newVal.forEach(item => { strArr.push(item.label) })
-          console.log(strArr.join(''))
-          this.$emit('el-change', strArr.join(''))
+      'elText': {
+        handler (newVal, oldVal) {
+          this.$emit('el-change', newVal)
         },
         immediate: true
       },
@@ -187,16 +117,6 @@
           this.$emit('var-params-change', this.$util.deepClone(newVal))
         },
         deep: true
-      }
-    },
-    computed: {
-      dragOptions() {
-        return {
-          animation: 200,
-          group: 'description',
-          disabled: false,
-          ghostClass: 'ghost'
-        }
       }
     },
     created () {
@@ -219,24 +139,11 @@
       })
     },
     methods: {
-      /**
-       * @author haodongdong
-       * @description 拖拽组件选中多拽元素的回调
-       * @param {Object} obj 回调参数
-       * @param {number} obj.oldIndex 移动前的序号
-       * @param {number} obj.newIndex 移动后的序号
-       */
-      handleDragChoose ({ oldIndex, newIndex }) {
-        this.curElListIndex = oldIndex
-        this.setActived(this.elList, this.curElListIndex)
-      },
-      handleBtn (btn) {
-        if (btn.label === '←') {
-          this.removeElFromElListByCurIndex()
+      handleBtn (str) {
+        if (str === '←') {
+          this.editor.execCommand('delCharBefore')
         } else {
-          const el = this.$util.deepClone(btn)
-          el.id = new Date().getTime()
-          this.addElToElListByCurIndex(el)
+          this.editor.replaceSelection(str)
         }
       },
       // 变量选择组件回调
@@ -247,11 +154,31 @@
         })
         this.buildResData()
       },
-      handleMouseDown (btn) {
-        if (btn.label === '←') {
+      // tag关闭回调
+      handleTagClose (index) {
+        const elArr = this.tempVarCodeList.splice(index, 1)
+
+        const reg = new RegExp(' ' + elArr[0] + ' ', 'g')
+        const str = this.elText.replace(reg, '')
+        this.editor.setValue(str)
+        this.editor.setCursor(0, this.elText.length - 1)
+
+        this.varMap.delete(elArr[0]) // 删除map中对应的变量
+        this.buildResData() // 根据varMap构建返回数据
+      },
+      // tag点击回调
+      handleTagClick (text) {
+        this.editor.replaceSelection(` ${text} `)
+      },
+      // 退格按钮的回调
+      handleBackspaceBtn (str) {
+        if (str === '←') this.editor.execCommand('delCharBefore')
+      },
+      handleMouseDown (str) {
+        if (str === '←') {
           this.setTimer = setTimeout(() => {
             this.intTimer = setInterval(() => {
-              this.removeElFromElListByCurIndex()
+              this.editor.execCommand('delCharBefore')
             }, 70)
           }, 300)
         }
@@ -262,31 +189,8 @@
       },
       // 清空按钮回调
       handleClearBtn () {
-        this.elList = [
-          { id: 1, label: '#', color: null, actived: false },
-          { id: 2, label: '{', color: null, actived: true },
-          { id: 3, label: '}', color: null, actived: false }
-        ]
-        this.curElListIndex = 1
-      },
-      // tag关闭回调
-      handleTagClose (index) {
-        const elArr = this.tempVarCodeList.splice(index, 1)
-
-        const filteredArr = this.elList.filter(item => item.label !== elArr[0])
-        this.elList = filteredArr
-
-        this.varMap.delete(elArr[0]) // 删除map中对应的变量
-        this.buildResData() // 根据varMap构建返回数据
-      },
-      // tag点击回调
-      handleTagClick (text) {
-        const obj = {
-          id: new Date().getTime(),
-          label: text,
-          color: null
-        }
-        this.addElToElListByCurIndex(obj)
+        this.editor.setValue('#{}')
+        this.editor.setCursor(0, 2)
       },
       validate () {
         this.$refs.form.validate()
@@ -323,50 +227,6 @@
       },
       /**
        * @author haodongdong
-       * @description 设置渲染el表达式的列表中的选中状态。
-       * @param {Array} elList 渲染el表达式的数组
-       * @param {number} index 需要选中的元素下标
-       */
-      setActived (elList, index) {
-        elList.forEach(item => { item.actived = false })
-
-        const newItem = elList[index]
-        newItem.actived = true
-
-        elList.splice(index, 1, newItem)
-      },
-      /**
-       * @author haodongdong
-       * @description 插入新的元素至elList，插入位置在当前选中的下标(curElListIndex)后，并更新当前选中下标。
-       * @param {Object} el 要插入的元素
-       */
-      addElToElListByCurIndex (el) {
-        if (this.elList.length === 0) {
-          this.elList.push(el)
-        } else {
-          this.elList.splice(this.curElListIndex + 1, 0, el)
-        }
-        this.curElListIndex += 1 // 插入新数据后向后移动表示选中的当前下标
-        this.setActived(this.elList, this.curElListIndex)
-      },
-      /**
-       * @author haodongdong
-       * @description 根据当前下标(curElListIndex)从elList删除元素，并更新当前下标。
-       */
-      removeElFromElListByCurIndex () {
-        this.elList.splice(this.curElListIndex, 1)
-        this.curElListIndex -= 1
-        if (this.curElListIndex < 0) {
-          if (this.elList.length > 0) {
-            this.curElListIndex = 0
-            this.setActived(this.elList, this.curElListIndex)
-          }
-        } else {
-          this.setActived(this.elList, this.curElListIndex)
-        }
-      },
-      /**
-       * @author haodongdong
        * @description 检查是否是自定义变量
        * @param {String} paraCode 参数编码
        */
@@ -376,10 +236,13 @@
         return res
       },
       init () {
+        this.editor = this.$refs.editor.jsonEditor
+
         if (this.initData) {
+          this.editor.setValue(this.initData.elText)
+          this.editor.setCursor(0, this.elText.length - 1)
+
           this.tempVarCodeList = this.initData.tempVarCodeList
-          this.elList = this.initData.elText.split(' ')
-          this.curElListIndex = this.elList.length - 1
 
           const params = [] // 存放还原多来源参数后的param
           const paramsCopy = this.$util.deepClone(this.initData.params)
@@ -418,7 +281,7 @@
             this.varMap.set(varObj.varCode, varObj)
           })
         } else {
-          // this.editor.setCursor(0, 2)
+          this.editor.setCursor(0, 2)
         }
       }
     }
@@ -438,33 +301,10 @@
 
 <style lang="stylus" scoped>
   .edit-el-var {
-    .el-exp {
-      .flip-list-move {
-        transition: transform 0.5s;
-      }
-      .no-move {
-        transition: transform 0s;
-      }
-      .ghost {
-        opacity: 0.5;
-        background: #c8ebfb;
-      }
-      span {
-        display: inline-block;
-        padding: 0 1px;
-        margin: 0 2px;
-        cursor: move;
-        font-size: 20px;
-        font-weight: 700;
-        color: #3ac1e5;
-      }
-      .actived {
-        border-bottom: 1.5px solid #3ac1e5;
-      }
-    }
 
     .con {
       display: flex
+      // border: 1px solid #f0f0f0;
 
       .left {
         display: flex;

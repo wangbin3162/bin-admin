@@ -102,7 +102,7 @@
   import EditSelectBizTemplate from './EditSelectBizTemplate'
   import EditSelectVar from './EditSelectVar'
   import EditParamManage from './EditParamManage'
-  import EditElVar from './EditElVar'
+  import EditElVar from './EditElVarCopy'
 
   export default {
     name: 'IndexVarEdit',
