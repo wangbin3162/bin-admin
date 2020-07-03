@@ -1,11 +1,14 @@
 <template>
-  <div class="header-wrap">
+  <div class="header-wrap" :class="{normal}">
     <div class="header-inner" flex="main:justify cross:center">
       <img src="../../../assets/images/urp/logo_lhjc.png" alt="logo" class="logo"/>
       <div class="info" flex="cross:center" v-if="userRoles">
         <div class="links">
           <div class="inner">
             <span class="item"><a href="" @click.stop.prevent="home">首页</a></span>
+            <span class="item">
+              <router-link to="/urp/listResult">执行记录</router-link>
+            </span>
           </div>
         </div>
         <b-dropdown>
@@ -28,6 +31,9 @@
 <script>
   export default {
     name: 'UrpHeader',
+    props: {
+      normal: Boolean
+    },
     computed: {
       userRoles() {
         return this.$store.state.user.roles
@@ -55,6 +61,9 @@
     background: rgba(13, 133, 255, 0.1);
     box-shadow: 0 0 8px rgba(100, 100, 100, 0.5);
     height: 80px;
+    &.normal {
+      background: #0c0c5a;
+    }
     .header-inner {
       position: relative;
       width: 1300px;

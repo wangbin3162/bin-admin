@@ -42,6 +42,12 @@ export const constantRouterMap = [
     meta: { title: '联合奖惩首页' }
   },
   {
+    path: '/urp/listResult',
+    name: 'ListResult',
+    component: () => import(/* webpackChunkName: "list" */ '../pages/urp/ListResult'),
+    meta: { title: '联合奖惩执行记录' }
+  },
+  {
     path: '/401',
     component: () => import(/* webpackChunkName: "error" */ '../pages/error/Error401.vue')
   },

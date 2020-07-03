@@ -60,3 +60,15 @@ export function getListResult(query) {
     }
   })
 }
+
+/* 撤销记录 */
+export function cancelResult(obj) {
+  let { recordId, cancelReason } = obj
+  return request({
+    url: '/api/urpService/cancel',
+    method: 'post',
+    data: {
+      recordId, cancelReason
+    }
+  })
+}

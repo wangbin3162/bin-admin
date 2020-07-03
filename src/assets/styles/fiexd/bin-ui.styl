@@ -22,11 +22,15 @@
 
 //列表-分页组件，弹窗样式覆盖
 .table-page-detail-modal {
+  .bin-modal-header {
+    padding: 4px 0;
+  }
   .bin-modal-content {
     overflow: hidden;
   }
   .bin-modal-body {
-    padding: 0;
+    max-height: 480px;
+    overflow: auto;
     background: url("../images/modal-bg.png") no-repeat center bottom;
   }
   .bin-modal-close .icon-ios-close {

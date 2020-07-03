@@ -11,6 +11,7 @@ import TitleBar from '../components/TitleBar/index'
 import KeyLabelWrap from '../components/KeyLabel/KeyLabelWrap'
 import KeyLabel from '../components/KeyLabel/KeyLabel'
 import SimpleLabel from '../components/SimpleLabel/SimpleLabel'
+import { VTableWrap, VTableToolBar, VFilterBar, VFilterItem, VEditWrap } from '../components/VTableLayout'
 import { isEmpty, isNotEmpty } from '../common/utils/assist'
 
 export default {
@@ -35,6 +36,12 @@ export default {
     Vue.component(KeyLabel.name, KeyLabel)
     // 查看显示组件简单
     Vue.component(SimpleLabel.name, SimpleLabel)
+    // 查询列表相关
+    Vue.component(VTableWrap.name, VTableWrap)
+    Vue.component(VTableToolBar.name, VTableToolBar)
+    Vue.component(VFilterBar.name, VFilterBar)
+    Vue.component(VFilterItem.name, VFilterItem)
+    Vue.component(VEditWrap.name, VEditWrap)
 
     Vue.component('CollapseTransition', BinUI.CollapseTransition)
     // 全局通信
