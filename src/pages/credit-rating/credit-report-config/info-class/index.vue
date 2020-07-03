@@ -111,6 +111,7 @@
     methods: {
       resetQuery () {
         this.listQuery = {
+          configId: this.configId,
           category: '',
           page: 1,
           size: 10
