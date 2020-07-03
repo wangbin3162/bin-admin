@@ -219,6 +219,10 @@
         if (visible) {
           this.init()
         } else {
+          this.listQuery.resourceCode = ''
+          this.listQuery.resourceName = ''
+          this.listQuery.resProperty = ''
+          this.currentTreeNode = null
           this.list = []
           this.treeData = []
           this.infoItemList = []
