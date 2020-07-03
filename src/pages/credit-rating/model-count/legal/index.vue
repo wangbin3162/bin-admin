@@ -7,13 +7,13 @@
           <v-filter-item title="名称">
             <b-input v-model="listQuery.compName" placeholder="请输入名称" clearable></b-input>
           </v-filter-item>
-           <v-filter-item title="评价方案">
+           <v-filter-item title="评级模型">
             <b-select v-model="listQuery.modelId" @on-change="handleModelChange" clearable>
               <b-option v-for="item in modelList" :key="item.id"
                 :value="item.id">{{ item.name }}</b-option>
             </b-select>
           </v-filter-item>
-          <v-filter-item title="评价等级">
+          <v-filter-item title="等级标准">
             <b-select v-model="listQuery.levelCode" clearable>
               <b-option v-for="item in ratingOptions" :key="item.levelCode"
                 :value="item.levelCode">{{ item.levelName }}</b-option>
@@ -162,7 +162,7 @@
             tooltip: true,
             align: 'center'
           },
-          { title: '评价方案', key: 'modelName', align: 'center' },
+          { title: '评级模型', key: 'modelName', align: 'center' },
           { title: '等级标准', key: 'ratingName', align: 'center' },
           { title: '评价得分', key: 'score', align: 'center' },
           { title: '评价等级', key: 'levelCode', align: 'center' },

@@ -10,13 +10,13 @@
           <v-filter-item title="证件号码" :span="5">
             <b-input v-model="listQuery.code" placeholder="请输入证件号码" clearable></b-input>
           </v-filter-item>
-           <v-filter-item title="评价方案" :span="4">
+           <v-filter-item title="评级模型" :span="4">
             <b-select v-model="listQuery.modelId" @on-change="handleModelChange">
               <b-option v-for="item in modelList" :key="item.id"
                 :value="item.id">{{ item.name }}</b-option>
             </b-select>
           </v-filter-item>
-          <v-filter-item title="评价等级" :span="4">
+          <v-filter-item title="等级标准" :span="4">
             <b-select v-model="listQuery.levelCode">
               <b-option v-for="item in ratingOptions" :key="item.levelCode"
                 :value="item.levelCode">{{ item.levelName }}</b-option>
@@ -60,11 +60,6 @@
 
           <template v-slot:idCode="{ row }">
             {{ row.natBaseInfo.idCode }}
-          </template>
-
-          <template v-slot:createDate="{ row }">
-            <p>{{ $util.parseTime(row.createDate, '{y}-{m}-{d}') }}</p>
-            <p>{{ $util.parseTime(row.createDate, '{h}:{i}:{s}') }}</p>
           </template>
 
           <template v-slot:action="{ row }">
@@ -158,11 +153,10 @@
           { title: '名称', width: 80, slot: 'name' },
           { title: '证件类型', slot: 'idTypeName', align: 'center' },
           { title: '证件号码', slot: 'idCode', width: 155, align: 'center' },
-          { title: '评价方案', key: 'modelName', align: 'center' },
+          { title: '评级模型', key: 'modelName', align: 'center' },
           { title: '等级标准', key: 'ratingName', align: 'center' },
           { title: '评价得分', key: 'score', align: 'center' },
           { title: '评价等级', key: 'levelCode', align: 'center' },
-          { title: '评价日期', slot: 'createDate', align: 'center' },
           { title: '操作', slot: 'action', width: 120, align: 'center' }
         ],
         defaultModelId: null, // 存储默认模型id
