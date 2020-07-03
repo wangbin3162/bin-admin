@@ -50,6 +50,7 @@
 
     <base-info v-if="dialogStatus === 'baseInfo'"
       @close="handleClose"
+      :id="curRow.id"
       :title="curRow.name"
       :personId="curRow.personId"
       :resourceKey="curRow.resourceKey">
@@ -121,7 +122,7 @@
        */
       handleNameBtn (row) {
         this.curRow = row
-        // this.dialogStatus = 'baseInfo'
+        this.dialogStatus = 'baseInfo'
       },
       // 查看按钮回调
       handleCheck (row) {
