@@ -36,7 +36,7 @@
         <div class="block memos">
           <div flex="main:justify" class="title">
             <span class="label">联合奖惩备忘录</span>
-            <span class="more">查看更多<b-icon name="doubleright"/></span>
+            <router-link to="/urp/memoList" class="more">查看更多<b-icon name="doubleright"/></router-link>
           </div>
           <div class="ul">
             <div v-for="memo in memoList5" :key="memo.id" class="link">
@@ -47,7 +47,7 @@
         <div class="block results">
           <div flex="main:justify" class="title">
             <span class="label">惩戒激励记录</span>
-            <span class="more">查看更多<b-icon name="doubleright"/></span>
+            <router-link to="/urp/listResult" class="more">查看更多<b-icon name="doubleright"/></router-link>
           </div>
           <div class="ul">
             <div v-for="result in listResult5" :key="result.id" class="link">

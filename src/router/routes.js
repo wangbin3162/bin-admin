@@ -38,13 +38,25 @@ export const constantRouterMap = [
   {
     path: '/urp/index',
     name: 'UrpIndex',
-    component: () => import(/* webpackChunkName: "list" */ '../pages/urp/UrpIndex'),
+    component: () => import(/* webpackChunkName: "urp" */ '../pages/urp/UrpIndex'),
     meta: { title: '联合奖惩首页' }
+  },
+  {
+    path: '/urp/memoList',
+    name: 'MemoList',
+    component: () => import(/* webpackChunkName: "urp" */ '../pages/urp/MemoList'),
+    meta: { title: '联合奖惩备忘录' }
+  },
+  {
+    path: '/urp/memoDetail',
+    name: 'MemoDetail',
+    component: () => import(/* webpackChunkName: "urp" */ '../pages/urp/MemoDetail'),
+    meta: { title: '联合奖惩备忘录详情' }
   },
   {
     path: '/urp/listResult',
     name: 'ListResult',
-    component: () => import(/* webpackChunkName: "list" */ '../pages/urp/ListResult'),
+    component: () => import(/* webpackChunkName: "urp" */ '../pages/urp/ListResult'),
     meta: { title: '联合奖惩执行记录' }
   },
   {
