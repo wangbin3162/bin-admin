@@ -38,7 +38,7 @@
       moduleName: {
         type: String,
         validate(val) {
-          return ['SysUserController', 'SysDepartController'].indexOf(val) > -1
+          return ['SysUserController', 'SysDepartController', 'UrpMeasureController'].indexOf(val) > -1
         },
         required: true
       },
@@ -61,7 +61,7 @@
       // 批量上传按钮事件
       handleBatchImport() {
         if (this.precondition) { // 有前置条件需要判断前置对象是否存在
-          if (!this.currentTreeNode) {
+          if (!this.currentTreeNode && this.moduleName !== 'UrpMeasureController') {
             this.$message({ type: 'danger', content: '请选择左侧组织再导入' })
             return
           }

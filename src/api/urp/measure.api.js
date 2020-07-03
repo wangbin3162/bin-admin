@@ -70,3 +70,10 @@ export function oneMeasureName(measure) {
     }
   })
 }
+
+/* 下载用户模板 */
+export function downloadMeasureTemplate() {
+  return request.get('/api/urp/measure/downloadMeasureTemplate', {
+    responseType: 'blob'
+  })
+}

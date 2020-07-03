@@ -130,7 +130,7 @@
         },
         statusMap: { COMPLETED: '已完成', STARTED: '正在进行中', FAILED: '失败', REPEATING: '重复性验证' },
         statusStyleMap: { COMPLETED: 'primary', STARTED: 'warning', FAILED: 'danger', REPEATING: 'warning' },
-        typeFrom: '', // 从哪个管理弹出 [user,depart]
+        typeFrom: '', // 从哪个管理弹出 [user,depart,urp_measure]
         handleType: 'import', // 操作类型，['import','export']
         importDetail: null, // 文件导入信息详情
         errDataColumns: [],
@@ -266,7 +266,7 @@
       },
       // 下载导出文件
       handleDownloadExport(id, time, title = '') {
-        const type = this.typeFrom === 'user' ? '用户' : '部门'
+        const type = this.typeFrom === 'user' ? '用户' : this.typeFrom === 'depart' ? '部门' : '奖惩措施'
         const parseTime = this.$util.parseTime(time, '{y}{m}{d}')
         const fileName = `${type}${title}${parseTime}.xlsx`
         if (!this.downloadEvent) { // 点击下载事件，需要函数防抖动
