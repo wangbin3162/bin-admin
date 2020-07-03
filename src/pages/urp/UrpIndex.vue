@@ -1,10 +1,15 @@
 <template>
   <urp-layout>
-    <div class="urp-main-wrap">
+    <div class="urp-main-wrap" :class="{'mini-wrap':showList}">
       <urp-header></urp-header>
       <div class="search-wrap">
-        <urp-search v-model="query" @on-search="handleSearch"></urp-search>
+        <urp-search v-model="query" @on-search="handleSearch" @on-clear="handleClear"></urp-search>
       </div>
+      <transition name="fade-scale-move">
+        <urp-list v-show="showList" :data="searchList"
+                  :loading="loading"
+                  @on-check-detail="handleCheckDetail"></urp-list>
+      </transition>
       <div v-show="!showList" class="card-container" flex="main:justify">
         <div class="card card1">
           <h2><span>{{ urpCount.count1 }}</span>条</h2>
@@ -27,7 +32,7 @@
           <p>奖惩措施</p>
         </div>
       </div>
-      <div flex="main:justify" class="memo-container min-height300">
+      <div v-show="!showList" flex="main:justify" class="memo-container min-height300">
         <div class="block memos">
           <div flex="main:justify" class="title">
             <span class="label">联合奖惩备忘录</span>
@@ -35,7 +40,7 @@
           </div>
           <div class="ul">
             <div v-for="memo in memoList5" :key="memo.id" class="link">
-              <span class="label">{{ memo.memoName }}</span><span class="date">{{ memo.createDate }}</span>
+              <span class="label">{{ memo.memoName }}</span><span class="date">{{ memo.createDate | filterTime }}</span>
             </div>
           </div>
         </div>
@@ -60,10 +65,12 @@
   import UrpLayout from './components/UrpLayout'
   import UrpSearch from './components/UrpSearch'
   import * as api from '../../api/urp.api'
+  import UrpList from './components/UrpList'
+  import { isNotEmpty } from '../../common/utils/assist'
 
   export default {
     name: 'UrpIndex',
-    components: { UrpSearch, UrpLayout, UrpHeader },
+    components: { UrpList, UrpSearch, UrpLayout, UrpHeader },
     data() {
       return {
         query: {
@@ -74,7 +81,6 @@
         showList: false,
         loading: false,
         searchList: [],
-        total: 0,
         memoList5: [],
         listResult5: []
       }
@@ -82,13 +88,39 @@
     created() {
       this.getUrpCount()
       this.queryHomeMemoAndResult()
+      this.fetchData()
+    },
+    watch: {
+      '$route': 'fetchData'
     },
     methods: {
+      fetchData() {
+        // 先从地址栏拉取请求
+        let { keyword, type } = this.$route.query
+        // 判断是否携带参数，如有参数则缓存vuex，如无参数则默认退回首页
+        this.query.keyword = keyword || ''
+        this.query.type = type || 'FO'
+        if (isNotEmpty(this.query.keyword) && isNotEmpty(this.query.type)) {
+          this.searchListData()
+        }
+      },
       // 查询主体列表
       handleSearch() {
-        api.getUrpList(this.query).then(resp => {
-          console.log(resp)
-        })
+        let { query } = this
+        // 判断地址栏请求是否和现有输入的相同，如相同则重新查询，否则重定向地址栏后再拉取数据
+        let { keyword, type } = this.$route.query
+        if (keyword === query.keyword && type === query.type) {
+          this.searchListData()
+        } else {
+          this.$router.replace({ path: '/urp/index', query })
+        }
+      },
+      // 清空
+      handleClear() {
+        this.searchList = []
+        this.showList = false
+        this.query = { keyword: '', type: 'FO' }
+        this.$router.replace({ path: '/urp/index' })
       },
       // 初始化首页的统计计数
       getUrpCount() {
@@ -108,6 +140,25 @@
           .then(resp => {
             this.listResult5 = resp.data.rows
           })
+      },
+      // 列表点击执行记录
+      handleCheckDetail() {
+
+      },
+      // 查询列表数据
+      searchListData() {
+        this.loading = true
+        this.searchList = []
+        api.getUrpList(this.query).then(resp => {
+          if (resp.data.code === '0') {
+            this.searchList = resp.data.data.subjects
+            this.showList = true
+            this.loading = false
+          } else {
+            this.$message({ type: 'warning', content: resp.data.message })
+            this.loading = false
+          }
+        })
       }
     }
   }

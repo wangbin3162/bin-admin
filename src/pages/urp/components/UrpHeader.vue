@@ -53,7 +53,7 @@
 <style scoped lang="stylus">
   .header-wrap {
     background: rgba(13, 133, 255, 0.1);
-    box-shadow: 0 0 8px rgba(143, 143, 143, 0.51);
+    box-shadow: 0 0 8px rgba(100, 100, 100, 0.5);
     height: 80px;
     .header-inner {
       position: relative;

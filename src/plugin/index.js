@@ -10,6 +10,7 @@ import TopSearch from '../components/TopSearch/index'
 import TitleBar from '../components/TitleBar/index'
 import KeyLabelWrap from '../components/KeyLabel/KeyLabelWrap'
 import KeyLabel from '../components/KeyLabel/KeyLabel'
+import SimpleLabel from '../components/SimpleLabel/SimpleLabel'
 import { isEmpty, isNotEmpty } from '../common/utils/assist'
 
 export default {
@@ -32,7 +33,9 @@ export default {
     Vue.component(KeyLabelWrap.name, KeyLabelWrap)
     // 查看显示组件
     Vue.component(KeyLabel.name, KeyLabel)
-    // 查看显示组件
+    // 查看显示组件简单
+    Vue.component(SimpleLabel.name, SimpleLabel)
+
     Vue.component('CollapseTransition', BinUI.CollapseTransition)
     // 全局通信
     Vue.prototype.$EventBus = new Vue()
