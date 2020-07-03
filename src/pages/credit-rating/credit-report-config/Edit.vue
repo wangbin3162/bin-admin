@@ -162,7 +162,7 @@
             this.$emit('success') // 发送成功事件
             this.$emit('close') // 关闭编辑组件
           } catch (error) {
-            this.$notice.danger({ title: '操作错误', desc: error })
+            // this.$notice.danger({ title: '操作错误', desc: error })
           }
           this.btnLoading = false
         }
