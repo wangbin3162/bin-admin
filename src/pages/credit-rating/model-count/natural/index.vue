@@ -49,7 +49,8 @@
         <!-- table -->
         <b-table :columns="columns" :data="list" :loading="listLoading">
           <template v-slot:name="{ row }">
-            <b-button type="text" @click="handleCheck(row)">
+            <b-button type="text" @click="handleCheck(row)"
+              t-ellipsis :title="row.natBaseInfo.name">
               {{ row.natBaseInfo.name }}
             </b-button>
           </template>
@@ -150,7 +151,7 @@
           levelCode: ''
         },
         columns: [
-          { title: '名称', width: 80, slot: 'name' },
+          { title: '名称', slot: 'name' },
           { title: '证件类型', slot: 'idTypeName', align: 'center' },
           { title: '证件号码', slot: 'idCode', width: 155, align: 'center' },
           { title: '评级模型', key: 'modelName', align: 'center' },

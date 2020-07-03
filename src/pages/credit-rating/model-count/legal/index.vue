@@ -46,7 +46,10 @@
         <!-- table -->
         <b-table :columns="columns" :data="list" :loading="listLoading">
           <template v-slot:compName="{ row }">
-            <b-button type="text" @click="handleCheck(row)">{{ row.legBaseInfo.compName }}</b-button>
+            <b-button type="text" @click="handleCheck(row)"
+              t-ellipsis :title="row.legBaseInfo.compName">
+              {{ row.legBaseInfo.compName }}
+            </b-button>
           </template>
 
           <template v-slot:idTypeName="{ row }">
