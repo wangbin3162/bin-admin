@@ -11,13 +11,13 @@
             <b-input v-model="listQuery.code" placeholder="请输入证件号码" clearable></b-input>
           </v-filter-item>
            <v-filter-item title="评级模型" :span="4">
-            <b-select v-model="listQuery.modelId" @on-change="handleModelChange">
+            <b-select v-model="listQuery.modelId" @on-change="handleModelChange" clearable>
               <b-option v-for="item in modelList" :key="item.id"
                 :value="item.id">{{ item.name }}</b-option>
             </b-select>
           </v-filter-item>
           <v-filter-item title="等级标准" :span="4">
-            <b-select v-model="listQuery.levelCode">
+            <b-select v-model="listQuery.levelCode" clearable>
               <b-option v-for="item in ratingOptions" :key="item.levelCode"
                 :value="item.levelCode">{{ item.levelName }}</b-option>
             </b-select>
@@ -181,10 +181,12 @@
       },
       // 评价方案下拉框chang事件
       handleModelChange (val) {
-        // 变化后更新评价等级下拉框数据
-        this.ratingOptions = this.modelList.find(item => {
-          return item.id === val
-        }).ratingOptions
+        if (val) {
+          // 变化后更新评价等级下拉框数据
+          this.ratingOptions = this.modelList.find(item => {
+            return item.id === val
+          }).ratingOptions
+        }
       },
       // 生成报告按钮回调
       handleReport () {
