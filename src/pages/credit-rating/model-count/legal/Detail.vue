@@ -43,7 +43,7 @@
             </tr>
             <tr>
               <td>评级人员：</td>
-              <td>{{ detail.createName }}</td>
+              <td>{{ detail.createByName }}</td>
               <td>评级部门：</td>
               <td>{{ detail.createDeptName }}</td>
             </tr>
