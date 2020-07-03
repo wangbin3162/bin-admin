@@ -4,19 +4,19 @@
       <v-table-wrap>
         <!-- 查询条件 -->
         <v-filter-bar @keyup-enter="handleFilter">
-          <v-filter-item title="名称" :span="5">
-            <b-input v-model="listQuery.name" placeholder="请输入名称" clearable></b-input>
+          <v-filter-item title="主体">
+            <div flex>
+              <b-input placeholder="请选择主体" :value="personName" disabled></b-input>
+              <b-button type="primary" plain @click="handleSelectBtn">选择</b-button>
+            </div>
           </v-filter-item>
-          <v-filter-item title="证件号码" :span="5">
-            <b-input v-model="listQuery.code" placeholder="请输入证件号码" clearable></b-input>
-          </v-filter-item>
-           <v-filter-item title="评级模型" :span="4">
+           <v-filter-item title="评级模型">
             <b-select v-model="listQuery.modelId" @on-change="handleModelChange" clearable>
               <b-option v-for="item in modelList" :key="item.id"
                 :value="item.id">{{ item.name }}</b-option>
             </b-select>
           </v-filter-item>
-          <v-filter-item title="等级标准" :span="4">
+          <v-filter-item title="等级标准">
             <b-select v-model="listQuery.levelCode" clearable>
               <b-option v-for="item in ratingOptions" :key="item.levelCode"
                 :value="item.levelCode">{{ item.levelName }}</b-option>
@@ -76,6 +76,8 @@
       </v-table-wrap>
     </page-header-wrap>
 
+    <nat-person-modal ref="natModal" @choose-one="handleChooseOne"></nat-person-modal>
+
     <detail v-if="isCheck"
       @close="handleCancel"
       :id="curRow.id"
@@ -116,6 +118,7 @@
   import permission from '../../../../common/mixins/permission'
   import { Decode, MaskCode } from '../../../../common/utils/secret'
   import { getNaturalList, getModelList } from '../../../../api/credit-rating/model-count.api'
+  import NatPersonModal from '../../../../components/Validator/FormControl/NatPersonModal'
   import Detail from './Detail'
   import RecordList from '../components/RecordList'
   import TempDlBtn from '../components/TempDlBtn'
@@ -127,6 +130,7 @@
     name: 'ModelCountNatural',
     mixins: [commonMixin, permission],
     components: {
+      NatPersonModal,
       Detail,
       RecordList,
       TempDlBtn,
@@ -142,11 +146,12 @@
         openPDF: false, // 打开p-d-f组件
         pdfBlob: null, // 存储re-count组件返回的pdfBlob
         personClass: 'A01',
+        personName: '', // 搜索栏主体选择input显示用
         curRow: {
           natBaseInfo: {}
         }, // 存储行数据
         listQuery: {
-          name: '',
+          personId: '',
           modelId: '',
           levelCode: ''
         },
@@ -174,11 +179,24 @@
         this.listQuery = {
           page: 1,
           size: 10,
-          name: '',
+          personId: '',
           modelId: this.defaultModelId,
           levelCode: ''
         }
+        this.personName = ''
         this.searchList()
+      },
+      /**
+       * @author haodongdong
+       * @description 主体选择按钮回调
+       */
+      handleSelectBtn () {
+        this.$refs.natModal.open()
+      },
+      // 主体选择组件回调
+      handleChooseOne (val) {
+        this.personName = val.name
+        this.listQuery.personId = val.id
       },
       // 评价方案下拉框chang事件
       handleModelChange (val) {
