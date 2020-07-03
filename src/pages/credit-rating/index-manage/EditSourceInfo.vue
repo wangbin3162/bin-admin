@@ -48,10 +48,10 @@
 
             <template v-if="!isConst">
               <div v-if="isEdit" flex="main:justify cross:center" class="mb-10">
-                <b-button type="info" plain size="small">
-                  <template v-if="isSource">所选资源信息</template>
-                  <template v-if="isInfo">所选信息项</template>
-                </b-button>
+                <b-tag color="#595959" no-border dot>
+                  <template v-if="isSource">所选资源信息：</template>
+                  <template v-if="isInfo">所选信息项：</template>
+                </b-tag>
                 <div>
                   <b-button type="text" icon="ios-trash" v-if="isSource" @click="clearAll(rowIndex)">清空</b-button>
                   <b-button type="text" icon="ios-settings" @click="open = true">配置</b-button>
