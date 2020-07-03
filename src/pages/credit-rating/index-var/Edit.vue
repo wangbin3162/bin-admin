@@ -55,9 +55,14 @@
               <b-col span="24">
                 <edit-el-var ref="elVar"
                   @var-change="handleVarChange"
-                  @el-change="elText => form.tplContent = elText"
+                  @el-change="({elText, elJson}) => {
+                    form.tplContent = elText
+                    form.tplJson = elJson
+                  }"
                   @var-params-change="handleVarParamsChange"
                   :initData="elExpreData">
+                  <!-- 简单的绑定下，用于处理form验证提示。全部清除el表达式时提示必填，填入一个字符时清除提示。 -->
+                  <b-input v-show="false" v-model="form.tplContent"></b-input>
                 </edit-el-var>
               </b-col>
             </b-row>
@@ -102,7 +107,7 @@
   import EditSelectBizTemplate from './EditSelectBizTemplate'
   import EditSelectVar from './EditSelectVar'
   import EditParamManage from './EditParamManage'
-  import EditElVar from './EditElVarCopy'
+  import EditElVar from './EditElVar'
 
   export default {
     name: 'IndexVarEdit',
@@ -130,6 +135,7 @@
           dataType: '',
           tplId: '', // 业务模板id | el表达式选择的变量编码
           tplContent: '', // 业务模板name | el表达式字符串
+          tplJson: null, // el表达式输入结构的json字符串
           params: []
         },
         rules: {
@@ -244,7 +250,8 @@
             this.elExpreData = {
               tempVarCodeList: this.tempVarCodeList,
               params: this.params,
-              elText: this.form.tplContent
+              elText: this.form.tplContent,
+              elJson: this.form.tpl_json
             }
           }
         }

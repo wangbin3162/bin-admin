@@ -1,19 +1,19 @@
 <template>
   <div class="edit-el-var">
-    <b-form-item label="el表达式" prop="tplContent" :rules="{ required: true, message: 'el表达式不能为空', trigger: 'blur' }"
+    <b-form-item label="el表达式" prop="tplContent" :rules="{ required: true, message: 'el表达式不能为空', trigger: 'change' }"
       flex="cross:center">
-      <!-- <b-code-editor ref="editor" mode="" :readonly="true" :lint="false" v-model="elText" height="100px">
-      </b-code-editor> -->
+      <slot></slot>
       <div class="el-exp">
         <draggable
           v-model="elList"
           v-bind="dragOptions"
-          @start="drag = true"
-          @end="drag = false"
+          @start="handleDragStart"
+          @end="handleDragEnd"
           @choose="handleDragChoose">
 
           <transition-group type="transition" :name="!drag ? 'flip-list' : null">
-            <span v-for="item in elList" :key="item.id" :class="{ actived: item.actived}">{{ item.label }}</span>
+            <span v-for="item in elList" :key="item.id"
+              :class="{ actived: item.actived}" :style="{ color: item.color } ">{{ item.label }}</span>
           </transition-group>
         </draggable>
       </div>
@@ -84,6 +84,10 @@
   import draggable from 'vuedraggable'
   import EditSelectVar from './EditSelectVar'
 
+  const color1 = '#21a8cc'
+  const color2 = '#bfbfbf'
+  const colorVar = '#569cd6'
+
   export default {
     name: 'EditElVar',
     props: [
@@ -102,9 +106,9 @@
         curCursor: 0, // 表达式输入框当前光标位置
         curElListIndex: 1,
         elList: [
-          { id: 1, label: '#', color: null, actived: false },
-          { id: 2, label: '{', color: null, actived: true },
-          { id: 3, label: '}', color: null, actived: false }
+          { id: 1, label: '#', color: color1, actived: false },
+          { id: 2, label: '{', color: color1, actived: true },
+          { id: 3, label: '}', color: color1, actived: false }
         ],
         elText: '#{}',
         varMap: new Map(),
@@ -121,44 +125,44 @@
         ],
         btnListEvo: [
           [
-            { label: '(', color: null, actived: false },
-            { label: ')', color: null, actived: false },
-            { label: '\'', color: null, actived: false },
-            { label: '#', color: null, actived: false },
-            { label: '←', color: null, actived: false },
-            { label: '/', color: null, actived: false }
+            { label: '(', color: color2, actived: false },
+            { label: ')', color: color2, actived: false },
+            { label: '\'', color: color2, actived: false },
+            { label: '#', color: color1, actived: false },
+            { label: '←', color: color2, actived: false },
+            { label: '/', color: color2, actived: false }
           ],
           [
-            { label: '{', color: null, actived: false },
-            { label: '}', color: null, actived: false },
-            { label: '7', color: null, actived: false },
-            { label: '8', color: null, actived: false },
-            { label: '9', color: null, actived: false },
-            { label: '*', color: null, actived: false }
+            { label: '{', color: color1, actived: false },
+            { label: '}', color: color1, actived: false },
+            { label: '7', color: color2, actived: false },
+            { label: '8', color: color2, actived: false },
+            { label: '9', color: color2, actived: false },
+            { label: '*', color: color2, actived: false }
           ],
           [
-            { label: '<', color: null, actived: false },
-            { label: '>', color: null, actived: false },
-            { label: '4', color: null, actived: false },
-            { label: '5', color: null, actived: false },
-            { label: '6', color: null, actived: false },
-            { label: '-', color: null, actived: false }
+            { label: '<', color: color2, actived: false },
+            { label: '>', color: color2, actived: false },
+            { label: '4', color: color2, actived: false },
+            { label: '5', color: color2, actived: false },
+            { label: '6', color: color2, actived: false },
+            { label: '-', color: color2, actived: false }
           ],
           [
-            { label: ':', color: null, actived: false },
-            { label: '!', color: null, actived: false },
-            { label: '1', color: null, actived: false },
-            { label: '2', color: null, actived: false },
-            { label: '3', color: null, actived: false },
-            { label: '+', color: null, actived: false }
+            { label: ':', color: color2, actived: false },
+            { label: '!', color: color2, actived: false },
+            { label: '1', color: color2, actived: false },
+            { label: '2', color: color2, actived: false },
+            { label: '3', color: color2, actived: false },
+            { label: '+', color: color2, actived: false }
           ],
           [
-            { label: '?', color: null, actived: false },
-            { label: '&', color: null, actived: false },
-            { label: '0', color: null, actived: false },
-            { label: '.', color: null, actived: false },
-            { label: '%', color: null, actived: false },
-            { label: '=', color: null, actived: false }
+            { label: '?', color: color2, actived: false },
+            { label: '&', color: color2, actived: false },
+            { label: '0', color: color2, actived: false },
+            { label: '.', color: color2, actived: false },
+            { label: '%', color: color2, actived: false },
+            { label: '=', color: color2, actived: false }
           ]
         ]
       }
@@ -175,10 +179,8 @@
       elList: {
         handler (newVal, oldeVal) {
           const strArr = []
-          console.log(newVal)
           newVal.forEach(item => { strArr.push(item.label) })
-          console.log(strArr.join(''))
-          this.$emit('el-change', strArr.join(''))
+          this.$emit('el-change', { elText: strArr.join(''), elJson: JSON.stringify(newVal) })
         },
         immediate: true
       },
@@ -212,11 +214,7 @@
         this.varMap.set(customVarObj.varCode, customVarObj)
         this.buildResData()
       })
-    },
-    mounted () {
-      this.$nextTick(() => {
-        this.init()
-      })
+      this.init()
     },
     methods: {
       /**
@@ -229,6 +227,22 @@
       handleDragChoose ({ oldIndex, newIndex }) {
         this.curElListIndex = oldIndex
         this.setActived(this.elList, this.curElListIndex)
+      },
+      /**
+       * @author haodongdong
+       * @description 拖拽组件拖动开始时的回调，设置drag为true，用于应用vue过度效果。
+       */
+      handleDragStart () {
+        this.drag = true
+      },
+      /**
+       * @author haodongdong
+       * @description 拖拽组件拖动结束时的回调，设置drag为false，用于应用vue过度效果。
+       * 并更新当前选中下标(curElListIndex)为拖拽后的位置
+       */
+      handleDragEnd ({ newIndex }) {
+        this.curElListIndex = newIndex
+        this.drag = false
       },
       handleBtn (btn) {
         if (btn.label === '←') {
@@ -263,9 +277,9 @@
       // 清空按钮回调
       handleClearBtn () {
         this.elList = [
-          { id: 1, label: '#', color: null, actived: false },
-          { id: 2, label: '{', color: null, actived: true },
-          { id: 3, label: '}', color: null, actived: false }
+          { id: 1, label: '#', color: color1, actived: false },
+          { id: 2, label: '{', color: color1, actived: true },
+          { id: 3, label: '}', color: color1, actived: false }
         ]
         this.curElListIndex = 1
       },
@@ -284,7 +298,7 @@
         const obj = {
           id: new Date().getTime(),
           label: text,
-          color: null
+          color: colorVar
         }
         this.addElToElListByCurIndex(obj)
       },
@@ -345,8 +359,8 @@
           this.elList.push(el)
         } else {
           this.elList.splice(this.curElListIndex + 1, 0, el)
+          this.curElListIndex += 1 // 插入新数据后向后移动表示选中的当前下标
         }
-        this.curElListIndex += 1 // 插入新数据后向后移动表示选中的当前下标
         this.setActived(this.elList, this.curElListIndex)
       },
       /**
@@ -354,15 +368,16 @@
        * @description 根据当前下标(curElListIndex)从elList删除元素，并更新当前下标。
        */
       removeElFromElListByCurIndex () {
-        this.elList.splice(this.curElListIndex, 1)
-        this.curElListIndex -= 1
-        if (this.curElListIndex < 0) {
-          if (this.elList.length > 0) {
-            this.curElListIndex = 0
+        if (this.elList.length > 0) {
+          this.elList.splice(this.curElListIndex, 1)
+          if (this.curElListIndex > 0) {
+            this.curElListIndex -= 1
             this.setActived(this.elList, this.curElListIndex)
+          } else {
+            if (this.elList.length > 0) {
+              this.setActived(this.elList, this.curElListIndex)
+            }
           }
-        } else {
-          this.setActived(this.elList, this.curElListIndex)
         }
       },
       /**
@@ -378,7 +393,7 @@
       init () {
         if (this.initData) {
           this.tempVarCodeList = this.initData.tempVarCodeList
-          this.elList = this.initData.elText.split(' ')
+          this.elList = JSON.parse(this.initData.elJson)
           this.curElListIndex = this.elList.length - 1
 
           const params = [] // 存放还原多来源参数后的param
@@ -417,8 +432,6 @@
             }
             this.varMap.set(varObj.varCode, varObj)
           })
-        } else {
-          // this.editor.setCursor(0, 2)
         }
       }
     }
@@ -439,6 +452,19 @@
 <style lang="stylus" scoped>
   .edit-el-var {
     .el-exp {
+      padding: 5px;
+      background-color: #262626;
+
+      .flip-list-enter, .flip-list-leave-to {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      .flip-list-enter-active, .flip-list-leave-active {
+        transition: all 0.5s;
+      }
+      .flip-list-leave-active {
+        position: absolute;
+      }
       .flip-list-move {
         transition: transform 0.5s;
       }
@@ -446,20 +472,33 @@
         transition: transform 0s;
       }
       .ghost {
-        opacity: 0.5;
-        background: #c8ebfb;
+        // opacity: 0.5;
+        // background: #c8ebfb;
       }
       span {
         display: inline-block;
-        padding: 0 1px;
-        margin: 0 2px;
+        padding: 0 0.5px;
         cursor: move;
         font-size: 20px;
         font-weight: 700;
         color: #3ac1e5;
       }
-      .actived {
-        border-bottom: 1.5px solid #3ac1e5;
+      .actived::after {
+        content: '';
+        position: absolute;
+        top: 31%;
+        height: 20px;
+        border-right: 1.5px solid #aeb6be;
+        animation: blink 1.1s infinite steps(1, end);
+      }
+
+      @keyframes blink {
+        0%, 100% {
+          border-right-color: #aeb6be;
+        }
+        50% {
+          border-right-color: transparent;
+        }
       }
     }
 
