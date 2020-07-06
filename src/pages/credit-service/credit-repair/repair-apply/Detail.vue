@@ -197,13 +197,15 @@
     width: 100%;
 
     td, th {
+      padding: 10px;
+      vertical-align: top;
       border: 1px solid #cad9ea;
       border: 1px solid #e8eaec;
       color: #666;
       height: 40px;
     }
     td:nth-child(odd), th:nth-child(odd) {
-      width: 20%;
+      width: 10%;
       padding-right: 15px;
       text-align: right;
       background: #f5fafa;
@@ -211,7 +213,7 @@
     }
     td:nth-child(even), th:nth-child(even) {
       width: 30%;
-      padding: 5px;
+      // padding: 5px;
       padding-left: 10px;
       text-align: left;
       background: #ffffff;
