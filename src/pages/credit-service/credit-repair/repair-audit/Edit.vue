@@ -144,24 +144,52 @@
 <style lang="stylus" scoped>
 .repair-audit {
   .con {
-    width: 70%;
-    margin-left: 93px;
+    margin-left: 100px;
+    margin-bottom: 20px;
+  }
+  .table {
+    border-collapse: collapse;
+    margin: 0 auto;
+    text-align: center;
+    width: 100%;
 
-    .table {
-      width: 100%;
-      border-collapse: collapse;
-
+    td, th {
+      border: 1px solid #cad9ea;
+      border: 1px solid #e8eaec;
+      color: #666;
+      height: 40px;
+    }
+    td:nth-child(odd), th:nth-child(odd) {
+      width: 20%;
+      padding-right: 15px;
+      text-align: right;
+      background: #f5fafa;
+      background: #fafafa;
+    }
+    td:nth-child(even), th:nth-child(even) {
+      width: 30%;
+      padding: 5px;
+      padding-left: 10px;
+      text-align: left;
+      background: #ffffff;
+    }
+    tr:hover {
       td {
-        height: 40px;
-        width: 35%;
-        padding: 5px 12px;
-        vertical-align: top;
-      }
-
-      td:nth-child(2n+1) {
-        width: 15%;
+        background: #f4f5f6;
+        transition: background 0.7s;
       }
     }
+    .td-cover {
+      background: #ffffff!important;
+      padding: 5px!important;
+      padding-left: 10px!important;
+    }
+    // tr:nth-child(odd) {
+    //   background: #f5fafa;
+    // }
+    // tr:nth-child(even) {
+    //   background: #ffffff;
+    // }
   }
 }
 </style>

@@ -50,7 +50,7 @@
             </tr>
             <tr>
               <td>流程状态：</td>
-              <td>{{ statusEnum[detail.status] }}</td>
+              <td colspan="3">{{ statusEnum[detail.status] }}</td>
             </tr>
             <tr>
               <td>流程附件：</td>
@@ -164,20 +164,48 @@
   }
 
   .table {
-    width: 100%;
-    font-size: 13px;
     border-collapse: collapse;
+    margin: 0 auto;
+    text-align: center;
+    width: 100%;
 
-    td {
+    td, th {
+      border: 1px solid #cad9ea;
+      border: 1px solid #e8eaec;
+      color: #666;
       height: 40px;
-      width: 35%;
-      padding: 5px 12px;
-      vertical-align: top;
     }
-
-    td:nth-child(2n+1) {
-      width: 15%;
+    td:nth-child(odd), th:nth-child(odd) {
+      width: 20%;
+      padding-right: 15px;
+      text-align: right;
+      background: #f5fafa;
+      background: #fafafa;
     }
+    td:nth-child(even), th:nth-child(even) {
+      width: 30%;
+      padding: 5px;
+      padding-left: 10px;
+      text-align: left;
+      background: #ffffff;
+    }
+    tr:hover {
+      td {
+        background: #f4f5f6;
+        transition: background 0.7s;
+      }
+    }
+    .td-cover {
+      background: #ffffff!important;
+      padding: 5px!important;
+      padding-left: 10px!important;
+    }
+    // tr:nth-child(odd) {
+    //   background: #f5fafa;
+    // }
+    // tr:nth-child(even) {
+    //   background: #ffffff;
+    // }
   }
 }
 </style>
