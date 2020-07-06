@@ -42,7 +42,7 @@
               <td v-if="index === 0" :rowspan="detail.attachments.length + 1">
                 附件信息
               </td>
-              <td colspan="3" style="padding: 5px 5px 5px 10px; background: #ffffff;">
+              <td colspan="3" class="td-cover">
                 <div flex="main:justify">
                   <span>{{ item.fileName }}</span>
                   <attach-dl-btn
@@ -165,6 +165,11 @@
         background: #f4f5f6;
         transition: background 0.7s;
       }
+    }
+    .td-cover {
+      background: #ffffff!important;
+      padding: 5px!important;
+      padding-left: 10px!important;
     }
     // tr:nth-child(odd) {
     //   background: #f5fafa;
