@@ -26,26 +26,15 @@
               <td>异议申请时间：</td>
               <td>{{ detail.applyDate }}</td>
             </tr>
-              <tr>
+            <tr>
               <td>数源单位：</td>
               <td>{{ detail.sourceDeptName }}</td>
-            </tr>
-            <tr>
               <td>异议内容：</td>
               <td>{{ detail.applyDescription }}</td>
             </tr>
-            <tr>
-              <td colspan="4">
-                <b-divider></b-divider>
-              </td>
-            </tr>
-            <tr>
-              <td colspan="4">
-                <h4>附件信息</h4>
-              </td>
-            </tr>
-            <tr v-for="item in detail.attachments" :key="item.id">
-              <td colspan="2" >
+            <tr v-for="(item, index) in detail.attachments" :key="item.id">
+              <td v-if="index === 0 " :rowspan="detail.attachments.length + 1">附件信息</td>
+              <td colspan="3" class="td-cover">
                 <div flex="main:justify">
                   <span>{{ item.fileName }}</span>
                   <attach-dl-btn
@@ -165,15 +154,48 @@
   }
 
   .table {
-    width: 100%;
-    font-size: 13px;
     border-collapse: collapse;
+    margin: 0 auto;
+    text-align: center;
+    width: 100%;
 
-    td {
+    td, th {
+      border: 1px solid #cad9ea;
+      border: 1px solid #e8eaec;
+      color: #666;
       height: 40px;
-      width: 25%;
-      padding: 5px 12px
     }
+    td:nth-child(odd), th:nth-child(odd) {
+      width: 20%;
+      padding-right: 15px;
+      text-align: right;
+      background: #f5fafa;
+      background: #fafafa;
+    }
+    td:nth-child(even), th:nth-child(even) {
+      width: 30%;
+      padding: 5px;
+      padding-left: 10px;
+      text-align: left;
+      background: #ffffff;
+    }
+    tr:hover {
+      td {
+        background: #f4f5f6;
+        transition: background 0.7s;
+      }
+    }
+    .td-cover {
+      background: #ffffff!important;
+      padding: 5px!important;
+      padding-left: 10px!important;
+    }
+    // tr:nth-child(odd) {
+    //   background: #f5fafa;
+    // }
+    // tr:nth-child(even) {
+    //   background: #ffffff;
+    // }
   }
 }
 </style>
