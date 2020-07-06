@@ -38,7 +38,7 @@
           </template>
         </div>
         <div class="ctrl">
-          <span v-waves @click="handleCheck(item.id)">执行反馈</span>
+          <span v-waves @click="handleCheck(item)">执行反馈</span>
         </div>
         <div class="memo-typ" :class="item.memoType==='1'?'black':'red'">
           <img v-if="item.memoType==='1'" src="../../../assets/images/urp/black_name.png" alt=""/>
@@ -80,8 +80,8 @@
       }
     },
     methods: {
-      handleCheck(id) {
-        this.$emit('on-check-detail', id)
+      handleCheck(item) {
+        this.$emit('on-check-detail', item)
       }
     }
   }

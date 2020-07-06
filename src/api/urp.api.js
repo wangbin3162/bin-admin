@@ -47,6 +47,15 @@ export function getMemoList(query) {
   })
 }
 
+/* 备忘录详情 */
+export function getMemoDetail(memoId) {
+  return request({
+    url: 'api/urpService/memoDetail',
+    method: 'get',
+    params: { memoId }
+  })
+}
+
 /* 惩戒激励记录列表 */
 export function getListResult(query) {
   return request({
@@ -70,5 +79,50 @@ export function cancelResult(obj) {
     data: {
       recordId, cancelReason
     }
+  })
+}
+
+/* 查询执行反馈详情 */
+export function getFeedbackDetail(query) {
+  let apis = [getSubjectDetail(query), getUrpMeasures(query)]
+  return new Promise((resolve, reject) => {
+    Promise.all(apis).then(res => {
+      resolve({
+        detail: res[0].data.code === '0' ? res[0].data.data.detail : null,
+        memos: res[1].data.code === '0' ? res[1].data.data.memos : []
+      })
+    }).catch(error => reject(new Error(error.message || '查询执行反馈详情失败')))
+  })
+}
+
+/* 执行反馈接口 */
+export function doFeedback(query) {
+  let { id, memoId, explain, measureIds } = query
+  return request({
+    url: 'api/urpService/feedback',
+    method: 'post',
+    data: { id, memoId, requestSource: '1', explain, measureIds }
+  })
+}
+
+/* 查询主体信息 */
+function getSubjectDetail(obj) {
+  let { subjectId, type } = obj
+  return request({
+    url: 'api/urpService/subjectDetail',
+    method: 'post',
+    data: {
+      subjectId, type
+    }
+  })
+}
+
+/* 获取奖惩措施 */
+function getUrpMeasures(query) {
+  let { subjectId, type, memoType, refId } = query
+  return request({
+    url: 'api/urpService/query',
+    method: 'post',
+    data: { subjectId, type, memoType, refId }
   })
 }

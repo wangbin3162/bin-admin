@@ -36,10 +36,13 @@
         <div class="block memos">
           <div flex="main:justify" class="title">
             <span class="label">联合奖惩备忘录</span>
-            <router-link to="/urp/memoList" class="more">查看更多<b-icon name="doubleright"/></router-link>
+            <router-link to="/urp/memoList" class="more">查看更多
+              <b-icon name="doubleright"/>
+            </router-link>
           </div>
           <div class="ul">
-            <div v-for="memo in memoList5" :key="memo.id" class="link">
+            <div v-for="memo in memoList5" :key="memo.id" class="link"
+                 @click="handleCheckMemo(memo.id)">
               <span class="label">{{ memo.memoName }}</span><span class="date">{{ memo.createDate | filterTime }}</span>
             </div>
           </div>
@@ -47,7 +50,9 @@
         <div class="block results">
           <div flex="main:justify" class="title">
             <span class="label">惩戒激励记录</span>
-            <router-link to="/urp/listResult" class="more">查看更多<b-icon name="doubleright"/></router-link>
+            <router-link to="/urp/listResult" class="more">查看更多
+              <b-icon name="doubleright"/>
+            </router-link>
           </div>
           <div class="ul">
             <div v-for="result in listResult5" :key="result.id" class="link">
@@ -122,6 +127,10 @@
         this.query = { keyword: '', type: 'FO' }
         this.$router.replace({ path: '/urp/index' })
       },
+      // 查看备忘录
+      handleCheckMemo(id) {
+        this.$router.push({ path: '/urp/memoDetail', query: { id } })
+      },
       // 初始化首页的统计计数
       getUrpCount() {
         api.getUrpCounts().then(resp => {
@@ -142,8 +151,9 @@
           })
       },
       // 列表点击执行记录
-      handleCheckDetail() {
-
+      handleCheckDetail(item) {
+        let { subjectId, type, memoType, refId } = item
+        this.$router.push({ path: '/urp/feedback', query: { subjectId, type, memoType, refId } })
       },
       // 查询列表数据
       searchListData() {

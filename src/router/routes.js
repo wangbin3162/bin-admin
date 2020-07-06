@@ -42,6 +42,12 @@ export const constantRouterMap = [
     meta: { title: '联合奖惩首页' }
   },
   {
+    path: '/urp/feedback',
+    name: 'Feedback',
+    component: () => import(/* webpackChunkName: "urp" */ '../pages/urp/Feedback'),
+    meta: { title: '执行记录' }
+  },
+  {
     path: '/urp/memoList',
     name: 'MemoList',
     component: () => import(/* webpackChunkName: "urp" */ '../pages/urp/MemoList'),

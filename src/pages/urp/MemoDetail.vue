@@ -9,7 +9,7 @@
           <b-breadcrumb-item>备忘录详情</b-breadcrumb-item>
         </b-breadcrumb>
         <p>备忘录详情(接口暂未提供)</p>
-        <p>{{ memoId }}</p>
+        <p>{{ detail }}</p>
       </div>
     </div>
   </urp-layout>
@@ -19,6 +19,7 @@
   import { isNotEmpty } from '../../common/utils/assist'
   import UrpLayout from './components/UrpLayout'
   import UrpHeader from './components/UrpHeader'
+  import { getMemoDetail } from '../../api/urp.api'
 
   export default {
     name: 'MemoDetail',
@@ -26,11 +27,11 @@
     data() {
       return {
         memoId: '',
-        memo: null
+        detail: null
       }
     },
     created() {
-      this.resetMemo()
+      this.resetMemoDetail()
       this.fetchData()
     },
     watch: {
@@ -48,24 +49,20 @@
         }
       },
       // 重置对象
-      resetMemo() {
-        this.memo = {
-          id: '',
-          memoName: '',
-          memoType: '1',
-          unionNum: 0,
-          memoStatus: '0',
-          fileCode: '',
-          signDate: '',
-          initiateDept: '',
-          initiateDeptName: '',
-          departs: [],
-          measures: []
+      resetMemoDetail() {
+        this.detail = {
+          memo: null,
+          departs: []
         }
       },
       // 查询详情
       searchDetail() {
         console.log('查询详情', this.memoId)
+        getMemoDetail(this.memoId).then(resp => {
+          if (resp.data.code === '0') {
+            this.detail = resp.data.data
+          }
+        })
       }
     }
   }
