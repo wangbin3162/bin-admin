@@ -210,6 +210,9 @@
             reportDefault: 'Y'
           })
           this.creditReportList = res.rows
+          // 设置选中默认的信用报告配置
+          const report = this.creditReportList.find(item => item.sysDefault === '1')
+          if (report) this.form.configId = report.id
         } catch (error) {
           console.error(error)
         }

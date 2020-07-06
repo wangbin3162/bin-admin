@@ -59,7 +59,7 @@
                 :key="index"
                 closable
                 @on-close="handleCloseTag(index)">
-                {{tag.varName}}
+                {{tag.varCode}}
               </b-tag>
               <b-button type="primary" style="width: 100%; margin: 10px 0;"
                 v-if="selectedList.length"

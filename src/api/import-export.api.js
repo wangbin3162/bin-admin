@@ -2,7 +2,8 @@ import request, { appendFormData, requestPostFormData } from './request'
 
 const moduleNameEnum = {
   USER: 'SysUserController',
-  DEPART: 'SysDepartController'
+  DEPART: 'SysDepartController',
+  MEASURE: 'UrpMeasureController'
 }
 
 /**

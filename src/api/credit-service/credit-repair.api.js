@@ -362,3 +362,28 @@ export async function getFocusRosterList(query) {
     }
   })
 }
+
+/**
+ * @author haodongdong
+ * @description 查询主体基本信息
+ * @param {*} id
+ * @returns Promise
+ */
+export async function queryBaseInfo(id) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/api/service/repairPointList/queryBaseInfo',
+        method: 'get',
+        params: { id }
+      })
+      if (res.data.successful) {
+        resolve(res.data.data)
+      } else {
+        reject(new Error(res.data.message))
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}

@@ -22,6 +22,16 @@
         <!--操作栏-->
         <v-table-tool-bar>
           <b-button v-if="canCreate" type="primary" icon="ios-add-circle-outline" @click="handleCreate">新 增</b-button>
+          <v-batch-import v-if="havePermission('import')" :module-name="batchType">
+            批量导入
+          </v-batch-import>
+          <div slot="right">
+            <template v-if="havePermission('download')">
+              <v-download-template :module-name="batchType">模板下载</v-download-template>
+              <b-divider type="vertical"></b-divider>
+            </template>
+            <b-button v-if="havePermission('records')" type="text" @click="handleOpenRecordDialog">导入记录</b-button>
+          </div>
         </v-table-tool-bar>
         <!--中央表格-->
         <b-table :columns="columns" :data="list" :loading="listLoading">
@@ -101,6 +111,8 @@
         </template>
       </v-edit-wrap>
     </page-header-wrap>
+    <!--操作记录弹窗-->
+    <record-list ref="record" @on-close="handleCancel"></record-list>
   </div>
 </template>
 
@@ -110,11 +122,16 @@
   import * as api from '../../api/urp/measure.api'
   import UrpDeptSelect from './components/UrpDeptSelect'
   import { requiredRule } from '../../common/utils/validate'
+  import RecordList from '../../pages/sys/components/RecordList'
+  import VBatchImport from '../../components/VBatch/VBatchImport'
+  import VDownloadTemplate from "../../components/VBatch/VDownloadTemplate";
+
+  const batchType = 'UrpMeasureController' // 模块名称，提供下载模板和批量导入导出
 
   export default {
     name: 'Measure',
-    components: { UrpDeptSelect },
-    mixins: [commonMixin, permission],
+    components: {RecordList, VDownloadTemplate, VBatchImport, UrpDeptSelect },
+    mixins: [commonMixin, permission, RecordList, VDownloadTemplate, VBatchImport ],
     data() {
       const validateMeasureName = (rule, value, callback) => {
         if (value.length > 512) {
@@ -139,6 +156,7 @@
         },
         measureTypeMap: { 'R': '激励', 'P': '惩戒' },
         measure: null,
+        batchType: batchType,
         columns: [
           { type: 'index', width: 50, align: 'center' },
           { title: '措施名称', slot: 'measureName' },
@@ -182,6 +200,11 @@
         this.resetMeasure()
         this.measure = { ...this.measure, ...row }
         this.openEditPage('modify')
+      },
+      // 弹出操作记录弹窗
+      handleOpenRecordDialog() {
+        this.dialogStatus = 'record' // 更改查询状态
+        this.$refs.record && this.$refs.record.open('urp_measure')
       },
       // 查看按钮事件
       handleCheck(row) {

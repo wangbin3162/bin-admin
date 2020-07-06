@@ -27,7 +27,7 @@
           <b-table :columns="columns" :data="list" :loading="listLoading" size="small">
             <!--操作栏-->
             <template v-slot:action="{ row }">
-              <b-button type="primary" plain
+              <b-button type="primary" plain size="small"
                 @click="handleSelect(row)">
                 选择
               </b-button>

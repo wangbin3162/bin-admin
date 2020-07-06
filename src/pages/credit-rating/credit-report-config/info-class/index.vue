@@ -10,7 +10,7 @@
         <!-- 查询条件 -->
         <v-filter-bar @keyup-enter="handleFilter">
            <v-filter-item title="信息类类别">
-            <b-select v-model="listQuery.category" clearable>
+            <b-select v-model="listQuery.categoryCode" clearable>
               <b-option v-for="(value, key) in reportItemTypeEnum" :key="key" :value="key">
                 {{ value }}
               </b-option>
@@ -63,9 +63,9 @@
 <script>
   import commonMixin from '../../../../common/mixins/mixin'
   import permission from '../../../../common/mixins/permission'
-  import Edit from './Edit'
   import { getEvalReportItemType, getEvalReportLayoutType } from '../../../../api/enum.api'
   import { getInfoClassList, deleteInfoClass } from '../../../../api/credit-rating/credit-report-config.api'
+  import Edit from './Edit'
 
   export default {
     name: 'CreditReportConfigInfoClass',
@@ -83,7 +83,7 @@
         detail: null, // 存储行数据
         listQuery: {
           configId: this.configId,
-          category: ''
+          categoryCode: ''
         },
         columns: [
           // { type: 'selection', width: 50, align: 'center' },
@@ -111,6 +111,7 @@
     methods: {
       resetQuery () {
         this.listQuery = {
+          configId: this.configId,
           category: '',
           page: 1,
           size: 10

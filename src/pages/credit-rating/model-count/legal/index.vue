@@ -4,16 +4,19 @@
       <v-table-wrap>
         <!-- 查询条件 -->
         <v-filter-bar @keyup-enter="handleFilter">
-          <v-filter-item title="名称">
-            <b-input v-model="listQuery.compName" placeholder="请输入名称" clearable></b-input>
+          <v-filter-item title="主体">
+            <div flex>
+              <b-input placeholder="请选择主体" :value="personName" disabled></b-input>
+              <b-button type="primary" plain @click="handleSelectBtn">选择</b-button>
+            </div>
           </v-filter-item>
-           <v-filter-item title="评价方案">
+           <v-filter-item title="评级模型">
             <b-select v-model="listQuery.modelId" @on-change="handleModelChange" clearable>
               <b-option v-for="item in modelList" :key="item.id"
                 :value="item.id">{{ item.name }}</b-option>
             </b-select>
           </v-filter-item>
-          <v-filter-item title="评价等级">
+          <v-filter-item title="等级标准">
             <b-select v-model="listQuery.levelCode" clearable>
               <b-option v-for="item in ratingOptions" :key="item.levelCode"
                 :value="item.levelCode">{{ item.levelName }}</b-option>
@@ -46,7 +49,10 @@
         <!-- table -->
         <b-table :columns="columns" :data="list" :loading="listLoading">
           <template v-slot:compName="{ row }">
-            <b-button type="text" @click="handleCheck(row)">{{ row.legBaseInfo.compName }}</b-button>
+            <b-button type="text" @click="handleCheck(row)"
+              t-ellipsis :title="row.legBaseInfo.compName">
+              {{ row.legBaseInfo.compName }}
+            </b-button>
           </template>
 
           <template v-slot:idTypeName="{ row }">
@@ -78,6 +84,8 @@
           @on-page-size-change="handleSizeChange"></b-page>
       </v-table-wrap>
     </page-header-wrap>
+
+    <leg-person-modal ref="legModal" @choose-one="handleChooseOne"></leg-person-modal>
 
     <detail v-if="isCheck"
       @close="handleCancel"
@@ -118,6 +126,7 @@
   import commonMixin from '../../../../common/mixins/mixin'
   import permission from '../../../../common/mixins/permission'
   import { getLegalList, getModelList, reCount } from '../../../../api/credit-rating/model-count.api'
+  import LegPersonModal from '../../../../components/Validator/FormControl/LegPersonModal'
   import Detail from './Detail'
   import RecordList from '../components/RecordList'
   import TempDlBtn from '../components/TempDlBtn'
@@ -129,6 +138,7 @@
     name: 'ModelCountLegal',
     mixins: [commonMixin, permission],
     components: {
+      LegPersonModal,
       Detail,
       RecordList,
       TempDlBtn,
@@ -144,11 +154,12 @@
         openPDF: false, // 打开p-d-f组件
         pdfBlob: null, // 存储re-count组件返回的pdfBlob
         personClass: 'A02', // 主体类型
+        personName: '', // 搜索栏主体选择input显示用
         curRow: {
           legBaseInfo: {}
         }, // 存储行数据
         listQuery: {
-          compName: '',
+          personId: '',
           modelId: '',
           levelCode: ''
         },
@@ -162,7 +173,7 @@
             tooltip: true,
             align: 'center'
           },
-          { title: '评价方案', key: 'modelName', align: 'center' },
+          { title: '评级模型', key: 'modelName', align: 'center' },
           { title: '等级标准', key: 'ratingName', align: 'center' },
           { title: '评价得分', key: 'score', align: 'center' },
           { title: '评价等级', key: 'levelCode', align: 'center' },
@@ -183,11 +194,24 @@
         this.listQuery = {
           page: 1,
           size: 10,
-          compName: '',
+          personId: '',
           modelId: this.defaultModelId,
           levelCode: ''
         }
+        this.personName = ''
         this.searchList()
+      },
+      /**
+       * @author haodongdong
+       * @description 主体选择按钮回调
+       */
+      handleSelectBtn () {
+        this.$refs.legModal.open()
+      },
+      // 主体选择组件回调
+      handleChooseOne (val) {
+        this.personName = val.compName
+        this.listQuery.personId = val.id
       },
       // 评价方案下拉框chang事件
       handleModelChange (val) {

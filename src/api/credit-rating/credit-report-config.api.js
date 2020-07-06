@@ -176,7 +176,7 @@ export async function getInfoClassList(query) {
         method: 'get',
         params: {
           configId: query.configId,
-          category: query.category,
+          categoryCode: query.categoryCode,
           size: query.size,
           page: query.page - 1
         }

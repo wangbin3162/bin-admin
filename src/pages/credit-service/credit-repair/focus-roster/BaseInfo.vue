@@ -39,12 +39,14 @@
   import { Decode, MaskCode } from '../../../../common/utils/secret'
   import {
     getCreditInfo, getNaturalDetail,
-    getResourceDetailField, getDetailContent
+    getResourceDetailField
   } from '../../../../api/credit-rating/model-count.api'
+  import { queryBaseInfo } from '../../../../api/credit-service/credit-repair.api'
 
   export default {
     name: 'FocusRosterBaseInfo',
     props: [
+      'id',
       'title',
       'personId',
       'resourceKey'
@@ -60,7 +62,7 @@
       }
     },
     created () {
-      this.getBaseInfo(this.personId, this.resourceKey)
+      this.getBaseInfo(this.id, this.resourceKey)
     },
     methods: {
       /**
@@ -75,7 +77,7 @@
         try {
           const [fieldList, baseInfo] = await Promise.all([
             getResourceDetailField(resourceKey),
-            getDetailContent(id, resourceKey)
+            queryBaseInfo(id)
           ])
 
           // 删除掉person_id字段

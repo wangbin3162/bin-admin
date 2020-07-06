@@ -99,9 +99,6 @@
             </b-row>
           </div>
         </b-collapse-wrap>
-        <b-collapse-wrap title="错误数据信息" v-if="errDataColumns.length>0">
-          <b-table :columns="errDataColumns" :data="errDataRows" size="small"></b-table>
-        </b-collapse-wrap>
         <template slot="footer">
           <b-button @click="detailDialog=false">返 回</b-button>
         </template>

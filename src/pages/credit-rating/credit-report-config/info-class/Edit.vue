@@ -64,29 +64,24 @@
                       </div>
                       <div style="width: 30%;">
                         <b-form-item label="布局方式" prop="layout">
-                          <!-- <b-select v-model="item.layout">
-                            <b-option v-for="(value, key) in reportLayoutTypeEnum" :key="key" :value="key">
-                              {{ value }}
-                            </b-option>
-                          </b-select> -->
                           <div class="img-btn">
-                            <span class="btn-con" @click="item.layout = 'FORM'">
+                            <span class="btn-con" :class="{ actived: item.layout === 'FORM'}" @click="item.layout = 'FORM'">
                               <span class="img-con">
                                 <img src="../../../../assets/images/credit-rating/icon_form.png">
-                                <b-icon v-if="item.layout === 'FORM'" class="icon" name="ios-checkmark" size="30" color="#1890ff"></b-icon>
+                                <b-icon v-if="item.layout === 'FORM'" class="icon" name="ios-checkmark" size="37" color="#1890ff"></b-icon>
                               </span>
-                              <span class="text">
+                              <!-- <span class="text">
                                 {{ reportLayoutTypeEnum.FORM }}
-                              </span>
+                              </span> -->
                             </span>
-                            <span class="btn-con" @click="item.layout = 'LIST'">
+                            <span class="btn-con" :class="{ actived: item.layout === 'LIST'}" @click="item.layout = 'LIST'">
                               <span class="img-con">
                                 <img src="../../../../assets/images/credit-rating/icon_list.png">
-                                <b-icon v-if="item.layout === 'LIST'" class="icon" name="ios-checkmark" size="30" color="#1890ff"></b-icon>
+                                <b-icon v-if="item.layout === 'LIST'" class="icon" name="ios-checkmark" size="37" color="#1890ff"></b-icon>
                               </span>
-                              <span class="text">
+                              <!-- <span class="text">
                                 {{ reportLayoutTypeEnum.LIST }}
-                              </span>
+                              </span> -->
                             </span>
                           </div>
                         </b-form-item>
@@ -218,171 +213,6 @@
       this.initEditData()
     },
     methods: {
-      expandRender (h, row) {
-        // console.log(row)
-        // const displayName = h(
-        //   'b-form-item',
-        //   {
-        //     props: {
-        //       label: '显示名称',
-        //       prop: 'displayName'
-        //     }
-        //   },
-        //   [h(
-        //     'b-input',
-        //     {
-        //       props: {
-        //         value: row.displayName
-        //       },
-        //       nativeOn: {
-        //         input (e) {
-        //           row.displayName = e.target.value
-        //         }
-        //       }
-        //     }
-        //   )]
-        // )
-        // const layout = h(
-        //   'b-form-item',
-        //   {
-        //     props: {
-        //       label: '布局方式',
-        //       prop: 'layout'
-        //     }
-        //   },
-        //   [h(
-        //     'b-select',
-        //     {
-        //       props: {
-        //         value: row.layout,
-        //         appendToBody: true
-        //       },
-        //       on: {
-        //         'on-change' (val) {
-        //           console.log(val)
-        //           row.layout = val
-        //         }
-        //       }
-        //     },
-        //     Object.keys(this.reportLayoutTypeEnum).map(key => {
-        //       const text = this.reportLayoutTypeEnum[key]
-        //       return h(
-        //         'b-option',
-        //         {
-        //           props: {
-        //             value: key
-        //           },
-        //           key: key
-        //         },
-        //         text
-        //       )
-        //     })
-        //   )]
-        // )
-        // const fieldNames = h(
-        //   'b-form-item',
-        //   {
-        //     props: {
-        //       label: '字段列表',
-        //       prop: 'fieldNames'
-        //     }
-        //   },
-        //   [h(
-        //     'b-input',
-        //     {
-        //       props: {
-        //         disabled: true,
-        //         value: row.fieldNames
-        //       }
-        //     }
-        //   )]
-        // )
-        // const fieldTitles = h(
-        //   'b-form-item',
-        //   {
-        //     props: {
-        //       label: '字段标题',
-        //       prop: 'fieldTitles'
-        //     }
-        //   },
-        //   [h(
-        //     'b-input',
-        //     {
-        //       props: {
-        //         disabled: true,
-        //         value: row.fieldTitles
-        //       }
-        //     }
-        //   )]
-        // )
-        // const fieldFilter = h(
-        //   'b-form-item',
-        //   {
-        //     props: {
-        //       label: '数据过滤'
-        //     }
-        //   },
-        //   [h(
-        //     'b-input',
-        //     {
-        //       props: {
-        //         value: row.fieldFilter
-        //       },
-        //       nativeOn: {
-        //         input (e) {
-        //           row.fieldFilter = e.target.value
-        //         }
-        //       }
-        //     }
-        //   )]
-        // )
-        // const bForm = h(
-        //   'b-form',
-        //   {
-        //     props: {
-        //       model: row,
-        //       rules: this.jsxRules,
-        //       labelWidth: 100
-        //     },
-        //     ref: 'expandForm',
-        //     refInFor: true
-        //   },
-        //   [
-        //     h(
-        //       'b-row',
-        //       { props: { gutter: 15 } },
-        //       [
-        //         h(
-        //           'b-col',
-        //           { props: { span: 12 } },
-        //           [displayName]
-        //         ),
-        //         h(
-        //           'b-col',
-        //           { props: { span: 12 } },
-        //           [layout]
-        //         ),
-        //         h(
-        //           'b-col',
-        //           { props: { span: 24 } },
-        //           [fieldNames]
-        //         ),
-        //         h(
-        //           'b-col',
-        //           { props: { span: 24 } },
-        //           [fieldTitles]
-        //         ),
-        //         h(
-        //           'b-col',
-        //           { props: { span: 24 } },
-        //           [fieldFilter]
-        //         )
-        //       ]
-        //     )
-        //   ]
-        // )
-        // return bForm
-      },
       // 添加资源信息按钮回调
       handleAddSourceInfo () {
         this.openSource = true
@@ -554,6 +384,11 @@
       }
     }
     .btn-con:hover {
+      .img-con {
+        box-shadow: 0 2px 7px 0 rgba(121, 187, 255, 1);
+      }
+    }
+    .actived {
       .img-con {
         box-shadow: 0 2px 7px 0 rgba(121, 187, 255, 1);
       }
