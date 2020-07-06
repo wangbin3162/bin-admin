@@ -77,7 +77,7 @@
             </tr>
             <tr>
               <td>流程状态：</td>
-              <td>{{ statusEnum[detail.status] }}</td>
+              <td colspan="3">{{ statusEnum[detail.status] }}</td>
             </tr>
             <tr>
               <td>流程附件：</td>
@@ -111,57 +111,6 @@
               <td>{{ detail.approveDesc }}</td>
             </tr>
           </table>
-          <!-- <div flex="main:center">
-            <b-row style="width: 100%;">
-              <b-col span="12">
-                <v-simple-label label="申请人姓名">{{ detail.applyName }}</v-simple-label>
-              </b-col>
-              <b-col span="12">
-                <v-simple-label label="申请人部门">{{ detail.applyDeptName }}</v-simple-label>
-              </b-col>
-              <b-col span="12">
-                <v-simple-label label="申请时间">{{ detail.applyDate }}</v-simple-label>
-              </b-col>
-              <b-col span="12">
-                <v-simple-label label="资源表名">{{ detail.tableName }}</v-simple-label>
-              </b-col>
-              <b-col span="24">
-                <v-simple-label label="流程状态">{{ statusEnum[detail.status] }}</v-simple-label>
-              </b-col>
-              <b-col span="24">
-                <v-simple-label label="流程附件">
-                  <div v-for="item in detail.attachments" :key="item.id">
-                    <attach-dl-btn
-                      :id="item.id"
-                      :fileName="item.fileName"
-                      btnType="text">
-                      {{ item.fileName }}
-                    </attach-dl-btn>
-                  </div>
-                </v-simple-label>
-              </b-col>
-              <b-col span="12">
-                <v-simple-label label="修复原因">{{ detail.repairCause }}</v-simple-label>
-              </b-col>
-              <b-col span="12">
-                <v-simple-label label="修复内容">{{ detail.repairContent }}</v-simple-label>
-              </b-col>
-              <b-col span="12">
-                <v-simple-label label="审核人">{{ detail.approveUserName }}</v-simple-label>
-              </b-col>
-              <b-col span="12">
-                <v-simple-label label="审核时间">{{ detail.approveDate }}</v-simple-label>
-              </b-col>
-              <b-col span="12">
-                <v-simple-label label="审核结果">
-                  {{ detail.status=='2'?detail.dealMode =='2'? '同意修复':'拒绝修复':'' }}
-                </v-simple-label>
-              </b-col>
-              <b-col span="12">
-                <v-simple-label label="审核意见">{{ detail.approveDesc }}</v-simple-label>
-              </b-col>
-            </b-row>
-          </div> -->
         </b-collapse-wrap>
 
         <template slot="footer">
@@ -242,20 +191,48 @@
   }
 
   .table {
-    width: 100%;
-    font-size: 13px;
     border-collapse: collapse;
+    margin: 0 auto;
+    text-align: center;
+    width: 100%;
 
-    td {
+    td, th {
+      border: 1px solid #cad9ea;
+      border: 1px solid #e8eaec;
+      color: #666;
       height: 40px;
-      width: 35%;
-      padding: 5px 12px;
-      vertical-align: top;
     }
-
-    td:nth-child(2n+1) {
-      width: 15%;
+    td:nth-child(odd), th:nth-child(odd) {
+      width: 20%;
+      padding-right: 15px;
+      text-align: right;
+      background: #f5fafa;
+      background: #fafafa;
     }
+    td:nth-child(even), th:nth-child(even) {
+      width: 30%;
+      padding: 5px;
+      padding-left: 10px;
+      text-align: left;
+      background: #ffffff;
+    }
+    tr:hover {
+      td {
+        background: #f4f5f6;
+        transition: background 0.7s;
+      }
+    }
+    .td-cover {
+      background: #ffffff!important;
+      padding: 5px!important;
+      padding-left: 10px!important;
+    }
+    // tr:nth-child(odd) {
+    //   background: #f5fafa;
+    // }
+    // tr:nth-child(even) {
+    //   background: #ffffff;
+    // }
   }
 }
 </style>
