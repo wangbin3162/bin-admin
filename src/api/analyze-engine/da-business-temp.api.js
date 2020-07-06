@@ -1,6 +1,14 @@
 // 系统日志管理相关请求
 import request from '../request'
 
+/* 请求索引枚举 */
+export function getEsIndex() {
+  return request({
+    url: 'da/enum/esIndexType',
+    method: 'get'
+  })
+}
+
 /* 获取模板列表(树) */
 export function getTemplateTree() {
   return request({
