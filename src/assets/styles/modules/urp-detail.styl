@@ -37,7 +37,50 @@
       }
     }
     .result-detail-box {
-
+      .top-detail {
+        background: #fff;
+        border: 1px solid #eeeeee;
+        padding: 24px;
+        display: flex;
+        margin-bottom: 24px;
+        .icon {
+          width: 100px;
+        }
+        .info {
+          width: calc(100% - 100px);
+        }
+      }
+      .departs-item {
+        color: rgba(0, 0, 0, .65);
+        .dept-name {
+          position: relative;
+          font-size: 16px;
+          margin-bottom: 16px;
+          padding-left: 24px;
+          &:before {
+            content: '';
+            position absolute;
+            left: 2px;
+            top: 8px;
+            width: 8px;
+            height: 8px;
+            background: rgba(0, 0, 0, .65);
+          }
+          &.active {
+            color: #0d85ff;
+            &:before {
+              background: #0d85ff;
+            }
+          }
+        }
+      }
+      .measure-item {
+        .iconfont {
+          font-size: 20px;
+          margin-right: 8px;
+          color: #bab9b9;
+        }
+      }
     }
   }
 }
