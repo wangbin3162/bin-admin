@@ -5,7 +5,7 @@
       <div class="info" flex="cross:center" v-if="userRoles">
         <div class="links">
           <div class="inner">
-            <span class="item"><a href="" @click.stop.prevent="home">首页</a></span>
+            <span class="item"><a @click.stop.prevent="home">首页</a></span>
             <span class="item">
               <router-link to="/urp/listResult">执行记录</router-link>
             </span>
@@ -45,7 +45,9 @@
     methods: {
       home() {
         this.$emit('on-home')
-        this.$router.push('/urp/index')
+        if (this.$route.fullPath !== '/urp/index') {
+          this.$router.push('/urp/index')
+        }
       },
       logout() {
         this.$store.dispatch('logout').then(res => {

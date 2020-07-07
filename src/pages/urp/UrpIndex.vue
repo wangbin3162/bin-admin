@@ -1,7 +1,7 @@
 <template>
   <urp-layout>
     <div class="urp-main-wrap" :class="{'mini-wrap':showList}">
-      <urp-header></urp-header>
+      <urp-header @on-home="handleClear"></urp-header>
       <div class="search-wrap">
         <urp-search v-model="query" @on-search="handleSearch" @on-clear="handleClear"></urp-search>
       </div>
@@ -124,8 +124,11 @@
       handleClear() {
         this.searchList = []
         this.showList = false
-        this.query = { keyword: '', type: 'FO' }
-        this.$router.replace({ path: '/urp/index' })
+        this.query.keyword = ''
+        let { keyword, type } = this.$route.query
+        if (isNotEmpty(keyword) || isNotEmpty(type)) {
+          this.$router.replace({ path: '/urp/index' })
+        }
       },
       // 查看备忘录
       handleCheckMemo(id) {

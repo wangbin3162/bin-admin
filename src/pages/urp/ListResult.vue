@@ -12,21 +12,21 @@
             <img src="../../assets/images/urp/icon_search.png" alt=""/>
             <div>
               <h4>累计查询次数</h4>
-              <p><span>1903</span>条</p>
+              <p><span>{{ countObj.queryNum }}</span>条</p>
             </div>
           </div>
           <div class="item">
             <img src="../../assets/images/urp/icon_jl.png" alt=""/>
             <div>
               <h4>激励次数</h4>
-              <p><span>50</span>条</p>
+              <p><span>{{ countObj.jlNum }}</span>条</p>
             </div>
           </div>
           <div class="item">
             <img src="../../assets/images/urp/icon_cj.png" alt=""/>
             <div>
               <h4>惩戒次数</h4>
-              <p><span>10</span>条</p>
+              <p><span>{{ countObj.cjNum }}</span>条</p>
             </div>
           </div>
         </div>
@@ -94,7 +94,7 @@
 <script>
   import UrpLayout from './components/UrpLayout'
   import UrpHeader from './components/UrpHeader'
-  import { cancelResult, getListResult } from '../../api/urp.api'
+  import { cancelResult, getListResult, getListResultCount } from '../../api/urp.api'
   import mixin from '../../common/mixins/mixin'
 
   export default {
@@ -121,12 +121,22 @@
           recordId: '',
           name: '',
           cancelReason: ''
+        },
+        countObj: {
+          cjNum: 0,
+          jlNum: 0,
+          queryNum: 0
         }
       }
     },
     created() {
       this.resetQuery()
       this.resetRecord()
+      getListResultCount().then(resp => {
+        if (resp.data.code === '0') {
+          this.countObj = resp.data.data
+        }
+      })
     },
     methods: {
       // filter-Bar:重置查询条件
@@ -169,7 +179,11 @@
       },
       // 打印
       print(row) {
-        // TODO
+        let routeUrl = this.$router.resolve({
+          path: '/urp/print',
+          query: { recordId: row.id }
+        })
+        window.open(routeUrl.href, '_blank')
       },
       // 重置对象
       resetRecord() {

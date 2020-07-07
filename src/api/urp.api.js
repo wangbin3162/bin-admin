@@ -56,6 +56,14 @@ export function getMemoDetail(memoId) {
   })
 }
 
+/* 执行记录总览 */
+export function getListResultCount() {
+  return request({
+    url: 'api/urpService/history',
+    method: 'get'
+  })
+}
+
 /* 惩戒激励记录列表 */
 export function getListResult(query) {
   return request({
@@ -124,5 +132,15 @@ function getUrpMeasures(query) {
     url: 'api/urpService/query',
     method: 'post',
     data: { subjectId, type, memoType, refId }
+  })
+}
+
+/* 打印 */
+export function print(recordId) {
+  return request({
+    url: '/api/urpService/print',
+    method: 'post',
+    responseType: 'blob',
+    params: { recordId }
   })
 }

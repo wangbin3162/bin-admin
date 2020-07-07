@@ -38,20 +38,42 @@
     }
     .result-detail-box {
       .top-detail {
+        position: relative;
         background: #fff;
         border: 1px solid #eeeeee;
-        padding: 24px;
+        padding: 32px;
         display: flex;
         margin-bottom: 24px;
         .icon {
-          width: 100px;
+          width: 80px;
         }
         .info {
-          width: calc(100% - 100px);
+          width: calc(100% - 80px);
+          padding-left: 32px;
+        }
+        .memo-typ {
+          position: absolute;
+          display: inline-flex;
+          justify-content: center;
+          align-items: center;
+          top: 0;
+          right: 32px;
+          width: 88px;
+          background: #f5f5f5;
+          padding: 10px 0;
+          text-align: center;
+          border-radius: 0 0 5px 5px;
+          img {
+            margin-right: 4px;
+          }
+          &.red {
+            color: #ee5454;
+          }
         }
       }
       .departs-item {
         color: rgba(0, 0, 0, .65);
+        margin-bottom: 16px;
         .dept-name {
           position: relative;
           font-size: 16px;
@@ -75,10 +97,54 @@
         }
       }
       .measure-item {
+        margin-bottom: 8px;
+        line-height: 1.575em;
         .iconfont {
           font-size: 20px;
           margin-right: 8px;
           color: #bab9b9;
+        }
+      }
+      .memo-item {
+        cursor: pointer;
+        width: 100%;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        padding: 12px 8px 12px 40px;
+        background-image: url("../images/urp/icon_lj.png");
+        background-repeat: no-repeat;
+        background-position: 14px 14px;
+        transition: .3s;
+        &:hover {
+          color: #0d85ff;
+        }
+        &.active {
+          background-color: #f2f8ff;
+          color: #0d85ff;
+        }
+      }
+      .measure-form {
+        height: 100%;
+        margin: -16px -24px;
+        h2 {
+          font-weight: normal;
+          margin-bottom: 8px;
+        }
+        .item {
+          margin-bottom: 8px;
+        }
+        .measures {
+          padding: 16px 24px;
+          height: 310px;
+          overflow: auto;
+        }
+        .form-wrap {
+          overflow: hidden;
+          padding: 24px 24px 0;
+          border-top: 1px solid #eeeeee;
+          background-color: #fffef8;
+          height: 190px;
         }
       }
     }

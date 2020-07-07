@@ -48,6 +48,12 @@ export const constantRouterMap = [
     meta: { title: '执行记录' }
   },
   {
+    path: '/urp/print',
+    name: 'UrpPrint',
+    component: () => import(/* webpackChunkName: "urp" */ '../pages/urp/UrpPrint'),
+    meta: { title: '打印' }
+  },
+  {
     path: '/urp/memoList',
     name: 'MemoList',
     component: () => import(/* webpackChunkName: "urp" */ '../pages/urp/MemoList'),

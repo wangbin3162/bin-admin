@@ -54,7 +54,6 @@
               </div>
             </div>
           </urp-left-right>
-          {{ detail }}
         </div>
       </div>
     </div>
