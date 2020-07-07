@@ -59,7 +59,8 @@
     </b-table>
 
     <b-button style="width: 100%; margin-top: 10px;"
-      type="primary" plain :disabled="isEdit"
+      v-if="!isEdit"
+      type="primary" plain
       @click="add">
       + 添加
     </b-button>

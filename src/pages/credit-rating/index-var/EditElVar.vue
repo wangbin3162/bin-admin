@@ -453,7 +453,7 @@
   .edit-el-var {
     .el-exp {
       padding: 5px;
-      background-color: #262626;
+      background-color: #fafafa;
 
       .flip-list-enter, .flip-list-leave-to {
         opacity: 0;

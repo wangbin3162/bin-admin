@@ -251,7 +251,7 @@
               tempVarCodeList: this.tempVarCodeList,
               params: this.params,
               elText: this.form.tplContent,
-              elJson: this.form.tpl_json
+              elJson: this.form.tplJson
             }
           }
         }
