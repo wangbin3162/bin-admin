@@ -71,7 +71,7 @@
             <b-row>
               <b-col span="12">
                 <b-form-item label="措施类型" prop="measureType">
-                  <b-select v-model="measure.measureType" placeholder="请选择" clearable>
+                  <b-select v-model="measure.measureType" placeholder="请选择" @on-change="handleTypeChange" clearable>
                     <b-option v-for="(val,key) in measureTypeMap" :key="key" :value="key">{{ val }}</b-option>
                   </b-select>
                 </b-form-item>
@@ -85,6 +85,20 @@
             </b-row>
             <b-form-item label="措施内容" prop="measureContent">
               <b-input v-model="measure.measureContent" placeholder="请输入措施内容" type="textarea"/>
+            </b-form-item>
+            <b-row>
+              <b-col span="12">
+                <b-form-item label="措施性质" prop="measureNature">
+                  <b-select v-model="measure.measureNature" placeholder="请选择" clearable>
+                    <b-option v-for="(val,key) in measureNatureMap" :key="key" :value="key">{{ val }}</b-option>
+                  </b-select>
+                </b-form-item>
+              </b-col>
+              <b-col span="12">
+              </b-col>
+            </b-row>
+            <b-form-item label="措施依据" prop="basis">
+              <b-input v-model="measure.basis" placeholder="请输入措施依据" type="textarea"/>
             </b-form-item>
           </b-form>
         </b-collapse-wrap>
@@ -155,6 +169,9 @@
           departId: ''
         },
         measureTypeMap: { 'R': '激励', 'P': '惩戒' },
+        measureNatureJlMap: {},
+        measureNatureCjMap: {},
+        measureNatureMap: {},
         measure: null,
         batchType: batchType,
         columns: [
@@ -176,6 +193,7 @@
     created() {
       this.resetMeasure()
       this.resetQuery()
+      this.resetNatureMap()
     },
     methods: {
       // filter-Bar:重置查询条件
@@ -200,6 +218,7 @@
         this.resetMeasure()
         this.measure = { ...this.measure, ...row }
         this.openEditPage('modify')
+        this.handleTypeChange(this.measure.measureType)
       },
       // 弹出操作记录弹窗
       handleOpenRecordDialog() {
@@ -261,7 +280,9 @@
           measureType: '',
           departId: '',
           departName: '',
-          measureContent: ''
+          measureContent: '',
+          measureNature:'',
+          basis:''
         }
       },
       // 查询所有措施列表
@@ -274,6 +295,34 @@
               total: response.data.total
             })
           }
+        })
+      },
+      // 措施类型切换
+      handleTypeChange(val) {
+         if(val === 'R'){
+             this.measureNatureMap = Object.assign({},this.measureNatureJlMap)
+         }else {
+             this.measureNatureMap = Object.assign({},this.measureNatureCjMap)
+         }
+      },
+      // 初始化措施性质map
+      resetNatureMap() {
+        api.queryNature("cjNature").then(res =>{
+            if (res.data.code === '0') {
+                this.measureNatureCjMap = res.data.data
+                console.log(res.data)
+            } else {
+                this.$notice.danger({ title: '操作错误', desc: res.data.message })
+            }
+        })
+
+        api.queryNature("jlNature").then(res =>{
+            if (res.data.code === '0') {
+                this.measureNatureJlMap = res.data.data
+                console.log(res.data)
+            } else {
+                this.$notice.danger({ title: '操作错误', desc: res.data.message })
+            }
         })
       }
     }

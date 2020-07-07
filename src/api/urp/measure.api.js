@@ -26,7 +26,9 @@ export function createMeasure(measure) {
       measureType: measure.measureType,
       departId: measure.departId,
       departName: measure.departName,
-      measureContent: measure.measureContent
+      measureContent: measure.measureContent,
+      measureNature: measure.measureNature,
+      basis: measure.basis
     }
   })
 }
@@ -42,7 +44,9 @@ export function modifyMeasure(measure) {
       measureType: measure.measureType,
       departId: measure.departId,
       departName: measure.departName,
-      measureContent: measure.measureContent
+      measureContent: measure.measureContent,
+      measureNature: measure.measureNature,
+      basis: measure.basis
     }
   })
 }
@@ -75,5 +79,14 @@ export function oneMeasureName(measure) {
 export function downloadMeasureTemplate() {
   return request.get('/api/urp/measure/downloadMeasureTemplate', {
     responseType: 'blob'
+  })
+}
+
+/* 查询措施性质字典 */
+export function queryNature(groupCode) {
+  return request.get('/api/urp/measure/queryNature', {
+    params: {
+      groupCode: groupCode
+    }
   })
 }
