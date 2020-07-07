@@ -97,6 +97,9 @@
                 <v-simple-label label="有效数据量">{{ detail.validCount }}</v-simple-label>
               </b-col>
             </b-row>
+            <v-simple-label label="错误信息" v-if="detail.jobStatus ==='FAILED'">
+              <b-input v-model="detail.jobMessage" type="textarea" :rows="4" disabled></b-input>
+            </v-simple-label>
           </div>
         </b-collapse-wrap>
         <template slot="footer">
