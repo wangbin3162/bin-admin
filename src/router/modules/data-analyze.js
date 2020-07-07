@@ -46,8 +46,14 @@ export default {
         {
           path: 'collectAnalysis',
           name: 'CollectAnalysis',
-          component: () => import(/* webpackChunkName: "themeSample" */ '../../pages/data-analyze/theme-sample/CollectAnalysis'),
+          component: () => import(/* webpackChunkName: "CollectAnalysis" */ '../../pages/data-analyze/theme-sample/CollectAnalysis'),
           meta: { title: '归集分析' }
+        },
+        {
+          path: 'ratingAnalysis',
+          name: 'RatingAnalysis',
+          component: () => import(/* webpackChunkName: "RatingAnalysis" */ '../../pages/data-analyze/theme-sample/RatingAnalysis'),
+          meta: { title: '评级分析' }
         }
       ]
     }

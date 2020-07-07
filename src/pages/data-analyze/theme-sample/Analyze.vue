@@ -187,7 +187,7 @@
   import permission from '../../../common/mixins/permission'
   import { formatDataSet } from 'bin-charts/src/utils/util'
   import * as api from '../../../api/data-analyze/data-analysis.api'
-  import GrooveSelect from './Groove/GrooveSelect'
+  import GrooveSelect from '../components/GrooveSelect'
 
   require('bin-charts/src/theme/charts-theme')
   export default {

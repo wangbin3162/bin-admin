@@ -181,7 +181,7 @@
       width: 10%;
       padding-right: 15px;
       text-align: right;
-      font-weight: 600;
+      // font-weight: 600;
       // background: #f5fafa;
       // background: #fafafa;
     }

@@ -113,7 +113,7 @@
                   <div flex="main:justify cross:center" class="header-height">
                     <span class="title-text">资源信息分类统计</span>
                     <div>
-                      <b-button type="info" plain round size="small" icon="ios-switch"
+                      <b-button type="primary" plain round size="small" icon="ios-switch"
                         @click="handlePersonClassBtn">
                         {{ query.personClass === 'nat' ? '自然人' : '法人' }}
                       </b-button>
