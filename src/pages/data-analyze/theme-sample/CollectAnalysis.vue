@@ -174,10 +174,6 @@
                     {{ directoryTransferEnum[row.resourceKey] }}
                   </div>
                 </template>
-
-                <template v-slot:count="{ row }">
-                  {{ row.count }}
-                </template>
               </b-table>
             </div>
           </b-card>
@@ -469,20 +465,20 @@
         list: [], // 弹框通用
         bmsjgjfxParams: {}, // 存储部门数据归集统计分析需要用到的参数
         bmsjgjfxColumns: [ // 部门数据归集分析统计
-          { title: '部门名称', slot: 'departId' },
+          { title: '部门名称', key: 'departId' },
           { title: '归集数量（条）', key: 'count', align: 'left' },
           { title: '完整率(%)', key: 'wzl', align: 'left' },
           { title: '占比', slot: 'percent', align: 'center' }
         ],
         bmsjgjfxData: [], // 部门数据归集分析
         zxtbbmColumns: [ // 最新提报部门
-          { title: '部门名称', slot: 'departId' },
-          { title: '资源信息', slot: 'resourceKey', align: 'right' }
+          { title: '部门名称', key: 'departId' },
+          { title: '资源信息', key: 'resourceKey', align: 'right' }
         ],
         zxtbbmData: [], // 最新提报部门
         xxgjjlColumns: [ // 信息归集记录
-          { title: '资源名称', slot: 'resourceKey' },
-          { title: '归集数量（条）', slot: 'count', align: 'right' }
+          { title: '资源名称', key: 'resourceKey' },
+          { title: '归集数量（条）', key: 'count', align: 'right' }
         ],
         xxgjjlData: [], // 信息归集记录
         bmsjgjfxLoading: false,
@@ -668,19 +664,7 @@
       async getResInfoClassif (query) {
         try {
           const res = await api.getZyxxfltjsj(query)
-          const resEnum = {
-            C01: '基本信息',
-            C02: '业务信息',
-            C03: '司法信息',
-            C04: '行政执法信息',
-            C05: '公用事业信息',
-            C06: '信用评价信息',
-            C07: '其他信息'
-          }
-          res.forEach(item => {
-            item.left = resEnum[item.left]
-          })
-          this.barChartOption.dataset = formatDataSet({ xField: 'left', yField: 'count' }, res)
+          this.barChartOption.dataset = formatDataSet({ xField: 'classifyCode', yField: 'count' }, res)
         } catch (error) {
           console.error(error)
         }
@@ -831,7 +815,7 @@
         this.commonDate = this.timeHandler(365, '{y}-{m}-{d}')
         this.resInfoDate = this.timeHandler(365)
         // 获取对应枚举
-        await this.getEnum()
+        // await this.getEnum()
         // 获取初始数据
         this.getBaseData()
         this.getTableData()
