@@ -51,7 +51,7 @@
                 @on-change="handleCurrentChange" @on-page-size-change="handleSizeChange"></b-page>
       </v-table-wrap>
     </page-header-wrap>
-    <page-header-wrap v-show="detailDialog" show-close @on-close="detailDialog=false" title="导入详情">
+    <page-header-wrap v-show="detailDialog" show-close @on-close="detailDialog=false" :title="jobTypeMap[detail.jobType]+'详情'">
       <v-edit-wrap transparent>
         <b-collapse-wrap v-if="detail" :title="jobTypeMap[detail.jobType]+'信息'">
           <div class="detail">
