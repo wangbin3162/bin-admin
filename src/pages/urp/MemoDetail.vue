@@ -31,19 +31,15 @@
             <div slot="left-header">参与部门 <span style="color:#999;">({{ detail.departs.length }})</span></div>
             <div slot="right-header">处置措施</div>
             <div slot="left">
-              <b-timeline>
-                <b-timeline-item v-for="dept in detail.departs" :key="dept.id"
-                                 :color="dept.id===activeDeptID?'primary':'info'">
-                  <span @click="handleSelectDept(dept.id)"
-                        :style="{cursor: 'pointer',color:dept.id===activeDeptID?'#0d85ff':'#35495e'}">
-                    {{ dept.name }}
-                  </span>
-                </b-timeline-item>
-              </b-timeline>
+              <b-anchor container-id="scrollWrapper" show-ink :scroll-offset="16" ref="anchor">
+                <b-anchor-link v-for="dept in detail.departs" :key="dept.id"
+                               :href="`#${dept.id}`" :title="dept.name"></b-anchor-link>
+              </b-anchor>
             </div>
-            <div slot="right">
+            <div slot="right" id="scrollWrapper"
+                 style="position: relative;margin: -16px -24px;height: 500px;overflow:auto;padding: 16px 24px;">
               <div class="departs-item" v-for="dept in detail.departs" :key="dept.id">
-                <div class="dept-name" :class="{'active':dept.id===activeDeptID}"
+                <div class="dept-name" :class="{'active':dept.id===getSelectDept()}"
                      :id="dept.id">
                   {{ dept.name }}
                 </div>
@@ -76,8 +72,7 @@
         detail: null,
         memoTypeMap: { '1': '惩戒', '2': '激励' },
         memoTypeStyleMap: { '1': 'primary', '2': 'danger' },
-        memoStatusMap: { '0': '通报', '1': '实施', '2': '过期' },
-        activeDeptID: ''
+        memoStatusMap: { '0': '通报', '1': '实施', '2': '过期' }
       }
     },
     created() {
@@ -107,19 +102,18 @@
       },
       // 查询详情
       searchDetail() {
-        this.activeDeptID = ''
         getMemoDetail(this.memoId).then(resp => {
           if (resp.data.code === '0') {
             this.detail = resp.data.data
-            if (this.detail.departs && this.detail.departs.length > 0) {
-              this.activeDeptID = this.detail.departs[0].id
-            }
           }
         })
       },
       // 点击选中左侧一个部门
-      handleSelectDept(id) {
-        this.activeDeptID = id
+      getSelectDept() {
+        if (this.$refs.anchor) {
+          return this.$refs.anchor.currentLink.slice(1)
+        }
+        return ''
       }
     }
   }
