@@ -118,6 +118,8 @@
             <v-key-label label="实施部门" label-width="150px">{{ measure.departName }}</v-key-label>
             <v-key-label label="创建部门" label-width="150px">{{ measure.createDeptName }}</v-key-label>
             <v-key-label label="措施内容" label-width="150px" is-bottom>{{ measure.measureContent }}</v-key-label>
+            <v-key-label label="措施性质" label-width="150px" is-bottom>{{ measureNatureMap[measure.measureNature] }}</v-key-label>
+            <v-key-label label="措施依据" label-width="150px" is-bottom>{{ measure.basis }}</v-key-label>
           </div>
         </b-collapse-wrap>
         <template slot="footer">
@@ -138,7 +140,7 @@
   import { requiredRule } from '../../common/utils/validate'
   import RecordList from '../../pages/sys/components/RecordList'
   import VBatchImport from '../../components/VBatch/VBatchImport'
-  import VDownloadTemplate from "../../components/VBatch/VDownloadTemplate";
+  import VDownloadTemplate from '../../components/VBatch/VDownloadTemplate'
 
   const batchType = 'UrpMeasureController' // 模块名称，提供下载模板和批量导入导出
 
@@ -229,6 +231,7 @@
       handleCheck(row) {
         this.measure = { ...row }
         this.openEditPage('check')
+        this.handleTypeChange(this.measure.measureType)
       },
       // 弹窗提示是否删除
       handleRemove(row) {
@@ -300,14 +303,14 @@
       // 措施类型切换
       handleTypeChange(val) {
          if(val === 'R'){
-             this.measureNatureMap = Object.assign({},this.measureNatureJlMap)
+             this.measureNatureMap = Object.assign({}, this.measureNatureJlMap)
          }else {
-             this.measureNatureMap = Object.assign({},this.measureNatureCjMap)
+             this.measureNatureMap = Object.assign({}, this.measureNatureCjMap)
          }
       },
       // 初始化措施性质map
       resetNatureMap() {
-        api.queryNature("cjNature").then(res =>{
+        api.queryNature('cjNature').then(res => {
             if (res.data.code === '0') {
                 this.measureNatureCjMap = res.data.data
                 console.log(res.data)
@@ -316,7 +319,7 @@
             }
         })
 
-        api.queryNature("jlNature").then(res =>{
+        api.queryNature('jlNature').then(res => {
             if (res.data.code === '0') {
                 this.measureNatureJlMap = res.data.data
                 console.log(res.data)
