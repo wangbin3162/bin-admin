@@ -237,7 +237,7 @@
                 // console.log('掩码后：' + value)
               }
               if (field.options) {
-                tmp[key] = field.options[obj[key]]
+                  tmp[key] = field.options[obj[key]] !== undefined ? field.options[obj[key]] : ""
               }
             }
           }
