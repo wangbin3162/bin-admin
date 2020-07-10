@@ -171,7 +171,7 @@
        */
       async treeNodeSelectHandler (nodes, curNode) {
         if (curNode.selected) {
-          const res = await this.appendSectionChildren(curNode)
+          curNode = await this.appendSectionChildren(curNode)
           this.curNode = curNode
           this.parentNode = this.findParentNode(this.treeData, curNode.id)
         } else {
