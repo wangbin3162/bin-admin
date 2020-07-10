@@ -23,9 +23,13 @@
   export default {
     name: 'ImgUpload',
     props: {
-      moduleName: {
+      funName: {
         type: String,
         required: true
+      },
+      moduleName: {
+        type: String,
+        default: ''
       },
       echoId: { // 用于编辑时下载回显 回显id
         type: String,
@@ -58,7 +62,7 @@
           this.imgSrc = e.target.result
           this.hasFile = true
 
-          this.fileUpload(this.moduleName, file)
+          this.fileUpload(file, this.funName, this.moduleName)
         }
         return false
       },
@@ -69,13 +73,13 @@
         this.$emit('clear') // 清除图片事件
       },
       // 图片上传请求
-      async fileUpload (moduleName, file) {
+      async fileUpload (file, funName, moduleName) {
         this.loadiingText = '上传中....'
         this.uploading = true
         this.disabled = true
 
         try {
-          const res = await fileUpload(moduleName, file)
+          const res = await fileUpload(file, funName, moduleName)
           this.$emit('success', res) // 上传成功事件
           this.$message({ type: 'success', content: '图片上传 成功' })
         } catch (error) {
@@ -87,13 +91,13 @@
         this.disabled = false
       },
       // 图片下载请求
-      async fileDownload (moduleName, id) {
+      async fileDownload (id, funName, moduleName) {
         this.loadiingText = '下载中....'
         this.uploading = true
         this.disabled = true
 
         try {
-          const res = await fileDownLoad(moduleName, id)
+          const res = await fileDownLoad(id, funName, moduleName)
           const reader = new FileReader()
           reader.readAsDataURL(res)
           reader.onload = e => {
@@ -111,7 +115,7 @@
       },
       init () {
         if (this.echoId) {
-          this.fileDownload(this.moduleName, this.echoId)
+          this.fileDownload(this.echoId, this.funName, this.moduleName)
         }
       }
     }
@@ -132,6 +136,7 @@
     }
     img {
       max-width: 100%;
+      cursor: pointer;
     }
     .show-model {
       display: block

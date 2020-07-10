@@ -16,7 +16,7 @@
             <v-key-label label="报告须知">{{ detailData.reportDesc }}</v-key-label>
             <v-key-label label="水印图片" is-bottom>
               <div style="padding: 5px 0;">
-                <img-upload moduleName="report"
+                <img-upload funName="report"
                   :echoId="detailData.reportWaterMark"
                   :showModel="true"></img-upload>
               </div>

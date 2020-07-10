@@ -20,6 +20,9 @@ import request from '../request'
  * @property {string} createDept 创建部门
  * @property {string} createDeptName 创建部门名称
  * @property {string} columnCode 栏目编码
+ * @property {string} [thumbnailPath] 缩略图路径id
+ * @property {string} [thumbnailHeight] 缩略图高度
+ * @property {string} [thumbnailWidth] 缩略图宽度
  * @property {string} [title] b-tree组件使用的树节点名称
  * @property {boolean} [expand] b-tree组件使用，是否展开子节点
  * @property {boolean} [loading] b-tree组件使用，异步加载子节点时是否显示加载效果

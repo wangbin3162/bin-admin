@@ -125,18 +125,20 @@ export function downloadExport(id) {
 /**
  * @author haodongdong
  * @description 通用？文件上传接口，目前用于信用报告配置新增图片上传
- * @param {*} moduleName
- * @param {*} file
+ * @param {File} file
+ * @param {string} funName
+ * @param {string} moduleName
  * @returns Promise
  */
-export function fileUpload(moduleName, file) {
+export function fileUpload(file, funName, moduleName = '') {
   return new Promise(async (resolve, reject) => {
     const url = '/api/comm/file/upload'
 
     let data = new FormData()
 
     appendFormData(data, 'uploadFile', file)
-    appendFormData(data, 'funName', moduleName)
+    appendFormData(data, 'funName', funName)
+    appendFormData(data, 'moduleName', moduleName)
 
     try {
       const res = await requestPostFormData(url, data)
@@ -154,11 +156,12 @@ export function fileUpload(moduleName, file) {
 /**
  * @author haodongdong
  * @description 通用？文件下载接口，目前用于信用报告配置图片回显
- * @param {*} moduleName
- * @param {*} file
+ * @param {string} id
+ * @param {string} funName
+ * @param {string} moduleName
  * @returns Promise
  */
-export function fileDownLoad(funName, id) {
+export function fileDownLoad(id, funName, moduleName = '') {
   return new Promise(async (resolve, reject) => {
     try {
       const res = await request({
@@ -167,7 +170,8 @@ export function fileDownLoad(funName, id) {
         method: 'get',
         params: {
           id,
-          funName
+          funName,
+          moduleName
         }
       })
       resolve(res.data)

@@ -69,7 +69,7 @@
             </b-form-item>
 
             <b-form-item label="水印图片">
-              <img-upload moduleName="report"
+              <img-upload funName="report"
                 :echoId="form.reportWaterMark"
                 @success="handleFileUploadSuccess"
                 @clear="handleFileClear"></img-upload>

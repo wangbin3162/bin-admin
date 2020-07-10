@@ -27,12 +27,12 @@
 
         <div flex="box:mean">
           <b-form-item label="序号" prop="colSort" class="mr-15">
-              <b-input-number style="width: 100%" :min="0"
-                v-model="form.colSort" placeholder="请输入序号">
-              </b-input-number>
+            <b-input-number style="width: 100%" :min="0"
+              v-model="form.colSort" placeholder="请输入序号">
+            </b-input-number>
           </b-form-item>
           <b-form-item label="所属组织" prop="time">
-              <b-input placeholder="所属组织" :value="departName" disabled></b-input>
+            <b-input placeholder="所属组织" :value="departName" disabled></b-input>
           </b-form-item>
         </div>
 
@@ -53,6 +53,27 @@
           <b-input v-model="form.brief" type="textarea" :autosize="{minRows: 4,maxRows: 5}"
             placeholder="栏目备注"></b-input>
         </b-form-item>
+
+        <div v-if="form.thumbnailPath !== null && form.thumbnailPath !== ''" flex="box:mean">
+          <b-form-item label="高度" prop="thumbnailHeight" class="mr-15">
+            <b-input-number style="width: 100%" :min="0"
+              v-model="form.thumbnailHeight" placeholder="请输入缩略图高度">
+            </b-input-number>
+          </b-form-item>
+
+          <b-form-item label="宽度" prop="thumbnailWidth">
+            <b-input-number style="width: 100%" :min="0"
+              v-model="form.thumbnailWidth" placeholder="请输入缩略图宽度">
+            </b-input-number>
+          </b-form-item>
+        </div>
+
+        <b-form-item label="缩略图片">
+          <img-upload ref="imgUpload" funName="cms" moduleName="thumbnail"
+            :echoId="form.thumbnailPath"
+            @success="val => form.thumbnailPath = val"
+            @clear="form.thumbnailPath = ''"></img-upload>
+        </b-form-item>
       </b-form>
 
       <div slot="footer">
@@ -65,6 +86,7 @@
 
 <script>
   import { createSection, updateSection } from '../../../api/cms/cms.api'
+  import ImgUpload from '../../credit-rating/credit-report-config/ImgUpload'
 
   /**
    * @typedef {import('../../../api/cms/cms.api').Section} Section
@@ -90,6 +112,7 @@
         default: null
       }
     },
+    components: { ImgUpload },
     data () {
       return {
         open: this.value,
@@ -104,7 +127,10 @@
           colDesc: '',
           keywords: '',
           columnCode: '',
-          brief: '' // 备注
+          brief: '', // 备注
+          thumbnailPath: null,
+          thumbnailHeight: null,
+          thumbnailWidth: null
         },
         rules: {
           colName: [
@@ -118,6 +144,12 @@
           ],
           colUrl: [
             { required: true, message: '栏目地址不能为空', trigger: 'blur' }
+          ],
+          thumbnailHeight: [
+            { required: true, type: 'integer', message: '必须为整数', trigger: 'blur' }
+          ],
+          thumbnailWidth: [
+            { required: true, type: 'integer', message: '必须为整数', trigger: 'blur' }
           ]
         }
       }
@@ -159,6 +191,7 @@
           this.init()
         } else {
           this.parentColName = '无'
+          this.$refs.imgUpload.clearImg()
           this.$refs.form.resetFields()
         }
       },
@@ -201,6 +234,9 @@
           if (this.optType === 'u') {
             this.form = editData
             if (this.parentNode) this.parentColName = this.parentNode.colName
+            this.$nextTick(() => {
+              this.$refs.imgUpload.init() // 回显存在的图片
+            })
           }
         }
       }
