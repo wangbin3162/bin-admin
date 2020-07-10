@@ -36,7 +36,8 @@ export async function getSectionRoots() {
     try {
       const res = await request({
         url: 'api/cms/column/roots',
-        method: 'get'
+        method: 'get',
+        params: { sort: 'colSort,asc' }
       })
       if (res.data.successful) {
        resolve(res.data.data)
@@ -61,7 +62,10 @@ export async function getSectionChildren(parentColId) {
       const res = await request({
         url: 'api/cms/column/children',
         method: 'get',
-        params: { parentColId }
+        params: {
+          parentColId,
+          sort: 'colSort,asc'
+        }
       })
       if (res.data.successful) {
        resolve(res.data.data)

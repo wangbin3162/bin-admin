@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-drawer v-model="open" title="栏目" width="720" @on-visible-change="visibleChangeHandler"
+    <b-drawer v-model="open" :title="title" width="720" @on-visible-change="visibleChangeHandler"
       append-to-body :mask-closable="false">
       <b-form :model="form" :rules="rules" ref="form" label-position="top">
         <div flex="box:mean">
@@ -27,14 +27,16 @@
 
         <div flex="box:mean">
           <b-form-item label="序号" prop="colSort" class="mr-15">
-              <b-input v-model="form.colSort" placeholder="请输入序号"></b-input>
+              <b-input-number style="width: 100%" :min="0"
+                v-model="form.colSort" placeholder="请输入序号">
+              </b-input-number>
           </b-form-item>
           <b-form-item label="所属组织" prop="time">
-              <b-input placeholder="所属组织" disabled></b-input>
+              <b-input placeholder="所属组织" :value="departName" disabled></b-input>
           </b-form-item>
         </div>
 
-        <b-form-item label="栏目地址" prop="colUrl">
+        <b-form-item v-if="form.colType === 'LINK'" label="栏目地址" prop="colUrl">
           <b-input v-model="form.colUrl" placeholder="请输入栏目地址"></b-input>
         </b-form-item>
 
@@ -47,15 +49,15 @@
             placeholder="向搜索引擎说明栏目的主要内容描述"></b-input>
         </b-form-item>
 
-        <b-form-item label="备注" prop="desc">
-          <b-input v-model="form.desc" type="textarea" :autosize="{minRows: 4,maxRows: 5}"
+        <b-form-item label="备注" prop="brief">
+          <b-input v-model="form.brief" type="textarea" :autosize="{minRows: 4,maxRows: 5}"
             placeholder="栏目备注"></b-input>
         </b-form-item>
       </b-form>
 
       <div slot="footer">
         <b-button @click="open = false">取 消</b-button>
-        <b-button type="primary" @click="submitHandler">提 交</b-button>
+        <b-button type="primary" @click="submitHandler" :loading="btnLoading">提 交</b-button>
       </div>
     </b-drawer>
   </div>
@@ -79,6 +81,10 @@
         type: String,
         required: true
       },
+      parentNode: { // 父节点
+        type: Object,
+        default: null
+      },
       editData: { // 待编辑数据 可用于区分是编辑还是新增
         type: Object,
         default: null
@@ -87,16 +93,18 @@
     data () {
       return {
         open: this.value,
+        btnLoading: false,
         parentColName: '无',
         form: {
           parentCol: null,
           colName: '',
           colUrl: '',
           colType: '',
-          colSort: '',
+          colSort: null,
           colDesc: '',
           keywords: '',
-          columnCode: ''
+          columnCode: '',
+          brief: '' // 备注
         },
         rules: {
           colName: [
@@ -107,6 +115,9 @@
           ],
           colType: [
             { required: true, message: '栏目类型不能为空', trigger: 'change' }
+          ],
+          colUrl: [
+            { required: true, message: '栏目地址不能为空', trigger: 'blur' }
           ]
         }
       }
@@ -126,6 +137,12 @@
     computed: {
       colTypeEnmu () {
         return this.$store.state.cms.colType
+      },
+      departName () {
+        return this.$store.state.user.info.departName
+      },
+      title () {
+        return this.optType === 'c' ? '新增栏目' : '编辑栏目'
       }
     },
     created () {
@@ -141,22 +158,33 @@
         if (visible) {
           this.init()
         } else {
+          this.parentColName = '无'
           this.$refs.form.resetFields()
         }
       },
 
       async submitHandler () {
+        this.btnLoading = true
         try {
           const valid = await this.$refs.form.validate()
           if (valid) {
-            const res = this.optType === 'c' ? await createSection(this.form) : await updateSection(this.form)
-            this.$emit('success', res)
+            let res = null
+            if (this.optType === 'c') {
+              res = await createSection(this.form)
+              this.$emit('add-success', res)
+            }
+            if (this.optType === 'u') {
+              await updateSection(this.form)
+              // 更新的时候需要返回form，因为form包含节点的相关状态，像是展开，子节点等。
+              this.$emit('update-success', this.$util.deepClone(this.form))
+            }
             this.open = false
           }
         } catch (error) {
           console.error(error)
           this.$notice.danger({ title: '操作失败', desc: error })
         }
+        this.btnLoading = false
       },
 
       /**
@@ -172,6 +200,7 @@
           }
           if (this.optType === 'u') {
             this.form = editData
+            if (this.parentNode) this.parentColName = this.parentNode.colName
           }
         }
       }

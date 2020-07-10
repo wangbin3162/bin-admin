@@ -4,13 +4,9 @@
       <h3>栏目信息</h3>
 
       <div class="section-btn">
-        <template v-for="btn in [
-            { icon: 'ios-create', type: 'u', tip: '编辑', size: '22px'},
-            { icon: 'ios-trash', type: 'd', tip: '删除', size: '22px'},
-            { icon: 'ios-add', type: 'c', tip: '添加', size: '24px'}
-          ]">
+        <template v-for="btn in btnList">
           <b-tooltip :content="btn.tip" placement="top-start" :key="btn.icon">
-            <b-button type="text" :icon="btn.icon"
+            <b-button type="text" :icon="btn.icon" :disabled="btn.icon === 'loading'"
               text-color="info" :icon-style="{fontSize: btn.size}"
               @click="openEditSectionHandler(btn.type)">
             </b-button>
@@ -19,11 +15,13 @@
       </div>
     </div>
 
-    <b-tree :data="treeData" :load-data="loadDataHandler" @on-select-change="treeNodeSelectHandler"></b-tree>
+    <b-tree :data="treeData" @on-select-change="treeNodeSelectHandler"></b-tree>
 
     <edit-section v-model="openEditSection"
-      @success="successHandler"
+      @add-success="addSuccessHandler"
+      @update-success="updateSuccessHandler"
       :optType="optType"
+      :parentNode="parentNode"
       :editData="curNode">
     </edit-section>
   </div>
@@ -44,6 +42,12 @@
     },
     data () {
       return {
+        btnList: [
+          { icon: 'ios-sync', type: 'r', tip: '刷新', size: '21px' },
+          { icon: 'ios-create', type: 'u', tip: '编辑', size: '22px' },
+          { icon: 'ios-trash', type: 'd', tip: '删除', size: '22px' },
+          { icon: 'ios-add', type: 'c', tip: '添加', size: '24px' }
+        ],
         treeData: [],
         curNode: null, // 当前选中的树节点
         parentNode: null, // 当前选中节点的父节点
@@ -60,6 +64,7 @@
        * @description 获取栏目根节点
        */
       async getSectionRoots () {
+        this.$set(this.btnList[0], 'icon', 'loading')
         try {
           const res = await getSectionRoots()
           this.treeData = this.buildTree(res)
@@ -67,24 +72,31 @@
           console.error(error)
           this.$notice.danger({ title: '请求失败', desc: error })
         }
+        this.$set(this.btnList[0], 'icon', 'ios-sync')
       },
 
       /**
        * @author haodongdong
-       * @description 根据栏目父节点id获取子节点
-       * @param {string} pid 父节点id
-       * @returns {Promise<Section[]>}
+       * @description 如果父节点没子节点的话，根据栏目父节点id获取子节点，然后追加至父节点。
+       * @param {string} pNode 父节点id
+       * @returns {Promise<Section[]>} 返回处理后的父节点
        */
-      async getSectionChildren (pid) {
+      async appendSectionChildren (pNode) {
         return new Promise(async (resolve, reject) => {
           try {
-            const res = await getSectionChildren(pid)
-            resolve(this.buildTree(res))
+            if (pNode.children.length === 0) { // 没有子节点的话则请求
+              this.$set(pNode, 'loading', true)
+              const res = await getSectionChildren(pNode.id)
+              if (res.length > 0) pNode.expand = true
+              pNode.children = this.buildTree(res)
+            }
+            resolve(pNode)
           } catch (error) {
             console.error(error)
             this.$notice.danger({ title: '请求失败', desc: error })
             reject(error)
           }
+          this.$delete(pNode, 'loading')
         })
       },
 
@@ -102,7 +114,7 @@
           } else {
             this.$confirm({
               title: '删除',
-              content: '确定要删除当前栏目吗？',
+              content: `确定要删除【${this.curNode.title}】吗？`,
               loading: true,
               okType: 'danger',
               onOk: async () => {
@@ -133,26 +145,21 @@
        */
       openEditSectionHandler (type) {
         this.optType = type
-        if (type === 'c' || type === 'u') {
+        if (type === 'c') {
           this.openEditSection = true
+        }
+        if (type === 'u') {
+          if (this.curNode) {
+            this.openEditSection = true
+          } else {
+            this.$alert.warning({ title: '提示', content: '请选择栏目后编辑。' })
+          }
         }
         if (type === 'd') {
           this.removeSection()
         }
-      },
-
-      /**
-       * @author haodongdong
-       * @description b-tree组件异步加载回调
-       * @param {Section} node 当前节点
-       * @param {Function} resolve 异步请求完成后加载节点的回调函数
-       */
-      async loadDataHandler (node, resolve) {
-        try {
-          const res = await this.getSectionChildren(node.id)
-          resolve(res)
-        } catch (error) {
-          resolve([])
+        if (type === 'r') {
+          this.getSectionRoots()
         }
       },
 
@@ -162,23 +169,36 @@
        * @param {Section[]} nodes 多选时，已选择的节点数组
        * @param {Section} curNode 当前点击的节点
        */
-      treeNodeSelectHandler (nodes, curNode) {
-        console.log(curNode)
+      async treeNodeSelectHandler (nodes, curNode) {
         if (curNode.selected) {
+          const res = await this.appendSectionChildren(curNode)
           this.curNode = curNode
+          this.parentNode = this.findParentNode(this.treeData, curNode.id)
         } else {
           this.curNode = null
+          this.parentNode = null
         }
       },
 
       /**
        * @author haodongdong
-       * @description EditSection组件编辑成功的回调
+       * @description EditSection组件添加成功的回调
        * @param {Section} section 成功提交的栏目对象
        */
-      successHandler (section) {
+      addSuccessHandler (section) {
         section = this.buildTree([section])[0]
         this.addTreeNode(section)
+      },
+
+      /**
+       * @author haodongdong
+       * @description EditSection组件编辑成功的回调
+       * @param {Section} section 成功更新的栏目对象
+       */
+      updateSuccessHandler (section) {
+        section = this.buildTree([section])[0]
+        this.curNode = section
+        this.updateTreeNode(section)
       },
 
       /**
@@ -210,10 +230,9 @@
       buildTree (sections) {
         sections.forEach((node, index) => {
           node.title = node.colName
-          node.children = []
-          node.expand = false
-          node.loading = false
-          node.selected = false
+          node.children = node.children === undefined ? [] : node.children
+          node.expand = node.expand === undefined ? false : node.expand
+          node.selected = node.selected === undefined ? false : node.selected
         })
         return sections
       },
@@ -224,15 +243,15 @@
        * @param {string} 树节点id
        */
       removeTreeNode (id) {
+        let tree = []
         const parentNode = this.findParentNode(this.treeData, id)
         if (parentNode) {
-          const index = parentNode.children.findIndex(node => node.id === id)
-          parentNode.children.splice(index, 1)
-          parentNode.expand = false
+          tree = parentNode.children
         } else {
-          const index = this.treeData.findIndex(node => node.id === id)
-          this.treeData.splice(index, 1)
+          tree = this.treeData
         }
+        const index = tree.findIndex(treeNode => treeNode.id === id)
+        tree.splice(index, 1)
       },
 
       /**
@@ -241,12 +260,44 @@
        * @param {Section} node 树节点
        */
       addTreeNode (node) {
+        let tree = []
         if (this.curNode) {
           this.curNode.children.push(node)
           this.curNode.expand = true
+          this.sortTreeNode(this.curNode.children)
         } else {
           this.treeData.push(node)
+          this.sortTreeNode(this.treeData)
         }
+      },
+
+      /**
+       * @author haodongdong
+       * @description 更新树节点
+       * @param {Section} node
+       */
+      updateTreeNode (node) {
+        let tree = []
+        const parentNode = this.findParentNode(this.treeData, node.id)
+        if (parentNode) {
+          tree = parentNode.children
+        } else {
+          tree = this.treeData
+        }
+        const index = tree.findIndex(treeNode => treeNode.id === node.id)
+        tree.splice(index, 1, node)
+        this.sortTreeNode(tree)
+      },
+
+      /**
+       * @author haodongdong
+       * @description 用于树的排序
+       * @param {Section[]} tree
+       */
+      sortTreeNode (tree) {
+        tree.sort((a, b) => {
+          return a.colSort - b.colSort
+        })
       }
     }
   }
