@@ -1883,10 +1883,10 @@ bin-code-editor@^0.9.0:
     jsonlint "^1.6.3"
     script-loader "^0.7.2"
 
-bin-ui@^3.4.7:
-  version "3.4.7"
-  resolved "https://registry.npmjs.org/bin-ui/-/bin-ui-3.4.7.tgz#902e8cd1c057e21791a60540b5417f16c92b4a05"
-  integrity sha512-OK7KJp+D4P0q9Va7DGXLNLDTuhNSn35tpKXHMfOc11Mr2Wmx5dlOYV4H4tk0w+bRyS8gKjDYRKWquFIfuZfuHQ==
+bin-ui@^3.4.8:
+  version "3.4.8"
+  resolved "https://registry.npmjs.org/bin-ui/-/bin-ui-3.4.8.tgz#85185dc0b06f184b223c34e52b6d3242db110e99"
+  integrity sha512-O1jPyEDOAEOanhk+x8LR5d9QlywtekksPJ+bvdIuVlJhL3Ses+0Z6og1X5x3PgI1A2Rj1ijrXuEOhnPXaR2hkw==
   dependencies:
     async-validator "^1.11.5"
     js-calendar "^1.2.3"

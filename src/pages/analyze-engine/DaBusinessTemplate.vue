@@ -173,11 +173,6 @@
             trigger: 'blur'
           }],
           tempType: [requiredRule],
-          indices: [requiredRule, {
-            pattern: /^(\w+[,])*\w+$/,
-            message: '索引不合法，字母数字下划线，中间用(,)连接',
-            trigger: 'blur'
-          }],
           tempSource: [requiredRule]
         }
       }

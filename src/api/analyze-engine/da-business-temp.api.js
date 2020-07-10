@@ -1,6 +1,21 @@
 // 系统日志管理相关请求
 import request from '../request'
 
+/* 获取模板参数控件类型枚举 */
+export function getTplControlType() {
+  return request({
+    url: '/da/enum/tplControlType',
+    method: 'get'
+  })
+}
+/* 获取模板参数类型枚举 */
+export function getTplAnalysisType() {
+  return request({
+    url: '/da/enum/tplAnalysisType',
+    method: 'get'
+  })
+}
+
 /* 请求索引枚举 */
 export function getEsIndex() {
   return request({
@@ -59,7 +74,7 @@ export function createBusinessTemp(template, params) {
   return request({
     url: '/da/businessTemplate/create',
     method: 'post',
-    data: {
+    data:  {
       tempName: template.tempName,
       tempCode: template.tempCode,
       tempType: template.tempType,

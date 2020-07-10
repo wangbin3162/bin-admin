@@ -13,11 +13,24 @@
         <span v-else>{{  row.paramCode }}</span>
       </template>
       <template v-slot:paramType="{row,index}">
-        <b-select v-model="totalData[index].paramType" v-if="row.edit" placeholder="参数类型" append-to-body size="small">
+        <b-select v-model="totalData[index].paramType" v-if="row.edit" append-to-body placeholder="数据类型" size="small">
           <b-option value="string">string</b-option>
           <b-option value="number">number</b-option>
         </b-select>
         <span v-else>{{ row.paramType }}</span>
+      </template>
+      <template v-slot:controlType="{row,index}">
+        <b-select v-model="totalData[index].controlType" v-if="row.edit" append-to-body placeholder="控件类型" size="small">
+          <b-option v-for="(val,key) in controlTypeMap" :key="key" :value="key">{{ val }}</b-option>
+        </b-select>
+        <span v-else>{{ controlTypeMap[row.controlType] }}</span>
+      </template>
+      <template v-slot:analysisType="{row,index}">
+        <b-select v-model="totalData[index].analysisType" v-if="row.edit" append-to-body placeholder="参数类型"
+                  size="small">
+          <b-option v-for="(val,key) in analysisTypeMap" :key="key" :value="key">{{ val }}</b-option>
+        </b-select>
+        <span v-else>{{ analysisTypeMap[row.analysisType] }}</span>
       </template>
       <template v-slot:isRequired="{row,index}">
         <b-switch v-model="totalData[index].isRequired" v-if="row.edit" true-value="Y" false-value="N">
@@ -47,9 +60,9 @@
           <b-button v-if="row.edit" @click="handleCancel(index)" size="small">取消</b-button>
           <span v-else style="margin-left: 10px;">
             <b-popover
-                confirm append-to-body
-                title="确认删除此项吗?"
-                @on-ok="handleRemove(index)">
+              confirm append-to-body
+              title="确认删除此项吗?"
+              @on-ok="handleRemove(index)">
               <b-button type="danger" size="small" transparent>删除</b-button>
             </b-popover>
           </span>
@@ -64,7 +77,8 @@
 </template>
 
 <script>
-  import { deepCopy } from '../../../../common/utils/assist'
+  import { deepCopy, isEmpty } from '../../../../common/utils/assist'
+  import { getTplAnalysisType, getTplControlType } from '../../../../api/analyze-engine/da-business-temp.api'
 
   export default {
     name: 'TempParams',
@@ -79,18 +93,30 @@
     data() {
       return {
         fieldsColumns: [
-          { type: 'index', width: 50, align: 'center' },
           { title: '参数名称', slot: 'paramName' },
           { title: '参数编码', slot: 'paramCode' },
-          { title: '参数类型', slot: 'paramType', width: 120 },
+          { title: '数据类型', slot: 'paramType', width: 120 },
+          { title: '控件类型', slot: 'controlType', width: 140 },
+          { title: '参数类型', slot: 'analysisType', width: 140 },
           { title: '是否必填', slot: 'isRequired', width: 100, align: 'center' },
           { title: '默认值', slot: 'defaultVal' },
           { title: '参数说明', slot: 'paramDesc' },
           { title: '操作', slot: 'action', width: 150 }
         ],
         totalData: [],
-        isRequiredMap: { N: '否', Y: '是' }
+        isRequiredMap: { N: '否', Y: '是' },
+        controlTypeMap: {},
+        analysisTypeMap: {}
       }
+    },
+    created() {
+      // 获取参数类型和控件类型枚举
+      getTplControlType().then(resp => {
+        this.controlTypeMap = resp.data.data || {}
+      })
+      getTplAnalysisType().then(resp => {
+        this.analysisTypeMap = resp.data.data || {}
+      })
     },
     watch: {
       value: {
@@ -106,6 +132,8 @@
           paramName: '', // 参数名称
           paramCode: '', // 参数编码
           paramType: 'string', // 参数类型
+          controlType: 'TEXT',
+          analysisType: 'ALL',
           isRequired: 'Y', // 是否必填
           defaultVal: '', // 默认值
           paramDesc: '', // 参数说明
@@ -125,10 +153,12 @@
           this.emitValue() // 移除后需要更新
         } else { // 编辑的则设置取消
           // 从value里获取当前行恢复
-          const { paramName, paramCode, paramType, isRequired, defaultVal, paramDesc } = this.value[index]
+          const { paramName, paramCode, paramType, isRequired, defaultVal, paramDesc, controlType, analysisType } = this.value[index]
           this.totalData[index].paramName = paramName
           this.totalData[index].paramCode = paramCode
           this.totalData[index].paramType = paramType
+          this.totalData[index].controlType = controlType
+          this.totalData[index].analysisType = analysisType
           this.totalData[index].isRequired = isRequired
           this.totalData[index].defaultVal = defaultVal
           this.totalData[index].paramDesc = paramDesc
@@ -140,8 +170,12 @@
         this.emitValue()
       },
       handleSave(row, index) {
-        if (row.paramName.length === 0 || row.paramCode.length === 0) {
-          this.$message({ type: 'danger', content: '参数名称和编码需要填写完整' })
+        if (isEmpty(row.paramName) || isEmpty(row.paramCode)) {
+          this.$message({ type: 'danger', content: '[参数名称] 和 [编码]需要填写完整' })
+          return
+        }
+        if (isEmpty(row.controlType) || isEmpty(row.analysisType)) {
+          this.$message({ type: 'danger', content: '[控件类型] 和 [参数类型]必选' })
           return
         }
         this.totalData[index].edit = false
