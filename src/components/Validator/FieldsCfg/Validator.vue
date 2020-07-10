@@ -78,7 +78,7 @@
             <template v-if="rule.name===RULE.required">
               <div class="info">
                 <span class="param-tip">错误提示：</span>
-                <b-input v-model.trim="checkRulesArr[index].message" size="small" @on-change="emitValue"/>
+                <b-input v-model.trim="checkRulesArr[index].message" size="small" @on-change="emitValue" clearable/>
               </div>
             </template>
             <!--长度参数-->
@@ -93,21 +93,21 @@
               </div>
               <div class="info">
                 <span class="param-tip">错误提示：</span>
-                <b-input v-model.trim="checkRulesArr[index].message" size="small" @on-change="emitValue"/>
+                <b-input v-model.trim="checkRulesArr[index].message" size="small" @on-change="emitValue" clearable/>
               </div>
             </template>
             <!--邮箱参数-->
             <template v-if="rule.name===RULE.email">
               <div class="info">
                 <span class="param-tip">错误提示：</span>
-                <b-input v-model.trim="checkRulesArr[index].message" size="small" @on-change="emitValue"/>
+                <b-input v-model.trim="checkRulesArr[index].message" size="small" @on-change="emitValue" clearable/>
               </div>
             </template>
             <!--手机号码-->
             <template v-if="rule.name===RULE.phone">
               <div class="info">
                 <span class="param-tip">错误提示：</span>
-                <b-input v-model.trim="checkRulesArr[index].message" size="small" @on-change="emitValue"/>
+                <b-input v-model.trim="checkRulesArr[index].message" size="small" @on-change="emitValue" clearable/>
               </div>
             </template>
             <!--正则匹配-->
@@ -117,11 +117,11 @@
                   <b-col span="12">
                     <span class="param-tip">正则规则：</span>
                     <b-input v-model.trim="checkRulesArr[index].regexp" size="small" placeholder="需输入字符格式"
-                             @on-change="emitValue"/>
+                             @on-change="emitValue" clearable/>
                   </b-col>
                   <b-col span="12">
                     <span class="param-tip">错误提示：</span>
-                    <b-input v-model.trim="checkRulesArr[index].message" size="small" @on-change="emitValue"/>
+                    <b-input v-model.trim="checkRulesArr[index].message" size="small" @on-change="emitValue" clearable/>
                   </b-col>
                 </b-row>
               </div>
@@ -137,7 +137,7 @@
               </div>
               <div class="info">
                 <span class="param-tip">错误提示：</span>
-                <b-input v-model.trim="checkRulesArr[index].message" size="small" @on-change="emitValue"/>
+                <b-input v-model.trim="checkRulesArr[index].message" size="small" @on-change="emitValue" clearable/>
               </div>
               <div class="number" style="padding-left: 10px;">
                 <span class="param-tip">忽略大小写：</span>
@@ -155,7 +155,7 @@
               </div>
               <div class="info">
                 <span class="param-tip">错误提示：</span>
-                <b-input v-model.trim="checkRulesArr[index].message" size="small" @on-change="emitValue"/>
+                <b-input v-model.trim="checkRulesArr[index].message" size="small" @on-change="emitValue" clearable/>
               </div>
               <div class="number" style="padding-left: 10px;">
                 <span class="param-tip">忽略大小写：</span>
@@ -173,7 +173,7 @@
               </div>
               <div class="info">
                 <span class="param-tip">错误提示：</span>
-                <b-input v-model.trim="checkRulesArr[index].message" size="small" @on-change="emitValue"/>
+                <b-input v-model.trim="checkRulesArr[index].message" size="small" @on-change="emitValue" clearable/>
               </div>
               <div class="number" style="padding-left: 10px;">
                 <span class="param-tip">忽略大小写：</span>
@@ -187,15 +187,15 @@
                   <span class="param-tip">前置字段：</span>
                 </b-tooltip>
                 <b-input @drop.native="onDrop($event,index)" @dragover.native="allowDrop($event)"
-                         v-model="checkRulesArr[index].preField" size="small" @on-change="emitValue"/>
+                         v-model="checkRulesArr[index].preField" size="small" @on-change="emitValue" clearable/>
               </div>
               <div class="info">
                 <span class="param-tip">错误提示：</span>
-                <b-input v-model.trim="checkRulesArr[index].message" size="small" @on-change="emitValue"/>
+                <b-input v-model.trim="checkRulesArr[index].message" size="small" @on-change="emitValue" clearable/>
               </div>
               <div class="number" style="padding-left: 10px;">
                 <span class="param-tip">忽略大小写：</span>
-                <b-switch v-model="checkRulesArr[index].ignoreCase" size="small" @on-change="emitValue"/>
+                <b-switch v-model="checkRulesArr[index].ignoreCase" size="small" @on-change="emitValue" clearable/>
               </div>
             </template>
             <!--条件必填-->
@@ -204,15 +204,15 @@
                 <span class="param-tip">前置字段：</span>
                 <b-input @drop.native="onDrop($event,index)" @dragover.native="allowDrop($event)"
                          v-model.trim="checkRulesArr[index].preField" size="small"
-                         @on-change="emitValue"/>
+                         @on-change="emitValue" clearable/>
               </div>
               <div class="number">
                 <span class="param-tip">前置字段值：</span>
-                <b-input v-model.trim="checkRulesArr[index].preFieldValue" size="small" @on-change="emitValue"/>
+                <b-input v-model.trim="checkRulesArr[index].preFieldValue" size="small" @on-change="emitValue" clearable/>
               </div>
               <div class="info">
                 <span class="param-tip">错误提示：</span>
-                <b-input v-model.trim="checkRulesArr[index].message" size="small" @on-change="emitValue"/>
+                <b-input v-model.trim="checkRulesArr[index].message" size="small" @on-change="emitValue" clearable/>
               </div>
             </template>
             <!--条件必不填-->
@@ -220,15 +220,15 @@
               <div class="number">
                 <span class="param-tip">前置字段：</span>
                 <b-input @drop.native="onDrop($event,index)" @dragover.native="allowDrop($event)"
-                         v-model.trim="checkRulesArr[index].preField" size="small" @on-change="emitValue"/>
+                         v-model.trim="checkRulesArr[index].preField" size="small" @on-change="emitValue" clearable/>
               </div>
               <div class="number">
                 <span class="param-tip">前置字段值：</span>
-                <b-input v-model.trim="checkRulesArr[index].preFieldValue" size="small" @on-change="emitValue"/>
+                <b-input v-model.trim="checkRulesArr[index].preFieldValue" size="small" @on-change="emitValue" clearable/>
               </div>
               <div class="info">
                 <span class="param-tip">错误提示：</span>
-                <b-input v-model.trim="checkRulesArr[index].message" size="small" @on-change="emitValue"/>
+                <b-input v-model.trim="checkRulesArr[index].message" size="small" @on-change="emitValue" clearable/>
               </div>
             </template>
             <!--条件不为某值-->
@@ -236,19 +236,19 @@
               <div class="number">
                 <span class="param-tip">前置字段：</span>
                 <b-input @drop.native="onDrop($event,index)" @dragover.native="allowDrop($event)"
-                         v-model.trim="checkRulesArr[index].preField" size="small" @on-change="emitValue"/>
+                         v-model.trim="checkRulesArr[index].preField" size="small" @on-change="emitValue" clearable/>
               </div>
               <div class="number">
                 <span class="param-tip">前置字段值：</span>
-                <b-input v-model.trim="checkRulesArr[index].preFieldValue" size="small" @on-change="emitValue"/>
+                <b-input v-model.trim="checkRulesArr[index].preFieldValue" size="small" @on-change="emitValue" clearable/>
               </div>
               <div class="number">
                 <span class="param-tip">不是某值：</span>
-                <b-input v-model.trim="checkRulesArr[index].notValue" size="small" @on-change="emitValue"/>
+                <b-input v-model.trim="checkRulesArr[index].notValue" size="small" @on-change="emitValue" clearable/>
               </div>
               <div class="info">
                 <span class="param-tip">错误提示：</span>
-                <b-input v-model.trim="checkRulesArr[index].message" size="small" @on-change="emitValue"/>
+                <b-input v-model.trim="checkRulesArr[index].message" size="small" @on-change="emitValue" clearable/>
               </div>
             </template>
             <!--值不能相同-->
@@ -256,11 +256,11 @@
               <div class="number">
                 <span class="param-tip">前置字段：</span>
                 <b-input @drop.native="onDrop($event,index)" @dragover.native="allowDrop($event)"
-                         v-model.trim="checkRulesArr[index].preField" size="small" @on-change="emitValue"/>
+                         v-model.trim="checkRulesArr[index].preField" size="small" @on-change="emitValue" clearable/>
               </div>
               <div class="info">
                 <span class="param-tip">错误提示：</span>
-                <b-input v-model.trim="checkRulesArr[index].message" size="small" @on-change="emitValue"/>
+                <b-input v-model.trim="checkRulesArr[index].message" size="small" @on-change="emitValue" clearable/>
               </div>
             </template>
             <!--日期区间-->
@@ -279,11 +279,11 @@
                   <span class="param-tip">比较值/字段：</span>
                 </b-tooltip>
                 <b-input @drop.native="onDrop($event,index)" @dragover.native="allowDrop($event)"
-                         v-model.trim="checkRulesArr[index].time" size="small" @on-change="emitValue"/>
+                         v-model.trim="checkRulesArr[index].time" size="small" @on-change="emitValue" clearable/>
               </div>
               <div class="info">
                 <span class="param-tip">错误提示：</span>
-                <b-input v-model.trim="checkRulesArr[index].message" size="small" @on-change="emitValue"/>
+                <b-input v-model.trim="checkRulesArr[index].message" size="small" @on-change="emitValue" clearable/>
               </div>
             </template>
             <div class="delete">

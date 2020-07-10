@@ -124,7 +124,7 @@
 
 <script>
   import enumObj from './enum'
-  import { deepCopy } from '../../../common/utils/assist'
+  import { isNotEmpty } from '../../../common/utils/assist'
   import VDragItems from '../VDragItems/index'
   import ValidValue from './ValidValue'
   import Validator from './Validator'
@@ -188,7 +188,7 @@
       tokenizerDisabled() {
         if (this.currentIndex !== -1) {
           let item = this.totalData[this.currentIndex]
-          return item.dataType !== 'string' || (item.validValue && item.validValue.length > 0)
+          return item.dataType !== 'string' || isNotEmpty(item.validValue)
         }
         return false
       },
