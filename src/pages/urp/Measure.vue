@@ -71,7 +71,7 @@
             <b-row>
               <b-col span="12">
                 <b-form-item label="措施类型" prop="measureType">
-                  <b-select v-model="measure.measureType" placeholder="请选择" @on-change="handleTypeChange" clearable>
+                  <b-select v-model="measure.measureType" placeholder="请选择" @on-change="handleTypeChange"  :disabled="dialogStatus === 'modify'"  clearable>
                     <b-option v-for="(val,key) in measureTypeMap" :key="key" :value="key">{{ val }}</b-option>
                   </b-select>
                 </b-form-item>
@@ -117,8 +117,8 @@
             <v-key-label label="措施类型" label-width="150px">{{ measureTypeMap[measure.measureType] }}</v-key-label>
             <v-key-label label="实施部门" label-width="150px">{{ measure.departName }}</v-key-label>
             <v-key-label label="创建部门" label-width="150px">{{ measure.createDeptName }}</v-key-label>
-            <v-key-label label="措施内容" label-width="150px" is-bottom>{{ measure.measureContent }}</v-key-label>
-            <v-key-label label="措施性质" label-width="150px" is-bottom>{{ measureNatureMap[measure.measureNature] }}</v-key-label>
+            <v-key-label label="措施内容" label-width="150px">{{ measure.measureContent }}</v-key-label>
+            <v-key-label label="措施性质" label-width="150px">{{ measureNatureMap[measure.measureNature] }}</v-key-label>
             <v-key-label label="措施依据" label-width="150px" is-bottom>{{ measure.basis }}</v-key-label>
           </div>
         </b-collapse-wrap>
@@ -315,7 +315,7 @@
                 this.measureNatureCjMap = res.data.data
                 console.log(res.data)
             } else {
-                this.$notice.danger({ title: '操作错误', desc: res.data.message })
+                this.$notice.danger({ title: '获取措施性质失败', desc: res.data.message })
             }
         })
 
@@ -324,7 +324,7 @@
                 this.measureNatureJlMap = res.data.data
                 console.log(res.data)
             } else {
-                this.$notice.danger({ title: '操作错误', desc: res.data.message })
+                this.$notice.danger({ title: '获取措施性质失败', desc: res.data.message })
             }
         })
       }
