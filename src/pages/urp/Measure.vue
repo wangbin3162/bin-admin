@@ -36,8 +36,10 @@
         <!--中央表格-->
         <b-table :columns="columns" :data="list" :loading="listLoading">
           <template v-slot:measureName="{row}">
-            <b-button type="text" style="overflow: hidden;text-overflow: ellipsis;white-space: nowrap; width: 100%;text-align: left"
-                      :title="row.measureName" @click="handleCheck(row)">{{ row.measureName }}</b-button>
+            <b-button type="text"
+                      style="overflow: hidden;text-overflow: ellipsis;white-space: nowrap; width: 100%;text-align: left"
+                      :title="row.measureName" @click="handleCheck(row)">{{ row.measureName }}
+            </b-button>
           </template>
           <!--类型-->
           <template v-slot:measureType="{row}">{{ measureTypeMap[row.measureType] }}</template>
@@ -71,7 +73,8 @@
             <b-row>
               <b-col span="12">
                 <b-form-item label="措施类型" prop="measureType">
-                  <b-select v-model="measure.measureType" placeholder="请选择" @on-change="handleTypeChange"  :disabled="dialogStatus === 'modify'"  clearable>
+                  <b-select v-model="measure.measureType" placeholder="请选择" @on-change="handleTypeChange"
+                            :disabled="dialogStatus === 'modify'" clearable>
                     <b-option v-for="(val,key) in measureTypeMap" :key="key" :value="key">{{ val }}</b-option>
                   </b-select>
                 </b-form-item>
@@ -79,7 +82,7 @@
               <b-col span="12">
                 <b-form-item label="实施部门" prop="departId">
                   <urp-dept-select v-model="measure.departId" :default-name="measure.departName" show-btn
-                                  @on-choose="({departName})=>{measure.departName=departName}"/>
+                                   @on-choose="({departName})=>{measure.departName=departName}"/>
                 </b-form-item>
               </b-col>
             </b-row>
@@ -146,25 +149,26 @@
 
   export default {
     name: 'Measure',
-    components: {RecordList, VDownloadTemplate, VBatchImport, UrpDeptSelect },
-    mixins: [commonMixin, permission, RecordList, VDownloadTemplate, VBatchImport ],
+    components: { RecordList, VDownloadTemplate, VBatchImport, UrpDeptSelect },
+    mixins: [commonMixin, permission],
     data() {
       const validateMeasureName = (rule, value, callback) => {
         if (value.length > 512) {
           callback(new Error('措施名称必须小于512个字符'))
         } else {
-            api.oneMeasureName(this.measure).then(response => {
-              if (response.data.data) {
-                callback(new Error('同一部门措施名称重复'))
-              } else {
-                callback()
-              }
-            }).catch(() => {
-              callback(new Error('请求验证重复性出错'))
-            })
-          }
+          api.oneMeasureName(this.measure).then(response => {
+            if (response.data.data) {
+              callback(new Error('同一部门措施名称重复'))
+            } else {
+              callback()
+            }
+          }).catch(() => {
+            callback(new Error('请求验证重复性出错'))
+          })
         }
+      }
       return {
+        moduleName: '奖惩措施',
         listQuery: {
           measureName: '',
           measureType: '',
@@ -284,8 +288,8 @@
           departId: '',
           departName: '',
           measureContent: '',
-          measureNature:'',
-          basis:''
+          measureNature: '',
+          basis: ''
         }
       },
       // 查询所有措施列表
@@ -302,30 +306,28 @@
       },
       // 措施类型切换
       handleTypeChange(val) {
-         if(val === 'R'){
-             this.measureNatureMap = Object.assign({}, this.measureNatureJlMap)
-         }else {
-             this.measureNatureMap = Object.assign({}, this.measureNatureCjMap)
-         }
+        if (val === 'R') {
+          this.measureNatureMap = Object.assign({}, this.measureNatureJlMap)
+        } else {
+          this.measureNatureMap = Object.assign({}, this.measureNatureCjMap)
+        }
       },
       // 初始化措施性质map
       resetNatureMap() {
         api.queryNature('cjNature').then(res => {
-            if (res.data.code === '0') {
-                this.measureNatureCjMap = res.data.data
-                console.log(res.data)
-            } else {
-                this.$notice.danger({ title: '获取措施性质失败', desc: res.data.message })
-            }
+          if (res.data.code === '0') {
+            this.measureNatureCjMap = res.data.data
+          } else {
+            this.$notice.danger({ title: '获取措施性质失败', desc: res.data.message })
+          }
         })
 
         api.queryNature('jlNature').then(res => {
-            if (res.data.code === '0') {
-                this.measureNatureJlMap = res.data.data
-                console.log(res.data)
-            } else {
-                this.$notice.danger({ title: '获取措施性质失败', desc: res.data.message })
-            }
+          if (res.data.code === '0') {
+            this.measureNatureJlMap = res.data.data
+          } else {
+            this.$notice.danger({ title: '获取措施性质失败', desc: res.data.message })
+          }
         })
       }
     }
