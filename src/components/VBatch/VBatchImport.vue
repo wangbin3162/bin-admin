@@ -80,7 +80,6 @@
       },
       // 确认进行上传操作
       handleImport() {
-        debugger
         if (this.file) {
           if(this.moduleName === 'UrpMeasureController') {
             this.precondition = false
