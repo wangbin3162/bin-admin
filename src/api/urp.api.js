@@ -78,6 +78,35 @@ export function getListResult(query) {
   })
 }
 
+/* 获取备注列表 */
+export function getRemarkList(query) {
+  return request({
+    url: 'api/urpService/remarks',
+    method: 'get',
+    params: {
+      subjectId: query.subjectId,
+      page: query.page - 1,
+      size: query.size
+    }
+  })
+}
+
+/* 修改备注 */
+export function remarkEdit(remark) {
+  return request({
+    url: 'api/urpService/remarkEdit',
+    method: 'post',
+    data: {
+      subjectId: remark.subjectId,
+      optType: remark.optType,
+      remark: remark.remark,
+      level: remark.level,
+      id: remark.id,
+      isShare: remark.isShare
+    }
+  })
+}
+
 /* 撤销记录 */
 export function cancelResult(obj) {
   let { recordId, cancelReason } = obj
@@ -114,7 +143,7 @@ export function doFeedback(query) {
 }
 
 /* 查询主体信息 */
-function getSubjectDetail(obj) {
+export function getSubjectDetail(obj) {
   let { subjectId, type } = obj
   return request({
     url: 'api/urpService/subjectDetail',

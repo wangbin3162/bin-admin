@@ -1,4 +1,5 @@
 import index from '../pages/index.vue'
+import urp from './urp'
 
 /**
  * 基础路由
@@ -35,42 +36,7 @@ export const constantRouterMap = [
     component: () => import(/* webpackChunkName: "list" */ '../pages/Stock.vue'),
     meta: { title: '股权结构图' }
   },
-  {
-    path: '/urp/index',
-    name: 'UrpIndex',
-    component: () => import(/* webpackChunkName: "urp" */ '../pages/urp/UrpIndex'),
-    meta: { title: '联合奖惩首页' }
-  },
-  {
-    path: '/urp/feedback',
-    name: 'Feedback',
-    component: () => import(/* webpackChunkName: "urp" */ '../pages/urp/Feedback'),
-    meta: { title: '执行记录' }
-  },
-  {
-    path: '/urp/print',
-    name: 'UrpPrint',
-    component: () => import(/* webpackChunkName: "urp" */ '../pages/urp/UrpPrint'),
-    meta: { title: '打印' }
-  },
-  {
-    path: '/urp/memoList',
-    name: 'MemoList',
-    component: () => import(/* webpackChunkName: "urp" */ '../pages/urp/MemoList'),
-    meta: { title: '联合奖惩备忘录' }
-  },
-  {
-    path: '/urp/memoDetail',
-    name: 'MemoDetail',
-    component: () => import(/* webpackChunkName: "urp" */ '../pages/urp/MemoDetail'),
-    meta: { title: '联合奖惩备忘录详情' }
-  },
-  {
-    path: '/urp/listResult',
-    name: 'ListResult',
-    component: () => import(/* webpackChunkName: "urp" */ '../pages/urp/ListResult'),
-    meta: { title: '联合奖惩执行记录' }
-  },
+  ...urp,
   {
     path: '/401',
     component: () => import(/* webpackChunkName: "error" */ '../pages/error/Error401.vue')

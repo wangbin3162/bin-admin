@@ -13,7 +13,10 @@
               <img src="../../assets/images/urp/bwl.png" alt=""/>
             </div>
             <div class="info">
-              <h2 class="mb-10">{{ subject.detail.name }}</h2>
+              <h2 class="mb-10" flex="cross:center">
+                <span class="mr-15">{{ subject.detail.name }}</span>
+                <b-button icon="ios-create" type="text" @click="gotoRemark">备注</b-button>
+              </h2>
               <template v-if="query.type==='FO'">
                 <b-row>
                   <b-col :span="8">
@@ -200,6 +203,10 @@
             this.$message({ type: 'danger', content: resp.data.message || '失败！' })
           }
         })
+      },
+      // 跳转备注列表
+      gotoRemark() {
+        this.$router.push({ path: '/urp/remarkList', query: { ...this.$route.query, name: this.subject.detail.name } })
       },
       // 成功后操作
       successDo(recordId) {
