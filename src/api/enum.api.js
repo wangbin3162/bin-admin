@@ -393,3 +393,23 @@ export async function getServiceDataType() {
     }
   })
 }
+
+/**
+ * @author haodongdong
+ * @description 内容管理--->栏目类型枚举
+ * @returns {Promise}
+ */
+export async function getCmsColType() {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request.get('/api/enum/cms/colType')
+      if (res.data.successful) {
+        resolve(res.data.data)
+      } else {
+        reject(new Error(res.data.message))
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}

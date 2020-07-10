@@ -9,6 +9,7 @@ import creditReportConfig from './modules/credit-rating/credit-report-config'
 import modelCount from './modules/credit-rating/model-count'
 import creditDiff from './modules/credit-service/credit-diff'
 import creditRepair from './modules/credit-service/credit-repair'
+import cms from './modules/cms/news-mgmt'
 
 Vue.use(Vuex)
 
@@ -22,6 +23,7 @@ export default new Vuex.Store({
     creditReportConfig,
     modelCount,
     creditDiff,
-    creditRepair
+    creditRepair,
+    cms
   }
 })
