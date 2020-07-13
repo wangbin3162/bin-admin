@@ -72,7 +72,7 @@
           <img-upload ref="imgUpload" funName="cms" moduleName="thumbnail"
             :echoId="form.thumbnailPath"
             @success="val => form.thumbnailPath = val"
-            @clear="form.thumbnailPath = ''"></img-upload>
+            @clear="imgClearHandler"></img-upload>
         </b-form-item>
       </b-form>
 
@@ -85,7 +85,7 @@
 </template>
 
 <script>
-  import { createSection, updateSection } from '../../../api/cms/cms.api'
+  import { createSection, updateSection, removeSectionImg } from '../../../api/cms/cms.api'
   import ImgUpload from '../../credit-rating/credit-report-config/ImgUpload'
 
   /**
@@ -118,6 +118,7 @@
         open: this.value,
         btnLoading: false,
         parentColName: '无',
+        thumbnailPathCache: '', // 清空图片后缓存图片的thumbnailPath，用于提交时调用删除图片接口
         form: {
           parentCol: null,
           colName: '',
@@ -181,25 +182,13 @@
 
     },
     methods: {
-      /**
-       * @author haodongdong
-       * @description b-drawer组件显示状态改变时的回调
-       * @param {boolean} visible 是否显示
-       */
-      visibleChangeHandler (visible) {
-        if (visible) {
-          this.init()
-        } else {
-          this.parentColName = '无'
-          this.$refs.imgUpload.clearImg()
-          this.$refs.form.resetFields()
-        }
-      },
-
       async submitHandler () {
         this.btnLoading = true
         try {
           const valid = await this.$refs.form.validate()
+
+          if (this.thumbnailPathCache) await removeSectionImg(this.thumbnailPathCache)
+
           if (valid) {
             let res = null
             if (this.optType === 'c') {
@@ -218,6 +207,32 @@
           this.$notice.danger({ title: '操作失败', desc: error })
         }
         this.btnLoading = false
+      },
+
+      /**
+       * @author haodongdong
+       * @description b-drawer组件显示状态改变时的回调
+       * @param {boolean} visible 是否显示
+       */
+      visibleChangeHandler (visible) {
+        if (visible) {
+          this.init()
+        } else {
+          this.parentColName = '无'
+          this.$refs.imgUpload.clearImg()
+          this.$refs.form.resetFields()
+        }
+      },
+
+      /**
+       * @author haodongdong
+       * @description imgUpload组件图片清空回调
+       */
+      imgClearHandler () {
+        this.thumbnailPathCache = this.form.thumbnailPath
+        this.form.thumbnailPath = ''
+        this.form.thumbnailHeight = null
+        this.form.thumbnailWidth = null
       },
 
       /**

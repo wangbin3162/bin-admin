@@ -155,3 +155,28 @@ export async function removeSection(columnId) {
     }
   })
 }
+
+/**
+ * @author haodongdong
+ * @description 删除栏目缩略图
+ * @param {string} columnId 栏目id
+ * @returns {Promise<void>}
+ */
+export async function removeSectionImg(columnId) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: 'api/cms/column/thumbnail/remove',
+        method: 'post',
+        params: { columnId }
+      })
+      if (res.data.successful) {
+       resolve()
+      } else {
+        reject(new Error(res.data.message))
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
