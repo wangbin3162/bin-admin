@@ -205,7 +205,7 @@ export async function getZyxxfltjsj(query) {
         }
       })
       if (res.data.successful) {
-        resolve(res.data.data.content)
+        resolve(res.data.data)
       } else {
         reject(res.data.message)
       }
