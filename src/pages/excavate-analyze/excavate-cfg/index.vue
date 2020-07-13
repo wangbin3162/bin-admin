@@ -35,6 +35,8 @@
           <!--操作栏-->
           <template v-slot:action="{row}">
             <b-button type="text">条件配置</b-button>
+            <b-divider type="vertical"/>
+            <b-button type="text" @click="handleCfgAnalyze(row)">配置分析</b-button>
           </template>
         </b-table>
         <!--下方分页器-->
@@ -43,6 +45,7 @@
                 @on-page-size-change="handleSizeChange"></b-page>
       </v-table-wrap>
     </page-header-wrap>
+    <cfg-panel ref="cfgPanel"/>
   </div>
 </template>
 
@@ -53,10 +56,16 @@
   import { getPersonClassTree } from '../../../api/data-manage/metadata.api'
   import { getClassifyTree } from '../../../api/data-manage/classify.api'
   import * as api from '../../../api/excavate-analyze/excavate-cfg.api'
+  import CfgPanel from './cfg-panel/CfgPanel'
+  import { deepCopy } from '../../../common/utils/assist'
 
   export default {
     name: 'ExcavateCfg',
+    components: { CfgPanel },
     mixins: [commonMixin, permission],
+    provide() {
+      return { Excavate: this }
+    },
     data() {
       return {
         moduleName: '资源信息',
@@ -110,6 +119,11 @@
           status: ''// 状态
         }
         this.handleFilter()
+      },
+      // 配置分析
+      handleCfgAnalyze(row) {
+        this.resource = deepCopy(row)
+        this.$refs.cfgPanel.open()
       },
       /* [数据接口] */
       // 通用枚举
