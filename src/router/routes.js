@@ -3,6 +3,7 @@ import sys from './modules/sys'
 import dataManage from './modules/data-manage'
 import analyzeEngine from './modules/analyze-engine'
 import dataAnalyze from './modules/data-analyze'
+import excavateAnalyze from './modules/excavate-analyze'
 import urp from './modules/urp'
 import creditRating from './modules/credit-rating'
 import creditService from './modules/credit-service'
@@ -20,7 +21,7 @@ import cms from './modules/cms'
   }
  **/
 export const asyncRouterMap = [
-  sys, dataManage, analyzeEngine, dataAnalyze, urp, creditRating, creditService, cms,
+  sys, dataManage, analyzeEngine, dataAnalyze, excavateAnalyze, urp, creditRating, creditService, cms,
   { path: '*', redirect: '/404', hidden: true }
 ]
 
