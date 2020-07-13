@@ -61,7 +61,7 @@
 <script>
   import commonMixin from '../../../common/mixins/mixin'
   import permission from '../../../common/mixins/permission'
-  import { getCmsColType } from '../../../api/enum.api'
+  import { getCmsColType, getCmsContentType, getCmsContentStatus } from '../../../api/enum.api'
   import SectionTree from './SectionTree'
 
   export default {
@@ -104,10 +104,14 @@
        */
       async getEnum () {
         try {
-          const [colType] = await Promise.all([
-            getCmsColType()
+          const [colType, conType, conStatus] = await Promise.all([
+            getCmsColType(),
+            getCmsContentType(),
+            getCmsContentStatus()
           ])
           this.$store.commit('SET_COL_TYPE', colType)
+          this.$store.commit('SET_CON_TYPE', conType)
+          this.$store.commit('SET_CON_STATUS', conStatus)
         } catch (error) {
           console.error(error)
           this.$notice.danger({ title: '请求失败', desc: error })
