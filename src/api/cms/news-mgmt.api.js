@@ -7,7 +7,7 @@ import request from '../request'
 
 /**
  * @typedef {Object} Section 栏目对象
- * @property {string} id
+ * @property {string} [id]
  * @property {string} parentCol 父节点id
  * @property {string} parentColName 父节点名称
  * @property {string} colName 栏目名称
@@ -31,7 +31,7 @@ import request from '../request'
 
 /**
  * @typedef {Object} Content 内容对象
- * @property {string} id
+ * @property {string} [id]
  * @property {string} colId 栏目id
  * @property {string} title 标题
  * @property {string} summary 摘要
@@ -210,7 +210,7 @@ export async function removeSectionImg(columnId) {
  * @param {number} query.size 分页尺寸
  * @param {number} query.page 页数
  */
-export async function getConList(query) {
+export async function getContentList(query) {
   return new Promise(async (resolve, reject) => {
     try {
       const res = await request({
@@ -227,6 +227,81 @@ export async function getConList(query) {
         }
       })
       resolve(res.data)
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
+ * @description 新增内容(新闻)
+ * @param {Content} content
+ * @returns {Promise<void>}
+ */
+export async function createContent(content) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: 'api/cms/content/add',
+        method: 'post',
+        data: content
+      })
+      if (res.data.successful) {
+        resolve()
+      } else {
+        reject(new Error(res.data.message))
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
+ * @description 更新内容(新闻)
+ * @param {Content} content
+ * @returns {Promise<void>}
+ */
+export async function updateContent(content) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: 'api/cms/content/modify',
+        method: 'post',
+        data: content
+      })
+      if (res.data.successful) {
+        resolve()
+      } else {
+        reject(new Error(res.data.message))
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
+ * @description 删除内容(新闻)
+ * @param {string} id 内容(新闻)id
+ * @returns {Promise<void>}
+ */
+export async function removeContent(id) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: 'api/cms/content/remove',
+        method: 'post',
+        params: { id }
+      })
+      if (res.data.successful) {
+        resolve()
+      } else {
+        reject(new Error(res.data.message))
+      }
     } catch (error) {
       reject(error)
     }

@@ -4,10 +4,12 @@
 
     <v-table-tool-bar>
       <b-button type="primary" icon="ios-add-circle-outline"
-        @click="$emit('create')">添加</b-button>
+        @click="$emit('create')" :disabled="!Boolean(columnId)">
+        添加
+      </b-button>
     </v-table-tool-bar>
 
-    <b-table :columns="columns" :data="list">
+    <b-table :columns="columns" :data="list" :loading="loading">
       <template v-slot:contentType="{ row }">
         {{ conType[row.contentType] }}
       </template>
@@ -34,11 +36,11 @@
         </b-select>
       </template>
 
-      <template v-slot:action>
-        <b-button type="text">
+      <template v-slot:action="{ row }">
+        <b-button type="text" @click="editBtnHandler(row)">
           编辑
         </b-button>
-        <b-button type="text" text-color="danger">
+        <b-button type="text" text-color="danger" @click="removeBtnHandler(row.id)">
           删除
         </b-button>
       </template>
@@ -54,7 +56,7 @@
 <script>
   import { mapState } from 'vuex'
   import permission from '../../../../common/mixins/permission'
-  import { getConList } from '../../../../api/cms/news-mgmt.api'
+  import { getContentList, removeContent } from '../../../../api/cms/news-mgmt.api'
   import TableSearch from './table-search'
 
   export default {
@@ -68,6 +70,7 @@
     },
     data () {
       return {
+        loading: false,
         total: 0,
         query: {
           columnId: this.columnId,
@@ -87,8 +90,7 @@
           { title: '状态', slot: 'contentStatus' },
           { title: '操作', slot: 'action', width: 120 }
         ],
-        list: [],
-        curRow: null
+        list: []
       }
     },
     watch: {
@@ -107,22 +109,32 @@
       })
     },
     created () {
-      this.getConList(this.query)
+      this.getContentList()
     },
     methods: {
-      async getConList (query) {
+      /**
+       * @author haodongdong
+       * @description 获取内容(新闻)列表
+       */
+      async getContentList () {
+        this.loading = true
         try {
-          const res = await getConList(query)
+          const res = await getContentList(this.query)
           this.total = res.total
           this.list = res.rows
         } catch (error) {
           console.error(error)
         }
+        this.loading = false
       },
 
+      /**
+       * @author haodongdong
+       * @description 搜索组件触发search事件回调
+       */
       searchHandler () {
         this.query.page = 1
-        this.getConList(this.query)
+        this.getContentList()
       },
 
       resetHandler () {
@@ -133,12 +145,58 @@
         console.log(val)
       },
 
-      pageChangeHandler () {
-
+      /**
+       * @author haodongdong
+       * @description 编辑按钮回调
+       * @param {Content} row
+       */
+      editBtnHandler (row) {
+        this.$emit('edit', this.$util.deepClone(row))
       },
 
-      pageSizeChangeHandler () {
+      /**
+       * @author haodongdong
+       * @description 删除按钮回调
+       * @param {string} id 内容(新闻)id
+       */
+      removeBtnHandler (id) {
+        this.$confirm({
+          title: '删除',
+          content: '确定要删除当前内容？',
+          loading: true,
+          okType: 'danger',
+          onOk: async () => {
+            try {
+              await removeContent(id)
+              this.$message({ type: 'success', content: '操作成功' })
+              this.getContentList()
+            } catch (error) {
+              this.$notice.danger({ title: '操作错误', desc: error })
+            }
+            this.$modal.remove()
+          }
+        })
+      },
 
+      /**
+       * @author haodongdong
+       * @description 分页组件切换分页按钮回调
+       * @param {number} page 当前页面
+       */
+      pageChangeHandler (page) {
+        this.query.page = page
+        this.getContentList()
+      },
+
+      /**
+       * @author haodongdong
+       * @description 分页组件，页面尺寸切换事件
+       * @param {number} size
+       */
+      pageSizeChangeHandler (size) {
+        this.query.page = 1
+        this.query.size = size
+        this.getContentList()
       }
     }
   }

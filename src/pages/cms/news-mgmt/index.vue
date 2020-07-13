@@ -6,14 +6,19 @@
          @section-change="colId => columnId = colId">
         </section-tree>
 
-        <table-con :columnId="columnId"
-          @create="setPageStatus('create')">
+        <table-con ref="tableCon" :columnId="columnId"
+          @create="setPageStatus('create')"
+          @edit="editHandler">
         </table-con>
       </v-table-wrap>
     </page-header-wrap>
 
-    <edit v-if="isEdit"
-      @close="setPageStatus(null)">
+    <edit
+      v-if="isEdit"
+      :columnId="columnId"
+      :editData="curRow"
+      @close="editCloseHandler"
+      @success="editSuccessHandler">
     </edit>
   </div>
 </template>
@@ -25,6 +30,10 @@
   import TableCon from './table-con'
   import Edit from './Edit'
 
+  /**
+   * @typedef {import('../../../api/cms/news-mgmt.api').Content} Content
+   */
+
   export default {
     name: 'NewsMgmt',
     components: {
@@ -34,7 +43,8 @@
     },
     data () {
       return {
-        columnId: ''
+        columnId: '',
+        curRow: null // 存储当前行
       }
     },
     computed: {
@@ -76,6 +86,34 @@
           console.error(error)
           this.$notice.danger({ title: '请求失败', desc: error })
         }
+      },
+
+      /**
+       * @author haodongdong
+       * @description table-con组件edit事件回调
+       * @param {Content} row 点击编辑按钮所在行数据
+       */
+      editHandler (row) {
+        this.curRow = row
+        this.setPageStatus('edit')
+      },
+
+      /**
+       * @author haodongdong
+       * @description edit组件close事件回调
+       */
+      editCloseHandler () {
+        this.curRow = null
+        this.setPageStatus(null)
+      },
+
+      /**
+       * @author haodongdong
+       * @description edit组件编辑成功回调
+       */
+      editSuccessHandler () {
+        this.$refs.tableCon.getContentList()
+        this.setPageStatus(null)
       }
     }
   }

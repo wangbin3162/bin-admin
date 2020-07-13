@@ -89,7 +89,7 @@
   import ImgUpload from '../../credit-rating/credit-report-config/ImgUpload'
 
   /**
-   * @typedef {import('../../../api/cms/cms.api').Section} Section
+   * @typedef {import('../../../api/cms/news-mgmt.api').Section} Section
    */
 
   export default {
