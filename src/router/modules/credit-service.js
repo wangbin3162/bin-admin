@@ -9,7 +9,7 @@ export default {
   redirect: 'noRedirect',
   meta: {
     title: '信用服务',
-    icon: 'ios-filing'
+    icon: 'ios-journal'
   },
   children: [
     {

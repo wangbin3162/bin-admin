@@ -10,7 +10,7 @@ export default {
   redirect: 'noRedirect',
   meta: {
     title: '内容管理',
-    icon: 'ios-create'
+    icon: 'ios-tv'
   },
   children: [
     {
