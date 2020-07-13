@@ -30,6 +30,23 @@ import request from '../request'
  */
 
 /**
+ * @typedef {Object} Content 内容对象
+ * @property {string} id
+ * @property {string} colId 栏目id
+ * @property {string} title 标题
+ * @property {string} summary 摘要
+ * @property {string} linkUrl 链接地址
+ * @property {string} contentType 文章类型
+ * @property {boolean} isTop 是否置顶
+ * @property {number} orderNo 排序码
+ * @property {string} keywords 关键字
+ * @property {string} description 描述
+ * @property {string} source 创建机构
+ * @property {string} brief 备注
+ * @property {string} detail 文章主体部分
+ */
+
+/**
  * @author haodongdong
  * @description 查询栏目所有根节点
  * @returns {Promise<Section>}
@@ -175,6 +192,41 @@ export async function removeSectionImg(columnId) {
       } else {
         reject(new Error(res.data.message))
       }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
+ * @description 获取栏目下的内容列表(新闻列表)
+ * @returns {Promise<Content>}
+ * @param {Object} query 查询参数
+ * @param {string} query.columnId 所属栏目id
+ * @param {string} query.title 标题
+ * @param {string} query.contentType 内容类型
+ * @param {string} query.contentStatus 内容状态
+ * @param {number} query.size 分页尺寸
+ * @param {number} query.page 页数
+ */
+export async function getConList(query) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: 'api/cms/content/search',
+        method: 'get',
+        params: {
+          columnId: query.columnId,
+          title: query.title,
+          contentType: query.contentType,
+          contentStatus: query.contentStatus,
+          size: query.size,
+          page: query.page - 1,
+          sort: 'isTop,desc'
+        }
+      })
+      resolve(res.data)
     } catch (error) {
       reject(error)
     }

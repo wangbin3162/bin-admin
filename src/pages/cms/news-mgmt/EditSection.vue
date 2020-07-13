@@ -85,7 +85,7 @@
 </template>
 
 <script>
-  import { createSection, updateSection, removeSectionImg } from '../../../api/cms/cms.api'
+  import { createSection, updateSection, removeSectionImg } from '../../../api/cms/news-mgmt.api'
   import ImgUpload from '../../credit-rating/credit-report-config/ImgUpload'
 
   /**
@@ -169,7 +169,7 @@
     },
     computed: {
       colTypeEnmu () {
-        return this.$store.state.cms.colType
+        return this.$store.state.newsMgmt.colType
       },
       departName () {
         return this.$store.state.user.info.departName
