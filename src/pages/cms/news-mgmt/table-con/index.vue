@@ -19,7 +19,9 @@
       </template>
 
       <template v-slot:thumbnailPath>
-        <b-button type="text">新增</b-button>
+        <b-button type="text" @click="openThumbnail = true">
+          set
+        </b-button>
       </template>
 
       <template v-slot:isTop="{ row }">
@@ -50,6 +52,8 @@
       @on-change="pageChangeHandler"
       @on-page-size-change="pageSizeChangeHandler">
     </b-page>
+
+    <thumbnail v-model="openThumbnail" :newsId="newsId"></thumbnail>
   </div>
 </template>
 
@@ -57,7 +61,8 @@
   import { mapState } from 'vuex'
   import permission from '../../../../common/mixins/permission'
   import { getContentList, removeContent } from '../../../../api/cms/news-mgmt.api'
-  import TableSearch from './table-search'
+  import TableSearch from './TableSearch'
+  import Thumbnail from './Thumbnail'
 
   export default {
     name: 'newsMgmtTableCon',
@@ -66,10 +71,12 @@
       'columnId'
     ],
     components: {
-      TableSearch
+      TableSearch,
+      Thumbnail
     },
     data () {
       return {
+        openThumbnail: false,
         loading: false,
         total: 0,
         query: {
@@ -90,7 +97,8 @@
           { title: '状态', slot: 'contentStatus' },
           { title: '操作', slot: 'action', width: 120 }
         ],
-        list: []
+        list: [],
+        newsId: null
       }
     },
     watch: {
