@@ -196,6 +196,7 @@ export async function exportPDF(params) {
         data: {
           personId: params.personId,
           configId: params.configId,
+          modelId: params.modelId,
           modelName: params.modelName,
           maskCode: params.maskCode
         }
