@@ -98,7 +98,7 @@
           orderNo: null,
           keywords: '',
           description: '',
-          source: '',
+          source: this.$store.state.user.info.departId,
           brief: '',
           detail: ''
         },

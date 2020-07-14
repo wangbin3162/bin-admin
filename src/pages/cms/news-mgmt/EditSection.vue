@@ -85,7 +85,7 @@
 </template>
 
 <script>
-  import { createSection, updateSection, removeSectionImg } from '../../../api/cms/news-mgmt.api'
+  import { createSection, updateSection } from '../../../api/cms/news-mgmt.api'
   import ImgUpload from '../../credit-rating/credit-report-config/ImgUpload'
 
   /**
@@ -118,7 +118,6 @@
         open: this.value,
         btnLoading: false,
         parentColName: '无',
-        thumbnailPathCache: '', // 清空图片后缓存图片的thumbnailPath，用于提交时调用删除图片接口
         form: {
           parentCol: null,
           colName: '',
@@ -187,8 +186,6 @@
         try {
           const valid = await this.$refs.form.validate()
 
-          if (this.thumbnailPathCache) await removeSectionImg(this.thumbnailPathCache)
-
           if (valid) {
             let res = null
             if (this.optType === 'c') {
@@ -228,11 +225,8 @@
        * @author haodongdong
        * @description imgUpload组件图片清空回调
        */
-      imgClearHandler () {
-        this.thumbnailPathCache = this.form.thumbnailPath
-        this.form.thumbnailPath = ''
-        this.form.thumbnailHeight = null
-        this.form.thumbnailWidth = null
+      async imgClearHandler () {
+        this.form.thumbnailPath = null
       },
 
       /**
