@@ -28,7 +28,8 @@
           </v-filter-item>
 
           <v-filter-item title="发布时间" :span="8">
-            <b-date-picker type="daterange" placement="bottom-start"
+            <b-date-picker v-model="dateStrArr" type="daterange" placement="bottom-start"
+              @on-change="dateChangeHandler"
               placeholder="请选择发布时间">
             </b-date-picker>
           </v-filter-item>
@@ -51,7 +52,8 @@
     data () {
       return {
         filterOpened: false,
-        query: this.value
+        query: this.value,
+        dateStrArr: []
       }
     },
     watch: {
@@ -90,6 +92,15 @@
        */
       resetQueryHandler () {
         this.$emit('reset', this.query)
+      },
+
+      /**
+       * @author haodongdong
+       * @description 时间选择组件时间改变回调
+       * @param {string[]} dateStrArr 包含开始于结束日期时间字符串的数组
+       */
+      dateChangeHandler (dateStrArr) {
+        console.log(dateStrArr)
       }
     }
   }

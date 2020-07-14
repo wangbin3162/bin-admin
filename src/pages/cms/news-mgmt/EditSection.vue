@@ -86,7 +86,7 @@
 
 <script>
   import { createSection, updateSection } from '../../../api/cms/news-mgmt.api'
-  import ImgUpload from '../../credit-rating/credit-report-config/ImgUpload'
+  import ImgUpload from '../../../components/ImgUpload'
 
   /**
    * @typedef {import('../../../api/cms/news-mgmt.api').Section} Section

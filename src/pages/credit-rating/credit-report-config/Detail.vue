@@ -33,7 +33,7 @@
 </template>
 
 <script>
-  import ImgUpload from './ImgUpload'
+  import ImgUpload from '../../../components/ImgUpload'
 
   export default {
     name: 'CreditReportConfigDetail',

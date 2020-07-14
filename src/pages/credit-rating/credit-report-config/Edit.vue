@@ -89,7 +89,7 @@
 
 <script>
   import { createCreditReport, updateCreditReport } from '../../../api/credit-rating/credit-report-config.api'
-  import ImgUpload from './ImgUpload'
+  import ImgUpload from '../../../components/ImgUpload'
 
   export default {
     name: 'CreditReportConfigEdit',

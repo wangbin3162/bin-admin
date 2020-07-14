@@ -130,13 +130,18 @@
 
       /**
        * @author haodongdong
-       * @description 搜索组件触发search事件回调
+       * @description 搜索组件触发搜索按钮search事件回调
        */
       searchHandler () {
         this.query.page = 1
-        this.getContentList()
+        console.log(this.query)
+        // this.getContentList()
       },
 
+      /**
+       * @author haodongdong
+       * @description 搜索组件触发重置按钮reset事件回调
+       */
       resetHandler () {
 
       },
