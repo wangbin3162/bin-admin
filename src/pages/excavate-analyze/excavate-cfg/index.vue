@@ -6,27 +6,14 @@
         <b-tree :data="treeData" slot="tree" @on-select-change="handTreeCurrentChange"></b-tree>
         <!--查询条件-->
         <v-filter-bar @keyup-enter="handleFilter">
-          <v-filter-item title="资源名称" :span="8">
+          <v-filter-item title="资源名称">
             <b-input v-model.trim="listQuery.resourceName" placeholder="资源名称(中文名)" clearable></b-input>
           </v-filter-item>
-          <v-filter-item title="资源性质" :span="8">
-            <v-cascade :data="resPropertyOptions" v-model="listQuery.resProperty" style="width: 100%;"></v-cascade>
+          <v-filter-item title="已配置" :span="3">
+            <b-switch v-model="listQuery.hasConfig" @on-change="handleFilter"></b-switch>
           </v-filter-item>
           <!--添加查询按钮位置-->
-          <v-filter-item :span="8" @on-search="handleFilter" @on-reset="resetQuery"
-                         :show-toggle="true" :is-opened="filterOpened" @on-toggle="filterOpened=!filterOpened"/>
-          <template v-if="filterOpened">
-            <v-filter-item title="资源状态" :span="8">
-              <b-select v-model="listQuery.status" clearable>
-                <b-option v-for="(value,key) in resStatusMap" :key="key" :value="key">{{ value }}</b-option>
-              </b-select>
-            </v-filter-item>
-            <v-filter-item title="可用状态" :span="8">
-              <b-select v-model="listQuery.availableStatus" clearable>
-                <b-option v-for="(value,key) in availableStatusMap" :key="key" :value="key">{{ value }}</b-option>
-              </b-select>
-            </v-filter-item>
-          </template>
+          <v-filter-item @on-search="handleFilter" @on-reset="resetQuery"/>
         </v-filter-bar>
         <!--中央表格-->
         <b-table :columns="columns" :data="list" :loading="listLoading">
@@ -34,7 +21,7 @@
           <template v-slot:resProperty="{row}">{{ resPropertyMap[row.resProperty] }}</template>
           <!--操作栏-->
           <template v-slot:action="{row}">
-            <b-button type="text">条件配置</b-button>
+            <b-button type="text" @click="handleConditionConfig(row)">条件配置</b-button>
             <b-divider type="vertical"/>
             <b-button type="text" @click="handleCfgAnalyze(row)">配置分析</b-button>
           </template>
@@ -45,6 +32,7 @@
                 @on-page-size-change="handleSizeChange"></b-page>
       </v-table-wrap>
     </page-header-wrap>
+    <condition-config ref="conditionConfig" @on-close="handleCancel"/>
     <cfg-panel ref="cfgPanel"/>
   </div>
 </template>
@@ -53,15 +41,14 @@
   import commonMixin from '../../../common/mixins/mixin'
   import permission from '../../../common/mixins/permission'
   import { getFieldCtrl } from '../../../api/enum.api'
-  import { getPersonClassTree } from '../../../api/data-manage/metadata.api'
-  import { getClassifyTree } from '../../../api/data-manage/classify.api'
   import * as api from '../../../api/excavate-analyze/excavate-cfg.api'
   import CfgPanel from './cfg-panel/CfgPanel'
   import { deepCopy } from '../../../common/utils/assist'
+  import ConditionConfig from './ConditionConfig'
 
   export default {
     name: 'ExcavateCfg',
-    components: { CfgPanel },
+    components: { ConditionConfig, CfgPanel },
     mixins: [commonMixin, permission],
     provide() {
       return { Excavate: this }
@@ -72,16 +59,14 @@
         listQuery: {
           resourceCode: '', // 所属分类
           resourceName: '', // 资源名称(中文名)
-          resProperty: '', // 资源性质
-          availableStatus: '', // 可用状态
-          status: '' // 状态
+          hasConfig: false // 已配置
         },
         treeData: [],
         columns: [
           { title: '资源名称', key: 'resourceName' },
           { title: '主体类别', slot: 'personClass' },
-          { title: '资源性质', slot: 'resProperty', align: 'center' },
-          { title: '数据来源', key: 'source', width: 130, align: 'center' },
+          { title: '资源性质', slot: 'resProperty', width: 150, align: 'center' },
+          { title: '数据来源', key: 'source', width: 150, align: 'center' },
           { title: '操作', slot: 'action', width: 200 }
         ],
         resource: null,
@@ -124,11 +109,14 @@
           size: 10,
           resourceCode: this.currentTreeNode ? this.currentTreeNode.code : '', // 类目类别所属分类
           resourceName: '', // 资源名称(中文名)
-          resProperty: '', // 资源性质
-          availableStatus: '', // 可用状态
-          status: ''// 状态
+          hasConfig: false // 已配置
         }
         this.handleFilter()
+      },
+      // 条件配置列表
+      handleConditionConfig(row) {
+        this.dialogStatus = 'conditionConfig'
+        this.$refs.conditionConfig.open(row.resourceKey, row.resourceName)
       },
       // 配置分析
       handleCfgAnalyze(row) {
@@ -143,7 +131,7 @@
           this.fieldCtrlMap = res.data.data || {}
         })
         // 主体类别树信息 code=A
-        getPersonClassTree().then(res => {
+        api.getPersonClassTree().then(res => {
           // 返回的树形需要格式化成级联菜单的结构，并需要扁平化一次
           let tree = res.data.data
           let personClasses = []
@@ -234,7 +222,7 @@
       initTree() {
         this.treeData = []
         // 请求响应返回树结构
-        getClassifyTree('C').then(response => {
+        api.getTypeTree().then(response => {
           const tree = response.data.data
           // 根据返回的数组格式化为树结构的格式，并追加parents用于级联选择和展开
           let data = tree ? this.treeMapper(tree, null, ['code']) : {}
@@ -267,7 +255,3 @@
     }
   }
 </script>
-
-<style scoped>
-
-</style>
