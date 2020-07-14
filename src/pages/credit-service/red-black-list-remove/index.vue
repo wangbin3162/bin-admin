@@ -151,7 +151,7 @@
       },
       // 去配置按钮回调
       handleConfigBtn () {
-        window.open('/#/sys/setting/dict')
+        window.open('#/sys/setting/dict')
       },
       // 模板下载按钮回调
       async handleDownloadTemplate() {
@@ -191,8 +191,8 @@
         this.loading = true
         try {
           const res = await getLeftTreeNode()
-          // res.redList = []
-          // res.blackList = []
+          res.redList = []
+          res.blackList = []
           this.treeData = this.buildTree(res)
         } catch (error) {
           console.error(error)
