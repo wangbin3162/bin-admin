@@ -1,8 +1,8 @@
 const newsMgmt = {
   state: {
     colType: {}, // 栏目类型
-    conType: {}, // 内容类型
-    conStatus: {}, // 内容状态
+    contentType: {}, // 内容类型
+    contentStatus: {}, // 内容状态
     pageStatus: 'info' // 页面状态，用于切换显示、新增、编辑等页面
   },
   getters: {
@@ -17,11 +17,11 @@ const newsMgmt = {
     SET_COL_TYPE (state, colType) {
       state.colType = colType
     },
-    SET_CON_TYPE (state, conType) {
-      state.conType = conType
+    SET_CONTENT_TYPE (state, contentType) {
+      state.contentType = contentType
     },
-    SET_CON_STATUS (state, conStatus) {
-      state.conStatus = conStatus
+    SET_CONTENT_STATUS (state, contentStatus) {
+      state.contentStatus = contentStatus
     },
     SET_PAGE_STATUS (state, pageStatus) {
       state.pageStatus = pageStatus

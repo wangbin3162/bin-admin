@@ -11,7 +11,7 @@
 
     <b-table :columns="columns" :data="list" :loading="loading">
       <template v-slot:contentType="{ row }">
-        {{ conType[row.contentType] }}
+        {{ contentType[row.contentType] }}
       </template>
 
       <template v-slot:publishDate="{ row }">
@@ -29,8 +29,8 @@
 
       <template v-slot:contentStatus="{ index }">
         <b-select appendToBody
-          v-model="list[index].contentStatus" @on-change="conStatusChangeHandler">
-          <b-option v-for="(value, key) in conStatus" :key="key" :value="key">
+          v-model="list[index].contentStatus" @on-change="contentStatusChangeHandler">
+          <b-option v-for="(value, key) in contentStatus" :key="key" :value="key">
             {{ value }}
           </b-option>
         </b-select>
@@ -104,8 +104,8 @@
     computed: {
       ...mapState({
         colType: state => state.newsMgmt.colType,
-        conType: state => state.newsMgmt.conType,
-        conStatus: state => state.newsMgmt.conStatus
+        contentType: state => state.newsMgmt.contentType,
+        contentStatus: state => state.newsMgmt.contentStatus
       })
     },
     created () {
@@ -141,7 +141,7 @@
 
       },
 
-      conStatusChangeHandler (val) {
+      contentStatusChangeHandler (val) {
         console.log(val)
       },
 

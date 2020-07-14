@@ -15,9 +15,9 @@
             </b-form-item>
 
             <div flex="box:mean">
-              <b-form-item label="内容类型" class="mr-15">
+              <b-form-item label="内容类型" prop="contentType" class="mr-15">
                 <b-select v-model="form.contentType">
-                  <b-option v-for="(value, key) in conType" :key="key" :value="key">
+                  <b-option v-for="(value, key) in contentType" :key="key" :value="key">
                     {{ value }}
                   </b-option>
                 </b-select>
@@ -25,11 +25,6 @@
 
               <b-form-item label="发布组织" class="mr-15">
                 <b-input placeholder="发布组织" disabled :value="departName"></b-input>
-              </b-form-item>
-
-              <b-form-item label="发布时间" class="mr-15">
-                <b-date-picker type="datetime" placeholder="选择发布时间">
-                </b-date-picker>
               </b-form-item>
 
               <b-form-item label="排序">
@@ -108,13 +103,16 @@
           ],
           summary: [
             { required: true, message: '内容摘要不能为空', trigger: 'blur' }
+          ],
+          contentType: [
+            { required: true, message: '内容类型不能为空', trigger: 'change' }
           ]
         }
       }
     },
     computed: {
       ...mapState({
-        conType: state => state.newsMgmt.conType
+        contentType: state => state.newsMgmt.contentType
       }),
       departName () {
         return this.$store.state.user.info.departName

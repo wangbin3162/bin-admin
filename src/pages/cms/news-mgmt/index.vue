@@ -59,8 +59,8 @@
     methods: {
       ...mapMutations({
         setColType: 'SET_COL_TYPE',
-        setConType: 'SET_CON_TYPE',
-        setConStatus: 'SET_CON_STATUS'
+        setContentType: 'SET_CONTENT_TYPE',
+        setContentStatus: 'SET_CONTENT_STATUS'
       }),
 
       ...mapActions([
@@ -80,8 +80,8 @@
           ])
 
           this.setColType(colType)
-          this.setConType(conType)
-          this.setConStatus(conStatus)
+          this.setContentType(conType)
+          this.setContentStatus(conStatus)
         } catch (error) {
           console.error(error)
           this.$notice.danger({ title: '请求失败', desc: error })

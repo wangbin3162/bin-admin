@@ -5,7 +5,10 @@
       </v-filter-item>
 
       <v-filter-item title="内容类型" :span="8">
-        <b-select>
+        <b-select v-model="query.contentType">
+          <b-option v-for="(value, key) in contentType" :key="key" :value="key">
+            {{ value }}
+          </b-option>
         </b-select>
       </v-filter-item>
 
@@ -17,8 +20,11 @@
       <collapse-transition>
         <div v-show="filterOpened" style="width: 100%;">
           <v-filter-item title="内容状态" :span="8">
-            <b-select>
-            </b-select>
+            <b-select v-model="query.contentStatus">
+          <b-option v-for="(value, key) in contentStatus" :key="key" :value="key">
+            {{ value }}
+          </b-option>
+        </b-select>
           </v-filter-item>
 
           <v-filter-item title="发布时间" :span="8">
@@ -32,6 +38,8 @@
 </template>
 
 <script>
+  import { mapState } from 'vuex'
+
   export default {
     name: 'newsMgmtTableSearch',
     props: {
@@ -58,6 +66,12 @@
           this.$emit('input', newVal)
         }
       }
+    },
+    computed: {
+      ...mapState({
+        contentType: state => state.newsMgmt.contentType,
+        contentStatus: state => state.newsMgmt.contentStatus
+      })
     },
     created () {
 
