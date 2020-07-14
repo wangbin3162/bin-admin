@@ -3,14 +3,13 @@
     <div v-show="visible" class="resource-cfg-modal">
       <div class="header">
         <div class="title">
-          <b-icon name="ios-undo" @click.native="visible = false"/>
-          资源信息分析配置
+          <b-icon name="ios-undo" @click.native="close"/>
+          {{ resourceTitle }}
         </div>
-        <b-icon name="close" @click.native="visible = false"/>
+        <b-icon name="close" @click.native="close"/>
       </div>
       <div class="content">
-        <p style="text-align: center;">{{resourceTitle}}</p>
-        <p v-for="i in 100" :key="i">填充行{{ i }}...</p>
+        <ctrl-panel/>
       </div>
     </div>
   </transition>
@@ -18,10 +17,11 @@
 
 <script>
   import scrollbarMixin from 'bin-ui/src/mixins/scrollbar-mixin'
-  import './cfg-panel.styl'
+  import CtrlPanel from './CtrlPanel'
 
   export default {
     name: 'CfgPanel',
+    components: { CtrlPanel },
     inject: ['Excavate'],
     mixins: [scrollbarMixin],
     data() {
@@ -44,13 +44,67 @@
     },
     computed: {
       resourceTitle() {
-        return this.Excavate.resource.resourceName + ' - 挖掘配置'
+        return '挖掘配置 - ' + this.Excavate.resource.resourceName
       }
     },
     methods: {
       open() {
         this.visible = true
+      },
+      // 关闭
+      close() {
+        this.visible = false
       }
     }
   }
 </script>
+
+<style lang="stylus" scoped>
+  .resource-cfg-modal {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    box-sizing: border-box;
+    background-color: #fff;
+    padding: 0;
+    color: rgba(0, 0, 0, 0.65);
+    font-size: 14px;
+    font-variant: tabular-nums;
+    line-height: 1.5715;
+    z-index: 1000;
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 16px;
+      height: 54px;
+      background-color: #1089ff;
+      color: #f0f0f0;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+      padding: 16px 24px;
+      .title {
+        width: 90%;
+        font-weight: 500;
+        line-height: 22px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        color: #f0f0f0;
+        white-space: nowrap;
+      }
+      .iconfont {
+        font-size: 20px;
+        cursor: pointer;
+        color: #f0f0f0;
+      }
+    }
+    .content {
+      position: absolute;
+      width: 100%;
+      top: 55px;
+      bottom: 0;
+      overflow: hidden;
+    }
+  }
+</style>

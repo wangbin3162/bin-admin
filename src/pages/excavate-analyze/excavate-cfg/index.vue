@@ -89,13 +89,23 @@
         resPropertyMap: {}, // 资源性质映射
         resPropertyOptions: [],
         personClassMap: {}, // 主体类别映射
-        personClassOptions: []
+        personClassOptions: [],
+        cfgInfo: {}
       }
     },
     created() {
       this.getEnum()
       this.initTree()
       this.resetResource()
+    },
+    watch: {
+      cfgInfo: {
+        handler(val) {
+          this.$log.primary('=========cfgInfo 原始值=========')
+          console.log(val)
+        },
+        deep: true
+      }
     },
     methods: {
       /* [事件响应] */
