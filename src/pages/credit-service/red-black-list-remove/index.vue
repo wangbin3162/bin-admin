@@ -271,7 +271,7 @@
 
         const nodes = [
           {
-            resourceKey: 'custom-id-red',
+            resourceKey: null,
             root: true,
             title: '红名单',
             expand: true,
@@ -279,7 +279,7 @@
             children: data.redList
           },
           {
-            resourceKey: 'custom-id-black',
+            resourceKey: null,
             root: true,
             title: '黑名单',
             expand: true,
