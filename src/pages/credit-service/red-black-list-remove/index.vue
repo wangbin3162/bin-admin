@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="red-black-list-remove">
     <page-header-wrap v-show="isNormal">
       <v-table-wrap style="position: relative;">
         <b-loading fix show-text="加载中...." v-if="loading"></b-loading>
@@ -8,10 +8,10 @@
 
         <div v-if="isEmpty">
           <b-empty>
-            <span>暂无数据 </span>
-            <b-button type="text" size="small" v-if="treeData.length" @click="handleConfigBtn">
-              去配置
-            </b-button>
+            <span>暂无数据</span>
+            <span class="btn" v-if="treeData.length" @click="handleConfigBtn">
+              请点这里进行配置
+            </span>
           </b-empty>
         </div>
 
@@ -295,3 +295,12 @@
     }
   }
 </script>
+
+<style lang="stylus" scoped>
+ .red-black-list-remove {
+   .btn {
+     color: #0d85ff;
+     cursor: pointer;
+   }
+ }
+</style>
