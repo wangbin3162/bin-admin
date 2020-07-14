@@ -144,11 +144,9 @@
         this.curNode = node
       },
       resetQuery () {
-        this.listQuery = {
-          name: '',
-          page: 1,
-          size: 10
-        }
+        this.listQuery.name = ''
+        this.listQuery.size = 10
+        this.listQuery.page = 1
         this.searchList()
       },
       // 去配置按钮回调
