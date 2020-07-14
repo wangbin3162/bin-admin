@@ -5,23 +5,24 @@
       @on-visible-change="visibleChangeHandler">
 
       <b-form ref="form" :model="form" :rules="rules" :label-width="70">
-        <b-form-item label="缩略图" prop="thumbnailId">
+        <b-form-item label="缩略图" prop="thumbnailPath">
           <img-upload ref="imgUpload" funName="cms" moduleName="thumbnail"
-            :echoId="form.thumbnailId"
-            @success="val => form.thumbnailId = val"
+            :echoId="form.thumbnailPath"
+            @success="val => form.thumbnailPath = val"
             @clear="imgClearHandler">
+            删 除
           </img-upload>
         </b-form-item>
 
-        <b-form-item label="高度" prop="height">
+        <b-form-item label="高度" prop="thumbnailHeight">
           <b-input-number style="width: 100%" :min="0"
-            v-model="form.height" placeholder="请输入缩略图高度">
+            v-model="form.thumbnailHeight" placeholder="请输入缩略图高度">
           </b-input-number>
         </b-form-item>
 
-        <b-form-item label="宽度" prop="width">
+        <b-form-item label="宽度" prop="thumbnailWidth">
           <b-input-number style="width: 100%" :min="0"
-            v-model="form.width" placeholder="请输入缩略图宽度">
+            v-model="form.thumbnailWidth" placeholder="请输入缩略图宽度">
           </b-input-number>
         </b-form-item>
       </b-form>
@@ -35,7 +36,7 @@
 </template>
 
 <script>
-  import { updateContentThumbnail } from '../../../../api/cms/news-mgmt.api'
+  import { updateContentThumbnail, removeContentThumbnail } from '../../../../api/cms/news-mgmt.api'
   import ImgUpload from '../../../../components/ImgUpload'
 
   export default {
@@ -59,18 +60,18 @@
         open: this.value,
         form: {
           id: this.newsId,
-          thumbnailId: null,
-          height: null,
-          width: null
+          thumbnailPath: null,
+          thumbnailHeight: null,
+          thumbnailWidth: null
         },
         rules: {
-          thumbnailId: [
+          thumbnailPath: [
             { required: true, message: '请添加缩略图', trigger: 'change' }
           ],
-          height: [
+          thumbnailHeight: [
             { required: true, type: 'integer', message: '必须为整数', trigger: 'blur' }
           ],
-          width: [
+          thumbnailWidth: [
             { required: true, type: 'integer', message: '必须为整数', trigger: 'blur' }
           ]
         }
@@ -107,12 +108,23 @@
 
       /**
        * @author haodongdong
-       * @description ImgUpload组件清空图片后的回调
+       * @description ImgUpload组件清空图片后的回调,调用删除缩略图接口
        */
-      imgClearHandler () {
-        console.log('imgClearHandler')
+      async imgClearHandler () {
+        try {
+          await removeContentThumbnail(this.form.id)
+          this.open = false
+          this.$message({ type: 'success', content: '操作成功' })
+        } catch (error) {
+          console.error(error)
+          this.$notice.danger({ title: '操作失败', desc: error })
+        }
       },
 
+      /**
+       * @author haodongdong
+       * @description 确定按钮的回调
+       */
       async submitHandler () {
         this.btnLoading = true
         try {
@@ -136,6 +148,9 @@
        */
       init () {
         this.form = this.thumbnailData
+        this.$nextTick(() => {
+          this.$refs.imgUpload.init() // 回显存在的图片
+        })
       }
     }
   }

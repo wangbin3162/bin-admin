@@ -52,9 +52,9 @@ import request from '../request'
  /**
  * @typedef {Object} ContentThumbnail 内容缩略图对象
  * @property {string} id 新闻id
- * @property {string} thumbnailId 缩略图id
- * @property {number} height 高度
- * @property {number} width 宽度
+ * @property {string} thumbnailPath 缩略图id
+ * @property {number} thumbnailHeight 高度
+ * @property {number} thumbnailWidth 宽度
  */
 
 /**
@@ -307,6 +307,31 @@ export async function updateContentThumbnail(contentThumbnail) {
         url: 'api/cms/content/thumbnail/update',
         method: 'post',
         data: contentThumbnail
+      })
+      if (res.data.successful) {
+        resolve()
+      } else {
+        reject(new Error(res.data.message))
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
+ * @description 删除内容(新闻)缩略图
+ * @param {string} id 内容(新闻)id
+ * @returns {Promise<void>}
+ */
+export async function removeContentThumbnail(id) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: 'api/cms/content/thumbnail/remove',
+        method: 'post',
+        data: { id }
       })
       if (res.data.successful) {
         resolve()

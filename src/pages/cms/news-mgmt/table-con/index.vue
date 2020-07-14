@@ -194,9 +194,9 @@
       thumbnailBtnHandler (row) {
         this.thumbnailData = {
           id: row.id,
-          thumbnailId: row.thumbnailPath,
-          height: row.thumbnailHeight,
-          width: row.thumbnailWidth
+          thumbnailPath: row.thumbnailPath,
+          thumbnailHeight: row.thumbnailHeight,
+          thumbnailWidth: row.thumbnailWidth
         }
         this.openThumbnail = true
       },
