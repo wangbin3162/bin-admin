@@ -1,7 +1,7 @@
 <template>
   <v-filter-bar @keyup-enter="searchHandler">
       <v-filter-item title="新闻标题" :span="8">
-        <b-input v-model="query.test" placeholder="请输入"></b-input>
+        <b-input v-model="query.title" placeholder="请输入"></b-input>
       </v-filter-item>
 
       <v-filter-item title="内容类型" :span="8">
@@ -66,7 +66,8 @@
       query: {
         handler (newVal, oldVal) {
           this.$emit('input', newVal)
-        }
+        },
+        deep: true
       }
     },
     computed: {
@@ -91,6 +92,12 @@
        * @description 重置按钮回调
        */
       resetQueryHandler () {
+        this.query.title = ''
+        this.query.contentType = ''
+        this.query.contentStatus = ''
+        this.query.size = 10
+        this.query.page = 1
+        // 如果以this.query = {}的形式给query赋值，watch内发出的input事件会慢于以下的reset事件
         this.$emit('reset', this.query)
       },
 

@@ -1,6 +1,7 @@
 <template>
   <div>
-    <table-search v-model="query" @search="searchHandler" @reset="resetHandler"></table-search>
+    <table-search v-model="query" @search="searchHandler" @reset="resetHandler">
+    </table-search>
 
     <v-table-tool-bar>
       <b-button type="primary" icon="ios-add-circle-outline"
@@ -18,20 +19,21 @@
         {{ $util.parseTime(row.publishDate) }}
       </template>
 
-      <template v-slot:thumbnailPath>
-        <b-button type="text" @click="openThumbnail = true">
-          set
+      <template v-slot:thumbnailPath="{ row }">
+        <b-button type="text" @click="thumbnailBtnHandler(row)">
+          {{ Boolean(row.thumbnailPath) ? '更新' : '新增' }}
         </b-button>
       </template>
 
       <template v-slot:isTop="{ row }">
-        <b-switch v-model="row.isTop">
+        <b-switch v-model="row.isTop"
+          @on-change="topSwitchHandler($event, row)">
         </b-switch>
       </template>
 
-      <template v-slot:contentStatus="{ index }">
-        <b-select appendToBody
-          v-model="list[index].contentStatus" @on-change="contentStatusChangeHandler">
+      <template v-slot:contentStatus="{ row }">
+        <b-select appendToBody :value="row.contentStatus"
+          @on-change="contentStatusChangeHandler($event, row.id)">
           <b-option v-for="(value, key) in contentStatus" :key="key" :value="key">
             {{ value }}
           </b-option>
@@ -53,16 +55,29 @@
       @on-page-size-change="pageSizeChangeHandler">
     </b-page>
 
-    <thumbnail v-model="openThumbnail" :newsId="newsId"></thumbnail>
+    <thumbnail v-model="openThumbnail"
+     :thumbnailData="thumbnailData"
+     @success="getContentList">
+    </thumbnail>
   </div>
 </template>
 
 <script>
   import { mapState } from 'vuex'
   import permission from '../../../../common/mixins/permission'
-  import { getContentList, removeContent } from '../../../../api/cms/news-mgmt.api'
+  import {
+    getContentList, removeContent,
+    setTop, setStatus
+  } from '../../../../api/cms/news-mgmt.api'
   import TableSearch from './TableSearch'
   import Thumbnail from './Thumbnail'
+
+  /**
+   * @typedef {import('../../../../api/cms/news-mgmt.api').Content} Content
+   */
+  /**
+   * @typedef {import('../../../../api/cms/news-mgmt.api').ContentThumbnail} ContentThumbnail
+   */
 
   export default {
     name: 'newsMgmtTableCon',
@@ -98,7 +113,7 @@
           { title: '操作', slot: 'action', width: 120 }
         ],
         list: [],
-        newsId: null
+        thumbnailData: null // 缩略图数据对象
       }
     },
     watch: {
@@ -142,8 +157,7 @@
        */
       searchHandler () {
         this.query.page = 1
-        console.log(this.query)
-        // this.getContentList()
+        this.getContentList()
       },
 
       /**
@@ -151,11 +165,56 @@
        * @description 搜索组件触发重置按钮reset事件回调
        */
       resetHandler () {
-
+        this.getContentList()
       },
 
-      contentStatusChangeHandler (val) {
-        console.log(val)
+      /**
+       * @author haodongdong
+       * @description 置顶开关组件回调
+       * @param {boolean} status 开关状态
+       * @param {Content} row 当前内容(新闻)
+       */
+      async topSwitchHandler (status, row) {
+        console.log(status)
+        try {
+          await setTop(row.id, status)
+          this.getContentList()
+          this.$message({ type: 'success', content: '操作成功' })
+        } catch (error) {
+          row.isTop = !status
+          console.error(error)
+        }
+      },
+
+      /**
+       * @author haodongdong
+       * @description 缩略图操作按钮回调
+       * @param {Content} row
+       */
+      thumbnailBtnHandler (row) {
+        this.thumbnailData = {
+          id: row.id,
+          thumbnailId: row.thumbnailPath,
+          height: row.thumbnailHeight,
+          width: row.thumbnailWidth
+        }
+        this.openThumbnail = true
+      },
+
+      /**
+       * @author haodongdong
+       * @description 状态栏b-select组件改变的回调
+       * @param {string} contentStatus 改变后的值
+       * @param {string} id 当前行内容(新闻)id
+       */
+      async contentStatusChangeHandler (contentStatus, id) {
+        try {
+          await setStatus(id, contentStatus)
+          this.$message({ type: 'success', content: '操作成功' })
+        } catch (error) {
+          this.getContentList()
+          console.error(error)
+        }
       },
 
       /**
@@ -184,7 +243,7 @@
               this.$message({ type: 'success', content: '操作成功' })
               this.getContentList()
             } catch (error) {
-              this.$notice.danger({ title: '操作错误', desc: error })
+              console.error(error)
             }
             this.$modal.remove()
           }

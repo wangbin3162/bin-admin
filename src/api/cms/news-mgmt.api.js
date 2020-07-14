@@ -44,6 +44,17 @@ import request from '../request'
  * @property {string} source 创建机构
  * @property {string} brief 备注
  * @property {string} detail 文章主体部分
+ * @property {string} [thumbnailPath] 缩略图路径id
+ * @property {string} [thumbnailHeight] 缩略图高度
+ * @property {string} [thumbnailWidth] 缩略图宽度
+ */
+
+ /**
+ * @typedef {Object} ContentThumbnail 内容缩略图对象
+ * @property {string} id 新闻id
+ * @property {string} thumbnailId 缩略图id
+ * @property {number} height 高度
+ * @property {number} width 宽度
  */
 
 /**
@@ -271,6 +282,83 @@ export async function removeContent(id) {
         url: 'api/cms/content/remove',
         method: 'post',
         params: { id }
+      })
+      if (res.data.successful) {
+        resolve()
+      } else {
+        reject(new Error(res.data.message))
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
+ * @description 更新内容(新闻)缩略图
+ * @param {ContentThumbnail} contentThumbnail 内容(新闻)缩略图对象
+ * @returns {Promise<void>}
+ */
+export async function updateContentThumbnail(contentThumbnail) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: 'api/cms/content/thumbnail/update',
+        method: 'post',
+        data: contentThumbnail
+      })
+      if (res.data.successful) {
+        resolve()
+      } else {
+        reject(new Error(res.data.message))
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
+ * @description 更新内容(新闻)置顶
+ * @param {string} id 内容(新闻)id
+ * @param {boolean} isTop 是否置顶
+ * @returns {Promise<void>}
+ */
+export async function setTop(id, isTop) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: 'api/cms/content/top',
+        method: 'post',
+        data: { id, isTop }
+      })
+      if (res.data.successful) {
+        resolve()
+      } else {
+        reject(new Error(res.data.message))
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
+ * @description 更新内容(新闻)状态
+ * @param {string} id 内容(新闻)id
+ * @param {string} contentStatus 内容(新闻)状态
+ * @returns {Promise<void>}
+ */
+export async function setStatus(id, contentStatus) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: 'api/cms/content/status',
+        method: 'post',
+        data: { id, contentStatus }
       })
       if (res.data.successful) {
         resolve()
