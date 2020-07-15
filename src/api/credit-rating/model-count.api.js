@@ -48,7 +48,7 @@ export async function getLegalList(query) {
         method: 'get',
         params: {
           // personId: query.personId,
-          compName: query.compName,
+          comp_name: query.compName,
           modelId: query.modelId,
           levelCode: query.levelCode,
           size: query.size,
