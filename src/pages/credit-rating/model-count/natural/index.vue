@@ -4,11 +4,12 @@
       <v-table-wrap>
         <!-- 查询条件 -->
         <v-filter-bar @keyup-enter="handleFilter">
-          <v-filter-item title="主体">
-            <div flex>
+          <v-filter-item title="名称">
+            <b-input v-model="listQuery.name" placeholder="请输入名称"></b-input>
+            <!-- <div flex>
               <b-input placeholder="请选择主体" :value="personName" disabled></b-input>
               <b-button type="primary" plain @click="handleSelectBtn">选择</b-button>
-            </div>
+            </div> -->
           </v-filter-item>
            <v-filter-item title="评级模型">
             <b-select v-model="listQuery.modelId" @on-change="handleModelChange" clearable>
@@ -151,7 +152,8 @@
           natBaseInfo: {}
         }, // 存储行数据
         listQuery: {
-          personId: '',
+          // personId: '',
+          name: '',
           modelId: '',
           levelCode: ''
         },
@@ -179,7 +181,8 @@
         this.listQuery = {
           page: 1,
           size: 10,
-          personId: '',
+          // personId: '',
+          name: '',
           modelId: this.defaultModelId,
           levelCode: ''
         }
