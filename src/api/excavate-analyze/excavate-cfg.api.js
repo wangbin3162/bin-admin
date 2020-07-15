@@ -33,23 +33,22 @@ export function getConditionConfigList(query) {
 
 /* 获取其中一个资源的所有字段 */
 export function getFields(resourceKey) {
-  return new Promise(resolve =>
-    request({ url: '/api/dir/items', method: 'get', params: { resourceKey } })
-      .then(resp => {
-        let fields = resp.data || []
-        console.log(fields)
-        // 过滤 person_id 获取原始列数组
-        let filterFields = fields.filter(item => {
-          return item.fieldName.indexOf('_id') === -1 &&
-            item.status === 'use' &&
-            oneOf(item.controlType, ['TEXT', 'SELECT', 'DATE', 'DATE_TIME', 'MULTIPLE_SELECT '])
-        })
-        resolve(filterFields)
-      })
-      .catch(() => {
-        resolve([])
-      })
-  )
+  return request({
+    url: '/api/wj/wjConditionConfig/fields',
+    method: 'get',
+    params: {
+      resKey: resourceKey
+    }
+  })
+}
+
+/* 批量新增 */
+export function addConditions(conditions) {
+  return request({
+    url: '/api/wj/wjConditionConfig/batchAdd',
+    method: 'post',
+    data: conditions
+  })
 }
 
 /* 条件配置更新接口 */
@@ -65,7 +64,7 @@ export function modifyCondition(config) {
 export function removeCondition(id) {
   return request({
     url: '/api/wj/wjConditionConfig/remove',
-    method: 'get',
+    method: 'post',
     params: { id }
   })
 }

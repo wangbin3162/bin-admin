@@ -51,18 +51,44 @@
     <b-modal v-model="configAddModal" title="新增条件字段"
              footer-hide width="1200" :mask-closable="false" :body-styles="{padding:0}">
       <v-table-wrap>
-        <v-filter-bar @keyup-enter="handleFilter">
+        <v-filter-bar @keyup-enter="handleFilterFields">
           <v-filter-item title="名称">
-            <b-input placeholder="信息项名称(中文名)" clearable></b-input>
+            <b-input v-model="filterFieldName" clearable/>
           </v-filter-item>
           <!--添加查询按钮位置-->
           <v-filter-item>
-            <b-button type="primary" @click="handleFilter">
-              &nbsp;查&nbsp;询&nbsp;
-            </b-button>
+            <b-button type="primary" @click="handleFilterFields">查&nbsp;询</b-button>
           </v-filter-item>
         </v-filter-bar>
-        选择条件字段
+        <b-row :gutter="24">
+          <b-col span="16">
+            <b-table :columns="fieldsColumns" :data="filterFields" size="small">
+              <!--操作栏-->
+              <template #action="{row}">
+                <b-button :text-color="checkRowSelected(row)?'danger':'primary'" type="text"
+                          @click="handleChooseOne(row)">
+                  {{checkRowSelected(row)?'取消选择':'选择'}}
+                </b-button>
+              </template>
+            </b-table>
+          </b-col>
+          <b-col span="8">
+            <b-card class="box-card" head-tip header="已选字段">
+              <b-tag type="primary" :key="index" v-for="(field,index) in selectedFields" closable
+                     @on-close="handleCloseChoose(index)">
+                {{ field.fieldTitle }}
+              </b-tag>
+              <b-button style="width: 100%;margin: 8px 0;" :disabled="!selectedFields.length"
+                        @click="selectedFields=[]">
+                全部清空
+              </b-button>
+              <b-button type="primary" plain style="width: 100%;margin: 0;"
+                        :disabled="!selectedFields.length" @click="submitSelectFields">
+                确定添加
+              </b-button>
+            </b-card>
+          </b-col>
+        </b-row>
       </v-table-wrap>
     </b-modal>
   </page-header-wrap>
@@ -116,7 +142,25 @@
         editFieldSort: null,
         editQueryType: '',
         editIndex: -1,
-        configAddModal: false
+        configAddModal: false,
+        sourceFields: [],
+        fieldsColumns: [
+          { type: 'index', width: 70 },
+          { title: '标题', key: 'fieldTitle' },
+          { title: '名称', key: 'fieldName' },
+          {
+            title: '类型',
+            width: 150,
+            align: 'center',
+            render: (h, { row }) => {
+              return h('span', this.fieldTypeMap[row.fieldType])
+            }
+          },
+          { title: '操作', slot: 'action', width: 100, align: 'center' }
+        ],
+        filterFields: [],
+        filterFieldName: '',
+        selectedFields: []
       }
     },
     methods: {
@@ -135,10 +179,52 @@
       },
       // 打开新增弹窗
       handleCreate() {
+        this.sourceFields = []
+        this.filterFields = []
         api.getFields(this.listQuery.resourceKey).then(resp => {
-          console.log(resp)
+          this.sourceFields = resp.data.data || []
+          this.filterFields = this.sourceFields.filter(i => i.fieldTitle.includes(this.filterFieldName))
         })
         this.configAddModal = true
+      },
+      // 过了条件字段
+      handleFilterFields() {
+        this.filterFields = this.sourceFields.filter(i => i.fieldTitle.includes(this.filterFieldName))
+      },
+      // 判断当前行有没有选中
+      checkRowSelected(row) {
+        const has = this.selectedFields.find(item => item.fieldName === row.fieldName)
+        return !!has
+      },
+      // 选中一行
+      handleChooseOne(row) {
+        let index = this.selectedFields.findIndex(item => item.fieldName === row.fieldName)
+        if (index === -1) {
+          let obj = { ...row }
+          delete obj['id']
+          delete obj['_index']
+          delete obj['_rowKey']
+          this.selectedFields.push(obj)
+        } else {
+          this.selectedFields.splice(index, 1)
+        }
+      },
+      // 取消一个选中
+      handleCloseChoose(index) {
+        this.selectedFields.splice(index, 1)
+      },
+      // 确定提交批量增加条件
+      submitSelectFields() {
+        api.addConditions(this.selectedFields).then(resp => {
+          if (resp.data.code === '0') {
+            this.$message({ type: 'success', content: '操作成功' })
+            this.configAddModal = false
+            this.searchList()
+          } else {
+            this.selectedFields = []
+            this.$message({ type: 'danger', content: resp.data.message || '操作失败' })
+          }
+        })
       },
       // 编辑某一行内容
       handleEdit(row, index) {
@@ -184,16 +270,16 @@
           iconName: 'danger',
           loading: true,
           onOk: () => {
-            // api.removeCondition(row.id).then(res => {
-            //   if (res.data.code === '0') {
-            //     this.$message({ type: 'success', content: '操作成功' })
-            //     this.$modal.remove()
-            //     this.handleFilter()
-            //   } else {
-            //     this.$modal.remove()
-            //     this.$notice.danger({ title: '操作错误', desc: res.data.message })
-            //   }
-            // })
+            api.removeCondition(row.id).then(res => {
+              if (res.data.code === '0') {
+                this.$message({ type: 'success', content: '操作成功' })
+                this.$modal.remove()
+                this.handleFilter()
+              } else {
+                this.$modal.remove()
+                this.$notice.danger({ title: '操作错误', desc: res.data.message })
+              }
+            })
           }
         })
       },
