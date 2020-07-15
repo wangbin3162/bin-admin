@@ -264,7 +264,6 @@
       },
       // 弹窗提示是否删除
       handleRemove(row) {
-        console.log(row)
         this.$confirm({
           title: '确定删除当前条件吗？',
           iconName: 'danger',

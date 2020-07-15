@@ -3,13 +3,14 @@
     <div class="left">
       <div class="top-fix">图表组件</div>
       <div class="scroll-content" style="padding: 0 16px;">
-        <div v-for="(chart,key) in chartsBuild" :key="key" class="chart-item">
+        <div v-for="(chart,key) in chartsBuild" :key="key" class="chart-item"
+             draggable="true" @dragstart="onDrag($event,key)">
           <svg-icon :icon-class="chart.icon" style="width: 28px;height:28px;"/>
           <div>{{chart.name}}</div>
         </div>
       </div>
     </div>
-    <div class="center">center</div>
+    <div class="center" @drop="onDrop($event)">center</div>
     <div class="right">
       <div class="top-fix">配置tabs</div>
       <div class="scroll-content">right-content</div>
@@ -38,6 +39,18 @@
           console.log(this.currentValue)
         },
         deep: true
+      }
+    },
+    methods: {
+      // ============图表拖拽生成============ //
+      onDrag(e, name) {
+        console.log('开始拖拽', name)
+        e.dataTransfer.setData('chart-name', name)
+      },
+      onDrop(e) {
+        let chartName = e.dataTransfer.getData('chart-name')
+        console.log(chartName)
+        e.preventDefault()
       }
     }
   }
@@ -79,7 +92,8 @@
     }
     .center {
       width: calc(100% - 500px);
-      height: 100%;
+      min-height: 100%;
+      padding: 42px 24px;
       overflow: hidden;
     }
     .right {
