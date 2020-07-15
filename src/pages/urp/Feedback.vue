@@ -71,7 +71,7 @@
                 </b-checkbox-group>
               </div>
               <div class="form-wrap">
-                <b-form>
+                <b-form :label-width="100">
                   <b-form-item label="涉及金额">
                     <b-input-number :min="0" v-model="amount" placeholder="涉及金额（元）"
                                     style="width: 200px;"/>&nbsp;(元)
