@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-header-wrap :title="'编辑内容'" show-close @on-close="$emit('close')">
+    <page-header-wrap :title="title" show-close @on-close="$emit('close')">
       <v-edit-wrap transparent>
         <b-collapse-wrap v-show="view === 'baseInfo'" title="基本信息">
           <b-form ref="form" :model="form" :rules="rules" label-position="top">
@@ -56,7 +56,8 @@
         </b-collapse-wrap>
 
         <b-collapse-wrap v-show="view === 'content'" title="编辑内容">
-          <rich-text v-model="form.detail" :contentId="form.id">
+          <rich-text v-model="form.detail"
+            :contentId="form.id">
           </rich-text>
         </b-collapse-wrap>
 
@@ -78,16 +79,19 @@
 
 <script>
   import { mapState } from 'vuex'
-  import { createContent, updateContent } from '../../../api/cms/news-mgmt.api'
+  import { createContent, updateContent } from '../../../../api/cms/news-mgmt.api'
   import RichText from './RichText'
 
   /**
-   * @typedef {import('../../../api/cms/news-mgmt.api').Content} Content
+   * @typedef {import('../../../../api/cms/news-mgmt.api').Content} Content
    */
 
   export default {
     name: 'newsMgmtEdit',
     props: {
+      title: {
+        type: String
+      },
       columnId: {
         type: String,
         required: true

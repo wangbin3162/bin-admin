@@ -1,14 +1,16 @@
 <template>
   <div class="rich-text">
     <vue-tinymce v-model="content"
-      :setup="setup"
       :setting="setting">
     </vue-tinymce>
+
+    <file-upload :contentId="contentId"></file-upload>
   </div>
 </template>
 
 <script>
-  import { UploadPicture } from '../../../api/cms/news-mgmt.api'
+  import { UploadPicture } from '../../../../api/cms/news-mgmt.api'
+  import FileUpload from './FileUpload'
 
   export default {
     name: 'RichText',
@@ -19,8 +21,11 @@
       },
       contentId: {
         type: String,
-        required: true
+        default: null
       }
+    },
+    components: {
+      FileUpload
     },
     data () {
       return {
@@ -55,9 +60,6 @@
 
     },
     methods: {
-      setup(editor) {
-
-      },
       async uploadFile (blobInfo, successFun, failFun) {
         try {
           const file = blobInfo.blob()

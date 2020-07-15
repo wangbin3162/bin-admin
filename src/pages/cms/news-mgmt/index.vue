@@ -7,7 +7,7 @@
         </section-tree>
 
         <table-con ref="tableCon" :columnId="columnId"
-          @create="setPageStatus('create')"
+          @create="createHandler"
           @edit="editHandler">
         </table-con>
       </v-table-wrap>
@@ -15,6 +15,7 @@
 
     <edit
       v-if="isEdit"
+      :title="editDiaTitle"
       :columnId="columnId"
       :editData="curRow"
       @close="editCloseHandler"
@@ -28,7 +29,7 @@
   import { getCmsColType, getCmsContentType, getCmsContentStatus } from '../../../api/enum.api'
   import SectionTree from './SectionTree'
   import TableCon from './table-con'
-  import Edit from './Edit'
+  import Edit from './edit'
 
   /**
    * @typedef {import('../../../api/cms/news-mgmt.api').Content} Content
@@ -43,6 +44,7 @@
     },
     data () {
       return {
+        editDiaTitle: '',
         columnId: '',
         curRow: null // 存储当前行
       }
@@ -90,11 +92,21 @@
 
       /**
        * @author haodongdong
+       * @description table-con组件create事件回调
+       */
+      createHandler () {
+        this.editDiaTitle = '新增内容'
+        this.setPageStatus('create')
+      },
+
+      /**
+       * @author haodongdong
        * @description table-con组件edit事件回调
        * @param {Content} row 点击编辑按钮所在行数据
        */
       editHandler (row) {
         this.curRow = row
+        this.editDiaTitle = '编辑内容'
         this.setPageStatus('edit')
       },
 

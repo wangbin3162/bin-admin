@@ -102,6 +102,7 @@
         if (visible) {
           this.init()
         } else {
+          this.$refs.imgUpload.clearImgNoEvent()
           this.$refs.form.resetFields()
         }
       },

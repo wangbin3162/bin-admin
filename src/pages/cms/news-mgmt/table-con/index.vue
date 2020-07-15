@@ -15,10 +15,6 @@
         {{ contentType[row.contentType] }}
       </template>
 
-      <template v-slot:publishDate="{ row }">
-        {{ $util.parseTime(row.publishDate) }}
-      </template>
-
       <template v-slot:thumbnailPath="{ row }">
         <b-button type="text" @click="thumbnailBtnHandler(row)">
           {{ Boolean(row.thumbnailPath) ? '更新' : '新增' }}
@@ -106,7 +102,7 @@
           { type: 'index', width: 50 },
           { title: '新闻标题', key: 'title', ellipsis: true, tooltip: true },
           { title: '内容类型', slot: 'contentType' },
-          { title: '发布时间', slot: 'publishDate' },
+          // { title: '发布时间', slot: 'publishDate' },
           { title: '缩略图', slot: 'thumbnailPath' },
           { title: '置顶', slot: 'isTop' },
           { title: '状态', slot: 'contentStatus' },

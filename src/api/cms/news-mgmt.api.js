@@ -420,7 +420,6 @@ export function UploadPicture(contentId, file) {
       })
 
       if (res.data.successful) {
-        console.log(res)
         resolve(res.data.data)
       } else {
         reject(res.data.message)
@@ -435,7 +434,7 @@ export function UploadPicture(contentId, file) {
  * @author haodongdong
  * @description 批量上传新闻下方附件
  * @param {string} contentId
- * @param {File[]} files
+ * @param {File[]} files 文件数组
  * @returns {Promise<void>}
  */
 export function UploadAttachments(contentId, files) {
@@ -444,7 +443,7 @@ export function UploadAttachments(contentId, files) {
       let data = new FormData()
       data.append('contentId', contentId)
       files.forEach(file => {
-        data.append('attachment', file)
+        data.append('attachment', file, file.name)
       })
 
       const res = await request({
@@ -457,7 +456,58 @@ export function UploadAttachments(contentId, files) {
       })
 
       if (res.data.successful) {
-        console.log()
+        resolve(res.data.data)
+      } else {
+        reject(res.data.message)
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
+ * @description 获取新闻下方附件列表
+ * @param {string} contentId
+ * @returns {Promise<any>}
+ */
+export function getAttachments(contentId) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: 'api/cms/attach/list',
+        method: 'get',
+        params: { contentId }
+      })
+
+      if (res.data.successful) {
+        resolve(res.data.data)
+      } else {
+        reject(res.data.message)
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
+ * @description 获取新闻下方附件列表
+ * @param {string} attachmentId 附件id
+ * @returns {Promise<any>}
+ */
+export function removeAttachment(attachmentId) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: 'api/cms/attach/remove',
+        method: 'post',
+        params: { attachmentId }
+      })
+
+      if (res.data.successful) {
         resolve(res.data.data)
       } else {
         reject(res.data.message)

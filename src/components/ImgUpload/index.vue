@@ -76,6 +76,11 @@
         this.imgSrc = ''
         this.$emit('clear') // 清除图片事件
       },
+      // 清空按钮回调，不发送clear事件
+      clearImgNoEvent () {
+        this.hasFile = false
+        this.imgSrc = ''
+      },
       // 图片上传请求
       async fileUpload (file, funName, moduleName) {
         this.loadiingText = '上传中....'
