@@ -100,21 +100,21 @@
 
       /**
        * @author haodongdong
+       * @description edit组件编辑成功回调
+       */
+      editSuccessHandler () {
+        this.$refs.tableCon.getContentList()
+      },
+
+      /**
+       * @author haodongdong
        * @description edit组件close事件回调
        */
       editCloseHandler () {
         this.curRow = null
         this.setPageStatus(null)
-      },
-
-      /**
-       * @author haodongdong
-       * @description edit组件编辑成功回调
-       */
-      editSuccessHandler () {
-        this.$refs.tableCon.getContentList()
-        this.setPageStatus(null)
       }
+
     }
   }
 </script>

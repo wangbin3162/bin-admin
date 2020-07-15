@@ -31,11 +31,11 @@ import request from '../request'
 
 /**
  * @typedef {Object} Content 内容对象
- * @property {string} [id]
+ * @property {string} [id] 内容id
  * @property {string} colId 栏目id
  * @property {string} title 标题
  * @property {string} summary 摘要
- * @property {string} linkUrl 链接地址
+ * @property {string} [linkUrl] 链接地址
  * @property {string} contentType 文章类型
  * @property {boolean} isTop 是否置顶
  * @property {number} orderNo 排序码
@@ -223,7 +223,7 @@ export async function getContentList(query) {
  * @author haodongdong
  * @description 新增内容(新闻)
  * @param {Content} content
- * @returns {Promise<void>}
+ * @returns {Promise<string>} 返回添加成功后的内容id
  */
 export async function createContent(content) {
   return new Promise(async (resolve, reject) => {
@@ -234,7 +234,7 @@ export async function createContent(content) {
         data: content
       })
       if (res.data.successful) {
-        resolve()
+        resolve(res.data.data)
       } else {
         reject(new Error(res.data.message))
       }
@@ -281,7 +281,7 @@ export async function removeContent(id) {
       const res = await request({
         url: 'api/cms/content/remove',
         method: 'post',
-        params: { id }
+        data: { id }
       })
       if (res.data.successful) {
         resolve()
@@ -389,6 +389,78 @@ export async function setStatus(id, contentStatus) {
         resolve()
       } else {
         reject(new Error(res.data.message))
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
+ * @description 富文本编辑器内文件上传接口
+ * @param {string} contentId
+ * @param {File} file
+ * @returns {Promise<void>}
+ */
+export function UploadPicture(contentId, file) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let data = new FormData()
+      data.append('contentId', contentId)
+      data.append('attachment', file)
+
+      const res = await request({
+        url: 'api/cms/attach/uploadPicture',
+        method: 'post',
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        },
+        data: data
+      })
+
+      if (res.data.successful) {
+        console.log(res)
+        resolve(res.data.data)
+      } else {
+        reject(res.data.message)
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
+ * @description 批量上传新闻下方附件
+ * @param {string} contentId
+ * @param {File[]} files
+ * @returns {Promise<void>}
+ */
+export function UploadAttachments(contentId, files) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let data = new FormData()
+      data.append('contentId', contentId)
+      files.forEach(file => {
+        data.append('attachment', file)
+      })
+
+      const res = await request({
+        url: 'api/cms/attach/uploadAttachments',
+        method: 'post',
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        },
+        data: data
+      })
+
+      if (res.data.successful) {
+        console.log()
+        resolve(res.data.data)
+      } else {
+        reject(res.data.message)
       }
     } catch (error) {
       reject(error)
