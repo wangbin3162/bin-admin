@@ -13,12 +13,16 @@
       <img v-if="hasFile" :class="{ 'show-model': showModel}" :src="imgSrc"/>
     </b-upload>
 
-    <b-button v-if="hasFile && !showModel" @click="clearImg">清 空</b-button>
+    <b-button v-if="hasFile && !showModel" @click="clearImg">
+      <slot>
+        清 空
+      </slot>
+    </b-button>
   </div>
 </template>
 
 <script>
-  import { fileUpload, fileDownLoad } from '../../../api/import-export.api'
+  import { fileUpload, fileDownLoad } from '../../api/import-export.api'
 
   export default {
     name: 'ImgUpload',

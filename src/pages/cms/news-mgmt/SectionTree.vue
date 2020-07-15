@@ -28,7 +28,7 @@
 </template>
 
 <script>
-  import { getSectionRoots, getSectionChildren, removeSection } from '../../../api/cms/cms.api'
+  import { getSectionRoots, getSectionChildren, removeSection } from '../../../api/cms/news-mgmt.api'
   import EditSection from './EditSection'
 
   /**
@@ -143,7 +143,7 @@
        * @description 栏目信息操作按钮的回调函数，根据传递的参数，或删除或打开编辑弹框。
        * @param {string} type 操作类型，u 编辑 d 删除 c 创建。
        */
-      openEditSectionHandler (type) {
+       openEditSectionHandler (type) {
         this.optType = type
         if (type === 'c') {
           this.openEditSection = true
@@ -160,16 +160,20 @@
         }
         if (type === 'r') {
           this.getSectionRoots()
+          // TODO: 刷新按钮需要改变节点选中状态
         }
       },
 
       /**
        * @author haodongdong
-       * @description b-tree组件节点选中状态改变的回调，用于更新全局唯一选中的节点curNode
+       * @description b-tree组件节点选中状态改变的回调，用于更新全局唯一选中的节点curNode与父节点parentNode，并发送栏目改变事件。
        * @param {Section[]} nodes 多选时，已选择的节点数组
        * @param {Section} curNode 当前点击的节点
        */
       async treeNodeSelectHandler (nodes, curNode) {
+        const colId = curNode.selected ? curNode.id : ''
+        this.$emit('section-change', colId)
+
         if (curNode.selected) {
           curNode = await this.appendSectionChildren(curNode)
           this.curNode = curNode

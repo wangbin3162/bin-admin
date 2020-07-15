@@ -413,3 +413,43 @@ export async function getCmsColType() {
     }
   })
 }
+
+/**
+ * @author haodongdong
+ * @description 内容管理--->内容类型枚举
+ * @returns {Promise}
+ */
+export async function getCmsContentType() {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request.get('/api/enum/cms/contentType')
+      if (res.data.successful) {
+        resolve(res.data.data)
+      } else {
+        reject(new Error(res.data.message))
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
+ * @description 内容管理--->内容状态枚举
+ * @returns {Promise}
+ */
+export async function getCmsContentStatus() {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request.get('/api/enum/cms/contentStatus')
+      if (res.data.successful) {
+        resolve(res.data.data)
+      } else {
+        reject(new Error(res.data.message))
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}

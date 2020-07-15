@@ -72,7 +72,7 @@
           <img-upload ref="imgUpload" funName="cms" moduleName="thumbnail"
             :echoId="form.thumbnailPath"
             @success="val => form.thumbnailPath = val"
-            @clear="form.thumbnailPath = ''"></img-upload>
+            @clear="imgClearHandler"></img-upload>
         </b-form-item>
       </b-form>
 
@@ -85,11 +85,11 @@
 </template>
 
 <script>
-  import { createSection, updateSection } from '../../../api/cms/cms.api'
-  import ImgUpload from '../../credit-rating/credit-report-config/ImgUpload'
+  import { createSection, updateSection } from '../../../api/cms/news-mgmt.api'
+  import ImgUpload from '../../../components/ImgUpload'
 
   /**
-   * @typedef {import('../../../api/cms/cms.api').Section} Section
+   * @typedef {import('../../../api/cms/news-mgmt.api').Section} Section
    */
 
   export default {
@@ -168,7 +168,7 @@
     },
     computed: {
       colTypeEnmu () {
-        return this.$store.state.cms.colType
+        return this.$store.state.newsMgmt.colType
       },
       departName () {
         return this.$store.state.user.info.departName
@@ -181,25 +181,11 @@
 
     },
     methods: {
-      /**
-       * @author haodongdong
-       * @description b-drawer组件显示状态改变时的回调
-       * @param {boolean} visible 是否显示
-       */
-      visibleChangeHandler (visible) {
-        if (visible) {
-          this.init()
-        } else {
-          this.parentColName = '无'
-          this.$refs.imgUpload.clearImg()
-          this.$refs.form.resetFields()
-        }
-      },
-
       async submitHandler () {
         this.btnLoading = true
         try {
           const valid = await this.$refs.form.validate()
+
           if (valid) {
             let res = null
             if (this.optType === 'c') {
@@ -218,6 +204,29 @@
           this.$notice.danger({ title: '操作失败', desc: error })
         }
         this.btnLoading = false
+      },
+
+      /**
+       * @author haodongdong
+       * @description b-drawer组件显示状态改变时的回调
+       * @param {boolean} visible 是否显示
+       */
+      visibleChangeHandler (visible) {
+        if (visible) {
+          this.init()
+        } else {
+          this.parentColName = '无'
+          this.$refs.imgUpload.clearImg()
+          this.$refs.form.resetFields()
+        }
+      },
+
+      /**
+       * @author haodongdong
+       * @description imgUpload组件图片清空回调
+       */
+      async imgClearHandler () {
+        this.form.thumbnailPath = null
       },
 
       /**

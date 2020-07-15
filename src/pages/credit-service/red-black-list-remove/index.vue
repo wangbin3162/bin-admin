@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="red-black-list-remove">
     <page-header-wrap v-show="isNormal">
       <v-table-wrap style="position: relative;">
         <b-loading fix show-text="加载中...." v-if="loading"></b-loading>
@@ -8,10 +8,10 @@
 
         <div v-if="isEmpty">
           <b-empty>
-            <span>暂无数据 </span>
-            <b-button type="text" size="small" v-if="treeData.length" @click="handleConfigBtn">
-              去配置
-            </b-button>
+            <span>暂无数据</span>
+            <span class="btn" v-if="treeData.length" @click="handleConfigBtn">
+              请点这里进行配置
+            </span>
           </b-empty>
         </div>
 
@@ -144,16 +144,14 @@
         this.curNode = node
       },
       resetQuery () {
-        this.listQuery = {
-          name: '',
-          page: 1,
-          size: 10
-        }
+        this.listQuery.name = ''
+        this.listQuery.size = 10
+        this.listQuery.page = 1
         this.searchList()
       },
       // 去配置按钮回调
       handleConfigBtn () {
-        window.open('/#/sys/setting/dict')
+        window.open('#/sys/setting/dict')
       },
       // 模板下载按钮回调
       async handleDownloadTemplate() {
@@ -193,8 +191,8 @@
         this.loading = true
         try {
           const res = await getLeftTreeNode()
-          // res.redList = []
-          // res.blackList = []
+          res.redList = []
+          res.blackList = []
           this.treeData = this.buildTree(res)
         } catch (error) {
           console.error(error)
@@ -271,7 +269,7 @@
 
         const nodes = [
           {
-            resourceKey: 'custom-id-red',
+            resourceKey: null,
             root: true,
             title: '红名单',
             expand: true,
@@ -279,7 +277,7 @@
             children: data.redList
           },
           {
-            resourceKey: 'custom-id-black',
+            resourceKey: null,
             root: true,
             title: '黑名单',
             expand: true,
@@ -297,3 +295,12 @@
     }
   }
 </script>
+
+<style lang="stylus" scoped>
+ .red-black-list-remove {
+   .btn {
+     color: #0d85ff;
+     cursor: pointer;
+   }
+ }
+</style>

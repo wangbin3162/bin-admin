@@ -188,6 +188,7 @@
               personId: this.form.personId,
               configId: this.form.configId,
               maskCode: JSON.parse(this.form.maskCode),
+              modelId: model.id,
               modelName: model.name
             })
 
