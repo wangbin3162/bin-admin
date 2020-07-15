@@ -47,7 +47,8 @@ export async function getLegalList(query) {
         url: '/api/eval/cal/result/leg/search',
         method: 'get',
         params: {
-          personId: query.personId,
+          // personId: query.personId,
+          compName: query.compName,
           modelId: query.modelId,
           levelCode: query.levelCode,
           size: query.size,
@@ -75,7 +76,8 @@ export async function getNaturalList(query) {
         url: '/api/eval/cal/result/nat/search',
         method: 'get',
         params: {
-          personId: query.personId,
+          // personId: query.personId,
+          name: query.name,
           modelId: query.modelId,
           levelCode: query.levelCode,
           size: query.size,
