@@ -20,6 +20,7 @@ import VTitleBar from '../components/VTitleBar'
 import VSortArrow from '../components/VSortArrow'
 import VCascade from '../components/VCascade'
 import { isEmpty, isNotEmpty } from '../common/utils/assist'
+import VueTinymce from '@packy-tang/vue-tinymce'
 
 export default {
   async install(Vue, options) {
@@ -27,6 +28,7 @@ export default {
     Vue.use(BinUI)
     // bin-code-editor
     Vue.use(CodeEditor)
+    Vue.use(VueTinymce)
     Vue.component(BinCharts.name, BinCharts)
     Vue.component(PageHeaderWrap.name, PageHeaderWrap)
     Vue.component(VTableWrap.name, VTableWrap)

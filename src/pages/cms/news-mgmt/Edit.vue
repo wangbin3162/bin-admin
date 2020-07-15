@@ -2,7 +2,7 @@
   <div>
     <page-header-wrap :title="'编辑测试'" show-close @on-close="$emit('close')">
       <v-edit-wrap transparent>
-        <b-collapse-wrap title="基本信息" collapse>
+        <b-collapse-wrap title="基本信息" collapse :value="false">
           <b-form ref="form" :model="form" :rules="rules" label-position="top">
             <b-form-item label="内容标题" prop="title">
               <b-input v-model="form.title" placeholder="请输入内容标题"></b-input>
@@ -51,6 +51,11 @@
           </b-form>
         </b-collapse-wrap>
 
+        <b-collapse-wrap title="编辑内容" collapse>
+          <rich-text v-model="form.detail">
+          </rich-text>
+        </b-collapse-wrap>
+
         <template slot="footer">
           <b-button @click="$emit('close')">取 消</b-button>
           <b-button type="primary" @click="submitHandler" :loading="btnLoading">提 交</b-button>
@@ -63,6 +68,7 @@
 <script>
   import { mapState } from 'vuex'
   import { createContent, updateContent } from '../../../api/cms/news-mgmt.api'
+  import RichText from './RichText'
 
   /**
    * @typedef {import('../../../api/cms/news-mgmt.api').Content} Content
@@ -79,6 +85,9 @@
         type: Object,
         default: null
       }
+    },
+    components: {
+      RichText
     },
     data () {
       return {
