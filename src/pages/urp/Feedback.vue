@@ -14,7 +14,7 @@
             </div>
             <div class="info">
               <h2 class="mb-10" flex="cross:center">
-                <span class="mr-15">{{ subject.detail.name }}</span>
+                <span class="mr-15">{{ subject.detail.name||subject.detail.compName }}</span>
                 <b-button icon="ios-create" type="text" @click="gotoRemark">备注</b-button>
               </h2>
               <template v-if="query.type==='FO'">
@@ -206,7 +206,10 @@
       },
       // 跳转备注列表
       gotoRemark() {
-        this.$router.push({ path: '/urp/remarkList', query: { ...this.$route.query, name: this.subject.detail.name } })
+        this.$router.push({
+          path: '/urp/remarkList',
+          query: { ...this.$route.query, name: this.subject.detail.name || this.subject.detail.compName }
+        })
       },
       // 成功后操作
       successDo(recordId) {
