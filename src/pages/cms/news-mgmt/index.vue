@@ -1,6 +1,6 @@
 <template>
   <div class="news-mgmt">
-    <page-header-wrap v-show="isInfo">
+    <page-header-wrap v-show="!isEdit">
       <v-table-wrap>
         <section-tree slot="tree"
          @section-change="colId => columnId = colId">
@@ -25,9 +25,9 @@
 </template>
 
 <script>
-  import { mapGetters, mapMutations, mapActions } from 'vuex'
+  import { mapMutations } from 'vuex'
   import { getCmsColType, getCmsContentType, getCmsContentStatus } from '../../../api/enum.api'
-  import SectionTree from './SectionTree'
+  import SectionTree from './section/SectionTree'
   import TableCon from './table-con'
   import Edit from './edit'
 
@@ -44,16 +44,16 @@
     },
     data () {
       return {
+        pageStatus: 'info', // 当前要显示的页面视图
         editDiaTitle: '',
         columnId: '',
         curRow: null // 存储当前行
       }
     },
     computed: {
-      ...mapGetters([
-        'isInfo',
-        'isEdit'
-      ])
+      isEdit () {
+        return this.pageStatus === 'edit'
+      }
     },
     created () {
       this.getEnum()
@@ -64,10 +64,6 @@
         setContentType: 'SET_CONTENT_TYPE',
         setContentStatus: 'SET_CONTENT_STATUS'
       }),
-
-      ...mapActions([
-        'setPageStatus'
-      ]),
 
       /**
        * @author haodongdong
@@ -96,7 +92,7 @@
        */
       createHandler () {
         this.editDiaTitle = '新增内容'
-        this.setPageStatus('create')
+        this.pageStatus = 'edit'
       },
 
       /**
@@ -107,7 +103,7 @@
       editHandler (row) {
         this.curRow = row
         this.editDiaTitle = '编辑内容'
-        this.setPageStatus('edit')
+        this.pageStatus = 'edit'
       },
 
       /**
@@ -124,7 +120,7 @@
        */
       editCloseHandler () {
         this.curRow = null
-        this.setPageStatus(null)
+        this.pageStatus = 'info'
       }
 
     }

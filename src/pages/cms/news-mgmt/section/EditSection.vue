@@ -85,11 +85,11 @@
 </template>
 
 <script>
-  import { createSection, updateSection } from '../../../api/cms/news-mgmt.api'
-  import ImgUpload from '../../../components/ImgUpload'
+  import { createSection, updateSection } from '../../../../api/cms/news-mgmt.api'
+  import ImgUpload from '../../../../components/ImgUpload'
 
   /**
-   * @typedef {import('../../../api/cms/news-mgmt.api').Section} Section
+   * @typedef {import('../../../../api/cms/news-mgmt.api').Section} Section
    */
 
   export default {

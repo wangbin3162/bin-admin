@@ -28,11 +28,11 @@
 </template>
 
 <script>
-  import { getSectionRoots, getSectionChildren, removeSection } from '../../../api/cms/news-mgmt.api'
+  import { getSectionRoots, getSectionChildren, removeSection } from '../../../../api/cms/news-mgmt.api'
   import EditSection from './EditSection'
 
   /**
-   * @typedef {import('../../../api/cms/cms.api').Section} Section
+   * @typedef {import('../../../../api/cms/cms.api').Section} Section
    */
 
   export default {
