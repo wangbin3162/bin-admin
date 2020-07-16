@@ -15,38 +15,93 @@ function getDepartId() {
 }
 
 // 2.5.1 获取资源信息数量
-export function getClassifyDataCount() {
-  return request({
-    url: '/da/data/collect/zyxxsl',
-    method: 'get'
+export async function getZyxxsl() {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/da/data/collect/zyxxsl',
+        method: 'get'
+      })
+      if (res.data.successful) {
+        resolve(res.data.data)
+      } else {
+        reject(res.data.message)
+      }
+    } catch (error) {
+      reject(error)
+    }
   })
 }
 // 2.5.2 获取数据归集总量
-export function getClassifyTotalCount() {
-  return request({
-    url: '/da/data/collect/sjgjzl',
-    method: 'get'
+export function getSjgjzl() {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/da/data/collect/sjgjzl',
+        method: 'get'
+      })
+      if (res.data.successful) {
+        resolve(res.data.data)
+      } else {
+        reject(res.data.message)
+      }
+    } catch (error) {
+      reject(error)
+    }
   })
 }
 // 2.5 3 获取本月归集数据量
-export function getClassifyMonthCount() {
-  return request({
-    url: '/da/data/collect/bygjsjl',
-    method: 'get'
+export function getBygjsjl() {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/da/data/collect/bygjsjl',
+        method: 'get'
+      })
+      if (res.data.successful) {
+        resolve(res.data.data)
+      } else {
+        reject(res.data.message)
+      }
+    } catch (error) {
+      reject(error)
+    }
   })
 }
 // 2.5.4 获取自然人数据总量
-export function getClassifyZrpCount() {
-  return request({
-    url: '/da/data/collect/zrpcount',
-    method: 'get'
+export function getZrpcount() {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/da/data/collect/zrpcount',
+        method: 'get'
+      })
+      if (res.data.successful) {
+        resolve(res.data.data)
+      } else {
+        reject(res.data.message)
+      }
+    } catch (error) {
+      reject(error)
+    }
   })
 }
 // 2.5.5 获取法人或其他组织数据总量
-export function getClassifyFoCount() {
-  return request({
-    url: '/da/data/collect/focount',
-    method: 'get'
+export function getFocount() {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/da/data/collect/focount',
+        method: 'get'
+      })
+      if (res.data.successful) {
+        resolve(res.data.data)
+      } else {
+        reject(res.data.message)
+      }
+    } catch (error) {
+      reject(error)
+    }
   })
 }
 // 2.5.6 月度信息归集趋势图

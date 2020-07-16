@@ -620,19 +620,19 @@
        */
       getBaseData() {
         Promise.all([
-          api.getClassifyDataCount(),
-          api.getClassifyTotalCount(),
-          api.getClassifyMonthCount(),
-          api.getClassifyZrpCount(),
-          api.getClassifyFoCount()
+          api.getZyxxsl(),
+          api.getSjgjzl(),
+          api.getBygjsjl(),
+          api.getZrpcount(),
+          api.getFocount()
         ]).then(([zyxxsl, sjgjzl, bygjsjl, zrpcount, focount]) => {
           // 顶部数据
           this.counts = {
-            cnt: zyxxsl.data.data.cnt,
-            totalCount: sjgjzl.data.data.totalCount,
-            monthCount: bygjsjl.data.data.monthCount,
-            zrpCount: zrpcount.data.data.zrpCount,
-            foCount: focount.data.data.foCount
+            cnt: zyxxsl.data.cnt,
+            totalCount: sjgjzl.data.totalCount,
+            monthCount: bygjsjl.data.monthCount,
+            zrpCount: zrpcount.data.zrpCount,
+            foCount: focount.data.foCount
           }
         })
       },
@@ -673,8 +673,8 @@
             'C07': '其他信息'
           }
           const res = await api.getZyxxfltjsj(query)
-          res.forEach(item => { item.key = kv[item.key] })
-          this.barChartOption.dataset = formatDataSet({ xField: 'key', yField: 'count' }, res)
+          res.data.forEach(item => { item.key = kv[item.key] })
+          this.barChartOption.dataset = formatDataSet({ xField: 'key', yField: 'count' }, res.data)
         } catch (error) {
           console.error(error)
         }
@@ -695,11 +695,11 @@
           const source = [
             {
               legend: '自然人',
-              data: zrr
+              data: zrr.data
             },
             {
               legend: '法人及其他组织',
-              data: fr
+              data: fr.data
             }
           ]
           const dataset = formatSeries({ xField: 'month', yField: 'count', seriesField: 'legend' }, source)
@@ -740,8 +740,8 @@
         this.bmsjgjfxLoading = true
         try {
           const res = await api.getBmsjgjfx(query)
-          const totalNum = res[0].totalNum
-          this.bmsjgjfxData = res.map((item, index) => {
+          const totalNum = res.data[0].totalNum
+          this.bmsjgjfxData = res.data.map((item, index) => {
             if (index > 1) {
               item.wzl = item.wzl.toFixed(2) + '%'
               item.percent = Number(((item.count / totalNum) * 100).toFixed(2))
@@ -764,7 +764,7 @@
         this.xxgjjlLoading = true
         try {
           const res = await api.getXxgjjl(query)
-          this.xxgjjlData = res
+          this.xxgjjlData = res.data
         } catch (error) {
           console.error(error)
         }
@@ -783,7 +783,7 @@
         this.zxtbbmLoadig = true
         try {
           const res = await api.getZxtbbm(query)
-          this.zxtbbmData = res
+          this.zxtbbmData = res.data
         } catch (error) {
           console.error(error)
         }
