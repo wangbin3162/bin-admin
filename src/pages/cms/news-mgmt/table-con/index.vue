@@ -28,7 +28,7 @@
       </template>
 
       <template v-slot:contentStatus="{ row }">
-        <b-select appendToBody :value="row.contentStatus"
+        <b-select appendToBody v-model="row.contentStatus"
           @on-change="contentStatusChangeHandler($event, row.id)">
           <b-option v-for="(value, key) in contentStatus" :key="key" :value="key">
             {{ value }}
