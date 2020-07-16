@@ -191,8 +191,8 @@
         this.loading = true
         try {
           const res = await getLeftTreeNode()
-          res.redList = []
-          res.blackList = []
+          // res.redList = []
+          // res.blackList = []
           this.treeData = this.buildTree(res)
         } catch (error) {
           console.error(error)
