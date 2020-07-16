@@ -62,7 +62,7 @@
         </b-collapse-wrap>
 
         <template slot="footer">
-          <b-button v-if="view === 'baseInfo'" @click="$emit('close')">取 消</b-button>
+          <b-button @click="$emit('close')">取 消</b-button>
           <b-button v-if="view === 'content'" @click="backBtnHandler">返 回</b-button>
           <b-button v-if="showSaveBtn" type="primary" @click="submitHandler" :loading="btnLoading">
             保 存

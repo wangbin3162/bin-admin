@@ -55,3 +55,9 @@
     }
   }
 </script>
+
+<style>
+  .tox-dialog-wrap__backdrop {
+    background-color: rgba(255,255,255,0)!important;
+  }
+</style>
