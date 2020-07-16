@@ -207,6 +207,8 @@ export async function getContentList(query) {
           title: query.title,
           contentType: query.contentType,
           contentStatus: query.contentStatus,
+          publishDateStart: query.publishDateStart,
+          publishDateEnd: query.publishDateEnd,
           size: query.size,
           page: query.page - 1,
           sort: 'isTop,desc'

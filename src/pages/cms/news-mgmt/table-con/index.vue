@@ -95,6 +95,8 @@
           title: '',
           contentType: '',
           contentStatus: '',
+          publishDateStart: '',
+          publishDateEnd: '',
           size: 10,
           page: 1
         },

@@ -21,14 +21,14 @@
         <div v-show="filterOpened" style="width: 100%;">
           <v-filter-item title="内容状态" :span="8">
             <b-select v-model="query.contentStatus">
-          <b-option v-for="(value, key) in contentStatus" :key="key" :value="key">
-            {{ value }}
-          </b-option>
-        </b-select>
+              <b-option v-for="(value, key) in contentStatus" :key="key" :value="key">
+                {{ value }}
+              </b-option>
+            </b-select>
           </v-filter-item>
 
           <v-filter-item title="发布时间" :span="8">
-            <b-date-picker v-model="dateStrArr" type="daterange" placement="bottom-start"
+            <b-date-picker v-model="dateStrArr" type="datetimerange" placement="bottom-start"
               @on-change="dateChangeHandler"
               placeholder="请选择发布时间">
             </b-date-picker>
@@ -95,6 +95,8 @@
         this.query.title = ''
         this.query.contentType = ''
         this.query.contentStatus = ''
+        this.query.publishDateStart = ''
+        this.query.publishDateEnd = ''
         this.query.size = 10
         this.query.page = 1
         // 如果以this.query = {}的形式给query赋值，watch内发出的input事件会慢于以下的reset事件
@@ -108,6 +110,8 @@
        */
       dateChangeHandler (dateStrArr) {
         console.log(dateStrArr)
+        this.query.publishDateStart = dateStrArr[0]
+        this.query.publishDateEnd = dateStrArr[1]
       }
     }
   }
