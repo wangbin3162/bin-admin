@@ -160,7 +160,9 @@
         }
         if (type === 'r') {
           this.getSectionRoots()
-          // TODO: 刷新按钮需要改变节点选中状态
+          // 这里最好在getSectionRoots请求成功的回调内处理以下逻辑
+          this.curNode = null
+          this.$emit('section-change', '')
         }
       },
 
