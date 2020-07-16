@@ -5,44 +5,50 @@
 
     <v-table-tool-bar>
       <b-button type="primary" icon="ios-add-circle-outline"
-        @click="$emit('create')" :disabled="!Boolean(columnId)">
+        @click="$emit('create')">
         添加
       </b-button>
     </v-table-tool-bar>
 
     <b-table :columns="columns" :data="list" :loading="loading">
-      <template v-slot:contentType="{ row }">
-        {{ contentType[row.contentType] }}
-      </template>
-
-      <template v-slot:thumbnailPath="{ row }">
-        <b-button type="text" @click="thumbnailBtnHandler(row)">
-          {{ Boolean(row.thumbnailPath) ? '更新' : '新增' }}
+      <template v-slot:title="{ row }">
+        <b-button type="text" t-ellipsis :title="row.title" @click="$emit('detail', row)">
+          {{ row.title }}
         </b-button>
       </template>
 
-      <template v-slot:isTop="{ row }">
-        <b-switch v-model="row.isTop"
-          @on-change="topSwitchHandler($event, row)">
-        </b-switch>
+      <template v-slot:type="{ row }">
+        {{ noticeType[row.type] }}
       </template>
 
-      <template v-slot:contentStatus="{ row }">
-        <b-select appendToBody v-model="row.contentStatus"
-          @on-change="contentStatusChangeHandler($event, row.id)">
-          <b-option v-for="(value, key) in contentStatus" :key="key" :value="key">
-            {{ value }}
-          </b-option>
-        </b-select>
+      <template v-slot:notifyStatus="{ row }">
+        {{ noticeStatus[row.notifyStatus] }}
       </template>
 
       <template v-slot:action="{ row }">
-        <b-button type="text" @click="editBtnHandler(row)">
-          编辑
-        </b-button>
         <b-button type="text" text-color="danger" @click="removeBtnHandler(row.id)">
           删除
         </b-button>
+
+        <template v-if="row.notifyStatus === 'DRAFT'">
+          <b-divider type="vertical"></b-divider>
+
+          <b-dropdown append-to-body>
+            <b-button type="text">
+              更多
+              <b-icon name="ios-arrow-down"></b-icon>
+            </b-button>
+            <b-dropdown-menu slot="list">
+              <b-dropdown-item style="color: #0d85ff;" @click.native="editBtnHandler(row)">
+                编辑
+              </b-dropdown-item>
+              <b-dropdown-item style="color: #0d85ff;">
+                发布
+              </b-dropdown-item>
+            </b-dropdown-menu>
+          </b-dropdown>
+        </template>
+
       </template>
     </b-table>
 
@@ -51,10 +57,6 @@
       @on-page-size-change="pageSizeChangeHandler">
     </b-page>
 
-    <thumbnail v-model="openThumbnail"
-     :thumbnailData="thumbnailData"
-     @success="getContentList">
-    </thumbnail>
   </div>
 </template>
 
@@ -62,85 +64,62 @@
   import { mapState } from 'vuex'
   import permission from '../../../../common/mixins/permission'
   import {
-    getContentList, removeContent,
-    setTop, setStatus
-  } from '../../../../api/cms/news-mgmt.api'
+    getNoticeList,
+    removeNotice
+  } from '../../../../api/cms/notice-mgmt.api'
   import TableSearch from './TableSearch'
-  import Thumbnail from './Thumbnail'
 
   /**
-   * @typedef {import('../../../../api/cms/news-mgmt.api').Content} Content
-   */
-  /**
-   * @typedef {import('../../../../api/cms/news-mgmt.api').ContentThumbnail} ContentThumbnail
+   * @typedef {import('../../../../api/cms/notice-mgmt.api').Notice} Notice
    */
 
   export default {
-    name: 'NewsMgmtTableCon',
+    name: 'NoticeMgmtTableCon',
     mixins: [permission],
-    props: [
-      'columnId'
-    ],
+    props: [],
     components: {
-      TableSearch,
-      Thumbnail
+      TableSearch
     },
     data () {
       return {
-        openThumbnail: false,
         loading: false,
         total: 0,
         query: {
-          columnId: this.columnId,
           title: '',
-          contentType: '',
-          contentStatus: '',
-          publishDateStart: '',
-          publishDateEnd: '',
+          type: '',
+          notifyStatus: '',
           size: 10,
           page: 1
         },
         columns: [
           { type: 'index', width: 50 },
-          { title: '新闻标题', key: 'title', ellipsis: true, tooltip: true },
-          { title: '内容类型', slot: 'contentType' },
-          // { title: '发布时间', slot: 'publishDate' },
-          { title: '缩略图', slot: 'thumbnailPath' },
-          { title: '置顶', slot: 'isTop' },
-          { title: '状态', slot: 'contentStatus' },
-          { title: '操作', slot: 'action', width: 120 }
+          { title: '通知标题', slot: 'title', ellipsis: true, tooltip: true },
+          { title: '通知类型', slot: 'type' },
+          { title: '置顶', key: '' },
+          { title: '状态', slot: 'notifyStatus' },
+          { title: '操作', slot: 'action', width: 130 }
         ],
-        list: [],
-        thumbnailData: null // 缩略图数据对象
-      }
-    },
-    watch: {
-      columnId: {
-        handler (newVal, oldVal) {
-          this.query.columnId = newVal
-          this.searchHandler(this.query)
-        }
+        list: []
       }
     },
     computed: {
       ...mapState({
-        colType: state => state.newsMgmt.colType,
-        contentType: state => state.newsMgmt.contentType,
-        contentStatus: state => state.newsMgmt.contentStatus
+        noticeType: state => state.noticeMgmt.noticeType,
+        noticeStatus: state => state.noticeMgmt.noticeStatus
       })
     },
     created () {
-      this.getContentList()
+      this.getNoticeList()
     },
     methods: {
       /**
        * @author haodongdong
        * @description 获取内容(新闻)列表
        */
-      async getContentList () {
+      async getNoticeList () {
         this.loading = true
         try {
-          const res = await getContentList(this.query)
+          const res = await getNoticeList(this.query)
           this.total = res.total
           this.list = res.rows
         } catch (error) {
@@ -155,7 +134,7 @@
        */
       searchHandler () {
         this.query.page = 1
-        this.getContentList()
+        this.getNoticeList()
       },
 
       /**
@@ -163,7 +142,7 @@
        * @description 搜索组件触发重置按钮reset事件回调
        */
       resetHandler () {
-        this.getContentList()
+        this.getNoticeList()
       },
 
       /**
@@ -174,28 +153,13 @@
        */
       async topSwitchHandler (status, row) {
         try {
-          await setTop(row.id, status)
-          this.getContentList()
+          // await setTop(row.id, status)
+          this.getNoticeList()
           this.$message({ type: 'success', content: '操作成功' })
         } catch (error) {
           row.isTop = !status
           console.error(error)
         }
-      },
-
-      /**
-       * @author haodongdong
-       * @description 缩略图操作按钮回调
-       * @param {Content} row
-       */
-      thumbnailBtnHandler (row) {
-        this.thumbnailData = {
-          id: row.id,
-          thumbnailPath: row.thumbnailPath,
-          thumbnailHeight: row.thumbnailHeight,
-          thumbnailWidth: row.thumbnailWidth
-        }
-        this.openThumbnail = true
       },
 
       /**
@@ -206,10 +170,10 @@
        */
       async contentStatusChangeHandler (contentStatus, id) {
         try {
-          await setStatus(id, contentStatus)
+          // await setStatus(id, contentStatus)
           this.$message({ type: 'success', content: '操作成功' })
         } catch (error) {
-          this.getContentList()
+          this.getNoticeList()
           console.error(error)
         }
       },
@@ -231,16 +195,17 @@
       removeBtnHandler (id) {
         this.$confirm({
           title: '删除',
-          content: '确定要删除当前内容？',
+          content: '确定要删除当前通知？',
           loading: true,
           okType: 'danger',
           onOk: async () => {
             try {
-              await removeContent(id)
+              await removeNotice(id)
               this.$message({ type: 'success', content: '操作成功' })
-              this.getContentList()
+              this.getNoticeList()
             } catch (error) {
               console.error(error)
+              this.$notice.danger({ title: '操作失败', desc: error })
             }
             this.$modal.remove()
           }
@@ -254,7 +219,7 @@
        */
       pageChangeHandler (page) {
         this.query.page = page
-        this.getContentList()
+        this.getNoticeList()
       },
 
       /**
@@ -265,7 +230,7 @@
       pageSizeChangeHandler (size) {
         this.query.page = 1
         this.query.size = size
-        this.getContentList()
+        this.getNoticeList()
       }
     }
   }

@@ -453,3 +453,43 @@ export async function getCmsContentStatus() {
     }
   })
 }
+
+/**
+ * @author haodongdong
+ * @description 内容管理--->通知类型枚举
+ * @returns {Promise}
+ */
+export async function getCmsNoticeType() {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request.get('/api/enum/cms/notifyType')
+      if (res.data.successful) {
+        resolve(res.data.data)
+      } else {
+        reject(new Error(res.data.message))
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
+ * @description 内容管理--->通知状态枚举
+ * @returns {Promise}
+ */
+export async function getCmsNoticeStatus() {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request.get('/api/enum/cms/notifyStatus')
+      if (res.data.successful) {
+        resolve(res.data.data)
+      } else {
+        reject(new Error(res.data.message))
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}

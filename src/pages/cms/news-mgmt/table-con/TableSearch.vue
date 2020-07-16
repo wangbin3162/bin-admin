@@ -1,11 +1,11 @@
 <template>
   <v-filter-bar @keyup-enter="searchHandler">
       <v-filter-item title="新闻标题" :span="8">
-        <b-input v-model="query.title" placeholder="请输入"></b-input>
+        <b-input v-model="query.title" placeholder="请输入" clearable></b-input>
       </v-filter-item>
 
       <v-filter-item title="内容类型" :span="8">
-        <b-select v-model="query.contentType">
+        <b-select v-model="query.contentType" clearable>
           <b-option v-for="(value, key) in contentType" :key="key" :value="key">
             {{ value }}
           </b-option>
@@ -20,7 +20,7 @@
       <collapse-transition>
         <div v-show="filterOpened" style="width: 100%;">
           <v-filter-item title="内容状态" :span="8">
-            <b-select v-model="query.contentStatus">
+            <b-select v-model="query.contentStatus" clearable>
               <b-option v-for="(value, key) in contentStatus" :key="key" :value="key">
                 {{ value }}
               </b-option>
@@ -42,7 +42,7 @@
   import { mapState } from 'vuex'
 
   export default {
-    name: 'newsMgmtTableSearch',
+    name: 'NewsMgmtTableSearch',
     props: {
       value: {
         type: Object,

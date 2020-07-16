@@ -193,6 +193,8 @@ export async function removeSection(columnId) {
  * @param {string} query.title 标题
  * @param {string} query.contentType 内容类型
  * @param {string} query.contentStatus 内容状态
+ * @param {string} query.publishDateStart 发布时间范围查询的起始时间
+ * @param {string} query.publishDateEnd 发布时间范围查询的结束时间
  * @param {number} query.size 分页尺寸
  * @param {number} query.page 页数
  */

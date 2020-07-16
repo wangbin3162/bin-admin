@@ -44,7 +44,7 @@
     },
     data () {
       return {
-        pageStatus: 'info', // 当前要显示的页面视图
+        viewStatus: 'info', // 当前要显示的页面视图
         editDiaTitle: '',
         columnId: '',
         curRow: null // 存储当前行
@@ -52,7 +52,7 @@
     },
     computed: {
       isEdit () {
-        return this.pageStatus === 'edit'
+        return this.viewStatus === 'edit'
       }
     },
     created () {
@@ -92,7 +92,7 @@
        */
       createHandler () {
         this.editDiaTitle = '新增内容'
-        this.pageStatus = 'edit'
+        this.viewStatus = 'edit'
       },
 
       /**
@@ -103,7 +103,7 @@
       editHandler (row) {
         this.curRow = row
         this.editDiaTitle = '编辑内容'
-        this.pageStatus = 'edit'
+        this.viewStatus = 'edit'
       },
 
       /**
@@ -120,7 +120,7 @@
        */
       editCloseHandler () {
         this.curRow = null
-        this.pageStatus = 'info'
+        this.viewStatus = 'info'
       }
 
     }

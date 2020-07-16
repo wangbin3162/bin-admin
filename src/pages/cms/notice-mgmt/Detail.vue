@@ -1,0 +1,117 @@
+<template>
+  <div class="notice-mgmt-detail">
+    <page-header-wrap show-close @on-close="$emit('close')">
+      <v-edit-wrap transparent>
+        <b-collapse-wrap title="基本信息" collapse>
+          <table class="table">
+            <tr>
+              <td>通知标题</td>
+              <td>{{ detail.title }}</td>
+              <td>通知类型</td>
+              <td>{{ noticeType[detail.type] }}</td>
+            </tr>
+            <tr>
+              <td>发布组织</td>
+              <td>{{ departName }}</td>
+              <td>过期时间</td>
+              <td>{{ detail.validDate }}</td>
+            </tr>
+            <tr>
+              <td>通知状态</td>
+              <td>{{ noticeStatus[detail.notifyStatus] }}</td>
+              <td>备注</td>
+              <td>{{ detail.remark }}</td>
+            </tr>
+          </table>
+        </b-collapse-wrap>
+
+        <b-collapse-wrap title="通知内容" collapse>
+          <div v-html="detail.content">
+
+          </div>
+        </b-collapse-wrap>
+
+        <template slot="footer">
+          <b-button @click="$emit('close')">取 消</b-button>
+        </template>
+      </v-edit-wrap>
+    </page-header-wrap>
+  </div>
+</template>
+
+<script>
+  import { mapState } from 'vuex'
+
+  export default {
+    name: 'NoticeMgmtDetail',
+    props: {
+      detail: {
+        sytpe: Object,
+        required: true
+      }
+    },
+    data () {
+      return {
+
+      }
+    },
+    computed: {
+      ...mapState({
+        noticeType: state => state.noticeMgmt.noticeType,
+        noticeStatus: state => state.noticeMgmt.noticeStatus,
+        departName: state => state.user.info.departName
+      })
+    },
+    created () {
+
+    },
+    methods: {
+
+    }
+  }
+</script>
+
+<style lang="stylus" scoped>
+ .notice-mgmt-detail {
+   .table {
+      border-collapse: collapse;
+      margin: 0 auto;
+      text-align: center;
+      width: 100%;
+
+      td, th {
+        padding: 10px;
+        vertical-align: top;
+        border: 1px solid #cad9ea;
+        border: 1px solid #e8eaec;
+        color: #666;
+        height: 40px;
+      }
+      td:nth-child(odd), th:nth-child(odd) {
+        width: 10%;
+        padding-right: 15px;
+        text-align: right;
+        background: #f5fafa;
+        background: #fafafa;
+      }
+      td:nth-child(even), th:nth-child(even) {
+        width: 30%;
+        // padding: 5px;
+        padding-left: 10px;
+        text-align: left;
+        background: #ffffff;
+      }
+      tr:hover {
+        td {
+          background: #f4f5f6;
+          transition: background 0.7s;
+        }
+      }
+      .td-cover {
+        background: #ffffff!important;
+        padding: 5px!important;
+        padding-left: 10px!important;
+      }
+   }
+ }
+</style>
