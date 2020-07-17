@@ -22,7 +22,8 @@
               </b-form-item>
 
               <b-form-item label="过期时间">
-                <b-date-picker type="datetime" placeholder="选择时间" style="padding-right: 20px;">
+                <b-date-picker type="datetime" placeholder="选择时间" style="padding-right: 20px;"
+                  v-model="form.validDate">
                 </b-date-picker>
               </b-form-item>
 
@@ -43,6 +44,7 @@
 
         <b-collapse-wrap title="通知内容" collapse>
           <rich-text v-model="form.content"></rich-text>
+          <file-upload :initFileList="form.fileList"></file-upload>
         </b-collapse-wrap>
 
         <template slot="footer">
@@ -60,6 +62,7 @@
   import { mapState } from 'vuex'
   import { createNotice, updateNotice } from '../../../../api/cms/notice-mgmt.api'
   import RichText from './RichText'
+  import FileUpload from './FileUpload'
 
   /**
    * @typedef {import('../../../../api/cms/notice-mgmt.api').Notice} Notice
@@ -77,7 +80,8 @@
       }
     },
     components: {
-      RichText
+      RichText,
+      FileUpload
     },
     data () {
       return {

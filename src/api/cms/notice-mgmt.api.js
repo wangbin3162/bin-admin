@@ -174,3 +174,60 @@ export async function setStatus(id, notifyStatus) {
     }
   })
 }
+
+/**
+ * @author haodongdong
+ * @description 通知公告附件上传接口
+ * @param {File} file
+ * @returns {Promise<void>}
+ */
+export function UploadNotifyFile(file) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let data = new FormData()
+      data.append('attachment', file)
+
+      const res = await request({
+        url: 'api/cms/cmsNotify/uploadNotify',
+        method: 'post',
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        },
+        data: data
+      })
+
+      if (res.data.successful) {
+        resolve(res.data.data)
+      } else {
+        reject(res.data.message)
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
+ * @description 通知公告附件删除接口
+ * @param {string} attachmentId 附件id
+ * @returns {Promise<void>}
+ */
+export function removeNotifyFile(attachmentId) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: 'api/cms/cmsNotify/deleteNotifyFile',
+        method: 'post',
+        params: { attachmentId }
+      })
+      if (res.data.successful) {
+        resolve()
+      } else {
+        reject(res.data.message)
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}

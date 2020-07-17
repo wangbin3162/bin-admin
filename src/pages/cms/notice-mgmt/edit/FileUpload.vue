@@ -10,7 +10,7 @@
     </div>
 
     <div class="list ml-15">
-      <b-table :columns="columns" :data="flieList" :loading="loading"
+      <b-table :columns="columns" :data="fileList"
         :show-header="false" no-data-text="暂无上传附件">
         <template v-slot:fileName="{ row }">
           <b-icon name="ios-document"></b-icon>{{ row.fileName }}
@@ -19,11 +19,12 @@
         <template v-slot:action="{ row }">
           <b-button type="text" icon="ios-download" title="下载"
             text-color="primary" :icon-style="{fontSize: '20px'}"
-            @click="downLoadBtnHandler(row.commInfoId, row.fileName)">
+            @click="downLoadBtnHandler(row.id, row.fileName)">
           </b-button>
-          <b-button type="text" icon="ios-trash" title="删除"
+
+          <b-button type="text" icon="ios-trash"
             text-color="danger" :icon-style="{fontSize: '20px'}"
-            @click="delBtnHandler(row.commInfoId)">
+            @click="delBtnHandler(row.id)">
           </b-button>
         </template>
       </b-table>
@@ -32,30 +33,37 @@
 </template>
 
 <script>
-  import { UploadAttachments, getAttachments, removeAttachment } from '../../../../api/cms/news-mgmt.api'
+  import { UploadNotifyFile, removeNotifyFile } from '../../../../api/cms/notice-mgmt.api'
   import { fileDownLoad } from '../../../../api/import-export.api'
 
   export default {
     name: 'FileUpload',
     props: {
-      contentId: {
-        type: String,
-        default: null
+      initFileList: {
+        type: Array,
+        default () {
+          return []
+        }
       }
     },
     data () {
       return {
         disabled: false, // 用于上传时禁止点击
-        loading: false,
-        flieList: [],
+        fileList: this.initFileList,
         columns: [
           { title: 'FileName', slot: 'fileName' },
           { title: 'Action', slot: 'action', width: 90, align: 'right' }
         ]
       }
     },
+    watch: {
+      fileList (newVal) {
+        console.log(newVal)
+        // TODO: 根据fileList变动构建files内容，以事件发出
+      }
+    },
     created () {
-      if (this.contentId) this.getAttachments(this.contentId)
+
     },
     methods: {
       /**
@@ -65,44 +73,25 @@
        * @returns {boolean} 返回false取消发组件默认的上传行为
        */
       handleUpload (file) {
-        console.log(file)
-        this.fileUpdate(this.contentId, file)
+        this.fileUpdate(file)
         return false
       },
 
       /**
        * @author haodongdong
-       * @description 请求附件上传接口，上传成功后调用附件列表接口，刷新列表
-       * @param {string} contentId 内容(新闻)id
+       * @description 请求附件上传接口，刷新列表
        * @param {File} file 文件
        */
-      async fileUpdate (contentId, file) {
+      async fileUpdate (file) {
         this.disabled = true
         try {
-          await UploadAttachments(contentId, [file])
-          await this.getAttachments(contentId)
+          const res = await UploadNotifyFile(file)
+          this.fileList.push(res)
         } catch (error) {
           console.error(error)
           this.$notice.danger({ title: '操作失败', desc: error })
         }
         this.disabled = false
-      },
-
-      /**
-       * @author haodongdong
-       * @description 获取附件列表
-       * @param {string} contentId 内容(新闻)id
-       */
-      async getAttachments (contentId) {
-        this.loading = true
-        try {
-          const res = await getAttachments(contentId)
-          this.flieList = res
-        } catch (error) {
-          console.error(error)
-          this.$notice.danger({ title: '加载附件失败', desc: error })
-        }
-        this.loading = false
       },
 
       /**
@@ -128,8 +117,9 @@
        */
       async delBtnHandler (attachmentId) {
         try {
-          await removeAttachment(attachmentId)
-          this.getAttachments(this.contentId)
+          await removeNotifyFile(attachmentId)
+          const index = this.fileList.findIndex(item => item.id === attachmentId)
+          this.fileList.splice(index, 1)
         } catch (error) {
           console.error(error)
           this.$notice.danger({ title: '操作失败', desc: error })
