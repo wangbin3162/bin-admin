@@ -1,7 +1,7 @@
 import layout from '../layout'
 import components from './modules/components'
 import tableDemo from './modules/table-demo'
-import formDemo from './modules/form-demo'
+import configDemo from './modules/config-demo'
 import errorPage from './modules/error-page'
 import nested from './modules/nested'
 
@@ -19,30 +19,9 @@ import nested from './modules/nested'
 export const asyncRouterMap = [
   components,
   tableDemo,
-  formDemo,
+  configDemo,
   errorPage,
   nested,
-  {
-    path: '/test',
-    name: 'test',
-    redirect: 'noRedirect',
-    meta: { title: '测试菜单', icon: 'ios-git-merge' },
-    component: layout,
-    children: [
-      {
-        path: 'test1',
-        component: () => import('../pages/demo/nested/menu1/index'), // Parent router-view
-        name: 'test1',
-        meta: { title: 'test1' }
-      },
-      {
-        path: 'test2',
-        name: 'test2',
-        component: () => import('../pages/demo/nested/menu2/index'),
-        meta: { title: 'test2' }
-      }
-    ]
-  },
   { path: '*', redirect: '/404', hidden: true }
 ]
 
