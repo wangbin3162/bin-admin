@@ -123,14 +123,24 @@
        * @param {string} attachmentId 附件id
        */
       async delBtnHandler (attachmentId) {
-        try {
-          await removeNotifyFile(attachmentId)
-          const index = this.fileList.findIndex(item => item.id === attachmentId)
-          this.fileList.splice(index, 1)
-        } catch (error) {
-          console.error(error)
-          this.$notice.danger({ title: '操作失败', desc: error })
-        }
+        this.$confirm({
+          title: '删除',
+          content: '确定要删除附件？',
+          loading: true,
+          okType: 'danger',
+          onOk: async () => {
+            try {
+              await removeNotifyFile(attachmentId)
+              const index = this.fileList.findIndex(item => item.id === attachmentId)
+              this.fileList.splice(index, 1)
+              this.$message({ type: 'success', content: '操作成功' })
+            } catch (error) {
+              console.error(error)
+              this.$notice.danger({ title: '操作失败', desc: error })
+            }
+            this.$modal.remove()
+          }
+        })
       },
 
       /**

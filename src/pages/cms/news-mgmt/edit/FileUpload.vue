@@ -127,13 +127,23 @@
        * @param {string} attachmentId 附件id
        */
       async delBtnHandler (attachmentId) {
-        try {
-          await removeAttachment(attachmentId)
-          this.getAttachments(this.contentId)
-        } catch (error) {
-          console.error(error)
-          this.$notice.danger({ title: '操作失败', desc: error })
-        }
+        this.$confirm({
+          title: '删除',
+          content: '确定要删除附件？',
+          loading: true,
+          okType: 'danger',
+          onOk: async () => {
+            try {
+              await removeAttachment(attachmentId)
+              this.getAttachments(this.contentId)
+              this.$message({ type: 'success', content: '操作成功' })
+            } catch (error) {
+              console.error(error)
+              this.$notice.danger({ title: '操作失败', desc: error })
+            }
+            this.$modal.remove()
+          }
+        })
       },
 
       /**
