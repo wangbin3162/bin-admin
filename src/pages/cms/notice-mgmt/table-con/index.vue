@@ -21,6 +21,10 @@
         {{ noticeType[row.type] }}
       </template>
 
+      <template v-slot:isTop="{ row }">
+        <b-switch v-model="row.isTop" @on-change="topSwitchHandler($evnet, row)"></b-switch>
+      </template>
+
       <template v-slot:notifyStatus="{ row }">
         {{ noticeStatus[row.notifyStatus] }}
       </template>
@@ -42,7 +46,7 @@
               <b-dropdown-item style="color: #0d85ff;" @click.native="editBtnHandler(row)">
                 编辑
               </b-dropdown-item>
-              <b-dropdown-item style="color: #0d85ff;">
+              <b-dropdown-item style="color: #0d85ff;" @click.native="pubBtnHandler(row.id)">
                 发布
               </b-dropdown-item>
             </b-dropdown-menu>
@@ -65,7 +69,9 @@
   import permission from '../../../../common/mixins/permission'
   import {
     getNoticeList,
-    removeNotice
+    removeNotice,
+    setTop,
+    setStatus
   } from '../../../../api/cms/notice-mgmt.api'
   import TableSearch from './TableSearch'
 
@@ -95,7 +101,7 @@
           { type: 'index', width: 50 },
           { title: '通知标题', slot: 'title', ellipsis: true, tooltip: true },
           { title: '通知类型', slot: 'type' },
-          { title: '置顶', key: '' },
+          { title: '置顶', slot: 'isTop' },
           { title: '状态', slot: 'notifyStatus' },
           { title: '操作', slot: 'action', width: 130 }
         ],
@@ -153,7 +159,7 @@
        */
       async topSwitchHandler (status, row) {
         try {
-          // await setTop(row.id, status)
+          await setTop(row.id, status)
           this.getNoticeList()
           this.$message({ type: 'success', content: '操作成功' })
         } catch (error) {
@@ -185,6 +191,22 @@
        */
       editBtnHandler (row) {
         this.$emit('edit', this.$util.deepClone(row))
+      },
+
+      /**
+       * @author haodongdong
+       * @description 发布按钮回调
+       * @param {string} id 通知id
+       */
+      async pubBtnHandler (id) {
+        try {
+          await setStatus(id, 'PUBLISHED')
+          this.getNoticeList()
+          this.$message({ type: 'success', content: '操作成功' })
+        } catch (error) {
+          console.error(error)
+          this.$notice.danger({ title: '操作失败', desc: error })
+        }
       },
 
       /**
