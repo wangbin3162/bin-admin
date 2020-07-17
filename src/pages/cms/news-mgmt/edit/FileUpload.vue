@@ -17,7 +17,11 @@
         </template>
 
         <template v-slot:action="{ row }">
-          <b-button type="text" icon="ios-trash"
+          <b-button type="text" icon="ios-download" title="下载"
+            text-color="primary" :icon-style="{fontSize: '20px'}"
+            @click="downLoadBtnHandler(row.commInfoId, row.fileName)">
+          </b-button>
+          <b-button type="text" icon="ios-trash" title="删除"
             text-color="danger" :icon-style="{fontSize: '20px'}"
             @click="delBtnHandler(row.commInfoId)">
           </b-button>
@@ -29,6 +33,7 @@
 
 <script>
   import { UploadAttachments, getAttachments, removeAttachment } from '../../../../api/cms/news-mgmt.api'
+  import { fileDownLoad } from '../../../../api/import-export.api'
 
   export default {
     name: 'FileUpload',
@@ -45,7 +50,7 @@
         flieList: [],
         columns: [
           { title: 'FileName', slot: 'fileName' },
-          { title: 'Action', slot: 'action', width: 50, align: 'right' }
+          { title: 'Action', slot: 'action', width: 90, align: 'right' }
         ]
       }
     },
@@ -102,6 +107,22 @@
 
       /**
        * @author haodongdong
+       * @description 附件下载按钮的回调
+       * @param {string} attachmentId 附件id
+       * @param {string} fileName 附件名称
+       */
+      async downLoadBtnHandler (attachmentId, fileName) {
+        try {
+          const res = await fileDownLoad(attachmentId, 'cms', 'content_attachments')
+          this.downloadFile(res, fileName)
+        } catch (error) {
+          console.error(error)
+          this.$notice.danger({ title: '下载失败', desc: error })
+        }
+      },
+
+      /**
+       * @author haodongdong
        * @description 附件删除按钮回调
        * @param {string} attachmentId 附件id
        */
@@ -112,6 +133,26 @@
         } catch (error) {
           console.error(error)
           this.$notice.danger({ title: '操作失败', desc: error })
+        }
+      },
+
+      /**
+       * @author haodongdong
+       * @description 触发下载的函数
+       * @param {Blob} 文件的blob数据
+       * @param {string} fileName 文件名
+       */
+      downloadFile (blob, fileName) {
+        if (window.navigator.msSaveOrOpenBlob) {
+          navigator.msSaveBlob(blob, fileName)
+        } else {
+          let link = document.createElement('a')
+          link.href = window.URL.createObjectURL(blob)
+          link.setAttribute('download', fileName)
+          document.body.appendChild(link)
+          link.click()
+          document.body.removeChild(link)
+          window.URL.revokeObjectURL(link.href)
         }
       }
 
