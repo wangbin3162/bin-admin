@@ -39,6 +39,13 @@
         </b-switch>
         <span v-else>{{ isRequiredMap[row.isRequired] }}</span>
       </template>
+      <template v-slot:configFlag="{row,index}">
+        <b-select v-model="totalData[index].configFlag" v-if="row.edit" append-to-body
+                  size="small">
+          <b-option v-for="(val,key) in configFlagMap" :key="key" :value="key">{{ val }}</b-option>
+        </b-select>
+        <span v-else>{{ configFlagMap[row.configFlag] }}</span>
+      </template>
       <template v-slot:defaultVal="{row,index}">
         <b-input type="text" v-model="totalData[index].defaultVal" v-if="row.edit" size="small"
                  placeholder="默认值"></b-input>
@@ -99,12 +106,14 @@
           { title: '控件类型', slot: 'controlType', width: 140 },
           { title: '参数类型', slot: 'analysisType', width: 140 },
           { title: '是否必填', slot: 'isRequired', width: 100, align: 'center' },
+          { title: '是否配置', slot: 'configFlag', width: 110, align: 'center' },
           { title: '默认值', slot: 'defaultVal' },
           { title: '参数说明', slot: 'paramDesc' },
           { title: '操作', slot: 'action', width: 150 }
         ],
         totalData: [],
         isRequiredMap: { N: '否', Y: '是' },
+        configFlagMap: { Y: '需要', N: '不需要' },
         controlTypeMap: {},
         analysisTypeMap: {}
       }
@@ -135,6 +144,7 @@
           controlType: 'TEXT',
           analysisType: 'ALL',
           isRequired: 'Y', // 是否必填
+          configFlag: 'Y',
           defaultVal: '', // 默认值
           paramDesc: '', // 参数说明
           edit: false,
