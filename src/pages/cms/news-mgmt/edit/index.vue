@@ -27,9 +27,17 @@
                 <b-input placeholder="发布组织" disabled :value="departName"></b-input>
               </b-form-item>
 
-              <b-form-item label="排序">
+              <b-form-item label="排序" class="mr-15">
                 <b-input-number v-model="form.orderNo" :min="0" placeholder="请输入序号" style="width: 100%;">
                 </b-input-number>
+              </b-form-item>
+
+              <b-form-item label="状态">
+                 <b-radio-group v-model="form.contentStatus">
+                  <b-radio v-for="(value, key) in contentStatus" :key="key" :label="key">
+                    <span>{{ value }}</span>
+                  </b-radio>
+                </b-radio-group>
               </b-form-item>
             </div>
 
@@ -116,6 +124,7 @@
           summary: '',
           linkUrl: '',
           contentType: 'CONTENT',
+          contentStatus: 'DRAFT',
           isTop: false,
           orderNo: null,
           keywords: '',
@@ -143,7 +152,8 @@
     },
     computed: {
       ...mapState({
-        contentType: state => state.newsMgmt.contentType
+        contentType: state => state.newsMgmt.contentType,
+        contentStatus: state => state.newsMgmt.contentStatus
       }),
       departName () {
         return this.$store.state.user.info.departName
