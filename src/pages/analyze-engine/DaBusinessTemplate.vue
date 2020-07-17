@@ -163,7 +163,8 @@
           { title: '参数类型', key: 'paramType' },
           { title: '是否必填', key: 'isRequired' },
           { title: '默认', key: 'defaultVal' },
-          { title: '参数说明', key: 'paramDesc' }
+          { title: '参数说明', key: 'paramDesc' },
+          { title: '是否配置', key: 'configFlag' }
         ],
         ruleValidate: {
           tempName: [requiredRule],
@@ -288,7 +289,8 @@
               defaultVal: '',
               paramDesc: '',
               edit: true,
-              newOne: true
+              newOne: true,
+              configFlag:'Y'
             })
           }
         })
