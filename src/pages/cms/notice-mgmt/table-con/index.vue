@@ -22,11 +22,21 @@
       </template>
 
       <template v-slot:isTop="{ row }">
-        <b-switch v-model="row.isTop" @on-change="topSwitchHandler($evnet, row)"></b-switch>
+        <b-switch v-model="row.isTop"
+          @on-change="topSwitchHandler($event, row)">
+        </b-switch>
       </template>
 
       <template v-slot:notifyStatus="{ row }">
-        {{ noticeStatus[row.notifyStatus] }}
+        <b-tag v-if="row.notifyStatus === 'PUBLISHED'" type="success" dot no-border>
+          {{ noticeStatus[row.notifyStatus] }}
+        </b-tag>
+        <b-tag v-if="row.notifyStatus === 'DRAFT'" type="primary" dot no-border>
+          {{ noticeStatus[row.notifyStatus] }}
+        </b-tag>
+        <b-tag v-if="row.notifyStatus === 'INVALID'" type="info" dot no-border>
+          {{ noticeStatus[row.notifyStatus] }}
+        </b-tag>
       </template>
 
       <template v-slot:action="{ row }">

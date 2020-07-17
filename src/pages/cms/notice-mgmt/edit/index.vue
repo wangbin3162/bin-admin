@@ -21,9 +21,10 @@
                 <b-input placeholder="发布组织" disabled :value="departName"></b-input>
               </b-form-item>
 
-              <b-form-item label="过期时间">
+              <b-form-item label="过期时间" prop="validDate">
                 <b-date-picker type="datetime" placeholder="选择时间" style="padding-right: 20px;"
-                  v-model="form.validDate">
+                 :value="form.validDate"
+                 @on-change="dateStr => form.validDate = dateStr">
                 </b-date-picker>
               </b-form-item>
 
@@ -44,7 +45,9 @@
 
         <b-collapse-wrap title="通知内容" collapse>
           <rich-text v-model="form.content"></rich-text>
-          <file-upload :initFileList="form.fileList"></file-upload>
+          <file-upload :initFileList="form.fileList"
+            @files-change="filesChangeHandler">
+          </file-upload>
         </b-collapse-wrap>
 
         <template slot="footer">
@@ -102,6 +105,9 @@
           ],
           type: [
             { required: true, message: '通知类型不能为空', trigger: 'change' }
+          ],
+          validDate: [
+            { required: true, message: '过期时间不能为空', trigger: 'change' }
           ]
         }
       }
@@ -109,7 +115,14 @@
     computed: {
       ...mapState({
         noticeType: state => state.noticeMgmt.noticeType,
-        noticeStatus: state => state.noticeMgmt.noticeStatus,
+        noticeStatus: state => {
+          const noticeStatus = state.noticeMgmt.noticeStatus
+          const obj = {}
+          Object.keys(noticeStatus).forEach(key => {
+            if (key !== 'INVALID') obj[key] = noticeStatus[key]
+          })
+          return obj
+        },
         departName: state => state.user.info.departName
       }),
       isEdit () {
@@ -128,6 +141,15 @@
         if (this.isEdit) {
           this.form = this.editData
         }
+      },
+
+      /**
+       * @author haodongdong
+       * @description file-upload组件files-change事件回调
+       * @param {string} files 包含已上传文件id的字符串，每个id用逗号分隔
+       */
+      filesChangeHandler (files) {
+        this.form.files = files
       },
 
       /**

@@ -38,7 +38,8 @@ export async function getNoticeList(query) {
           type: query.type,
           notifyStatus: query.notifyStatus,
           size: query.size,
-          page: query.page - 1
+          page: query.page - 1,
+          sort: 'isTop,desc'
         }
       })
       resolve(res.data)

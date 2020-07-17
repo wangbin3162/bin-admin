@@ -1,6 +1,6 @@
 <template>
   <div class="file-upload">
-    <div class="upload">
+    <div v-if="!showMode" class="upload">
       <b-upload action="/" type="drag" :show-upload-list="false"
         :before-upload="handleUpload" :disabled="disabled">
         <div class="con" flex="dir:top main:center cross:center">
@@ -22,7 +22,7 @@
             @click="downLoadBtnHandler(row.id, row.fileName)">
           </b-button>
 
-          <b-button type="text" icon="ios-trash"
+          <b-button v-if="!showMode" type="text" icon="ios-trash"
             text-color="danger" :icon-style="{fontSize: '20px'}"
             @click="delBtnHandler(row.id)">
           </b-button>
@@ -44,6 +44,10 @@
         default () {
           return []
         }
+      },
+      showMode: {
+        type: Boolean,
+        default: false
       }
     },
     data () {
@@ -58,8 +62,11 @@
     },
     watch: {
       fileList (newVal) {
-        console.log(newVal)
-        // TODO: 根据fileList变动构建files内容，以事件发出
+        const files = []
+        newVal.forEach(item => {
+          files.push(item.id)
+        })
+        this.$emit('files-change', files.join(','))
       }
     },
     created () {
