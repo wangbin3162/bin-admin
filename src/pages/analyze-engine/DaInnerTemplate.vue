@@ -52,7 +52,7 @@
                   <b-col span="12">
                     <b-form-item label="模板编码" prop="tempCode">
                       <b-input v-model="template.tempCode" placeholder="编码为sys_开头" clearable
-                              :disabled="dialogStatus==='modify'"></b-input>
+                               :disabled="dialogStatus==='modify'"></b-input>
                     </b-form-item>
                   </b-col>
                 </b-row>
@@ -75,7 +75,7 @@
           </b-row>
         </b-collapse-wrap>
         <b-collapse-wrap title="参数信息" collapse>
-          <temp-params v-model="params"/>
+          <temp-params v-model="params" ref="tempParams"/>
         </b-collapse-wrap>
         <!--保存提交-->
         <template slot="footer">
@@ -224,29 +224,28 @@
       handleSubmit() {
         this.$refs.form.validate((valid) => {
           if (valid) {
-            if (this.checkNewOne()) {
-              this.$alert.warning({ title: '警告', content: '有未保存的参数信息，请全部保存后提交' })
-              return
-            }
-            this.btnLoading = true
-            // 需要过滤params新增未保存的
-            let params = this.params.filter(item => !item.newOne)
-            let fun = this.dialogStatus === 'create' ? api.createInnerTemp : api.modifyInnerTemplate
-            fun(this.template, params).then(res => {
-              if (res.data.code === '0') {
-                this.submitDone(true)
-                this.searchList()
+            this.$refs.tempParams.validateList().then(validParams => {
+              if (validParams) {
+                this.btnLoading = true
+                // 需要过滤params新增未保存的
+                let params = this.params.filter(item => !item.newOne)
+                let fun = this.dialogStatus === 'create' ? api.createInnerTemp : api.modifyInnerTemplate
+                fun(this.template, params).then(res => {
+                  if (res.data.code === '0') {
+                    this.submitDone(true)
+                    this.searchList()
+                  } else {
+                    this.submitDone(false)
+                    this.$notice.danger({ title: '操作错误', desc: res.data.message })
+                  }
+                })
               } else {
-                this.submitDone(false)
-                this.$notice.danger({ title: '操作错误', desc: res.data.message })
+                this.$alert.warning({ title: '警告', content: '有未填写完整的参数信息！' })
               }
             })
+
           }
         })
-      },
-      // 验证是否有未添加的
-      checkNewOne() {
-        return this.params.reduce((total, current) => current.newOne, false)
       },
       // tree:初始化树结构
       initTree() {
