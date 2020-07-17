@@ -1,6 +1,32 @@
 <template>
   <!--模板参数 for DaInnerTemplate.vue 模板参数项-->
-  <div>
+  <div class="temp-params">
+    <div class="param-item" :class="{'edit':item.edit}" v-for="(item,index) in totalData" :key="index">
+      <div class="top">
+        <div class="front">
+          <span class="handle"><b-icon name="ios-move"/></span>
+          <span class="label">{{ item.paramName }}</span>
+        </div>
+        <div class="right">
+          <b-button v-if="item.edit" @click="handleCancel(index)" size="small">取消</b-button>
+          <span v-else style="margin-left: 10px;">
+            <b-popover
+              confirm append-to-body
+              title="确认删除此项吗?"
+              @on-ok="handleRemove(index)">
+              <b-button type="danger" size="small" transparent>删除</b-button>
+            </b-popover>
+          </span>
+        </div>
+      </div>
+      <b-form label-position="top">
+        <b-form-item label="参数名称">
+          <b-input type="text" v-model="totalData[index].paramName" v-if="item.edit" size="small"
+                   placeholder="参数名称"></b-input>
+          <span v-else>{{ item.paramName }}</span>
+        </b-form-item>
+      </b-form>
+    </div>
     <b-table disabled-hover :data="totalData" :columns="fieldsColumns" size="small">
       <template v-slot:paramName="{row,index}">
         <b-input type="text" v-model="totalData[index].paramName" v-if="row.edit" size="small"
@@ -106,7 +132,8 @@
         totalData: [],
         isRequiredMap: { N: '否', Y: '是' },
         controlTypeMap: {},
-        analysisTypeMap: {}
+        analysisTypeMap: {},
+        opened: [] // 自定义展开
       }
     },
     created() {
@@ -122,6 +149,9 @@
       value: {
         handler(val) {
           this.totalData = deepCopy(val)
+          for (let i = 0; i < this.totalData.length; i++) {
+            this.opened.push(false)
+          }
         },
         immediate: true
       }
@@ -190,3 +220,12 @@
     }
   }
 </script>
+
+<style lang="stylus" scoped>
+  .temp-params {
+    .param-item {
+      border: 1px solid #eeeeee;
+      margin-bottom: 8px;
+    }
+  }
+</style>

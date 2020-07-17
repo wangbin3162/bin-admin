@@ -23,6 +23,10 @@
         <b-input v-model="totalData[index].memo" v-if="row.edit" size="small"/>
         <span v-else>{{ row.memo }}</span>
       </template>
+      <template v-slot:title="{row,index}">
+        <b-input v-model="totalData[index].title" v-if="row.edit" size="small"/>
+        <span v-else>{{ row.title }}</span>
+      </template>
       <template v-slot:action="{row,index}">
         <div v-if="row.newOne">
           <b-button @click="handleSave(row,index)" type="success" size="small" transparent>添加</b-button>
@@ -89,6 +93,7 @@
           { title: '别名', slot: 'keyAlias' },
           { title: '键路径', slot: 'keyPath' },
           { title: '数据类型', slot: 'dataType', width: 150 },
+          { title: '标题', slot: 'title' },
           { title: '说明', slot: 'memo' },
           { title: '操作', slot: 'action', width: 150 }
         ],
@@ -114,6 +119,7 @@
           keyPath: '', // 建路径
           dataType: '', // 数据类型
           memo: '', // 说明
+          title: '',// 标题
           edit: false,
           newOne: true
         }
@@ -130,7 +136,7 @@
           this.emitValue() // 移除后需要更新
         } else { // 编辑的则设置取消
           // 从value里获取当前行恢复
-          const { keyName, keyAlias, keyPath, dataType, memo } = this.value[index]
+          const { keyName, keyAlias, keyPath, dataType, memo, title } = this.value[index]
           // 检查键名是否有重复
           if (this.checkInclude('keyName', keyName)) {
             this.$message({ type: 'danger', content: '键名不能重复' })
@@ -141,6 +147,7 @@
           this.totalData[index].keyPath = keyPath
           this.totalData[index].dataType = dataType
           this.totalData[index].memo = memo
+          this.totalData[index].title = title
           this.totalData[index].edit = false
         }
       },

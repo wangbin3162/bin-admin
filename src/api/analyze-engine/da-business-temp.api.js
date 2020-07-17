@@ -8,6 +8,7 @@ export function getTplControlType() {
     method: 'get'
   })
 }
+
 /* 获取模板参数类型枚举 */
 export function getTplAnalysisType() {
   return request({
@@ -74,7 +75,7 @@ export function createBusinessTemp(template, params) {
   return request({
     url: '/da/businessTemplate/create',
     method: 'post',
-    data:  {
+    data: {
       tempName: template.tempName,
       tempCode: template.tempCode,
       tempType: template.tempType,
@@ -180,7 +181,8 @@ export function addResp(response) {
       respKind: response.respKind,
       dataType: response.dataType,
       memo: response.memo,
-      orderNo: response.orderNo
+      orderNo: response.orderNo,
+      title: response.title
     }
   })
 }
@@ -209,7 +211,8 @@ export function modifyResp(response) {
       respKind: response.respKind,
       dataType: response.dataType,
       memo: response.memo,
-      orderNo: response.orderNo
+      orderNo: response.orderNo,
+      title: response.title
     }
   })
 }

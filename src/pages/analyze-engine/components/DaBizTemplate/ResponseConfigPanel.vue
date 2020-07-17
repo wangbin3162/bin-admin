@@ -9,7 +9,7 @@
               <b-button icon="ios-add-circle-outline" @click="handleCreateRoot"/>
             </b-tooltip>
             <b-tooltip content="编辑当前节点">
-              <b-button icon="ios-create" @click="handleModify(currentTreeNode)"/>
+              <b-button icon="ios-create" @click="handleModifyRoot"/>
             </b-tooltip>
             <b-tooltip content="移除当前节点">
               <b-button icon="ios-remove-circle-outline" @click="handleRemove(currentTreeNode)"/>
@@ -114,6 +114,9 @@
             </b-form-item>
           </b-col>
         </b-row>
+        <b-form-item label="标题" prop="title">
+          <b-input v-model="resp.title" placeholder="请输入标题"/>
+        </b-form-item>
         <b-form-item label="说明" prop="memo">
           <b-input v-model="resp.memo" type="textarea" placeholder="请输入响应说明"/>
         </b-form-item>
@@ -169,6 +172,7 @@
           { title: '键名', key: 'keyName' },
           { title: '别名', key: 'keyAlias' },
           { title: '键路径', key: 'keyPath' },
+          { title: '标题', key: 'title' },
           { title: '响应类型', slot: 'respKind', align: 'center', width: 90 },
           { title: '数据类型', slot: 'dataType', align: 'center', width: 90 },
           { title: '说明', key: 'memo' },
@@ -214,6 +218,12 @@
         this.openEditPage('create')
         this.drawerVisible = true
       },
+      // 编辑节点事件
+      handleModifyRoot() {
+        this.resp = { ...this.currentTreeNode.obj }
+        this.openEditPage('modify')
+        this.drawerVisible = true
+      },
       handleCreate() {
         if (!this.currentTreeNode) {
           this.$message({ type: 'danger', content: '请选择一个响应节点后再新增！' })
@@ -256,6 +266,7 @@
                 keyPath: `/${key}`,
                 dataType: 'string',
                 orderNo: 1,
+                title: key,
                 edit: true,
                 newOne: true
               })
@@ -268,10 +279,8 @@
       },
       handleBatchSubmit() {
         this.batchLoading = true
-
         // 需要过滤params新增未保存的
         let params = this.batchItemList.filter(item => !item.newOne)
-        console.log(params)
         api.batchAddResp(params).then(res => {
           this.batchLoading = false // 按钮状态清空
           if (res.data.code === '0') {
@@ -312,7 +321,7 @@
         this.openEditPage('modify')
         this.drawerVisible = true
       },
-      // 键名更改时间
+      // 键名更改事件
       keyNameChange() {
         this.resp.keyAlias = this.resp.keyName
         this.resp.keyPath = '/' + this.resp.keyName
@@ -355,7 +364,8 @@
           respKind: '',
           dataType: '',
           memo: '',
-          orderNo: 1
+          orderNo: 1,
+          title: ''
         }
       },
       // 获取enum
@@ -374,16 +384,13 @@
       // tree:初始化树结构
       initTree() {
         this.treeData = []
+        this.currentTreeNode = null
         // 请求响应返回树结构
         api.getRespTree(this.listQuery.bizId).then(response => {
           if (response.status === 200) {
             const tree = response.data
             // 根据返回的数组格式化为树结构的格式，并追加parents用于级联选择和展开
-            this.treeData = tree ? tree.map(item => {
-              return this.treeMapper(item, null,
-                ['bizId', 'parentId', 'respKind', 'keyName', 'keyAlias', 'keyPath', 'dataType'],
-                'keyName')
-            }) : []
+            this.treeData = tree ? tree.map(item => this.treeMapper(item, null)) : []
             if (this.treeData.length > 0) {
               // 如果没有当前选中节点则初始化为第一个选中
               if (!this.currentTreeNode) {
@@ -395,6 +402,31 @@
             }
           }
         })
+      },
+      treeMapper(node, parentId) {
+        // 当前id
+        const currentId = node.id
+        let parents = parentId ? parentId.split(',') : []
+        parents.push(currentId)
+        let child = []
+        if (node.children) {
+          node.children.forEach(item => {
+            child.push(this.treeMapper(item, parents.join(',')))
+          })
+        }
+        // 是否是选中状态
+        let isSelect = this.currentTreeNode ? this.currentTreeNode.id === currentId : false
+        // 是否是展开状态，根据当前选择的节点中的parents数组来判定自身和父级的展开状态
+        let isExpand = this.currentTreeNode ? this.currentTreeNode.parents.includes(currentId) : false
+        return {
+          id: node.id,
+          title: node['keyName'],
+          obj: { ...node },
+          parents: parents, // 配合级联展开时使用
+          selected: isSelect,
+          expand: isExpand, // 先全部打开,后再进行比对关闭
+          children: child
+        }
       },
       // 查询所有列表
       searchList() {
