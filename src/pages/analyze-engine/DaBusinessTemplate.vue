@@ -290,7 +290,7 @@
               paramDesc: '',
               edit: true,
               newOne: true,
-              configFlag:'1'
+              configFlag:'Y'
             })
           }
         })
