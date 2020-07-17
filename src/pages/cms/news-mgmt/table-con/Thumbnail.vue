@@ -6,12 +6,15 @@
 
       <b-form ref="form" :model="form" :rules="rules" :label-width="70">
         <b-form-item label="缩略图" prop="thumbnailPath">
-          <img-upload ref="imgUpload" funName="cms" moduleName="thumbnail"
-            :echoId="form.thumbnailPath"
-            @success="val => form.thumbnailPath = val"
-            @clear="imgClearHandler">
-            删 除
-          </img-upload>
+          <div flex="main:center">
+            <img-upload ref="imgUpload" style="margin-left: -30px; width: 200px;"
+              funName="cms" moduleName="thumbnail"
+              :echoId="form.thumbnailPath"
+              @success="val => form.thumbnailPath = val"
+              @clear="imgClearHandler">
+              删 除
+            </img-upload>
+          </div>
         </b-form-item>
 
         <b-form-item label="高度" prop="thumbnailHeight">

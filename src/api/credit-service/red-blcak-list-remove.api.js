@@ -143,3 +143,59 @@ export async function batchRemove(params) {
     }
   })
 }
+
+/**
+ * @author haodongdong
+ * @description 获取批量解除记录列表
+ * @param {Object} query 查询参数对象
+ * @param {string} query.resourceKey 资源key
+ * @param {string} query.beginTime 开始时间 yyyy-MM-dd
+ * @param {string} query.endTime 结束时间 yyyy-MM-dd
+ * @param {string} query.status 状态 COMPLETED FAILED RUNNING
+ * @param {number} query.sizez 分页大小
+ * @param {string} query.page 页数
+ * @returns {Promise<void>}
+ */
+export async function exportList(query) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/api/dir/exchange/query/list',
+        method: 'get',
+        data: {
+          resourceKey: query.resourceKey,
+          beginTime: query.beginTime,
+          endTime: query.endTime,
+          status: query.status,
+          size: query.size,
+          page: query.page
+        }
+      })
+      resolve(res.data)
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
+ * @description 下载错误文件
+ * @param {string} id 批量解除记录id
+ * @returns {Promise<void>}
+ */
+export async function downloadFailFile(id) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/api/dir/exchange/query/import/errorDownload',
+        method: 'post',
+        responseType: 'blob',
+        params: { id }
+      })
+      resolve(res.data)
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
