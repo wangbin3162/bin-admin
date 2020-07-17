@@ -4,6 +4,7 @@
  * @module
  */
 import request from '../request'
+import Qs from 'qs'
 
 /**
  * @typedef {Object} Section 栏目对象
@@ -213,7 +214,14 @@ export async function getContentList(query) {
           publishDateEnd: query.publishDateEnd,
           size: query.size,
           page: query.page - 1,
-          sort: 'isTop,desc'
+          sort: [
+            'isTop,desc',
+            'orderNo,desc',
+            'publishDate,desc'
+          ]
+        },
+        paramsSerializer (params) {
+          return Qs.stringify(params, { arrayFormat: 'repeat' })
         }
       })
       resolve(res.data)

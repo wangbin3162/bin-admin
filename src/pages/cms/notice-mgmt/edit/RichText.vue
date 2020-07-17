@@ -24,9 +24,9 @@
         content: this.value,
         setting: {
           menubar: false,
-          toolbar: 'undo redo | formatselect alignleft aligncenter alignright alignjustify | link unlink | numlist bullist | image media table | fontselect fontsizeselect forecolor backcolor | bold italic underline strikethrough | indent outdent | superscript subscript | removeformat |',
+          toolbar: 'undo redo | preview formatselect alignleft aligncenter alignright alignjustify | link unlink | numlist bullist | image media table | fontselect fontsizeselect forecolor backcolor | bold italic underline strikethrough | indent outdent | superscript subscript | removeformat |',
           toolbar_drawer: 'sliding',
-          plugins: 'link table lists quickbars',
+          plugins: 'preview link table lists quickbars',
           quickbars_selection_toolbar: 'removeformat | bold italic underline strikethrough | fontsizeselect forecolor backcolor',
           quickbars_insert_toolbar: false,
           language: 'zh_CN',

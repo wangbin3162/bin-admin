@@ -27,8 +27,9 @@
 
         <b-collapse-wrap title="通知内容" collapse>
           <div v-html="detail.content">
-
           </div>
+          <file-upload :initFileList="detail.fileList" showMode>
+          </file-upload>
         </b-collapse-wrap>
 
         <template slot="footer">
@@ -41,6 +42,7 @@
 
 <script>
   import { mapState } from 'vuex'
+  import FileUpload from './edit/FileUpload'
 
   export default {
     name: 'NoticeMgmtDetail',
@@ -49,6 +51,9 @@
         sytpe: Object,
         required: true
       }
+    },
+    components: {
+      FileUpload
     },
     data () {
       return {
