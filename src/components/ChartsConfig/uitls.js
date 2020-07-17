@@ -20,6 +20,38 @@ export const chartsOptions = {
   radar: {}
 }
 
+export const basicComponents = [
+  {
+    name: '折线图',
+    type: 'line',
+    icon: 'linechart',
+    options: {}
+  },
+  {
+    name: '柱状图',
+    type: 'histogram',
+    icon: 'barchart',
+    options: {}
+  },
+  {
+    name: '条形图',
+    type: 'bar',
+    icon: 'align-left',
+    options: {}
+  },
+  {
+    name: '饼图',
+    type: 'pie',
+    icon: 'piechart',
+    options: {}
+  },
+  {
+    name: '雷达图',
+    type: 'radar',
+    icon: 'radarchart',
+    options: {}
+  }
+]
 /**
  * 图表配置生成器
  * key为图表类型

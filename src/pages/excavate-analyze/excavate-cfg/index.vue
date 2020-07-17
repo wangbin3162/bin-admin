@@ -33,7 +33,7 @@
       </v-table-wrap>
     </page-header-wrap>
     <condition-config ref="conditionConfig" @on-close="handleCancel"/>
-    <cfg-panel ref="cfgPanel"/>
+    <charts-config-panel ref="cfgPanel"/>
   </div>
 </template>
 
@@ -42,17 +42,14 @@
   import permission from '../../../common/mixins/permission'
   import { getFieldCtrl } from '../../../api/enum.api'
   import * as api from '../../../api/excavate-analyze/excavate-cfg.api'
-  import CfgPanel from './cfg-panel/CfgPanel'
   import { deepCopy } from '../../../common/utils/assist'
   import ConditionConfig from './ConditionConfig'
+  import ChartsConfigPanel from '../../../components/ChartsConfig/ChartConfigPanel'
 
   export default {
     name: 'ExcavateCfg',
-    components: { ConditionConfig, CfgPanel },
+    components: { ChartsConfigPanel, ConditionConfig },
     mixins: [commonMixin, permission],
-    provide() {
-      return { Excavate: this }
-    },
     data() {
       return {
         moduleName: '资源信息',
@@ -121,7 +118,7 @@
       // 配置分析
       handleCfgAnalyze(row) {
         this.resource = deepCopy(row)
-        this.$refs.cfgPanel.open()
+        this.$refs.cfgPanel.open(this.resource, [])
       },
       /* [数据接口] */
       // 通用枚举

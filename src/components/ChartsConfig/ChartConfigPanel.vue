@@ -9,7 +9,7 @@
         <b-icon name="close" @click.native="close"/>
       </div>
       <div class="content">
-        <ctrl-panel/>
+        <ctrl-panel v-model="currentList"/>
       </div>
     </div>
   </transition>
@@ -18,15 +18,17 @@
 <script>
   import scrollbarMixin from 'bin-ui/src/mixins/scrollbar-mixin'
   import CtrlPanel from './CtrlPanel'
+  import { deepCopy } from '../../common/utils/assist'
 
   export default {
-    name: 'CfgPanel',
+    name: 'ChartsConfigPanel',
     components: { CtrlPanel },
-    inject: ['Excavate'],
     mixins: [scrollbarMixin],
     data() {
       return {
-        visible: false
+        visible: false,
+        currentList: [],
+        resource: { resourceName: '' }
       }
     },
     watch: {
@@ -44,12 +46,15 @@
     },
     computed: {
       resourceTitle() {
-        return '挖掘配置 - ' + this.Excavate.resource.resourceName
+        return `挖掘配置 - ${this.resource.resourceName}`
       }
     },
     methods: {
-      open() {
+      // 打开弹窗，第一个为资源名称，第二个为原始数据列表（用于回显）
+      open(resource, data) {
         this.visible = true
+        this.resource = deepCopy(resource)
+        this.currentList = deepCopy(data)
       },
       // 关闭
       close() {
