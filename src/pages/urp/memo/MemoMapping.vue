@@ -19,6 +19,10 @@
         </v-table-tool-bar>
         <!--中央表格-->
         <b-table :columns="columns" :data="list" :loading="listLoading">
+          <template v-slot:memoName="{row}">
+             <span  style="display: inline-block;overflow: hidden;text-overflow: ellipsis;white-space: nowrap; width:100%;text-align: left"
+                    :title="row.memoName">{{row.memoName}}</span>
+          </template>
           <template v-slot:personClass="{row}">{{ personClassMap[row.personClass] }}</template>
           <template v-slot:isSys="{row}">{{ mapTypeMap[row.isSys] }}</template>
           <!--操作栏-->
@@ -166,7 +170,7 @@
         },
         columns: [
           { type: 'index', width: 50, align: 'center' },
-          { title: '备忘录名称', key: 'memoName' },
+          { title: '备忘录名称', slot: 'memoName', width: 250},
           { title: '主体类型', slot: 'personClass', align: 'center', width: 150 },
           { title: '映射类型', slot: 'isSys', align: 'center', width: 200 },
           { title: '接口标识', key: 'ifcTagName' },
