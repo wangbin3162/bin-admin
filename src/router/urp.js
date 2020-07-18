@@ -15,7 +15,7 @@ export default [
     path: '/urp/print',
     name: 'UrpPrint',
     component: () => import(/* webpackChunkName: "urp" */ '../pages/urp/UrpPrint'),
-    meta: { title: '打印' }
+    meta: { title: '联合奖惩反馈单' }
   },
   {
     path: '/urp/memoList',

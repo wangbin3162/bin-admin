@@ -62,11 +62,12 @@
       <div class="table-page-inner">
         <key-label-wrap>
           <key-label label="主体名称" is-full>{{ record.name }}</key-label>
+          <key-label label="证件号码" is-full>{{ record.idCode }}</key-label>
           <key-label label="奖惩备忘录" is-full>{{ record.memoName }}</key-label>
           <key-label label="反馈时间" is-full>{{ record.feedbackDate }}</key-label>
-          <key-label label="证件号码" is-full>{{ record.idCode }}</key-label>
-          <key-label label="统一社会信用代码" is-full>{{ record.orgInstCode }}</key-label>
-          <key-label label="工商注册号" is-full>{{ record.regNo }}</key-label>
+          <key-label label="金额" is-full>{{ record.amount }}</key-label>
+       <!--   <key-label label="统一社会信用代码" is-full v-if="record.personClass === 'FO'">{{ record.orgInstCode }}</key-label>
+          <key-label label="工商注册号" is-full v-if="record.personClass === 'FO'">{{ record.regNo }}</key-label>-->
           <key-label label="措施内容" is-full>{{ record.measureContent }}</key-label>
         </key-label-wrap>
       </div>
@@ -96,6 +97,7 @@
   import UrpHeader from './components/UrpHeader'
   import { cancelResult, getListResult, getListResultCount } from '../../api/urp.api'
   import mixin from '../../common/mixins/mixin'
+  import { Decode, MaskCode } from '../../common/utils/secret'
 
   export default {
     name: 'ListResult',
@@ -169,6 +171,7 @@
             cancelResult(this.cancelObj).then(resp => {
               if (resp.data.code === '0') {
                 this.$message({ type: 'success', content: '撤销成功！' })
+                this.searchList()
               } else {
                 this.$message({ type: 'danger', content: resp.data.message || '撤销失败！' })
               }
@@ -204,10 +207,23 @@
         this.setListData()
         getListResult(this.listQuery).then(resp => {
           this.setListData({
-            list: resp.data.rows,
+            list: this.decodeAndMaskFormat(resp.data.rows || [], true),
             total: resp.data.total
           })
         })
+      },
+        // =======解码掩码函数======== //
+      decodeAndMaskFormat(arr, mask = false) {
+          let newArr = []
+          arr.forEach(item => {
+              let tmp = { ...item }
+              if (tmp.personClass === 'ZRP') { // 自然人需要将idCode解码并掩码显示
+                  let str = tmp.idCode
+                  tmp.idCode = MaskCode(Decode(str), 'ID_CODE')
+              }
+              newArr.push(tmp)
+          })
+          return newArr
       }
     }
   }

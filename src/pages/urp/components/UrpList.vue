@@ -33,7 +33,7 @@
           <template v-else>
             <h2>{{ item.name }}</h2>
             <p>
-              <span>身份证号码：{{ item.code }}</span>
+              <span>证件号码：{{ item.code }}</span>
             </p>
           </template>
         </div>

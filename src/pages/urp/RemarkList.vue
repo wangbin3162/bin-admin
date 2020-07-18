@@ -23,8 +23,17 @@
           <!--中央表格-->
           <b-table :columns="columns" :data="list" :loading="listLoading">
             <template #isShare="{row}">{{ row.isShare==='1'?'是':'否' }}</template>
+            <template #level="{row}">
+              <b-rate
+                :value="parseFloat(row.level)"
+                disabled
+                show-score
+                text-color="#fa8c16"
+                :score-template="row.level">
+              </b-rate>
+            </template>
             <template #action="{row}">
-              <b-button type="text" @click="handleRemove(row)" text-color="danger">删除</b-button>
+              <b-button type="text"  v-if="currentUserName === row.recorder" @click="handleRemove(row)" text-color="danger">删除</b-button>
             </template>
           </b-table>
           <!--下方分页器-->
@@ -37,7 +46,7 @@
 
     <b-modal v-model="modal" :mask-closable="false" title="新增备注">
       <b-form :model="remark" ref="form" :label-width="100">
-        <b-form-item label="level">
+        <b-form-item label="重要程度">
           <b-rate v-model="remark.level" style="margin-top: 6px;"></b-rate>
         </b-form-item>
         <b-form-item label="是否共享" prop="isShare">
@@ -76,13 +85,16 @@
           name: ''
         },
         columns: [
-          { title: '备注内容', key: 'remark', tooltip: true },
+          { title: '记录人', key: 'recorder', tooltip: true },
+          { title: '来源部门', key: 'recordDept', tooltip: true },
           { title: '备注时间', key: 'recordTime', tooltip: true },
-          { title: '是否公开', slot: 'isShare', align: 'center' },
+          { title: '重要程度', slot: 'level', align: 'center' },
+          { title: '备注', key: 'remark', align: 'center' },
           { title: '操作', slot: 'action', width: 100 }
         ],
         modal: false,
-        remark: null
+        remark: null,
+        currentUserName: this.$store.state.user.info.username
       }
     },
     created() {

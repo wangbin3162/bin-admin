@@ -134,11 +134,11 @@ export function getFeedbackDetail(query) {
 
 /* 执行反馈接口 */
 export function doFeedback(query) {
-  let { id, memoId, explain, measureIds } = query
+  let { id, memoId, explain, measureIds, amount } = query
   return request({
     url: 'api/urpService/feedback',
     method: 'post',
-    data: { id, memoId, requestSource: '1', explain, measureIds }
+    data: { id, memoId, requestSource: '1', explain, measureIds, amount }
   })
 }
 

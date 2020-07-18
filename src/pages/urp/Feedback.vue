@@ -41,7 +41,7 @@
               </template>
               <template v-else>
                 <p>
-                  <span>身份证号码：{{ subject.detail.code }}</span>
+                  <span>证件号码：{{ subject.detail.code }}</span>
                 </p>
               </template>
             </div>
@@ -76,7 +76,7 @@
                     <b-input-number :min="0" v-model="amount" placeholder="涉及金额（元）"
                                     style="width: 200px;"/>&nbsp;(元)
                   </b-form-item>
-                  <b-form-item label="反馈说明">
+                  <b-form-item label="反馈说明"  prop="explain" :rules=" { required: true, message: '撤销原因必填',  trigger: 'blur' }">
                     <div flex="cross:bottom">
                       <b-input v-model="explain" type="textarea" :rows="3" placeholder="输入说明描述..."
                                style="width: 70%;"/>
@@ -190,11 +190,16 @@
           this.$message({ type: 'warning', content: '必须选择一个处置措施！' })
           return
         }
+        if (this.explain.length === 0) {
+            this.$message({ type: 'warning', content: '必须填写反馈说明！' })
+            return
+        }
         let query = {
           id: this.query.subjectId,
           memoId: this.activeMemo.memoId,
           explain: this.explain,
-          measureIds: this.checkedMeasures
+          measureIds: this.checkedMeasures,
+          amount: this.amount
         }
         api.doFeedback(query).then(resp => {
           if (resp.data.code === '0') {
