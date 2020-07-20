@@ -30,7 +30,7 @@
           quickbars_selection_toolbar: 'removeformat | bold italic underline strikethrough | fontsizeselect forecolor backcolor',
           quickbars_insert_toolbar: false,
           language: 'zh_CN',
-          language_url: process.env.VUE_APP_TINYMCE_LANG_URL,
+          language_url: 'tinymce/langs/zh_CN.js',
           height: 500
         }
       }
