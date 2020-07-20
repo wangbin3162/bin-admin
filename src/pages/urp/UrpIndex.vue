@@ -17,11 +17,11 @@
         </div>
         <div class="card card2">
           <h2><span>{{ urpCount.count2 }}</span>条</h2>
-          <p>奖惩激励记录</p>
+          <p>激励记录</p>
         </div>
         <div class="card card3">
           <h2><span>{{ urpCount.count3 }}</span>条</h2>
-          <p>奖惩名单</p>
+          <p>惩戒记录</p>
         </div>
         <div class="card card4">
           <h2><span>{{ urpCount.count4 }}</span>条</h2>
