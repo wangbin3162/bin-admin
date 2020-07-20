@@ -333,3 +333,60 @@ export function searchTestData(resourceKey) {
     }
   })
 }
+
+/**
+ * @author haodongdong
+ * @description 用于动态form选择行政区域与选择行业代码两种控件类型。
+ * 获取类别树，功能等同于系统管理--->系统设置--->类别管理左侧树接口。
+ * @param {string} typeCode 类别编码
+ * @returns {Promise<any>}
+ */
+export async function getConTypeTree (typeCode) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/api/confType/tree',
+        method: 'get',
+        params: { typeCode }
+      })
+      if (res.data.successful) {
+        resolve(res.data.data)
+      } else {
+        reject(new Error(res.data.message))
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
+ * @description 用于动态form选择行政区域与选择行业代码两种控件类型。根据parentId获取子集的类别列表。
+ * @param {Object} query 查询参数
+ * @param {string} query.typeName 类别名称
+ * @param {string} query.typeCode 类别编码
+ * @param {number} query.size 分页大小
+ * @param {string} query.page 当前页
+ * @returns {Promise<any>}
+ */
+export async function getConTypeList (query) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/api/confType/search',
+        method: 'get',
+        params: {
+          parentId: query.parentId,
+          typeName: query.typeName,
+          typeCode: query.typeCode,
+          size: query.size,
+          page: query.page - 1
+        }
+      })
+      resolve(res.data)
+    } catch (error) {
+      reject(error)
+    }
+  })
+}

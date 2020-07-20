@@ -3,11 +3,12 @@ import SelectLegInput from './SelectLegInput'
 import SelectNatInput from './SelectNatInput'
 import SelectNatOrLeg from './SelectNatOrLeg'
 import FileUpload from './FileUpload'
+import SelectRegion from './SelectRegion'
 import { oneOf } from 'bin-ui/src/utils/util'
 
 export default {
   name: 'FormControl',
-  components: { SelectLegInput, SelectNatInput, SelectNatOrLeg, FileUpload },
+  components: { SelectLegInput, SelectNatInput, SelectNatOrLeg, FileUpload, SelectRegion },
   data() {
     return {
       currentValue: '',
@@ -184,6 +185,26 @@ export default {
             resourceKey: this.resourceKey,
             tip: '不能上传大于100M的文件',
             maxSize: 100 * 1024
+          },
+          on: { input: this.handleInput }
+        })
+        break
+      case 'REGION_SELECT':
+        node = h('SelectRegion', {
+          props: {
+            value: this.currentValue,
+            placeholder: '选择行政区域',
+            type: 'REGION_SELECT'
+          },
+          on: { input: this.handleInput }
+        })
+        break
+      case 'HYDM_SELECT':
+        node = h('SelectRegion', {
+          props: {
+            value: this.currentValue,
+            placeholder: '选择行业代码',
+            type: 'HYDM_SELECT'
           },
           on: { input: this.handleInput }
         })
