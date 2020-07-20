@@ -184,7 +184,7 @@
         batchStr: '',
         batchItemList: [],
         respTypeMap: { QUERY: '查询', METRIC: '度量', BUCKET: '分组', RECORD: '记录' },
-        dataTypeMap: { string: '字符', long: '整数', double: '小数', date: '日期', datetime: '日期时间', boolean: '布尔' }
+        dataTypeMap: { string: '字符', long: '整数', double: '小数', date: '日期', datetime: '日期时间', boolean: '布尔', map: 'map集合' }
       }
     },
     created() {
