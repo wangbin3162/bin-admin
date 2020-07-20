@@ -23,7 +23,7 @@
         <b-table :columns="columns" :data="list" :loading="listLoading">
           <template v-slot:memoName="{row}">
             <b-button type="text"   style="overflow: hidden;text-overflow: ellipsis;white-space: nowrap; width: 100%;text-align: left"
-                    :title="row.memoName"  @click="handleCheck(row)">{{ row.memoName }} 123</b-button>
+                    :title="row.memoName"  @click="handleCheck(row)">{{ row.memoName }}</b-button>
           </template>
           <template v-slot:memoType="{row}">{{ memoTypeMap[row.memoType] }}</template>
           <template v-slot:memoStatus="{row}">{{ memoStatusMap[row.memoStatus] }}</template>
