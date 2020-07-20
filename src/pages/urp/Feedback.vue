@@ -73,7 +73,7 @@
               <div class="form-wrap">
                 <b-form :label-width="100">
                   <b-form-item label="涉及金额">
-                    <b-input-number :min="0" v-model="amount" placeholder="涉及金额（元）"
+                    <b-input-number :min="0" :precision="2"  v-model="amount" placeholder="涉及金额（元）"
                                     style="width: 200px;"/>&nbsp;(元)
                   </b-form-item>
                   <b-form-item label="反馈说明"  prop="explain" :rules=" { required: true, message: '撤销原因必填',  trigger: 'blur' }">

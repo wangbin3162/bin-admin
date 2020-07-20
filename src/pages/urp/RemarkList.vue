@@ -27,10 +27,12 @@
               <b-rate
                 :value="parseFloat(row.level)"
                 disabled
-                show-score
-                text-color="#fa8c16"
-                :score-template="row.level">
+                text-color="#fa8c16">
               </b-rate>
+            </template>
+            <template #remark="{row}">
+             <span  style="display: inline-block;overflow: hidden;text-overflow: ellipsis;white-space: nowrap; width:100%;text-align: left"
+                    :title="row.remark">{{row.remark}}</span>
             </template>
             <template #action="{row}">
               <b-button type="text"  v-if="currentUserName === row.recorder" @click="handleRemove(row)" text-color="danger">删除</b-button>
@@ -89,7 +91,7 @@
           { title: '来源部门', key: 'recordDept', tooltip: true },
           { title: '备注时间', key: 'recordTime', tooltip: true },
           { title: '重要程度', slot: 'level', align: 'center' },
-          { title: '备注', key: 'remark', align: 'center' },
+          { title: '备注', slot: 'remark', align: 'center' },
           { title: '操作', slot: 'action', width: 100 }
         ],
         modal: false,
