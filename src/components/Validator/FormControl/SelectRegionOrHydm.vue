@@ -5,7 +5,7 @@
     </b-input>
     <b-button type="primary" plain @click="handleSelectBtn">选择</b-button>
 
-    <region-modal v-model="openRegion" @selected="typeCode => $emit('input', typeCode)">
+    <region-modal v-model="openRegion" @selected="handleSelected">
     </region-modal>
 
     <hydm-modal v-model="openHydm" @selected="handleSelected">
