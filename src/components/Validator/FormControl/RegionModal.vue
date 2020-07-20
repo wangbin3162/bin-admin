@@ -190,6 +190,8 @@
         let recFun = tree => {
           tree.forEach((node, index) => {
             node.title = node.text
+            node.expand = false
+            node.selected = false
             if (node.children && node.children.length) {
               recFun(node.children)
             }
