@@ -3,12 +3,12 @@ import SelectLegInput from './SelectLegInput'
 import SelectNatInput from './SelectNatInput'
 import SelectNatOrLeg from './SelectNatOrLeg'
 import FileUpload from './FileUpload'
-import SelectRegion from './SelectRegion'
+import SelectRegionOrHydm from './SelectRegionOrHydm'
 import { oneOf } from 'bin-ui/src/utils/util'
 
 export default {
   name: 'FormControl',
-  components: { SelectLegInput, SelectNatInput, SelectNatOrLeg, FileUpload, SelectRegion },
+  components: { SelectLegInput, SelectNatInput, SelectNatOrLeg, FileUpload, SelectRegionOrHydm },
   data() {
     return {
       currentValue: '',
@@ -190,7 +190,7 @@ export default {
         })
         break
       case 'REGION_SELECT':
-        node = h('SelectRegion', {
+        node = h('select-region-or-hydm', {
           props: {
             value: this.currentValue,
             placeholder: '选择行政区域',
@@ -200,7 +200,7 @@ export default {
         })
         break
       case 'HYDM_SELECT':
-        node = h('SelectRegion', {
+        node = h('select-region-or-hydm', {
           props: {
             value: this.currentValue,
             placeholder: '选择行业代码',

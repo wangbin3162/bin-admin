@@ -141,7 +141,7 @@
        * @param {string} row.typeCode 类别编码
        */
       handleSelectBtn (row) {
-        this.$emit('selected', row.typeCode)
+        this.$emit('selected', row)
         this.open = false
       },
 
