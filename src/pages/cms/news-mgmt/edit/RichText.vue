@@ -42,7 +42,7 @@
           file_picker_types: 'image media',
           file_picker_callback: this.uploadFile,
           language: 'zh_CN',
-          language_url: '/tinymce/langs/zh_CN.js',
+          language_url: process.env.VUE_APP_TINYMCE_LANG_URL,
           height: 500
         }
       }
