@@ -43,6 +43,7 @@ export function createContent(content) {
     toggle: content.toggle,
     data: content.data,
     category: content.type[0] || '',
+    unit: content.unit,
     subCategory: content.type[1] || null
   })
 }
@@ -59,6 +60,7 @@ export function modifyContent(content) {
     toggle: content.toggle,
     data: content.data,
     category: content.type[0] || '',
+    unit: content.unit,
     subCategory: content.type[1] || null
   })
 }

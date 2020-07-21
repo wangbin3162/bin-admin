@@ -75,10 +75,10 @@
     </page-header-wrap>
     <page-header-wrap v-show="isEdit" :title="editTitle" show-close @on-close="handleCancel">
       <v-edit-wrap transparent>
-        <b-collapse-wrap title="基本信息">
+        <b-collapse-wrap title="基本信息" collapse :value="true">
           <b-form :model="content" ref="form" :rules="ruleValidate" label-position="top">
             <b-row :gutter="20">
-              <b-col span="6">
+              <b-col span="24">
                 <b-form-item label="所属主题" prop="themeCode">
                   <b-input v-model="content.themeName" disabled/>
                 </b-form-item>
@@ -96,6 +96,11 @@
               <b-col span="6">
                 <b-form-item label="类型" prop="type">
                   <b-cascader :data="contentTypeMap" v-model="content.type"/>
+                </b-form-item>
+              </b-col>
+              <b-col span="6">
+                <b-form-item label="单位" prop="type">
+                  <b-input v-model="content.unit"></b-input>
                 </b-form-item>
               </b-col>
             </b-row>
@@ -127,6 +132,11 @@
             </b-form-item>
           </b-form>
         </b-collapse-wrap>
+
+        <!-- <b-collapse-wrap title="数据配置" collapse>
+          <data-config v-model="content.toggle" :data="content.data">
+          </data-config>
+        </b-collapse-wrap> -->
         <!--保存提交-->
         <template slot="footer">
           <b-button @click="handleCancel">取 消</b-button>
@@ -183,6 +193,10 @@
     </page-header-wrap>
     <response-config-panel ref="resConfigPanel" @on-close="handleCancel"/>
     <content-test-panel ref="testPanel" @on-close="handleCancel"/>
+    <!-- 编辑模块数据配置点击信息项映射配置切换到新的page-header-wrap 信息项映射 -->
+    <!-- 数据配置单独出一个组件，维护相关数据，那么信息项映射产生的数据需要回传给数据配置组件 -->
+    <!-- 信息项映射需要对应到数据配置对应的接口 -->
+    <!-- 信息项映射组件 -->
   </div>
 </template>
 
@@ -196,10 +210,11 @@
   import ResponseConfigPanel from '../analyze-engine/components/DaBizTemplate/ResponseConfigPanel'
   import { getApiDetail } from '../../api/analyze-engine/da-api.api'
   import ContentTestPanel from './components/DaContent/ContentTestPanel'
+  import DataConfig from './components/DaContent/DataConfig'
 
   export default {
     name: 'Content',
-    components: { ContentTestPanel, ResponseConfigPanel, ApiChoose },
+    components: { ContentTestPanel, ResponseConfigPanel, ApiChoose, DataConfig },
     mixins: [commonMixin, permission],
     data() {
       return {
@@ -431,6 +446,7 @@
           apiId: '',
           toggle: 'OFF',
           type: [],
+          unit: '',
           apiName: '',
           themeName: this.currentTreeNode ? this.currentTreeNode.title : ''
         }
