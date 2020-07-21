@@ -305,52 +305,52 @@
         this.tab = curTab // curTab可用做计算之前的年份的偏移量
         this.getYearData(curTab)
       },
-      // 查询所有列表
-      searchList() {
+      // 查询所有数据
+      searchAll() {
         this.resetListQuery()
         // 2.4.1 资源信息数量
-        api.getTotalResource(this.listQuery).then(res => {
+        api.getZyxxsl(this.listQuery).then(res => {
           if (res.data.code === '0') {
-            this.counts.totalResource = res.data.data.cnt
+            this.counts.totalResource = res.data.data.data.cnt
           }
         })
         // 2.4.2 数据归集总量
-        api.getTotalCount(this.listQuery).then(res => {
+        api.getSjgjzl(this.listQuery).then(res => {
           if (res.data.code === '0') {
-            this.counts.totalCount = res.data.data.value
+            this.counts.totalCount = res.data.data.data.value
           }
         })
         // 2.4.3 本月归集数据量
-        api.getCurMonthCount(this.listQuery).then(res => {
+        api.getBygjsjl(this.listQuery).then(res => {
           if (res.data.code === '0') {
-            this.counts.monthCount = res.data.data.monthCount
+            this.counts.monthCount = res.data.data.data.monthCount
           }
         })
         // 2.4.4 上月归集数据量
-        api.getPreMonthCount(this.listQuery).then(res => {
+        api.getSygjsjl(this.listQuery).then(res => {
           if (res.data.code === '0') {
-            this.counts.preMonthCount = res.data.data.preMonthCount
+            this.counts.preMonthCount = res.data.data.data.preMonthCount
           }
         })
         // 2.4.5 数据完整率
-        api.getCompleteRate(this.listQuery).then(res => {
+        api.getSjwzl(this.listQuery).then(res => {
           if (res.data.code === '0') {
-            this.counts.completeRate = res.data.data.completeRate.toFixed(1)
+            this.counts.completeRate = res.data.data.data.completeRate.toFixed(1)
           }
         })
         // 2.4.6 本月信息归集统计
-        api.getCurCompleteRate(this.listQuery).then(res => {
+        api.getByxxgjtj(this.listQuery).then(res => {
           if (res.data.code === '0') {
-            const [{ count: preCount }, { count: curCount }] = res.data.data
+            const [{ count: preCount }, { count: curCount }] = res.data.data.data
             this.counts.preCount = Number(preCount)
             this.counts.curCount = Number(curCount)
             this.counts.percent = Math.round(this.counts.curCount / this.counts.preCount * 100)
             if (this.counts.percent > 100) this.counts.percent = 100
           }
         })
-        // 2.4.7 月度信息归集趋势
+        // // 2.4.7 月度信息归集趋势
         this.getMonthData()
-        // 年度信息归集趋势
+        // // 年度信息归集趋势
         this.getYearData()
       },
       // 获取信息归集记录
@@ -359,7 +359,7 @@
         try {
           const res = await api.getDataHistory(query)
           if (res.data.successful) {
-            this.historyList = res.data.data
+            this.historyList = res.data.data.data
           }
         } catch (error) {
           console.error(error)
@@ -375,7 +375,7 @@
 
         api.getMonthData(this.listQuery).then(res => {
           if (res.data.code === '0') {
-            let data = res.data.data
+            let data = res.data.data.data
             this.lineChartOption.dataset = formatDataSet({ xField: 'name', yField: 'value' }, data)
           }
         })
@@ -393,7 +393,7 @@
 
         api.getYearData(this.listQuery).then(res => {
           if (res.data.code === '0') {
-            let data = res.data.data
+            let data = res.data.data.data
             this.smoothLineChartOption.dataset = formatDataSet({ xField: 'name', yField: 'value' }, data)
           }
         })
@@ -439,7 +439,8 @@
           }
           dateArr.push({
             name: yearStr + '-' + monthStr,
-            value: this.getRandom(100, 2000)
+            // value: this.getRandom(100, 2000)
+            value: 0
           })
         }
         dateArr.reverse()
@@ -454,7 +455,8 @@
           if (monthStr < 10) monthStr = '0' + monthStr
           dateArr.push({
             name: date.getFullYear() + '-' + monthStr,
-            value: this.getRandom(100, 2000)
+            // value: this.getRandom(100, 2000)
+            value: 0
           })
         }
         this.smoothLineChartOption.dataset = formatDataSet({ xField: 'name', yField: 'value' }, dateArr)
@@ -476,7 +478,7 @@
         await this.getEnum()
         this.buildDefaultDataYear()
         this.buildDefaultDataMonth()
-        this.searchList()
+        this.searchAll()
       }
     }
   }

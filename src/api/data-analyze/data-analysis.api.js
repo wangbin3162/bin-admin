@@ -33,7 +33,7 @@ export async function getResources() {
 }
 
 /* 2.4.1 资源信息数量 */
-export function getTotalResource(query) {
+export function getZyxxsl(query) {
   return request({
     url: '/da/data/gather/zyxxsl',
     method: 'get',
@@ -45,7 +45,7 @@ export function getTotalResource(query) {
 }
 
 /* 2.4.2 数据归集总量 */
-export function getTotalCount(query) {
+export function getSjgjzl(query) {
   return request({
     url: '/da/data/gather/sjgjzl',
     method: 'get',
@@ -57,7 +57,7 @@ export function getTotalCount(query) {
 }
 
 /* 2.4.3 本月归集数据量 */
-export function getCurMonthCount(query) {
+export function getBygjsjl(query) {
   return request({
     url: '/da/data/gather/bygjsjl',
     method: 'get',
@@ -69,7 +69,7 @@ export function getCurMonthCount(query) {
 }
 
 /* 2.4.4 上月归集数据量 */
-export function getPreMonthCount(query) {
+export function getSygjsjl(query) {
   return request({
     url: '/da/data/gather/sygjsjl',
     method: 'get',
@@ -81,7 +81,7 @@ export function getPreMonthCount(query) {
 }
 
 /* 2.4.5 数据完整率 */
-export function getCompleteRate(query) {
+export function getSjwzl(query) {
   return request({
     url: '/da/data/gather/sjwzl',
     method: 'get',
@@ -93,7 +93,7 @@ export function getCompleteRate(query) {
 }
 
 /* 2.4.6 本月信息归集统计 */
-export function getCurCompleteRate(query) {
+export function getByxxgjtj(query) {
   return request({
     url: '/da/data/gather/byxxgjtj',
     method: 'get',
