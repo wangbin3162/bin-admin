@@ -16,19 +16,25 @@
 </script>
 
 <style lang="stylus" scoped>
-  .gui-group-name {
-    border-bottom: 1px solid #e0e0e0;
-    line-height: 39px;
-    cursor: pointer;
-    text-align: left;
-    span {
-      line-height: 24px;
-      padding: 0 18px;
-      border-left: 2px solid #1089ff;
+  .gui-group {
+    .gui-group-name {
+      border-top: 1px solid #e0e0e0;
+      border-bottom: 1px solid #e0e0e0;
+      line-height: 39px;
+      cursor: pointer;
+      text-align: left;
+      span {
+        line-height: 24px;
+        padding: 0 18px;
+        border-left: 2px solid #1089ff;
+      }
     }
-  }
-  .gui-group-content {
-    background: #fafafa;
-    padding: 5px 0;
+    &:first-child .gui-group-name {
+      border-top: none;
+    }
+    .gui-group-content {
+      background: #fafafa;
+      padding: 5px 0;
+    }
   }
 </style>

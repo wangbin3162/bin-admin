@@ -28,10 +28,15 @@
     &-container {
       min-height: 24px;
       display: flex;
-      width: 270px;
+      width: 260px;
+      flex: 0 0 260px;
       -webkit-box-align: center;
       -ms-flex-align: center;
       align-items: center;
     }
+  }
+
+  .gui-wrap .gui-field {
+    padding-left: 18px;
   }
 </style>

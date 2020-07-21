@@ -1,7 +1,7 @@
 /**
  * 图表类型中文名映射
  */
-import { formatDataSet } from 'bin-charts/src/utils/util'
+import { formatSeries } from 'bin-charts/src/utils/util'
 import { deepCopy } from '../../common/utils/assist'
 
 export const chartsNameMap = {
@@ -23,13 +23,13 @@ export const basicComponents = [
     options: {
       title: '折线图',
       titleStyle: {
-        color: 'rgba(0,0,0,.65)',
+        color: '#666',
         fontSize: 18
       },
       width: '1/3',
       height: 400,
       grid: { left: 40, top: 15, right: 20, bottom: 40 },
-      tooltip: false,
+      tooltip: { show: false, trigger: 'axis' },
       legend: {
         show: false,
         textStyle: {
@@ -37,17 +37,78 @@ export const basicComponents = [
           fontSize: 12
         },
         bottom: 0
+      },
+      xAxis: {
+        type: 'category',
+        show: true,
+        name: '',
+        nameTextStyle: {
+          color: '#999'
+        },
+        axisLine: {
+          show: true,
+          lineStyle: {
+            color: '#999'
+          }
+        },
+        splitLine: {
+          show: false,
+          lineStyle: {
+            color: '#eee'
+          }
+        },
+        axisTick: {
+          alignWithLabel: true
+        }
+      },
+      yAxis: {
+        type: 'value',
+        show: true,
+        name: '',
+        nameTextStyle: {
+          color: '#999'
+        },
+        axisLine: {
+          show: false,
+          lineStyle: {
+            color: '#999'
+          }
+        },
+        splitLine: {
+          show: true,
+          lineStyle: {
+            color: '#eee'
+          }
+        }
+      },
+      series: {
+        type: 'line',
+        smooth: true,
+        label: {
+          show: false,
+          color: '#666',
+          fontSize: 12,
+          position: 'top'
+        },
+        areaStyle: {
+          opacity: 0
+        }
       }
     },
     dataSourceType: 'static',
     sourceMap: { xField: 'x', yField: 'y', seriesField: 's' },
     dataSource: [
-      { x: '1/1', y: 375, s: '系列1' },
-      { x: '1/2', y: 200, s: '系列1' },
-      { x: '1/3', y: 25, s: '系列1' },
-      { x: '1/4', y: 190, s: '系列1' },
-      { x: '1/5', y: 90, s: '系列1' },
-      { x: '1/6', y: 277, s: '系列1' }
+      {
+        s: '系列1',
+        data: [
+          { x: '1/1', y: 375 },
+          { x: '1/2', y: 200 },
+          { x: '1/3', y: 25 },
+          { x: '1/4', y: 190 },
+          { x: '1/5', y: 90 },
+          { x: '1/6', y: 277 }
+        ]
+      }
     ]
   },
   {
@@ -56,7 +117,7 @@ export const basicComponents = [
     icon: 'barchart',
     options: {
       titleStyle: {
-        color: 'rgba(0,0,0,.65)',
+        color: '#666',
         fontSize: 18
       },
       width: '1/3',
@@ -69,7 +130,7 @@ export const basicComponents = [
     icon: 'align-left',
     options: {
       titleStyle: {
-        color: 'rgba(0,0,0,.65)',
+        color: '#666',
         fontSize: 18
       },
       width: '1/3',
@@ -82,7 +143,7 @@ export const basicComponents = [
     icon: 'piechart',
     options: {
       titleStyle: {
-        color: 'rgba(0,0,0,.65)',
+        color: '#666',
         fontSize: 18
       },
       width: '1/3',
@@ -95,7 +156,7 @@ export const basicComponents = [
     icon: 'radarchart',
     options: {
       titleStyle: {
-        color: 'rgba(0,0,0,.65)',
+        color: '#666',
         fontSize: 18
       },
       width: '1/3',
@@ -104,36 +165,27 @@ export const basicComponents = [
   }
 ]
 
-/**
- * 图表配置生成器
- * key为图表类型
- * 根据基本的配置options调用函数返回charts需要的option
- */
-export const chartsBuilder = {
-  line: function (sourceMap, dataSource, opts) {
-    let sMap = sourceMap || { xField: 'x', yField: 'y', seriesField: 's' }
-    let dataset = formatDataSet(sMap, dataSource)
-    return {
-      tooltip: { show: opts.tooltip, trigger: 'axis' },
-      grid: deepCopy(opts.grid),
-      legend: deepCopy(opts.legend),
-      xAxis: {
-        type: 'category',
-        axisTick: {
-          alignWithLabel: true
-        }
-      },
-      yAxis: { type: 'value' },
-      series: {
-        type: 'line',
-        name: '数量',
-        areaStyle: { opacity: 0.4 }
-      },
-      dataset
-    }
-  },
-  histogram: {},
-  bar: {},
-  pie: {},
-  radar: {}
+// 根据图表原始数据拼装实际charts options
+export function buildOptions(chartData) {
+  let { sourceMap, dataSource, options } = chartData
+  let sMap = sourceMap || { xField: 'x', yField: 'y', seriesField: 's' }
+  let data = dataSource || []
+  let dataset = formatSeries(sMap, data)
+  let series = []
+  data.forEach(item => {
+    series.push({
+      name: item[sMap.seriesField],
+      ...deepCopy(options.series)
+    })
+  })
+
+  // 组装options
+  let opts = deepCopy(options)
+  delete opts['title']
+  delete opts['titleStyle']
+  delete opts['width']
+  delete opts['height']
+  opts.dataset = dataset
+  opts.series = series
+  return opts
 }

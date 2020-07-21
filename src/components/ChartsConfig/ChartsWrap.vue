@@ -21,7 +21,7 @@
 
 <script>
   import Enum from './enum'
-  import { chartsBuilder } from './uitls'
+  import { buildOptions } from './uitls'
 
   require('bin-charts/src/theme/charts-theme')
 
@@ -101,10 +101,7 @@
       },
       // 根据类型和已配置项创建对应图表的options
       chartOptions() {
-        let { type, sourceMap, dataSource, options } = this.data
-        let opts = chartsBuilder[type](sourceMap, dataSource, options)
-        console.log(opts)
-        return opts
+        return buildOptions(this.data)
       }
     }
   }

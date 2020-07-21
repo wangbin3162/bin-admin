@@ -17,8 +17,9 @@
   .gui-inline {
     display: inline-block;
     width: 140px;
-    &:first-child {
-      margin-right: 8px;
+    margin-right: 8px;
+    &:last-child {
+      margin-right: 0;
     }
     .label {
       color: #647279;

@@ -10,6 +10,7 @@
   .scroll-content {
     height: calc(100% - 42px);
     overflow-y: auto;
+    overflow-x: hidden;
   }
   .left {
     width: 120px;
@@ -27,7 +28,11 @@
       cursor: grab;
       transition: border-color .2s;
       &:hover {
-        border-color: rgba(11, 28, 36, 0.5);
+        border-color: #1089ff;
+        color: #1089ff;
+        .svg-icon {
+          color: inherit;
+        }
       }
     }
   }
@@ -49,7 +54,6 @@
   .right {
     width: 380px;
     height: 100%;
-    overflow: hidden;
     .top-fix {
       display: flex;
       border-bottom: 1px solid #e0e0e0;
@@ -189,7 +193,8 @@
     .bin-collapse-content {
       padding: 0;
       .bin-collapse-content-box {
-        padding: 0;
+        padding: 4px 0;
+        background-color: #fafafa;
       }
     }
   }
