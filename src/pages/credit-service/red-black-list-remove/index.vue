@@ -33,21 +33,27 @@
             </batch-remove-btn>
             <b-button :disabled="btnDisabled" @click="handleDownloadTemplate">模板下载</b-button>
 
-            <b-dropdown slot="right" trigger="custom" :visible="visible" @on-click-outside="visible = false">
-              <a href="javascript:void(0)" @click="visible = true">
-                字段选择
-                <b-icon name="ios-arrow-down"></b-icon>
-              </a>
-              <b-dropdown-menu slot="list" class="ml-10" style="max-height: 500px; overflow: auto;">
-                  <b-checkbox-group v-model="showColumns">
-                    <b-dropdown-item v-for="item in curColumns" :key="item.id">
-                      <b-checkbox :label="item.fieldName" style="display: block;">
-                        <span>{{ item.fieldTitle}}</span>
-                      </b-checkbox>
-                    </b-dropdown-item>
-                  </b-checkbox-group>
-              </b-dropdown-menu>
-            </b-dropdown>
+            <div slot="right">
+              <b-button type="text" @click="handleOpenRecordDialog" :disabled="isRoot">导入记录</b-button>
+
+              <b-divider type="vertical"></b-divider>
+
+              <b-dropdown trigger="custom" :visible="visible" @on-click-outside="visible = false">
+                <b-button type="text" @click="visible = true">
+                  字段选择
+                  <b-icon name="ios-arrow-down"></b-icon>
+                </b-button>
+                <b-dropdown-menu slot="list" class="ml-10" style="max-height: 500px; overflow: auto;">
+                    <b-checkbox-group v-model="showColumns">
+                      <b-dropdown-item v-for="item in curColumns" :key="item.id">
+                        <b-checkbox :label="item.fieldName" style="display: block;">
+                          <span>{{ item.fieldTitle}}</span>
+                        </b-checkbox>
+                      </b-dropdown-item>
+                    </b-checkbox-group>
+                </b-dropdown-menu>
+              </b-dropdown>
+            </div>
           </v-table-tool-bar>
 
           <!-- table -->
@@ -62,6 +68,7 @@
       </v-table-wrap>
     </page-header-wrap>
 
+    <import-export-list ref="importExportList" @on-close="handleCancel"/>
   </div>
 </template>
 
@@ -76,12 +83,14 @@
     getResourceList, downloadTemplate
   } from '../../../api/credit-service/red-blcak-list-remove.api'
   import BatchRemoveBtn from '../components/BatchRemoveBtn'
+  import ImportExportList from './ImportExportList'
 
   export default {
     name: 'RedBlackListRemove',
     mixins: [commonMixin, permission],
     components: {
-      BatchRemoveBtn
+      BatchRemoveBtn,
+      ImportExportList
     },
     data () {
       return {
@@ -105,6 +114,9 @@
       // 当前资源是否是法人
       isLeg() {
         return this.tableName.includes('leg_')
+      },
+      isRoot () { // 当前选中节点是否是根节点
+        return this.curNode === null || this.curNode.root
       },
       columns () {
         const res = []
@@ -163,6 +175,10 @@
           console.error(error)
         }
         this.btnDisabled = false
+      },
+      handleOpenRecordDialog () {
+        this.dialogStatus = 'importExportList'
+        this.$refs.importExportList && this.$refs.importExportList.open(this.curNode)
       },
       async searchList () {
         this.listLoading = true
