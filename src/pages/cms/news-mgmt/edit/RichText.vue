@@ -88,9 +88,8 @@
           input.onchange = async event => {
             const file = event.path[0].files[0]
             const res = await UploadPicture(this.contentId, file)
-            const url = location.protocol + '//' + location.host + '/api/cms/attach/download?attachmentId=' + res.id
-            console.log(url)
-            callback(url)
+            // const url = location.protocol + '//' + location.host + '/api/cms/attach/download?attachmentId=' + res.id
+            callback(res.url)
             input = null
           }
         } catch (error) {

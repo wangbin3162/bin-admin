@@ -24,6 +24,7 @@
               <b-form-item label="过期时间" prop="validDate">
                 <b-date-picker type="datetime" placeholder="选择时间" style="padding-right: 20px;"
                  :value="form.validDate"
+                 format="yyyy-MM-dd"
                  @on-change="dateStr => form.validDate = dateStr">
                 </b-date-picker>
               </b-form-item>
