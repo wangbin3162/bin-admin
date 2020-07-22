@@ -3,20 +3,24 @@
     <div class="header-inner" flex="main:justify cross:center">
       <img src="../../assets/images/login/logo-white.png" @click="home" alt="logo" class="logo"/>
       <div class="info" flex="cross:center" v-if="userRoles">
-        <!--        <div class="links">-->
-        <!--          <div class="inner">-->
-        <!--            <span class="item"><a href="" @click.stop.prevent="home">首页</a></span>-->
-        <!--            <span class="item"><a href="/dir/#/dataManage/res/resInfo" target="_blank">数据治理</a></span>-->
-        <!--            <span class="item"><a href="">大数据分析</a></span>-->
-        <!--            <span class="item"><a href="">联合奖惩</a></span>-->
-        <!--            <span class="item"><a href="">信用监管</a></span>-->
-        <!--            <span class="item"><a href="/dir/#/creditRating/ratingModel" target="_blank">信用评级</a></span>-->
-        <!--            <span class="item"><a href="/dir/#/sys/org/dept" target="_blank">系统管理</a></span>-->
-        <!--          </div>-->
-        <!--        </div>-->
+        <div class="links">
+          <div class="inner">
+            <span class="item"><a href="" @click.stop.prevent="home">首页</a></span>
+            <span class="item"><a href="">政策法规</a></span>
+            <span class="item"><a href="">数据可视化</a></span>
+            <span class="item"><a href="">联合奖惩</a></span>
+            <span class="item"><a href="">挖掘分析</a></span>
+            <span class="item"><a href="">信用监管</a></span>
+            <!-- <span class="item"><a href="/dir/#/dataManage/res/resInfo" target="_blank">数据治理</a></span> -->
+            <!-- <span class="item"><a href="/dir/#/creditRating/ratingModel" target="_blank">信用评级</a></span> -->
+            <!-- <span class="item"><a href="/dir/#/sys/org/dept" target="_blank">系统管理</a></span> -->
+          </div>
+        </div>
+
         <div class="search-btn" v-if="showSearch" @click="changeDisplay(true)">
           <img src="../../assets/images/search.png" height="24" width="24" alt="icon" title="查询"/>
         </div>
+
         <b-dropdown>
           <div class="user" flex="main:center cross:center">
             <img src="../../assets/images/icon-user.png" height="24" width="24" alt="icon"/>

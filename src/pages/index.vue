@@ -2,18 +2,14 @@
   <base-layout>
     <div class="main-wrap" :class="{'mini-wrap':showList}">
       <base-header @on-home="handleHome"></base-header>
+
       <div class="search-wrap">
         <h2 v-show="!showList">综合信用查询</h2>
         <base-search v-model="query" :size="searchSize" @on-search="handleSearch" @on-clear="handleClear"></base-search>
       </div>
-      <!--查询列表结果-->
-      <transition name="fade-scale-move">
-        <base-list v-show="showList"
-                   :total="total" :data="searchList"
-                   :mapping="mapping" :loading="loading"
-                   :current-type="query.type"
-                   @on-check-detail="handleCheckDetail"></base-list>
-      </transition>
+
+      <base-content v-show="!showList"></base-content>
+
       <div v-show="!showList" class="center-banner">
         <b-row :gutter="20">
           <b-col :span="6">
@@ -66,22 +62,35 @@
           </b-col>
         </b-row>
       </div>
+
+       <!--查询列表结果-->
+      <transition name="fade-scale-move">
+        <base-list v-show="showList"
+                   :total="total" :data="searchList"
+                   :mapping="mapping" :loading="loading"
+                   :current-type="query.type"
+                   @on-check-detail="handleCheckDetail"></base-list>
+      </transition>
+
       <div class="page-wrap">
-        <b-page :total="total" :current.sync="listQuery.page" v-if="total>listQuery.size"
-                show-total @on-change="handlePageChange"></b-page>
+        <b-page :total="total" :current.sync="listQuery.page"
+          v-if="total>listQuery.size"
+          show-total @on-change="handlePageChange">
+        </b-page>
       </div>
     </div>
   </base-layout>
 </template>
 
 <script>
-  import BaseList from '../components/BaseList/index'
   import { getSearchList } from '../api/search.api'
   import { isEmpty, isNotEmpty } from '../common/utils/assist'
+  import BaseList from '../components/BaseList/index'
+  import BaseContent from '../components/BaseContent'
 
   export default {
     name: 'index',
-    components: { BaseList },
+    components: { BaseList, BaseContent },
     data() {
       return {
         listQuery: {
