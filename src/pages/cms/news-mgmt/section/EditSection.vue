@@ -215,6 +215,8 @@
         if (visible) {
           this.init()
         } else {
+          this.form.id = null
+          this.form.parentCol = null
           this.parentColName = '无'
           this.$refs.imgUpload.clearImg()
           this.$refs.form.resetFields()
