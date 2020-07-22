@@ -1,69 +1,54 @@
 <template>
-  <div class="list-widget-item" :class="{'active' : selected}"
+  <div class="list-widget-item" :class="{'active' : selectWidget.key===element.key}"
        :style="widgetStyle"
-       @click="handleSelectWidget">
-    <template v-if="selected">
+       @click.stop="handleSelectWidget(index,element.key)">
+
+    <template v-if="selectWidget.key===element.key">
       <div class="widget-view-drag">
         <b-icon name="ios-move"/>
       </div>
-      <div class="widget-view-action" @click="handleWidgetDelete">
+      <div class="widget-view-action" @click.stop="handleWidgetDelete(index)">
         <b-icon name="ios-trash"/>
       </div>
     </template>
-    <template v-if="data.options">
-      <h2><span :style="titleStyle">{{ data.options.title }}</span></h2>
-      <div class="chart-wrap" :style="chartStyle">
-        <b-charts :height="chartHeight" theme="charts-theme" :options="chartOptions"/>
-      </div>
-    </template>
+    <div class="widget-view-key" v-if="!previewModel">{{ element.key }}</div>
+
+    <h2><span :style="titleStyle">{{ element.options.title }}</span></h2>
+    <div class="chart-wrap" :style="chartStyle">
+      <b-charts :height="chartHeight" theme="charts-theme" :options="chartOptions"/>
+    </div>
   </div>
 </template>
 
 <script>
-  import Enum from './enum'
   import { buildOptions } from './uitls'
+  import Enum from './enum.json'
 
   require('bin-charts/src/theme/charts-theme')
 
   export default {
     name: 'ChartsWrap',
-    inject: ['Ctrl'],
     props: {
-      data: {
-        type: Object
-      },
-      index: {
-        type: Number,
-        required: true
-      },
-      previewModel: Boolean // 预览模式
+      element: Object,
+      select: Object,
+      list: Array,
+      index: Number,
+      previewModel: Boolean, // 预览模式
+      log: Boolean // 打印配置项
     },
     data() {
       return {
-        widthMap: Enum.widthMap
-      }
-    },
-    methods: {
-      // 选中widget
-      handleSelectWidget() {
-        this.$emit('select-one', this.index)
-      },
-      // 删除一个
-      handleWidgetDelete() {
-        this.$emit('delete-one', this.index)
+        widthMap: Enum.widthMap,
+        selectWidget: this.select
       }
     },
     computed: {
-      // 是否选中
-      selected() {
-        return this.index === this.Ctrl.selectIndex
-      },
       // 图表标题样式
       titleStyle() {
-        if (!this.data.options) {
+        if (!this.element.options) {
           return null
         }
-        let { color, fontSize } = this.data.options.titleStyle
+        let { color, fontSize } = this.element.options.titleStyle
         return {
           color: color,
           fontSize: `${fontSize}px`
@@ -71,26 +56,26 @@
       },
       // 容器高度
       widgetHeight() {
-        if (!this.data.options) {
+        if (!this.element.options) {
           return 400
         }
-        let { height } = this.data.options
+        let { height } = this.element.options
         return this.previewModel ? height : (height >= 400 ? height / 2 : 200)
-      },
-      // 图表高度
-      chartHeight() {
-        return `${this.widgetHeight - 30}px`
       },
       // 容器的宽高样式
       widgetStyle() {
-        if (!this.data.options) {
+        if (!this.element.options) {
           return null
         }
-        let { width } = this.data.options
+        let { width } = this.element.options
         return {
           width: this.widthMap[width],
           height: `${this.widgetHeight}px`
         }
+      },
+      // 图表高度
+      chartHeight() {
+        return `${this.widgetHeight - 30}px`
       },
       // 图表容器的样式
       chartStyle() {
@@ -101,7 +86,48 @@
       },
       // 根据类型和已配置项创建对应图表的options
       chartOptions() {
-        return buildOptions(this.data)
+        let options = buildOptions(this.element)
+        if (this.log) {
+          console.log(options)
+        }
+        return options
+      }
+    },
+    methods: {
+      // 选中widget
+      handleSelectWidget(index, key) {
+        if (key === this.selectWidget.key) {
+          // this.selectWidget = {}
+          return
+        }
+        this.$log.primary(`====SelectWidget:${index}====`)
+        this.selectWidget = this.list[index]
+      },
+      // 删除一个
+      handleWidgetDelete(index) {
+        if (this.list.length - 1 === index) {
+          if (index === 0) {
+            this.selectWidget = {}
+          } else {
+            this.selectWidget = this.list[index - 1]
+          }
+        } else {
+          this.selectWidget = this.list[index + 1]
+        }
+        this.$nextTick(() => {
+          this.list.splice(index, 1)
+        })
+      }
+    },
+    watch: {
+      select(val) {
+        this.selectWidget = val
+      },
+      selectWidget: {
+        handler(val) {
+          this.$emit('update:select', val)
+        },
+        deep: true
       }
     }
   }

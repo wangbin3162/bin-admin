@@ -54,6 +54,9 @@
   .right {
     width: 380px;
     height: 100%;
+    .config-panel {
+      height: 100%;
+    }
     .top-fix {
       display: flex;
       border-bottom: 1px solid #e0e0e0;
@@ -179,10 +182,18 @@
       cursor: pointer;
     }
   }
+  .widget-view-key {
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-size: 12px;
+    color: #52c41a;
+  }
 }
 
 // 右边配置页面
 .block-config {
+  min-height: 100%;
   .bin-collapse > .bin-collapse-item > {
     .bin-collapse-header {
       padding: 8px 12px;
