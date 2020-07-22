@@ -9,7 +9,7 @@ export default [
     path: '/urp/feedback',
     name: 'Feedback',
     component: () => import(/* webpackChunkName: "urp" */ '../pages/urp/Feedback'),
-    meta: { title: '执行记录' }
+    meta: { title: '执行反馈' }
   },
   {
     path: '/urp/print',
