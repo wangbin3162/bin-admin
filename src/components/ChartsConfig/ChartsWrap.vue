@@ -10,21 +10,18 @@
       <div class="widget-view-action" @click.stop="handleWidgetDelete(index)">
         <b-icon name="ios-trash"/>
       </div>
+      <div class="widget-view-key" v-if="!previewModel">{{ element.key }}</div>
     </template>
-    <div class="widget-view-key" v-if="!previewModel">{{ element.key }}</div>
 
     <h2><span :style="titleStyle">{{ element.options.title }}</span></h2>
     <div class="chart-wrap" :style="chartStyle">
-      <b-charts :height="chartHeight" theme="charts-theme" :options="chartOptions"/>
+      <b-charts :height="chartHeight" :options="chartOptions"/>
     </div>
   </div>
 </template>
 
 <script>
-  import { buildOptions } from './uitls'
-  import Enum from './enum.json'
-
-  require('bin-charts/src/theme/charts-theme')
+  import { buildOptions, WIDTH_MAP } from './uitls'
 
   export default {
     name: 'ChartsWrap',
@@ -38,7 +35,7 @@
     },
     data() {
       return {
-        widthMap: Enum.widthMap,
+        widthMap: WIDTH_MAP,
         selectWidget: this.select
       }
     },

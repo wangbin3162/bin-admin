@@ -13,6 +13,48 @@ export const chartsNameMap = {
   radar: '雷达图'
 }
 
+const DEFAULT_COLORS = [
+  '#5B8FF9', '#5AD8A6',
+  '#5D7092', '#F6BD16',
+  '#E8684A', '#6DC8EC',
+  '#9270CA', '#FF9D4D',
+  '#269A99', '#FF99C3'
+]
+
+// 颜色列表
+export const COLOR_LIST = [
+  '#5B8FF9', '#BDD2FD',
+  '#5AD8A6', '#BDEFDB',
+  '#5D7092', '#C2C8D5',
+  '#F6BD16', '#FBE5A2',
+  '#E8684A', '#F6C3B7',
+  '#6DC8EC', '#B6E3F5',
+  '#9270CA', '#D3C6EA',
+  '#FF9D4D', '#FFD8B8',
+  '#269A99', '#AAD8D8',
+  '#FF99C3', '#FFD6E7'
+]
+
+export const COLOR_LIST_GRAY = [
+  '#eeeeee',
+  '#dddddd',
+  '#bebebe',
+  '#a1a1a1',
+  '#848484',
+  '#686868',
+  '#4e4e4e',
+  '#353535',
+  '#1d1d1d'
+]
+
+// 宽度下拉
+export const WIDTH_MAP = {
+  '1/3': 'calc(33.33% - 4px)',
+  '2/3': 'calc(66.66% - 4px)',
+  '1/2': 'calc(50% - 4px)',
+  '100%': '100%'
+}
+
 /**
  * 图表基础配置对象
  */
@@ -24,7 +66,7 @@ export const basicComponents = [
     options: {
       title: '折线图',
       titleStyle: {
-        color: '#666',
+        color: '#686868',
         fontSize: 18
       },
       width: '1/3',
@@ -34,9 +76,12 @@ export const basicComponents = [
       legend: {
         show: false,
         textStyle: {
-          color: '#666',
+          color: '#686868',
           fontSize: 12
         },
+        icon: '',
+        itemWidth: 16,
+        itemHeight: 12,
         bottom: 0
       },
       xAxis: {
@@ -44,22 +89,31 @@ export const basicComponents = [
         show: true,
         name: '',
         nameTextStyle: {
-          color: '#999'
+          color: '#848484'
         },
         axisLine: {
           show: true,
           lineStyle: {
-            color: '#999'
+            color: '#848484'
+          }
+        },
+        axisLabel: {
+          show: true,
+          color: '#848484',
+          fontSize: 12
+        },
+        axisTick: {
+          show: true,
+          alignWithLabel: true,
+          lineStyle: {
+            color: '#848484'
           }
         },
         splitLine: {
           show: false,
           lineStyle: {
-            color: '#eee'
+            color: '#eeeeee'
           }
-        },
-        axisTick: {
-          alignWithLabel: true
         }
       },
       yAxis: {
@@ -67,18 +121,30 @@ export const basicComponents = [
         show: true,
         name: '',
         nameTextStyle: {
-          color: '#999'
+          color: '#848484'
         },
         axisLine: {
-          show: false,
+          show: true,
           lineStyle: {
-            color: '#999'
+            color: '#848484'
+          }
+        },
+        axisLabel: {
+          show: true,
+          color: '#848484',
+          fontSize: 12
+        },
+        axisTick: {
+          show: true,
+          alignWithLabel: true,
+          lineStyle: {
+            color: '#848484'
           }
         },
         splitLine: {
           show: true,
           lineStyle: {
-            color: '#eee'
+            color: '#eeeeee'
           }
         }
       },
@@ -87,14 +153,15 @@ export const basicComponents = [
         smooth: true,
         label: {
           show: false,
-          color: '#666',
+          color: '#686868',
           fontSize: 12,
           position: 'top'
         },
         areaStyle: {
           opacity: 0
         }
-      }
+      },
+      color: DEFAULT_COLORS
     },
     dataSourceType: 'static',
     sourceMap: { xField: 'x', yField: 'y', seriesField: 's' },
@@ -119,7 +186,7 @@ export const basicComponents = [
     options: {
       title: '柱状图',
       titleStyle: {
-        color: '#666',
+        color: '#686868',
         fontSize: 18
       },
       width: '1/3',
@@ -135,9 +202,12 @@ export const basicComponents = [
       legend: {
         show: false,
         textStyle: {
-          color: '#666',
+          color: '#686868',
           fontSize: 12
         },
+        icon: 'circle',
+        itemWidth: 8,
+        itemHeight: 8,
         bottom: 0
       },
       xAxis: {
@@ -145,18 +215,30 @@ export const basicComponents = [
         show: true,
         name: '',
         nameTextStyle: {
-          color: '#999'
+          color: '#848484'
         },
         axisLine: {
           show: true,
           lineStyle: {
-            color: '#999'
+            color: '#848484'
+          }
+        },
+        axisLabel: {
+          show: true,
+          color: '#848484',
+          fontSize: 12
+        },
+        axisTick: {
+          show: true,
+          alignWithLabel: true,
+          lineStyle: {
+            color: '#848484'
           }
         },
         splitLine: {
           show: false,
           lineStyle: {
-            color: '#eee'
+            color: '#eeeeee'
           }
         }
       },
@@ -165,18 +247,30 @@ export const basicComponents = [
         show: true,
         name: '',
         nameTextStyle: {
-          color: '#999'
+          color: '#848484'
         },
         axisLine: {
-          show: false,
+          show: true,
           lineStyle: {
-            color: '#999'
+            color: '#848484'
+          }
+        },
+        axisLabel: {
+          show: true,
+          color: '#848484',
+          fontSize: 12
+        },
+        axisTick: {
+          show: true,
+          alignWithLabel: true,
+          lineStyle: {
+            color: '#848484'
           }
         },
         splitLine: {
           show: true,
           lineStyle: {
-            color: '#eee'
+            color: '#eeeeee'
           }
         }
       },
@@ -185,12 +279,13 @@ export const basicComponents = [
         smooth: true,
         label: {
           show: false,
-          color: '#666',
+          color: '#686868',
           fontSize: 12,
           position: 'top'
         },
         barWidth: 'auto' // 可选
-      }
+      },
+      color: DEFAULT_COLORS
     },
     dataSourceType: 'static',
     sourceMap: { xField: 'x', yField: 'y', seriesField: 's' },
@@ -226,7 +321,7 @@ export const basicComponents = [
     options: {
       title: '条形图',
       titleStyle: {
-        color: '#666',
+        color: '#686868',
         fontSize: 18
       },
       width: '1/3',
@@ -242,9 +337,12 @@ export const basicComponents = [
       legend: {
         show: false,
         textStyle: {
-          color: '#666',
+          color: '#686868',
           fontSize: 12
         },
+        icon: 'circle',
+        itemWidth: 8,
+        itemHeight: 8,
         bottom: 0
       },
       xAxis: {
@@ -252,18 +350,30 @@ export const basicComponents = [
         show: true,
         name: '',
         nameTextStyle: {
-          color: '#999'
+          color: '#848484'
         },
         axisLine: {
           show: false,
           lineStyle: {
-            color: '#999'
+            color: '#848484'
+          }
+        },
+        axisLabel: {
+          show: true,
+          color: '#848484',
+          fontSize: 12
+        },
+        axisTick: {
+          show: false,
+          alignWithLabel: false,
+          lineStyle: {
+            color: '#848484'
           }
         },
         splitLine: {
           show: true,
           lineStyle: {
-            color: '#eee'
+            color: '#eeeeee'
           }
         }
       },
@@ -272,18 +382,30 @@ export const basicComponents = [
         show: true,
         name: '',
         nameTextStyle: {
-          color: '#999'
+          color: '#848484'
         },
         axisLine: {
           show: true,
           lineStyle: {
-            color: '#999'
+            color: '#848484'
+          }
+        },
+        axisLabel: {
+          show: true,
+          color: '#848484',
+          fontSize: 12
+        },
+        axisTick: {
+          show: true,
+          alignWithLabel: true,
+          lineStyle: {
+            color: '#848484'
           }
         },
         splitLine: {
           show: false,
           lineStyle: {
-            color: '#eee'
+            color: '#eeeeee'
           }
         }
       },
@@ -292,12 +414,13 @@ export const basicComponents = [
         smooth: true,
         label: {
           show: false,
-          color: '#666',
+          color: '#686868',
           fontSize: 12,
           position: 'top'
         },
         barWidth: 'auto' // 可选
-      }
+      },
+      color: DEFAULT_COLORS
     },
     dataSourceType: 'static',
     sourceMap: { xField: 'x', yField: 'y', seriesField: 's' },
@@ -333,7 +456,7 @@ export const basicComponents = [
     options: {
       title: '饼图',
       titleStyle: {
-        color: '#666',
+        color: '#686868',
         fontSize: 18
       },
       width: '1/3',
@@ -342,9 +465,12 @@ export const basicComponents = [
       legend: {
         show: false,
         textStyle: {
-          color: '#666',
+          color: '#686868',
           fontSize: 12
         },
+        icon: 'circle',
+        itemWidth: 8,
+        itemHeight: 8,
         bottom: 0
       },
       series: {
@@ -358,7 +484,8 @@ export const basicComponents = [
         roseType: false, // 饼图可选玫瑰图
         center: ['50%', '40%'], // 饼图可选
         radius: ['0', '70%']// 饼图可选
-      }
+      },
+      color: DEFAULT_COLORS
     },
     dataSourceType: 'static',
     sourceMap: { xField: 'x', yField: 'y', seriesField: 's' },
@@ -383,7 +510,7 @@ export const basicComponents = [
     options: {
       title: '雷达图',
       titleStyle: {
-        color: '#666',
+        color: '#686868',
         fontSize: 18
       },
       width: '1/3',
@@ -392,9 +519,12 @@ export const basicComponents = [
       legend: {
         show: false,
         textStyle: {
-          color: '#666',
+          color: '#686868',
           fontSize: 12
         },
+        icon: 'circle',
+        itemWidth: 8,
+        itemHeight: 8,
         bottom: 0
       },
       radar: { // 雷达图可选
@@ -413,7 +543,8 @@ export const basicComponents = [
         areaStyle: { // 可选的
           opacity: 0
         }
-      }
+      },
+      color: DEFAULT_COLORS
     },
     dataSourceType: 'static',
     sourceMap: { xField: 'x', yField: 'y', seriesField: 's' },
@@ -437,7 +568,7 @@ export const basicComponents = [
       {
         s: '维度3',
         data: [
-          { x: '类别一', y: 45 },
+          { x: '类别一', y: 95 },
           { x: '类别二', y: 100 },
           { x: '类别三', y: 222 }
         ]

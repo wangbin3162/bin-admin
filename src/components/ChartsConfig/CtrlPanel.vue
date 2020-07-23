@@ -126,13 +126,9 @@
       handleWidgetAdd({ newIndex }) {
         // 为拖拽到容器的元素添加唯一 key
         const key = Date.parse(new Date()) + '_' + Math.ceil(Math.random() * 99999)
-        this.$set(this.currentList, newIndex, {
-          ...this.currentList[newIndex],
-          options: {
-            ...this.currentList[newIndex].options
-          },
-          key: this.currentList[newIndex].type + '_' + key
-        })
+        let object = deepCopy(this.currentList[newIndex])
+        object.key = this.currentList[newIndex].type + '_' + key
+        this.$set(this.currentList, newIndex, object)
         this.selectWidget = this.currentList[newIndex]
       },
       // 更新列表值

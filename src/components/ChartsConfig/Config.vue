@@ -20,7 +20,7 @@
                                 :min="14" :max="22" @on-change="emitValue"></b-input-number>
               </gui-inline>
               <gui-inline label="颜色">
-                <b-color-picker v-model="data.options.titleStyle.color" size="small"
+                <b-color-picker v-model="data.options.titleStyle.color" size="small" :colors="colorsGary"
                                 @on-change="emitValue"></b-color-picker>
               </gui-inline>
             </gui-field>
@@ -70,48 +70,86 @@
               <gui-field label="是否显示">
                 <b-checkbox v-model="data.options.legend.show" @on-change="emitValue"></b-checkbox>
               </gui-field>
-              <gui-field label="样式">
+              <gui-field label="文本样式">
                 <gui-inline label="字号">
                   <b-input-number v-model="data.options.legend.textStyle.fontSize"
                                   size="small" :min="12" :max="20" @on-change="emitValue"></b-input-number>
                 </gui-inline>
                 <gui-inline label="颜色">
-                  <b-color-picker v-model="data.options.legend.textStyle.color"
+                  <b-color-picker v-model="data.options.legend.textStyle.color" :colors="colorsGary"
                                   @on-change="emitValue" size="small"></b-color-picker>
+                </gui-inline>
+              </gui-field>
+              <gui-field label="图形设置">
+                <gui-inline label="宽度">
+                  <b-input-number v-model="data.options.legend.itemWidth"
+                                  size="small" :min="8" :max="25" @on-change="emitValue"></b-input-number>
+                </gui-inline>
+                <gui-inline label="高度">
+                  <b-input-number v-model="data.options.legend.itemHeight"
+                                  size="small" :min="8" :max="25" @on-change="emitValue"></b-input-number>
+                </gui-inline>
+                <gui-inline label="图形">
+                  <b-select v-model="data.options.legend.icon"
+                            placeholder="默认" clearable
+                            @on-change="emitValue" size="small">
+                    <b-option value="circle">圆形</b-option>
+                    <b-option value="roundRect">矩形</b-option>
+                    <b-option value="triangle">三角</b-option>
+                    <b-option value="diamond">菱形</b-option>
+                  </b-select>
                 </gui-inline>
               </gui-field>
             </b-collapse-panel>
             <!--x轴-->
             <b-collapse-panel title="x轴" name="xAxis" v-if="showXAxis">
-              <gui-wrap label="x轴" v-model="data.options.xAxis.show" @on-change="emitValue">
-                <gui-field label="坐标轴">
-                  <gui-inline label="标题">
+              <gui-wrap label="坐标轴" v-model="data.options.xAxis.show" @on-change="emitValue">
+                <gui-field label="标题">
+                  <gui-inline label="标题名称">
                     <b-input v-model="data.options.xAxis.name" size="small" clearable
                              @on-change="emitValue"></b-input>
                   </gui-inline>
                   <gui-inline label="颜色">
-                    <b-color-picker v-model="data.options.xAxis.nameTextStyle.color"
+                    <b-color-picker v-model="data.options.xAxis.nameTextStyle.color" :colors="colorsGary"
                                     @on-change="emitValue" size="small"></b-color-picker>
                   </gui-inline>
                 </gui-field>
-                <gui-field label="标签对齐" v-if="isLine">
-                  <b-switch v-model="data.options.xAxis.axisTick.alignWithLabel" size="small"
-                            @on-change="emitValue"></b-switch>
-                </gui-field>
               </gui-wrap>
-              <gui-wrap label="轴线" v-model="data.options.xAxis.axisLine.show"
-                        @on-change="emitValue">
+              <gui-wrap label="轴线" v-model="data.options.xAxis.axisLine.show" @on-change="emitValue">
                 <gui-field label="颜色">
                   <b-color-picker v-model="data.options.xAxis.axisLine.lineStyle.color"
-                                  placement="bottom-start"
+                                  placement="bottom-start" :colors="colorsGary"
                                   @on-change="emitValue" size="small"></b-color-picker>
                 </gui-field>
               </gui-wrap>
-              <gui-wrap label="网格线" v-model="data.options.xAxis.splitLine.show"
-                        @on-change="emitValue">
+              <gui-wrap label="刻度" v-model="data.options.xAxis.axisTick.show" @on-change="emitValue">
+                <gui-field label="颜色">
+                  <b-color-picker v-model="data.options.xAxis.axisTick.lineStyle.color"
+                                  placement="bottom-start" :colors="colorsGary"
+                                  style="margin-right: 24px;"
+                                  @on-change="emitValue" size="small"></b-color-picker>
+                  <b-checkbox v-model="data.options.xAxis.axisTick.alignWithLabel"
+                              v-if="isLine||isHistogram" size="small" @on-change="emitValue">
+                    标签刻度对齐
+                  </b-checkbox>
+                </gui-field>
+              </gui-wrap>
+              <gui-wrap label="标签" v-model="data.options.xAxis.axisLabel.show" @on-change="emitValue">
+                <gui-field label="样式">
+                  <gui-inline label="字号">
+                    <b-input-number v-model="data.options.xAxis.axisLabel.fontSize"
+                                    size="small" :min="12" :max="20" @on-change="emitValue"></b-input-number>
+                  </gui-inline>
+                  <gui-inline label="颜色">
+                    <b-color-picker v-model="data.options.xAxis.axisLabel.color" :colors="colorsGary"
+                                    @on-change="emitValue" size="small"></b-color-picker>
+                  </gui-inline>
+                </gui-field>
+              </gui-wrap>
+              <gui-wrap label="网格线" v-model="data.options.xAxis.splitLine.show" @on-change="emitValue">
                 <gui-field label="颜色">
                   <b-color-picker v-model="data.options.xAxis.splitLine.lineStyle.color"
-                                  placement="bottom-start"
+                                  placement="bottom-start" :colors="colorsGary"
                                   @on-change="emitValue" size="small"></b-color-picker>
                 </gui-field>
               </gui-wrap>
@@ -119,13 +157,13 @@
             <!--y轴-->
             <b-collapse-panel title="y轴" name="yAxis" v-if="showYAxis">
               <gui-wrap label="坐标轴" v-model="data.options.yAxis.show" @on-change="emitValue">
-                <gui-field label="y轴">
-                  <gui-inline label="标题">
+                <gui-field label="标题">
+                  <gui-inline label="标题名称">
                     <b-input v-model="data.options.yAxis.name" size="small" clearable
                              @on-change="emitValue"></b-input>
                   </gui-inline>
                   <gui-inline label="颜色">
-                    <b-color-picker v-model="data.options.yAxis.nameTextStyle.color"
+                    <b-color-picker v-model="data.options.yAxis.nameTextStyle.color" :colors="colorsGary"
                                     @on-change="emitValue" size="small"></b-color-picker>
                   </gui-inline>
                 </gui-field>
@@ -134,15 +172,39 @@
                         @on-change="emitValue">
                 <gui-field label="颜色">
                   <b-color-picker v-model="data.options.yAxis.axisLine.lineStyle.color"
-                                  placement="bottom-start"
+                                  placement="bottom-start" :colors="colorsGary"
                                   @on-change="emitValue" size="small"></b-color-picker>
+                </gui-field>
+              </gui-wrap>
+              <gui-wrap label="刻度" v-model="data.options.yAxis.axisTick.show" @on-change="emitValue">
+                <gui-field label="颜色">
+                  <b-color-picker v-model="data.options.yAxis.axisTick.lineStyle.color"
+                                  placement="bottom-start" :colors="colorsGary"
+                                  style="margin-right: 24px;"
+                                  @on-change="emitValue" size="small"></b-color-picker>
+                  <b-checkbox v-model="data.options.yAxis.axisTick.alignWithLabel"
+                              v-if="isBar" size="small" @on-change="emitValue">
+                    标签刻度对齐
+                  </b-checkbox>
+                </gui-field>
+              </gui-wrap>
+              <gui-wrap label="标签" v-model="data.options.yAxis.axisLabel.show" @on-change="emitValue">
+                <gui-field label="样式">
+                  <gui-inline label="字号">
+                    <b-input-number v-model="data.options.yAxis.axisLabel.fontSize"
+                                    size="small" :min="12" :max="20" @on-change="emitValue"></b-input-number>
+                  </gui-inline>
+                  <gui-inline label="颜色">
+                    <b-color-picker v-model="data.options.yAxis.axisLabel.color" :colors="colorsGary"
+                                    @on-change="emitValue" size="small"></b-color-picker>
+                  </gui-inline>
                 </gui-field>
               </gui-wrap>
               <gui-wrap label="网格线" v-model="data.options.yAxis.splitLine.show"
                         @on-change="emitValue">
                 <gui-field label="颜色">
                   <b-color-picker v-model="data.options.yAxis.splitLine.lineStyle.color"
-                                  placement="bottom-start"
+                                  placement="bottom-start" :colors="colorsGary"
                                   @on-change="emitValue" size="small"></b-color-picker>
                 </gui-field>
               </gui-wrap>
@@ -179,18 +241,18 @@
                     <b-input-number v-model="data.options.series.label.fontSize" size="small"
                                     :min="12" :max="40" @on-change="emitValue"></b-input-number>
                   </gui-inline>
+                  <gui-inline label="位置">
+                    <b-select v-model="data.options.series.label.position" size="small"
+                              @on-change="emitValue">
+                      <b-option label="inside" value="inside"></b-option>
+                      <b-option v-if="isPie" label="outside" value="outside"></b-option>
+                      <b-option v-else label="top" value="top"></b-option>
+                    </b-select>
+                  </gui-inline>
                   <gui-inline label="颜色">
                     <b-color-picker v-model="data.options.series.label.color" size="small"
-                                    @on-change="emitValue"></b-color-picker>
+                                    @on-change="emitValue" :colors="colorsGary"></b-color-picker>
                   </gui-inline>
-                </gui-field>
-                <gui-field label="指标位置">
-                  <b-select v-model="data.options.series.label.position" size="small"
-                            @on-change="emitValue">
-                    <b-option label="inside" value="inside"></b-option>
-                    <b-option v-if="isPie" label="outside" value="outside"></b-option>
-                    <b-option v-else label="top" value="top"></b-option>
-                  </b-select>
                 </gui-field>
               </gui-wrap>
               <gui-field label="区域透明度" v-if="isLine||isRadar">
@@ -239,6 +301,16 @@
                 </gui-field>
               </template>
             </b-collapse-panel>
+            <!--调色盘颜色-->
+            <b-collapse-panel title="调色盘颜色" name="colors" v-if="data.options.color">
+              <div style="padding: 5px 13px;">
+                <div v-for="(c,index) of data.options.color" :key="index+c"
+                     style="display: inline-block;margin-right: 4px;">
+                  <b-color-picker v-model="data.options.color[index]" :colors="colors" size="small"
+                                  @on-change="emitValue"></b-color-picker>
+                </div>
+              </div>
+            </b-collapse-panel>
           </b-collapse>
         </div>
         <!--数据配置-->
@@ -281,13 +353,13 @@
 
 <script>
   import { isNotEmpty } from '../../common/utils/assist'
-  import Enum from './enum'
   import GuiWrap from './gui/gui-wrap'
   import GuiGroup from './gui/gui-group'
   import GuiField from './gui/gui-field'
   import GuiInline from './gui/gui-inline'
   import VSlider from '../VSlider/VSlider'
   import BAceEditor from '../AceEditor'
+  import { COLOR_LIST, COLOR_LIST_GRAY, WIDTH_MAP } from './uitls'
 
   export default {
     name: 'Config',
@@ -338,7 +410,9 @@
           { key: 'tab2', title: '数据配置' }
         ],
         activeTab: 'tab1',
-        widthMap: Enum.widthMap
+        widthMap: WIDTH_MAP,
+        colors: COLOR_LIST,
+        colorsGary: COLOR_LIST_GRAY
       }
     },
     watch: {
