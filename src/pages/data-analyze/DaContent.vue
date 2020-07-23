@@ -134,7 +134,8 @@
         </b-collapse-wrap>
 
         <!-- <b-collapse-wrap title="数据配置" collapse>
-          <data-config v-model="content.toggle" :data="content.data">
+          <data-config v-model="content.toggle" :data="content.data"
+            @config-map="handleConfigMap">
           </data-config>
         </b-collapse-wrap> -->
         <!--保存提交-->
@@ -197,6 +198,9 @@
     <!-- 数据配置单独出一个组件，维护相关数据，那么信息项映射产生的数据需要回传给数据配置组件 -->
     <!-- 信息项映射需要对应到数据配置对应的接口 -->
     <!-- 信息项映射组件 -->
+    <info-item-map v-if="dialogStatus === 'infoItemMap'"
+      @close="dialogStatus = 'modify'">
+    </info-item-map>
   </div>
 </template>
 
@@ -211,10 +215,11 @@
   import { getApiDetail } from '../../api/analyze-engine/da-api.api'
   import ContentTestPanel from './components/DaContent/ContentTestPanel'
   import DataConfig from './components/DaContent/DataConfig'
+  import InfoItemMap from './components/DaContent/InfoItemMap'
 
   export default {
     name: 'Content',
-    components: { ContentTestPanel, ResponseConfigPanel, ApiChoose, DataConfig },
+    components: { ContentTestPanel, ResponseConfigPanel, ApiChoose, DataConfig, InfoItemMap },
     mixins: [commonMixin, permission],
     data() {
       return {
@@ -531,6 +536,10 @@
         } else {
           this.$message({ type: 'danger', content: '请选择操作的数据' })
         }
+      },
+      // 数据配置组件配置信息项映射事件回调
+      handleConfigMap () {
+        this.dialogStatus = 'infoItemMap'
       }
     }
   }

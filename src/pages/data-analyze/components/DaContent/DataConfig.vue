@@ -59,7 +59,8 @@
             </b-form-item>
 
             <b-form-item label="信息项映射" class="form-item">
-              <b-button type="primary" plain style="width: 100%;">
+              <b-button type="primary" plain style="width: 100%;"
+                @click="$emit('config-map')">
                 配置信息项映射
               </b-button>
             </b-form-item>
