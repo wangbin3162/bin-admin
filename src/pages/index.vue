@@ -11,7 +11,7 @@
       <base-content v-show="!showList"></base-content>
 
       <div v-show="!showList" class="center-banner">
-        <b-row :gutter="20">
+        <!-- <b-row :gutter="20">
           <b-col :span="6">
             <div class="card">
               <div class="inner">
@@ -60,7 +60,37 @@
               </div>
             </div>
           </b-col>
-        </b-row>
+        </b-row> -->
+
+        <div class="card">
+          <div class="inner">
+            <h2>信用监控</h2>
+            <img src="../assets/images/service.png" alt="bigdata">
+          </div>
+        </div>
+
+        <div class="card-cen">
+           <div class="card-item">
+            <div class="inner">
+              <h2>归集分析</h2>
+              <img src="../assets/images/joint.png" alt="bigdata">
+            </div>
+          </div>
+
+          <div class="card-item" @click="handleCardClick('/data')">
+            <div class="inner">
+              <h2>数据挖掘</h2>
+              <img src="../assets/images/bigdata.png" alt="bigdata">
+            </div>
+          </div>
+        </div>
+
+        <div class="card" @click="handleCardClick('#/urp/index')">
+          <div class="inner">
+            <h2>联合奖惩</h2>
+            <img src="../assets/images/exchange.png" alt="bigdata">
+          </div>
+        </div>
       </div>
 
        <!--查询列表结果-->
@@ -185,6 +215,9 @@
           this.showList = true
           this.loading = false
         })
+      },
+      handleCardClick (path) {
+        window.open(path)
       }
     }
   }

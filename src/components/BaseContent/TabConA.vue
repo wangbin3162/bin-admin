@@ -18,25 +18,30 @@
       </div>
 
       <div class="right">
-        <ul class="list">
-          <li v-for="content in contentList" :key="content.id"
-            flex="main:justify" class="list-item">
-            <p>
-              {{ content.title }}
-            </p>
-            <span>
-              2020-07-22
-            </span>
-          </li>
-          <b-loading fix showText="加载中...." v-if="loading">
-          </b-loading>
-        </ul>
+        <b-loading fix showText="加载中...." v-if="loading">
+        </b-loading>
 
-        <div flex="main:right">
-          <div type="text" class="more-btn">
-            查看更多 >>
+        <template v-if="contentList.length > 0">
+          <ul class="list">
+            <li v-for="content in contentList" :key="content.id"
+              flex="main:justify" class="list-item">
+              <p>
+                {{ content.title }}
+              </p>
+              <span>
+                2020-07-22
+              </span>
+            </li>
+          </ul>
+
+          <div flex="main:right">
+            <div type="text" class="more-btn">
+              查看更多 >>
+            </div>
           </div>
-        </div>
+        </template>
+
+        <b-empty v-else style="margin-top: 10%;">暂时没用内容哦</b-empty>
       </div>
     </div>
 </template>
@@ -73,7 +78,7 @@
        */
       async init () {
         await this.getSectionChildren(this.parentColId)
-        await this.getContentList(this.sectionList[0].id)
+        if (this.sectionList.length) await this.getContentList(this.sectionList[0].id)
       },
       /**
        * @author haodongdong
@@ -126,11 +131,11 @@
 <style lang="stylus" scoped>
   .tab-con-a {
     display: flex;
-    height: 325px;
+    height: 275px;
 
     .left {
       .block-btn-con {
-        height: 65px;
+        height: 55px;
         width: 210px;
 
         >* {
@@ -180,13 +185,13 @@
     }
 
     .right {
-      padding-top: 25px;
+      position: relative;
+      // padding-top: 25px;
       padding-left: 30px;
       padding-right: 10px;
       width: calc(100% - 210px);
 
       .list {
-        position: relative;
         display: flex;
         flex-direction: column;
         height: 85%;

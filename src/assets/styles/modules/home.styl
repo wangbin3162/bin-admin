@@ -30,37 +30,82 @@
     }
   }
   .center-banner {
+    display: flex;
+    justify-content: space-between;
     width: 1300px;
     margin: 0 auto;
+
     .card {
-      padding: 24px 24px 40px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 400px;
+      width: 415px;
       background: #fff;
+      cursor: pointer;
+      transition: all 0.4s;
+
       .inner {
         display: flex;
         flex-direction: column;
         align-items: center;
+
         h2 {
           font-weight: normal;
-          font-size: 18px;
+          font-size: 17px;
           color: rgba(0, 0, 0, .85);
         }
-        p {
-          color: rgba(0, 0, 0, .45);
-          margin: .7em 0;
-        }
-        .check {
-          display: inline-block;
-          margin-top: 1.5em;
-          background: #1089ff;
-          color: #fff;
-          padding: 6px 15px;
-          border-radius: 15px;
-          .iconfont {
-            font-size: 18px;
-            vertical-align: -1px;
+        // .check {
+        //   display: inline-block;
+        //   margin-top: 1.5em;
+        //   background: #1089ff;
+        //   color: #fff;
+        //   padding: 6px 15px;
+        //   border-radius: 15px;
+        //   .iconfont {
+        //     font-size: 18px;
+        //     vertical-align: -1px;
+        //   }
+        // }
+      }
+
+      &:hover {
+        box-shadow: 0 10px 24px 0 rgba(0,0,0,0.12);
+      }
+    }
+    
+    .card-cen {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 400px;
+      width: 415px;
+
+      .card-item {
+        display: flex;
+        justify-content: center;
+        height: 190px;
+        width: 100%;
+        background: #fff;
+        cursor: pointer;
+        transition: all 0.4s;
+
+        .inner {
+          display: flex;
+          justify-content: space-around;
+          align-items: center;
+
+          h2 {
+            font-weight: normal;
+            font-size: 17px;
+            color: rgba(0, 0, 0, .85);
           }
         }
-      }
+
+        &:hover {
+          box-shadow: 0 10px 24px 0 rgba(0,0,0,0.12);
+        }
+      }  
     }
   }
   .page-wrap {
