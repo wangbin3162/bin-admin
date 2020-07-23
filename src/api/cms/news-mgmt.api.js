@@ -69,7 +69,15 @@ export async function getSectionRoots() {
       const res = await request({
         url: 'api/cms/column/roots',
         method: 'get',
-        params: { sort: 'colSort,asc' }
+        params: {
+          sort: [
+            'colSort,asc',
+            'createDate,desc'
+          ]
+        },
+        paramsSerializer (params) {
+          return Qs.stringify(params, { arrayFormat: 'repeat' })
+        }
       })
       if (res.data.successful) {
        resolve(res.data.data)
@@ -96,7 +104,13 @@ export async function getSectionChildren(parentColId) {
         method: 'get',
         params: {
           parentColId,
-          sort: 'colSort,asc'
+          sort: [
+            'colSort,desc',
+            'createDate,desc'
+          ]
+        },
+        paramsSerializer (params) {
+          return Qs.stringify(params, { arrayFormat: 'repeat' })
         }
       })
       if (res.data.successful) {
