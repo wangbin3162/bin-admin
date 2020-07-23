@@ -8,7 +8,7 @@
 </template>
 
 <script>
-  import { buildOptions, WIDTH_MAP } from './uitls'
+  import { buildOptions, WIDTH_MAP } from './utils/util'
   import 'echarts/lib/component/visualMap'
   import 'echarts/lib/component/geo'
   import china from 'echarts/map/json/china.json'

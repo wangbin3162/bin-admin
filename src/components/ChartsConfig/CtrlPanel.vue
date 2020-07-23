@@ -78,7 +78,7 @@
 <script>
   import Draggable from 'vuedraggable'
   import { deepCopy, isEmpty } from '../../common/utils/assist'
-  import { basicComponents } from './uitls'
+  import { basicComponents } from './utils/util'
   import ChartsWrap from './ChartsWrap'
   import BAceEditor from '../AceEditor'
   import Config from './Config'

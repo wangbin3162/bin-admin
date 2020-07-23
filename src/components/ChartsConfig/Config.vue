@@ -500,7 +500,7 @@
   import GuiInline from './gui/gui-inline'
   import VSlider from '../VSlider/VSlider'
   import BAceEditor from '../AceEditor'
-  import { COLOR_LIST, COLOR_LIST_GRAY, WIDTH_MAP } from './uitls'
+  import { COLOR_LIST, COLOR_LIST_GRAY, WIDTH_MAP } from './utils/util'
 
   export default {
     name: 'Config',

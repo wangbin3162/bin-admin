@@ -2,7 +2,7 @@
  * 图表类型中文名映射
  */
 import { formatSeries } from 'bin-charts/src/utils/util'
-import { deepCopy } from '../../common/utils/assist'
+import { deepCopy } from '../../../common/utils/assist'
 import { oneOf } from 'bin-ui/src/utils/util'
 import { geoCoordMap } from './geoCoordMap'
 
