@@ -1,5 +1,6 @@
 import index from '../pages/index.vue'
 import urp from './urp'
+import content from './content'
 
 /**
  * 基础路由
@@ -37,6 +38,7 @@ export const constantRouterMap = [
     meta: { title: '股权结构图' }
   },
   ...urp,
+  ...content,
   {
     path: '/401',
     component: () => import(/* webpackChunkName: "error" */ '../pages/error/Error401.vue')
