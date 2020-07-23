@@ -14,7 +14,7 @@
     </div>
     <div class="center">
       <div class="top-fix">
-        <b-button type="text">
+        <b-button type="text" @click="handlePreview">
           <b-icon name="ios-eye"/>&nbsp;预览
         </b-button>&nbsp;&nbsp;
         <b-button type="text" @click="handleShowJson" :disabled="jsonDisable">
@@ -61,6 +61,17 @@
         <b-button type="primary" @click="saveJson">确定</b-button>
       </div>
     </b-modal>
+    <!--预览弹窗-->
+    <b-modal v-model="previewModal" title="预览" fullscreen>
+      <div class="preview-wrapper">
+        <template v-for="element in currentList">
+          <charts-preview-item v-if="element&&element.key"
+                               :key="element.key"
+                               :element="element"
+                               :wrap-style="{margin:'8px'}"/>
+        </template>
+      </div>
+    </b-modal>
   </div>
 </template>
 
@@ -71,10 +82,11 @@
   import ChartsWrap from './ChartsWrap'
   import BAceEditor from '../AceEditor'
   import Config from './Config'
+  import ChartsPreviewItem from './ChartsPreviewItem'
 
   export default {
     name: 'CtrlPanel',
-    components: { Config, BAceEditor, ChartsWrap, Draggable },
+    components: { ChartsPreviewItem, Config, BAceEditor, ChartsWrap, Draggable },
     props: {
       value: {
         type: Array,
@@ -90,7 +102,8 @@
         selectWidget: {}, // 当前选择的，
         jsonModal: false,
         jsonOptions: '',
-        chartLog: false // 是否打印图表参数
+        chartLog: false, // 是否打印图表参数
+        previewModal: false
       }
     },
     mounted() {
@@ -150,6 +163,10 @@
         } catch (e) {
         }
         this.jsonModal = false
+      },
+      // 预览弹窗
+      handlePreview() {
+        this.previewModal = true
       }
     },
     computed: {

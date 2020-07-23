@@ -10,7 +10,7 @@
       <div class="widget-view-action" @click.stop="handleWidgetDelete(index)">
         <b-icon name="ios-trash"/>
       </div>
-      <div class="widget-view-key" v-if="!previewModel">{{ element.key }}</div>
+      <div class="widget-view-key">{{ element.key }}</div>
     </template>
 
     <h2><span :style="titleStyle">{{ element.options.title }}</span></h2>
@@ -36,7 +36,6 @@
       select: Object,
       list: Array,
       index: Number,
-      previewModel: Boolean, // 预览模式
       log: Boolean // 打印配置项
     },
     data() {
@@ -63,7 +62,7 @@
           return 400
         }
         let { height } = this.element.options
-        return this.previewModel ? height : (height >= 400 ? height / 2 : 200)
+        return height >= 400 ? height / 2 : 200
       },
       // 容器的宽高样式
       widgetStyle() {
@@ -72,7 +71,7 @@
         }
         let { width } = this.element.options
         return {
-          width: this.widthMap[width],
+          width: width === '100%' ? width : `calc(${this.widthMap[width]} - 4px)`,
           height: `${this.widgetHeight}px`
         }
       },

@@ -6,14 +6,6 @@ import { deepCopy } from '../../common/utils/assist'
 import { oneOf } from 'bin-ui/src/utils/util'
 import { geoCoordMap } from './geoCoordMap'
 
-export const chartsNameMap = {
-  line: '折线图',
-  histogram: '柱状图',
-  bar: '条形图',
-  pie: '饼图',
-  radar: '雷达图'
-}
-
 const DEFAULT_COLORS = [
   '#5B8FF9', '#5AD8A6',
   '#5D7092', '#F6BD16',
@@ -50,9 +42,9 @@ export const COLOR_LIST_GRAY = [
 
 // 宽度下拉
 export const WIDTH_MAP = {
-  '1/3': 'calc(33.33% - 4px)',
-  '2/3': 'calc(66.66% - 4px)',
-  '1/2': 'calc(50% - 4px)',
+  '1/3': '33.33%',
+  '2/3': '66.66%',
+  '1/2': '50%',
   '100%': '100%'
 }
 
