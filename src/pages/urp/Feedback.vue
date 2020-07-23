@@ -76,7 +76,7 @@
                     <b-input-number :min="0" :precision="2"  v-model="amount" placeholder="涉及金额（元）"
                                     style="width: 200px;"/>&nbsp;(元)
                   </b-form-item>
-                  <b-form-item label="反馈说明"  prop="explain" :rules=" { required: true, message: '撤销原因必填',  trigger: 'blur' }">
+                  <b-form-item label="反馈说明" class="req"  prop="explain">
                     <div flex="cross:bottom">
                       <b-input v-model="explain" type="textarea" :rows="3" placeholder="输入说明描述..."
                                style="width: 70%;"/>
@@ -262,3 +262,16 @@
     }
   }
 </script>
+<style lang="stylus">
+  .req::before{
+    content: "*";
+    display: inline-block;
+    margin-right: -28px;
+    line-height: 1.5715;
+    font-family: SimSun;
+    font-size: 16px;
+    color: #ff4d4f;
+    margin-top: 5px;
+    margin-left: 20px;
+  }
+</style>
