@@ -183,3 +183,49 @@ export async function getNoticeList(query) {
     }
   })
 }
+
+/**
+ * @author haodongdong
+ * @description 获取未读通知数量
+ * @returns {Promise<number>}
+ */
+export async function getUnreadNum () {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: 'api/cms/cmsNotify/userReadModify',
+        method: 'post'
+      })
+      if (res.data.successful) {
+        resolve(res.data.data)
+      } else {
+        reject(new Error(res.data.message))
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
+ * @description 更新用户读取通知时间
+ * @returns {Promise}
+ */
+export async function updateUserReadNotice () {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: 'api/cms/cmsNotify/unread',
+        method: 'get'
+      })
+      if (res.data.successful) {
+        resolve(res.data.data)
+      } else {
+        reject(new Error(res.data.message))
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}

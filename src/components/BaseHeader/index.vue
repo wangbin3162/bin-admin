@@ -21,6 +21,9 @@
           <img src="../../assets/images/search.png" height="24" width="24" alt="icon" title="查询"/>
         </div>
 
+        <notice-tips class="ml-15 mr-15">
+        </notice-tips>
+
         <b-dropdown>
           <div class="user" flex="main:center cross:center">
             <img src="../../assets/images/icon-user.png" height="24" width="24" alt="icon"/>
@@ -44,6 +47,8 @@
 </template>
 
 <script>
+  import NoticeTips from './NoticeTips'
+
   export default {
     name: 'BaseHeader',
     props: {
@@ -53,6 +58,9 @@
       showSearch: {
         type: Boolean
       }
+    },
+    components: {
+      NoticeTips
     },
     data() {
       return {

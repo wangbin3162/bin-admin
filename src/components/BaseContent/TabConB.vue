@@ -104,6 +104,7 @@
         try {
           const res = await getContentList({
             columnId,
+            contentStatus: 'PUBLISHED',
             size: 5,
             page: 1
           })
