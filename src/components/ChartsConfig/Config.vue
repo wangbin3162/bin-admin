@@ -38,7 +38,7 @@
             </gui-field>
           </gui-group>
           <!--图表分类配置-->
-          <b-collapse simple accordion>
+          <b-collapse simple accordion v-model="activeConfig">
             <b-collapse-panel title="通用配置" name="grid">
               <template v-if="showGrid">
                 <gui-field label="上下边距">
@@ -233,6 +233,113 @@
                 </gui-inline>
               </gui-field>
             </b-collapse-panel>
+            <!--地图独有-->
+            <template v-if="isMap">
+              <b-collapse-panel title="视觉映射" name="map">
+                <gui-field label="是否显示">
+                  <b-switch v-model="data.options.visualMap.show" size="small" @on-change="emitValue"></b-switch>
+                </gui-field>
+                <gui-field label="样式">
+                  <gui-inline label="类型">
+                    <b-select v-model="data.options.visualMap.type" size="small"
+                              @on-change="visualMapChange" :value="data.options.visualMap.type">
+                      <b-option label="分段型" value="piecewise"></b-option>
+                      <b-option label="连续型" value="continuous"></b-option>
+                    </b-select>
+                  </gui-inline>
+                  <template v-if="data.options.visualMap.type==='piecewise'">
+                    <gui-inline label="字号">
+                      <b-input-number v-model="data.options.visualMap.textStyle.fontSize" size="small"
+                                      :min="12" :max="20" @on-change="emitValue"></b-input-number>
+                    </gui-inline>
+                    <gui-inline label="颜色">
+                      <b-color-picker v-model="data.options.visualMap.textStyle.color"
+                                      :colors="colorsGary" size="small" @on-change="emitValue"></b-color-picker>
+                    </gui-inline>
+                  </template>
+                  <template v-else>
+                    <gui-inline label="宽度">
+                      <b-input-number v-model="data.options.visualMap.itemWidth" size="small"
+                                      :min="10" :max="20" @on-change="emitValue"></b-input-number>
+                    </gui-inline>
+                    <gui-inline label="高度">
+                      <b-input-number v-model="data.options.visualMap.itemHeight" size="small"
+                                      :min="10" :max="140" @on-change="emitValue"></b-input-number>
+                    </gui-inline>
+                  </template>
+                </gui-field>
+                <gui-field label="极值">
+                  <gui-inline label="最小值">
+                    <b-input-number v-model="data.options.visualMap.min" size="small" :min="0"
+                                    @on-change="emitValue"></b-input-number>
+                  </gui-inline>
+                  <gui-inline label="最大值">
+                    <b-input-number v-model="data.options.visualMap.max" size="small" :min="0"
+                                    @on-change="emitValue"></b-input-number>
+                  </gui-inline>
+                </gui-field>
+                <gui-field label="图元大小">
+                  <gui-inline label="最小值">
+                    <b-input-number v-model="data.options.visualMap.inRange.symbolSize[0]" size="small" :min="0"
+                                    @on-change="emitValue"></b-input-number>
+                  </gui-inline>
+                  <gui-inline label="最大值">
+                    <b-input-number v-model="data.options.visualMap.inRange.symbolSize[1]" size="small" :min="0"
+                                    @on-change="emitValue"></b-input-number>
+                  </gui-inline>
+                </gui-field>
+                <gui-field label="图元颜色">
+                  <div v-for="(c,index) of data.options.visualMap.inRange.color" :key="index+c"
+                       style="display: inline-block;margin-right: 4px;">
+                    <b-color-picker v-model="data.options.visualMap.inRange.color[index]"
+                                    size="small" :colors="colors" @on-change="emitValue"></b-color-picker>
+                  </div>
+                </gui-field>
+              </b-collapse-panel>
+              <b-collapse-panel title="地理坐标系" name="geo">
+                <gui-field label="视角缩放">
+                  <v-slider v-model="data.options.geo.zoom" :min="1" :max="2" :step="0.1"
+                            @on-change="emitValue">
+                  </v-slider>
+                </gui-field>
+                <gui-wrap label="文本" v-model="data.options.geo.label.normal.show" @on-change="emitValue">
+                  <gui-field label="文本">
+                    <gui-inline label="字号">
+                      <b-input-number v-model="data.options.geo.label.normal.fontSize" size="small"
+                                      :min="12" :max="20" @on-change="emitValue"></b-input-number>
+                    </gui-inline>
+                    <gui-inline label="颜色">
+                      <b-color-picker v-model="data.options.geo.label.normal.color"
+                                      :colors="colorsGary" size="small"
+                                      @on-change="emitValue"></b-color-picker>
+                    </gui-inline>
+                    <gui-inline label="高亮颜色">
+                      <b-color-picker v-model="data.options.geo.label.emphasis.color"
+                                      :colors="colorsGary" size="small"
+                                      @on-change="emitValue"></b-color-picker>
+                    </gui-inline>
+                  </gui-field>
+                </gui-wrap>
+                <gui-field label="多边形">
+                  <gui-inline label="区域颜色" style="width:auto;">
+                    <b-color-picker v-model="data.options.geo.itemStyle.normal.areaColor" size="small"
+                                    alpha :colors="colors" @on-change="emitValue"></b-color-picker>
+                  </gui-inline>
+                  <gui-inline label="边框颜色" style="width:auto;">
+                    <b-color-picker v-model="data.options.geo.itemStyle.normal.borderColor" size="small"
+                                    alpha :colors="colors" @on-change="emitValue"></b-color-picker>
+                  </gui-inline>
+                  <gui-inline label="高亮区域" style="width:auto;">
+                    <b-color-picker v-model="data.options.geo.itemStyle.emphasis.areaColor" size="small"
+                                    alpha :colors="colors" @on-change="emitValue"></b-color-picker>
+                  </gui-inline>
+                  <gui-inline label="高亮边框" style="width:auto;">
+                    <b-color-picker v-model="data.options.geo.itemStyle.emphasis.borderColor" size="small"
+                                    alpha :colors="colors" @on-change="emitValue"></b-color-picker>
+                  </gui-inline>
+                </gui-field>
+              </b-collapse-panel>
+            </template>
             <!--数据系列-->
             <b-collapse-panel title="数据系列" name="series" v-if="data.options.series">
               <gui-wrap label="指标" v-model="data.options.series.label.show" @on-change="emitValue">
@@ -297,6 +404,40 @@
                     <b-input v-model="data.options.series.radius[1]" size="small"
                              placeholder="像素或百分比%"
                              @on-change="emitValue"></b-input>
+                  </gui-inline>
+                </gui-field>
+              </template>
+              <!--地图独有-->
+              <template v-if="isMap">
+                <gui-field label="类型">
+                  <b-select v-model="data.options.series.type" size="small"
+                            @change="emitValue" :value="data.options.series.type">
+                    <b-option label="散点/气泡" value="scatter"></b-option>
+                    <b-option label="动画气泡" value="effectScatter"></b-option>
+                  </b-select>
+                </gui-field>
+                <gui-field label="涟漪动画" v-if="data.options.series.type==='effectScatter'">
+                  <gui-inline label="最大缩放比">
+                    <b-input-number v-model="data.options.series.rippleEffect.scale" size="small"
+                                    :step="0.5" @on-change="emitValue"></b-input-number>
+                  </gui-inline>
+                  <gui-inline label="波纹方式">
+                    <b-select v-model="data.options.series.rippleEffect.brushType" size="small"
+                              @change="emitValue" :value="data.options.series.rippleEffect.brushType">
+                      <b-option label="stroke" value="stroke"></b-option>
+                      <b-option label="fill" value="fill"></b-option>
+                    </b-select>
+                  </gui-inline>
+                </gui-field>
+                <gui-field label="气泡悬停">
+                  <gui-inline label="边框宽度">
+                    <b-input-number v-model="data.options.series.itemStyle.emphasis.borderWidth" size="small"
+                                    :min="0" :max="2" @on-change="emitValue"></b-input-number>
+                  </gui-inline>
+                  <gui-inline label="边框颜色" style="width:auto;">
+                    <b-color-picker v-model="data.options.series.itemStyle.emphasis.borderColor"
+                                    size="small" :colors="colors"
+                                    @on-change="emitValue"></b-color-picker>
                   </gui-inline>
                 </gui-field>
               </template>
@@ -394,6 +535,9 @@
       isRadar() {
         return this.data.type === 'radar'
       },
+      isMap() {
+        return this.data.type === 'map'
+      },
       showXAxis() {
         let options = this.data.options
         return options.xAxis && (this.isLine || this.isHistogram || this.isBar)
@@ -410,6 +554,7 @@
           { key: 'tab2', title: '数据配置' }
         ],
         activeTab: 'tab1',
+        activeConfig: '',
         widthMap: WIDTH_MAP,
         colors: COLOR_LIST,
         colorsGary: COLOR_LIST_GRAY
@@ -418,6 +563,7 @@
     watch: {
       'data.key'() {
         this.activeTab = 'tab1'
+        this.activeConfig = ''
       }
     },
     methods: {
@@ -439,6 +585,17 @@
           this.data.dataSource = JSON.parse(val)
         } catch (e) {
         }
+      },
+      // 视觉影射类型改变
+      visualMapChange(val) {
+        if (val === 'piecewise') {
+          this.data.options.visualMap.itemWidth = 10
+          this.data.options.visualMap.itemHeight = 10
+        } else {
+          this.data.options.visualMap.itemWidth = 20
+          this.data.options.visualMap.itemHeight = 100
+        }
+        this.emitValue()
       },
       emitValue() {
 

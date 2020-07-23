@@ -37,7 +37,7 @@
                            :select.sync="selectWidget"
                            :index="index"
                            :list="currentList"
-                           log>
+                           :log="chartLog">
               </charts-wrap>
             </template>
           </draggable>
@@ -89,7 +89,8 @@
         currentList: [],
         selectWidget: {}, // 当前选择的，
         jsonModal: false,
-        jsonOptions: ''
+        jsonOptions: '',
+        chartLog: false // 是否打印图表参数
       }
     },
     mounted() {

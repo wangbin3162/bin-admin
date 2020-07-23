@@ -4,6 +4,7 @@
 import { formatSeries } from 'bin-charts/src/utils/util'
 import { deepCopy } from '../../common/utils/assist'
 import { oneOf } from 'bin-ui/src/utils/util'
+import { geoCoordMap } from './geoCoordMap'
 
 export const chartsNameMap = {
   line: '折线图',
@@ -590,6 +591,101 @@ export const basicComponents = [
         ]
       }
     ]
+  },
+  {
+    name: '地图',
+    type: 'map',
+    icon: 'map',
+    options: {
+      title: '地图',
+      titleStyle: {
+        color: '#686868',
+        fontSize: 18
+      },
+      width: '1/2',
+      height: 600,
+      tooltip: { show: false, trigger: 'item' },
+      visualMap: {
+        show: false,
+        type: 'piecewise',
+        min: 0,
+        max: 200,
+        itemWidth: 10,
+        itemHeight: 10,
+        inRange: {
+          color: ['#50a3ba', '#eac736', '#d94e5d'],
+          symbolSize: [10, 16]
+        },
+        textStyle: {
+          color: '#686868',
+          fontSize: 12
+        }
+      },
+      // 地图独有的
+      geo: {
+        map: 'china',
+        zoom: 1.2,
+        label: {
+          normal: {
+            show: false,
+            color: '#fff',
+            fontSize: 12
+          },
+          emphasis: {
+            color: '#1f9bff'
+          }
+        },
+        itemStyle: {
+          normal: {
+            areaColor: '#282c3c',
+            borderColor: '#1f9bff'
+          },
+          emphasis: {
+            areaColor: '#1d2131',
+            borderColor: '#1f9bff'
+          }
+        }
+      },
+      series: {
+        type: 'scatter', // scatter,effectScatter
+        coordinateSystem: 'geo',
+        symbolSize: 10,
+        aspectScale: 0.75,
+        hoverAnimation: true,
+        showEffectOn: 'render',
+        rippleEffect: {
+          brushType: 'stroke',
+          scale: 3
+        },
+        label: {
+          show: false,
+          color: '',
+          fontSize: 12,
+          position: 'inside' // 可选inside
+        },
+        itemStyle: {
+          emphasis: {
+            borderColor: '#fff',
+            borderWidth: 1
+          }
+        },
+        zlevel: 1
+      }
+    },
+    dataSourceType: 'static',
+    sourceMap: { xField: 'x', yField: 'y', seriesField: 's' },
+    dataSource: [
+      { x: '吉林', y: 178 },
+      { x: '北京', y: 23 },
+      { x: '上海', y: 122 },
+      { x: '徐州', y: 98 },
+      { x: '南京', y: 188 },
+      { x: '兰州', y: 31 },
+      { x: '乌鲁木齐', y: 122 },
+      { x: '马鞍山', y: 32 },
+      { x: '张家界', y: 55 },
+      { x: '三门峡', y: 100 }
+    ]
   }
 ]
 
@@ -626,5 +722,26 @@ export function buildOptions(chartData) {
     series.data = seriesData
     opts.series = [series]
   }
+  // 地图特殊处理
+  if (type === 'map') {
+    let series = opts.series
+    series.data = convertData(data, sourceMap.xField, sourceMap.yField)
+    opts.series = [series]
+    delete opts['dataset']
+  }
   return opts
+}
+
+function convertData(data, xField, yField) {
+  let res = []
+  for (let i = 0; i < data.length; i++) {
+    let geoCoord = geoCoordMap[data[i][xField]]
+    if (geoCoord) {
+      res.push({
+        name: data[i][xField],
+        value: geoCoord.concat(data[i][yField])
+      })
+    }
+  }
+  return res
 }

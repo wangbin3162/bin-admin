@@ -35,7 +35,7 @@
     },
     computed: {
       rangeStyle() {
-        let percent = (this.range / (this.max - this.min)) * 100
+        let percent = ((this.range - this.min) / (this.max - this.min)) * 100
         return `background: linear-gradient(to right, rgb(0, 251, 255), rgb(0, 176, 255) ${percent}%, rgb(38, 42, 53) ${percent}%, rgb(38, 42, 53));`
       }
     },
