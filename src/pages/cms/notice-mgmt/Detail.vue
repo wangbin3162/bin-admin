@@ -28,6 +28,7 @@
         <b-collapse-wrap title="通知内容" collapse>
           <div v-html="detail.content">
           </div>
+          <h4>附件列表：</h4>
           <file-upload :initFileList="detail.fileList" showMode>
           </file-upload>
         </b-collapse-wrap>
@@ -42,13 +43,14 @@
 
 <script>
   import { mapState } from 'vuex'
+  import { getNoticeDetail } from '../../../api/cms/notice-mgmt.api'
   import FileUpload from './edit/FileUpload'
 
   export default {
     name: 'NoticeMgmtDetail',
     props: {
-      detail: {
-        sytpe: Object,
+      id: {
+        type: String,
         required: true
       }
     },
@@ -57,7 +59,7 @@
     },
     data () {
       return {
-
+        detail: {}
       }
     },
     computed: {
@@ -68,10 +70,23 @@
       })
     },
     created () {
-
+      this.getNoticeDetail(this.id)
     },
     methods: {
-
+      /**
+       * @author haodongdong
+       * @description 根据通知id获取通知详情
+       * @param {string} id 通知id
+       */
+      async getNoticeDetail (id) {
+        try {
+          const res = await getNoticeDetail(id)
+          this.detail = res
+        } catch (error) {
+          console.error(error)
+          this.$notice.danger({ title: '加载失败', desc: error })
+        }
+      }
     }
   }
 </script>

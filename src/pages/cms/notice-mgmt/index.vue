@@ -13,7 +13,7 @@
     </page-header-wrap>
 
     <detail v-if="isDetail"
-      :detail="curRow"
+      :id="curRow.id"
       @close="closeHandler">
     </detail>
 

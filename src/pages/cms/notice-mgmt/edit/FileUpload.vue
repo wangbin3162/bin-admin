@@ -61,6 +61,9 @@
       }
     },
     watch: {
+      initFileList (newVal) {
+        this.fileList = newVal
+      },
       fileList (newVal) {
         const files = []
         newVal.forEach(item => {

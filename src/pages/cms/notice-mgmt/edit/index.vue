@@ -22,7 +22,7 @@
               </b-form-item>
 
               <b-form-item label="过期时间" prop="validDate">
-                <b-date-picker type="datetime" placeholder="选择时间" style="padding-right: 20px;"
+                <b-date-picker type="date" placeholder="选择时间" style="padding-right: 20px;"
                  :value="form.validDate"
                  format="yyyy-MM-dd"
                  @on-change="dateStr => form.validDate = dateStr">
@@ -64,7 +64,7 @@
 
 <script>
   import { mapState } from 'vuex'
-  import { createNotice, updateNotice } from '../../../../api/cms/notice-mgmt.api'
+  import { createNotice, updateNotice, getNoticeDetail } from '../../../../api/cms/notice-mgmt.api'
   import RichText from './RichText'
   import FileUpload from './FileUpload'
 
@@ -140,7 +140,7 @@
        */
       init () {
         if (this.isEdit) {
-          this.form = this.editData
+          this.getNoticeDetail(this.editData.id)
         }
       },
 
@@ -177,6 +177,21 @@
           this.$notice.danger({ title: '操作失败', desc: error })
         }
         this.btnLoading = false
+      },
+
+      /**
+       * @author haodongdong
+       * @description 根据通知id获取通知详情
+       * @param {string} id 通知id
+       */
+      async getNoticeDetail (id) {
+        try {
+          const res = await getNoticeDetail(id)
+          this.form = res
+        } catch (error) {
+          console.error(error)
+          this.$notice.danger({ title: '加载失败', desc: error })
+        }
       }
     }
   }
