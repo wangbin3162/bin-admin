@@ -66,8 +66,8 @@
       </div>
     </b-modal>
     <!--预览弹窗-->
-    <b-modal v-model="previewModal" title="预览" fullscreen>
-      <div class="preview-wrapper">
+    <b-modal v-model="previewModal" title="预览" fullscreen footer-hide width="100%">
+      <div class="preview-wrapper" v-if="previewModal">
         <template v-for="element in currentList">
           <charts-preview-item v-if="element&&element.key"
                                :key="element.key"
