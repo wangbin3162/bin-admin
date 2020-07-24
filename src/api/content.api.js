@@ -84,6 +84,38 @@ export async function getTopColumn() {
 
 /**
  * @author haodongdong
+ * @description 查询栏目所有根节点
+ * @returns {Promise<Section>}
+ */
+export async function getSectionRoots() {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: 'api/cms/column/roots',
+        method: 'get',
+        params: {
+          sort: [
+            'colSort,asc',
+            'createDate,desc'
+          ]
+        },
+        paramsSerializer (params) {
+          return Qs.stringify(params, { arrayFormat: 'repeat' })
+        }
+      })
+      if (res.data.successful) {
+       resolve(res.data.data)
+      } else {
+        reject(res.data.message)
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
  * @description 获取子栏目
  * @param {string} parentColId
  * @returns {Promise<Section>}
@@ -134,6 +166,46 @@ export async function getContentList(query) {
           contentStatus: query.contentStatus,
           publishDateStart: query.publishDateStart,
           publishDateEnd: query.publishDateEnd,
+          size: query.size,
+          page: query.page - 1,
+          sort: [
+            'isTop,desc',
+            'orderNo,desc',
+            'publishDate,desc'
+          ]
+        },
+        paramsSerializer (params) {
+          return Qs.stringify(params, { arrayFormat: 'repeat' })
+        }
+      })
+      resolve(res.data)
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
+ * @description 根据关键字查询文章内容
+ * @returns {Promise<Content>}
+ * @param {Object} query 查询参数
+ * @param {string} query.colId 所属栏目id，不传则查询所有栏目
+ * @param {string} query.keyword 关键字
+ * @param {string} query.contentStatus 内容状态
+ * @param {number} query.size 分页尺寸
+ * @param {number} query.page 页数
+ */
+export async function getContentListByKeyword(query) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: 'api/cms/content/keyword',
+        method: 'get',
+        params: {
+          colId: query.columnId,
+          keyword: query.keyword,
+          contentStatus: query.contentStatus,
           size: query.size,
           page: query.page - 1,
           sort: [

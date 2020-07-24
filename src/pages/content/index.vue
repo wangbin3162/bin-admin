@@ -10,15 +10,22 @@
         </div>
       </div>
 
+      <!-- <b-affix :offset-top="0">
+      </b-affix> -->
       <div class="sec-nav-con">
         <div class="sec-nav">
           <div class="tabs">
-            <b-tabs v-model="activeTab" :data="tabs"></b-tabs>
+            <b-tabs ref="tabs" v-model="activeTab" :data="tabs"
+              @on-change="handleTabsChange">
+            </b-tabs>
           </div>
 
           <div class="input">
-            <b-input placeholder="请输入想查询的文字">
-               <b-icon name="ios-search" slot="suffix" ></b-icon>
+            <b-input v-model="query.keyword" placeholder="请输入想查询的文字"
+              @on-enter="handleSearch">
+              <b-icon name="ios-search" slot="suffix" style="cursor: pointer"
+                @click.native="handleSearch">
+              </b-icon>
             </b-input>
           </div>
         </div>
@@ -26,34 +33,53 @@
 
       <div class="list-con">
         <transition name="move-left">
+          <!-- <b-affix :offset-top="95">
+          </b-affix> -->
           <div class="left" v-show="visible">
             <div class="col-title">
               <b-icon size="24" name="ios-photos" color="#4ca6fb"></b-icon>
               <h3>栏目信息</h3>
             </div>
 
-            <div class="nav-btn" :class="{ actived: n === 1}" v-for="n in 5" :key="n">
-              法律法规
+            <div v-for="item in subSecList" :key="item.id"
+              @click="handleSubSecClick(item)"
+              class="nav-btn" :class="{ actived: item.id === curSubTab.id }">
+              {{ item.colName }}
             </div>
           </div>
         </transition>
 
         <transition name="move-right">
           <div class="right" v-show="visible">
-            <ul>
-              <li v-for="n in 7" :key="n">
-                <p>关于支持民营企业参与交通基础设施建设发展的实施意见（发改基础[2020] 1008号）</p>
-                <div class="tips">
-                  <span>2020-07-13</span>
-                  <span>浏览1215</span>
-                </div>
-              </li>
-            </ul>
+            <b-loading fix showText="加载中...." v-if="loading">
+            </b-loading>
 
-            <div class="page">
-              <b-page :total="0" :current="1" @on-change="handlePageChange">
-              </b-page>
-            </div>
+            <template v-if="contentList.length > 0">
+              <ul>
+                <li v-for="item in contentList" :key="item.id">
+                  <div class="con-title">
+                    <img :src="`/api/cms/attach/download?attachmentId=${item.thumbnailPath}`" alt=""
+                      v-show="item.thumbnailPath !== null">
+                    <p>{{ item.title }}</p>
+                  </div>
+
+                  <div class="tips">
+                    <span>{{ $util.parseTime(new Date(item.publishDate), '{y}-{m}-{d}')}}</span>
+                    <span>浏览1215</span>
+                  </div>
+                </li>
+              </ul>
+
+              <div class="page">
+                <b-page :total="total"
+                  :current.sync="query.page"
+                  :page-size="query.size"
+                  @on-change="handlePageChange">
+                </b-page>
+              </div>
+            </template>
+
+            <b-empty v-else style="margin-top: 20%;">暂时没用内容哦</b-empty>
           </div>
         </transition>
       </div>
@@ -62,37 +88,187 @@
 </template>
 
 <script>
+  import {
+    getSectionRoots, getSectionChildren,
+    getContentList, getContentListByKeyword
+  } from '../../api/content.api'
+
   export default {
     name: 'Content',
     data () {
       return {
         visible: false,
-        tabs: [
-          { key: 'tab1', title: '用户管理' },
-          { key: 'tab2', title: '组织管理' },
-          { key: 'tab3', title: '系统管理' },
-          { key: 'tab4', title: '目录模块配置' },
-          { key: 'tab11', title: '用户管理' },
-          { key: 'tab22', title: '组织管理' },
-          { key: 'tab33', title: '系统管理' },
-          { key: 'tab44', title: '目录模块配置' }
-        ],
-        activeTab: 'tab1'
+        loading: false,
+        activeTab: '',
+        curRootTab: {}, // 当前选中的根栏目tab
+        curSubTab: {}, // 当前选中的子栏目tab
+        tabs: [],
+        subSecList: [],
+        total: 0,
+        query: { // 内容的查询参数
+          columnId: '',
+          contentStatus: 'PUBLISHED',
+          keyword: '',
+          size: 10,
+          page: 1
+        },
+        contentList: []
       }
     },
     created () {
-
-    },
-    mounted () {
-      this.visible = true
+      this.init()
     },
     methods: {
+      /**
+       * @author haodongdong
+       * @description 初始化处理
+       */
+      async init () {
+        const query = this.$route.query
+        await this.getSectionRoots(query.parentCol)
+        await this.getSectionChildren(this.curRootTab.id, query.id)
+        this.visible = true
+        if (this.subSecList.length > 0) {
+          this.query.columnId = this.curSubTab.id
+          await this.getContentList(this.query)
+        }
+      },
+
+      /**
+       * @author haodongdong
+       * @description 获取所有根节点栏目渲染tabs，并根据router参数处理默认选中
+       * @param {string} [activedSecId] 当前使之活动栏目
+       */
+      async getSectionRoots (activedSecId = undefined) {
+        try {
+          const res = await getSectionRoots()
+          res.forEach(item => {
+            item.key = item.id
+            item.title = item.colName
+            this.tabs.push(item)
+          })
+          this.$nextTick(() => {
+            let index = this.tabs.findIndex(item => item.id === activedSecId)
+            index = index === -1 ? 0 : index
+            this.curRootTab = this.tabs[index]
+            this.$refs.tabs.handleSelectTab(this.tabs[index])
+          })
+        } catch (error) {
+          console.error(error)
+        }
+      },
+
+      /**
+       * @author haodongdong
+       * @description 获取子栏目
+       * @param {string} parentColId 父栏目id
+       * @param {string} [activedSecId] 当前使之活动栏目
+       */
+      async getSectionChildren (parentColId, activedSecId = undefined) {
+        try {
+          const res = await getSectionChildren(parentColId)
+          this.subSecList = res
+          // 有子栏目则设置左侧默认选中
+          if (this.subSecList.length > 0) {
+            let index = this.subSecList.findIndex(item => item.id === activedSecId)
+            index = index === -1 ? 0 : index
+            this.curSubTab = this.subSecList[index]
+          }
+        } catch (error) {
+          console.error(error)
+        }
+      },
+
+      /**
+       * @author haodongdong
+       * @description 根据栏目获取文章内容
+       * @param {Object} query 查询参数
+       * @param {string} query.columnId 所属栏目id
+       * @param {string} query.contentStatus 内容状态
+       * @param {number} query.size 分页尺寸
+       * @param {number} query.page 页数
+       */
+      async getContentList (query) {
+        this.loading = true
+        try {
+          const res = await getContentList(query)
+          this.contentList = res.rows
+          this.total = res.total
+        } catch (error) {
+          console.error(error)
+        }
+        this.loading = false
+      },
+
+      /**
+       * @author haodongdong
+       * @description 根据关键字查询内容列表
+       * @param {Object} query 查询参数
+       * @param {string} query.columnId 所属栏目id
+       * @param {string} query.keyword 关键字
+       * @param {string} query.contentStatus 内容状态
+       * @param {number} query.size 分页尺寸
+       * @param {number} query.page 页数
+       */
+      async getContentListByKeyword (query) {
+        this.loading = true
+        try {
+          const res = await getContentListByKeyword(query)
+          this.contentList = res.rows
+          this.total = res.total
+        } catch (error) {
+          console.error(error)
+        }
+        this.loading = false
+      },
+
       handleHome () {
 
       },
 
-      handlePageChange () {
+      /**
+       * @author haodongdong
+       * @description 查询函数
+       */
+      handleSearch () {
+        this.query.page = 1
+        this.getContentListByKeyword(this.query)
+      },
 
+      /**
+       * @author haodongdong
+       * @description b-tabs组件当前tab改变回调
+       * @param {Object} tab 当前tab对象
+       */
+      async handleTabsChange (tab) {
+        await this.getSectionChildren(tab.id)
+        this.contentList = []
+        if (this.subSecList.length > 0) {
+          this.query.page = 1
+          this.query.columnId = this.curSubTab.id
+          this.getContentList(this.query)
+        }
+      },
+
+      /**
+       * @author haodongdong
+       * @description 左侧子栏目点击事件
+       * @param {Object} tab 子栏目对象
+       */
+      handleSubSecClick (tab) {
+        this.curSubTab = tab
+        this.query.page = 1
+        this.query.columnId = tab.id
+        this.getContentList(this.query)
+      },
+
+      /**
+       * @author haodongdong
+       * @description 分页组件页面切换回调
+       */
+      handlePageChange (page) {
+        this.query.page = page
+        this.getContentList(this.query)
       }
     }
   }
@@ -155,6 +331,7 @@
 
     .sec-nav-con {
       background: #ffffff;
+      box-shadow: 0 7px 13px 0 rgba(0,0,0,0.12);
 
       .sec-nav {
         display: flex;
@@ -210,7 +387,7 @@
 
           &:hover {
             color: #ffffff;
-            background: rgba(13, 133, 255, 0.5);
+            background: rgba(13, 133, 255, 0.2);
           }
 
           &.actived {
@@ -221,6 +398,7 @@
       }
 
       .right {
+        position: relative;
         min-height: 500px;
         width: 975px;
         padding: 20px 25px;
@@ -231,18 +409,32 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
-            height: 90px;
-            // margin-bottom: 10px;
+            margin-bottom: 10px;
+            min-height: 90px;
             border-bottom: 1px solid #d9d9d9;
 
-            p {
-              font-size: 17px;
+            .con-title {
+              display: flex;
+              align-items: center;
               margin-bottom: 10px;
               cursor: pointer;
 
+              img {
+                max-width: 100px;
+                margin-right: 20px;
+              }
+
+              p {
+                font-size: 17px;
+              }
+
               &:hover {
                 color: #3d9dff;
-                transition: color 0.2s;
+                img {
+                  box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.3);
+                  transition: all 0.3s;
+                }
+                transition: color 0.3s;
               }
             }
 

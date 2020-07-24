@@ -1,16 +1,16 @@
 <template>
   <div class="tab-con-a">
       <div class="left">
-        <div v-for="(section, index) in sectionList" :key="section.id"
-          @click="handleBlockBtnClick(section.id, index)"
+        <div v-for="item in sectionList" :key="item.id"
+          @click="handleBlockBtnClick(item)"
           flex="cross:center" class="block-btn-con"
-          :class="{ actived: clickedIndex === index}">
+          :class="{ actived: curActivedBtn.id === item.id }">
 
           <div class="block-btn">
             <div style="margin: 0 17%;">
               <b-icon name="ios-megaphone" size="19"></b-icon>
             </div>
-            {{ section.colName }}
+            {{ item.colName }}
           </div>
           <div class="arrow"></div>
 
@@ -29,13 +29,13 @@
                 {{ content.title }}
               </p>
               <span>
-                2020-07-22
+                {{ $util.parseTime(new Date(content.publishDate), '{y}-{m}-{d}')}}
               </span>
             </li>
           </ul>
 
           <div flex="main:right">
-            <div type="text" class="more-btn">
+            <div type="text" class="more-btn" @click="HandleMoreBtn">
               查看更多 >>
             </div>
           </div>
@@ -63,9 +63,9 @@
     data () {
       return {
         loading: false,
-        clickedIndex: 0,
         sectionList: [],
-        contentList: []
+        contentList: [],
+        curActivedBtn: {}
       }
     },
     created () {
@@ -80,6 +80,7 @@
         await this.getSectionChildren(this.parentColId)
         if (this.sectionList.length) await this.getContentList(this.sectionList[0].id)
       },
+
       /**
        * @author haodongdong
        * @description 获取子栏目
@@ -89,6 +90,7 @@
         try {
           const res = await getSectionChildren(parentColId)
           this.sectionList = res
+          this.curActivedBtn = res[0]
         } catch (error) {
           console.error(error)
         }
@@ -117,13 +119,21 @@
 
       /**
        * @author haodongdong
-       * @description 栏目点击事件回调
-       * @param {string} columnId 栏目id
-       * @param {number} index 栏目index
+       * @description 左侧栏目点击事件回调
+       * @param {Sectiob} sec 当前栏目
        */
-      handleBlockBtnClick (columnId, index) {
-        this.clickedIndex = index
-        this.getContentList(columnId)
+      handleBlockBtnClick (sec) {
+        this.curActivedBtn = sec
+        this.getContentList(sec.id)
+      },
+
+      /**
+       * @author haodongdong
+       * @description 查看更多按钮回调
+       */
+      HandleMoreBtn () {
+        console.log(this.curActivedBtn)
+        window.open(`#/content/index?parentCol=${this.curActivedBtn.parentCol}&id=${this.curActivedBtn.id}`)
       }
     }
   }

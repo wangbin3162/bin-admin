@@ -7,12 +7,12 @@
       </b-tabs>
 
       <template v-if="tabs.length > 1">
-        <tab-con-a v-show="activedTab === '政策法规'"
-          :parentColId="pIdMap.get('政策法规')">
+        <tab-con-a v-show="activedTab === tabs[0].key"
+          :parentColId="tabs[0].id">
         </tab-con-a>
 
-        <tab-con-b v-show="activedTab === '信用动态'"
-          :parentColId="pIdMap.get('信用动态')">
+        <tab-con-b v-show="activedTab === tabs[1].key"
+          :parentColId="tabs[1].id">
         </tab-con-b>
       </template>
 
@@ -42,7 +42,7 @@
           { key: '通知公告', title: '通知公告' }
         ],
          activedTab: '',
-         pIdMap: new Map()
+         pIdList: []
       }
     },
     mounted () {
@@ -59,7 +59,6 @@
           res.forEach(item => {
             item.key = item.colName
             item.title = item.colName
-            this.pIdMap.set(item.colName, item.id)
           })
           this.tabs = [...res, ...this.tabs]
           this.activedTab = this.tabs[0].key

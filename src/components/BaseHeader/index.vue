@@ -6,7 +6,7 @@
         <div class="links">
           <div class="inner">
             <span class="item"><a href="" @click.stop.prevent="home">首页</a></span>
-            <span class="item"><a href="">政策法规</a></span>
+            <span class="item"><a href="#/content/index">政策法规</a></span>
             <span class="item"><a href="">数据可视化</a></span>
             <span class="item"><a href="">联合奖惩</a></span>
             <span class="item"><a href="">挖掘分析</a></span>
