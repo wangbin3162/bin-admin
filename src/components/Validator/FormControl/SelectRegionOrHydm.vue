@@ -1,6 +1,6 @@
 <template>
   <div flex>
-    <b-input v-model="current" :placeholder="placeholder"
+    <b-input :placeholder="placeholder" :value="current"
       readonly clearable @on-clear="handleClear">
     </b-input>
     <b-button type="primary" plain @click="handleSelectBtn">选择</b-button>
@@ -47,7 +47,12 @@
     watch: {
       value: {
         handler (newVal) {
-          if (newVal) this.current = JSON.parse(newVal).typeName
+          let obj = null
+          if (newVal.includes('typeName')) {
+            obj = JSON.parse(newVal)
+            this.current = obj.typeName
+            this.$emit('input', obj.typeCode)
+          }
         },
         immediate: true
       }
@@ -70,12 +75,8 @@
        * @param {string} row.typeCode
        */
       handleSelected (row) {
-        const type = this.type === 'REGION_SELECT' ? 'region' : 'hydm'
-        this.$emit('input', JSON.stringify({
-          typeName: row.typeName,
-          typeCode: row.typeCode,
-          type
-        }))
+        this.current = row.typeName
+        this.$emit('input', row.typeCode)
       },
 
       /**
