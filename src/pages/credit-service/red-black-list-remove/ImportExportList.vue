@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-header-wrap v-show="visible && !detailDialog" show-close @on-close="close" title="导入/导出记录">
+    <page-header-wrap v-show="visible && !detailDialog" show-close @on-close="close" title="导入记录">
       <v-table-wrap>
         <!--查询条件-->
         <v-filter-bar @keyup-enter="handleFilter">
@@ -25,7 +25,7 @@
         <b-table :columns="columns" :data="list" :loading="listLoading">
           <template v-slot:jobType="{row}">
             <b-icon v-if="row.jobType==='EXPORT'" name="ios-log-out" size="22" color="#ff7072"/>
-            <b-icon v-if="row.jobType==='IMPORT'" name="ios-log-in" size="22" color="#74cf47"/>
+            <b-icon v-if="row.jobType==='IMPORT_DELETE'" name="ios-log-in" size="22" color="#74cf47"/>
             {{ jobTypeMap[row.jobType] }}
           </template>
           <template v-slot:jobStatus="{row}">
@@ -124,7 +124,7 @@
         visible: false,
         detailDialog: false,
         listQuery: {
-          jobType: 'IMPORT', // 任务类型
+          jobType: 'IMPORT_DELETE', // 任务类型
           beginTime: '', // 开始时间
           endTime: '', // 结束时间
           status: ''
@@ -140,7 +140,7 @@
         ],
         statusMap: { COMPLETED: '完成', STARTED: '正在进行中', FAILED: '失败', REPEATING: '重复性验证' },
         statusStyleMap: { COMPLETED: 'success', STARTED: 'primary', FAILED: 'danger', REPEATING: 'warning' },
-        jobTypeMap: { IMPORT: '导入', EXPORT: '导出' },
+        jobTypeMap: { IMPORT_DELETE: '导入', EXPORT: '导出' },
         detail: null, // 文件导入信息详情
         errDataColumns: [],
         errDataRows: [] // 导入错误数据信息
@@ -169,7 +169,7 @@
         this.listQuery = {
           page: 1,
           size: 10,
-          jobType: 'IMPORT',
+          jobType: 'IMPORT_DELETE',
           beginTime: '', // 开始时间
           endTime: '', // 结束时间
           status: ''
