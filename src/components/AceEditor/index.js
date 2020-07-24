@@ -15,12 +15,37 @@ module.exports = {
   },
   props: {
     value: String,
-    lang: true,
-    theme: String,
-    height: true,
-    width: true,
+    lang: {
+      type: String,
+      default: 'json'
+    },
+    theme: {
+      type: String,
+      default: 'chrome'
+    },
+    height: {
+      type: String,
+      default: '350'
+    },
+    width: {
+      type: String,
+      default: '100%'
+    },
+    fontSize: {
+      type: Number,
+      default: 12
+    },
     options: Object,
-    readonly: Boolean
+    readonly: Boolean,
+    showNumber: {
+      type: Boolean,
+      default: true
+    },
+    wrap: {
+      type: Boolean,
+      default: false
+    },
+    snippets: Boolean
   },
   data() {
     return {
@@ -30,10 +55,30 @@ module.exports = {
   },
   methods: {
     px(n) {
-      if (/^\d*$/.test(n)) {
-        return n + 'px'
+      return /^\d*$/.test(n) ? `${n}px` : n
+    },
+    getValue() {
+      return this.editor.getValue()
+    },
+    handleBlur(event) {
+      this.$emit('on-blur', event)
+      // 触发校验
+      this.dispatch('BFormItem', 'on-form-blur', this.value)
+    },
+    dispatch(componentName, eventName, params) {
+      let parent = this.$parent || this.$root
+      let name = parent.$options.name
+
+      while (parent && (!name || name !== componentName)) {
+        parent = parent.$parent
+
+        if (parent) {
+          name = parent.$options.name
+        }
       }
-      return n
+      if (parent) {
+        parent.$emit.apply(parent, [eventName].concat(params))
+      }
     }
   },
   watch: {
@@ -44,13 +89,20 @@ module.exports = {
       }
     },
     theme(newTheme) {
+      require('brace/theme/' + newTheme)
       this.editor.setTheme('ace/theme/' + newTheme)
     },
     lang(newLang) {
-      this.editor.getSession().setMode(typeof newLang === 'string' ? ('ace/mode/' + newLang) : newLang)
+      this.editor.getSession().setMode('ace/mode/' + newLang)
     },
     options(newOption) {
       this.editor.setOptions(newOption)
+    },
+    fontSize(newSize) {
+      this.editor.setFontSize(newSize) // 设置文字大小
+    },
+    readonly(val) {
+      this.editor.setFontSize(val) // 设置只读
     },
     height() {
       this.$nextTick(function () {
@@ -69,25 +121,38 @@ module.exports = {
   },
   mounted() {
     let vm = this
-    let lang = this.lang || 'text'
-    let theme = this.theme || 'chrome'
+    let lang = this.lang
+    let theme = this.theme
 
-    require('brace/ext/emmet')
+    if (lang === 'html') {
+      require('brace/ext/emmet')
+    }
+    require('brace/ext/language_tools') // language extension
+    require('brace/mode/' + lang)
+    require('brace/theme/' + theme)
+    require('brace/snippets/' + lang)
 
     let editor = vm.editor = ace.edit(this.$el)
+    editor.getSession().setMode('ace/mode/' + lang)
+    editor.setTheme('ace/theme/' + theme)
     editor.$blockScrolling = Infinity
+    editor.setFontSize(this.fontSize) // 设置文字大小
+    editor.setReadOnly(this.readonly) // 设置只读
+    editor.getSession().setUseWrapMode(this.wrap)
+    editor.setShowPrintMargin(false)
+    editor.getSession().setTabSize(2)
+
+    editor.setOptions({
+      enableBasicAutocompletion: this.snippets,
+      enableSnippets: this.snippets,
+      enableLiveAutocompletion: this.snippets
+    })
 
     this.$emit('init', editor)
 
-    // editor.setOption("enableEmmet", true);
-    editor.getSession().setMode(typeof lang === 'string' ? ('ace/mode/' + lang) : lang)
-    editor.setTheme('ace/theme/' + theme)
-    // 设置只读
-    if (this.readonly) {
-      editor.setReadOnly(true)
-    }
     if (this.value) {
       editor.setValue(this.value, 1)
+      editor.gotoLine(0, 0, false)
     }
     this.contentBackup = this.value
 
@@ -97,6 +162,7 @@ module.exports = {
       vm.$emit('on-change', content)
       vm.contentBackup = content
     })
+    editor.on('blur', this.handleBlur)
     if (vm.options) {
       editor.setOptions(vm.options)
     }
