@@ -5,7 +5,7 @@
 
       <div class="title">
         <div class="con">
-          <p>新闻动态</p>
+          <p>政策法规</p>
           <span>关注信用/关注政策/关注事实</span>
         </div>
       </div>
@@ -60,12 +60,12 @@
                   <div class="con-title">
                     <img :src="`/api/cms/attach/download?attachmentId=${item.thumbnailPath}`" alt=""
                       v-show="item.thumbnailPath !== null">
-                    <p>{{ item.title }}</p>
+                    <p v-html="item.title"></p>
                   </div>
 
                   <div class="tips">
                     <span>{{ $util.parseTime(new Date(item.publishDate), '{y}-{m}-{d}')}}</span>
-                    <span>浏览1215</span>
+                    <span>浏览: {{ item.accessCnt }}</span>
                   </div>
                 </li>
               </ul>
@@ -276,6 +276,9 @@
 
 <style lang="stylus">
   .content {
+    .bin-tabs-wrapper.default:after {
+      height: 0px;
+    }
     .bin-tabs-wrapper .nav-wrapper .tabs-active-bar {
       height: 2px;
     }
@@ -331,7 +334,7 @@
 
     .sec-nav-con {
       background: #ffffff;
-      box-shadow: 0 7px 13px 0 rgba(0,0,0,0.12);
+      box-shadow: 0 2px 12px 0 rgba(0,0,0,0.12);
 
       .sec-nav {
         display: flex;
@@ -426,6 +429,16 @@
 
               p {
                 font-size: 17px;
+
+                &:before {
+                  content: '';
+                  display: inline-block;
+                  margin-right: 10px;
+                  height: 13px;
+                  width: 2px;
+                  background: #d9d9d9;
+                  // line-height: 30px;
+                }
               }
 
               &:hover {

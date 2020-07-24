@@ -8,7 +8,7 @@
 
           <div class="block-btn">
             <div style="margin: 0 17%;">
-              <b-icon name="ios-megaphone" size="19"></b-icon>
+              <i class="iconfont" :class="[item.brief]"></i>
             </div>
             {{ item.colName }}
           </div>

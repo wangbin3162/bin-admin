@@ -6,6 +6,7 @@ import router from './router'
 import store from './store'
 import BinAdmin from './plugin'
 import './assets/styles/index.styl'
+import './icons'
 
 Vue.use(BinAdmin)
 

@@ -53,6 +53,7 @@
         this.loading = true
         try {
           const res = await getNoticeList({
+            notifyStatus: 'PUBLISHED',
             size: 5,
             page: 1
           })

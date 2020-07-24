@@ -77,7 +77,7 @@
             </div>
           </div>
 
-          <div class="card-item" @click="handleCardClick('/data')">
+          <div class="card-item">
             <div class="inner">
               <h2>数据挖掘</h2>
               <img src="../assets/images/bigdata.png" alt="bigdata">
