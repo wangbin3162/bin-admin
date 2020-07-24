@@ -20,6 +20,9 @@
         <b-button type="text" @click="handleShowJson" :disabled="jsonDisable">
           <b-icon name="ios-paper"/>&nbsp;编辑JSON
         </b-button>&nbsp;&nbsp;
+        <b-button type="text" @click="handleSaveCfg">
+          <b-icon name="ios-save"/>&nbsp;保存
+        </b-button>&nbsp;&nbsp;
       </div>
       <div class="scroll-content">
         <div class="chart-widget">
@@ -37,7 +40,8 @@
                            :select.sync="selectWidget"
                            :index="index"
                            :list="currentList"
-                           :log="chartLog">
+                           :log="chartLog"
+                           @on-delete="handleSaveCfg">
               </charts-wrap>
             </template>
           </draggable>
@@ -88,7 +92,7 @@
     name: 'CtrlPanel',
     components: { ChartsPreviewItem, Config, BAceEditor, ChartsWrap, Draggable },
     props: {
-      value: {
+      list: {
         type: Array,
         default() {
           return []
@@ -116,16 +120,18 @@
       }
     },
     watch: {
-      value: {
+      list: {
         handler(val) {
           this.currentList = deepCopy(val)
-          this.$log.warning('=========缓存当前操作值=========')
-          console.log(this.currentList)
-        }
+          if (this.currentList.length > 0) {
+            this.selectWidget = this.currentList[0]
+          }
+        },
+        immediate: true
       }
     },
     methods: {
-      editorInit: function () {
+      editorInit() {
         require('brace/ext/language_tools') // language extension
         require('brace/mode/html')
         require('brace/mode/json') // language
@@ -163,6 +169,13 @@
         } catch (e) {
         }
         this.jsonModal = false
+      },
+      // 保存配置项
+      handleSaveCfg() {
+        this.$log.warning('====保存按钮触发,发送save指令====>')
+        console.log(this.currentList)
+        this.updateData()
+        this.$emit('on-save', this.currentList)
       },
       // 预览弹窗
       handlePreview() {

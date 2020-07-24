@@ -567,7 +567,7 @@
       }
     },
     methods: {
-      editorInit: function () {
+      editorInit() {
         require('brace/ext/language_tools') // language extension
         require('brace/mode/html')
         require('brace/mode/json') // language
