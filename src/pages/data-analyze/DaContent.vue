@@ -134,7 +134,10 @@
         </b-collapse-wrap>
 
         <!-- <b-collapse-wrap title="数据配置" collapse>
-          <data-config v-model="content.toggle" :data="content.data"
+          <data-config ref="dataConfig" v-model="content.toggle"
+            :isEdit="isEdit"
+            :data="content.data"
+            :initMappingFields="content.mappingFields"
             @config-map="handleConfigMap">
           </data-config>
         </b-collapse-wrap> -->
@@ -374,7 +377,9 @@
       // 表单提交
       handleSubmit(cfgFlag) {
         let tmpContent = { ...this.content }
-        this.$refs.form.validate((valid) => {
+        this.$refs.form.validate(async (valid) => {
+          // const valid2 = await this.$refs.dataConfig.validate()
+          // console.log(this.$refs.dataConfig.mappingFields)
           if (valid) {
             this.btnLoading = true
             let fun = this.dialogStatus === 'create' ? api.createContent : api.modifyContent
@@ -453,6 +458,7 @@
           type: [],
           unit: '',
           apiName: '',
+          mappingFields: [],
           themeName: this.currentTreeNode ? this.currentTreeNode.title : ''
         }
       },
