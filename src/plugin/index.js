@@ -1,9 +1,10 @@
 // bin-ui
 import BinUI from 'bin-ui'
 import 'bin-ui/lib/styles/index.css'
-// bin-code-editor
-import CodeEditor from 'bin-code-editor'
-import 'bin-code-editor/lib/styles/index.css'
+
+// bin-ace-editor
+import Editor from 'bin-ace-editor'
+
 import BinCharts from 'bin-charts'
 import 'echarts/lib/chart/line'
 import 'echarts/lib/chart/bar'
@@ -21,13 +22,45 @@ import VSimpleLabel from '../components/VKeyLabel/Simple'
 import VTitleBar from '../components/VTitleBar'
 import VSortArrow from '../components/VSortArrow'
 
+require('brace/ext/emmet')
+require('brace/ext/language_tools') // language extension
+let language = ['json', 'javascript', 'markdown', 'sql', 'java', 'elixir', 'html', 'css', 'stylus']
+
+let theme = [
+  'chrome',
+  'xcode',
+  'clouds',
+  'crimson_editor',
+  'sqlserver',
+  'github',
+  'textmate',
+  'tomorrow',
+  'solarized_light',
+  'cobalt',
+  'dracula',
+  'monokai',
+  'solarized_dark',
+  'terminal',
+  'vibrant_ink'
+]
+
+language.forEach(lang => {
+  require('brace/mode/' + lang)
+  require('brace/snippets/' + lang)
+})
+
+theme.forEach(item => {
+  require('brace/theme/' + item)
+})
+
 export default {
   async install(Vue, options) {
     // bin-ui引用
     Vue.use(BinUI)
-    // bin-code-editor
-    Vue.use(CodeEditor)
     Vue.component(BinCharts.name, BinCharts)
+    // 注册editor
+    Vue.component(Editor.name, Editor)
+
     Vue.component(PageHeaderWrap.name, PageHeaderWrap)
     Vue.component(VTableWrap.name, VTableWrap)
     Vue.component(VEditWrap.name, VEditWrap)

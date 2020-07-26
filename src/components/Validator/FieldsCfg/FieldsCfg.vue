@@ -317,7 +317,7 @@
   }
 </script>
 
-<style lang="stylus">
+<style lang="stylus" scoped>
   .config-panel {
     display: flex;
     justify-content: space-between;

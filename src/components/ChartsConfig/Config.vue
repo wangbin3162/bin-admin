@@ -477,11 +477,7 @@
           </gui-group>
           <gui-group group-name="数据源">
             <div v-if="data.dataSourceType==='static'">
-              <b-ace-editor :value="JSON.stringify(data.dataSource,null,2)"
-                            lang="json" theme="chrome" height="400"
-                            @on-change="staticDataChange"
-                            @init="editorInit"
-              />
+              <b-ace-editor :value="JSON.stringify(data.dataSource,null,2)" height="400" @on-change="staticDataChange"/>
             </div>
             <div v-else>动态api配置</div>
           </gui-group>
@@ -499,12 +495,11 @@
   import GuiField from './gui/gui-field'
   import GuiInline from './gui/gui-inline'
   import VSlider from '../VSlider/VSlider'
-  import BAceEditor from '../AceEditor'
   import { COLOR_LIST, COLOR_LIST_GRAY, WIDTH_MAP } from './utils/util'
 
   export default {
     name: 'Config',
-    components: { GuiInline, GuiField, GuiGroup, GuiWrap, VSlider, BAceEditor },
+    components: { GuiInline, GuiField, GuiGroup, GuiWrap, VSlider },
     props: {
       data: {
         type: Object,
@@ -567,13 +562,6 @@
       }
     },
     methods: {
-      editorInit() {
-        require('brace/ext/language_tools') // language extension
-        require('brace/mode/html')
-        require('brace/mode/json') // language
-        require('brace/theme/chrome')
-        require('brace/snippets/json') // snippet
-      },
       // 自适应按钮事件
       autoClick() {
         this.data.options.series.barWidth = 'auto'

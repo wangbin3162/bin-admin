@@ -7,10 +7,10 @@ export default {
   meta: { title: '内置组件', icon: 'ios-cube' },
   children: [
     {
-      path: 'jsonEditor',
-      name: 'JsonEditorDemo',
-      component: () => import('../../pages/demo/components/JsonEditorDemo'),
-      meta: { title: 'Json编辑器' }
+      path: 'editor',
+      name: 'editorDemo',
+      component: () => import('../../pages/demo/components/editorDemo'),
+      meta: { title: '代码编辑器' }
     },
     {
       path: 'chart',

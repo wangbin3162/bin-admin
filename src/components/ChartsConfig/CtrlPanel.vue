@@ -54,11 +54,7 @@
     <!--查看json-->
     <b-modal v-model="jsonModal" title="编辑JSON" width="800px">
       <div v-if="jsonModal">
-        <b-ace-editor v-model="jsonOptions"
-                      lang="json" theme="chrome" height="400"
-                      width="752" ref="jsonEditor"
-                      @init="editorInit"
-        />
+        <b-ace-editor v-model="jsonOptions" height="400" width="752" :snippets="false"/>
       </div>
       <div slot="footer">
         <b-button @click="jsonModal=false">取消</b-button>
@@ -84,13 +80,12 @@
   import { deepCopy, isEmpty } from '../../common/utils/assist'
   import { basicComponents } from './utils/util'
   import ChartsWrap from './ChartsWrap'
-  import BAceEditor from '../AceEditor'
   import Config from './Config'
   import ChartsPreviewItem from './ChartsPreviewItem'
 
   export default {
     name: 'CtrlPanel',
-    components: { ChartsPreviewItem, Config, BAceEditor, ChartsWrap, Draggable },
+    components: { ChartsPreviewItem, Config, ChartsWrap, Draggable },
     props: {
       list: {
         type: Array,
@@ -131,13 +126,6 @@
       }
     },
     methods: {
-      editorInit() {
-        require('brace/ext/language_tools') // language extension
-        require('brace/mode/html')
-        require('brace/mode/json') // language
-        require('brace/theme/chrome')
-        require('brace/snippets/json') // snippet
-      },
       // 调试移动结束
       handleMoveEnd({ newIndex, oldIndex }) {
         this.$log.warning(`====MoveEnd-(newIndex:${newIndex})-(oldIndex:${oldIndex})====`)

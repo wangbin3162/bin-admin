@@ -24,15 +24,14 @@
         <!--调试模式-->
         <div class="mt-15" v-show="debugJson">
           <b-tag type="success" size="small">实际存储对象[fields]</b-tag>
-          <b-code-editor :value="JSON.stringify(fields,null,2)" readonly/>
+          <b-ace-editor :value="JSON.stringify(fields,null,2)" readonly wrap/>
         </div>
       </v-table-wrap>
     </page-header-wrap>
-    <b-modal v-model="jsonModal" title="导入Json" :z-index="50" width="750px" append-to-body
-             @on-opened="$refs.editor.refresh()" @on-ok="importJson">
-      <b-code-editor ref="editor" v-model="jsonStr"/>
+    <b-modal v-model="jsonModal" title="导入Json" :z-index="50" width="750px" @on-ok="importJson">
+      <b-ace-editor v-model="jsonStr" wrap/>
     </b-modal>
-    <b-modal v-model="previewModal" title="预览表单" width="1200px" append-to-body :styles="{top: '20px'}"
+    <b-modal v-model="previewModal" title="预览表单" width="1200px" :styles="{top: '20px'}"
              @on-hidden="previewModalForm=false">
       <b-form v-if="previewModalForm" :model="form" :rules="rules" ref="dynamicFormRef" label-position="top">
         <!--自定义form-item-->

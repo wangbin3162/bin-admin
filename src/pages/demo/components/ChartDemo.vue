@@ -15,7 +15,7 @@
           </div>
           <div slot="right" class="right-container">
             数据源:
-            <b-code-editor v-model="dataSource" @on-change="dataSourceChange"/>
+            <b-ace-editor v-model="dataSource" @on-change="dataSourceChange"></b-ace-editor>
           </div>
         </b-split>
       </div>
