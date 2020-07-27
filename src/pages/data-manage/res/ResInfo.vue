@@ -207,7 +207,7 @@
             <!--调试模式-->
             <div class="mt-15" v-if="debugJson">
               <b-tag type="success" size="small">实际存储对象[fields]</b-tag>
-              <b-code-editor :value="JSON.stringify(resource.items,null,2)" readonly/>
+              <b-ace-editor :value="JSON.stringify(resource.items,null,2)" readonly height="300" wrap/>
             </div>
           </div>
         </b-collapse-wrap>

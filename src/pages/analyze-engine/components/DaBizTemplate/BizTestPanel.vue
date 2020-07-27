@@ -7,15 +7,16 @@
           <b-col span="12">
             <v-title-bar label="基础参数" class="mb-20"/>
             <b-empty v-if="this.$isEmpty(params)">无参数</b-empty>
-            <b-form v-else :model="form" ref="form" :label-width="100">
+            <b-form v-else :model="form" ref="form" label-position="top">
               <b-form-item v-for="item in params" :key="item.paramCode"
                            :label="item.paramName" :prop="item.paramCode"
-                           :rules="{ required: true, message: `${item.paramName}不能为空`, trigger: 'blur' }">
+                           :rules="{ required: true, message: `${item.paramName}不能为空`, trigger: 'blur' }"
+                           style="display: inline-block;width: calc(50% - 8px);margin-right: 8px;">
                 <b-input v-model="form[item.paramCode]" clearable placeholder="请输入"/>
               </b-form-item>
             </b-form>
 
-            <div :style="btnLeft">
+            <div style="margin-right: 8px;">
               <b-button type="primary" @click="handleTest" dashed
                         :loading="btnLoading"
                         style="width: 100%;">
@@ -27,7 +28,7 @@
             <v-title-bar label="执行结果" class="mb-20"/>
             <div style="position: relative;">
               <div v-if="result">
-                <b-code-editor :value="resultJson" readonly/>
+                <b-ace-editor :value="resultJson" readonly/>
               </div>
               <b-empty v-else>暂无执行结果</b-empty>
               <b-loading v-show="btnLoading" fix show-text="正在请求测试..."></b-loading>
@@ -73,11 +74,6 @@
           return JSON.stringify(this.result, null, 2)
         } catch (e) {
           return ''
-        }
-      },
-      btnLeft() {
-        return {
-          paddingLeft: isEmpty(this.params) ? '0' : '100px'
         }
       }
     },

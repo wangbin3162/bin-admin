@@ -27,7 +27,7 @@
             <v-title-bar label="执行结果" class="mb-20"/>
             <div style="position: relative;">
               <div v-if="result">
-                <b-code-editor :value="resultJson" readonly/>
+                <b-ace-editor :value="resultJson" readonly/>
               </div>
               <b-empty v-else>暂无执行结果</b-empty>
               <b-loading v-show="btnLoading" fix show-text="正在请求测试..."></b-loading>

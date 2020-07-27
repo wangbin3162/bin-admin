@@ -298,7 +298,7 @@
     </draggable>
     <div v-if="showReal">
       <b-tag type="success" size="small">实际存储对象</b-tag>
-      <b-code-editor :value="JSON.stringify(checkRulesArr,null,2)" readonly/>
+      <b-ace-editor :value="JSON.stringify(checkRulesArr,null,2)" readonly height="240"/>
     </div>
   </div>
 </template>
@@ -634,7 +634,7 @@
   }
 </script>
 
-<style lang="stylus">
+<style lang="stylus" scoped>
   .validator-wrap {
     width: 100%;
     margin-bottom: 16px;

@@ -29,7 +29,6 @@
               style="width: 100%;margin-top: 16px;margin-bottom: 8px;"
               @click="handleCreateItem">添加信息项
     </b-button>
-    <!--    <b-code-editor :value="JSON.stringify(totalData,null,2)" readonly/>-->
     <!--新增修改弹窗-->
     <b-modal v-model="dialogFormVisible" width="800"
              :title="dialogTitle" :mask-closable="false">

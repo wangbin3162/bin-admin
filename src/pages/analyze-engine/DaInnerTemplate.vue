@@ -57,10 +57,10 @@
                   </b-col>
                 </b-row>
                 <b-form-item v-if="isEdit" label="模板脚本" prop="tempSource">
-                  <b-code-editor v-model="template.tempSource" :lint="false" :auto-format="false"/>
+                  <b-ace-editor v-model="template.tempSource" lang="elixir" wrap/>
                 </b-form-item>
                 <b-form-item label="模板说明" prop="tempDesc">
-                  <b-input v-model="template.tempDesc" placeholder="请输入模板说明" type="textarea" :rows="1"></b-input>
+                  <b-input v-model="template.tempDesc" placeholder="请输入模板说明" type="textarea" :rows="2"/>
                 </b-form-item>
               </b-form>
             </b-col>
@@ -176,8 +176,7 @@
               isRequired: 'Y',
               defaultVal: '',
               paramDesc: '',
-              edit: true,
-              newOne: true
+              expand: true
             })
           }
         })

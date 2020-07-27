@@ -24,14 +24,6 @@
         </div>
       </div>
     </div>
-    <!--    <div>-->
-    <!--      <b-tag>平铺的部门列表</b-tag>-->
-    <!--      {{ tiledDeparts }}-->
-    <!--    </div>-->
-    <!--    <div>-->
-    <!--      <div>{{tiledMeasures}}</div>-->
-    <!--      <b-code-editor class="mt-20" :value="JSON.stringify(unionDeparts,null,2)" readonly/>-->
-    <!--    </div>-->
     <union-dept-cfg ref="unionDeptCfg" @on-save="handleSaveUnionDept"/>
   </div>
 </template>
