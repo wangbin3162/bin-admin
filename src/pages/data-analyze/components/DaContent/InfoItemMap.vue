@@ -4,10 +4,51 @@
       <v-edit-wrap transparent>
 
         <b-collapse-wrap title="编辑映射" flex="dir:top main:center">
-          <template v-for="(item, index) in mappingItems">
-            <b-form :model="item" :rules="rules" ref="form"
-              label-position="top" :label-width="60" :key="item.keyAlias">
-              <b-row :gutter="20">
+          <b-empty v-if="mappingItems.length === 0">当前暂无数据</b-empty>
+
+          <b-card v-for="(item, index) in mappingItems" :key="index"
+            shadow="always" class="mb-15">
+            <b-form :model="item" :rules="rules" ref="form" class="form"
+              label-position="left" :label-width="60">
+
+              <div flex>
+                <b-form-item label="别名" prop="names" class="mr-15 form-item">
+                  <b-input v-model="item.names" placeholder="key" disabled></b-input>
+                </b-form-item>
+
+                <b-form-item label="标题" prop="titles" class="mr-15 form-item">
+                  <b-input v-model="item.titles" placeholder="请输入标题"></b-input>
+                </b-form-item>
+
+                <b-form-item label="操作">
+                  <b-button type="primary" plain
+                    @click="handleRemoveBtn(index)">
+                    移除
+                  </b-button>
+                </b-form-item>
+              </div>
+
+              <div flex>
+                <b-form-item label="类型" prop="type" class="mr-15 form-item">
+                  <b-select v-model="item.type" style="width: 100%;" appendToBody>
+                    <b-option v-for="(value, key) in typeEnum" :key="key" :value="key">
+                      {{ value }}
+                    </b-option>
+                  </b-select>
+                </b-form-item>
+
+                <b-form-item label="配置" v-if="item.type === 'DICT'" prop="dictCode" class="mr-15 form-item">
+                  <div flex>
+                    <b-input placeholder="选择字典" disabled :value="item.dictName"></b-input>
+                    <b-button type="primary" plain
+                      @click="handleSelectBtn(item)">
+                      选择
+                    </b-button>
+                  </div>
+                </b-form-item>
+              </div>
+
+              <!-- <b-row :gutter="20">
 
                 <b-col span="5">
                   <b-form-item label="别名" prop="names">
@@ -52,10 +93,10 @@
                   </b-form-item>
                 </b-col>
 
-              </b-row>
+              </b-row> -->
 
             </b-form>
-          </template>
+          </b-card>
 
           <b-button type="primary" plain style="width: 100%;"
             @click="openSelectResponse = true">
@@ -228,6 +269,8 @@
 
 <style lang="stylus" scoped>
   .info-item-map {
-
+    .form-item {
+      width: 40%;
+    }
   }
 </style>

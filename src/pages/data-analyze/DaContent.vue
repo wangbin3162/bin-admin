@@ -392,7 +392,8 @@
           let valid2 = true
           if (tmpContent.toggle === 'ON') {
             valid2 = await this.$refs.dataConfig.validate()
-            tmpContent.mappingFields = this.$refs.dataConfig.mappingFields // 获取data-config组件维护的数据
+            // 获取data-config组件维护的数据
+            tmpContent.mappingFields = JSON.stringify(this.$refs.dataConfig.mappingFields)
           }
 
           if (valid && valid2) {
