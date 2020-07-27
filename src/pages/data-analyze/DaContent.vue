@@ -228,7 +228,7 @@
     components: {
       ContentTestPanel,
       ResponseConfigPanel,
-      ApiChoose,
+      // ApiChoose,
       DataConfig,
       InfoItemMap
     },
