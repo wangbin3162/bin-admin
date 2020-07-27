@@ -28,8 +28,8 @@
       </div>
 
       <div v-if="!isDynamic && isEdit" class="static">
-        <b-code-editor v-model="exampleData">
-        </b-code-editor>
+        <b-ace-editor v-model="exampleData">
+        </b-ace-editor>
       </div>
 
       <div v-if="isDynamic" class="dynamic">
