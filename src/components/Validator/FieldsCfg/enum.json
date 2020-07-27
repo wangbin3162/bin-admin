@@ -22,7 +22,9 @@
     "NAT_PERSON": "选择自然人",
     "LEG_PERSON": "选择法人",
     "NAT_OR_LEG_PERSON": "选择自然人或法人",
-    "FILE_UPLOAD": "文件上传"
+    "FILE_UPLOAD": "文件上传",
+    "REGION_SELECT": "选择行政区域",
+    "HYDM_SELECT": "选择行业代码"
   },
   "openType": {
     "PUBLIC": "社会公开",
