@@ -61,7 +61,7 @@
     <draggable v-model="checkRulesArr"
                v-bind="{ group:'rules', animation: 200, ghostClass:'ghost', handle:'.rules-drag' }"
                @end="onDragEnd">
-      <div v-for="(rule,index) in checkRulesArr" :key="index">
+      <div v-for="(rule,index) in checkRulesArr" :key="index" class="rules-list-item">
         <div class="params">
           <div class="title">
             <span class="param-tip">规则名：</span>
@@ -209,7 +209,8 @@
             </div>
             <div class="number">
               <span class="param-tip">前置字段值：</span>
-              <b-input v-model.trim="checkRulesArr[index].preFieldValue" size="small" @on-change="emitValue" clearable/>
+              <b-input v-model.trim="checkRulesArr[index].preFieldValue" size="small" @on-change="emitValue"
+                       clearable/>
             </div>
             <div class="info">
               <span class="param-tip">错误提示：</span>
@@ -226,7 +227,8 @@
             </div>
             <div class="number">
               <span class="param-tip">前置字段值：</span>
-              <b-input v-model.trim="checkRulesArr[index].preFieldValue" size="small" @on-change="emitValue" clearable/>
+              <b-input v-model.trim="checkRulesArr[index].preFieldValue" size="small" @on-change="emitValue"
+                       clearable/>
             </div>
             <div class="info">
               <span class="param-tip">错误提示：</span>
@@ -243,7 +245,8 @@
             </div>
             <div class="number">
               <span class="param-tip">前置字段值：</span>
-              <b-input v-model.trim="checkRulesArr[index].preFieldValue" size="small" @on-change="emitValue" clearable/>
+              <b-input v-model.trim="checkRulesArr[index].preFieldValue" size="small" @on-change="emitValue"
+                       clearable/>
             </div>
             <div class="number">
               <span class="param-tip">不是某值：</span>
@@ -703,12 +706,12 @@
       color: rgba(0, 0, 0, 0.65);
     }
 
-    .rules-list {
+    .rules-list-item {
       .rules-drag {
         cursor: move;
       }
 
-      .ghost {
+      &.ghost {
         position: relative;
         font-size: 0;
         border: 1px dashed #1089ff;
