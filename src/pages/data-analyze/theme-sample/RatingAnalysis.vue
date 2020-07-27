@@ -522,22 +522,6 @@
        * @description 获取t头部磁力块基础数据
        */
       getBaseData() {
-        Promise.all([
-          api.getClassifyDataCount(),
-          api.getClassifyTotalCount(),
-          api.getClassifyMonthCount(),
-          api.getClassifyZrpCount(),
-          api.getClassifyFoCount()
-        ]).then(([zyxxsl, sjgjzl, bygjsjl, zrpcount, focount]) => {
-          // 顶部数据
-          this.counts = {
-            cnt: zyxxsl.data.data.cnt,
-            totalCount: sjgjzl.data.data.totalCount,
-            monthCount: bygjsjl.data.data.monthCount,
-            zrpCount: zrpcount.data.data.zrpCount,
-            foCount: focount.data.data.foCount
-          }
-        })
       },
       /**
        * @author haodongdong
