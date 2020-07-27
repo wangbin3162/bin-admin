@@ -313,20 +313,12 @@
 <script>
   import Draggable from 'vuedraggable'
   import VToggleShow from '../VToggleShow/index'
-  import {
-    RULE,
-    ruleNameMap
-  } from './cfg-util'
-  import {
-    typeOf
-  } from '../../../common/utils/assist'
+  import { RULE, ruleNameMap } from './cfg-util'
+  import { typeOf } from '../../../common/utils/assist'
 
   export default {
     name: 'Validator',
-    components: {
-      VToggleShow,
-      Draggable
-    },
+    components: { VToggleShow, Draggable },
     props: {
       value: {
         type: String
@@ -419,10 +411,7 @@
           return
         }
         if (this.hasSame(ruleType)) {
-          this.$message({
-            type: 'warning',
-            content: '已有同名规则，无需重复添加'
-          })
+          this.$message({ type: 'warning', content: '已有同名规则，无需重复添加' })
           return
         }
         switch (ruleType) {
@@ -609,10 +598,7 @@
       },
       // 枚举拖拽结束
       onDragEnd(event) {
-        let {
-          oldIndex,
-          newIndex
-        } = event
+        let { oldIndex, newIndex } = event
         if (oldIndex !== newIndex) {
           this.emitValue()
         }
@@ -628,9 +614,7 @@
       },
       // 判断是否是5个特殊信息项，返回是否存在相同类似条件
       hasSame(name) {
-        let infoItems = [RULE.regexp, RULE.conditionRequired, RULE.conditionNotRequired, RULE.conditionNotBe, RULE.notSame,
-          RULE.timeBound
-        ]
+        let infoItems = [RULE.regexp, RULE.conditionRequired, RULE.conditionNotRequired, RULE.conditionNotBe, RULE.notSame, RULE.timeBound]
         if (infoItems.indexOf(name) > -1) { // 特殊信息项，则可以配置多个
           return false
         } else {
@@ -638,8 +622,7 @@
         }
       },
       ruleStyle(name) {
-        return ['$conditionRequired', '$conditionNotRequired', '$conditionNotBe', '$notSame', '$timeBound'].indexOf(
-          name) > -1 ? 'success' : 'primary'
+        return ['$conditionRequired', '$conditionNotRequired', '$conditionNotBe', '$notSame', '$timeBound'].indexOf(name) > -1 ? 'success' : 'primary'
       },
       allowDrop(e) {
         e.preventDefault()
@@ -662,36 +645,30 @@
   .validator-wrap {
     width: 100%;
     margin-bottom: 16px;
-
     .params {
       display: flex;
       border-radius: 2px;
       border: 1px dashed #eee;
       margin-bottom: 8px;
       padding: 4px 0;
-
       .title {
         flex: 0 0 110px;
         width: 110px;
         padding: 0 4px;
       }
-
       .number {
         flex: 0 0 100px;
         width: 100px;
         padding-right: 5px;
       }
-
       .info {
         flex: auto;
       }
-
       .trigger {
         flex: 0 0 85px;
         width: 85px;
         padding-left: 5px;
       }
-
       .delete {
         flex: 0 0 30px;
         width: 30px;
@@ -699,25 +676,21 @@
         text-align: center;
       }
     }
-
     .param-tip {
       display: inline-block;
       width: 100%;
       color: rgba(0, 0, 0, 0.65);
     }
-
     .rules-list-item {
       .rules-drag {
         cursor: move;
       }
-
       &.ghost {
         position: relative;
         font-size: 0;
         border: 1px dashed #1089ff;
         height: 58px;
         margin-bottom: 8px;
-
         &::after {
           position: absolute;
           content: '';
