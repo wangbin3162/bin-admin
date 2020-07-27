@@ -75,7 +75,7 @@
     </page-header-wrap>
     <page-header-wrap v-show="isEdit" :title="editTitle" show-close @on-close="handleCancel">
       <v-edit-wrap transparent>
-        <b-collapse-wrap title="基本信息" collapse :value="true">
+        <b-collapse-wrap title="基本信息" collapse :value="false">
           <b-form :model="content" ref="form" :rules="ruleValidate" label-position="top">
             <b-row :gutter="20">
               <b-col span="24">
@@ -133,14 +133,14 @@
           </b-form>
         </b-collapse-wrap>
 
-        <!-- <b-collapse-wrap title="数据配置" collapse>
+        <b-collapse-wrap title="数据配置" collapse>
           <data-config ref="dataConfig" v-model="content.toggle"
             :isEdit="isEdit"
             :data="content.data"
             :initMappingFields="content.mappingFields"
             @config-map="handleConfigMap">
           </data-config>
-        </b-collapse-wrap> -->
+        </b-collapse-wrap>
         <!--保存提交-->
         <template slot="footer">
           <b-button @click="handleCancel">取 消</b-button>

@@ -2,13 +2,28 @@
   <div class="info-item-map">
     <page-header-wrap title="信息项映射" show-close @on-close="$emit('close')">
       <v-edit-wrap>
-        <b-table :columns="[]" :data="[]" class="mb-15">
-          <template v-slot:action="">
-            <b-button type="text">
-              移除
-            </b-button>
-          </template>
-        </b-table>
+
+        <b-form label-position="left" :label-width="50">
+          <div flex="box:mean">
+            <b-form-item label="别名" class="mr-15">
+              <b-input disabled placeholder="key"></b-input>
+            </b-form-item>
+
+            <b-form-item label="标题" class="mr-15">
+              <b-input placeholder="请输入标题"></b-input>
+            </b-form-item>
+
+            <b-form-item label="类型" class="mr-15">
+              <b-select style="width: 100%;">
+                <!-- <b-option></b-option> -->
+              </b-select>
+            </b-form-item>
+
+            <b-form-item label="" class="mr-15">
+              <b-button type="primary" plain>移除</b-button>
+            </b-form-item>
+          </div>
+        </b-form>
 
         <b-button type="primary" plain style="width: 100%;"
           @click="openSelectResponse = true">
@@ -33,7 +48,12 @@
   export default {
     name: 'InfoItemMap',
     props: {
-
+      initMappingItems: {
+        type: Array,
+        default () {
+          return []
+        }
+      }
     },
     components: {
       SelectResponse
@@ -59,3 +79,9 @@
     }
   }
 </script>
+
+<style lang="stylus" scoped>
+  .info-item-map {
+
+  }
+</style>
