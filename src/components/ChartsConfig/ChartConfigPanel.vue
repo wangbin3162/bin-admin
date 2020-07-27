@@ -1,18 +1,37 @@
 <template>
-  <transition name="move-right">
-    <div v-show="visible" class="resource-cfg-modal">
-      <div class="header">
-        <div class="title">
-          <b-icon name="ios-undo" @click.native="close"/>
-          {{ resourceTitle }}
+  <div>
+    <transition name="move-right">
+      <div v-if="visible" class="resource-cfg-modal">
+        <div class="header">
+          <div class="title">
+            <b-icon name="ios-undo" @click.native="close"/>
+            {{ resourceTitle }}
+          </div>
+          <b-icon name="close" @click.native="close"/>
         </div>
-        <b-icon name="close" @click.native="close"/>
+        <div class="content">
+          <ctrl-panel ref="ctrlPanel" :list="currentList" @on-save="handleSave"/>
+        </div>
       </div>
-      <div class="content">
-        <ctrl-panel v-model="currentList"/>
+    </transition>
+    <b-modal v-model="closeModal" footer-hide :mask-closable="false" width="400">
+      <div>
+        <div style="line-height: 44px;font-size: 16px;">
+          <b-icon name="ios-warning" size="28" color="#fea638"/>
+          <span style="display: inline-block;vertical-align: middle;margin-left: 12px;color: rgba(0,0,0,.85);">
+            确定关闭吗？
+          </span>
+        </div>
+        <p style="padding-left: 42px;color: rgba(0,0,0,.65);">
+          在关闭当前配置面板时请确保已经<span style="color: #ff4d4f;">保存</span>！
+        </p>
       </div>
-    </div>
-  </transition>
+      <div style="text-align: right;padding-top: 16px;">
+        <b-button type="danger" @click="closeSave(false)">关闭</b-button>
+        <b-button type="primary" @click="closeSave(true)">保存并关闭</b-button>
+      </div>
+    </b-modal>
+  </div>
 </template>
 
 <script>
@@ -28,7 +47,8 @@
       return {
         visible: false,
         currentList: [],
-        resource: { resourceName: '' }
+        resource: { resourceName: '' },
+        closeModal: false
       }
     },
     watch: {
@@ -58,7 +78,28 @@
       },
       // 关闭
       close() {
+        this.closeModal = true
+      },
+      // 是否保存并关闭
+      closeSave(save) {
+        if (save) {
+          // 触发一下保存按钮操作
+          this.$refs.ctrlPanel.handleSaveCfg()
+        }
+        this.closeModal = false
         this.visible = false
+      },
+      // 保存按钮操作，调用api
+      handleSave(list) {
+        this.chartsList = list
+        this.saveSubmit()
+      },
+      saveSubmit() {
+        this.$log.success('====最终保存,提交api====>')
+        console.log(this.chartsList)
+        this.$emit('save-success', this.chartsList)
+        // 保存成功给出提示
+        this.$notice.success({ title: '保存配置成功！' })
       }
     }
   }

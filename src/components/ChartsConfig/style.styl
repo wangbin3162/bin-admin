@@ -1,0 +1,212 @@
+// 配置控制整体样式
+.ctrl-panel {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  .top-fix {
+    height: 42px;
+    line-height: 42px;
+  }
+  .scroll-content {
+    height: calc(100% - 42px);
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+  .left {
+    width: 120px;
+    height: 100%;
+    overflow: hidden;
+    .top-fix {
+      text-align: center;
+      font-size: 16px;
+    }
+    .chart-item {
+      border: 1px dashed rgba(11, 28, 36, 0.2);
+      padding: 4px 8px;
+      text-align: center;
+      margin-bottom: 8px;
+      cursor: grab;
+      transition: border-color .2s;
+      &:hover {
+        border-color: #1089ff;
+        color: #1089ff;
+        .svg-icon {
+          color: inherit;
+        }
+      }
+    }
+  }
+  .center {
+    width: calc(100% - 500px);
+    height: 100%;
+    overflow: hidden;
+    border-left: 1px solid #e0e0e0;
+    border-right: 1px solid #e0e0e0;
+    .top-fix {
+      text-align: right;
+      padding: 0 16px;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    .scroll-content {
+      background: #fafafa;
+    }
+  }
+  .right {
+    width: 380px;
+    height: 100%;
+    .config-panel {
+      height: 100%;
+    }
+    .top-fix {
+      display: flex;
+      border-bottom: 1px solid #e0e0e0;
+      .tab-item {
+        width: 50%;
+        text-align: center;
+        font-size: 16px;
+        transition: background .2s;
+        cursor: pointer;
+        &.active {
+          background: #e0e0e0;
+        }
+      }
+    }
+  }
+}
+.chart-widget {
+  position: relative;
+  height: calc(100% - 20px);
+  .chart-empty {
+    position: absolute;
+    text-align: center;
+    height: 20px;
+    font-size: 20px;
+    top: 50%;
+    width: 100%;
+    margin-top: -10px;
+    color: #ccc;
+  }
+}
+// 拖拽放置区域样式
+.drag-area {
+  background: #fff;
+  border: 1px dashed #999;
+  min-height: 100%;
+  margin: 10px;
+  .chart-item.ghost {
+    position: relative;
+    margin: 2px;
+    width: calc(33.33% - 4px);
+    display: inline-block;
+    vertical-align: top;
+    height: 5px;
+    padding: 0;
+    font-size: 0;
+    overflow: hidden;
+    &::after {
+      position: absolute;
+      content: '';
+      background: #f5222d;
+      display: block;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+    }
+  }
+}
+//  图表渲染容器样式
+.list-widget-item {
+  position: relative;
+  display: inline-block;
+  vertical-align: top;
+  border: 1px dashed hsla(0, 0%, 66.7%, .5);
+  background-color: rgba(236, 245, 255, .3);
+  margin: 2px;
+  overflow: hidden;
+  height: 200px;
+  width: calc(33.33% - 4px);
+  &:hover {
+    background: #ecf5ff;
+    outline: 1px solid #1089ff;
+    outline-offset: 0;
+  }
+  &.active {
+    outline: 1px solid #1089ff;
+    border: 1px solid #1089ff;
+  }
+  &.ghost {
+    position: relative;
+    font-size: 0;
+    border: 1px dashed #1089ff;
+    &::after {
+      position: absolute;
+      content: '';
+      background: #fff;
+      display: block;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+    }
+  }
+  .widget-view-drag {
+    position: absolute;
+    left: -2px;
+    top: -2px;
+    height: 24px;
+    line-height: 22px;
+    background: #1089ff;
+    width: 24px;
+    text-align: center;
+    z-index: 10;
+    cursor: move;
+    i {
+      font-size: 18px;
+      color: #fff;
+    }
+  }
+  .widget-view-action {
+    position: absolute;
+    right: -2px;
+    top: -2px;
+    height: 24px;
+    line-height: 22px;
+    background: #1089ff;
+    width: 24px;
+    text-align: center;
+    z-index: 9;
+    i {
+      font-size: 18px;
+      color: #fff;
+      cursor: pointer;
+    }
+  }
+  .widget-view-key {
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-size: 12px;
+    color: #52c41a;
+  }
+}
+
+// 右边配置页面
+.block-config {
+  min-height: 100%;
+  .bin-collapse > .bin-collapse-item > {
+    .bin-collapse-header {
+      padding: 8px 12px;
+      .iconfont {
+        margin-right: 0;
+      }
+    }
+    .bin-collapse-content {
+      padding: 0;
+      .bin-collapse-content-box {
+        padding: 4px 0;
+        background-color: #fafafa;
+      }
+    }
+  }
+}
