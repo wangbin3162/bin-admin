@@ -252,16 +252,18 @@
        */
       async handleConfirmBtn () {
         const failed = []
+        if (this.mappingItems.length > 0) {
           for (const item of this.$refs.form) {
             const valid = await item.validate()
             if (!valid) {
               failed.push(valid)
             }
           }
-          if (failed.length === 0) {
-            this.$emit('complete', this.$util.deepClone(this.mappingItems))
-            this.$emit('close')
-          }
+        }
+        if (failed.length === 0) {
+          this.$emit('complete', this.$util.deepClone(this.mappingItems))
+          this.$emit('close')
+        }
       }
     }
   }
