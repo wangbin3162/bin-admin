@@ -119,7 +119,7 @@
           keyPath: '', // 建路径
           dataType: '', // 数据类型
           memo: '', // 说明
-          title: '',// 标题
+          title: '', // 标题
           edit: false,
           newOne: true
         }

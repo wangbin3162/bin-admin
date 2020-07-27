@@ -81,7 +81,7 @@
       // 确认进行上传操作
       handleImport() {
         if (this.file) {
-          if(this.moduleName === 'UrpMeasureController') {
+          if (this.moduleName === 'UrpMeasureController') {
             this.precondition = false
           }
           this.uploadLoading = true

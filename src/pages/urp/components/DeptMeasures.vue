@@ -225,10 +225,10 @@
       },
       // 循环遍历措施列表，将已勾选的措施填充值平铺 措施列表
       tiledReadyMeasures() {
-        //平铺部门树转换成map结构
+        // 平铺部门树转换成map结构
         let checkedDepartMap = {}
         this.tiledDeparts.forEach(function (depart) {
-            checkedDepartMap[depart.departId] =  depart.departName
+            checkedDepartMap[depart.departId] = depart.departName
         })
         let arr = []
         this.deptMeasures.forEach(dept => {

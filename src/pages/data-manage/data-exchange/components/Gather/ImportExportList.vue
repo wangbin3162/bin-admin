@@ -51,7 +51,8 @@
                 @on-change="handleCurrentChange" @on-page-size-change="handleSizeChange"></b-page>
       </v-table-wrap>
     </page-header-wrap>
-    <page-header-wrap v-show="detailDialog" show-close @on-close="detailDialog=false" v-if="detail" :title="jobTypeMap[detail.jobType]+'详情'">
+    <page-header-wrap v-show="detailDialog" show-close @on-close="detailDialog=false" v-if="detail"
+                      :title="jobTypeMap[detail.jobType]+'详情'">
       <v-edit-wrap transparent>
         <b-collapse-wrap v-if="detail" :title="jobTypeMap[detail.jobType]+'信息'">
           <div class="detail">
@@ -198,7 +199,6 @@
         api.queryImportDetails(id).then(res => {
           if (res.data.code === '0') {
             this.detail = res.data.data
-            debugger;
             this.detailDialog = true
             // 如果存在错误数据下载则再请求读取错误列表
             if (this.detail.errorCount && this.detail.errorCount > 0) {

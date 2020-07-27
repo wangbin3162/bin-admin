@@ -169,7 +169,7 @@
         },
         columns: [
           { type: 'index', width: 50, align: 'center' },
-          { title: '备忘录名称', slot: 'memoName', width: 250},
+          { title: '备忘录名称', slot: 'memoName', width: 250 },
           { title: '主体类型', slot: 'personClass', align: 'center', width: 150 },
           { title: '映射类型', slot: 'isSys', align: 'center', width: 200 },
           { title: '接口标识', key: 'ifcTagName' },
