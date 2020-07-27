@@ -1,9 +1,9 @@
 <template>
   <page-header-wrap>
     <v-table-wrap>
-      <b-alert>json编辑器现已独立发布为bin-code-editor插件
+      <b-alert>编辑器现已独立发布为bin-ace-editor插件
         <template slot="desc">
-          具体请查看<a href="https://wangbin3162.gitee.io/bin-code-editor" target="_blank">示例文档</a>来获取更多插件使用方法
+          具体请查看<a href="https://wangbin3162.gitee.io/bin-ace-editor" target="_blank">示例文档</a>来获取更多插件使用方法
         </template>
       </b-alert>
 
