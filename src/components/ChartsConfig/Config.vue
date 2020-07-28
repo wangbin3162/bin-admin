@@ -459,17 +459,18 @@
           <gui-group group-name="数据映射">
             <gui-field label="字段映射">
               <gui-inline label="x轴字段">
-                <b-input v-model="data.options.sourceMap.xField" size="small"/>
+                <b-input v-model="data.options.sourceMap.xField" size="small" @on-change="emitValue"/>
               </gui-inline>
               <gui-inline label="y轴字段">
-                <b-input v-model="data.options.sourceMap.yField" size="small"/>
+                <b-input v-model="data.options.sourceMap.yField" size="small" @on-change="emitValue"/>
               </gui-inline>
               <gui-inline label="系列字段">
-                <b-input v-model="data.options.sourceMap.seriesField" size="small"/>
+                <b-input v-model="data.options.sourceMap.seriesField" size="small" @on-change="emitValue"/>
               </gui-inline>
             </gui-field>
             <gui-field label="数据来源">
-              <b-switch v-model="data.isOpen" size="large" true-value="dynamic" false-value="static">
+              <b-switch v-model="data.isOpen" size="large" true-value="dynamic" false-value="static"
+                        @on-change="emitValue">
                 <span slot="open">动态</span>
                 <span slot="close">静态</span>
               </b-switch>
@@ -575,6 +576,7 @@
       staticDataChange(val) {
         try {
           this.data.staticDataSource = JSON.parse(val)
+          this.emitValue()
         } catch (e) {
         }
       },
