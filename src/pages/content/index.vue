@@ -1,7 +1,7 @@
 <template>
   <base-layout>
     <div class="content">
-      <base-header @on-home="handleHome"></base-header>
+      <base-header></base-header>
 
       <div class="title">
         <div class="con">
@@ -10,8 +10,6 @@
         </div>
       </div>
 
-      <!-- <b-affix :offset-top="0">
-      </b-affix> -->
       <div class="sec-nav-con">
         <div class="sec-nav">
           <div class="tabs">
@@ -33,8 +31,6 @@
 
       <div class="list-con">
         <transition name="move-left">
-          <!-- <b-affix :offset-top="95">
-          </b-affix> -->
           <div class="left" v-show="visible">
             <div class="col-title">
               <b-icon size="24" name="ios-photos" color="#4ca6fb"></b-icon>
@@ -60,7 +56,10 @@
                   <div class="con-title">
                     <img :src="`/api/cms/attach/download?attachmentId=${item.thumbnailPath}`" alt=""
                       v-show="item.thumbnailPath !== null">
-                    <p v-html="item.title"></p>
+                    <div>
+                      <p v-html="item.title"></p>
+                      <span>{{ item.summary }}</span>
+                    </div>
                   </div>
 
                   <div class="tips">
@@ -222,10 +221,6 @@
         this.loading = false
       },
 
-      handleHome () {
-
-      },
-
       /**
        * @author haodongdong
        * @description 查询函数
@@ -259,6 +254,9 @@
         this.curSubTab = tab
         this.query.page = 1
         this.query.columnId = tab.id
+        this.$router.push({ // 暂时用于清空可能存在的url参数
+          path: '/content/index'
+        })
         this.getContentList(this.query)
       },
 
@@ -437,8 +435,14 @@
                   height: 13px;
                   width: 2px;
                   background: #d9d9d9;
-                  // line-height: 30px;
                 }
+              }
+
+              span {
+                display: inline-block;
+                margin-top: 10px;
+                margin-left: 13px;
+                color: #bfbfbf;
               }
 
               &:hover {

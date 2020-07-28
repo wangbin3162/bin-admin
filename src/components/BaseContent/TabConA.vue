@@ -212,7 +212,7 @@
           margin-bottom: 30px;
 
           p {
-            font-size: 16px;
+            font-size: 15px;
             cursor: pointer;
 
             &:hover {

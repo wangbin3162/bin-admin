@@ -11,61 +11,11 @@
       <base-content v-show="!showList"></base-content>
 
       <div v-show="!showList" class="center-banner">
-        <!-- <b-row :gutter="20">
-          <b-col :span="6">
-            <div class="card">
-              <div class="inner">
-                <img src="../assets/images/bigdata.png" alt="bigdata">
-                <h2>数据可视化</h2>
-                <a class="check" href="/data" target="_blank">
-                  <b-icon name="ios-arrow-round-forward"/>
-                  查询
-                </a>
-              </div>
-            </div>
-          </b-col>
-          <b-col :span="6">
-            <div class="card">
-              <div class="inner">
-                <img src="../assets/images/service.png" alt="service">
-                <h2>信用服务</h2>
-                <a class="check" href="" target="_blank">
-                  <b-icon name="ios-arrow-round-forward"/>
-                  查询
-                </a>
-              </div>
-            </div>
-          </b-col>
-          <b-col :span="6">
-            <div class="card">
-              <div class="inner">
-                <img src="../assets/images/exchange.png" alt="exchange">
-                <h2>信用监管</h2>
-                <a class="check" href="" target="_blank">
-                  <b-icon name="ios-arrow-round-forward"/>
-                  查询
-                </a>
-              </div>
-            </div>
-          </b-col>
-          <b-col :span="6">
-            <div class="card">
-              <div class="inner">
-                <img src="../assets/images/joint.png" alt="joint">
-                <h2>联合奖惩</h2>
-                <router-link tag="a" class="check" to="/urp/index" target="_blank">
-                  <b-icon name="ios-arrow-round-forward"/>
-                  查询
-                </router-link>
-              </div>
-            </div>
-          </b-col>
-        </b-row> -->
 
         <div class="card">
           <div class="inner">
             <h2>信用监控</h2>
-            <img src="../assets/images/service.png" alt="bigdata">
+            <img src="../assets/images/exchange.png" alt="bigdata">
           </div>
         </div>
 
@@ -88,7 +38,7 @@
         <div class="card" @click="handleCardClick('#/urp/index')">
           <div class="inner">
             <h2>联合奖惩</h2>
-            <img src="../assets/images/exchange.png" alt="bigdata">
+            <img src="../assets/images/service.png" alt="bigdata">
           </div>
         </div>
       </div>
