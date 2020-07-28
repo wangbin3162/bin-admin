@@ -4,7 +4,7 @@
       <div v-if="visible" class="resource-cfg-modal">
         <div class="header">
           <div class="title">
-            <b-icon name="ios-undo" @click.native="close"/>
+            <b-icon name="ios-undo" @click.native="closeSave(false)"/>
             {{ resourceTitle }}
           </div>
           <b-icon name="close" @click.native="close"/>
