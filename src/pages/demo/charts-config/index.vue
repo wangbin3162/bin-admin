@@ -11,7 +11,7 @@
         />
       </b-collapse-wrap>
     </page-header-wrap>
-    <charts-config-panel ref="chartsConfigPanel" @save-success="(list)=>{this.chartsList=list}"/>
+    <charts-config-panel ref="chartsConfigPanel" @on-save="handleSave"/>
   </div>
 </template>
 
@@ -42,6 +42,11 @@
           resourceName: '测试资源名称'
         }
         this.$refs.chartsConfigPanel.open(this.resource, this.chartsList)
+      },
+      handleSave(list) {
+        this.chartsList = list
+        this.$log.success('====响应保存事件====>')
+        console.log(this.chartsList)
       }
     }
   }
