@@ -77,7 +77,7 @@
 
 <script>
   import Draggable from 'vuedraggable'
-  import { deepCopy, isEmpty } from '../../common/utils/assist'
+  import { deepCopy, isEmpty, isNotEmpty } from '../../common/utils/assist'
   import { basicComponents } from './utils/util'
   import ChartsWrap from './ChartsWrap'
   import Config from './Config'
@@ -120,6 +120,9 @@
           this.currentList = deepCopy(val)
           if (this.currentList.length > 0 && isEmpty(this.selectWidget)) {
             this.selectWidget = this.currentList[0]
+          } else if (isNotEmpty(this.selectWidget)) {
+            let index = this.currentList.findIndex(i => i.key === this.selectWidget.key)
+            this.selectWidget = this.currentList[index]
           }
         },
         immediate: true
