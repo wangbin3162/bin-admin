@@ -84,7 +84,49 @@ export function getTypeTree() {
   return getClassifyTree('C')
 }
 
-// 判断数组是否包含一个值
-function oneOf(value, validList) {
-  return validList.indexOf(value) > -1
+/* 1.2.1图表配置列表接口 */
+export function chartsCfgShow(resourceKey) {
+  return request({
+    url: '/api/wj/wjChartsConfig/show',
+    method: 'get',
+    params: {
+      resKey: resourceKey
+    }
+  })
 }
+
+/* 图表配置批量新增修改接口 */
+export function chartsCfgAddOrModify(dataList) {
+  return request({
+    url: '/api/wj/wjChartsConfig/batchAddOrModify',
+    method: 'post',
+    data: dataList
+  })
+}
+
+/* 1.2.3业务模板分页查询接口 */
+export function businessTemplateList(query) {
+  return request({
+    url: '/da/businessTemplate/search',
+    method: 'get',
+    params: {
+      size: query.size,
+      page: query.page - 1,
+      tempName: query.resourceName,
+      tempCode: query.resourceCode,
+      tempType: 'wj_analysis'
+    }
+  })
+}
+
+/* 1.2.4业务模板查询模板详情接口 */
+export function businessTemplateDetail(id) {
+  return request({
+    url: '/da/businessTemplate/detail',
+    method: 'get',
+    params: {
+      id
+    }
+  })
+}
+
