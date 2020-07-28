@@ -459,27 +459,32 @@
           <gui-group group-name="数据映射">
             <gui-field label="字段映射">
               <gui-inline label="x轴字段">
-                <b-input v-model="data.sourceMap.xField" size="small"/>
+                <b-input v-model="data.options.sourceMap.xField" size="small" @on-change="emitValue"/>
               </gui-inline>
               <gui-inline label="y轴字段">
-                <b-input v-model="data.sourceMap.yField" size="small"/>
+                <b-input v-model="data.options.sourceMap.yField" size="small" @on-change="emitValue"/>
               </gui-inline>
               <gui-inline label="系列字段">
-                <b-input v-model="data.sourceMap.seriesField" size="small"/>
+                <b-input v-model="data.options.sourceMap.seriesField" size="small" @on-change="emitValue"/>
               </gui-inline>
             </gui-field>
             <gui-field label="数据来源">
-              <b-switch v-model="data.dataSourceType" size="large" true-value="api" false-value="static">
+              <b-switch v-model="data.isOpen" size="large" true-value="dynamic" false-value="static"
+                        @on-change="emitValue">
                 <span slot="open">动态</span>
                 <span slot="close">静态</span>
               </b-switch>
             </gui-field>
           </gui-group>
           <gui-group group-name="数据源">
-            <div v-if="data.dataSourceType==='static'">
-              <b-ace-editor :value="JSON.stringify(data.dataSource,null,2)" height="400" @on-change="staticDataChange"/>
+            <div v-if="data.isOpen==='static'">
+              <b-ace-editor :value="JSON.stringify(data.staticDataSource,null,2)" height="500"
+                            @on-change="staticDataChange"/>
             </div>
-            <div v-else>动态api配置</div>
+            <div v-else>
+              <p>dataSource: {{ data.dataSource }}</p>
+              <p>dataSourceParam: {{ data.dataSourceParam }}</p>
+            </div>
           </gui-group>
         </div>
       </div>
@@ -570,7 +575,8 @@
       // 静态数据改变事件
       staticDataChange(val) {
         try {
-          this.data.dataSource = JSON.parse(val)
+          this.data.staticDataSource = JSON.parse(val)
+          this.emitValue()
         } catch (e) {
         }
       },
@@ -586,7 +592,7 @@
         this.emitValue()
       },
       emitValue() {
-
+        this.$emit('update-data')
       }
     }
   }

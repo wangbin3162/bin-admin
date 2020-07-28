@@ -129,4 +129,3 @@ export function businessTemplateDetail(id) {
     }
   })
 }
-

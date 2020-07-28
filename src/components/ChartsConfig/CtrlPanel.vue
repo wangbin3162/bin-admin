@@ -41,7 +41,7 @@
                            :index="index"
                            :list="currentList"
                            :log="chartLog"
-                           @on-delete="handleSaveCfg">
+                           @on-delete="handleDeleteWidget">
               </charts-wrap>
             </template>
           </draggable>
@@ -49,7 +49,7 @@
       </div>
     </div>
     <div class="right">
-      <config :data="selectWidget"/>
+      <config :data="selectWidget" @update-data="emitUpdateData"/>
     </div>
     <!--查看json-->
     <b-modal v-model="jsonModal" title="编辑JSON" width="800px">
@@ -77,7 +77,7 @@
 
 <script>
   import Draggable from 'vuedraggable'
-  import { deepCopy, isEmpty } from '../../common/utils/assist'
+  import { deepCopy, isEmpty, isNotEmpty } from '../../common/utils/assist'
   import { basicComponents } from './utils/util'
   import ChartsWrap from './ChartsWrap'
   import Config from './Config'
@@ -118,8 +118,11 @@
       list: {
         handler(val) {
           this.currentList = deepCopy(val)
-          if (this.currentList.length > 0) {
+          if (this.currentList.length > 0 && isEmpty(this.selectWidget)) {
             this.selectWidget = this.currentList[0]
+          } else if (isNotEmpty(this.selectWidget)) {
+            let index = this.currentList.findIndex(i => i.key === this.selectWidget.key)
+            this.selectWidget = this.currentList[index]
           }
         },
         immediate: true
@@ -128,7 +131,8 @@
     methods: {
       // 调试移动结束
       handleMoveEnd({ newIndex, oldIndex }) {
-        this.$log.warning(`====MoveEnd-(newIndex:${newIndex})-(oldIndex:${oldIndex})====`)
+        // this.$log.warning(`====MoveEnd-(newIndex:${newIndex})-(oldIndex:${oldIndex})====`)
+        this.emitUpdateData()
       },
       // 新增一个
       handleWidgetAdd({ newIndex }) {
@@ -138,6 +142,11 @@
         object.key = this.currentList[newIndex].type + '_' + key
         this.$set(this.currentList, newIndex, object)
         this.selectWidget = this.currentList[newIndex]
+        this.emitUpdateData()
+      },
+      // 移除一个
+      handleDeleteWidget() {
+        this.emitUpdateData()
       },
       // 更新列表值
       updateData() {
@@ -154,20 +163,23 @@
         try {
           this.selectWidget.options = JSON.parse(this.jsonOptions)
           this.updateData()
+          this.emitUpdateData()
         } catch (e) {
         }
         this.jsonModal = false
       },
       // 保存配置项
       handleSaveCfg() {
-        this.$log.warning('====保存按钮触发,发送save指令====>')
-        console.log(this.currentList)
-        this.updateData()
+        // this.$log.warning('====保存按钮触发,发送save指令====>')
         this.$emit('on-save', this.currentList)
       },
       // 预览弹窗
       handlePreview() {
         this.previewModal = true
+      },
+      // 更新list
+      emitUpdateData() {
+        this.$emit('on-update', this.currentList)
       }
     },
     computed: {

@@ -102,7 +102,7 @@
           // this.selectWidget = {}
           return
         }
-        this.$log.primary(`====SelectWidget:${index}====`)
+        // this.$log.primary(`====SelectWidget:${index}====`)
         this.selectWidget = this.list[index]
       },
       // 删除一个

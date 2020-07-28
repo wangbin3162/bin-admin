@@ -154,11 +154,11 @@ export const basicComponents = [
           opacity: 0
         }
       },
-      color: DEFAULT_COLORS
+      color: DEFAULT_COLORS,
+      sourceMap: { xField: 'x', yField: 'y', seriesField: 's' }
     },
-    dataSourceType: 'static',
-    sourceMap: { xField: 'x', yField: 'y', seriesField: 's' },
-    dataSource: [
+    isOpen: 'static',
+    staticDataSource: [
       {
         s: '系列1',
         data: [
@@ -170,7 +170,9 @@ export const basicComponents = [
           { x: '1/6', y: 277 }
         ]
       }
-    ]
+    ],
+    dataSource: '',
+    dataSourceParam: []
   },
   {
     name: '柱状图',
@@ -278,11 +280,11 @@ export const basicComponents = [
         },
         barWidth: 'auto' // 可选
       },
-      color: DEFAULT_COLORS
+      color: DEFAULT_COLORS,
+      sourceMap: { xField: 'x', yField: 'y', seriesField: 's' }
     },
-    dataSourceType: 'static',
-    sourceMap: { xField: 'x', yField: 'y', seriesField: 's' },
-    dataSource: [
+    isOpen: 'static',
+    staticDataSource: [
       {
         s: '系列1',
         data: [
@@ -305,7 +307,9 @@ export const basicComponents = [
           { x: '1/6', y: 77 }
         ]
       }
-    ]
+    ],
+    dataSource: '',
+    dataSourceParam: []
   },
   {
     name: '条形图',
@@ -413,11 +417,11 @@ export const basicComponents = [
         },
         barWidth: 'auto' // 可选
       },
-      color: DEFAULT_COLORS
+      color: DEFAULT_COLORS,
+      sourceMap: { xField: 'x', yField: 'y', seriesField: 's' }
     },
-    dataSourceType: 'static',
-    sourceMap: { xField: 'x', yField: 'y', seriesField: 's' },
-    dataSource: [
+    isOpen: 'static',
+    staticDataSource: [
       {
         s: '系列1',
         data: [
@@ -440,7 +444,9 @@ export const basicComponents = [
           { x: '1/6', y: 77 }
         ]
       }
-    ]
+    ],
+    dataSource: '',
+    dataSourceParam: []
   },
   {
     name: '饼图',
@@ -478,11 +484,11 @@ export const basicComponents = [
         center: ['50%', '40%'], // 饼图可选
         radius: ['0', '70%']// 饼图可选
       },
-      color: DEFAULT_COLORS
+      color: DEFAULT_COLORS,
+      sourceMap: { xField: 'x', yField: 'y', seriesField: 's' }
     },
-    dataSourceType: 'static',
-    sourceMap: { xField: 'x', yField: 'y', seriesField: 's' },
-    dataSource: [
+    isOpen: 'static',
+    staticDataSource: [
       {
         s: '系列1',
         data: [
@@ -494,7 +500,9 @@ export const basicComponents = [
           { x: '1/6', y: 277 }
         ]
       }
-    ]
+    ],
+    dataSource: '',
+    dataSourceParam: []
   },
   {
     name: '雷达图',
@@ -537,11 +545,11 @@ export const basicComponents = [
           opacity: 0
         }
       },
-      color: DEFAULT_COLORS
+      color: DEFAULT_COLORS,
+      sourceMap: { xField: 'x', yField: 'y', seriesField: 's' }
     },
-    dataSourceType: 'static',
-    sourceMap: { xField: 'x', yField: 'y', seriesField: 's' },
-    dataSource: [
+    isOpen: 'static',
+    staticDataSource: [
       {
         s: '维度1',
         data: [
@@ -582,7 +590,9 @@ export const basicComponents = [
           { x: '类别三', y: 522 }
         ]
       }
-    ]
+    ],
+    dataSource: '',
+    dataSourceParam: []
   },
   {
     name: '地图',
@@ -662,11 +672,11 @@ export const basicComponents = [
           }
         },
         zlevel: 1
-      }
+      },
+      sourceMap: { xField: 'x', yField: 'y', seriesField: 's' }
     },
-    dataSourceType: 'static',
-    sourceMap: { xField: 'x', yField: 'y', seriesField: 's' },
-    dataSource: [
+    isOpen: 'static',
+    staticDataSource: [
       { x: '吉林', y: 178 },
       { x: '北京', y: 23 },
       { x: '上海', y: 122 },
@@ -677,16 +687,18 @@ export const basicComponents = [
       { x: '马鞍山', y: 32 },
       { x: '张家界', y: 55 },
       { x: '三门峡', y: 100 }
-    ]
+    ],
+    dataSource: '',
+    dataSourceParam: []
   }
 ]
 
 // 根据图表原始数据拼装实际charts options
 export function buildOptions(chartData) {
-  let { sourceMap, dataSource, options, type } = chartData
-  let sMap = sourceMap || { xField: 'x', yField: 'y', seriesField: 's' }
-  let data = dataSource || []
-  let dataset = formatSeries(sMap, data)
+  let { staticDataSource, options, type } = chartData
+  let sourceMap = options.sourceMap || { xField: 'x', yField: 'y', seriesField: 's' }
+  let data = staticDataSource || []
+  let dataset = formatSeries(sourceMap, data)
 
   // 组装options
   let opts = deepCopy(options)
@@ -694,13 +706,14 @@ export function buildOptions(chartData) {
   delete opts['titleStyle']
   delete opts['width']
   delete opts['height']
+  delete opts['sourceMap']
   opts.dataset = dataset
 
   if (oneOf(type, ['line', 'histogram', 'bar', 'pie'])) {
     let seriesList = []
     data.forEach(item => {
       seriesList.push({
-        name: item[sMap.seriesField],
+        name: item[sourceMap.seriesField],
         ...deepCopy(options.series)
       })
     })
