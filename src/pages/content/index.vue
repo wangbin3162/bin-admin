@@ -19,8 +19,8 @@
           </div>
 
           <div class="input">
-            <b-input v-model="query.keyword" placeholder="请输入想查询的文字"
-              @on-enter="handleSearch">
+            <b-input v-model="query.keyword" placeholder="请输入想查询的文字" clearable
+              @on-enter="handleSearch" @on-clear="handleSearch">
               <b-icon name="ios-search" slot="suffix" style="cursor: pointer"
                 @click.native="handleSearch">
               </b-icon>
@@ -53,12 +53,12 @@
             <template v-if="contentList.length > 0">
               <ul>
                 <li v-for="item in contentList" :key="item.id">
-                  <div class="con-title">
+                  <div class="title-con">
                     <img :src="`/api/cms/attach/download?attachmentId=${item.thumbnailPath}`" alt=""
                       v-show="item.thumbnailPath !== null">
-                    <div>
-                      <p v-html="item.title"></p>
-                      <span>{{ item.summary }}</span>
+                    <div class="title-text">
+                      <p v-html="item.title" @click="handleTitleBtnClick(item.id)"></p>
+                      <div v-html="item.summary"></div>
                     </div>
                   </div>
 
@@ -88,6 +88,7 @@
 
 <script>
   import {
+    getTopColumn,
     getSectionRoots, getSectionChildren,
     getContentList, getContentListByKeyword
   } from '../../api/content.api'
@@ -124,23 +125,28 @@
        */
       async init () {
         const query = this.$route.query
-        await this.getSectionRoots(query.parentCol)
-        await this.getSectionChildren(this.curRootTab.id, query.id)
+        await this.getTopColumn(query.pId)
+        await this.getSectionChildren(this.curRootTab.id, query.sId)
         this.visible = true
         if (this.subSecList.length > 0) {
-          this.query.columnId = this.curSubTab.id
-          await this.getContentList(this.query)
+          if (query.keyword) {
+            this.query.keyword = query.keyword
+            await this.getContentListByKeyword(this.query)
+          } else {
+            this.query.columnId = this.curSubTab.id
+            await this.getContentList(this.query)
+          }
         }
       },
 
       /**
        * @author haodongdong
-       * @description 获取所有根节点栏目渲染tabs，并根据router参数处理默认选中
+       * @description 获取topColumn接口筛选后的顶级栏目节点
        * @param {string} [activedSecId] 当前使之活动栏目
        */
-      async getSectionRoots (activedSecId = undefined) {
+      async getTopColumn (activedSecId = undefined) {
         try {
-          const res = await getSectionRoots()
+          const res = await getTopColumn()
           res.forEach(item => {
             item.key = item.id
             item.title = item.colName
@@ -227,7 +233,11 @@
        */
       handleSearch () {
         this.query.page = 1
-        this.getContentListByKeyword(this.query)
+        if (this.query.keyword) {
+          this.getContentListByKeyword(this.query)
+        } else {
+          this.getContentList(this.query)
+        }
       },
 
       /**
@@ -236,12 +246,15 @@
        * @param {Object} tab 当前tab对象
        */
       async handleTabsChange (tab) {
-        await this.getSectionChildren(tab.id)
-        this.contentList = []
-        if (this.subSecList.length > 0) {
-          this.query.page = 1
-          this.query.columnId = this.curSubTab.id
-          this.getContentList(this.query)
+        if (this.visible) { // 界面渲染后b-tabs组件切换的回调才有效
+          this.curRootTab = tab
+          await this.getSectionChildren(tab.id)
+          this.contentList = []
+          if (this.subSecList.length > 0) {
+            this.query.page = 1
+            this.query.columnId = this.curSubTab.id
+            this.getContentList(this.query)
+          }
         }
       },
 
@@ -258,6 +271,24 @@
           path: '/content/index'
         })
         this.getContentList(this.query)
+      },
+
+      /**
+       * @author haodongdong
+       * @description 点击文章标题的回调
+       * @param {string} 文章id
+       */
+      handleTitleBtnClick (id) {
+        this.$router.push({
+          path: '/content/detail',
+          query: {
+            pId: this.curRootTab.id,
+            sId: this.curSubTab.id,
+            pName: this.curRootTab.colName,
+            sName: this.curSubTab.colName,
+            contentId: id
+          }
+        })
       },
 
       /**
@@ -414,7 +445,7 @@
             min-height: 90px;
             border-bottom: 1px solid #d9d9d9;
 
-            .con-title {
+            .title-con {
               display: flex;
               align-items: center;
               margin-bottom: 10px;
@@ -425,24 +456,26 @@
                 margin-right: 20px;
               }
 
-              p {
+              .title-text {
+                p {
                 font-size: 17px;
 
-                &:before {
-                  content: '';
-                  display: inline-block;
-                  margin-right: 10px;
-                  height: 13px;
-                  width: 2px;
-                  background: #d9d9d9;
+                  &:before {
+                    content: '';
+                    display: inline-block;
+                    margin-right: 10px;
+                    height: 13px;
+                    width: 2px;
+                    background: #d9d9d9;
+                  }
                 }
-              }
 
-              span {
-                display: inline-block;
-                margin-top: 10px;
-                margin-left: 13px;
-                color: #bfbfbf;
+                div {
+                  display: inline-block;
+                  margin-top: 10px;
+                  margin-left: 13px;
+                  color: #bfbfbf;
+                }
               }
 
               &:hover {

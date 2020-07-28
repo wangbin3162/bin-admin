@@ -61,7 +61,7 @@ import Qs from 'qs'
 
 /**
  * @author haodongdong
- * @description 首页栏目列表
+ * @description 获取由后端筛选后的顶级栏目节点（目前为政策法规、标准规范）
  * @returns {Promise<any>}
  */
 export async function getTopColumn() {
@@ -219,6 +219,31 @@ export async function getContentListByKeyword(query) {
         }
       })
       resolve(res.data)
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
+ * @description 获取内容（新闻）详情
+ * @returns {Promise<Content>}
+ * @param {string} id 内容id
+ */
+export async function getContentDetail(id) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: 'api/cms/content/detail',
+        method: 'get',
+        params: { id }
+      })
+      if (res.data.successful) {
+        resolve(res.data.data)
+      } else {
+        reject(res.data.message)
+      }
     } catch (error) {
       reject(error)
     }

@@ -23,13 +23,13 @@
 
         <template v-if="contentList.length > 0">
           <ul class="list">
-            <li v-for="content in contentList" :key="content.id"
+            <li v-for="item in contentList" :key="item.id"
               flex="main:justify" class="list-item">
-              <p>
-                {{ content.title }}
+              <p @click="handleTitleBtnClick(item.id)">
+                {{ item.title }}
               </p>
               <span>
-                {{ $util.parseTime(new Date(content.publishDate), '{y}-{m}-{d}')}}
+                {{ $util.parseTime(new Date(item.publishDate), '{y}-{m}-{d}')}}
               </span>
             </li>
           </ul>
@@ -129,11 +129,29 @@
 
       /**
        * @author haodongdong
+       * @description 点击文章标题的回调
+       * @param {string} 文章id
+       */
+      handleTitleBtnClick (id) {
+        this.$router.push({
+          path: '/content/detail',
+          query: {
+            pId: this.curActivedBtn.parentCol,
+            sId: this.curActivedBtn.id,
+            pName: this.curActivedBtn.colName,
+            sName: this.curActivedBtn.parentColName,
+            contentId: id
+          }
+        })
+      },
+
+      /**
+       * @author haodongdong
        * @description 查看更多按钮回调
        */
       HandleMoreBtn () {
         console.log(this.curActivedBtn)
-        window.open(`#/content/index?parentCol=${this.curActivedBtn.parentCol}&id=${this.curActivedBtn.id}`)
+        window.open(`#/content/index?pId=${this.curActivedBtn.parentCol}&sId=${this.curActivedBtn.id}`)
       }
     }
   }
