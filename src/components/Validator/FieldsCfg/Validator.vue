@@ -188,7 +188,7 @@
               </b-tooltip>
               <b-input @drop.native="onDrop($event,index)" @dragover.native="allowDrop($event)"
                        v-model="checkRulesArr[index].preField"
-                       size="small" @on-change="emitValue" clearable/>
+                       size="small" @on-change="emitValue"/>
             </div>
             <div class="info">
               <span class="param-tip">错误提示：</span>

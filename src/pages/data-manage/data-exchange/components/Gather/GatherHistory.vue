@@ -70,6 +70,9 @@
               </div>
             </div>
           </div>
+          <b-ace-editor :value="JSON.stringify(compareList,null,2)" readonly height="1000"/>
+          <b-ace-editor :value="JSON.stringify(operateObjects,null,2)" readonly height="600"/>
+          <b-ace-editor :value="JSON.stringify(compareResult,null,2)" readonly height="600"/>
         </b-collapse-wrap>
         <template slot="footer">
           <b-button @click="close">关闭</b-button>
@@ -174,7 +177,9 @@
         this.listQuery.recordId = current.id
         // 存储当前版本最新数据，名称字段映射和需要加密的字段列表
         this.current = { ...current }
+        console.log(columns)
         this.fieldMap = this.formatFieldMaps(columns)
+        console.log(this.fieldMap)
         this.historyDialog = true
         this.searchList()
       },
@@ -237,7 +242,7 @@
                 // console.log('掩码后：' + value)
               }
               if (field.options) {
-                  tmp[key] = field.options[obj[key]] !== undefined ? field.options[obj[key]] : null
+                tmp[key] = field.options[obj[key]] !== undefined ? field.options[obj[key]] : null
               }
             }
           }

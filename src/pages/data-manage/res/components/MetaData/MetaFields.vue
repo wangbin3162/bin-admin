@@ -58,7 +58,7 @@
               <b-row>
                 <b-col span="12">
                   <b-form-item label="数据长度" prop="dataLength" v-if="showDataLength">
-                    <b-input-number v-model="metaItem.dataLength" :max="3000"></b-input-number>
+                    <b-input-number v-model="metaItem.dataLength" :max="12000"></b-input-number>
                   </b-form-item>
                 </b-col>
                 <b-col span="12">
@@ -72,7 +72,7 @@
                 </b-col>
                 <b-col span="12">
                   <b-form-item label="数据精度" prop="dataPrecision" v-if="showDataPrecision">
-                    <b-input-number v-model="metaItem.dataPrecision" :max="4"></b-input-number>
+                    <b-input-number v-model="metaItem.dataPrecision" :max="6"></b-input-number>
                   </b-form-item>
                 </b-col>
               </b-row>
