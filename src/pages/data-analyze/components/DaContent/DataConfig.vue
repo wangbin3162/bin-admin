@@ -44,8 +44,8 @@
                 </api-choose>
               </b-form-item>
 
-              <b-form-item label="名称" class="form-item mr-20" prop="names">
-                <b-input v-model="item.names" placeholder="请输入名称"></b-input>
+              <b-form-item label="名称" class="form-item mr-20" prop="name">
+                <b-input v-model="item.name" placeholder="请输入名称"></b-input>
               </b-form-item>
 
               <b-form-item label="信息项映射" class="form-item">
@@ -120,7 +120,7 @@
         required: true
       },
       initMappingFields: { // 动态数据时，数据配置信息
-        type: Array,
+        type: String,
         required: true
       },
       isEdit: { // 用于正确渲染b-code-editor组件
@@ -157,7 +157,7 @@
       },
       initMappingFields: { // 此watcher用于赋初始值
         handler (newVal) {
-          this.mappingFields = this.$util.deepClone(newVal)
+          this.mappingFields = JSON.parse(newVal)
           if (this.mappingFields.length === 0) {
             const obj = this.createInterfaceObj()
             this.mappingFields.push(obj)
@@ -222,15 +222,6 @@
       handleConfigInfoItemMapBtn (mappingItems, index) {
         this.curIndex = index // 缓存当前操作行index，用于配置信息项映射后更新数据
         this.$emit('config-map', this.$util.deepClone(mappingItems))
-      },
-
-      /**
-       * @author haodongdong
-       * @description 静态、动态数据按钮点击回调
-       * @param {string} toggle OFF NO
-       */
-      handleBlockBtnClick (toggle) {
-        console.log(toggle)
       },
 
       /**

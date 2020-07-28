@@ -474,7 +474,7 @@
           type: [],
           unit: '',
           apiName: '',
-          mappingFields: [],
+          mappingFields: '[]',
           themeName: this.currentTreeNode ? this.currentTreeNode.title : ''
         }
       },
