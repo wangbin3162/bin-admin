@@ -60,13 +60,17 @@
     methods: {
       // 上传前的回调
       handleUpload (file) {
-        const reader = new FileReader()
-        reader.readAsDataURL(file)
-        reader.onload = e => {
-          this.imgSrc = e.target.result
-          this.hasFile = true
+        if (file.type.includes('image')) {
+          const reader = new FileReader()
+          reader.readAsDataURL(file)
+          reader.onload = e => {
+            this.imgSrc = e.target.result
+            this.hasFile = true
 
-          this.fileUpload(file, this.funName, this.moduleName)
+            this.fileUpload(file, this.funName, this.moduleName)
+          }
+        } else {
+          this.$message({ type: 'warning', content: '请上传图片类型的文件' })
         }
         return false
       },
