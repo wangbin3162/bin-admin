@@ -18,7 +18,7 @@
             </div>
           </b-form-item>
 
-          <b-form-item label="方案名称" prop="modelId">
+          <b-form-item label="方案名称" prop="modelId" v-if="curReportConfig.reportType === 'R'">
             <b-select v-model="form.modelId">
               <b-option v-for="item in modelList" :key="item.id"
                 :value="item.id">
@@ -28,7 +28,7 @@
           </b-form-item>
 
            <b-form-item label="报告类型" prop="configId">
-            <b-select v-model="form.configId">
+            <b-select v-model="form.configId" @on-change="handleConfigChange">
               <b-option v-for="item in creditReportList" :key="item.id"
                 :value="item.id">
                 {{ item.reportName }}
@@ -118,7 +118,8 @@
           maskCode: [
             { required: true, message: '请选择是否掩码', trigger: 'change' }
           ]
-        }
+        },
+        curReportConfig: {} // 当前选中的报告类型（报告配置）数据对象
       }
     },
     computed: {
@@ -174,6 +175,11 @@
         }
         this.form.personId = val.id
       },
+      // 报告类型下拉框回调
+      handleConfigChange (id) {
+        const reportConfig = this.creditReportList.find(item => item.id === id)
+        this.curReportConfig = reportConfig
+      },
       // 确定按钮回调
       async handleSubmit () {
         const valid = await this.$refs.form.validate()
@@ -181,16 +187,26 @@
         if (valid) {
           try {
             this.loadingBtn = true
-            const res = await reCount(this.form)
 
+            // 查询选中的报告模型，用于配置导出pdf接口的参数
             const model = this.modelList.find(item => item.id === this.form.modelId)
-            const pdfBlob = await exportPDF({
+            const pdfParam = {
               personId: this.form.personId,
               configId: this.form.configId,
               maskCode: JSON.parse(this.form.maskCode),
               modelId: model.id,
               modelName: model.name
-            })
+            }
+
+            // 判断当前选择的报告类型(信用报告配置)为信用报告还是核查报告
+            if (this.curReportConfig.reportType === 'R') { // R 信用报告 V 核查报告
+              const res = await reCount(this.form) // 信用报告则重新计算
+            } else { // 核查报告pdf下载接口以下两个参数为空
+              pdfParam.modelId = null
+              pdfParam.modelName = null
+            }
+
+            const pdfBlob = await exportPDF(pdfParam)
 
             this.showDialog = false
             this.$emit('recount-success', pdfBlob)
@@ -213,7 +229,10 @@
           this.creditReportList = res.rows
           // 设置选中默认的信用报告配置
           const report = this.creditReportList.find(item => item.sysDefault === '1')
-          if (report) this.form.configId = report.id
+          if (report) {
+            this.form.configId = report.id
+            this.curReportConfig = report
+          }
         } catch (error) {
           console.error(error)
         }
