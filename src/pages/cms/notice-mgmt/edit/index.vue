@@ -39,7 +39,7 @@
             </div>
 
             <b-form-item label="备注">
-              <b-input type="textarea" placeholder="通知备注" :autosize=" { minRows: 2, maxRows: 4 }"></b-input>
+              <b-input v-model="form.remark" type="textarea" placeholder="通知备注" :autosize=" { minRows: 2, maxRows: 4 }"></b-input>
             </b-form-item>
           </b-form>
         </b-collapse-wrap>
