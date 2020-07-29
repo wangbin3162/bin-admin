@@ -91,7 +91,7 @@
        * @description table-con组件create事件回调
        */
       createHandler () {
-        this.editDiaTitle = '新增内容'
+        this.editDiaTitle = '新增新闻'
         this.viewStatus = 'edit'
       },
 
@@ -102,7 +102,7 @@
        */
       editHandler (row) {
         this.curRow = row
-        this.editDiaTitle = '编辑内容'
+        this.editDiaTitle = '编辑新闻'
         this.viewStatus = 'edit'
       },
 

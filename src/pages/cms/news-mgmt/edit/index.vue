@@ -4,18 +4,18 @@
       <v-edit-wrap transparent>
         <b-collapse-wrap v-show="view === 'baseInfo'" title="基本信息">
           <b-form ref="form" :model="form" :rules="rules" label-position="top">
-            <b-form-item label="内容标题" prop="title">
-              <b-input v-model="form.title" placeholder="请输入内容标题" :maxlength="300"></b-input>
+            <b-form-item label="新闻标题" prop="title">
+              <b-input v-model="form.title" placeholder="请输入新闻标题" :maxlength="300"></b-input>
             </b-form-item>
 
-            <b-form-item label="内容摘要" prop="summary">
+            <b-form-item label="新闻摘要" prop="summary">
               <b-input v-model="form.summary" type="textarea" :autosize="{minRows: 3,maxRows: 5}"
-               placeholder="请输入内容摘要" :maxlength="1000">
+               placeholder="请输入新闻摘要" :maxlength="1000">
               </b-input>
             </b-form-item>
 
             <div flex="box:mean">
-              <b-form-item label="内容类型" prop="contentType" class="mr-15">
+              <b-form-item label="新闻类型" prop="contentType" class="mr-15">
                 <b-select v-model="form.contentType">
                   <b-option v-for="(value, key) in contentType" :key="key" :value="key">
                     {{ value }}
@@ -46,19 +46,19 @@
             </b-form-item>
 
             <b-form-item label="关键字">
-              <b-input v-model="form.keywords" placeholder="向搜索引擎说明内容的关键字，多个以英文逗号隔开" :maxlength="300">
+              <b-input v-model="form.keywords" placeholder="向搜索引擎说明新闻的关键字，多个以英文逗号隔开" :maxlength="300">
               </b-input>
             </b-form-item>
 
             <b-form-item label="描述">
               <b-input v-model="form.description" type="textarea" :autosize="{minRows: 1,maxRows: 5}"
-               placeholder="向搜索引擎说明内容描述" :maxlength="500">
+               placeholder="向搜索引擎说明新闻描述" :maxlength="500">
               </b-input>
             </b-form-item>
 
             <b-form-item label="备注">
               <b-input v-model="form.brief" type="textarea" :autosize="{minRows: 3,maxRows: 5}"
-               placeholder="内容备注" :maxlength="500">
+               placeholder="新闻备注" :maxlength="500">
               </b-input>
             </b-form-item>
           </b-form>
@@ -136,16 +136,16 @@
         },
         rules: {
           title: [
-            { required: true, message: '内容标题不能为空', trigger: 'blur' }
+            { required: true, message: '新闻标题不能为空', trigger: 'blur' }
           ],
           summary: [
-            { required: true, message: '内容摘要不能为空', trigger: 'blur' }
+            { required: true, message: '新闻摘要不能为空', trigger: 'blur' }
           ],
           linkUrl: [
             { required: true, message: '链接地址不能为空', trigger: 'blur' }
           ],
           contentType: [
-            { required: true, message: '内容类型不能为空', trigger: 'change' }
+            { required: true, message: '新闻类型不能为空', trigger: 'change' }
           ]
         },
         detailCache: ''
