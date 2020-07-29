@@ -5,12 +5,12 @@
         <b-collapse-wrap v-show="view === 'baseInfo'" title="基本信息">
           <b-form ref="form" :model="form" :rules="rules" label-position="top">
             <b-form-item label="内容标题" prop="title">
-              <b-input v-model="form.title" placeholder="请输入内容标题"></b-input>
+              <b-input v-model="form.title" placeholder="请输入内容标题" :maxlength="300"></b-input>
             </b-form-item>
 
             <b-form-item label="内容摘要" prop="summary">
               <b-input v-model="form.summary" type="textarea" :autosize="{minRows: 3,maxRows: 5}"
-               placeholder="请输入内容摘要">
+               placeholder="请输入内容摘要" :maxlength="1000">
               </b-input>
             </b-form-item>
 
@@ -46,18 +46,19 @@
             </b-form-item>
 
             <b-form-item label="关键字">
-              <b-input v-model="form.keywords" placeholder="向搜索引擎说明内容的关键字，多个以英文逗号隔开"></b-input>
+              <b-input v-model="form.keywords" placeholder="向搜索引擎说明内容的关键字，多个以英文逗号隔开" :maxlength="300">
+              </b-input>
             </b-form-item>
 
             <b-form-item label="描述">
               <b-input v-model="form.description" type="textarea" :autosize="{minRows: 1,maxRows: 5}"
-               placeholder="向搜索引擎说明内容描述">
+               placeholder="向搜索引擎说明内容描述" :maxlength="500">
               </b-input>
             </b-form-item>
 
             <b-form-item label="备注">
               <b-input v-model="form.brief" type="textarea" :autosize="{minRows: 3,maxRows: 5}"
-               placeholder="内容备注">
+               placeholder="内容备注" :maxlength="500">
               </b-input>
             </b-form-item>
           </b-form>
