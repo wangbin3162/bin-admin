@@ -34,7 +34,7 @@
             <b-button :disabled="btnDisabled" @click="handleDownloadTemplate">模板下载</b-button>
 
             <div slot="right">
-              <b-button type="text" @click="handleOpenRecordDialog" :disabled="isRoot">导入记录</b-button>
+              <b-button type="text" @click="handleOpenRecordDialog" :disabled="isRoot">解除记录</b-button>
 
               <b-divider type="vertical"></b-divider>
 

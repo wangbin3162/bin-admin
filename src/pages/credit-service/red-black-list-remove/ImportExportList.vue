@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-header-wrap v-show="visible && !detailDialog" show-close @on-close="close" title="导入记录">
+    <page-header-wrap v-show="visible && !detailDialog" show-close @on-close="close" title="解除记录">
       <v-table-wrap>
         <!--查询条件-->
         <v-filter-bar @keyup-enter="handleFilter">
@@ -25,7 +25,7 @@
         <b-table :columns="columns" :data="list" :loading="listLoading">
           <template v-slot:jobType="{row}">
             <b-icon v-if="row.jobType==='EXPORT'" name="ios-log-out" size="22" color="#ff7072"/>
-            <b-icon v-if="row.jobType==='IMPORT_DELETE'" name="ios-log-in" size="22" color="#74cf47"/>
+            <b-icon v-if="row.jobType==='IMPORT_DELETE'" name="ios-close-circle-outline" size="22" color="red"/>
             {{ jobTypeMap[row.jobType] }}
           </template>
           <template v-slot:jobStatus="{row}">
@@ -140,7 +140,7 @@
         ],
         statusMap: { COMPLETED: '完成', STARTED: '正在进行中', FAILED: '失败', REPEATING: '重复性验证' },
         statusStyleMap: { COMPLETED: 'success', STARTED: 'primary', FAILED: 'danger', REPEATING: 'warning' },
-        jobTypeMap: { IMPORT_DELETE: '导入', EXPORT: '导出' },
+        jobTypeMap: { IMPORT_DELETE: '解除', EXPORT: '导出' },
         detail: null, // 文件导入信息详情
         errDataColumns: [],
         errDataRows: [] // 导入错误数据信息
