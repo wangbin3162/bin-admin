@@ -93,10 +93,10 @@
     getTopColumn,
     getSectionRoots, getSectionChildren,
     getContentList, getContentListByKeyword
-  } from '../../api/content.api'
+  } from '../../../api/cms/news.api'
 
   export default {
-    name: 'Content',
+    name: 'News',
     data () {
       return {
         visible: false,
@@ -270,7 +270,7 @@
         this.query.page = 1
         this.query.columnId = tab.id
         this.$router.push({ // 暂时用于清空可能存在的url参数
-          path: '/content/index'
+          path: '/news/index'
         })
         this.getContentList(this.query)
       },
@@ -282,7 +282,7 @@
        */
       handleTitleBtnClick (id) {
         this.$router.push({
-          path: '/content/detail',
+          path: '/news/detail',
           query: {
             pId: this.curRootTab.id,
             sId: this.curSubTab.id,
@@ -337,7 +337,7 @@
 <style lang="stylus" scoped>
   .content {
     height: 100%;
-    background: url("../../assets/images/content/banner-bg0.png") no-repeat 0 0;
+    background: url("../../../assets/images/content/banner-bg0.png") no-repeat 0 0;
     background-size: 100% 310px;
     transition: background .3s;
 

@@ -14,7 +14,7 @@
         <b-breadcrumb separator="/">
           <b-breadcrumb-item :to="{ path: '/' }">首页</b-breadcrumb-item>
           <b-breadcrumb-item :to="{
-            path: '/content/index',
+            path: '/news/index',
             query: {
               pId: routeQuery.pId,
               sId: routeQuery.sId,
@@ -95,10 +95,10 @@
   import {
     getTopColumn, getSectionChildren,
     getContentDetail
-  } from '../../api/content.api'
+  } from '../../../api/cms/news.api'
 
   export default {
-    name: 'Content',
+    name: 'NewsDetail',
     data () {
       return {
         visible: false,
@@ -166,7 +166,7 @@
        */
       handleSecBtnClick (pId, sId) {
         this.$router.push({
-          path: '/content/index',
+          path: '/news/index',
           query: {
             pId,
             sId
@@ -180,7 +180,7 @@
        */
       handleSearch () {
         this.$router.push({
-          path: '/content/index',
+          path: '/news/index',
           query: {
             pid: this.routeQuery.pId,
             sid: this.routeQuery.sId,
@@ -206,7 +206,7 @@
 <style lang="stylus" scoped>
   .content {
     height: 100%;
-    background: url("../../assets/images/content/banner-bg0.png") no-repeat 0 0;
+    background: url("../../../assets/images/content/banner-bg0.png") no-repeat 0 0;
     background-size: 100% 310px;
     transition: background .3s;
 

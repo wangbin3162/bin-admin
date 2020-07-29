@@ -31,7 +31,7 @@
 </template>
 
 <script>
-  import { getNoticeList } from '../../api/content.api'
+  import { getNoticeList } from '../../api/cms/notice.api'
 
   export default {
     name: 'TabConC',

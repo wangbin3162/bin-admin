@@ -9,7 +9,7 @@
 </template>
 
 <script>
-  import { getUnreadNum } from '../../api/content.api'
+  import { getUnreadNum } from '../../api/cms/notice.api'
 
   export default {
     name: 'NoticeTips',

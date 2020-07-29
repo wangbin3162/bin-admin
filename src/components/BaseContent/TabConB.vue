@@ -47,7 +47,7 @@
 </template>
 
 <script>
-  import { getSectionChildren, getContentList } from '../../api/content.api'
+  import { getSectionChildren, getContentList } from '../../api/cms/news.api'
 
   /**
    * @typedef {import('../../api/content.api').Section} Section
@@ -134,7 +134,7 @@
        */
       handleTitleBtnClick (id) {
         this.$router.push({
-          path: '/content/detail',
+          path: '/news/detail',
           query: {
             pId: this.curActivedBtn.parentCol,
             sId: this.curActivedBtn.id,
@@ -151,7 +151,7 @@
        */
       HandleMoreBtn () {
         console.log(this.curActivedBtn)
-        window.open(`#/content/index?pId=${this.curActivedBtn.parentCol}&sId=${this.curActivedBtn.id}`)
+        window.open(`#/news/index?pId=${this.curActivedBtn.parentCol}&sId=${this.curActivedBtn.id}`)
       }
     }
   }
