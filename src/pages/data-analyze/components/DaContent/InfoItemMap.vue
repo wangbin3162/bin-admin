@@ -13,7 +13,13 @@
 
               <div flex>
                 <b-form-item label="别名" prop="names" class="mr-15 form-item">
-                  <b-input v-model="item.names" placeholder="key" disabled></b-input>
+                  <div flex>
+                    <b-input v-model="item.names" placeholder="请输入或选择别名">
+                    </b-input>
+                    <b-button type="primary" plain @click="handleAliasSelectBtn(item)">
+                      选择
+                    </b-button>
+                  </div>
                 </b-form-item>
 
                 <b-form-item label="标题" prop="titles" class="mr-15 form-item">
@@ -41,65 +47,18 @@
                   <div flex>
                     <b-input placeholder="选择字典" disabled :value="item.dictName"></b-input>
                     <b-button type="primary" plain
-                      @click="handleSelectBtn(item)">
+                      @click="handleSelectDictBtn(item)">
                       选择
                     </b-button>
                   </div>
                 </b-form-item>
               </div>
 
-              <!-- <b-row :gutter="20">
-
-                <b-col span="5">
-                  <b-form-item label="别名" prop="names">
-                    <b-input v-model="item.names" placeholder="key" disabled></b-input>
-                  </b-form-item>
-                </b-col>
-
-                <b-col span="5">
-                  <b-form-item label="标题" prop="titles">
-                    <b-input v-model="item.titles" placeholder="请输入标题"></b-input>
-                  </b-form-item>
-                </b-col>
-
-                <b-col span="5">
-                  <b-form-item label="类型" prop="type">
-                    <b-select v-model="item.type" style="width: 100%;">
-                      <b-option v-for="(value, key) in typeEnum" :key="key" :value="key">
-                        {{ value }}
-                      </b-option>
-                    </b-select>
-                  </b-form-item>
-                </b-col>
-
-                <b-col span="5">
-                  <b-form-item label="配置" v-if="item.type === 'DICT'" prop="dictCode">
-                    <div flex>
-                      <b-input placeholder="选择字典" disabled :value="item.dictName"></b-input>
-                      <b-button type="primary" plain
-                        @click="handleSelectBtn(item)">
-                        选择
-                      </b-button>
-                    </div>
-                  </b-form-item>
-                </b-col>
-
-                <b-col span="4">
-                  <b-form-item label="操作">
-                    <b-button type="primary" plain
-                      @click="handleRemoveBtn(index)">
-                      移除
-                    </b-button>
-                  </b-form-item>
-                </b-col>
-
-              </b-row> -->
-
             </b-form>
           </b-card>
 
           <b-button type="primary" plain style="width: 100%;"
-            @click="openSelectResponse = true">
+            @click="handleAddBtnClick">
             添加
           </b-button>
         </b-collapse-wrap>
@@ -196,25 +155,36 @@
 
       /**
        * @author haodongdong
-       * @description 选择按钮回调
-       * @param {InfoItem} infoItem
+       * @description 创建信息映射项对象
+       * @returns {InfoItem}
        */
-      handleSelectBtn (infoItem) {
-        this.curMappingItem = infoItem
-        this.openSelectDict = true
+      createInfoItemObj () {
+        return {
+          names: '',
+          titles: '',
+          type: '',
+          dictCode: null,
+          dictName: null
+        }
       },
 
       /**
        * @author haodongdong
-       * @description select-dict组件已选择的回调
-       * @param {Object} dict 字典信息
-       * @param {string} dict.groupCode 字典编码
-       * @param {string} dict.groupName 字典名称
+       * @description 添加按钮回调
        */
-      handleSelectedDict (dict) {
-        console.log(dict)
-        this.curMappingItem.dictCode = dict.groupCode
-        this.curMappingItem.dictName = dict.groupName
+      handleAddBtnClick () {
+        const obj = this.createInfoItemObj()
+        this.mappingItems.push(obj)
+      },
+
+      /**
+       * @author haodongdong
+       * @description 别名选择按钮回调
+       * @param {InfoItem} infoItem
+       */
+      handleAliasSelectBtn (infoItem) {
+        this.curMappingItem = infoItem
+        this.openSelectResponse = true
       },
 
       /**
@@ -227,14 +197,29 @@
        * @param {string} resInfo.keyPath
        */
       handleSelectedRes (resInfo) {
-        const obj = {
-          names: resInfo.keyAlias,
-          titles: '',
-          type: '',
-          dictCode: null,
-          dictName: null
-        }
-        this.mappingItems.push(obj)
+        this.curMappingItem.names = resInfo.keyAlias
+      },
+
+      /**
+       * @author haodongdong
+       * @description 字典项选择按钮回调
+       * @param {InfoItem} infoItem
+       */
+      handleSelectDictBtn (infoItem) {
+        this.curMappingItem = infoItem
+        this.openSelectDict = true
+      },
+
+      /**
+       * @author haodongdong
+       * @description select-dict组件已选择的回调
+       * @param {Object} dict 字典信息
+       * @param {string} dict.groupCode 字典编码
+       * @param {string} dict.groupName 字典名称
+       */
+      handleSelectedDict (dict) {
+        this.curMappingItem.dictCode = dict.groupCode
+        this.curMappingItem.dictName = dict.groupName
       },
 
       /**

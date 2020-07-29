@@ -5,7 +5,7 @@
         <b-collapse-wrap title="基本信息" collapse>
           <b-form ref="form" :model="form" :rules="rules" label-position="top">
             <b-form-item label="通知标题" prop="title">
-              <b-input v-model="form.title" placeholder="请输入通知标题"></b-input>
+              <b-input v-model="form.title" placeholder="请输入通知标题" :maxlength="80"></b-input>
             </b-form-item>
 
             <div flex="box:mean">
@@ -39,7 +39,8 @@
             </div>
 
             <b-form-item label="备注">
-              <b-input type="textarea" placeholder="通知备注" :autosize=" { minRows: 2, maxRows: 4 }"></b-input>
+              <b-input v-model="form.remark" type="textarea" placeholder="通知备注" :autosize=" { minRows: 2, maxRows: 4 }" :maxlength="300">
+              </b-input>
             </b-form-item>
           </b-form>
         </b-collapse-wrap>

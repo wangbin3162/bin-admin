@@ -302,7 +302,11 @@
        */
       sortTreeNode (tree) {
         tree.sort((a, b) => {
-          return a.colSort - b.colSort
+          if (a.colSort === null) {
+            return b.colSort - a.colSort
+          } else {
+            return a.colSort - b.colSort
+          }
         })
       }
     }

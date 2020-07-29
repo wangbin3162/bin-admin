@@ -4,7 +4,7 @@
         <b-input v-model="query.title" placeholder="请输入" clearable></b-input>
       </v-filter-item>
 
-      <v-filter-item title="内容类型" :span="8">
+      <v-filter-item title="新闻类型" :span="8">
         <b-select v-model="query.contentType" clearable>
           <b-option v-for="(value, key) in contentType" :key="key" :value="key">
             {{ value }}
@@ -19,7 +19,7 @@
 
       <collapse-transition>
         <div v-show="filterOpened" style="width: 100%;">
-          <v-filter-item title="内容状态" :span="8">
+          <v-filter-item title="新闻状态" :span="8">
             <b-select v-model="query.contentStatus" clearable>
               <b-option v-for="(value, key) in contentStatus" :key="key" :value="key">
                 {{ value }}
@@ -92,14 +92,7 @@
        * @description 重置按钮回调
        */
       resetQueryHandler () {
-        this.query.title = ''
-        this.query.contentType = ''
-        this.query.contentStatus = ''
-        this.query.publishDateStart = ''
-        this.query.publishDateEnd = ''
-        this.query.size = 10
-        this.query.page = 1
-        // 如果以this.query = {}的形式给query赋值，watch内发出的input事件会慢于以下的reset事件
+        this.dateStrArr = []
         this.$emit('reset', this.query)
       },
 
@@ -109,7 +102,6 @@
        * @param {string[]} dateStrArr 包含开始于结束日期时间字符串的数组
        */
       dateChangeHandler (dateStrArr) {
-        console.log(dateStrArr)
         this.query.publishDateStart = dateStrArr[0]
         this.query.publishDateEnd = dateStrArr[1]
       }

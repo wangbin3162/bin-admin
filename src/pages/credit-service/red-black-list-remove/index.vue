@@ -34,7 +34,7 @@
             <b-button :disabled="btnDisabled" @click="handleDownloadTemplate">模板下载</b-button>
 
             <div slot="right">
-              <b-button type="text" @click="handleOpenRecordDialog" :disabled="isRoot">导入记录</b-button>
+              <b-button type="text" @click="handleOpenRecordDialog" :disabled="isRoot">解除记录</b-button>
 
               <b-divider type="vertical"></b-divider>
 
@@ -97,7 +97,7 @@
         visible: false,
         btnDisabled: false,
         loading: false,
-        isEmpty: true,
+        isEmpty: true, // 判断顶层节点是否为空，用于界面提示。
         treeData: [],
         curNode: null, // 当前选中节点
         listQuery: {
@@ -132,7 +132,7 @@
     },
     async created () {
       await this.getLeftTreeNode()
-      if (this.curNode.resourceKey) {
+      if (!this.curNode.root) {
         this.buildTable(this.curNode.resourceKey)
       }
     },
@@ -142,11 +142,16 @@
         if (this.curNode.resourceKey === node.resourceKey) {
           node.selected = true
         } else {
-          // 如果点击的顶层节点为空则 this.isEmpty = true
+          // 如果点击的顶层节点为空则 this.isEmpty = true，用于控制是否显示可能未配置的空的名单提示
           if (node.root && !(node.children && node.children.length)) {
             this.isEmpty = true
           } else {
             this.isEmpty = false
+          }
+          if (node.root && (node.children && node.children.length)) { // 如果是根节点且根节点children不为空，则选中跟节点下第一个子节点
+            node.selected = false
+            node = node.children[0]
+            node.selected = true
           }
           // 不是根节点则发起请求构建table
           if (!node.root) {
@@ -268,6 +273,7 @@
       buildTree (data) {
         data.redList.forEach((item, index) => {
           item.title = item.resourceName
+          item.selected = false
           if (index === 0) {
             item.selected = true // 默认选中第一项
             this.curNode = item // 选中后设置当前节点
@@ -276,6 +282,7 @@
         })
         data.blackList.forEach((item, index) => {
           item.title = item.resourceName
+          item.selected = false
           if (!data.redList.length && index === 0) {
             item.selected = true // redList不存在的话默认选中blackList第一项
             this.curNode = item // 选中后设置当前节点
@@ -285,7 +292,7 @@
 
         const nodes = [
           {
-            resourceKey: null,
+            resourceKey: 'red',
             root: true,
             title: '红名单',
             expand: true,
@@ -293,7 +300,7 @@
             children: data.redList
           },
           {
-            resourceKey: null,
+            resourceKey: 'black',
             root: true,
             title: '黑名单',
             expand: true,

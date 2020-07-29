@@ -317,25 +317,25 @@
         // 2.4.2 数据归集总量
         api.getSjgjzl(this.listQuery).then(res => {
           if (res.data.code === '0') {
-            this.counts.totalCount = res.data.data.data.value
+            this.counts.totalCount = res.data.data.data[0].value
           }
         })
         // 2.4.3 本月归集数据量
         api.getBygjsjl(this.listQuery).then(res => {
           if (res.data.code === '0') {
-            this.counts.monthCount = res.data.data.data.monthCount
+            this.counts.monthCount = res.data.data.data[0].monthCount
           }
         })
         // 2.4.4 上月归集数据量
         api.getSygjsjl(this.listQuery).then(res => {
           if (res.data.code === '0') {
-            this.counts.preMonthCount = res.data.data.data.preMonthCount
+            this.counts.preMonthCount = res.data.data.data[0].preMonthCount
           }
         })
         // 2.4.5 数据完整率
         api.getSjwzl(this.listQuery).then(res => {
           if (res.data.code === '0') {
-            this.counts.completeRate = res.data.data.data.completeRate.toFixed(1)
+            this.counts.completeRate = res.data.data.data[0].completeRate.toFixed(1)
           }
         })
         // 2.4.6 本月信息归集统计

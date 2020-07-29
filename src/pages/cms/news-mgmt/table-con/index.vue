@@ -103,7 +103,7 @@
         columns: [
           { type: 'index', width: 50 },
           { title: '新闻标题', key: 'title', ellipsis: true, tooltip: true },
-          { title: '内容类型', slot: 'contentType' },
+          { title: '新闻类型', slot: 'contentType' },
           // { title: '发布时间', slot: 'publishDate' },
           { title: '缩略图', slot: 'thumbnailPath' },
           { title: '置顶', slot: 'isTop' },
@@ -163,6 +163,13 @@
        * @description 搜索组件触发重置按钮reset事件回调
        */
       resetHandler () {
+        this.query.title = ''
+        this.query.contentType = ''
+        this.query.contentStatus = ''
+        this.query.publishDateStart = ''
+        this.query.publishDateEnd = ''
+        this.query.size = 10
+        this.query.page = 1
         this.getContentList()
       },
 

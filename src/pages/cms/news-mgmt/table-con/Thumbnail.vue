@@ -119,6 +119,7 @@
           await removeContentThumbnail(this.form.id)
           this.open = false
           this.$message({ type: 'success', content: '操作成功' })
+          this.$emit('success')
         } catch (error) {
           console.error(error)
           this.$notice.danger({ title: '操作失败', desc: error })
