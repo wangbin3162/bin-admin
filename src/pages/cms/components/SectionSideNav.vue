@@ -37,6 +37,10 @@
   export default {
     name: 'SectionSideNav',
     props: {
+      value: {
+        type: String,
+        default: ''
+      },
       searchTitle: {
         type: String,
         default: '文章搜索'
@@ -48,8 +52,16 @@
     },
     data () {
       return {
-        keyword: '',
+        keyword: this.value,
         secList: []
+      }
+    },
+    watch: {
+      value (newVal) {
+        this.keyword = newVal
+      },
+      keyword (newVal) {
+        this.$emit('input', newVal)
       }
     },
     created () {

@@ -240,6 +240,9 @@
         } else {
           this.getContentList(this.query)
         }
+        this.$router.push({ // 清空url参数
+          path: 'news'
+        })
       },
 
       /**

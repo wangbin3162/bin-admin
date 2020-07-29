@@ -16,5 +16,11 @@ export default [
     name: 'Notice',
     component: () => import(/* webpackChunkName: "Notice" */ '../pages/cms/notice'),
     meta: { title: '通知公告' }
+  },
+  {
+    path: '/notice/detail',
+    name: 'NoticeDetail',
+    component: () => import(/* webpackChunkName: "NoticeDetail" */ '../pages/cms/notice/Detail'),
+    meta: { title: '通知公告详情' }
   }
 ]

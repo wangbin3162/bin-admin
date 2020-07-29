@@ -5,16 +5,16 @@
 
     <template v-if="noticeList.length > 0">
       <ul class="list">
-        <li v-for="notice in noticeList" :key="notice.id"
+        <li v-for="item in noticeList" :key="item.id"
           flex="main:justify" class="list-item">
           <div flex="cross:center">
             <div class="line"></div>
-            <p>
-              {{ notice.title }}
+            <p @click="handleTitleBtnClick(item.id)">
+              {{ item.title }}
             </p>
           </div>
           <span>
-            {{ $util.parseTime(new Date(notice.createDate), '{y}-{m}-{d}') }}
+            {{ $util.parseTime(new Date(item.createDate), '{y}-{m}-{d}') }}
           </span>
         </li>
       </ul>
@@ -62,6 +62,20 @@
           console.error(error)
         }
         this.loading = false
+      },
+
+      /**
+       * @author haodongdong
+       * @description 点击通知标题的回调
+       * @param {string} 通知id
+       */
+      handleTitleBtnClick (id) {
+        this.$router.push({
+          path: '/notice/detail',
+          query: {
+            noticeId: id
+          }
+        })
       },
 
       /**

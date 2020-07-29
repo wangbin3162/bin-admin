@@ -13,42 +13,31 @@
       <div class="sec-nav-con">
         <b-breadcrumb separator="/">
           <b-breadcrumb-item :to="{ path: '/' }">首页</b-breadcrumb-item>
-          <b-breadcrumb-item :to="{
-            path: '/news',
-            query: {
-              pId: routeQuery.pId,
-              sId: routeQuery.sId,
-            }
-          }">
-            {{ routeQuery.pName }}
-          </b-breadcrumb-item>
-          <b-breadcrumb-item>
-            <span style="color: #0d85ff;">{{ routeQuery.sName }}</span>
+          <b-breadcrumb-item to="/notice">
+            通知公告
           </b-breadcrumb-item>
         </b-breadcrumb>
       </div>
 
       <div class="main-con">
-        <!-- <b-loading fix showText="加载中...." v-if="loading">
-        </b-loading> -->
 
         <transition name="move-left">
           <div class="left" v-show="visible">
 
-            <div v-if="content.title !== null">
+            <div v-if="detail.title !== null">
               <div class="content-title">
                 <p>
-                  {{ content.title }}
+                  {{ detail.title }}
                 </p>
 
-                <span>发布时间：{{ $util.parseTime(new Date(content.publishDate), '{y}-{m}-{d}') }}</span>
-                <span>来源：{{ content.source }}</span>
-                <span>浏览量：{{ content.accessCnt }}</span>
+                <span>发布时间：{{ $util.parseTime(new Date(detail.createDate), '{y}-{m}-{d}') }}</span>
+                <span>来源：{{ detail.source }}</span>
+                <span>浏览量：{{ detail.accessCnt }}</span>
               </div>
 
               <b-divider></b-divider>
 
-              <div v-html="content.detail" class="content-con">
+              <div v-html="detail.content" class="content-con">
               </div>
             </div>
 
@@ -58,8 +47,8 @@
 
         <transition name="move-right">
           <div class="right" v-show="visible">
-            <section-side-nav>
-            </section-side-nav>
+            <section-side-nav searchTitle="通知搜索" searchType="notice"
+              @search="handleSearch"></section-side-nav>
           </div>
         </transition>
       </div>
@@ -68,7 +57,7 @@
 </template>
 
 <script>
-  import { getContentDetail } from '../../../api/cms/news.api'
+  import { getNoticeDetail } from '../../../api/cms/notice.api'
   import SectionSideNav from '../components/SectionSideNav'
 
   export default {
@@ -80,7 +69,7 @@
       return {
         visible: false,
         loading: false,
-        content: {},
+        detail: {},
         routeQuery: {}
       }
     },
@@ -94,7 +83,7 @@
        */
       async init () {
         this.routeQuery = this.$route.query
-        await this.getContentDetail(this.routeQuery.contentId)
+        await this.getNoticeDetail(this.routeQuery.noticeId)
         this.visible = true
       },
 
@@ -103,15 +92,29 @@
        * @description 根据内容id获取新闻内容
        * @param {string} id
        */
-      async getContentDetail (id) {
+      async getNoticeDetail (id) {
         this.loading = true
         try {
-          const res = await getContentDetail(id)
-          this.content = res
+          const res = await getNoticeDetail(id)
+          this.detail = res
         } catch (error) {
           console.error(error)
         }
         this.loading = false
+      },
+
+      /**
+       * @author haodongdong
+       * @description section-side-nav组件的search事件回调
+       * @param {string} title 搜索框的值
+       */
+      handleSearch (title) {
+        this.$router.push({
+          path: '/notice',
+          query: {
+            noticeTitle: title
+          }
+        })
       }
 
     }

@@ -31,7 +31,7 @@
                   <div class="title-con">
                     <div class="title-text">
                       <p v-html="item.title" @click="handleTitleBtnClick(item.id)"></p>
-                      <div v-html="item.content"></div>
+                      <!-- <div v-html="item.content"></div> -->
                     </div>
                   </div>
 
@@ -57,7 +57,9 @@
 
         <transition name="move-right">
           <div class="right" v-show="visible">
-            <section-side-nav searchTitle="通知搜索" searchType="notice"
+            <section-side-nav v-model="query.title"
+              searchTitle="通知搜索"
+              searchType="notice"
               @search="handleSearch">
             </section-side-nav>
           </div>
@@ -103,6 +105,9 @@
        */
       async init () {
         const query = this.$route.query
+        if (query.noticeTitle) {
+          this.query.title = query.noticeTitle
+        }
         await this.getNoticeList(this.query)
         this.visible = true
       },
@@ -134,13 +139,9 @@
        */
       handleTitleBtnClick (id) {
         this.$router.push({
-          path: '/news/detail',
+          path: '/notice/detail',
           query: {
-            pId: this.curRootTab.id,
-            sId: this.curSubTab.id,
-            pName: this.curRootTab.colName,
-            sName: this.curSubTab.colName,
-            contentId: id
+            noticeId: id
           }
         })
       },
@@ -154,6 +155,9 @@
         this.query.page = 1
         this.query.title = title
         this.getNoticeList(this.query)
+        this.$router.push({ // 用于清理url
+          path: '/notice'
+        })
       },
 
       /**

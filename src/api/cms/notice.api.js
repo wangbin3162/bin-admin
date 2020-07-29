@@ -48,6 +48,31 @@ export async function getNoticeList(query) {
 
 /**
  * @author haodongdong
+ * @description 获取通知详情
+ * @param {string} id 通知id
+ * @returns {Promise<Notice>}
+ */
+export async function getNoticeDetail(id) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: 'api/cms/cmsNotify/detail',
+        method: 'get',
+        params: { id }
+      })
+      if (res.data.successful) {
+        resolve(res.data.data)
+      } else {
+        reject(new Error(res.data.message))
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
  * @description 获取未读通知数量
  * @returns {Promise<number>}
  */
