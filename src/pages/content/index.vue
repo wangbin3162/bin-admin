@@ -80,7 +80,7 @@
               </div>
             </template>
 
-            <b-empty v-else style="margin-top: 20%;">暂时没用内容哦</b-empty>
+            <b-empty v-else style="margin-top: 20%;">暂时没有内容哦</b-empty>
           </div>
         </transition>
       </div>
