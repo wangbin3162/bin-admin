@@ -1,6 +1,5 @@
 <template>
   <div class="index-manage-index-rule">
-    <!-- <b-code-editor :value="JSON.stringify(this.list)"></b-code-editor> -->
     <b-table v-if="isStringType" :columns="columnsS" :data="list">
       <template v-slot:itemValue="{ index }">
         <b-tooltip

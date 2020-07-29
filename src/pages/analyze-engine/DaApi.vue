@@ -61,14 +61,14 @@
               </b-col>
             </b-row>
             <b-form-item v-if="apiObj.type === 'SQL'" label="sql语句" prop="sql">
-              <b-input v-model="apiObj.sql" placeholder="请输入sql语句" type="textarea"></b-input>
+              <b-ace-editor v-model="apiObj.sql" lang="sql" height="240" wrap/>
             </b-form-item>
             <b-form-item v-if="apiObj.type === 'URL'" label="url" prop="url">
               <b-input v-model="apiObj.url" placeholder="请输入url"></b-input>
             </b-form-item>
             <b-form-item v-if="apiObj.type === 'TEMPLATE'" label="模板" prop="tempId">
               <template-choose v-model="apiObj.tempId" @on-fields="handlePushFields"
-                              :default-name="tempName"></template-choose>
+                               :default-name="tempName"></template-choose>
             </b-form-item>
             <b-form-item label="接口描述" prop="describe">
               <b-input v-model="apiObj.describe" placeholder="请输入接口描述" type="textarea"></b-input>
@@ -78,7 +78,7 @@
         <!--信息项-->
         <b-collapse-wrap title="参数信息" collapse>
           <da-api-fields v-model="apiObj.daParameters"
-            :data-type-options="dataTypeOptions">
+                         :data-type-options="dataTypeOptions">
           </da-api-fields>
         </b-collapse-wrap>
         <!--保存提交-->

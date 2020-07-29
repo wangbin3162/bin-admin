@@ -1,18 +1,50 @@
 <template>
-  <transition name="move-right">
-    <div v-show="visible" class="resource-cfg-modal">
-      <div class="header">
-        <div class="title">
-          <b-icon name="ios-undo" @click.native="close"/>
-          {{ resourceTitle }}
+  <div>
+    <transition name="move-right">
+      <div v-if="visible" class="resource-cfg-modal">
+        <div class="header">
+          <div class="title">
+            {{ resourceTitle }}
+            <b-icon name="ios-radio-button-on" v-if="isEdit" color="#fea638" size="14" style="margin-right: 16px;"/>
+            <b-icon name="ios-bug" @click.native="debug=true" style="margin-right: 16px;"/>
+          </div>
+          <div class="right">
+            <b-icon name="close" @click.native="close"/>
+          </div>
         </div>
-        <b-icon name="close" @click.native="close"/>
+        <div class="content">
+          <ctrl-panel ref="ctrlPanel" :list="currentList" @on-update="handleUpdate" @on-save="handleSave"/>
+        </div>
       </div>
-      <div class="content">
-        <ctrl-panel v-model="currentList"/>
+    </transition>
+    <b-modal v-model="debug" footer-hide width="1000">
+      <div flex="box:mean">
+        <div>
+          <b-ace-editor :value="JSON.stringify(currentList,null,2)" readonly></b-ace-editor>
+        </div>
+        <div>
+          <b-ace-editor :value="JSON.stringify(updateList,null,2)" readonly></b-ace-editor>
+        </div>
       </div>
-    </div>
-  </transition>
+    </b-modal>
+    <b-modal v-model="closeModal" footer-hide :mask-closable="false" width="400" :styles="{top: '200px'}">
+      <div flex="main:justify">
+        <b-icon name="ios-warning" size="60" color="#fea638" style="padding-top: 8px;"/>
+        <div>
+          <div style="padding:4px 16px;color: rgba(0,0,0,.85);">
+            是否保存对"{{ resourceTitle }}"的更改？
+          </div>
+          <div style="padding:8px 16px 0;" flex="main:justify">
+            <b-button size="mini" @click="closeSave(false)">不保存</b-button>
+            <div>
+              <b-button size="mini" @click="closeModal=false">取消</b-button>
+              <b-button size="mini" type="primary" @click="closeSave(true)">保存</b-button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </b-modal>
+  </div>
 </template>
 
 <script>
@@ -28,7 +60,10 @@
       return {
         visible: false,
         currentList: [],
-        resource: { resourceName: '' }
+        updateList: [],
+        resource: { resourceName: '' },
+        closeModal: false,
+        debug: false
       }
     },
     watch: {
@@ -47,7 +82,16 @@
     computed: {
       resourceTitle() {
         return `挖掘配置 - ${this.resource.resourceName}`
+      },
+      isEdit() {
+        return !(JSON.stringify(this.currentList) === JSON.stringify(this.updateList))
       }
+    },
+    mounted() {
+      document.addEventListener('keydown', this.keypadSave)
+    },
+    beforeDestroy() {
+      document.removeEventListener('keydown', this.keypadSave)
     },
     methods: {
       // 打开弹窗，第一个为资源名称，第二个为原始数据列表（用于回显）
@@ -55,10 +99,43 @@
         this.visible = true
         this.resource = deepCopy(resource)
         this.currentList = deepCopy(data)
+        this.updateList = deepCopy(data)
       },
       // 关闭
       close() {
+        if (this.isEdit) { // 如果已经修改过，则弹窗提示是否保存
+          this.closeModal = true
+        } else {
+          this.visible = false
+        }
+      },
+      // 是否保存并关闭
+      closeSave(save) {
+        if (save) {
+          // 触发一下保存按钮操作,此部分会触发保存按钮操作指令handleSave
+          this.$refs.ctrlPanel.handleSaveCfg()
+        }
+        this.closeModal = false
         this.visible = false
+      },
+      // 内部数据更新
+      handleUpdate(list) {
+        // this.$log.danger('====更新数据====>')
+        // console.log(list)
+        this.updateList = list
+      },
+      // 保存按钮操作指令
+      handleSave(list) {
+        this.updateList = deepCopy(list)
+        this.currentList = deepCopy(list)
+        this.$emit('on-save', this.currentList)
+      },
+      // 键盘保存
+      keypadSave(e) {
+        if (e.keyCode === 83 && (navigator.platform.match('Mac') ? e.metaKey : e.ctrlKey)) {
+          e.preventDefault()
+          this.$refs.ctrlPanel.handleSaveCfg()
+        }
       }
     }
   }
@@ -98,10 +175,23 @@
         color: #f0f0f0;
         white-space: nowrap;
       }
-      .iconfont {
-        font-size: 20px;
-        cursor: pointer;
-        color: #f0f0f0;
+      .right {
+        display: flex;
+        align-items: center
+        .iconfont {
+          font-size: 22px;
+          cursor: pointer;
+          color: #f0f0f0;
+          border-radius: 50%;
+        }
+        .icon-close {
+          padding: 4px;
+          font-size: 18px;
+          &:hover {
+            color: #ffffff;
+            background: #ff7072;
+          }
+        }
       }
     }
     .content {

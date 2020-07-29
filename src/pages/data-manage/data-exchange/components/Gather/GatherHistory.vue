@@ -64,7 +64,7 @@
                 <div v-if="showOperator">
                   <div v-for="item in operateObjects" class="source" :key="item.id">
                     <b-tag dot no-border type="primary" style="margin-bottom: 8px;">{{ item.title }}</b-tag>
-                    <b-code-editor :value="JSON.stringify(item.obj,null,2)" readonly/>
+                    <b-ace-editor :value="JSON.stringify(item.obj,null,2)" readonly height="200"/>
                   </div>
                 </div>
               </div>
@@ -237,7 +237,7 @@
                 // console.log('掩码后：' + value)
               }
               if (field.options) {
-                  tmp[key] = field.options[obj[key]] !== undefined ? field.options[obj[key]] : null
+                tmp[key] = field.options[obj[key]] !== undefined ? field.options[obj[key]] : null
               }
             }
           }

@@ -191,17 +191,17 @@
                 cronStr: '',
                 activeTab: 'sec',
                 tabs: [
-                    {key: 'sec', title: '秒'},
-                    {key: 'min', title: '分'},
-                    {key: 'hou', title: '时'},
-                    {key: 'day', title: '日'},
-                    {key: 'mon', title: '月'}
+                    { key: 'sec', title: '秒' },
+                    { key: 'min', title: '分' },
+                    { key: 'hou', title: '时' },
+                    { key: 'day', title: '日' },
+                    { key: 'mon', title: '月' }
                 ],
-                sec: {key: 'sec', list: [0], flag: 'time', begin: 1, cycle: 2},
-                min: {key: 'min', list: [0], flag: 'time', begin: 1, cycle: 2},
-                hou: {key: 'hou', list: [1], flag: 'time', begin: 1, cycle: 2},
-                day: {key: 'day', list: [], flag: 'time', begin: 1, cycle: 2},
-                mon: {key: 'mon', list: [], flag: 'time', begin: 1, cycle: 2}
+                sec: { key: 'sec', list: [0], flag: 'time', begin: 1, cycle: 2 },
+                min: { key: 'min', list: [0], flag: 'time', begin: 1, cycle: 2 },
+                hou: { key: 'hou', list: [1], flag: 'time', begin: 1, cycle: 2 },
+                day: { key: 'day', list: [], flag: 'time', begin: 1, cycle: 2 },
+                mon: { key: 'mon', list: [], flag: 'time', begin: 1, cycle: 2 }
             }
         },
         created() {
@@ -229,7 +229,6 @@
                         } else {
                             cron += '* '
                         }
-
                     }
                 } else if (obj.flag === 'default') {
                     cron += '* '
@@ -245,11 +244,11 @@
                 this.cronClear()
             },
             cronClear() {
-                this.sec = {key: 'sec', list: [0], flag: 'time', begin: 1, cycle: 2}
-                this.min = {key: 'min', list: [0], flag: 'time', begin: 1, cycle: 2}
-                this.hou = {key: 'hou', list: [1], flag: 'time', begin: 1, cycle: 2}
-                this.day = {key: 'day', list: [], flag: 'time', begin: 1, cycle: 2}
-                this.mon = {key: 'mon', list: [], flag: 'time', begin: 1, cycle: 2}
+                this.sec = { key: 'sec', list: [0], flag: 'time', begin: 1, cycle: 2 }
+                this.min = { key: 'min', list: [0], flag: 'time', begin: 1, cycle: 2 }
+                this.hou = { key: 'hou', list: [1], flag: 'time', begin: 1, cycle: 2 }
+                this.day = { key: 'day', list: [], flag: 'time', begin: 1, cycle: 2 }
+                this.mon = { key: 'mon', list: [], flag: 'time', begin: 1, cycle: 2 }
             }
         },
         computed: {

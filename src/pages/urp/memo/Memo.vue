@@ -106,8 +106,6 @@
           <dept-measures ref="deptMeasures" :departs="departsBuffer" :dept-measures="deptMeasuresBuffer" :memoType="memo.memoType"
                           @on-change="handleDeptMeasuresChange"/>
         </b-collapse-wrap>
-
-        <!-- <b-code-editor class="mt-20" v-if="isEdit" :value="JSON.stringify(memo,null,2)" readonly/>-->
         <!--保存提交-->
         <template slot="footer">
           <b-button @click="handleCancel">取 消</b-button>

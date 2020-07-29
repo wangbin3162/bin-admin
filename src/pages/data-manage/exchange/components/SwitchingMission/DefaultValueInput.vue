@@ -59,7 +59,7 @@
           value: '', // 实际值
           showValue: '' // 显示值
         },
-        typeMap: { dept: '部门', user: '用户',el: "表达式",default: '自定义' }
+        typeMap: { dept: '部门', user: '用户', el: '表达式', default: '自定义' }
       }
     },
     watch: {

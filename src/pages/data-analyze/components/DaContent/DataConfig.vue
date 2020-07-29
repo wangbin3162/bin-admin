@@ -28,8 +28,8 @@
       </div>
 
       <div v-if="!isDynamic && isEdit" class="static">
-        <b-code-editor v-model="exampleData">
-        </b-code-editor>
+        <b-ace-editor v-model="exampleData">
+        </b-ace-editor>
       </div>
 
       <div v-if="isDynamic" class="dynamic">
@@ -39,21 +39,20 @@
             <div flex>
               <b-form-item :label="item.title === '' ? `接口${index + 1}` : item.title"
                 class="form-item mr-10" prop="apiId">
-                <!-- <div flex>
-                  <b-input placeholder="请选择接口" :value="item.apiId" disabled>
-                  </b-input>
-                  <b-button type="primary" plain>选择</b-button>
-                </div> -->
-                <api-choose v-model="item.apiId" :default-name="item.apiId">
+                <api-choose v-model="item.apiId" :default-name="item.title"
+                  @on-change="({ name })=> item.title = name">
                 </api-choose>
-              </b-form-item>
-
-              <b-form-item label="标题" class="form-item mr-10" prop="title">
-                <b-input v-model="item.title" placeholder="请输入标题"></b-input>
               </b-form-item>
 
               <b-form-item label="名称" class="form-item mr-20" prop="name">
                 <b-input v-model="item.name" placeholder="请输入名称"></b-input>
+              </b-form-item>
+
+              <b-form-item label="信息项映射" class="form-item">
+                <b-button type="primary" plain style="width: 100%;"
+                  @click="handleConfigInfoItemMapBtn(item.mappingItems, index)">
+                  配置信息项映射
+                </b-button>
               </b-form-item>
 
               <div flex="main:center" style="flex-grow: 1;" class="mt-10">
@@ -65,7 +64,7 @@
               </div>
             </div>
 
-            <div flex>
+            <!-- <div flex>
               <b-form-item label="排序" class="form-item mr-10">
                 <b-input-number v-model="item.orderNo"
                   style="width: 100%;"
@@ -76,11 +75,11 @@
 
               <b-form-item label="信息项映射" class="form-item">
                 <b-button type="primary" plain style="width: 100%;"
-                  @click="$emit('config-map')">
+                  @click="handleConfigInfoItemMapBtn(item.mappingItems, index)">
                   配置信息项映射
                 </b-button>
               </b-form-item>
-            </div>
+            </div> -->
           </b-form>
         </template>
       </div>
@@ -92,11 +91,12 @@
   import ApiChoose from './ApiChoose'
 
   /**
-   * @typedef {Object} infoItem 信息项对象
+   * @typedef {Object} InfoItem 信息项对象
    * @property {string} name 名称
    * @property {string} titles 标题
    * @property {string} type 类型
-   * @property {string} typeContent 类型内容
+   * @property {string} [dictCode] 字典编码
+   * @property {string} [dictName] 字典名称
    */
 
   /**
@@ -105,7 +105,7 @@
    * @property {string} title 标题
    * @property {string} name 名称
    * @property {number} orderNo 排序
-   * @property {infoItem[]} mappingItems 信息项映射配置
+   * @property {InfoItem[]} mappingItems 信息项映射配置
    */
 
   export default {
@@ -120,7 +120,7 @@
         required: true
       },
       initMappingFields: { // 动态数据时，数据配置信息
-        type: Array,
+        type: String,
         required: true
       },
       isEdit: { // 用于正确渲染b-code-editor组件
@@ -138,15 +138,10 @@
         mappingFields: [],
         rules: {
           apiId: [
-            { required: true, message: '接口不能为空', trigger: 'change' }
-          ],
-          title: [
-            { required: true, message: '标题不能为空', trigger: 'blur' }
-          ],
-          name: [
-            { required: true, message: '名称不能为空', trigger: 'blur' }
+            { required: true, message: '请配置接口', trigger: 'change' }
           ]
-        }
+        },
+        curIndex: null // 当前操作行所在的index
       }
     },
     watch: {
@@ -162,10 +157,9 @@
       },
       initMappingFields: { // 此watcher用于赋初始值
         handler (newVal) {
-          this.mappingFields = this.$util.deepClone(newVal)
+          this.mappingFields = JSON.parse(newVal)
           if (this.mappingFields.length === 0) {
             const obj = this.createInterfaceObj()
-            obj.title = '接口1'
             this.mappingFields.push(obj)
           }
         }
@@ -196,7 +190,6 @@
           apiId: '',
           title: '',
           name: '',
-          orderNo: null,
           mappingItems: []
         }
         return obj
@@ -208,7 +201,6 @@
        */
       handleAddInterfaceBtn () {
         const obj = this.createInterfaceObj()
-        obj.title = '接口' + (this.mappingFields.length + 1)
         this.mappingFields.push(obj)
       },
 
@@ -223,11 +215,13 @@
 
       /**
        * @author haodongdong
-       * @description 静态、动态数据按钮点击回调
-       * @param {string} toggle OFF NO
+       * @description 配置信息项映射按钮回调
+       * @param {InfoItem} mappingItems
+       * @param {number} index
        */
-      handleBlockBtnClick (toggle) {
-        console.log(toggle)
+      handleConfigInfoItemMapBtn (mappingItems, index) {
+        this.curIndex = index // 缓存当前操作行index，用于配置信息项映射后更新数据
+        this.$emit('config-map', this.$util.deepClone(mappingItems))
       },
 
       /**
@@ -249,6 +243,16 @@
             resolve(false)
           }
         })
+      },
+
+      /**
+       * @author haodongdong
+       * @description 用于共外部组件产生mappingItems后更新当前组件内对应数据
+       * @param {InfoItem} mappingItems
+       */
+      setMappingitems (mappingItems) {
+        const curObj = this.mappingFields[this.curIndex]
+        curObj.mappingItems = mappingItems
       }
     }
   }

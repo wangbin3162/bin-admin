@@ -49,7 +49,7 @@
       <v-edit-wrap>
         <div>
           <b-alert closable>手动输入或复制粘贴json文本至下面编辑框，确保无误后点击转换添加列表。<span slot="close">不再提示</span></b-alert>
-          <b-code-editor v-if="batchDialog" v-model="batchStr" ref="codeEditor"/>
+          <b-ace-editor v-model="batchStr"/>
           <div class="p15 t-center">
             <b-button type="success" plain icon="ios-barcode" @click="formatCode">
               格式化
@@ -184,7 +184,15 @@
         batchStr: '',
         batchItemList: [],
         respTypeMap: { QUERY: '查询', METRIC: '度量', BUCKET: '分组', RECORD: '记录' },
-        dataTypeMap: { string: '字符', long: '整数', double: '小数', date: '日期', datetime: '日期时间', boolean: '布尔', map: 'map集合' }
+        dataTypeMap: {
+          string: '字符',
+          long: '整数',
+          double: '小数',
+          date: '日期',
+          datetime: '日期时间',
+          boolean: '布尔',
+          map: 'map集合'
+        }
       }
     },
     created() {
@@ -245,7 +253,11 @@
       },
       // 格式化编辑器
       formatCode() {
-        this.$refs.codeEditor && this.$refs.codeEditor.formatCode()
+        try {
+          this.batchStr = JSON.stringify(JSON.parse(this.batchStr), null, 2)
+        } catch (e) {
+
+        }
       },
       // 将json转换为item对象
       batchStrChange() {

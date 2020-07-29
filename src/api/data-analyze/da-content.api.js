@@ -44,6 +44,7 @@ export function createContent(content) {
     data: content.data,
     category: content.type[0] || '',
     unit: content.unit,
+    mappingFields: content.mappingFields,
     subCategory: content.type[1] || null
   })
 }
@@ -61,6 +62,7 @@ export function modifyContent(content) {
     data: content.data,
     category: content.type[0] || '',
     unit: content.unit,
+    mappingFields: content.mappingFields,
     subCategory: content.type[1] || null
   })
 }
@@ -124,29 +126,6 @@ export async function queryRespInfos (id) {
         url: '/da/contentApi/queryRespInfos',
         method: 'get',
         params: { contentId: id }
-      })
-      if (res.data.successful) {
-        resolve(res.data.data)
-      } else {
-        reject(res.data.message)
-      }
-    } catch (error) {
-      reject(error)
-    }
-  })
-}
-
-/**
- * @author haodongdong
- * @description 分析内容，信息项映射组件内使用，查询字典项。
- * @returns {Promise}
- */
-export async function getMappingType () {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const res = await request({
-        url: '/da/contentApi/getMappingType',
-        method: 'get'
       })
       if (res.data.successful) {
         resolve(res.data.data)

@@ -493,3 +493,23 @@ export async function getCmsNoticeStatus() {
     }
   })
 }
+
+/**
+ * @author haodongdong
+ * @description 数据分析--->分析内容，信息项映射组件内使用，类型枚举。
+ * @returns {Promise}
+ */
+export async function getDaMappingType () {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request.get('/da/enum/mappingType')
+      if (res.data.successful) {
+        resolve(res.data.data)
+      } else {
+        reject(res.data.message)
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}

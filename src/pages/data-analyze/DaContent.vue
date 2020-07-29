@@ -104,7 +104,7 @@
                 </b-form-item>
               </b-col>
             </b-row>
-            <b-row :gutter="20">
+            <!-- <b-row :gutter="20">
               <b-col span="6">
                 <b-form-item label="数据来源" prop="toggle">
                   <b-radio-group v-model="content.toggle">
@@ -123,24 +123,24 @@
                               @on-change="({name})=>this.apiName=name"/>
                 </b-form-item>
               </b-col>
-            </b-row>
-            <b-form-item label="示例数据" prop="data">
+            </b-row> -->
+            <!-- <b-form-item label="示例数据" prop="data">
               <b-code-editor v-if="isEdit&&content" v-model="content.data"/>
-            </b-form-item>
+            </b-form-item> -->
             <b-form-item label="描述" prop="describe">
               <b-input v-model="content.describe" type="textarea" :autosize="{minRows: 2,maxRows: 5}"></b-input>
             </b-form-item>
           </b-form>
         </b-collapse-wrap>
 
-        <!-- <b-collapse-wrap title="数据配置" collapse>
+        <b-collapse-wrap title="数据配置" collapse>
           <data-config ref="dataConfig" v-model="content.toggle"
             :isEdit="isEdit"
             :data="content.data"
             :initMappingFields="content.mappingFields"
             @config-map="handleConfigMap">
           </data-config>
-        </b-collapse-wrap> -->
+        </b-collapse-wrap>
         <!--保存提交-->
         <template slot="footer">
           <b-button @click="handleCancel">取 消</b-button>
@@ -202,7 +202,10 @@
     <!-- 信息项映射需要对应到数据配置对应的接口 -->
     <!-- 信息项映射组件 -->
     <info-item-map v-if="dialogStatus === 'infoItemMap'"
-      @close="dialogStatus = 'modify'">
+      :id="content.id"
+      :initMappingItems="mappingItems"
+      @close="dialogStatus = 'modify'"
+      @complete="handleCompleteInfoItemMap">
     </info-item-map>
   </div>
 </template>
@@ -222,7 +225,13 @@
 
   export default {
     name: 'Content',
-    components: { ContentTestPanel, ResponseConfigPanel, ApiChoose, DataConfig, InfoItemMap },
+    components: {
+      ContentTestPanel,
+      ResponseConfigPanel,
+      // ApiChoose,
+      DataConfig,
+      InfoItemMap
+    },
     mixins: [commonMixin, permission],
     data() {
       return {
@@ -252,7 +261,9 @@
           apiId: [{ required: true, message: '必填项', trigger: 'change,blur' }]
         },
         statusMap: { 'I': '初始', 'Y': '启用', 'D': '禁用' },
-        apiModel: true
+        apiModel: true,
+        // 分析内容重构后需要的参数
+        mappingItems: []
       }
     },
     created() {
@@ -378,9 +389,14 @@
       handleSubmit(cfgFlag) {
         let tmpContent = { ...this.content }
         this.$refs.form.validate(async (valid) => {
-          // const valid2 = await this.$refs.dataConfig.validate()
-          // console.log(this.$refs.dataConfig.mappingFields)
-          if (valid) {
+          let valid2 = true
+          if (tmpContent.toggle === 'ON') {
+            valid2 = await this.$refs.dataConfig.validate()
+            // 获取data-config组件维护的数据
+            tmpContent.mappingFields = JSON.stringify(this.$refs.dataConfig.mappingFields)
+          }
+
+          if (valid && valid2) {
             this.btnLoading = true
             let fun = this.dialogStatus === 'create' ? api.createContent : api.modifyContent
             fun(tmpContent).then(res => {
@@ -458,7 +474,7 @@
           type: [],
           unit: '',
           apiName: '',
-          mappingFields: [],
+          mappingFields: '[]',
           themeName: this.currentTreeNode ? this.currentTreeNode.title : ''
         }
       },
@@ -543,9 +559,23 @@
           this.$message({ type: 'danger', content: '请选择操作的数据' })
         }
       },
-      // 数据配置组件配置信息项映射事件回调
-      handleConfigMap () {
+      /**
+       * @author haodongdong
+       * @descriptiong data-config组件配置信息项映射按钮事件回调
+       * @param {Object} mappingItems 配置信息项映射数据
+       */
+      handleConfigMap (mappingItems) {
+        this.mappingItems = mappingItems
         this.dialogStatus = 'infoItemMap'
+      },
+
+      /**
+       * @author haodongdong
+       * @description info-item-map组件complete完成事件的回调，调用data-config组件提供的函数更新数据
+       * @param {Object} mappingItems 组件处理后的信息项映射数据
+       */
+      handleCompleteInfoItemMap (mappingItems) {
+        this.$refs.dataConfig.setMappingitems(mappingItems)
       }
     }
   }

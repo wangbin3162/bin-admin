@@ -60,6 +60,17 @@
                   <b-input v-model="form.unitAddress" placeholder="请输入单位地址" clearable></b-input>
                 </b-form-item>
               </b-col>
+              <b-col span="12">
+                <b-form-item label="有效期" prop="validDay">
+                  <div flex>
+                    <b-input-number v-model="form.validDay" placeholder="请输入有效期" clearable
+                      style="width: 100%;"
+                      :min="1">
+                    </b-input-number>
+                    <b-button>天</b-button>
+                  </div>
+                </b-form-item>
+              </b-col>
             </b-row>
 
             <!-- <b-divider></b-divider> -->
@@ -114,7 +125,8 @@
           unitUrl: '',
           unitAddress: '',
           reportDesc: '',
-          reportWaterMark: '' // 水印图片
+          reportWaterMark: '', // 水印图片
+          validDay: 30
         },
         rules: {
           reportName: [
@@ -125,6 +137,9 @@
           ],
           personClass: [
             { required: true, message: '请选择主体', trigger: 'change' }
+          ],
+          validDay: [
+            { required: true, type: 'integer', message: '请输入有效期', trigger: 'change' }
           ]
         }
       }

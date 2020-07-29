@@ -29,7 +29,6 @@
               style="width: 100%;margin-top: 16px;margin-bottom: 8px;"
               @click="handleCreateItem">添加信息项
     </b-button>
-    <!--    <b-code-editor :value="JSON.stringify(totalData,null,2)" readonly/>-->
     <!--新增修改弹窗-->
     <b-modal v-model="dialogFormVisible" width="800"
              :title="dialogTitle" :mask-closable="false">
@@ -59,7 +58,7 @@
               <b-row>
                 <b-col span="12">
                   <b-form-item label="数据长度" prop="dataLength" v-if="showDataLength">
-                    <b-input-number v-model="metaItem.dataLength" :max="3000"></b-input-number>
+                    <b-input-number v-model="metaItem.dataLength" :max="12000"></b-input-number>
                   </b-form-item>
                 </b-col>
                 <b-col span="12">
@@ -73,7 +72,7 @@
                 </b-col>
                 <b-col span="12">
                   <b-form-item label="数据精度" prop="dataPrecision" v-if="showDataPrecision">
-                    <b-input-number v-model="metaItem.dataPrecision" :max="4"></b-input-number>
+                    <b-input-number v-model="metaItem.dataPrecision" :max="6"></b-input-number>
                   </b-form-item>
                 </b-col>
               </b-row>
