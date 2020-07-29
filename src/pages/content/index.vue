@@ -37,10 +37,12 @@
               <h3>栏目信息</h3>
             </div>
 
-            <div v-for="item in subSecList" :key="item.id"
-              @click="handleSubSecClick(item)"
-              class="nav-btn" :class="{ actived: item.id === curSubTab.id }">
-              {{ item.colName }}
+            <div class="nav-btn-list">
+              <div v-for="item in subSecList" :key="item.id"
+                @click="handleSubSecClick(item)"
+                class="nav-btn" :class="{ actived: item.id === curSubTab.id }">
+                {{ item.colName }}
+              </div>
             </div>
           </div>
         </transition>
@@ -405,6 +407,11 @@
           h3 {
             margin-left: 15px;
           }
+        }
+
+        .nav-btn-list {
+          max-height: 345px;
+          overflow: auto;
         }
 
         .nav-btn {

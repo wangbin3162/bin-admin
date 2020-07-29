@@ -89,7 +89,7 @@
       async getSectionChildren (parentColId) {
         try {
           const res = await getSectionChildren(parentColId)
-          this.sectionList = res
+          this.sectionList = res.slice(0, 5)
           this.curActivedBtn = res[0]
         } catch (error) {
           console.error(error)
