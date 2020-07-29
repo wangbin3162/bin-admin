@@ -1,0 +1,100 @@
+<template>
+  <div class="data-source-params">
+    <b-collapse simple accordion>
+      <b-collapse-panel v-for="(item,index) in params" :key="item.id" :name="item.id">
+        <div slot="title" style="display:inline-block;width:calc(100% - 20px);padding:0 4px;">
+          <div flex="main:justify">
+            <span>{{ item.paramName }}</span>
+            <b-tag type="warning" size="mini" style="margin: 0;font-size: 12px;">
+              {{ controlTypeMap[item.controlType] }}
+            </b-tag>
+          </div>
+        </div>
+        <div v-if="item.realVal">
+          <template v-if="item.controlType==='TEXT'">
+            <gui-field label="实际值:" label-width="60px">
+              <b-input v-model="params[index].realVal.value" size="small" placeholder="实际值" clearable
+                       @on-change="emitValue"/>
+            </gui-field>
+          </template>
+          <template v-if="item.controlType==='NUM'">
+            <gui-field label="实际值:" label-width="60px">
+              <b-input-number v-model="params[index].realVal.value" size="small" style="width: 100%;"
+                              @on-change="emitValue"/>
+            </gui-field>
+          </template>
+          <template v-if="item.controlType==='NUM_RANGE'">
+            <num-range v-model="params[index].realVal.value"/>
+          </template>
+          <template v-if="item.controlType==='DATA_RANGE'">
+            <date-range v-model="params[index].realVal.value"/>
+          </template>
+        </div>
+      </b-collapse-panel>
+    </b-collapse>
+    <b-ace-editor :value="JSON.stringify(params.map(i=>({paramName:i.paramName,realVal:i.realVal})),null,2)"
+                  readonly wrap/>
+  </div>
+</template>
+
+<script>
+  import { deepCopy } from '../../../common/utils/assist'
+  import GuiWrap from '../gui/gui-wrap'
+  import { getTplControlType } from '../../../api/analyze-engine/da-business-temp.api'
+  import GuiField from '../gui/gui-field'
+  import NumRange from './ctrl/NumRange'
+  import DateRange from './ctrl/DateRange'
+
+  export default {
+    name: 'DataSourceParam',
+    components: { DateRange, NumRange, GuiField, GuiWrap },
+    props: {
+      value: {
+        type: Array,
+        default() {
+          return []
+        }
+      }
+    },
+    data() {
+      return {
+        params: [],
+        controlTypeMap: {
+          DATA_RANGE: '日期范围',
+          DICT: '字典',
+          ENUM: '枚举',
+          ITEM: '信息项',
+          NUM: '数字框',
+          NUM_RANGE: '数字范围',
+          PREFIX: '前缀过滤控件',
+          TERM: '精确过滤控件',
+          TEXT: '文本框'
+        }
+      }
+    },
+    created() {
+      // 获取参数类型和控件类型枚举
+      getTplControlType().then(resp => {
+        this.controlTypeMap = resp.data.data || {}
+      })
+    },
+    watch: {
+      value: {
+        handler(val) {
+          this.params = deepCopy(val)
+        },
+        immediate: true
+      }
+    },
+    methods: {
+      emitValue() {
+        this.$emit('input', this.params)
+        this.$emit('on-change', this.params)
+      }
+    }
+  }
+</script>
+
+<style scoped lang="stylus">
+
+</style>

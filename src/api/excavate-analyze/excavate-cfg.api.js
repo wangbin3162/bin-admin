@@ -96,10 +96,13 @@ export function chartsCfgShow(resourceKey) {
 }
 
 /* 图表配置批量新增修改接口 */
-export function chartsCfgAddOrModify(dataList) {
+export function chartsCfgAddOrModify(resourceKey, dataList) {
   return request({
     url: '/api/wj/wjChartsConfig/batchAddOrModify',
     method: 'post',
+    params: {
+      resKey: resourceKey
+    },
     data: dataList
   })
 }

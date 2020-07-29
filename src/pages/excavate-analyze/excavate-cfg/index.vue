@@ -33,7 +33,7 @@
       </v-table-wrap>
     </page-header-wrap>
     <condition-config ref="conditionConfig" @on-close="handleCancel"/>
-    <charts-config-panel ref="cfgPanel"/>
+    <charts-config-panel ref="cfgPanel" @on-save="handleSave"/>
   </div>
 </template>
 
@@ -45,6 +45,7 @@
   import { deepCopy } from '../../../common/utils/assist'
   import ConditionConfig from './ConditionConfig'
   import ChartsConfigPanel from '../../../components/ChartsConfig/ChartConfigPanel'
+  import { basicComponents } from '../../../components/ChartsConfig/utils/util'
 
   export default {
     name: 'ExcavateCfg',
@@ -118,7 +119,56 @@
       // 配置分析
       handleCfgAnalyze(row) {
         this.resource = deepCopy(row)
-        this.$refs.cfgPanel.open(this.resource, [])
+        // 查询已有的配置列表
+        api.chartsCfgShow(row.resourceKey).then(resp => {
+          if (resp.data.code === '0') {
+            let list = resp.data.data.map(item => {
+              let base = this.getChartBaseInfo(item.chartType)
+              base.key = item.id
+              base.isOpen = item.isOpen
+              base.dataSource = item.dataSource
+              base.dataSourceName = item.dataSourceName || item.dataSource
+              try {
+                base.options = JSON.parse(item.chartConfigExt)
+                base.dataSourceParam = JSON.parse(item.dataSourceParam)
+                base.staticDataSource = JSON.parse(item.staticDataSource)
+              } catch (e) {
+              }
+              return base
+            })
+            this.$refs.cfgPanel.open(this.resource, list)
+          }
+        })
+      },
+      // 配置分析保存
+      handleSave(list) {
+        this.$log.success('====响应保存事件====>')
+        let data = list.map(item => {
+          return {
+            resourceKey: this.resource.resourceKey,
+            resourceName: this.resource.resourceName,
+            chartTitle: item.options.title,
+            chartUnit: '',
+            chartType: item.type,
+            configType: '',
+            chartConfigExt: JSON.stringify(item.options),
+            isOpen: item.isOpen,
+            staticDataSource: JSON.stringify(item.staticDataSource),
+            dataSource: item.dataSource,
+            dataSourceParam: JSON.stringify(item.dataSourceParam)
+          }
+        })
+        api.chartsCfgAddOrModify(this.resource.resourceKey, data).then(resp => {
+          if (resp.data.code === '0') {
+            this.$notice.success({ title: '保存配置成功！' })
+          } else {
+            this.$notice.danger({ title: '保存配置失败！', desc: resp.data.message || '保存失败，请重新配置或检查服务！' })
+          }
+        })
+      },
+      // 获取一个类型的基础配置项
+      getChartBaseInfo(type) {
+        return basicComponents.find(i => i.type === type)
       },
       /* [数据接口] */
       // 通用枚举

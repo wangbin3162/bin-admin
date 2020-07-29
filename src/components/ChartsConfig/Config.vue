@@ -476,16 +476,21 @@
               </b-switch>
             </gui-field>
           </gui-group>
-          <gui-group group-name="数据源">
-            <div v-if="data.isOpen==='static'">
-              <b-ace-editor :value="JSON.stringify(data.staticDataSource,null,2)" height="500"
-                            @on-change="staticDataChange"/>
-            </div>
-            <div v-else>
-              <p>dataSource: {{ data.dataSource }}</p>
-              <p>dataSourceParam: {{ data.dataSourceParam }}</p>
-            </div>
+          <gui-group v-if="data.isOpen==='static'" group-name="静态数据源">
+            <b-ace-editor :value="JSON.stringify(data.staticDataSource,null,2)" height="500"
+                          @on-change="staticDataChange"/>
           </gui-group>
+          <template v-else>
+            <gui-group group-name="模板接口">
+              <div style="padding: 4px 12px;">
+                <data-source-select v-model="data.dataSource" :default-name="data.dataSourceName"
+                                    @on-select="handleSetSourceParam" @on-clear="handleSetSourceParam"/>
+              </div>
+            </gui-group>
+            <gui-group group-name="参数信息" v-if="data.dataSourceParam.length>0">
+              <data-source-param v-model="data.dataSourceParam" @on-change="emitValue"/>
+            </gui-group>
+          </template>
         </div>
       </div>
       <b-empty v-else>暂未选择图表</b-empty>
@@ -501,10 +506,12 @@
   import GuiInline from './gui/gui-inline'
   import VSlider from '../VSlider/VSlider'
   import { COLOR_LIST, COLOR_LIST_GRAY, WIDTH_MAP } from './utils/util'
+  import DataSourceSelect from './data-source-cfg/DataSourceSelect'
+  import DataSourceParam from './data-source-cfg/DataSourceParam'
 
   export default {
     name: 'Config',
-    components: { GuiInline, GuiField, GuiGroup, GuiWrap, VSlider },
+    components: { DataSourceParam, DataSourceSelect, GuiInline, GuiField, GuiGroup, GuiWrap, VSlider },
     props: {
       data: {
         type: Object,
@@ -589,6 +596,20 @@
           this.data.options.visualMap.itemWidth = 20
           this.data.options.visualMap.itemHeight = 100
         }
+        this.emitValue()
+      },
+      // 设置sourceParam
+      handleSetSourceParam(params) {
+        this.data.dataSourceParam = params.map(item => {
+          return {
+            ...item,
+            realVal: {
+              fieldName: '',
+              value: null,
+              type: 'val'
+            }
+          }
+        })
         this.emitValue()
       },
       emitValue() {
