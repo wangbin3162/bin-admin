@@ -163,6 +163,13 @@
        * @description 搜索组件触发重置按钮reset事件回调
        */
       resetHandler () {
+        this.query.title = ''
+        this.query.contentType = ''
+        this.query.contentStatus = ''
+        this.query.publishDateStart = ''
+        this.query.publishDateEnd = ''
+        this.query.size = 10
+        this.query.page = 1
         this.getContentList()
       },
 

@@ -92,14 +92,7 @@
        * @description 重置按钮回调
        */
       resetQueryHandler () {
-        this.query.title = ''
-        this.query.contentType = ''
-        this.query.contentStatus = ''
-        this.query.publishDateStart = ''
-        this.query.publishDateEnd = ''
-        this.query.size = 10
-        this.query.page = 1
-        // 如果以this.query = {}的形式给query赋值，watch内发出的input事件会慢于以下的reset事件
+        this.dateStrArr = []
         this.$emit('reset', this.query)
       },
 
@@ -109,7 +102,6 @@
        * @param {string[]} dateStrArr 包含开始于结束日期时间字符串的数组
        */
       dateChangeHandler (dateStrArr) {
-        console.log(dateStrArr)
         this.query.publishDateStart = dateStrArr[0]
         this.query.publishDateEnd = dateStrArr[1]
       }
