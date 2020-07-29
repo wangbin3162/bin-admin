@@ -270,7 +270,7 @@
         this.query.page = 1
         this.query.columnId = tab.id
         this.$router.push({ // 暂时用于清空可能存在的url参数
-          path: '/news/index'
+          path: '/news'
         })
         this.getContentList(this.query)
       },
@@ -478,10 +478,17 @@
                 }
 
                 div {
-                  display: inline-block;
                   margin-top: 10px;
                   margin-left: 13px;
                   color: #bfbfbf;
+
+                  text-overflow: -o-ellipsis-lastline;
+                  overflow: hidden;
+                  text-overflow: ellipsis;
+                  display: -webkit-box;
+                  -webkit-line-clamp: 2;
+                  line-clamp: 2;
+                  -webkit-box-orient: vertical;
                 }
               }
 

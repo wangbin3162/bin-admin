@@ -20,7 +20,7 @@
       </ul>
 
       <div flex="main:right">
-        <div type="text" class="more-btn">
+        <div type="text" class="more-btn" @click="HandleMoreBtn">
           查看更多 >>
         </div>
       </div>
@@ -62,6 +62,14 @@
           console.error(error)
         }
         this.loading = false
+      },
+
+      /**
+       * @author haodongdong
+       * @description 查看更多按钮回调
+       */
+      HandleMoreBtn () {
+        window.open(`#/notice`)
       }
     }
   }

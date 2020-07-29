@@ -150,7 +150,6 @@
        * @description 查看更多按钮回调
        */
       HandleMoreBtn () {
-        console.log(this.curActivedBtn)
         window.open(`#/news?pId=${this.curActivedBtn.parentCol}&sId=${this.curActivedBtn.id}`)
       }
     }
