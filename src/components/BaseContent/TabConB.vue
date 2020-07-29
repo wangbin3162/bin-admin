@@ -151,7 +151,7 @@
        */
       HandleMoreBtn () {
         console.log(this.curActivedBtn)
-        window.open(`#/news/index?pId=${this.curActivedBtn.parentCol}&sId=${this.curActivedBtn.id}`)
+        window.open(`#/news?pId=${this.curActivedBtn.parentCol}&sId=${this.curActivedBtn.id}`)
       }
     }
   }

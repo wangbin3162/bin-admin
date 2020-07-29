@@ -166,7 +166,7 @@
        */
       handleSecBtnClick (pId, sId) {
         this.$router.push({
-          path: '/news/index',
+          path: '/news',
           query: {
             pId,
             sId
@@ -180,7 +180,7 @@
        */
       handleSearch () {
         this.$router.push({
-          path: '/news/index',
+          path: '/news',
           query: {
             pid: this.routeQuery.pId,
             sid: this.routeQuery.sId,
