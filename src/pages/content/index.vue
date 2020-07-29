@@ -315,7 +315,7 @@
     }
     .bin-tabs-wrapper .nav-wrapper .tab-item {
       position: relative;
-      top: -12px;
+      top: -11px;
       font-size: 16px;
       &:hover {
         color: rgba(0,0,0,.65);
