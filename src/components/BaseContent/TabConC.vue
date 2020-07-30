@@ -26,7 +26,7 @@
       </div>
     </template>
 
-    <b-empty v-else style="margin-top: 10%;">暂时没用内容哦</b-empty>
+    <b-empty v-else style="margin-top: 10%">暂时没用内容哦</b-empty>
   </div>
 </template>
 
@@ -91,6 +91,8 @@
 
 <style lang="stylus" scoped>
  .tab-con-c {
+   display: flex;
+   flex-direction: column;
    position: relative;
    padding-left: 5px;
    padding-right: 10px;

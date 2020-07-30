@@ -249,3 +249,29 @@ export async function getContentDetail(id) {
     }
   })
 }
+
+/**
+ * @author haodongdong
+ * @description 获取新闻下方附件列表
+ * @param {string} contentId
+ * @returns {Promise<any>}
+ */
+export function getAttachments(contentId) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: 'api/cms/attach/list',
+        method: 'get',
+        params: { contentId }
+      })
+
+      if (res.data.successful) {
+        resolve(res.data.data)
+      } else {
+        reject(res.data.message)
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}

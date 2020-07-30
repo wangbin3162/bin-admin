@@ -41,9 +41,14 @@
                   {{ content.title }}
                 </p>
 
-                <span>发布时间：{{ $util.parseTime(new Date(content.publishDate), '{y}-{m}-{d}') }}</span>
-                <span>来源：{{ content.source }}</span>
-                <span>浏览量：{{ content.accessCnt }}</span>
+                <div flex="main:justify">
+                  <div>
+                    <span>发布时间：{{ $util.parseTime(new Date(content.publishDate), '{y}-{m}-{d}') }}</span>
+                    <span>来源：{{ content.source }}</span>
+                    <span>浏览量：{{ content.accessCnt }}</span>
+                  </div>
+                  <span style="cursor: pointer; color: #0d85ff;" @click="handleAttachDlBtn">附件下载</span>
+                </div>
               </div>
 
               <b-divider></b-divider>
@@ -64,22 +69,29 @@
         </transition>
       </div>
     </div>
+
+    <attachment-download v-model="openAttachmentDownload"
+      :contentId="routeQuery.contentId">
+    </attachment-download>
   </base-layout>
 </template>
 
 <script>
   import { getContentDetail } from '../../../api/cms/news.api'
   import SectionSideNav from '../components/SectionSideNav'
+  import AttachmentDownload from '../components/AttachmentDownload'
 
   export default {
     name: 'NewsDetail',
     components: {
-      SectionSideNav
+      SectionSideNav,
+      AttachmentDownload
     },
     data () {
       return {
         visible: false,
         loading: false,
+        openAttachmentDownload: false,
         content: {},
         routeQuery: {}
       }
@@ -112,6 +124,14 @@
           console.error(error)
         }
         this.loading = false
+      },
+
+      /**
+       * @author haodongdong
+       * @description 附件下载按钮回调
+       */
+      handleAttachDlBtn () {
+        this.openAttachmentDownload = true
       }
 
     }
