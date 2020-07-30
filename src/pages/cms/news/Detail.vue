@@ -144,6 +144,10 @@
       p {
         margin: 16px;
       }
+      img {
+        height: auto;
+        max-width: 100%;
+      }
     }
   }
 </style>
