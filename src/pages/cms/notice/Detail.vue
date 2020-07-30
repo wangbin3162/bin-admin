@@ -44,6 +44,12 @@
 
               <div v-html="detail.content" class="content-con">
               </div>
+
+              <b-divider></b-divider>
+
+               <attachment-download v-model="openAttachmentDownload"
+                :initFileList="detail.fileList">
+              </attachment-download>
             </div>
 
             <b-empty v-else style="margin-top: 20%;">暂时没有内容哦</b-empty>
@@ -59,9 +65,9 @@
       </div>
     </div>
 
-    <attachment-download v-model="openAttachmentDownload"
+    <!-- <attachment-download v-model="openAttachmentDownload"
       :initFileList="detail.fileList">
-    </attachment-download>
+    </attachment-download> -->
   </base-layout>
 </template>
 

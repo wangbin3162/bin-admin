@@ -47,7 +47,7 @@
                     <span>来源：{{ content.source }}</span>
                     <span>浏览量：{{ content.accessCnt }}</span>
                   </div>
-                  <span style="cursor: pointer; color: #0d85ff;" @click="handleAttachDlBtn">附件下载</span>
+                  <!-- <span style="cursor: pointer; color: #0d85ff;" @click="handleAttachDlBtn">附件下载</span> -->
                 </div>
               </div>
 
@@ -55,6 +55,12 @@
 
               <div v-html="content.detail" class="content-con">
               </div>
+
+              <b-divider></b-divider>
+
+              <attachment-download v-model="openAttachmentDownload"
+                :contentId="routeQuery.contentId">
+              </attachment-download>
             </div>
 
             <b-empty v-else style="margin-top: 20%;">暂时没有内容哦</b-empty>
@@ -70,9 +76,9 @@
       </div>
     </div>
 
-    <attachment-download v-model="openAttachmentDownload"
+    <!-- <attachment-download v-model="openAttachmentDownload"
       :contentId="routeQuery.contentId">
-    </attachment-download>
+    </attachment-download> -->
   </base-layout>
 </template>
 

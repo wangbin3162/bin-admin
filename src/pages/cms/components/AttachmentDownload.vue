@@ -1,29 +1,33 @@
 <template>
   <div class="attachment-download">
-    <b-modal v-model="open"
+    <!-- <b-modal v-model="open"
       title="附件下载"
       :body-styles="{ padding: '0 5px 10px' }"
       footer-hide
-      @on-visible-change="visibleChangeHandler">
+      @on-visible-change="visibleChangeHandler"> -->
 
-     <div class="list">
-      <b-table :columns="columns" :data="fileList" :loading="loading"
-        :show-header="false" no-data-text="暂无上传附件">
-        <template v-slot:fileName="{ row }">
-          <b-icon name="ios-document"></b-icon>
-          <span>{{ row.fileName }}</span>
-        </template>
+     <div class="list" v-if="fileList.length > 0">
+      <span>附件下载：</span>
 
-        <template v-slot:action="{ row }">
-          <b-button type="text" icon="ios-download" title="下载"
-            text-color="primary" :icon-style="{fontSize: '20px'}"
-            @click="downLoadBtnHandler(row.id, row.fileName)">
-          </b-button>
-        </template>
-      </b-table>
+      <div class="table-con">
+        <b-table :columns="columns" :data="fileList" :loading="loading"
+          :show-header="false" no-data-text="暂无上传附件" class="mt-10">
+          <template v-slot:fileName="{ row }">
+            <b-icon name="ios-document"></b-icon>
+            <span>{{ row.fileName }}</span>
+          </template>
+
+          <template v-slot:action="{ row }">
+            <b-button type="text" icon="ios-download" title="下载"
+              text-color="primary" :icon-style="{fontSize: '20px'}"
+              @click="downLoadBtnHandler(row.id, row.fileName)">
+            </b-button>
+          </template>
+        </b-table>
+      </div>
     </div>
 
-    </b-modal>
+    <!-- </b-modal> -->
   </div>
 </template>
 
@@ -72,7 +76,7 @@
       }
     },
     created () {
-
+      if (this.contentId) this.getAttachments(this.contentId)
     },
     methods: {
       /**
@@ -144,6 +148,10 @@
 
 <style lang="stylus" scoped>
   .attachment-download {
-
+    .list {
+      .table-con {
+        margin-left: -9px;
+      }
+    }
   }
 </style>
