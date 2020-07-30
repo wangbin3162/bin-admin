@@ -38,6 +38,8 @@
           quickbars_selection_toolbar: 'removeformat | bold italic underline strikethrough | fontsizeselect forecolor backcolor',
           quickbars_insert_toolbar: false,
           media_live_embeds: true,
+          media_alt_source: false,
+          media_poster: false,
           paste_data_images: true,
           file_picker_types: 'image media',
           file_picker_callback: this.uploadFile,
