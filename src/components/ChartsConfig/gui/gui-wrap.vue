@@ -5,7 +5,9 @@
              :class="[{'show':visible},{'simple':simple}]">
           <b-icon name="ios-arrow-forward" size="14"></b-icon>
        </span>
-      <span class="wrap-label">{{label}}</span>
+      <slot name="title">
+        <span class="wrap-label">{{ label }}</span>
+      </slot>
       <span class="wrap-toggle" @click="toggleVisible" v-if="!simple">
         <b-icon :name="visible?'ios-eye':'ios-eye-off'" size="16"></b-icon>
       </span>
@@ -79,13 +81,16 @@
       &.show {
         transform: rotate(90deg);
       }
+      &.simple {
+        cursor: pointer;
+      }
     }
     .wrap-label {
       padding: 0 5px 0 2px;
     }
     span {
       display: inline-block;
-      vertical-align: middle;
+      vertical-align: top;
     }
     .wrap-toggle {
       cursor: pointer;

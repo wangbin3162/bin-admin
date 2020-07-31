@@ -17,7 +17,7 @@
         </div>
       </div>
     </transition>
-    <b-modal v-model="debug" footer-hide width="1000">
+    <b-modal v-model="debug" footer-hide width="1000" stop-remove-scroll>
       <div flex="box:mean">
         <div>
           <b-ace-editor :value="JSON.stringify(currentList,null,2)" readonly></b-ace-editor>
@@ -27,7 +27,8 @@
         </div>
       </div>
     </b-modal>
-    <b-modal v-model="closeModal" footer-hide :mask-closable="false" width="400" :styles="{top: '200px'}">
+    <b-modal v-model="closeModal" footer-hide :mask-closable="false" width="400" :styles="{top: '200px'}"
+             stop-remove-scroll>
       <div flex="main:justify">
         <b-icon name="ios-warning" size="60" color="#fea638" style="padding-top: 8px;"/>
         <div>
@@ -56,6 +57,9 @@
     name: 'ChartsConfigPanel',
     components: { CtrlPanel },
     mixins: [scrollbarMixin],
+    provide() {
+      return { ConfigRoot: this }
+    },
     data() {
       return {
         visible: false,
