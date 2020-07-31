@@ -1,5 +1,5 @@
 <template>
-   <div class="notice" :title="`您有${unreadNum}条未读通知`" @click="handleClick">
+   <div class="notice" :title="title" @click="handleClick">
       <b-badge :value="unreadNum" class="item">
         <b-icon name="ios-notifications-outline"
           size="29" color="#ffffff">
@@ -15,7 +15,18 @@
     name: 'NoticeTips',
     data () {
       return {
-        unreadNum: 0
+        unreadNum: null
+      }
+    },
+    computed: {
+      title () {
+        let res = ''
+        if (this.unreadNum) {
+          res = `您有${this.unreadNum}条未读通知`
+        } else {
+          res = '暂无未读通知'
+        }
+        return res
       }
     },
     created () {
@@ -29,7 +40,11 @@
       async getUnreadNum () {
         try {
           const res = await getUnreadNum()
-          this.unreadNum = res
+          if (res === 0) {
+            this.unreadNum = null
+          } else {
+            this.unreadNum = res
+          }
         } catch (error) {
           console.error(error)
         }
