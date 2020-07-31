@@ -190,14 +190,14 @@
 
     .sec-nav-con {
       width: 1300px;
-      margin: 20px auto;
+      margin: 15px auto;
     }
 
     .main-con {
       display: flex;
       justify-content: space-between;
       width: 1300px;
-      margin: 25px auto 25px;
+      margin: 0 auto 25px;
 
       .left {
         position: relative;
