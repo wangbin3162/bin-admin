@@ -127,7 +127,7 @@
           colName: '',
           colUrl: '',
           colType: '',
-          colSort: null,
+          colSort: 0,
           colDesc: '',
           keywords: '',
           columnCode: '',
@@ -145,6 +145,9 @@
           ],
           colType: [
             { required: true, message: '栏目类型不能为空', trigger: 'change' }
+          ],
+          colSort: [
+            { required: true, type: 'integer', message: '必须为整数', trigger: 'blur' }
           ],
           colUrl: [
             { required: true, message: '栏目地址不能为空', trigger: 'blur' }
