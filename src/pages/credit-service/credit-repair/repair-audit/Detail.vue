@@ -21,10 +21,11 @@
               <tr>
                 <td>数据记录：</td>
                 <td colspan="3">
-                  <b-code-editor
+                  <b-ace-editor
                     v-if="detail.recordJson"
+                    height="200"
                     :value="JSON.stringify(JSON.parse(detail.recordJson), null, 2)" readonly>
-                  </b-code-editor>
+                  </b-ace-editor>
                   <b-button type="text" @click="open = true" v-if ="detail.dealMode !='2'">
                     查看详细
                   </b-button>

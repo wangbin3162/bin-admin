@@ -21,43 +21,17 @@
               <tr>
                 <td>数据记录：</td>
                 <td colspan="3">
-                  <b-code-editor
+                  <b-ace-editor
                     v-if="detail.recordJson"
+                    height="200"
                     :value="JSON.stringify(JSON.parse(detail.recordJson), null, 2)" readonly>
-                  </b-code-editor>
+                  </b-ace-editor>
                   <b-button type="text" @click="open = true" v-if ="detail.dealMode !='2'">
                     查看详细
                   </b-button>
                 </td>
               </tr>
             </table>
-            <!-- <div flex="main:center">
-              <b-row style="width: 100%;">
-                <b-col span="12">
-                  <v-simple-label label="主体名称">{{ detail.name }}</v-simple-label>
-                </b-col>
-                <b-col span="12">
-                  <v-simple-label label="主体标识">{{ detail.personId }}</v-simple-label>
-                </b-col>
-                <b-col span="12">
-                  <v-simple-label label="申请目录">{{ detail.resourceName }}</v-simple-label>
-                </b-col>
-                <b-col span="12">
-                  <v-simple-label label="申请标识">{{ detail.resourceKey }}</v-simple-label>
-                </b-col>
-                <b-col span="24">
-                  <v-simple-label label="数据记录">
-                    <b-code-editor
-                      v-if="detail.recordJson"
-                      :value="JSON.stringify(JSON.parse(detail.recordJson), null, 2)" readonly>
-                    </b-code-editor>
-                    <b-button type="text" @click="open = true" v-if ="detail.dealMode !='2'">
-                      查看详细
-                    </b-button>
-                  </v-simple-label>
-                </b-col>
-              </b-row>
-            </div> -->
           </div>
         </b-collapse-wrap>
 

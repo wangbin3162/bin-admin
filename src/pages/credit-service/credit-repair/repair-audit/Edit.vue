@@ -25,10 +25,11 @@
 
             <b-form :model="form" ref="form" :rules="rules" :label-width="100">
               <b-form-item label="数据记录">
-                <b-code-editor
+                <b-ace-editor
                     v-if="detail.recordJson"
+                    height="200"
                     :value="JSON.stringify(JSON.parse(detail.recordJson), null, 2)" readonly>
-                  </b-code-editor>
+                  </b-ace-editor>
                 <b-button type="text" @click="open = true">
                   查看详细
                 </b-button>

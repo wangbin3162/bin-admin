@@ -27,7 +27,10 @@
         <!-- 中央表格 -->
         <b-table :columns="columns" :data="list" :loading="listLoading">
           <template v-slot:indexName="{ row }">
-            <b-button type="text" @click="handleCheck(row.id)">{{ row.indexName }}</b-button>
+            <b-button type="text" t-ellipsis :title="row.indexName"
+              @click="handleCheck(row.id)">
+              {{ row.indexName }}
+            </b-button>
           </template>
           <template v-slot:indexKind="{ row }">
             {{ natureEnum[row.indexKind] }}

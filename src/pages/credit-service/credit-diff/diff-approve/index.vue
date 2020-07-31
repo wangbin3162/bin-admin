@@ -68,7 +68,7 @@
         },
         columns: [
           { type: 'index', width: 50, align: 'center' },
-          { title: '异议编码', key: 'searchCode' },
+          { title: '异议编码', key: 'searchCode', ellipsis: true, tooltip: true },
           { title: '申请人', key: 'applyUserName' },
           { title: '申请人身份证号码', key: 'idCode', width: 170 },
           // { title: '联系电话', key: 'phone' },
