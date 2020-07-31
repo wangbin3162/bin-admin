@@ -67,7 +67,11 @@
 
         <transition name="move-right">
           <div class="right" v-show="visible">
-            <section-side-nav @breadcrumb-param="handleBreadcrumbParam">
+            <section-side-nav
+              searchTitle="新闻搜索"
+              searchType="search"
+              @search="handleSearch"
+              @breadcrumb-param="handleBreadcrumbParam">
             </section-side-nav>
           </div>
         </transition>
@@ -137,6 +141,15 @@
        */
       handleAttachDlBtn () {
         this.openAttachmentDownload = true
+      },
+
+      /**
+       * @author haodongdong
+       * @description section-side-nav组件的search事件回调
+       * @param {string} keyword 关键字
+       */
+      handleSearch (keyword) {
+        window.open(`#/news/search?keyword=${keyword}`)
       },
 
       /**

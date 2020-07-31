@@ -38,8 +38,11 @@
                   </div>
 
                   <div class="tips">
-                    <span>{{ $util.parseTime(new Date(item.publishDate), '{y}-{m}-{d}')}}</span>
-                    <span>浏览: {{ item.accessCnt }}</span>
+                    <span>所属栏目：{{ item.colName }}</span>
+                    <div>
+                      <span class="mr-20">{{ $util.parseTime(new Date(item.publishDate), '{y}-{m}-{d}')}}</span>
+                      <span>浏览: {{ item.accessCnt }}</span>
+                    </div>
                   </div>
                 </li>
               </ul>
