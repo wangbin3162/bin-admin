@@ -24,10 +24,18 @@
             </gui-field>
           </template>
           <template v-if="item.controlType==='NUM_RANGE'">
-            <num-range v-model="params[index].realVal.value"/>
+            <num-range v-model="params[index].realVal.value" @on-change="emitValue"/>
           </template>
           <template v-if="item.controlType==='DATA_RANGE'">
-            <date-range v-model="params[index].realVal.value"/>
+            <date-range v-model="params[index].realVal.value" @on-change="emitValue"/>
+          </template>
+          <template v-if="item.controlType==='ITEM'">
+            <gui-field label="信息项:" label-width="60px">
+              <item-ctrl v-model="params[index].realVal" @on-change="emitValue"/>
+            </gui-field>
+          </template>
+          <template v-if="item.controlType==='PREFIX'">
+            <prefix-ctrl v-model="params[index].realVal" @on-change="emitValue"/>
           </template>
         </div>
       </b-collapse-panel>
@@ -44,10 +52,12 @@
   import GuiField from '../gui/gui-field'
   import NumRange from './ctrl/NumRange'
   import DateRange from './ctrl/DateRange'
+  import ItemCtrl from './ctrl/ItemCtrl'
+  import PrefixCtrl from './ctrl/PrefixCtrl'
 
   export default {
     name: 'DataSourceParam',
-    components: { DateRange, NumRange, GuiField, GuiWrap },
+    components: { PrefixCtrl, ItemCtrl, DateRange, NumRange, GuiField, GuiWrap },
     props: {
       value: {
         type: Array,
@@ -66,7 +76,7 @@
           ITEM: '信息项',
           NUM: '数字框',
           NUM_RANGE: '数字范围',
-          PREFIX: '前缀过滤控件',
+          PREFIX: '行业代码过滤控件',
           TERM: '精确过滤控件',
           TEXT: '文本框'
         }
@@ -94,7 +104,3 @@
     }
   }
 </script>
-
-<style scoped lang="stylus">
-
-</style>
