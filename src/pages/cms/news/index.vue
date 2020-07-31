@@ -19,7 +19,7 @@
           </div>
 
           <div class="input">
-            <b-input v-model="query.keyword" placeholder="请输入想查询的文字" clearable
+            <b-input v-model="keyword" placeholder="请输入想查询的文字" clearable
               @on-enter="handleSearch" @on-clear="handleSearch">
               <b-icon name="ios-search" slot="suffix" style="cursor: pointer"
                 @click.native="handleSearch">
@@ -59,7 +59,7 @@
                     <img :src="`/api/cms/attach/download?attachmentId=${item.thumbnailPath}`" alt=""
                       v-show="item.thumbnailPath !== null">
                     <div class="title-text">
-                      <p v-html="item.title" @click="handleTitleBtnClick(item.id)"></p>
+                      <p v-html="item.title" @click="handleTitleBtnClick(item.id, item.colId)"></p>
                       <div v-html="item.summary"></div>
                     </div>
                   </div>
@@ -92,7 +92,7 @@
   import {
     getTopColumn,
     getSectionRoots, getSectionChildren,
-    getContentList, getContentListByKeyword
+    getContentList
   } from '../../../api/cms/news.api'
 
   export default {
@@ -106,11 +106,10 @@
         curSubTab: {}, // 当前选中的子栏目tab
         tabs: [],
         subSecList: [],
+        keyword: '',
         total: 0,
         query: { // 内容的查询参数
           columnId: '',
-          contentStatus: 'PUBLISHED',
-          keyword: '',
           size: 10,
           page: 1
         },
@@ -131,13 +130,8 @@
         await this.getSectionChildren(this.curRootTab.id, query.sId)
         this.visible = true
         if (this.subSecList.length > 0) {
-          if (query.keyword) {
-            this.query.keyword = query.keyword
-            await this.getContentListByKeyword(this.query)
-          } else {
-            this.query.columnId = this.curSubTab.id
-            await this.getContentList(this.query)
-          }
+          this.query.columnId = this.curSubTab.id
+          await this.getContentList(this.query)
         }
       },
 
@@ -209,40 +203,10 @@
 
       /**
        * @author haodongdong
-       * @description 根据关键字查询内容列表
-       * @param {Object} query 查询参数
-       * @param {string} query.columnId 所属栏目id
-       * @param {string} query.keyword 关键字
-       * @param {string} query.contentStatus 内容状态
-       * @param {number} query.size 分页尺寸
-       * @param {number} query.page 页数
-       */
-      async getContentListByKeyword (query) {
-        this.loading = true
-        try {
-          const res = await getContentListByKeyword(query)
-          this.contentList = res.rows
-          this.total = res.total
-        } catch (error) {
-          console.error(error)
-        }
-        this.loading = false
-      },
-
-      /**
-       * @author haodongdong
        * @description 查询函数
        */
       handleSearch () {
-        this.query.page = 1
-        if (this.query.keyword) {
-          this.getContentListByKeyword(this.query)
-        } else {
-          this.getContentList(this.query)
-        }
-        this.$router.push({ // 清空url参数
-          path: 'news'
-        })
+        window.open(`#/news/search?keyword=${this.keyword}`)
       },
 
       /**
@@ -281,17 +245,15 @@
       /**
        * @author haodongdong
        * @description 点击文章标题的回调
-       * @param {string} 文章id
+       * @param {string} id 文章新闻id
+       * @param {string} colId 文章所属栏目id
        */
-      handleTitleBtnClick (id) {
+      handleTitleBtnClick (id, colId) {
         this.$router.push({
           path: '/news/detail',
           query: {
-            pId: this.curRootTab.id,
-            sId: this.curSubTab.id,
-            pName: this.curRootTab.colName,
-            sName: this.curSubTab.colName,
-            contentId: id
+            newsId: id,
+            newsColumnId: colId
           }
         })
       },
@@ -453,6 +415,7 @@
             justify-content: center;
             margin-bottom: 10px;
             min-height: 90px;
+            padding-bottom: 5px;
             border-bottom: 1px solid #d9d9d9;
 
             .title-con {

@@ -25,7 +25,7 @@
           <ul class="list">
             <li v-for="item in contentList" :key="item.id"
               flex="main:justify" class="list-item">
-              <p @click="handleTitleBtnClick(item.id)">
+              <p @click="handleTitleBtnClick(item.id, item.colId)">
                 {{ item.title }}
               </p>
               <span>
@@ -106,7 +106,6 @@
         try {
           const res = await getContentList({
             columnId,
-            contentStatus: 'PUBLISHED',
             size: 5,
             page: 1
           })
@@ -130,17 +129,15 @@
       /**
        * @author haodongdong
        * @description 点击文章标题的回调
-       * @param {string} 文章id
+       * @param {string} id 文章新闻id
+       * @param {string} colId 所属栏目id
        */
-      handleTitleBtnClick (id) {
+      handleTitleBtnClick (id, colId) {
         this.$router.push({
           path: '/news/detail',
           query: {
-            pId: this.curActivedBtn.parentCol,
-            sId: this.curActivedBtn.id,
-            pName: this.curActivedBtn.colName,
-            sName: this.curActivedBtn.parentColName,
-            contentId: id
+            newsId: id,
+            newsColumnId: colId
           }
         })
       },

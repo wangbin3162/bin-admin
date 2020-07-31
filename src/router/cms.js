@@ -12,6 +12,12 @@ export default [
     meta: { title: '新闻详情' }
   },
   {
+    path: '/news/search',
+    name: 'NewsSearch',
+    component: () => import(/* webpackChunkName: "NewsSearch" */ '../pages/cms/news/Search'),
+    meta: { title: '新闻搜索' }
+  },
+  {
     path: '/notice',
     name: 'Notice',
     component: () => import(/* webpackChunkName: "Notice" */ '../pages/cms/notice'),

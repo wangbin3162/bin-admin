@@ -73,10 +73,23 @@
        * @author haodongdong
        */
       async buildSectionSideNav () {
-       try {
+        const query = this.$route.query
+        try {
           const res = await getTopColumn()
           res.forEach(item => {
             getSectionChildren(item.id).then(res => {
+              if (query.newsColumnId) { // 这里是根据文章所属栏目id，确定文章所属的栏目结构，生成参数传递出去
+                const subSec = res.find(item => item.id === query.newsColumnId)
+                if (subSec) {
+                  this.$emit('breadcrumb-param', {
+                    pId: subSec.parentCol,
+                    sId: subSec.id,
+                    pName: subSec.parentColName,
+                    sName: subSec.colName
+
+                  })
+                }
+              }
               this.$set(item, 'children', res)
             })
           })

@@ -16,14 +16,14 @@
           <b-breadcrumb-item :to="{
             path: '/news',
             query: {
-              pId: routeQuery.pId,
-              sId: routeQuery.sId,
+              pId: breadcrumbParam.pId,
+              sId: breadcrumbParam.sId,
             }
           }">
-            {{ routeQuery.pName }}
+            {{ breadcrumbParam.pName }}
           </b-breadcrumb-item>
           <b-breadcrumb-item>
-            <span style="color: #0d85ff;">{{ routeQuery.sName }}</span>
+            <span style="color: #0d85ff;">{{ breadcrumbParam.sName }}</span>
           </b-breadcrumb-item>
         </b-breadcrumb>
       </div>
@@ -56,10 +56,8 @@
               <div v-html="content.detail" class="content-con">
               </div>
 
-              <b-divider></b-divider>
-
               <attachment-download v-model="openAttachmentDownload"
-                :contentId="routeQuery.contentId">
+                :contentId="routeQuery.newsId">
               </attachment-download>
             </div>
 
@@ -69,7 +67,7 @@
 
         <transition name="move-right">
           <div class="right" v-show="visible">
-            <section-side-nav>
+            <section-side-nav @breadcrumb-param="handleBreadcrumbParam">
             </section-side-nav>
           </div>
         </transition>
@@ -99,7 +97,8 @@
         loading: false,
         openAttachmentDownload: false,
         content: {},
-        routeQuery: {}
+        routeQuery: {},
+        breadcrumbParam: {} // 面包屑需要使用的参数
       }
     },
     created () {
@@ -112,7 +111,7 @@
        */
       async init () {
         this.routeQuery = this.$route.query
-        await this.getContentDetail(this.routeQuery.contentId)
+        await this.getContentDetail(this.routeQuery.newsId)
         this.visible = true
       },
 
@@ -138,6 +137,19 @@
        */
       handleAttachDlBtn () {
         this.openAttachmentDownload = true
+      },
+
+      /**
+       * @author haodongdong
+       * @description section-side-nav组件breadcrumb-param事件回调
+       * @param {Object} param
+       * @param {string} param.pId 文章所属的顶层栏目id
+       * @param {string} param.sId 文章所属栏目id
+       * @param {string} param.pName 文章所属的顶层栏目名
+       * @param {string} param.sName 文章所属栏目名
+       */
+      handleBreadcrumbParam (param) {
+        this.breadcrumbParam = param
       }
 
     }

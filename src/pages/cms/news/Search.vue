@@ -11,12 +11,12 @@
       </div>
 
       <div class="sec-nav-con">
-        <div class="sec-nav">
-          <div class="tabs">
-            <b-tabs ref="tabs" v-model="activeTab" :data="tabs">
-            </b-tabs>
-          </div>
-        </div>
+        <b-breadcrumb separator="/">
+          <b-breadcrumb-item :to="{ path: '/' }">首页</b-breadcrumb-item>
+          <b-breadcrumb-item>
+            <span style="color: #0d85ff;">新闻搜索</span>
+          </b-breadcrumb-item>
+        </b-breadcrumb>
       </div>
 
       <div class="list-con">
@@ -25,19 +25,21 @@
             <b-loading fix showText="加载中...." v-if="loading">
             </b-loading>
 
-            <template v-if="list.length > 0">
+           <template v-if="list.length > 0">
               <ul>
                 <li v-for="item in list" :key="item.id">
                   <div class="title-con">
+                    <img :src="`/api/cms/attach/download?attachmentId=${item.thumbnailPath}`" alt=""
+                      v-show="item.thumbnailPath !== null">
                     <div class="title-text">
-                      <p v-html="item.title" @click="handleTitleBtnClick(item.id)"></p>
-                      <!-- <div v-html="item.content"></div> -->
+                      <p v-html="item.title" @click="handleTitleBtnClick(item.id, item.colId)"></p>
+                      <div v-html="item.summary"></div>
                     </div>
                   </div>
 
                   <div class="tips">
-                    <span></span>
-                    <span>{{ $util.parseTime(new Date(item.createDate), '{y}-{m}-{d}')}}</span>
+                    <span>{{ $util.parseTime(new Date(item.publishDate), '{y}-{m}-{d}')}}</span>
+                    <span>浏览: {{ item.accessCnt }}</span>
                   </div>
                 </li>
               </ul>
@@ -57,9 +59,9 @@
 
         <transition name="move-right">
           <div class="right" v-show="visible">
-            <section-side-nav v-model="query.title"
-              searchTitle="通知搜索"
-              searchType="notice"
+            <section-side-nav v-model="query.keyword"
+              searchTitle="新闻搜索"
+              searchType="search"
               @search="handleSearch">
             </section-side-nav>
           </div>
@@ -71,7 +73,7 @@
 </template>
 
 <script>
-  import { getNoticeList } from '../../../api/cms/notice.api'
+  import { getContentListByKeyword } from '../../../api/cms/news.api'
   import SectionSideNav from '../components/SectionSideNav'
 
   export default {
@@ -83,14 +85,14 @@
       return {
         visible: false,
         loading: false,
-        activeTab: 'notice',
-        tabs: [{ title: '通知公告', key: 'notice' }],
         total: 0,
-        query: { // 通知列表的查询参数
-          title: '',
+        query: { // 查询参数
+          columnId: '',
+          keyword: '',
           size: 10,
           page: 1
         },
+        routeQuery: {},
         list: []
       }
     },
@@ -103,26 +105,28 @@
        * @description 初始化处理
        */
       async init () {
-        const query = this.$route.query
-        if (query.noticeTitle) {
-          this.query.title = query.noticeTitle
+        this.routeQuery = this.$route.query
+        if (this.routeQuery.keyword) {
+          this.query.keyword = this.routeQuery.keyword
         }
-        await this.getNoticeList(this.query)
+        await this.getContentListByKeyword(this.query)
         this.visible = true
       },
 
       /**
        * @author haodongdong
-       * @description 根据栏目获取文章内容
+       * @description 根据关键字查询内容列表
        * @param {Object} query 查询参数
-       * @param {string} query.notifyStatus 内容状态
+       * @param {string} query.columnId 所属栏目id
+       * @param {string} query.keyword 关键字
+       * @param {string} query.contentStatus 内容状态
        * @param {number} query.size 分页尺寸
        * @param {number} query.page 页数
        */
-      async getNoticeList (query) {
+      async getContentListByKeyword (query) {
         this.loading = true
         try {
-          const res = await getNoticeList(query)
+          const res = await getContentListByKeyword(query)
           this.list = res.rows
           this.total = res.total
         } catch (error) {
@@ -133,30 +137,24 @@
 
       /**
        * @author haodongdong
-       * @description 点击通知标题的回调
-       * @param {string} 通知id
+       * @description 点击标题的回调
+       * @param {string} id 文章新闻id
+       * @param {string} colId 新闻文章所属栏目id
        */
-      handleTitleBtnClick (id) {
-        this.$router.push({
-          path: '/notice/detail',
-          query: {
-            noticeId: id
-          }
-        })
+      handleTitleBtnClick (id, colId) {
+        window.open(`#/news/detail?newsId=${id}&newsColumnId=${colId}`)
       },
 
       /**
        * @author haodongdong
        * @description section-side-nav组件的search事件回调
-       * @param {string} title 搜索框的值
+       * @param {string} keyword 关键字
        */
-      handleSearch (title) {
+      handleSearch (keyword) {
         this.query.page = 1
-        this.query.title = title
-        this.getNoticeList(this.query)
-        this.$router.push({ // 用于清理url
-          path: '/notice'
-        })
+        this.query.keyword = keyword
+        this.$router.push('search')
+        this.getContentListByKeyword(this.query)
       },
 
       /**
@@ -165,7 +163,7 @@
        */
       handlePageChange (page) {
         this.query.page = page
-        this.getContentList(this.query)
+        this.getContentListByKeyword(this.query)
       }
     }
   }
@@ -230,33 +228,15 @@
     }
 
     .sec-nav-con {
-      background: #ffffff;
-      box-shadow: 0 2px 12px 0 rgba(0,0,0,0.12);
-
-      .sec-nav {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-end;
-        height: 70px;
-        width: 1300px;
-        margin: 0 auto;
-
-        .tabs {
-          width:  700px;
-        }
-
-        .input {
-          height: 47px;;
-          width: 400px;
-        }
-      }
+      width: 1300px;
+      margin: 15px auto;
     }
 
     .list-con {
       display: flex;
       justify-content: space-between;
       width: 1300px;
-      margin: 25px auto 25px;
+      margin: 0 auto 25px;
 
       .right {
         width: 300px;
@@ -276,6 +256,7 @@
             justify-content: center;
             margin-bottom: 10px;
             min-height: 90px;
+            padding-bottom: 5px;
             border-bottom: 1px solid #d9d9d9;
 
             .title-con {

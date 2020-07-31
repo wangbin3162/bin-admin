@@ -33,7 +33,8 @@ export async function getNoticeList(query) {
         params: {
           title: query.title,
           type: query.type,
-          notifyStatus: query.notifyStatus,
+          // notifyStatus: query.notifyStatus,
+          notifyStatus: 'PUBLISHED',
           size: query.size,
           page: query.page - 1,
           sort: 'isTop,desc'

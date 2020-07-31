@@ -36,7 +36,7 @@
                     <span>来源：{{ detail.source }}</span>
                     <!-- <span>浏览量：{{ detail.accessCnt }}</span> -->
                   </div>
-                  <span style="cursor: pointer; color: #0d85ff;" @click="handleAttachDlBtn">附件下载</span>
+                  <!-- <span style="cursor: pointer; color: #0d85ff;" @click="handleAttachDlBtn">附件下载</span> -->
                 </div>
               </div>
 
@@ -44,8 +44,6 @@
 
               <div v-html="detail.content" class="content-con">
               </div>
-
-              <b-divider></b-divider>
 
                <attachment-download v-model="openAttachmentDownload"
                 :initFileList="detail.fileList">

@@ -162,8 +162,10 @@ export async function getContentList(query) {
         params: {
           columnId: query.columnId,
           title: query.title,
-          contentType: query.contentType,
-          contentStatus: query.contentStatus,
+          // contentType: query.contentType,
+          // contentStatus: query.contentStatus,
+          contentType: 'CONTENT',
+          contentStatus: 'PUBLISHED',
           publishDateStart: query.publishDateStart,
           publishDateEnd: query.publishDateEnd,
           size: query.size,
@@ -205,7 +207,9 @@ export async function getContentListByKeyword(query) {
         params: {
           colId: query.columnId,
           keyword: query.keyword,
-          contentStatus: query.contentStatus,
+          // contentStatus: query.contentStatus,
+          contentStatus: 'PUBLISHED',
+          contentType: 'CONTENT',
           size: query.size,
           page: query.page - 1,
           sort: [

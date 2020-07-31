@@ -7,6 +7,8 @@
       @on-visible-change="visibleChangeHandler"> -->
 
      <div class="list" v-if="fileList.length > 0">
+      <b-divider></b-divider>
+
       <span>附件下载：</span>
 
       <div class="table-con">
