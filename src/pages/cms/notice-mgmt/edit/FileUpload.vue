@@ -83,7 +83,11 @@
        * @returns {boolean} 返回false取消发组件默认的上传行为
        */
       handleUpload (file) {
-        this.fileUpdate(file)
+        if (file.size > 31457280) {
+          this.$message({ type: 'warning', content: '上传文件请小于30mb' })
+        } else {
+          this.fileUpdate(file)
+        }
         return false
       },
 
