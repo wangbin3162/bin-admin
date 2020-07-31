@@ -5,7 +5,7 @@
       <b-form :model="form" :rules="rules" ref="form" label-position="top">
         <div flex="box:mean">
           <b-form-item label="栏目名称" prop="colName" class="mr-15">
-            <b-input v-model="form.colName" placeholder="请输入栏目名称"></b-input>
+            <b-input v-model="form.colName" placeholder="请输入栏目名称" :maxlength="20"></b-input>
           </b-form-item>
           <b-form-item label="父栏目" prop="parentCol">
             <b-input :value="parentColName" disabled></b-input>
@@ -14,7 +14,7 @@
 
         <div flex="box:mean">
           <b-form-item label="栏目编码" prop="columnCode" class="mr-15">
-            <b-input v-model="form.columnCode" placeholder="请输入栏目编码"></b-input>
+            <b-input v-model="form.columnCode" placeholder="请输入栏目编码" :maxlength="10"></b-input>
           </b-form-item>
           <b-form-item label="栏目类型" prop="colType">
             <b-select v-model="form.colType">
@@ -41,17 +41,21 @@
         </b-form-item>
 
         <b-form-item label="关键字" prop="keywords">
-          <b-input v-model="form.keywords" placeholder="向搜索引擎说明栏目的关键字，多个用英文逗号隔开"></b-input>
+          <b-input v-model="form.keywords" placeholder="向搜索引擎说明栏目的关键字，多个用英文逗号隔开"
+            :maxlength="100">
+          </b-input>
         </b-form-item>
 
         <b-form-item label="描述" prop="colDesc">
           <b-input v-model="form.colDesc" type="textarea" :autosize="{minRows: 2,maxRows: 5}"
-            placeholder="向搜索引擎说明栏目的主要内容描述"></b-input>
+            placeholder="向搜索引擎说明栏目的主要内容描述" :maxlength="300">
+          </b-input>
         </b-form-item>
 
         <b-form-item label="备注" prop="brief">
           <b-input v-model="form.brief" type="textarea" :autosize="{minRows: 4,maxRows: 5}"
-            placeholder="栏目备注"></b-input>
+            placeholder="栏目备注" :maxlength="300">
+          </b-input>
         </b-form-item>
 
         <div v-if="form.thumbnailPath !== null && form.thumbnailPath !== ''" flex="box:mean">
