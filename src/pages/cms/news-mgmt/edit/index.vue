@@ -130,7 +130,7 @@
           orderNo: null,
           keywords: '',
           description: '',
-          source: this.$store.state.user.info.departId,
+          source: this.$store.state.user.info.departName,
           brief: '',
           detail: ''
         },

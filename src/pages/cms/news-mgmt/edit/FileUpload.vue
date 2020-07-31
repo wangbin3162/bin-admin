@@ -65,8 +65,11 @@
        * @returns {boolean} 返回false取消发组件默认的上传行为
        */
       handleUpload (file) {
-        console.log(file)
-        this.fileUpdate(this.contentId, file)
+        if (file.size > 31457280) {
+          this.$message({ type: 'warning', content: '上传文件请小于30mb' })
+        } else {
+          this.fileUpdate(this.contentId, file)
+        }
         return false
       },
 

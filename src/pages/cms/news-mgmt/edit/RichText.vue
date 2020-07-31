@@ -90,8 +90,12 @@
           input.click()
           input.onchange = async () => {
             const file = input.files[0]
-            const res = await UploadPicture(this.contentId, file)
-            callback(res.url)
+            if (file.size > 31457280) {
+              this.$message({ type: 'warning', content: '上传文件请小于30mb' })
+            } else {
+              const res = await UploadPicture(this.contentId, file)
+              callback(res.url)
+            }
             input = null
           }
         } catch (error) {
