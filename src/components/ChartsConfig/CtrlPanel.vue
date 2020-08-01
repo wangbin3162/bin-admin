@@ -52,7 +52,7 @@
       <config :data="selectWidget" @update-data="emitUpdateData"/>
     </div>
     <!--查看json-->
-    <b-modal v-model="jsonModal" title="编辑JSON" width="800px">
+    <b-modal v-model="jsonModal" title="编辑JSON" width="800px" stop-remove-scroll>
       <div v-if="jsonModal">
         <b-ace-editor v-model="jsonOptions" height="400" width="752" :snippets="false"/>
       </div>
