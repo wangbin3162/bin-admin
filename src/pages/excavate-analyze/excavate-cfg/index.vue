@@ -168,7 +168,7 @@
       },
       // 获取一个类型的基础配置项
       getChartBaseInfo(type) {
-        return basicComponents.find(i => i.type === type)
+        return deepCopy(basicComponents.find(i => i.type === type))
       },
       /* [数据接口] */
       // 通用枚举

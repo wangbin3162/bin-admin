@@ -37,11 +37,14 @@
           <template v-if="item.controlType==='PREFIX'">
             <prefix-ctrl v-model="params[index].realVal" @on-change="emitValue"/>
           </template>
+          <template v-if="item.controlType==='TERM'">
+            <term-ctrl v-model="params[index].realVal" @on-change="emitValue"/>
+          </template>
         </div>
       </b-collapse-panel>
     </b-collapse>
-    <b-ace-editor :value="JSON.stringify(params.map(i=>({paramName:i.paramName,realVal:i.realVal})),null,2)"
-                  readonly wrap/>
+    <!--<b-ace-editor :value="JSON.stringify(params.map(i=>({paramName:i.paramName,realVal:i.realVal})),null,2)"-->
+    <!--readonly wrap/>-->
   </div>
 </template>
 
@@ -54,10 +57,11 @@
   import DateRange from './ctrl/DateRange'
   import ItemCtrl from './ctrl/ItemCtrl'
   import PrefixCtrl from './ctrl/PrefixCtrl'
+  import TermCtrl from './ctrl/TermCtrl'
 
   export default {
     name: 'DataSourceParam',
-    components: { PrefixCtrl, ItemCtrl, DateRange, NumRange, GuiField, GuiWrap },
+    components: { TermCtrl, PrefixCtrl, ItemCtrl, DateRange, NumRange, GuiField },
     props: {
       value: {
         type: Array,

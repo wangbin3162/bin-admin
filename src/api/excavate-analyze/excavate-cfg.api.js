@@ -132,3 +132,29 @@ export function businessTemplateDetail(id) {
     }
   })
 }
+
+/* 获取所有字典组列表 */
+export function getDictList(query) {
+  return request({
+    url: '/management/dict/group/search',
+    method: 'get',
+    params: {
+      size: query.size,
+      page: query.page - 1,
+      groupName: query.groupName,
+      groupCode: query.groupCode,
+      sort: 'createDate,desc'
+    }
+  })
+}
+
+/* 获取所有字典项列表 */
+export function getDictItems(code) {
+  return request({
+    url: '/api/dict/queryItems',
+    method: 'get',
+    params: {
+      groupCode: code
+    }
+  })
+}

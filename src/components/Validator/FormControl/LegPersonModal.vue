@@ -47,14 +47,6 @@
         ]
       }
     },
-    watch: {
-      value: {
-        handler(val) {
-          this.current = val
-        },
-        immediate: true
-      }
-    },
     methods: {
       open() {
         this.dialogFormVisible = true
