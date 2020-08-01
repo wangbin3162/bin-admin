@@ -10,12 +10,6 @@ export default {
   meta: { title: '分析引擎', icon: 'ios-globe' },
   children: [
     {
-      path: 'daApi',
-      name: 'DaApi',
-      component: () => import(/* webpackChunkName: "analyzeEngine" */ '../../pages/analyze-engine/DaApi'),
-      meta: { title: '接口管理' }
-    },
-    {
       path: 'daInnerTemplate',
       name: 'DaInnerTemplate',
       component: () => import(/* webpackChunkName: "analyzeEngine" */ '../../pages/analyze-engine/DaInnerTemplate'),
@@ -26,6 +20,12 @@ export default {
       name: 'DaBusinessTemplate',
       component: () => import(/* webpackChunkName: "analyzeEngine" */ '../../pages/analyze-engine/DaBusinessTemplate'),
       meta: { title: '业务模板' }
+    },
+    {
+      path: 'daApi',
+      name: 'DaApi',
+      component: () => import(/* webpackChunkName: "analyzeEngine" */ '../../pages/analyze-engine/DaApi'),
+      meta: { title: '接口管理' }
     },
     {
       path: 'useLog',
