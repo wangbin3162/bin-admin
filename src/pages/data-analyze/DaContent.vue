@@ -217,7 +217,7 @@
   import { getThemeTree } from '../../api/data-analyze/da-theme.api'
   import ApiChoose from './components/DaContent/ApiChoose'
   import { requiredRule } from '../../common/utils/validate'
-  import ResponseConfigPanel from '../analyze-engine/components/DaBizTemplate/ResponseConfigPanel'
+  import ResponseConfigPanel from './components/DaContent/ResponseConfigPanelAnalyzeCon'
   import { getApiDetail } from '../../api/analyze-engine/da-api.api'
   import ContentTestPanel from './components/DaContent/ContentTestPanel'
   import DataConfig from './components/DaContent/DataConfig'
@@ -336,7 +336,7 @@
       // 查看配置响应信息
       handleConfig(row) {
         this.dialogStatus = 'config'
-        this.$refs.resConfigPanel && this.$refs.resConfigPanel.open(row.id, row.name)
+        this.$refs.resConfigPanel && this.$refs.resConfigPanel.open(row.id, row.name, row.mappingFields)
       },
       // 新增按钮事件
       handleCreate() {

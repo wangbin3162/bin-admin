@@ -137,3 +137,49 @@ export async function queryRespInfos (id) {
     }
   })
 }
+
+/**
+ * @author haodongdong
+ * @description 分析内容、响应配置获取左侧树
+ * @param {string} id 分析内容记录的id
+ * @returns {Promise}
+ */
+export async function queryLeftRespInfos (id) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/da/contentApi/queryLeftRespInfos',
+        method: 'get',
+        params: { contentId: id }
+      })
+      resolve(res.data)
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
+ * @description 获取多接口模板参数，测试模块使用。
+ * @param {string} id 分析内容记录的id
+ * @returns {Promise}
+ */
+export async function getMultiInterfaceTemplateParam (id) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/da/api/details',
+        method: 'get',
+        params: { contentId: id }
+      })
+      if (res.data.successful) {
+        resolve(res.data.data)
+      } else {
+        reject(res.data.message)
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}

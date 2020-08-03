@@ -174,6 +174,7 @@ export function addResp(response) {
     method: 'post',
     params: {
       bizId: response.bizId,
+      apiId: response.apiId, // 重构 分析内容时添加
       parentId: response.parentId,
       keyName: response.keyName,
       keyAlias: response.keyAlias,
@@ -203,6 +204,7 @@ export function modifyResp(response) {
     method: 'post',
     params: {
       bizId: response.bizId,
+      apiId: response.apiId, // 重构分析内容时添加
       id: response.id,
       parentId: response.parentId,
       keyName: response.keyName,
