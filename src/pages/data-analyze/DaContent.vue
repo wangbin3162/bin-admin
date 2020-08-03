@@ -201,12 +201,12 @@
     <!-- 数据配置单独出一个组件，维护相关数据，那么信息项映射产生的数据需要回传给数据配置组件 -->
     <!-- 信息项映射需要对应到数据配置对应的接口 -->
     <!-- 信息项映射组件 -->
-    <info-item-map v-if="dialogStatus === 'infoItemMap'"
+    <!-- <info-item-map v-if="dialogStatus === 'infoItemMap'"
       :id="content.id"
       :initMappingItems="mappingItems"
       @close="dialogStatus = 'modify'"
       @complete="handleCompleteInfoItemMap">
-    </info-item-map>
+    </info-item-map> -->
   </div>
 </template>
 
@@ -408,7 +408,7 @@
                     this.dialogStatus = 'config'
                     this.btnLoading = false // 按钮状态清空
                     this.searchList()
-                    this.$refs.resConfigPanel.open(this.content.id, this.content.name)
+                    this.$refs.resConfigPanel.open(this.content.id, this.content.name, this.content.mappingFields)
                     this.$message({ type: 'success', content: '操作成功' })
                   })
                 } else {

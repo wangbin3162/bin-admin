@@ -48,12 +48,12 @@
                 <b-input v-model="item.name" placeholder="请输入名称"></b-input>
               </b-form-item>
 
-              <b-form-item label="信息项映射" class="form-item">
+              <!-- <b-form-item label="信息项映射" class="form-item">
                 <b-button type="primary" plain style="width: 100%;"
                   @click="handleConfigInfoItemMapBtn(item.mappingItems, index)">
                   配置信息项映射
                 </b-button>
-              </b-form-item>
+              </b-form-item> -->
 
               <div flex="main:center" style="flex-grow: 1;" class="mt-10">
                 <b-button type="text" icon="ios-remove-circle-outline"
@@ -298,7 +298,7 @@
         border-bottom: 1px solid #d9d9d9;
 
         .form-item {
-          width: 30%;
+          width: 47%;
         }
       }
     }
