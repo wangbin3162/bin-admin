@@ -17,7 +17,7 @@
           </span>
           <span class="info" flex="dir:top">
             <i t-ellipsis title="数据归集总量（条）">数据归集总量（条）</i>
-            <i class="count">{{counts.dataMergeContentValue}}</i>
+            <i class="count">{{counts.totalCount}}</i>
           </span>
         </div>
         <div class="tip-item" flex>
@@ -257,7 +257,7 @@
         },
         counts: {
           cnt: '',
-          dataMergeContentValue: '',
+          totalCount: '',
           monthCount: '',
           zrpCount: '',
           foCount: ''
