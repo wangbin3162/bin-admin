@@ -183,3 +183,28 @@ export async function getMultiInterfaceTemplateParam (id) {
     }
   })
 }
+
+/**
+ * @author haodongdong
+ * @description 响应配置内测试接口
+ * @param {string} contentId 分析内容id
+ * @param {Object} daExecuteDtos 接口相关参数对象，包含apiId、接口参数
+ * @returns {Promise}
+ */
+export async function executeTest (contentId, daExecuteDtos) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/da/content/execute',
+        method: 'post',
+        params: {
+          contentId
+        },
+        data: daExecuteDtos
+      })
+      resolve(res.data)
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
