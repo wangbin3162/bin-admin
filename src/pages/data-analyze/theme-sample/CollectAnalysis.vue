@@ -72,8 +72,8 @@
             <div class="pl-15 pr-15">
               <b-table :columns="bmsjgjfxColumns" :data="bmsjgjfxData.slice(2, 7)" :loading="bmsjgjfxLoading">
                 <template v-slot:departId="{ row }">
-                  <div class="t-ellipsis" :title="compTransferEnum[row.key]">
-                    {{ compTransferEnum[row.key] }}
+                  <div class="t-ellipsis" :title="compTransferEnum[row.departId]">
+                    {{ compTransferEnum[row.departId] }}
                   </div>
                 </template>
 
@@ -170,8 +170,8 @@
             <div class="pl-20 pr-20">
               <b-table :columns="xxgjjlColumns" :data="xxgjjlData.slice(1, 7)" size="small" class="mb-10" :loading="xxgjjlLoading">
                 <template v-slot:resourceKey="{ row }">
-                  <div class="t-ellipsis" :title="directoryTransferEnum[row.key]">
-                    {{ directoryTransferEnum[row.key] }}
+                  <div class="t-ellipsis" :title="directoryTransferEnum[row.resourceKey]">
+                    {{ directoryTransferEnum[row.resourceKey] }}
                   </div>
                 </template>
               </b-table>
@@ -629,7 +629,7 @@
           // 顶部数据
           this.counts = {
             cnt: zyxxsl.data.cnt,
-            dataMergeContentValue: sjgjzl.data[0].dataMergeContentValue,
+            dataMergeContentValue: sjgjzl.data[0].aggsCount,
             monthCount: bygjsjl.data[0].monthCount,
             zrpCount: zrpcount.data[0].zrpCount,
             foCount: focount.data[0].foCount
