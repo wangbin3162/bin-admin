@@ -37,7 +37,7 @@
             <span v-if="scope.row.toggle=== 'ON'">动态</span>
             <span v-else>静态</span> &nbsp;
             <b-switch
-              :disabled="!havePermission('changeToggle')"
+              :disabled="!haveSwitch('changeToggle', scope.row.mappingFields)"
               v-model="scope.row.toggle" :true-value="'ON'" :false-value="'OFF'"
               @on-change="handleChangeStatus(scope.row)">
               <span slot="open">开</span>
@@ -56,10 +56,14 @@
                 <b-dropdown-item :disabled="!havePermission('respCfg')" :style="colorSuccess" name="cfg">
                   配置响应
                 </b-dropdown-item>
-                <b-dropdown-item :disabled="!havePermission('test')" :style="colorWarning" name="test"
-                                 v-if="row.toggle==='ON'">
-                  测试
-                </b-dropdown-item>
+                <template v-if="hideTestAndConfigMapBtn(row.toggle, row.mappingFields)">
+                  <b-dropdown-item :style="colorPrimary" name="cfgMap">
+                    配置映射
+                  </b-dropdown-item>
+                  <b-dropdown-item :disabled="!havePermission('test')" :style="colorWarning" name="test">
+                    测试
+                  </b-dropdown-item>
+                </template>
                 <b-dropdown-item :disabled="!canRemove" :style="colorDanger" name="remove">
                   删除
                 </b-dropdown-item>
@@ -137,8 +141,7 @@
           <data-config ref="dataConfig" v-model="content.toggle"
             :isEdit="isEdit"
             :data="content.data"
-            :initMappingFields="content.mappingFields"
-            @config-map="handleConfigMap">
+            :initMappingFields="content.mappingFields">
           </data-config>
         </b-collapse-wrap>
         <!--保存提交-->
@@ -201,12 +204,12 @@
     <!-- 数据配置单独出一个组件，维护相关数据，那么信息项映射产生的数据需要回传给数据配置组件 -->
     <!-- 信息项映射需要对应到数据配置对应的接口 -->
     <!-- 信息项映射组件 -->
-    <!-- <info-item-map v-if="dialogStatus === 'infoItemMap'"
-      :id="content.id"
-      :initMappingItems="mappingItems"
-      @close="dialogStatus = 'modify'"
-      @complete="handleCompleteInfoItemMap">
-    </info-item-map> -->
+    <info-item-map v-if="dialogStatus === 'infoItemMap'"
+      @close="handleCancel"
+      @success="searchList"
+      :contentId="content.id"
+      :initMappingFields="content.mappingFields">
+    </info-item-map>
   </div>
 </template>
 
@@ -263,7 +266,7 @@
         statusMap: { 'I': '初始', 'Y': '启用', 'D': '禁用' },
         apiModel: true,
         // 分析内容重构后需要的参数
-        mappingItems: []
+        mappingFields: ''
       }
     },
     created() {
@@ -367,6 +370,9 @@
         switch (name) {
           case 'cfg':
             this.handleConfig(row)
+            break
+          case 'cfgMap': // 配置映射
+            this.handleConfigMap(row)
             break
           case 'test':
             this.handleTest(row)
@@ -561,22 +567,46 @@
       },
       /**
        * @author haodongdong
-       * @descriptiong data-config组件配置信息项映射按钮事件回调
-       * @param {Object} mappingItems 配置信息项映射数据
+       * @descriptiong 更多按钮下配置映射的回调
+       * @param {Object} row 当前行对象
        */
-      handleConfigMap (mappingItems) {
-        this.mappingItems = mappingItems
+      handleConfigMap (row) {
+        this.content = { ...this.content, ...row }
         this.dialogStatus = 'infoItemMap'
       },
 
       /**
        * @author haodongdong
-       * @description info-item-map组件complete完成事件的回调，调用data-config组件提供的函数更新数据
-       * @param {Object} mappingItems 组件处理后的信息项映射数据
+       * @description 重构 用于判断是否有操纵开关的权限
+       * @returns {boolean}
        */
-      handleCompleteInfoItemMap (mappingItems) {
-        this.$refs.dataConfig.setMappingitems(mappingItems)
+      haveSwitch (funStr, mappingFields) {
+        let res = false
+        // 拥有权限 并且 mappingFields不为空
+        if (this.havePermission(funStr) && JSON.parse(mappingFields).length > 0) {
+          res = true
+        }
+        return res
+      },
+
+      /**
+       * @author haodongdong
+       * @descriptiong 用于判断是否隐藏更多按钮内的测试 配置响应 按钮
+       * @param {string} toggle 动静态切换状态
+       * @param {Array} mappingFields 配置映射对象数组
+       */
+      hideTestAndConfigMapBtn (toggle, mappingFields) {
+        let res = true
+        if (toggle === 'OFF') {
+          res = false
+        } else {
+          if (JSON.parse(mappingFields).length === 0) {
+            res = false
+          }
+        }
+        return res
       }
+
     }
   }
 </script>

@@ -12,8 +12,8 @@
           </div>
 
            <div class="btn-con">
-             <div class="block-btn mr-15" v-for="(item, index) in mappingFields" :key="item.apiId"
-              :class="{ actived: item.apiId === curInterface.apiId, error: validateArr.includes(index)}"
+             <div class="block-btn mr-15" v-for="item in mappingFields" :key="item.apiId"
+              :class="{ actived: item.apiId === curInterface.apiId, error: validateArr.includes(item.name)}"
               @click="handleInterfaceBtn(item)">
               <p class="t-ellipsis" title="接口1">
                 接口：{{ item.title }}
@@ -25,22 +25,24 @@
            </div>
 
           <template v-for="(form, key) in formsObj">
-            <b-form ref="form" v-show="key === curInterface.name" :key="key"
-              label-position="top"
-              :model="form.model"
-              :rules="form.rules">
+            <template v-if="form.fields.length > 0">
+              <b-form :ref="key" v-show="key === curInterface.name" :key="key"
+                label-position="top"
+                :model="form.model"
+                :rules="form.rules">
 
-              <div class="form">
-                <template v-for="field in form.fields">
-                  <b-form-item class="form-item mr-15" :key="field.fieldName"
-                    :label="field.name"
-                    :prop="field.fieldName">
-                    <b-input v-model="form.model[field.fieldName]" @on-blur="validateAllForm"></b-input>
-                  </b-form-item>
-                </template>
-              </div>
+                <div class="form">
+                  <template v-for="field in form.fields">
+                    <b-form-item class="form-item mr-15" :key="field.fieldName"
+                      :label="field.name"
+                      :prop="field.fieldName">
+                      <b-input v-model="form.model[field.fieldName]" @on-blur="validateAllForm"></b-input>
+                    </b-form-item>
+                  </template>
+                </div>
 
-            </b-form>
+              </b-form>
+            </template>
           </template>
         </div>
 
@@ -190,6 +192,7 @@
             const mappingField = mappingFields.find(item => item.name === key)
 
             formsObj[key] = {
+              key,
               apiId: mappingField.apiId,
               model: model,
               rules: rules,
@@ -206,21 +209,34 @@
        * @description 用于验证所有form
        */
       async validateAllForm () {
+        console.log(this.$refs)
         return new Promise(async (resolve, reject) => {
-          this.validateArr = []
+          try {
+            this.validateArr = []
 
-          const forms = this.$refs.form
+            // const forms = this.$refs.form
+            // for (let i = 0; i < forms.length; i++) {
+            //   const form = forms[i]
+            //   const valid = await form.validate()
+            //   if (!valid) this.validateArr.push(i)
+            // }
 
-          for (let i = 0; i < forms.length; i++) {
-            const form = forms[i]
-            const valid = await form.validate()
-            if (!valid) this.validateArr.push(i)
+            const formsObj = this.$refs
+            for (const key in formsObj) {
+              if (formsObj.hasOwnProperty(key)) {
+                const form = formsObj[key][0]
+                const valid = await form.validate()
+                if (!valid) this.validateArr.push(key)
+              }
+            }
+
+            let res = false
+            if (this.validateArr.length === 0) res = true
+
+            resolve(res)
+          } catch (error) {
+            console.error(error)
           }
-
-          let res = false
-          if (this.validateArr.length === 0) res = true
-
-          resolve(res)
         })
       }
     }

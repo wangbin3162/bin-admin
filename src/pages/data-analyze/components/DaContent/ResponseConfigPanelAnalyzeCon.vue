@@ -258,8 +258,10 @@
           node.selected = true
         }
         this.currentTreeNode = node // 此处需要放在this.handleFilter() 上面，因为searchList内会取currentTreeNode.id
-        if (!node.root) {
+        if (!node.root && node.id !== null) {
           this.handleFilter()
+        } else {
+          this.list = []
         }
       },
       // 添加跟响应节点
@@ -279,7 +281,7 @@
           this.$message({ type: 'danger', content: '请选择一个响应节点后再新增！' })
           return
         }
-        this.resetResp(this.currentTreeNode.id)
+        this.resetResp(this.currentTreeNode.id, this.currentTreeNode.apiId)
         this.openEditPage('create')
         this.drawerVisible = true
       },
@@ -370,7 +372,6 @@
       },
       // 编辑事件
       handleModify(row) {
-        console.log(row.apiId)
         this.resetResp(this.currentTreeNode.id, row.apiId)
         this.resp = { ...row }
         this.openEditPage('modify')
