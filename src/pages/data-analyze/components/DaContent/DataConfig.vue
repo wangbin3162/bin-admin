@@ -139,6 +139,9 @@
         rules: {
           apiId: [
             { required: true, message: '请配置接口', trigger: 'change' }
+          ],
+          name: [
+            { required: true, message: '请输入名称', trigger: 'blur' }
           ]
         },
         curIndex: null // 当前操作行所在的index
