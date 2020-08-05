@@ -1,54 +1,56 @@
 <template>
-  <div>
+  <div class="response-config-panel-analyze-con">
     <page-header-wrap v-show="visible && !batchDialog" show-close @on-close="close"
       :title="`[${cfgTitle}] 响应信息配置`">
-      <v-table-wrap>
-        <div slot="tree">
-          <div class="mb-15">
-            <b-tooltip content="新增根节点">
-              <b-button icon="ios-add-circle-outline" @click="handleCreateRoot" :disabled="!isRootNode"/>
-            </b-tooltip>
-            <b-tooltip content="编辑当前节点">
-              <b-button icon="ios-create" @click="handleModifyRoot" :disabled="isRootNode"/>
-            </b-tooltip>
-            <b-tooltip content="移除当前节点">
-              <b-button icon="ios-remove-circle-outline" @click="handleRemove(currentTreeNode)" :disabled="isRootNode"/>
-            </b-tooltip>
+      <b-collapse-wrap title="配置响应" collapse class="custom">
+        <v-table-wrap>
+          <div slot="tree">
+            <div class="mb-15">
+              <b-tooltip content="新增根节点">
+                <b-button icon="ios-add-circle-outline" @click="handleCreateRoot" :disabled="!isRootNode"/>
+              </b-tooltip>
+              <b-tooltip content="编辑当前节点">
+                <b-button icon="ios-create" @click="handleModifyRoot" :disabled="isRootNode"/>
+              </b-tooltip>
+              <b-tooltip content="移除当前节点">
+                <b-button icon="ios-remove-circle-outline" @click="handleRemove(currentTreeNode)" :disabled="isRootNode"/>
+              </b-tooltip>
+            </div>
+            <b-tree :data="treeData" @on-select-change="handTreeCurrentChange"/>
           </div>
-          <b-tree :data="treeData" @on-select-change="handTreeCurrentChange"/>
-        </div>
-        <v-table-tool-bar>
-          <b-button v-if="canCreate" type="primary" icon="ios-add-circle-outline"
-            @click="handleCreate" :disabled="isRootNode || needEdit">
-            新 增
-          </b-button>
-          <b-button v-if="canCreate" icon="ios-medkit"
-            @click="handleCreateBatch" :disabled="isRootNode || needEdit">
-            批量新增
-          </b-button>
-        </v-table-tool-bar>
-        <!--中央表格-->
-        <b-table :columns="columns" :data="list" :loading="listLoading">
-          <template v-slot:respKind="{row}">
-            <b-tag type="success" v-if="row.respKind==='RECORD'" size="mini">{{ respTypeMap[row.respKind] }}</b-tag>
-            <b-tag type="primary" v-else size="mini">{{ respTypeMap[row.respKind] }}</b-tag>
-          </template>
-          <template v-slot:dataType="{row}">{{ dataTypeMap[row.dataType] }}</template>
-          <!--操作栏-->
-          <template v-slot:action="{row}">
-            <b-button :disabled="!canModify" type="text" @click="handleModify(row)">修改</b-button>
-            <!--是否有删除键-->
-            <template v-if="canRemove">
-              <b-divider type="vertical"></b-divider>
-              <b-button type="text" text-color="danger" @click="handleRemove(row)">删除</b-button>
+          <v-table-tool-bar>
+            <b-button v-if="canCreate" type="primary" icon="ios-add-circle-outline"
+              @click="handleCreate" :disabled="isRootNode || needEdit">
+              新 增
+            </b-button>
+            <b-button v-if="canCreate" icon="ios-medkit"
+              @click="handleCreateBatch" :disabled="isRootNode || needEdit">
+              批量新增
+            </b-button>
+          </v-table-tool-bar>
+          <!--中央表格-->
+          <b-table :columns="columns" :data="list" :loading="listLoading">
+            <template v-slot:respKind="{row}">
+              <b-tag type="success" v-if="row.respKind==='RECORD'" size="mini">{{ respTypeMap[row.respKind] }}</b-tag>
+              <b-tag type="primary" v-else size="mini">{{ respTypeMap[row.respKind] }}</b-tag>
             </template>
-          </template>
-        </b-table>
-        <!--下方分页器-->
-        <b-page :total="total" show-sizer :current.sync="listQuery.page"
-                @on-change="handleCurrentChange"
-                @on-page-size-change="handleSizeChange"></b-page>
-      </v-table-wrap>
+            <template v-slot:dataType="{row}">{{ dataTypeMap[row.dataType] }}</template>
+            <!--操作栏-->
+            <template v-slot:action="{row}">
+              <b-button :disabled="!canModify" type="text" @click="handleModify(row)">修改</b-button>
+              <!--是否有删除键-->
+              <template v-if="canRemove">
+                <b-divider type="vertical"></b-divider>
+                <b-button type="text" text-color="danger" @click="handleRemove(row)">删除</b-button>
+              </template>
+            </template>
+          </b-table>
+          <!--下方分页器-->
+          <b-page :total="total" show-sizer :current.sync="listQuery.page"
+                  @on-change="handleCurrentChange"
+                  @on-page-size-change="handleSizeChange"></b-page>
+        </v-table-wrap>
+      </b-collapse-wrap>
 
       <div class="mt-20">
         <interface-test v-if="openInterfaceTest" :initParam="interfaceTestInitParam">
@@ -69,10 +71,11 @@
                       @click="batchStrChange">转换为添加列表
             </b-button>
           </div>
-          <resp-params v-model="batchItemList" :data-type-map="dataTypeMap"
-                       :biz-id="listQuery.bizId"
-                       :parent-id="currentTreeNode?currentTreeNode.id:''"
-                       resp-kind="RECORD"/>
+          <resp-params v-model="batchItemList"
+            :data-type-map="dataTypeMap"
+            :biz-id="listQuery.bizId"
+            :parent-id="currentTreeNode && currentTreeNode.id  ?currentTreeNode.id : ''"
+            resp-kind="RECORD" />
         </div>
         <!--保存提交-->
         <div slot="footer">
@@ -509,3 +512,11 @@
     }
   }
 </script>
+
+<style lang="stylus">
+  .response-config-panel-analyze-con {
+    .custom.bin-collapse-wrap .content {
+      padding: 0;
+    }
+  }
+</style>

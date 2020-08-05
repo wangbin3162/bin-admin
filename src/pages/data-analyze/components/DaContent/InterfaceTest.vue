@@ -1,6 +1,6 @@
 <template>
   <div class="interface-test">
-    <b-collapse-wrap  title="测试接口" collapse>
+    <b-collapse-wrap  title="测试接口" :collapse="inside">
       <div class="test-con">
         <div class="left">
 
