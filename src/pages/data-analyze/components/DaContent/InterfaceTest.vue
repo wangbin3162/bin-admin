@@ -150,12 +150,14 @@
        * @param {Object} daExecuteDtos 接口相关参数对象，包含apiId、接口参数
        */
       async executeTest (contentId, daExecuteDtos) {
+        this.loading = true
         try {
           const res = await executeTest(contentId, daExecuteDtos)
           this.testResStr = JSON.stringify(res, null, 2)
         } catch (error) {
           console.error(error)
         }
+        this.loading = false
       },
 
       /**

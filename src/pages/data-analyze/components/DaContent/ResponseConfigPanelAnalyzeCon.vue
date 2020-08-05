@@ -69,10 +69,10 @@
                       @click="batchStrChange">转换为添加列表
             </b-button>
           </div>
-          <!-- <resp-params v-model="batchItemList" :data-type-map="dataTypeMap"
+          <resp-params v-model="batchItemList" :data-type-map="dataTypeMap"
                        :biz-id="listQuery.bizId"
                        :parent-id="currentTreeNode?currentTreeNode.id:''"
-                       resp-kind="RECORD"/> -->
+                       resp-kind="RECORD"/>
         </div>
         <!--保存提交-->
         <div slot="footer">
