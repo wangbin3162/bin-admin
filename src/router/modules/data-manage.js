@@ -98,6 +98,12 @@ export default {
           name: 'Gather',
           component: () => import(/* webpackChunkName: "res" */ '../../pages/data-manage/data-exchange/Gather'),
           meta: { title: '我的采集' }
+        },
+        {
+          path: 'esExchange',
+          name: 'EsExchange',
+          component: () => import(/* webpackChunkName: "EsExchange" */ '../../pages/data-manage/data-exchange/es-exchange'),
+          meta: { title: 'ES交换' }
         }
       ]
     }
