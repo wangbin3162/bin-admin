@@ -213,6 +213,7 @@
       @close="handleCancel"
       @success="searchList"
       :contentId="content.id"
+      :contentName="content.name"
       :initMappingFields="content.mappingFields">
     </info-item-map>
   </div>

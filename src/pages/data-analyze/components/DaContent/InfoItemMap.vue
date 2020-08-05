@@ -1,6 +1,6 @@
 <template>
   <div class="info-item-map">
-    <page-header-wrap title="信息项映射" show-close @on-close="$emit('close')">
+    <page-header-wrap :title="`[${contentName}]信息项映射`" show-close @on-close="$emit('close')">
       <v-edit-wrap transparent>
 
         <b-collapse-wrap title="编辑映射" flex="dir:top main:center">
@@ -132,6 +132,10 @@
     name: 'InfoItemMap',
     props: {
       contentId: {
+        type: String,
+        required: true
+      },
+      contentName: {
         type: String,
         required: true
       },
