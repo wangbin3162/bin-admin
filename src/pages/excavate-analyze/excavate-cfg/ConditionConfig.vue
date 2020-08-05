@@ -24,7 +24,7 @@
           <span v-else>{{ row.fieldSort }}</span>
         </template>
         <template #queryType="{row,index}">
-          <b-select v-model="editQueryType" v-if="editIndex === index" size="small">
+          <b-select v-model="editQueryType" v-if="editIndex === index" size="small" append-to-body>
             <b-option v-for="(val,key) in queryTypeMap" :key="key" :value="key" :label="val"></b-option>
           </b-select>
           <span v-else>{{ queryTypeMap[row.queryType] }}</span>

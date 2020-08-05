@@ -1,8 +1,8 @@
 /**
  * 图表类型中文名映射
  */
-import { formatSeries } from 'bin-charts/src/utils/util'
-import { deepCopy } from '../../../common/utils/assist'
+import { formatSeries, formatDataSet } from 'bin-charts/src/utils/util'
+import { deepCopy, isEmpty } from '@/common/utils/assist'
 import { oneOf } from 'bin-ui/src/utils/util'
 import { geoCoordMap } from './geoCoordMap'
 
@@ -694,11 +694,9 @@ export const basicComponents = [
 ]
 
 // 根据图表原始数据拼装实际charts options
-export function buildOptions(chartData) {
+export function buildOptions(chartData, dynamic = false, dynamicData = []) {
   let { staticDataSource, options, type } = chartData
-  let sourceMap = options.sourceMap || { xField: 'x', yField: 'y', seriesField: 's' }
-  let data = staticDataSource || []
-  let dataset = formatSeries(sourceMap, data)
+  let sourceMap = options.sourceMap
 
   // 组装options
   let opts = deepCopy(options)
@@ -707,8 +705,11 @@ export function buildOptions(chartData) {
   delete opts['width']
   delete opts['height']
   delete opts['sourceMap']
-  opts.dataset = dataset
 
+  let data = (dynamic && dynamicData) ? dynamicData : staticDataSource
+  let dataset = getDataset(sourceMap, data)
+
+  // 设置数据series和dataset
   if (oneOf(type, ['line', 'histogram', 'bar', 'pie'])) {
     let seriesList = []
     data.forEach(item => {
@@ -718,6 +719,7 @@ export function buildOptions(chartData) {
       })
     })
     opts.series = seriesList
+    opts.dataset = dataset
   }
   // 雷达图特殊处理
   if (type === 'radar') {
@@ -732,9 +734,19 @@ export function buildOptions(chartData) {
     let series = opts.series
     series.data = convertData(data, sourceMap.xField, sourceMap.yField)
     opts.series = [series]
-    delete opts['dataset']
   }
+
   return opts
+}
+
+// 处理dataset数据
+function getDataset(sourceMap, data) {
+  let _sourceMap = sourceMap || { xField: 'x', yField: 'y', seriesField: 's' }
+  let _data = data || []
+  if (_data.length === 1 && isEmpty(_data[0].s)) {
+    return formatDataSet(_sourceMap, _data[0].data)
+  }
+  return formatSeries(_sourceMap, _data)
 }
 
 function convertData(data, xField, yField) {

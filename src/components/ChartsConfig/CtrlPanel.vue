@@ -4,8 +4,8 @@
       <div class="top-fix">图表组件</div>
       <div class="scroll-content" style="padding: 0 16px;">
         <draggable tag="ul" :list="basicComponents"
-                   v-bind="{group:{ name:'charts', pull:'clone',put:false}, sort:false}">
-          <li v-for="(chart,key) in basicComponents" :key="key" class="chart-item">
+                   v-bind="{ group: { name: 'charts', pull: 'clone', put: false }, sort: false }">
+          <li v-for="(chart, key) in basicComponents" :key="key" class="chart-item">
             <svg-icon :icon-class="chart.icon" style="width: 28px;height:28px;"/>
             <div>{{ chart.name }}</div>
           </li>
@@ -15,34 +15,39 @@
     <div class="center">
       <div class="top-fix">
         <b-button type="text" @click="handlePreview">
-          <b-icon name="ios-eye"/>&nbsp;预览
-        </b-button>&nbsp;&nbsp;
+          <b-icon name="ios-eye"/>
+          &nbsp;预览
+        </b-button>
         <b-button type="text" @click="handleShowJson" :disabled="jsonDisable">
-          <b-icon name="ios-paper"/>&nbsp;编辑JSON
-        </b-button>&nbsp;&nbsp;
+          <b-icon name="ios-paper"/>
+          &nbsp;编辑JSON
+        </b-button>
         <b-button type="text" @click="handleSaveCfg">
-          <b-icon name="ios-save"/>&nbsp;保存
-        </b-button>&nbsp;&nbsp;
+          <b-icon name="ios-save"/>
+          &nbsp;保存
+        </b-button>
       </div>
       <div class="scroll-content">
         <div class="chart-widget">
-          <b-empty class="chart-empty" v-if="currentList.length===0">拖拽左侧图表至当前面板新增</b-empty>
+          <b-empty class="chart-empty" v-if="currentList.length === 0">拖拽左侧图表至当前面板新增</b-empty>
           <draggable
             class="drag-area list-group"
             :list="currentList"
-            v-bind="{group:'charts', ghostClass: 'ghost',animation: 200,handle:'.widget-view-drag'}"
+            v-bind="{ group: 'charts', ghostClass: 'ghost', animation: 200, handle: '.widget-view-drag' }"
             @add="handleWidgetAdd"
             @end="handleMoveEnd"
           >
-            <template v-for="(element,index) in currentList">
-              <charts-wrap v-if="element&&element.key" :key="element.key"
-                           :element="element"
-                           :select.sync="selectWidget"
-                           :index="index"
-                           :list="currentList"
-                           :log="chartLog"
-                           @on-delete="handleDeleteWidget">
-              </charts-wrap>
+            <template v-for="(element, index) in currentList">
+              <charts-wrap
+                v-if="element && element.key"
+                :key="element.key"
+                :element="element"
+                :select.sync="selectWidget"
+                :index="index"
+                :list="currentList"
+                :log="chartLog"
+                @on-delete="handleDeleteWidget"
+              ></charts-wrap>
             </template>
           </draggable>
         </div>
@@ -57,35 +62,27 @@
         <b-ace-editor v-model="jsonOptions" height="400" width="752" :snippets="false"/>
       </div>
       <div slot="footer">
-        <b-button @click="jsonModal=false">取消</b-button>
+        <b-button @click="jsonModal = false">取消</b-button>
         <b-button type="primary" @click="saveJson">确定</b-button>
       </div>
     </b-modal>
     <!--预览弹窗-->
-    <b-modal v-model="previewModal" title="预览" fullscreen footer-hide width="100%" stop-remove-scroll>
-      <div class="preview-wrapper" v-if="previewModal">
-        <template v-for="element in currentList">
-          <charts-preview-item v-if="element&&element.key"
-                               :key="element.key"
-                               :element="element"
-                               :wrap-style="{margin:'8px'}"/>
-        </template>
-      </div>
-    </b-modal>
+    <preview ref="preview"/>
   </div>
 </template>
 
 <script>
   import Draggable from 'vuedraggable'
-  import { deepCopy, isEmpty, isNotEmpty } from '../../common/utils/assist'
+  import { deepCopy, isEmpty, isNotEmpty } from '@/common/utils/assist'
   import { basicComponents } from './utils/util'
   import ChartsWrap from './ChartsWrap'
   import Config from './Config'
-  import ChartsPreviewItem from './ChartsPreviewItem'
+  import Preview from './preview/Preview'
 
   export default {
     name: 'CtrlPanel',
-    components: { ChartsPreviewItem, Config, ChartsWrap, Draggable },
+    components: { Preview, Config, ChartsWrap, Draggable },
+    inject: ['ConfigRoot'],
     props: {
       list: {
         type: Array,
@@ -101,8 +98,7 @@
         selectWidget: {}, // 当前选择的，
         jsonModal: false,
         jsonOptions: '',
-        chartLog: false, // 是否打印图表参数
-        previewModal: false
+        chartLog: false // 是否打印图表参数
       }
     },
     mounted() {
@@ -130,14 +126,14 @@
     },
     methods: {
       // 调试移动结束
-      handleMoveEnd({ newIndex, oldIndex }) {
+      handleMoveEnd() {
         // this.$log.warning(`====MoveEnd-(newIndex:${newIndex})-(oldIndex:${oldIndex})====`)
         this.emitUpdateData()
       },
       // 新增一个
       handleWidgetAdd({ newIndex }) {
         // 为拖拽到容器的元素添加唯一 key
-        const key = Date.parse(new Date()) + '_' + Math.ceil(Math.random() * 99999)
+        const key = Date.parse(new Date().toString()) + '_' + Math.ceil(Math.random() * 99999)
         let object = deepCopy(this.currentList[newIndex])
         object.key = this.currentList[newIndex].type + '_' + key
         this.$set(this.currentList, newIndex, object)
@@ -175,7 +171,7 @@
       },
       // 预览弹窗
       handlePreview() {
-        this.previewModal = true
+        this.$refs.preview.open(this.currentList, this.ConfigRoot.resource)
       },
       // 更新list
       emitUpdateData() {
@@ -191,5 +187,5 @@
 </script>
 
 <style lang="stylus">
-  @import "./style.styl";
+  @import './style.styl'
 </style>

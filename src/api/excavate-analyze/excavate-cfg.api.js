@@ -122,17 +122,6 @@ export function businessTemplateList(query) {
   })
 }
 
-/* 1.2.4业务模板查询模板详情接口 */
-export function businessTemplateDetail(id) {
-  return request({
-    url: '/da/businessTemplate/detail',
-    method: 'get',
-    params: {
-      id
-    }
-  })
-}
-
 /* 获取所有字典组列表 */
 export function getDictList(query) {
   return request({
@@ -155,6 +144,30 @@ export function getDictItems(code) {
     method: 'get',
     params: {
       groupCode: code
+    }
+  })
+}
+
+/* 展示界面的初始化数据接口-用于获取所有图表信息和条件配置的集合 */
+export function getRenderingConfig(resourceKey, type = '') {
+  return request({
+    url: '/api/wj/rendering/config',
+    method: 'get',
+    params: {
+      resourceKey,
+      type
+    }
+  })
+}
+
+/* 获取具体某个图表数据的接口 */
+export function renderingChart(chartId, condition) {
+  return request({
+    url: '/api/wj/rendering/data',
+    method: 'post',
+    data: {
+      chartId,
+      condition
     }
   })
 }

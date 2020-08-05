@@ -499,122 +499,126 @@
 </template>
 
 <script>
-  import { isNotEmpty } from '../../common/utils/assist'
-  import GuiWrap from './gui/gui-wrap'
-  import GuiGroup from './gui/gui-group'
-  import GuiField from './gui/gui-field'
-  import GuiInline from './gui/gui-inline'
-  import VSlider from '../VSlider/VSlider'
-  import { COLOR_LIST, COLOR_LIST_GRAY, WIDTH_MAP } from './utils/util'
-  import DataSourceSelect from './data-source-cfg/DataSourceSelect'
-  import DataSourceParam from './data-source-cfg/DataSourceParam'
+import { isNotEmpty } from '@/common/utils/assist'
+import GuiWrap from './gui/gui-wrap'
+import GuiGroup from './gui/gui-group'
+import GuiField from './gui/gui-field'
+import GuiInline from './gui/gui-inline'
+import VSlider from '../VSlider/VSlider'
+import { COLOR_LIST, COLOR_LIST_GRAY, WIDTH_MAP } from './utils/util'
+import DataSourceSelect from './data-source-cfg/DataSourceSelect'
+import DataSourceParam from './data-source-cfg/DataSourceParam'
 
-  export default {
-    name: 'Config',
-    components: { DataSourceParam, DataSourceSelect, GuiInline, GuiField, GuiGroup, GuiWrap, VSlider },
-    props: {
-      data: {
-        type: Object,
-        default() {
-          return {}
-        }
-      }
-    },
-    computed: {
-      show() {
-        return !!(this.data && isNotEmpty(this.data))
-      },
-      showGrid() {
-        return this.data.options && this.data.options.grid
-      },
-      isLine() {
-        return this.data.type === 'line'
-      },
-      isBar() {
-        return this.data.type === 'bar'
-      },
-      isHistogram() {
-        return this.data.type === 'histogram'
-      },
-      isPie() {
-        return this.data.type === 'pie'
-      },
-      isRadar() {
-        return this.data.type === 'radar'
-      },
-      isMap() {
-        return this.data.type === 'map'
-      },
-      showXAxis() {
-        let options = this.data.options
-        return options.xAxis && (this.isLine || this.isHistogram || this.isBar)
-      },
-      showYAxis() {
-        let options = this.data.options
-        return options.yAxis && (this.isLine || this.isHistogram || this.isBar)
-      }
-    },
-    data() {
-      return {
-        tabs: [
-          { key: 'tab1', title: '图表配置' },
-          { key: 'tab2', title: '数据配置' }
-        ],
-        activeTab: 'tab1',
-        activeConfig: '',
-        widthMap: WIDTH_MAP,
-        colors: COLOR_LIST,
-        colorsGary: COLOR_LIST_GRAY
-      }
-    },
-    watch: {
-      'data.key'() {
-        this.activeTab = 'tab1'
-        this.activeConfig = ''
-      }
-    },
-    methods: {
-      // 自适应按钮事件
-      autoClick() {
-        this.data.options.series.barWidth = 'auto'
-        this.emitValue()
-      },
-      // 静态数据改变事件
-      staticDataChange(val) {
-        try {
-          this.data.staticDataSource = JSON.parse(val)
-          this.emitValue()
-        } catch (e) {
-        }
-      },
-      // 视觉影射类型改变
-      visualMapChange(val) {
-        if (val === 'piecewise') {
-          this.data.options.visualMap.itemWidth = 10
-          this.data.options.visualMap.itemHeight = 10
-        } else {
-          this.data.options.visualMap.itemWidth = 20
-          this.data.options.visualMap.itemHeight = 100
-        }
-        this.emitValue()
-      },
-      // 设置sourceParam
-      handleSetSourceParam(params) {
-        this.data.dataSourceParam = params.map(item => {
-          return {
-            ...item,
-            realVal: {
-              fieldName: '',
-              value: null,
-              type: 'val'
-            }
-          }
-        })
-        this.emitValue()
-      },
-      emitValue() {
-        this.$emit('update-data')
+export default {
+  name: 'Config',
+  components: { DataSourceParam, DataSourceSelect, GuiInline, GuiField, GuiGroup, GuiWrap, VSlider },
+  props: {
+    data: {
+      type: Object,
+      default() {
+        return {}
       }
     }
+  },
+  computed: {
+    show() {
+      return !!(this.data && isNotEmpty(this.data))
+    },
+    showGrid() {
+      return this.data.options && this.data.options.grid
+    },
+    isLine() {
+      return this.data.type === 'line'
+    },
+    isBar() {
+      return this.data.type === 'bar'
+    },
+    isHistogram() {
+      return this.data.type === 'histogram'
+    },
+    isPie() {
+      return this.data.type === 'pie'
+    },
+    isRadar() {
+      return this.data.type === 'radar'
+    },
+    isMap() {
+      return this.data.type === 'map'
+    },
+    showXAxis() {
+      let options = this.data.options
+      return options.xAxis && (this.isLine || this.isHistogram || this.isBar)
+    },
+    showYAxis() {
+      let options = this.data.options
+      return options.yAxis && (this.isLine || this.isHistogram || this.isBar)
+    }
+  },
+  data() {
+    return {
+      tabs: [
+        { key: 'tab1', title: '图表配置' },
+        { key: 'tab2', title: '数据配置' }
+      ],
+      activeTab: 'tab1',
+      activeConfig: '',
+      widthMap: WIDTH_MAP,
+      colors: COLOR_LIST,
+      colorsGary: COLOR_LIST_GRAY
+    }
+  },
+  watch: {
+    'data.key'() {
+      this.activeTab = 'tab1'
+      this.activeConfig = ''
+    }
+  },
+  methods: {
+    // 自适应按钮事件
+    autoClick() {
+      this.data.options.series.barWidth = 'auto'
+      this.emitValue()
+    },
+    // 静态数据改变事件
+    staticDataChange(val) {
+      try {
+        this.data.staticDataSource = JSON.parse(val)
+        this.emitValue()
+      } catch (e) {
+      }
+    },
+    // 视觉影射类型改变
+    visualMapChange(val) {
+      if (val === 'piecewise') {
+        this.data.options.visualMap.itemWidth = 10
+        this.data.options.visualMap.itemHeight = 10
+      } else {
+        this.data.options.visualMap.itemWidth = 20
+        this.data.options.visualMap.itemHeight = 100
+      }
+      this.emitValue()
+    },
+    // 设置sourceParam
+    handleSetSourceParam(params) {
+      this.data.dataSourceParam = params.map(item => {
+        let temp = { ...item }
+        delete temp['createDate']
+        delete temp['updateDate']
+        delete temp['orderNo']
+        return {
+          ...temp,
+          realVal: {
+            fieldName: '',
+            value: null,
+            type: 'val'
+          }
+        }
+      })
+      this.emitValue()
+    },
+    emitValue() {
+      this.$emit('update-data')
+    }
   }
+}
 </script>

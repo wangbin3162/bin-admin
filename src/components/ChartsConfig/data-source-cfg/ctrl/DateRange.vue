@@ -3,7 +3,7 @@
     <div class="date-item" v-for="(item,index) in rangeList" :key="index">
       <span class="label">区间{{ index+1 }}</span>
       <b-date-picker type="daterange" :value="rangeList[index]"
-                     style="width: 200px;"
+                     style="width: 220px;"
                      @on-change="(val)=>{ dateChange(val,index)}"
                      separator=" ~ " placeholder="选择日期区间"></b-date-picker>
       <span class="label">
