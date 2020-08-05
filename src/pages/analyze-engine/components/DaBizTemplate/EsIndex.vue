@@ -34,7 +34,11 @@
     watch: {
       value: {
         handler(val) {
-          this.list = val.split(',')
+          if (val === '') {
+            this.list = []
+          } else {
+            this.list = val.split(',')
+          }
         },
         immediate: true
       }
