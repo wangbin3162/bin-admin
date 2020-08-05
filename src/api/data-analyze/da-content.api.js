@@ -211,6 +211,35 @@ export async function executeTest (contentId, daExecuteDtos) {
 
 /**
  * @author haodongdong
+ * @description 列表页面测试按钮进入的组件要使用的测试接口
+ * @param {string} contentId 分析内容id
+ * @param {Array} daExecuteDtos 接口相关参数对象数组，包含apiId、接口参数
+ * @returns {Promise}
+ */
+export async function executeContentTest (contentId, daExecuteDtos) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/da/data/api/executeContent',
+        method: 'post',
+        params: {
+          contentId
+        },
+        data: daExecuteDtos
+      })
+      if (res.data.successful) {
+        resolve(res.data.data)
+      } else {
+        reject(res.data.message)
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
  * @description 更新配置映射接口
  * @param {string} contentId 分析内容id
  * @param {Array} mappingFields 信息项映射配置对象数组

@@ -199,10 +199,15 @@
       </v-edit-wrap>
     </page-header-wrap>
     <response-config-panel ref="resConfigPanel" @on-close="handleCancel"/>
-    <content-test-panel ref="testPanel" @on-close="handleCancel"/>
-    <!-- 编辑模块数据配置点击信息项映射配置切换到新的page-header-wrap 信息项映射 -->
-    <!-- 数据配置单独出一个组件，维护相关数据，那么信息项映射产生的数据需要回传给数据配置组件 -->
-    <!-- 信息项映射需要对应到数据配置对应的接口 -->
+    <!-- <content-test-panel ref="testPanel" @on-close="handleCancel"/> -->
+
+    <content-test-panel v-if="dialogStatus === 'test'"
+      :initContentId="content.id"
+      :initContentName="content.name"
+      :initMappingFields="content.mappingFields"
+      @close="handleCancel">
+    </content-test-panel>
+
     <!-- 信息项映射组件 -->
     <info-item-map v-if="dialogStatus === 'infoItemMap'"
       @close="handleCancel"
@@ -384,12 +389,15 @@
       },
       // 测试
       handleTest(row) {
-        // 获取api的对应参数列表
-        getApiDetail(row.apiId).then(res => {
-          let params = res.data.data
-          this.dialogStatus = 'test'
-          this.$refs.testPanel && this.$refs.testPanel.open(row, params)
-        })
+        // // 获取api的对应参数列表
+        // getApiDetail(row.apiId).then(res => {
+        //   let params = res.data.data
+        //   this.dialogStatus = 'test'
+        //   this.$refs.testPanel && this.$refs.testPanel.open(row, params)
+        // })
+        // 重构 测试组件相关
+        this.content = { ...this.content, ...row }
+        this.dialogStatus = 'test'
       },
       // 表单提交
       handleSubmit(cfgFlag) {

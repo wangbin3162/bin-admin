@@ -1,42 +1,17 @@
 <template>
-  <div>
-    <page-header-wrap v-show="visible" show-close @on-close="close"
-                      :title="`[${content.name}] 测试`">
-      <v-edit-wrap>
-        <b-row :gutter="20">
-          <b-col span="12">
-            <v-title-bar label="基础参数" class="mb-20"/>
-            <b-empty v-if="this.$isEmpty(params)">无参数</b-empty>
-            <b-form v-else :model="form" ref="form" :label-width="100">
-              <b-form-item v-for="item in params" :key="item.fieldName"
-                           :label="item.name" :prop="item.fieldName"
-                           :rules="{ required: true, message: `${item.name}不能为空`, trigger: 'blur' }">
-                <b-input v-model="form[item.fieldName]" clearable placeholder="请输入"/>
-              </b-form-item>
-            </b-form>
+  <div class="content-test-panel">
+    <page-header-wrap show-close :title="`[${contentName}] 测试`" @on-close="$emit('close')">
+      <v-edit-wrap transparent>
+        <interface-test
+          :initParam="{
+            contentId,
+            mappingFields
+          }"
+          :inside="false">
+        </interface-test>
 
-            <div :style="btnLeft">
-              <b-button type="primary" @click="handleTest" dashed
-                        :loading="btnLoading"
-                        style="width: 100%;">
-                测 试
-              </b-button>
-            </div>
-          </b-col>
-          <b-col span="12">
-            <v-title-bar label="执行结果" class="mb-20"/>
-            <div style="position: relative;">
-              <div v-if="result">
-                <b-ace-editor :value="resultJson" readonly/>
-              </div>
-              <b-empty v-else>暂无执行结果</b-empty>
-              <b-loading v-show="btnLoading" fix show-text="正在请求测试..."></b-loading>
-            </div>
-          </b-col>
-        </b-row>
-        <!--保存提交-->
         <div slot="footer">
-          <b-button @click="close">取 消</b-button>
+          <b-button @click="$emit('close')">取 消</b-button>
         </div>
       </v-edit-wrap>
     </page-header-wrap>
@@ -44,99 +19,102 @@
 </template>
 
 <script>
-  import commonMixin from '../../../../common/mixins/mixin'
-  import permission from '../../../../common/mixins/permission'
-  import { deepCopy, isEmpty } from '../../../../common/utils/assist'
-  import { testContent } from '../../../../api/data-analyze/da-content.api'
+  import InterfaceTest from './InterfaceTest'
 
   export default {
     name: 'ContentTestPanel',
-    mixins: [commonMixin, permission],
-    data() {
-      return {
-        visible: false,
-        content: null,
-        params: null,
-        form: {},
-        result: null
-      }
-    },
-    created() {
-      this.reset()
-    },
-    computed: {
-      resultJson() {
-        try {
-          if (!this.result) {
-            return ''
-          }
-          return JSON.stringify(this.result, null, 2)
-        } catch (e) {
-          return ''
-        }
+    props: {
+      initContentId: {
+        type: String,
+        required: true
       },
-      btnLeft() {
-        return {
-          paddingLeft: isEmpty(this.params) ? '0' : '100px'
-        }
+      initContentName: {
+        type: String,
+        rtequired: true
+      },
+      initMappingFields: {
+        type: String,
+        required: true
       }
+    },
+    components: {
+      InterfaceTest
+    },
+    data () {
+      return {
+        loading: false,
+        contentId: this.initContentId,
+        contentName: this.initContentName,
+        mappingFields: this.initMappingFields
+      }
+    },
+    created () {
+
     },
     methods: {
-      open(content, params) {
-        this.content = deepCopy(content)
-        this.params = deepCopy(params)
-        // 转换params为form表单对象
-        this.params.forEach(p => {
-          this.$set(this.form, p.fieldName, p.defaultValue)
-        })
-        this.visible = true
-        this.$refs.form && this.$refs.form.resetFields()
-      },
-      close() {
-        this.visible = false
-        this.result = null
-        this.btnLoading = false
-        this.$emit('on-close')
-      },
-      reset() {
-        this.content = {
-          id: '',
-          themeCode: '',
-          name: '',
-          code: '',
-          describe: '',
-          data: '',
-          apiId: '',
-          toggle: 'OFF',
-          type: [],
-          apiName: '',
-          themeName: ''
-        }
-        this.params = []
-      },
-      handleTest() {
-        if (isEmpty(this.params) && !this.$refs.form) {
-          this.testApi()
-          return
-        }
-        this.$refs.form.validate((valid) => {
-          if (valid) {
-            this.testApi()
-          }
-        })
-      },
-      testApi() {
-        this.btnLoading = true
-        let { themeCode, code: contentCode } = this.content
-        let params = this.form
-        testContent(themeCode, contentCode, params).then(res => {
-          this.result = res.data
-          this.btnLoading = false
-        }).catch(err => {
-          this.btnLoading = false
-          this.$notice.danger({ title: '错误', desc: err.message })
-        })
-      }
+
     }
   }
 </script>
+
+<style lang="stylus" scoped>
+ .content-test-panel {
+    .test-con {
+      display: flex;
+
+      .border {
+        border-bottom: 1px solid #d9d9d9;
+      }
+
+      .left {
+        padding: 0 10px;
+        width: 50%;
+        border-right: 1px solid #d9d9d9;
+
+        .btn-con {
+          display: flex;
+          flex-wrap: wrap;
+          width: 100%
+
+          .block-btn {
+            margin-bottom: 20px;
+            padding: 10px;
+            width: 30%;
+            border: 1px solid #d9d9d9;
+            cursor: pointer;
+            transition: all 0.4s;
+
+            p {
+              font-size: 13px;
+            }
+
+            &:hover {
+              box-shadow: 0 2px 10px 0 rgba(121, 187, 255, 1);
+            }
+            &.actived {
+              box-shadow: 0 2px 10px 0 rgba(121, 187, 255, 1);
+            }
+            &.error {
+              border: 1px solid #ff7072;
+              box-shadow: 0 2px 10px 0 rgba(255, 112, 114, 1);
+            }
+          }
+        }
+
+        .form {
+          display: flex;
+          flex-wrap: wrap;
+
+          .form-item {
+            width: 45%;
+          }
+        }
+      }
+
+      .right {
+        padding: 0 10px;
+        width: 50%;
+      }
+    }
+ }
+</style>

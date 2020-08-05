@@ -50,8 +50,11 @@
           <h4 class="mb-20">
             执行结果
           </h4>
-          <b-ace-editor :value="testResStr" readonly>
-          </b-ace-editor>
+          <div style="position: relative;">
+            <b-loading fix show-text="测试中..." v-if="loading"></b-loading>
+            <b-ace-editor :value="testResStr" readonly>
+            </b-ace-editor>
+          </div>
         </div>
       </div>
     </b-collapse-wrap>
@@ -61,6 +64,7 @@
 <script>
   import {
     getMultiInterfaceTemplateParam,
+    executeContentTest,
     executeTest
   } from '../../../../api/data-analyze/da-content.api'
 
@@ -70,10 +74,15 @@
       initParam: {
         type: Object,
         default: null
+      },
+      inside: { // 默认内部模式，配置相应内使用，可设置外部模式，配置响应外使用，最终调用的测试接口不同
+        type: Boolean,
+        default: true
       }
     },
     data () {
       return {
+        loading: false,
         contentId: '',
         mappingFields: [],
         curInterface: {}, // 当前选中的接口按钮
@@ -118,6 +127,24 @@
 
       /**
        * @author haodongdong
+       * @description 响应配置外测试接口
+       * @param {string} contentId 分析内容id
+       * @param {Object} daExecuteDtos 接口相关参数对象，包含apiId、接口参数
+       */
+      async executeContentTest (contentId, daExecuteDtos) {
+        this.loading = true
+        try {
+          const res = await executeContentTest(contentId, daExecuteDtos)
+          this.testResStr = JSON.stringify(res, null, 2)
+        } catch (error) {
+          console.error(error)
+          this.$notice.danger({ title: '测试出错', desc: error })
+        }
+        this.loading = false
+      },
+
+      /**
+       * @author haodongdong
        * @description 响应配置内测试接口
        * @param {string} contentId 分析内容id
        * @param {Object} daExecuteDtos 接口相关参数对象，包含apiId、接口参数
@@ -148,7 +175,11 @@
             })
           })
 
-          this.executeTest(this.contentId, reqParams)
+          if (this.inside) {
+            this.executeTest(this.contentId, reqParams)
+          } else {
+            this.executeContentTest(this.contentId, reqParams)
+          }
         } else {
           this.$message({ type: 'warning', content: '有未填写的接口参数，请填写后测试。' })
         }
@@ -211,17 +242,9 @@
        * @description 用于验证所有form
        */
       async validateAllForm () {
-        console.log(this.$refs)
         return new Promise(async (resolve, reject) => {
           try {
             this.validateArr = []
-
-            // const forms = this.$refs.form
-            // for (let i = 0; i < forms.length; i++) {
-            //   const form = forms[i]
-            //   const valid = await form.validate()
-            //   if (!valid) this.validateArr.push(i)
-            // }
 
             const formsObj = this.$refs
             for (const key in formsObj) {
