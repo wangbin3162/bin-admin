@@ -82,23 +82,25 @@
         validateArr: [] // 存放未通过校验的index
       }
     },
-    watch: {
-      initParam: {
-        handler (newVal) {
-          if (newVal) {
-            this.contentId = newVal.contentId
-            this.mappingFields = JSON.parse(newVal.mappingFields)
-            this.curInterface = this.mappingFields[0]
-
-            this.getMultiInterfaceTemplateParam(this.contentId, this.mappingFields)
-          }
-        }
-      }
-    },
     created () {
-
+      this.init(this.initParam)
     },
     methods: {
+      /**
+       * @author haodongdong
+       * @description 一些初始化处理
+       * @param {Object} initParam
+       * @param {string} initParam.contentId
+       * @param {string} initParam.mappingFields
+       */
+      init (initParam) {
+        this.contentId = initParam.contentId
+        this.mappingFields = JSON.parse(initParam.mappingFields)
+        this.curInterface = this.mappingFields[0]
+
+        this.getMultiInterfaceTemplateParam(this.contentId, this.mappingFields)
+      },
+
       /**
        * @author haodongdong
        * @description 获取接口摸板参数

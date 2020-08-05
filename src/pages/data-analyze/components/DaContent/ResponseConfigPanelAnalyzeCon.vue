@@ -51,7 +51,7 @@
       </v-table-wrap>
 
       <div class="mt-20">
-        <interface-test :initParam="interfaceTestInitParam">
+        <interface-test v-if="openInterfaceTest" :initParam="interfaceTestInitParam">
         </interface-test>
       </div>
     </page-header-wrap>
@@ -207,7 +207,8 @@
           map: 'map集合'
         },
         // 以下为重构后需要的参数
-        interfaceTestInitParam: null // 接口测试组件interface-test需要使用的参数
+        interfaceTestInitParam: null, // 接口测试组件interface-test需要使用的参数
+        openInterfaceTest: false // 用于控制interface-test组件测生命周期
       }
     },
     computed: { // 重构新增计算属性
@@ -237,14 +238,15 @@
         this.listQuery.bizId = bizId
         this.cfgTitle = title
         this.visible = true
-        // this.initTree()
         this.queryLeftRespInfos(bizId)
+        this.openInterfaceTest = true // 用于控制interface-test组件测生命周期
       },
       close() {
         this.visible = false
         this.treeData = []
         this.list = []
         this.currentTreeNode = null
+        this.openInterfaceTest = false
         this.$emit('on-close')
       },
       /**
@@ -416,7 +418,6 @@
         if (type === 'RECORD') {
           this.handleFilter()
         } else {
-          // this.initTree()
           this.queryLeftRespInfos(this.listQuery.bizId)
         }
       },
@@ -448,53 +449,6 @@
             this.dataTypeMap = res.data.data
           }
         })
-      },
-      // tree:初始化树结构
-      initTree() {
-        this.treeData = []
-        this.currentTreeNode = null
-        // 请求响应返回树结构
-        api.getRespTree(this.listQuery.bizId).then(response => {
-          if (response.status === 200) {
-            const tree = response.data
-            // 根据返回的数组格式化为树结构的格式，并追加parents用于级联选择和展开
-            this.treeData = tree ? tree.map(item => this.treeMapper(item, null)) : []
-            if (this.treeData.length > 0) {
-              // 如果没有当前选中节点则初始化为第一个选中
-              if (!this.currentTreeNode) {
-                this.currentTreeNode = this.treeData[0]
-                this.$set(this.treeData[0], 'selected', true)
-                this.$set(this.treeData[0], 'expand', true)
-              }
-              this.handleFilter()
-            }
-          }
-        })
-      },
-      treeMapper(node, parentId) {
-        // 当前id
-        const currentId = node.id
-        let parents = parentId ? parentId.split(',') : []
-        parents.push(currentId)
-        let child = []
-        if (node.children) {
-          node.children.forEach(item => {
-            child.push(this.treeMapper(item, parents.join(',')))
-          })
-        }
-        // 是否是选中状态
-        let isSelect = this.currentTreeNode ? this.currentTreeNode.id === currentId : false
-        // 是否是展开状态，根据当前选择的节点中的parents数组来判定自身和父级的展开状态
-        let isExpand = this.currentTreeNode ? this.currentTreeNode.parents.includes(currentId) : false
-        return {
-          id: node.id,
-          title: node['keyName'],
-          obj: { ...node },
-          parents: parents, // 配合级联展开时使用
-          selected: isSelect,
-          expand: isExpand, // 先全部打开,后再进行比对关闭
-          children: child
-        }
       },
       // 查询所有列表
       searchList() {
