@@ -339,6 +339,9 @@
         this.batchLoading = true
         // 需要过滤params新增未保存的
         let params = this.batchItemList.filter(item => !item.newOne)
+        params.forEach(param => { // 添加apiId
+          param.apiId = this.currentTreeNode.apiId
+        })
         api.batchAddResp(params).then(res => {
           this.batchLoading = false // 按钮状态清空
           if (res.data.code === '0') {
