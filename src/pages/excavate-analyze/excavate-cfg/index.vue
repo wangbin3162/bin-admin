@@ -21,9 +21,18 @@
           <template v-slot:resProperty="{row}">{{ resPropertyMap[row.resProperty] }}</template>
           <!--操作栏-->
           <template v-slot:action="{row}">
-            <b-button type="text" @click="handleConditionConfig(row)">条件配置</b-button>
-            <b-divider type="vertical"/>
-            <b-button type="text" @click="handleCfgAnalyze(row)">配置分析</b-button>
+            <b-tooltip content="条件配置" theme="light" max-width="200" style="padding-top: 3px;">
+              <b-button type="text" icon="ios-filing"
+                        :icon-style="{fontSize:'20px'}" @click="handleConditionConfig(row)"/>
+            </b-tooltip>&nbsp;
+            <b-tooltip content="配置分析" theme="light" max-width="200" style="padding-top: 3px;">
+              <b-button type="text" icon="ios-analytics"
+                        :icon-style="{fontSize:'20px'}" @click="handleCfgAnalyze(row)"/>
+            </b-tooltip>&nbsp;
+            <b-tooltip content="预览" theme="light" max-width="200" style="padding-top: 3px;">
+              <b-button text-color="success" type="text" icon="ios-eye"
+                        :icon-style="{fontSize:'20px'}" @click="handlePreview(row)"/>
+            </b-tooltip>
           </template>
         </b-table>
         <!--下方分页器-->
@@ -34,22 +43,25 @@
     </page-header-wrap>
     <condition-config ref="conditionConfig" @on-close="handleCancel"/>
     <charts-config-panel ref="cfgPanel" @on-save="handleSave"/>
+    <!--预览窗口-->
+    <preview-modal ref="preview"/>
   </div>
 </template>
 
 <script>
-import commonMixin from '../../../common/mixins/mixin'
-import permission from '../../../common/mixins/permission'
-import { getFieldCtrl } from '@/api/enum.api'
-import * as api from '../../../api/excavate-analyze/excavate-cfg.api'
+import commonMixin from '@/common/mixins/mixin'
+import permission from '@/common/mixins/permission'
 import { deepCopy } from '@/common/utils/assist'
-import ConditionConfig from './ConditionConfig'
-import ChartsConfigPanel from '../../../components/ChartsConfig/ChartConfigPanel'
+import { getFieldCtrl } from '@/api/enum.api'
+import * as api from '@/api/excavate-analyze/excavate-cfg.api'
+import ChartsConfigPanel from '@/components/ChartsConfig/ChartConfigPanel'
 import { basicComponents } from '@/components/ChartsConfig/utils/util'
+import PreviewModal from './PreviewModal'
+import ConditionConfig from './ConditionConfig'
 
 export default {
   name: 'ExcavateCfg',
-  components: { ChartsConfigPanel, ConditionConfig },
+  components: { PreviewModal, ChartsConfigPanel, ConditionConfig },
   mixins: [commonMixin, permission],
   data() {
     return {
@@ -65,7 +77,7 @@ export default {
         { title: '主体类别', slot: 'personClass' },
         { title: '资源性质', slot: 'resProperty', width: 150, align: 'center' },
         { title: '数据来源', key: 'source', width: 150, align: 'center' },
-        { title: '操作', slot: 'action', width: 200 }
+        { title: '操作', slot: 'action', width: 150 }
       ],
       resource: null,
       fieldCtrlMap: {}, // 字段控件类型
@@ -165,6 +177,11 @@ export default {
           this.$notice.danger({ title: '保存配置失败！', desc: resp.data.message || '保存失败，请重新配置或检查服务！' })
         }
       })
+    },
+    // 预览页面
+    handlePreview(row) {
+      this.resource = deepCopy(row)
+      this.$refs.preview.open(this.resource)
     },
     // 获取一个类型的基础配置项
     getChartBaseInfo(type) {

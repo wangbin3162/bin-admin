@@ -20,7 +20,6 @@ export default {
   name: 'ChartsPreviewItem',
   props: {
     element: Object,
-    wrapStyle: Object,
     itemGap: { // 容器项间隔
       type: Number,
       default: 10
@@ -56,7 +55,6 @@ export default {
     initOptions() {
       this.chartOptions = buildOptions(this.element, this.dynamic)
       if (this.dynamic && this.element.isOpen === 'dynamic') {
-        console.log('渲染动态数据')
         this.updateData()
       }
       // 打印options

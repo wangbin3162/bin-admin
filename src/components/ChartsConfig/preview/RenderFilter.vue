@@ -5,13 +5,14 @@
       <div class="input">
         <template v-if="item.controlType==='SELECT'">
           <b-select v-model="editList[index].value" multiple :max-tag-count="1" size="small"
-                    @on-change="emitValue">
+                    :placeholder="item.fieldTitle" @on-change="emitValue">
             <b-option v-for="(val,key) in item.options" :key="key" :value="key" :label="val"></b-option>
           </b-select>
         </template>
         <template v-else>
           <b-date-picker type="daterange" :value="formatTimeRange(editList[index].value)" separator=" ~ "
-                         @on-change="val=>{ timeChange(val,index) }" size="small"  @on-clear="timeChange(['',''],index)"
+                         :placeholder="item.fieldTitle"
+                         @on-change="val=>{ timeChange(val,index) }" size="small" @on-clear="timeChange(['',''],index)"
           ></b-date-picker>
         </template>
       </div>
