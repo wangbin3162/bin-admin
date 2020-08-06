@@ -57,10 +57,10 @@
 </template>
 
 <script>
-  import { isNotEmpty } from '../../common/utils/assist'
+  import { isNotEmpty } from '@/common/utils/assist'
   import UrpLayout from './components/UrpLayout'
   import UrpHeader from './components/UrpHeader'
-  import { getMemoDetail } from '../../api/urp.api'
+  import { getMemoDetail } from '@/api/urp.api'
   import UrpLeftRight from './components/UrpLeftRight'
 
   export default {

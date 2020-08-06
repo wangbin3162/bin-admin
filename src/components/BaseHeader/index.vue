@@ -9,7 +9,7 @@
             <span class="item"><a href="#/news" target="_blank">政策法规</a></span>
             <span class="item"><a href="/data" target="_blank">数据可视化</a></span>
             <span class="item"><a href="#/urp/index" target="_blank">联合奖惩</a></span>
-            <span class="item"><a href="">挖掘分析</a></span>
+            <span class="item"><a href="/#/excavate" target="_blank">挖掘分析</a></span>
             <span class="item"><a href="">信用监管</a></span>
             <!-- <span class="item"><a href="/dir/#/dataManage/res/resInfo" target="_blank">数据治理</a></span> -->
             <!-- <span class="item"><a href="/dir/#/creditRating/ratingModel" target="_blank">信用评级</a></span> -->

@@ -1,6 +1,7 @@
 import index from '../pages/index.vue'
 import urp from './urp'
 import cms from './cms'
+import excavate from './excavate'
 
 /**
  * 基础路由
@@ -23,13 +24,13 @@ export const constantRouterMap = [
     path: '/index',
     name: 'index',
     component: index,
-    meta: { title: '首页' }
+    meta: { title: '公共信用信息共享平台' }
   },
   {
     path: '/detail',
     name: 'Detail',
     component: () => import(/* webpackChunkName: "list" */ '../pages/Detail.vue'),
-    meta: { title: '详情' }
+    meta: { title: '公共信用信息共享平台' }
   },
   {
     path: '/stock',
@@ -39,6 +40,7 @@ export const constantRouterMap = [
   },
   ...urp,
   ...cms,
+  ...excavate,
   {
     path: '/401',
     component: () => import(/* webpackChunkName: "error" */ '../pages/error/Error401.vue')
