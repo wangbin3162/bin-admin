@@ -1,15 +1,20 @@
 <template>
   <div>
-    <page-header-wrap v-show="isNormal">
+    <page-header-wrap title="ES数据同步记录" show-close @on-close="$emit('close')">
       <v-table-wrap>
         <!-- 查询条件 -->
         <v-filter-bar @keyup-enter="handleFilter">
-          <v-filter-item title="资源名称">
-            <b-input v-model.trim="listQuery.resName" placeholder="请输入" clearable></b-input>
+          <v-filter-item title="执行时间">
+            <b-date-picker type="daterange"
+              placement="bottom-start"
+              placeholder="Select date">
+            </b-date-picker>
           </v-filter-item>
-          <v-filter-item title="运行状态">
+          <v-filter-item title="执行状态">
             <b-select v-model="listQuery.status" clearable>
-
+              <b-option v-for="(value, key) in runStatusEmun" :key="key" :value="key">
+                {{ value }}
+              </b-option>
             </b-select>
           </v-filter-item>
           <!-- 添加查询按钮位置 -->
@@ -27,7 +32,7 @@
         <!-- 中央表格 -->
         <b-table :columns="columns" :data="list" :loading="listLoading">
           <!-- 操作栏 -->
-          <template v-slot:action="{ row }">
+          <template v-slot:action>
             <b-button type="text" @click="handleViewTaskBtn">
               查看任务
             </b-button>
@@ -51,6 +56,7 @@
 </template>
 
 <script>
+  import { mapState } from 'vuex'
   import commonMixin from '../../../../common/mixins/mixin'
   import permission from '../../../../common/mixins/permission'
   import { getPersonClassTree } from '../../../../api/data-manage/metadata.api'
@@ -59,6 +65,9 @@
   export default {
     name: 'AsyncRecord',
     mixins: [commonMixin, permission],
+    props: {
+
+    },
     components: {
 
     },
@@ -71,13 +80,20 @@
         },
         columns: [
           { title: '作业ID', key: '', ellipsis: true, tooltip: true },
-          { title: '资源名称', key: '', ellipsis: true, tooltip: true },
-          { title: '执行次数', key: '' },
-          { title: '执行时间(最近)', key: '' },
-          { title: '运行状态(最近)', key: '' },
+          { title: '开始时间', key: '' },
+          { title: '结束时间', key: '' },
+          { title: '总耗时', key: '' },
+          { title: '条件', key: '' },
+          { title: '任务状态', key: '' },
+          { title: '数据总量', key: '' },
           { title: '操作', slot: 'action', width: 120, align: 'center' }
         ]
       }
+    },
+    computed: {
+      ...mapState({
+        runStatusEmun: state => state.esExchange.runStatus
+      })
     },
     created () {
 
