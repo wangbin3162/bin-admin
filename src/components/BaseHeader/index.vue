@@ -8,7 +8,7 @@
             <span class="item"><a href="" @click.stop.prevent="home">首页</a></span>
             <span class="item"><a href="#/news" target="_blank">政策法规</a></span>
             <span class="item"><a href="/data" target="_blank">数据可视化</a></span>
-            <span class="item"><a href="">联合奖惩</a></span>
+            <span class="item"><a href="#/urp/index" target="_blank">联合奖惩</a></span>
             <span class="item"><a href="">挖掘分析</a></span>
             <span class="item"><a href="">信用监管</a></span>
             <!-- <span class="item"><a href="/dir/#/dataManage/res/resInfo" target="_blank">数据治理</a></span> -->
@@ -47,130 +47,130 @@
 </template>
 
 <script>
-  import NoticeTips from './NoticeTips'
+import NoticeTips from './NoticeTips'
 
-  export default {
-    name: 'BaseHeader',
-    props: {
-      value: {
-        type: Boolean
-      },
-      showSearch: {
-        type: Boolean
-      }
+export default {
+  name: 'BaseHeader',
+  props: {
+    value: {
+      type: Boolean
     },
-    components: {
-      NoticeTips
-    },
-    data() {
-      return {
-        display: false
-      }
-    },
-    watch: {
-      value: {
-        handler(val) {
-          this.display = val
-        },
-        immediate: true
-      }
-    },
-    computed: {
-      userRoles() {
-        return this.$store.state.user.roles
-      },
-      userName() {
-        return this.$store.state.user.info.realName
-      }
-    },
-    methods: {
-      home() {
-        this.$emit('on-home')
-        this.$router.push('/index')
-      },
-      logout() {
-        this.$store.dispatch('logout').then(res => {
-          this.$router.push('/login')
-        })
-      },
-      changeDisplay(val) {
+    showSearch: {
+      type: Boolean
+    }
+  },
+  components: {
+    NoticeTips
+  },
+  data() {
+    return {
+      display: false
+    }
+  },
+  watch: {
+    value: {
+      handler(val) {
         this.display = val
-        this.$emit('input', val)
-      }
+      },
+      immediate: true
+    }
+  },
+  computed: {
+    userRoles() {
+      return this.$store.state.user.roles
+    },
+    userName() {
+      return this.$store.state.user.info.realName
+    }
+  },
+  methods: {
+    home() {
+      this.$emit('on-home')
+      this.$router.push('/index')
+    },
+    logout() {
+      this.$store.dispatch('logout').then(res => {
+        this.$router.push('/login')
+      })
+    },
+    changeDisplay(val) {
+      this.display = val
+      this.$emit('input', val)
     }
   }
+}
 </script>
 
 <style scoped lang="stylus">
-  .header-wrap {
-    background: rgba(16, 103, 222, 0.5);
-    box-shadow: 0 0 8px rgba(143, 143, 143, 0.51);
-    height: 80px;
-    &.detail {
-      background: rgba(16, 103, 222, 0.5) url("../../assets/images/header-bg.png") no-repeat center top;
-      .search-wrap{
+.header-wrap {
+  background: rgba(16, 103, 222, 0.5);
+  box-shadow: 0 0 8px rgba(143, 143, 143, 0.51);
+  height: 80px;
+  &.detail {
+    background: rgba(16, 103, 222, 0.5) url("../../assets/images/header-bg.png") no-repeat center top;
+    .search-wrap {
 
-      }
     }
-    .header-inner {
-      position: relative;
-      width: 1300px;
+  }
+  .header-inner {
+    position: relative;
+    width: 1300px;
+    height: 100%;
+    margin: 0 auto;
+    .logo {
+      cursor: pointer;
       height: 100%;
-      margin: 0 auto;
-      .logo {
-        cursor: pointer;
-        height: 100%;
-      }
-      .links {
-        .inner {
-          text-align: right;
-          .item {
-            display inline-block;
-            width: 110px;
-            text-align: center;
-            a {
-              color: #fff;
-            }
+    }
+    .links {
+      .inner {
+        text-align: right;
+        .item {
+          display inline-block;
+          width: 110px;
+          text-align: center;
+          a {
+            color: #fff;
           }
         }
       }
-      .user {
-        width: auto;
-        padding: 0 10px;
-        color: #fff;
-      }
-      .search-btn {
-        position: relative;
-        cursor: pointer;
-        margin-left: 10px;
-        padding-right: 10px;
-        &:after {
-          content: '';
-          position: absolute;
-          top: 5px;
-          bottom: 5px;
-          right: 0;
-          border-right: 1px solid #e1e1e1;
-        }
-      }
-      .search-wrap {
+    }
+    .user {
+      width: auto;
+      padding: 0 10px;
+      color: #fff;
+    }
+    .search-btn {
+      position: relative;
+      cursor: pointer;
+      margin-left: 10px;
+      padding-right: 10px;
+      &:after {
+        content: '';
         position: absolute;
-        display: flex;
-        align-items: center;
-        top: 0;
+        top: 5px;
+        bottom: 5px;
         right: 0;
-        width: 920px;
-        height: 100%;
-        background-color: #0f80e9; /* 不支持线性的时候显示 */
-        background-image: linear-gradient(to right, #0f80e9, #0e89ea);
-        &.move-enter-active, &.move-leave-active {
-          transition: .35s;
-        }
-        &.move-enter, &.move-leave-to {
-          transform: translateY(-100%)
-          opacity: .5;
-        }
+        border-right: 1px solid #e1e1e1;
+      }
+    }
+    .search-wrap {
+      position: absolute;
+      display: flex;
+      align-items: center;
+      top: 0;
+      right: 0;
+      width: 920px;
+      height: 100%;
+      background-color: #0f80e9; /* 不支持线性的时候显示 */
+      background-image: linear-gradient(to right, #0f80e9, #0e89ea);
+      &.move-enter-active, &.move-leave-active {
+        transition: .35s;
+      }
+      &.move-enter, &.move-leave-to {
+        transform: translateY(-100%)
+        opacity: .5;
       }
     }
   }
+}
 </style>

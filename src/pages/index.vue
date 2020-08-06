@@ -63,8 +63,8 @@
 </template>
 
 <script>
-  import { getSearchList } from '../api/search.api'
-  import { isEmpty, isNotEmpty } from '../common/utils/assist'
+  import { getSearchList } from '@/api/search.api'
+  import { isEmpty, isNotEmpty } from '@/common/utils/assist'
   import BaseList from '../components/BaseList/index'
   import BaseContent from '../components/BaseContent'
 

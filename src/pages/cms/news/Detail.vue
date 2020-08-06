@@ -85,11 +85,11 @@
 </template>
 
 <script>
-  import { getContentDetail } from '../../../api/cms/news.api'
-  import SectionSideNav from '../components/SectionSideNav'
-  import AttachmentDownload from '../components/AttachmentDownload'
+import { getContentDetail } from '@/api/cms/news.api'
+import SectionSideNav from '../components/SectionSideNav'
+import AttachmentDownload from '../components/AttachmentDownload'
 
-  export default {
+export default {
     name: 'NewsDetail',
     components: {
       SectionSideNav,
@@ -127,8 +127,7 @@
       async getContentDetail (id) {
         this.loading = true
         try {
-          const res = await getContentDetail(id)
-          this.content = res
+          this.content = await getContentDetail(id)
         } catch (error) {
           console.error(error)
         }

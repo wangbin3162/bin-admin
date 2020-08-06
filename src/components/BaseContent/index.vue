@@ -24,7 +24,7 @@
 </template>
 
 <script>
-  import { getTopColumn } from '.././../api/cms/news.api'
+  import { getTopColumn } from '@/api/cms/news.api'
   import TabConA from './TabConA'
   import TabConB from './TabConB'
   import TabConC from './TabConC'

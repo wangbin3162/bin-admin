@@ -345,7 +345,7 @@
         }
 
         .input {
-          height: 47px;;
+          height: 47px;
           width: 400px;
         }
       }
