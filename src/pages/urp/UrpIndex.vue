@@ -71,7 +71,7 @@
   import UrpSearch from './components/UrpSearch'
   import * as api from '../../api/urp.api'
   import UrpList from './components/UrpList'
-  import { isNotEmpty } from '../../common/utils/assist'
+  import { isNotEmpty } from '@/common/utils/assist'
 
   export default {
     name: 'UrpIndex',
