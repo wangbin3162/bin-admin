@@ -1,6 +1,15 @@
 // bin-ui
 import BinUI from 'bin-ui'
 import 'bin-ui/lib/styles/index.css'
+import BinCharts from 'bin-charts'
+import 'echarts/lib/chart/line'
+import 'echarts/lib/chart/bar'
+import 'echarts/lib/chart/pie'
+import 'echarts/lib/chart/radar'
+import 'echarts/lib/chart/scatter'
+import 'echarts/lib/chart/effectScatter'
+import 'echarts/lib/component/legend'
+import 'echarts/lib/component/tooltip'
 // 本项目的全局自定义组件
 import BaseLayout from '../components/BaseLayout/index'
 import BaseHeader from '../components/BaseHeader/index'
@@ -18,6 +27,7 @@ export default {
   async install(Vue, options) {
     // bin-ui引用
     Vue.use(BinUI)
+    Vue.component(BinCharts.name, BinCharts)
     // 通用基本布局
     Vue.component(BaseLayout.name, BaseLayout)
     // 顶部通用导航

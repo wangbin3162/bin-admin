@@ -24,6 +24,17 @@ export function getRenderingConfig(resourceKey, type = '') {
   })
 }
 
+/* 获取所有字典项列表 */
+export function getDictItems(code) {
+  return request({
+    url: '/api/dict/queryItems',
+    method: 'get',
+    params: {
+      groupCode: code
+    }
+  })
+}
+
 /* 获取具体某个图表数据的接口 */
 export function renderingChart(chartId, condition) {
   return request({

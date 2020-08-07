@@ -32,6 +32,9 @@
           </div>
         </div>
       </div>
+      <div class="footer-img">
+        <waves/>
+      </div>
     </div>
   </exc-layout>
 </template>
@@ -42,10 +45,11 @@ import ExcHeader from '@/pages/excavate/components/ExcHeader'
 import { getResList } from '@/api/excavate.api'
 import ResSearch from '@/pages/excavate/components/ResSearch'
 import NoData from '@/components/NoData/index'
+import Waves from '@/pages/excavate/components/Waves'
 
 export default {
   name: 'Excavate',
-  components: { NoData, ResSearch, ExcHeader, ExcLayout },
+  components: { Waves, NoData, ResSearch, ExcHeader, ExcLayout },
   data() {
     return {
       keyword: '',
@@ -70,6 +74,7 @@ export default {
 
 <style scoped lang="stylus">
 .excavate-main-wrap {
+  position: relative
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -130,6 +135,13 @@ export default {
         }
       }
     }
+  }
+  .footer-img {
+    position: absolute;
+    bottom: 0
+    left: 0;
+    right: 0;
+    height: 160px;
   }
 }
 </style>

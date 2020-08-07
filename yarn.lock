@@ -1871,6 +1871,13 @@ bin-animation@^1.1.1:
   dependencies:
     babel-runtime "^6.26.0"
 
+bin-charts@^0.6.0:
+  version "0.6.0"
+  resolved "https://registry.npmjs.org/bin-charts/-/bin-charts-0.6.0.tgz#5835e2dbe4b2cf5392f51e9bbee250773cd2d231"
+  integrity sha512-AZ0hRGGtSztEvIkjB/RYsflOfrlZ6Py+PRpVwPdCPtHJzPArr7BH47qXLlcee9hFDnzPw7h2qHoLXfH12LgY2g==
+  dependencies:
+    resize-observer-polyfill "^1.5.1"
+
 bin-ui@^3.5.0:
   version "3.5.0"
   resolved "https://registry.npmjs.org/bin-ui/-/bin-ui-3.5.0.tgz#73759bc0315810252f72ebcef8e199a63190d8ab"
@@ -3407,6 +3414,13 @@ ecc-jsbn@~0.1.1:
   dependencies:
     jsbn "~0.1.0"
     safer-buffer "^2.1.0"
+
+echarts@^4.8.0:
+  version "4.8.0"
+  resolved "https://registry.npmjs.org/echarts/-/echarts-4.8.0.tgz#b2c1cfb9229b13d368ee104fc8eea600b574d4c4"
+  integrity sha512-YwShpug8fWngj/RlgxDaYrLBoD+LsZUArrusjNPHpAF+is+gGe38xx4W848AwWMGoi745t3OXM52JedNrv+F6g==
+  dependencies:
+    zrender "4.3.1"
 
 ee-first@1.1.1:
   version "1.1.1"
@@ -9993,3 +10007,8 @@ zepto@^1.2.0:
   version "1.2.0"
   resolved "https://registry.npmjs.org/zepto/-/zepto-1.2.0.tgz#e127bd9e66fd846be5eab48c1394882f7c0e4f98"
   integrity sha1-4Se9nmb9hGvl6rSME5SIL3wOT5g=
+
+zrender@4.3.1:
+  version "4.3.1"
+  resolved "https://registry.npmjs.org/zrender/-/zrender-4.3.1.tgz#baf8aa6dc8187a2f819692d7d5f9bedfa2b90fa3"
+  integrity sha512-CeH2TpJeCdG0TAGYoPSAcFX2ogdug1K7LIn9UO/q9HWqQ54gWhrMAlDP9AwWYMUDhrPe4VeazQ4DW3msD96nUQ==

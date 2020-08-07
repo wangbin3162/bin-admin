@@ -31,10 +31,18 @@ export default {
       currentIndex: 0
     }
   },
+  watch: {
+    activeIndex: {
+      handler(newVal) {
+        this.currentIndex = newVal
+      },
+      immediate: true
+    }
+  },
   methods: {
     change(index) {
       this.currentIndex = index
-      this.$emit('on-change', index)
+      this.$emit('on-change', this.currentIndex)
     }
   }
 }
@@ -42,6 +50,7 @@ export default {
 
 <style scoped lang="stylus">
 .exc-tabs {
+  background-color: #fff;
   box-shadow: 0 0 8px rgba(200, 200, 200, 0.5);
   &-inner {
     position: relative;

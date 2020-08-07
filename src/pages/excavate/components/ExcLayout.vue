@@ -11,6 +11,7 @@
 <script>
 
 import ExcFooter from '@/pages/excavate/components/ExcFooter'
+
 export default {
   name: 'ExcLayout',
   components: { ExcFooter },
@@ -19,3 +20,13 @@ export default {
   }
 }
 </script>
+
+<style>
+body {
+  background-color: #f9f9f9;
+}
+
+.app-wrap .index-wrap {
+  background-color: #f9f9f9;
+}
+</style>

@@ -2,8 +2,20 @@
   <exc-layout>
     <div class="excavate-main-wrap">
       <exc-header/>
-      挖掘分析详情页
-      <p>{{ resource }}</p>
+      <exc-tabs :active-index="activeIndex" @on-change="handleTabChange"/>
+      <div class="breadcrumb">
+        <b-breadcrumb separator="/">
+          <b-breadcrumb-item :to="{ path: '/excavate' }">挖掘分析</b-breadcrumb-item>
+          <b-breadcrumb-item> {{ resource.resourceName }}</b-breadcrumb-item>
+        </b-breadcrumb>
+      </div>
+      <div class="content">
+        <div v-if="activeIndex===0">
+          <exc-analyze/>
+        </div>
+        <div v-if="activeIndex===1">归集分析</div>
+        <div v-if="activeIndex===2">群体分析</div>
+      </div>
     </div>
   </exc-layout>
 </template>
@@ -11,17 +23,20 @@
 <script>
 import ExcLayout from '@/pages/excavate/components/ExcLayout'
 import ExcHeader from '@/pages/excavate/components/ExcHeader'
-import { isNotEmpty } from '@/common/utils/assist'
+import { isEmpty } from '@/common/utils/assist'
+import ExcTabs from '@/pages/excavate/components/ExcTabs'
+import ExcAnalyze from '@/pages/excavate/ExcAnalyze'
 
 export default {
   name: 'RenderPage',
-  components: { ExcHeader, ExcLayout },
+  components: { ExcAnalyze, ExcTabs, ExcHeader, ExcLayout },
   data() {
     return {
       resource: {
         resourceKey: '',
         resourceName: ''
-      }
+      },
+      activeIndex: 0
     }
   },
   created() {
@@ -36,20 +51,29 @@ export default {
       let { resourceKey, resourceName } = this.$route.query
       this.resource.resourceKey = resourceKey || ''
       this.resource.resourceName = resourceName || ''
-      if (isNotEmpty(resourceKey)) {
-        this.searchDetail()
-      } else {
+      if (isEmpty(resourceKey)) {
         this.$router.push('/excavate')
       }
     },
-    // 查询详情
-    searchDetail() {
-      console.log('查询对应资源图表')
+    // tab切换
+    handleTabChange(current) {
+      this.activeIndex = current
     }
   }
 }
 </script>
 
-<style scoped>
-
+<style scoped lang="stylus">
+.excavate-main-wrap {
+  background-color: #f9f9f9;
+  .content {
+    width: 1300px;
+    margin: 16px auto;
+  }
+  .breadcrumb {
+    width: 1300px;
+    margin: 16px auto;
+    padding: 0 8px;
+  }
+}
 </style>
