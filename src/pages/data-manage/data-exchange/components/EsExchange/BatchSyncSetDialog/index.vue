@@ -72,10 +72,10 @@
   import commonMixin from '@/common/mixins/mixin'
   import permission from '@/common/mixins/permission'
   import { getClassifyTree } from '@/api/data-manage/es-exchange.api'
-  import SetCon from '@/pages/data-manage/data-exchange/components/EsExchange/BatchAsyncSetDialog/SetCon'
+  import SetCon from '@/pages/data-manage/data-exchange/components/EsExchange/BatchSyncSetDialog/SetCon'
 
   export default {
-    name: 'BatchAsyncSetDialog',
+    name: 'BatchSyncSetDialog',
     mixins: [commonMixin, permission],
     props: {
       value: {
