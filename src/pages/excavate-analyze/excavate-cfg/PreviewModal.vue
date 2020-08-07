@@ -1,6 +1,7 @@
 <template>
   <!--预览弹窗-->
-  <b-modal v-model="previewModal" :title="'预览-' + resource.resourceName || ''" fullscreen footer-hide>
+  <b-modal v-model="previewModal" :title="'预览-' + resource.resourceName || ''" fullscreen footer-hide
+           :body-styles="{backgroundColor:'#f9f9f9',padding:'16px 24px'}">
     <div class="preview-wrapper" v-if="previewModal">
       <render-filter v-model="conditionForm" :conditions="conditions" @on-change="handleFilter"/>
       <template v-for="chart in charts">

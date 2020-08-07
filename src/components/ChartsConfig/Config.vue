@@ -567,12 +567,6 @@ export default {
       colorsGary: COLOR_LIST_GRAY
     }
   },
-  watch: {
-    'data.key'() {
-      this.activeTab = 'tab1'
-      this.activeConfig = ''
-    }
-  },
   methods: {
     // 自适应按钮事件
     autoClick() {

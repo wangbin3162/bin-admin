@@ -744,7 +744,7 @@ function getDataset(sourceMap, data) {
   let _sourceMap = sourceMap || { xField: 'x', yField: 'y', seriesField: 's' }
   let _data = data || []
   if (_data.length === 1 && isEmpty(_data[0].s)) {
-    return formatDataSet(_sourceMap, _data[0].data)
+    _data[0].s = '系列一'
   }
   return formatSeries(_sourceMap, _data)
 }

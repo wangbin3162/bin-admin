@@ -2,7 +2,7 @@
   <div class="chart-widget-item" :style="widgetStyle">
     <h2><span :style="titleStyle">{{ element.options.title }}</span></h2>
     <div class="chart-wrap" :style="chartStyle">
-      <b-charts :height="chartHeight" :options="chartOptions"/>
+      <b-charts :height="chartHeight" :options="chartOptions" ref="chart"/>
     </div>
   </div>
 </template>
@@ -53,8 +53,9 @@ export default {
   },
   methods: {
     initOptions() {
-      this.chartOptions = buildOptions(this.element, this.dynamic)
-      if (this.dynamic && this.element.isOpen === 'dynamic') {
+      let dynamic = this.element.isOpen === 'dynamic' && this.dynamic
+      this.chartOptions = buildOptions(this.element, dynamic)
+      if (dynamic) {
         this.updateData()
       }
       // 打印options
@@ -62,21 +63,26 @@ export default {
     },
     // 更新数据项
     updateData() {
-      let condition = this.getAPiConditions(this.conditions)
-      renderingChart(this.element.key, condition).then(resp => {
-        if (resp.data.code === '0') {
-          this.chartOptions = buildOptions(this.element, this.dynamic, resp.data.data)
-          // 打印options
-          this.log && console.log(this.chartOptions)
-        }
-      })
+      let dynamic = this.dynamic && this.element.isOpen === 'dynamic'
+      if (dynamic) {
+        let condition = this.getAPiConditions(this.conditions)
+        renderingChart(this.element.key, condition).then(resp => {
+          if (resp.data.code === '0') {
+            this.chartOptions = buildOptions(this.element, this.dynamic, resp.data.data)
+            // 打印options
+            this.log && console.log(this.chartOptions)
+          }
+        })
+      } else {
+        this.chartOptions = buildOptions(this.element)
+      }
     },
     // 判断条件为空情况做剔除
     getAPiConditions(conditions) {
       let list = []
       for (const item of conditions) {
         if (JSON.stringify(item.value) === '[]' ||
-            JSON.stringify(item.value) === JSON.stringify({ gte: '', lt: '' })) {
+          JSON.stringify(item.value) === JSON.stringify({ gte: '', lt: '' })) {
           continue
         }
         list.push(item)
@@ -113,7 +119,7 @@ export default {
     },
     // 图表高度
     chartHeight() {
-      return `${this.widgetHeight - 30}px`
+      return `${this.widgetHeight - 43}px`
     },
     // 图表容器的样式
     chartStyle() {
@@ -131,13 +137,27 @@ export default {
   position: relative;
   display: inline-block;
   vertical-align: top;
+  background: #fff;
+  border-radius: 4px;
+  box-shadow: 0 0 5px 1px rgba(100, 100, 100, .1);
   h2 {
     font-weight: normal;
     font-size: 16px;
+    border-bottom: 1px solid #eeeeee;
+    padding: 6px 2px;
     span {
+      position: relative;
       line-height: 30px;
       padding: 0 18px;
-      border-left: 2px solid #1089ff;
+      &:before {
+        content: '';
+        position: absolute;
+        left: 2px
+        top: 2px;
+        bottom: 2px;
+        width: 2px;
+        background-color: #1089ff;
+      }
     }
   }
 }

@@ -99,13 +99,12 @@ export default {
 
 <style lang="stylus" scoped>
 .conditions-wrap {
-  background: #ffffff;
-  padding: 8px 0;
+  padding: 0 8px 16px;
 }
 .ctrl-item {
   display: inline-flex;
   align-items: center;
-  padding: 0 16px;
+  padding-right: 16px;
   width: 25%;
   .label {
     width: 80px;

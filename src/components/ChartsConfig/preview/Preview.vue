@@ -14,7 +14,7 @@
         <template v-for="chart in charts">
           <charts-preview-item v-if="chart && chart.key" :key="chart.key"
                                ref="chartItems"
-                               :element="chart"
+                               :element="chart" :item-gap="16"
                                :dynamic="isOpen" :conditions="conditionForm"/>
         </template>
       </div>
