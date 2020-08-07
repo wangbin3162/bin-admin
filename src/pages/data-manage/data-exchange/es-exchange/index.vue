@@ -34,9 +34,6 @@
             @click="handleBatchAsyncBtn">
             + 批量同步
           </b-button>
-          <b-button @click="handleViewTaskBtn">test</b-button>
-          <b-button @click="openSyncSetDialog = true">test</b-button>
-          <b-button @click="openBatchSyncSetDialog = true">test</b-button>
         </v-table-tool-bar>
 
         <!-- 中央表格 -->
@@ -75,7 +72,7 @@
 
             <b-divider type="vertical"></b-divider>
 
-            <b-button type="text" :disabled="row.exeCount === 0"
+            <b-button type="text"
               @click="handleAsyncBtn(row)">
                 同步
             </b-button>
@@ -99,7 +96,8 @@
       @success="searchList">
     </sync-set-dialog>
 
-    <batch-sync-set-dialog v-model="openBatchSyncSetDialog">
+    <batch-sync-set-dialog v-model="openBatchSyncSetDialog"
+      @success="searchList">
     </batch-sync-set-dialog>
 
   </div>
@@ -161,7 +159,8 @@
     methods: {
       ...mapMutations({
         setPersonClass: 'SET_PERSON_CLASS',
-        setResProperty: 'SET_RES_PROPERTY'
+        setResProperty: 'SET_RES_PROPERTY',
+        setResPropertyOptions: 'SET_RES_PROPERTY_OPTIONS'
       }),
       /**
        * @author haodongdong
@@ -272,6 +271,7 @@
             })
             console.log(keyValue)
             this.setResProperty(keyValue)
+            this.setResPropertyOptions(data.children || [])
             resolve(keyValue)
           } catch (error) {
             reject(error)
@@ -322,8 +322,12 @@
         this.handleFilter()
       },
 
+      /**
+       * @author haodongdong
+       * @description 批量同步按钮回调
+       */
       handleBatchAsyncBtn () {
-
+        this.openBatchSyncSetDialog = true
       },
 
       /**

@@ -99,6 +99,44 @@ export async function getSingleResourceResult(query) {
 
 /**
  * @author haodongdong
+ * @description 查询资源信息
+ * @param {Object} query 查询参数对象
+ * @param {string} query.resourceName 资源名称
+ * @param {string} query.resourceCode 资源code
+ * @param {string} query.status 资源状态
+ * @param {string} query.availableStatus 是否可用
+ * @param {string} query.resProperty 资源性质
+ * @param {number} query.size 分页尺寸
+ * @param {number} query.page 当前页
+ * @returns {Promise}
+ */
+export function getResInfoList(query) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/api/dir/search',
+        method: 'get',
+        params: {
+          size: query.size,
+          page: query.page - 1,
+          resourceCode: query.resourceCode,
+          resourceName: query.resourceName,
+          status: query.status,
+          availableStatus: query.availableStatus,
+          resProperty: query.resProperty,
+          isOpen: query.isOpen || '',
+          sort: 'resourceKey,desc'
+        }
+      })
+      resolve(res.data)
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
  * @description 同步Es数据，时间参数传空字符串表示为全量、反之为增量。
  * @param {Object} param 参数对象
  * @param {string} param.isAll 是否选择全部资源 全部传 all 反之空字符串

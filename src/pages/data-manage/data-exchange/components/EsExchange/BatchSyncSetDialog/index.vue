@@ -25,24 +25,42 @@
                 <b-input v-model.trim="listQuery.resName" placeholder="请输入" clearable></b-input>
               </v-filter-item>
               <v-filter-item title="资源性质" :span="8">
-                <b-select v-model="listQuery.status" clearable>
-                  <!-- <b-option v-for="(value, key) in runStatusEmun" :key="key" :value="key">
-                    {{ value }}
-                  </b-option> -->
-                </b-select>
+                <v-cascade :data="resPropertyOptions"
+                  v-model="listQuery.resProperty" style="width: 100%;">
+                </v-cascade>
               </v-filter-item>
               <!-- 添加查询按钮位置 -->
               <v-filter-item @on-search="handleFilter" @on-reset="resetQuery"></v-filter-item>
             </v-filter-bar>
 
             <!-- 中央表格 -->
-            <b-table :columns="columns" :data="[{a: 1}, {a: 1}, {a: 1}, {a: 1}]" :loading="listLoading" size="small">
+            <b-table :columns="columns" :data="list" :loading="listLoading" size="small">
+              <template v-slot:personClass="{ row }">
+                <span t-ellipsis :title="personClassEnum[row.personClass]">
+                  {{ personClassEnum[row.personClass] }}
+                </span>
+              </template>
+
+              <template v-slot:resProperty="{ row }">
+                <span t-ellipsis :title="resPropertyEnum[row.resProperty]">
+                  {{ resPropertyEnum[row.resProperty] }}
+                </span>
+              </template>
+
               <!-- 操作栏 -->
               <template v-slot:action="{ row }">
-                <b-button type="primary" plain size="small" :disabled="isAllRes"
-                  @click="handleSelectedBtn(row)">
-                    选择
-                </b-button>
+                <template v-if="haveRow(row)">
+                  <b-button type="danger" plain size="small" :disabled="isAllRes"
+                    @click="handleSelectedBtn(row)">
+                      取消
+                  </b-button>
+                </template>
+                <template v-else>
+                  <b-button type="primary" plain size="small" :disabled="isAllRes"
+                    @click="handleSelectedBtn(row)">
+                      选择
+                  </b-button>
+                </template>
               </template>
             </b-table>
 
@@ -54,9 +72,11 @@
           </b-col>
 
           <b-col span="9" class="card-con">
-            <set-con :initResources="selectedRows"
+            <set-con :initResources="selectedRows" :modalVisible="open"
               @res-change="handleResChange"
-              @select-status-change="status => isAllRes = status">
+              @select-status-change="status => isAllRes = status"
+              @close="open = false"
+              @success="$emit('success')">
             </set-con>
           </b-col>
         </b-row>
@@ -71,7 +91,9 @@
   import { mapState } from 'vuex'
   import commonMixin from '@/common/mixins/mixin'
   import permission from '@/common/mixins/permission'
-  import { getClassifyTree } from '@/api/data-manage/es-exchange.api'
+  import {
+    getClassifyTree, getResInfoList
+  } from '@/api/data-manage/es-exchange.api'
   import SetCon from '@/pages/data-manage/data-exchange/components/EsExchange/BatchSyncSetDialog/SetCon'
 
   export default {
@@ -95,14 +117,19 @@
         treeLoading: false,
         treeData: [],
         listQuery: {
-          resName: '',
-          resNature: ''
+          resourceCode: '',
+          status: 'audited',
+          availableStatus: 'available',
+          resourceName: '',
+          resProperty: '',
+          size: 10,
+          page: 1
         },
         columns: [
           { type: 'index', width: 50, align: 'center' },
-          { title: '资源名称', key: '', ellipsis: true, tooltip: true },
-          { title: '主体类别', key: '' },
-          { title: '资源性质', key: '' },
+          { title: '资源名称', key: 'resourceName', ellipsis: true, tooltip: true },
+          { title: '主体类别', slot: 'personClass' },
+          { title: '资源性质', slot: 'resProperty' },
           { title: '操作', slot: 'action', width: 120, align: 'center' }
         ],
         selectedRows: [], // 存储已选择的行数据
@@ -121,6 +148,13 @@
         }
       }
     },
+    computed: {
+      ...mapState({
+        personClassEnum: state => state.esExchange.personClass,
+        resPropertyEnum: state => state.esExchange.resProperty,
+        resPropertyOptions: state => state.esExchange.resPropertyOptions
+      })
+    },
     created () {
 
     },
@@ -137,6 +171,7 @@
           this.currentTreeNode = null
           this.treeData = []
           this.list = []
+          this.selectedRows = []
         }
       },
 
@@ -144,8 +179,9 @@
        * @author haodongdong
        * @descriptiong 一些初始化处理
        */
-      init () {
-        this.getClassifyTree()
+      async init () {
+        await this.getClassifyTree()
+        this.searchList()
       },
 
       /**
@@ -158,6 +194,7 @@
           const res = await getClassifyTree('C')
           this.treeData = this.buildTree(res)
           this.currentTreeNode = this.treeData[0]
+          this.listQuery.resourceCode = this.currentTreeNode.code
         } catch (error) {
           console.error(error)
         }
@@ -166,12 +203,13 @@
 
       // 获取列表
       async searchList() {
+        this.listLoading = true
         try {
-          // const res = await getIndexManageList(this.listQuery)
-          // this.setListData({
-          //   list: res.rows,
-          //   total: res.total
-          // })
+          const res = await getResInfoList(this.listQuery)
+          this.setListData({
+            list: res.rows,
+            total: res.total
+          })
         } catch (error) {
           console.error(error)
         }
@@ -187,26 +225,20 @@
       handTreeCurrentChange (nodes, node) {
         if (this.currentTreeNode.id === node.id) {
           node.selected = true
+        } else {
+          this.listQuery.resourceCode = node.code
+          this.handleFilter()
         }
         this.currentTreeNode = node
-        // this.handleFilter()
       },
 
       // 重置查询
       resetQuery () {
-
-      },
-
-      handleBatchAsyncBtn () {
-
-      },
-
-      /**
-       * @author haodongdong
-       * @description 查看任务按钮回调
-       */
-      handleViewTaskBtn () {
-        this.dialogStatus = 'asyncRecord'
+        this.listQuery.size = 10
+        this.listQuery.page = 1
+        this.listQuery.resourceName = ''
+        this.listQuery.resProperty = ''
+        this.handleFilter()
       },
 
       /**
@@ -215,7 +247,24 @@
        * @param {Object} row 当前行数据
        */
       handleSelectedBtn (row) {
-        this.selectedRows.push(row)
+        const index = this.selectedRows.findIndex(item => item.id === row.id)
+        if (index > -1) {
+          this.selectedRows.splice(index, 1)
+        } else {
+          this.selectedRows.push(row)
+        }
+      },
+
+      /**
+       * @author haodongdong
+       * @description 判断当前行是否在已选择的数组内
+       * @param {Object} row 当前行数据
+       */
+      haveRow (row) {
+        let res = false
+        const el = this.selectedRows.find(item => item.id === row.id)
+        if (el) res = true
+        return res
       },
 
       /**
@@ -224,7 +273,6 @@
        * @param {Array} resList 改变后的数组
        */
       handleResChange (resList) {
-        console.log(resList)
         this.selectedRows = resList
       },
 

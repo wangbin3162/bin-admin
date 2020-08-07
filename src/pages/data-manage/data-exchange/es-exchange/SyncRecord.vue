@@ -32,13 +32,14 @@
             {{ $util.parseTime(new Date(row.jobEndDate), '{y}-{m}-{d} {h}:{m}:{s}') }}
           </template>
 
+          <template v-slot:queryTimeCondtions="{ row }">
+            <span v-if="row.queryTimeCondtions.length > 0" t-ellipsis
+              :title="row.queryTimeCondtions[0] + '~' + row.queryTimeCondtions[1]">
+              {{ row.queryTimeCondtions[0] }} ~ {{ row.queryTimeCondtions[1] }}
+            </span>
+          </template>
+
           <template v-slot:exeStatus="{ row }">
-            <!-- <b-tag v-if="row.exeCount === 0" type="info" dot no-border
-              :key="row.exeStatus">
-              <span style="color: #bfbfbf;">
-                暂未同步
-              </span>
-            </b-tag> -->
             <b-tag :type="{
               COMPLETED: 'success',
               STARTED: 'primary',
@@ -49,10 +50,15 @@
           </template>
 
           <!-- 操作栏 -->
-          <template v-slot:action="{ row }">
-            <b-button type="text" @click="handleRebootBtn" :disabled="row.exeStatus !== 'FAILED'">
+          <template v-slot:action="{ row, index }">
+            <b-button type="text" :disabled="row.exeStatus !== 'FAILED' || btnLoading"
+              @click="handleRebootBtn(row, index)" >
+              <template v-if="btnLoading && curRowIndex === index">
+                <b-icon name="loading2" class="icon-is-rotating"></b-icon>
+              </template>
               重启
             </b-button>
+            <!-- <b-button type="text" :loading="btnLoading">测试</b-button> -->
           </template>
         </b-table>
 
@@ -89,6 +95,8 @@
     },
     data () {
       return {
+        btnLoading: false,
+        curRowIndex: null,
         dateStrArr: ['', ''],
         listQuery: {
           resourceKey: '',
@@ -103,7 +111,7 @@
           { title: '开始时间', slot: 'jobBeginDate', align: 'center' },
           { title: '结束时间', slot: 'jobEndDate', align: 'center' },
           { title: '总耗时', key: 'totalCost' },
-          { title: '条件', key: 'queryTimeCondtion' },
+          { title: '条件', slot: 'queryTimeCondtions' },
           { title: '任务状态', slot: 'exeStatus' },
           { title: '数据总量', key: 'syncTotal', align: 'center' },
           { title: '操作', slot: 'action', width: 120, align: 'center' }
@@ -167,9 +175,31 @@
        * @author haodongdong
        * @description 重启按钮回调
        * @param {Object} row 当前行数据
+       * @param {number} index 当前行index
        */
-      handleRebootBtn (row) {
-
+      async handleRebootBtn (row, index) {
+        this.curRowIndex = index
+        this.btnLoading = true
+        try {
+          let param = {
+            isAll: '',
+            resourceKeys: [row.resourceKey]
+          }
+          if (row.queryTimeCondtions.length > 0) {
+            param.beginDate = row.queryTimeCondtions[0]
+            param.endDate = row.queryTimeCondtions[1]
+          } else {
+            param.beginDate = ''
+            param.endDate = ''
+          }
+          await syncESData(param)
+          this.searchList()
+          this.$message({ type: 'success', content: '操作成功' })
+        } catch (error) {
+          console.error(error)
+          this.$notice.danger({ title: '操作失败', desc: error })
+        }
+        this.btnLoading = false
       }
 
     }

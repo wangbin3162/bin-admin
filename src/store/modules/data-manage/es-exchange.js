@@ -6,7 +6,8 @@ const esExchange = {
       FAILED: '失败'
     },
     personClass: {}, // 主体类别枚举
-    resProperty: {} // 资源性质枚举
+    resProperty: {}, // 资源性质枚举
+    resPropertyOptions: [] // 资源性质级联选择框使用的数据
   },
   mutations: {
     SET_ES_SYNC_STATUS (state, esSyncStatus) {
@@ -17,6 +18,9 @@ const esExchange = {
     },
     SET_RES_PROPERTY (state, resProperty) {
       state.resProperty = resProperty
+    },
+    SET_RES_PROPERTY_OPTIONS (state, resPropertyOptions) {
+      state.resPropertyOptions = resPropertyOptions
     }
   },
   actions: {}

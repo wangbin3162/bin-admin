@@ -59,9 +59,6 @@
           endDate: ''
         },
         rules: {
-          // beginDate: [
-          //   { required: true, message: '请选择开始时间', trigger: 'change' }
-          // ],
           endDate: [
             { required: true, message: '请选择执行时间', trigger: 'change' }
           ]
