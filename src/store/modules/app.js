@@ -10,7 +10,8 @@ const app = {
       fixedHeader: false,
       fixedAside: false
     },
-    menu: []
+    menu: [],
+    licStatus: true // /lic/check 证书验证状态，默认为true
   },
   mutations: {
     SAVE_SETTING: (state, setting) => {
@@ -42,6 +43,9 @@ const app = {
     TOGGLE_FIXED_ASIDE: (state, isFixed) => {
       state.setting.fixedAside = isFixed
       setAdminSetting(state.setting)
+    },
+    SET_LIC_STATUS (state, licStatus) {
+      state.licStatus = licStatus
     }
   },
   actions: {

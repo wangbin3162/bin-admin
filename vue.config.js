@@ -17,7 +17,8 @@ module.exports = {
       '/user': { target: 'http://localhost:8082/' },
       '/management': { target: 'http://localhost:8082/' },
       '/api': { target: 'http://localhost:8082/' },
-      '/da': { target: 'http://localhost:8082/' }
+      '/da': { target: 'http://localhost:8082/' },
+      '/lic': { target: 'http://localhost:8082/' }
     }
   },
   productionSourceMap: false,

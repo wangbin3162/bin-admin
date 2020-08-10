@@ -42,7 +42,7 @@
             </b-form-item>
             <div flex="main:center">
               <b-button @click="submit" class="button-login" v-waves :loading="loginLoading" size="large"
-                        type="primary">
+                        type="primary" :disabled="!licStatus">
                 {{ loginLoading? '登录中...' :'登 录' }}
               </b-button>
             </div>
@@ -58,6 +58,7 @@
 </template>
 
 <script>
+  import { mapState } from 'vuex'
   import { getVerifyCode, login } from '../api/login.api'
 
   export default {
@@ -86,6 +87,11 @@
         },
         loginLoading: false
       }
+    },
+    computed: {
+      ...mapState({
+        licStatus: state => state.app.licStatus
+      })
     },
     created() {
       this.refreshCode()
