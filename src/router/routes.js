@@ -2,6 +2,7 @@ import index from '../pages/index.vue'
 import urp from './urp'
 import cms from './cms'
 import excavate from './excavate'
+import collectAnalysis from './collect-analysis'
 
 /**
  * 基础路由
@@ -41,6 +42,7 @@ export const constantRouterMap = [
   ...urp,
   ...cms,
   ...excavate,
+  ...collectAnalysis,
   {
     path: '/401',
     component: () => import(/* webpackChunkName: "error" */ '../pages/error/Error401.vue')

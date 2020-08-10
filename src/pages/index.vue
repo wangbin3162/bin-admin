@@ -20,7 +20,7 @@
         </div>
 
         <div class="card-cen">
-          <div class="card-item">
+          <div class="card-item" @click="handleCardClick('#/collectAnalysis')">
             <div class="inner">
               <h2>归集分析</h2>
               <img src="../assets/images/joint.png" alt="bigdata">
