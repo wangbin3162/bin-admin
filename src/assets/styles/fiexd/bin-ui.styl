@@ -45,9 +45,11 @@
 // 挖掘分析页面样式覆盖
 
 .excavate-main-wrap {
-  .bin-input-wrapper .bin-input-suffix {
-    width: auto;
-    padding-right: 2px;
+  .search-input, .search-input-wrap {
+    .bin-input-wrapper .bin-input-suffix {
+      width: auto;
+      padding-right: 2px;
+    }
   }
   .bin-carousel-dots {
     li {
@@ -64,5 +66,13 @@
   }
   .bin-scrollbar__wrap {
     overflow-x: hidden;
+  }
+  .bin-card .bin-card__header {
+    padding: 10px 24px;
+  }
+  .bin-card .bin-card__header.has-tip::after {
+    top: 12px;
+    bottom: 12px;
+    left: 2px;
   }
 }

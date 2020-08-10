@@ -1,17 +1,10 @@
 <template>
   <div class="exc-tabs">
     <div class="exc-tabs-inner">
-      <div class="tab-item" :class="{active:currentIndex===0}" @click="change(0)">
-        <b-icon name="ios-trending-up"/>
-        趋势研究
-      </div>
-      <div class="tab-item" :class="{active:currentIndex===1}" @click="change(1)">
-        <b-icon name="ios-analytics"/>
-        归集分析
-      </div>
-      <div class="tab-item" :class="{active:currentIndex===2}" @click="change(2)">
-        <b-icon name="ios-contacts"/>
-        群体分析
+      <div class="tab-item" v-for="item in tabs" :key="item.code"
+           :class="{active: item.code===currentCode}" @click="change(item.code)">
+        <b-icon :name="item.icon"/>
+        {{ item.name }}
       </div>
     </div>
   </div>
@@ -21,28 +14,34 @@
 export default {
   name: 'ExcTabs',
   props: {
-    activeIndex: {
-      type: Number,
-      default: 0
+    value: {
+      type: String,
+      default: 'resource'
     }
   },
   data() {
     return {
-      currentIndex: 0
+      tabs: [
+        { code: 'resource', name: '资源分析', icon: 'ios-trending-up' },
+        { code: 'gather', name: '归集分析', icon: 'ios-analytics' },
+        { code: 'person', name: '群体分析', icon: 'ios-contacts' }
+      ],
+      currentCode: ''
     }
   },
   watch: {
-    activeIndex: {
+    value: {
       handler(newVal) {
-        this.currentIndex = newVal
+        this.currentCode = newVal
       },
       immediate: true
     }
   },
   methods: {
-    change(index) {
-      this.currentIndex = index
-      this.$emit('on-change', this.currentIndex)
+    change(code) {
+      this.currentCode = code
+      this.$emit('input', this.currentCode)
+      this.$emit('on-change', this.currentCode)
     }
   }
 }

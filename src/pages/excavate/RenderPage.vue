@@ -4,19 +4,18 @@
       <exc-header>
         <res-search-input/>
       </exc-header>
-      <exc-tabs :active-index="activeIndex" @on-change="handleTabChange"/>
+      <exc-tabs v-model="activeCode"/>
       <div class="breadcrumb">
         <b-breadcrumb separator="/">
           <b-breadcrumb-item :to="{ path: '/excavate' }">挖掘分析</b-breadcrumb-item>
+          <b-breadcrumb-item> {{ tabs[activeCode] }}</b-breadcrumb-item>
           <b-breadcrumb-item> {{ resource.resourceName }}</b-breadcrumb-item>
         </b-breadcrumb>
       </div>
       <div class="content">
-        <div v-if="activeIndex===0">
-          <exc-analyze/>
-        </div>
-        <div v-if="activeIndex===1">归集分析</div>
-        <div v-if="activeIndex===2">群体分析</div>
+        <exc-analyze v-if="activeCode==='resource'"/>
+        <gather-analyze v-if="activeCode==='gather'"/>
+        <div v-if="activeCode==='person'">群体分析</div>
       </div>
     </div>
   </exc-layout>
@@ -29,17 +28,23 @@ import { isEmpty } from '@/common/utils/assist'
 import ExcTabs from '@/pages/excavate/components/ExcTabs'
 import ExcAnalyze from '@/pages/excavate/ExcAnalyze'
 import ResSearchInput from '@/pages/excavate/components/ResSearchInput'
+import GatherAnalyze from '@/pages/excavate/GatherAnalyze'
 
 export default {
   name: 'RenderPage',
-  components: { ResSearchInput, ExcAnalyze, ExcTabs, ExcHeader, ExcLayout },
+  components: { GatherAnalyze, ResSearchInput, ExcAnalyze, ExcTabs, ExcHeader, ExcLayout },
   data() {
     return {
       resource: {
         resourceKey: '',
         resourceName: ''
       },
-      activeIndex: 0
+      activeCode: 'gather',
+      tabs: {
+        resource: '资源分析',
+        gather: '归集分析',
+        person: '群体分析'
+      }
     }
   },
   created() {
@@ -57,10 +62,6 @@ export default {
       if (isEmpty(resourceKey)) {
         this.$router.push('/excavate')
       }
-    },
-    // tab切换
-    handleTabChange(current) {
-      this.activeIndex = current
     }
   }
 }
