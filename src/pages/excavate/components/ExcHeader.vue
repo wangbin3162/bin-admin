@@ -2,8 +2,9 @@
   <div class="header-wrap" :class="{normal}">
     <div class="header-inner" flex="main:justify cross:center">
       <img src="../../../assets/images/excavate/logo.png" alt="logo" class="logo" @click="clickLogo"/>
-      <div class="info" flex="cross:center" v-if="userRoles">
-        <b-dropdown>
+      <div class="info" flex="cross:center">
+        <slot></slot>
+        <b-dropdown v-if="userRoles">
           <div class="user" flex="main:center cross:center">
             <b-icon name="ios-contact" size="20" color="#fafafa"/>
             <span class="pl-5">

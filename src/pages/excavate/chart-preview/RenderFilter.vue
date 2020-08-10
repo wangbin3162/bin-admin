@@ -99,7 +99,8 @@ export default {
 
 <style lang="stylus" scoped>
 .conditions-wrap {
-  padding: 0 8px 16px;
+  padding: 0 8px;
+  margin-bottom: 16px;
 }
 .ctrl-item {
   display: inline-flex;

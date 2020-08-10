@@ -1,7 +1,9 @@
 <template>
   <exc-layout>
     <div class="excavate-main-wrap">
-      <exc-header/>
+      <exc-header>
+        <res-search-input/>
+      </exc-header>
       <exc-tabs :active-index="activeIndex" @on-change="handleTabChange"/>
       <div class="breadcrumb">
         <b-breadcrumb separator="/">
@@ -26,10 +28,11 @@ import ExcHeader from '@/pages/excavate/components/ExcHeader'
 import { isEmpty } from '@/common/utils/assist'
 import ExcTabs from '@/pages/excavate/components/ExcTabs'
 import ExcAnalyze from '@/pages/excavate/ExcAnalyze'
+import ResSearchInput from '@/pages/excavate/components/ResSearchInput'
 
 export default {
   name: 'RenderPage',
-  components: { ExcAnalyze, ExcTabs, ExcHeader, ExcLayout },
+  components: { ResSearchInput, ExcAnalyze, ExcTabs, ExcHeader, ExcLayout },
   data() {
     return {
       resource: {

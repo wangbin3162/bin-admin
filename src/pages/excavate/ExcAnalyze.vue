@@ -46,6 +46,12 @@ export default {
       let { resourceKey, resourceName } = this.$route.query
       this.resource.resourceKey = resourceKey || ''
       this.resource.resourceName = resourceName || ''
+      // 初始化数据
+      this.charts = []
+      this.conditions = []
+      this.conditionForm = []
+      this.previewVisible = false
+
       if (isNotEmpty(resourceKey)) {
         this.searchDetail()
       }
@@ -106,7 +112,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-
-</style>

@@ -24,6 +24,11 @@ export default {
       default: ''
     }
   },
+  data() {
+    return {
+      keyword: ''
+    }
+  },
   watch: {
     value: {
       handler(newVal) {
