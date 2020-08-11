@@ -547,12 +547,12 @@
        * @param {string} query.personClass 主体类别，nat 自然人 leg 法人
        */
       async getResInfoClassif (query) {
-        try {
-          const res = await api.getZyxxfltjsj(query)
-          this.barChartOption.dataset = formatDataSet({ xField: 'classifyCode', yField: 'count' }, res)
-        } catch (error) {
-          console.error(error)
-        }
+        // try {
+        //   const res = await api.getZyxxfltjsj(query)
+        //   this.barChartOption.dataset = formatDataSet({ xField: 'classifyCode', yField: 'count' }, res)
+        // } catch (error) {
+        //   console.error(error)
+        // }
       },
       /**
        * @author haodongdong
@@ -562,26 +562,26 @@
        * @param {string} query.endDate 结束时间 yyyy-mm
        */
       async getResInfoCollection (query) {
-        try {
-          const [fr, zrr] = await Promise.all([
-            api.getFrzzxxgjqs(query),
-            api.getZrpxxgjqs(query)
-          ])
-          const source = [
-            {
-              legend: '自然人',
-              data: zrr
-            },
-            {
-              legend: '法人及其他组织',
-              data: fr
-            }
-          ]
-          const dataset = formatSeries({ xField: 'month', yField: 'count', seriesField: 'legend' }, source)
-          this.lineSmoothChartOption.dataset = dataset
-        } catch (error) {
-          console.error(error)
-        }
+        // try {
+        //   const [fr, zrr] = await Promise.all([
+        //     api.getFrzzxxgjqs(query),
+        //     api.getZrpxxgjqs(query)
+        //   ])
+        //   const source = [
+        //     {
+        //       legend: '自然人',
+        //       data: zrr
+        //     },
+        //     {
+        //       legend: '法人及其他组织',
+        //       data: fr
+        //     }
+        //   ]
+        //   const dataset = formatSeries({ xField: 'month', yField: 'count', seriesField: 'legend' }, source)
+        //   this.lineSmoothChartOption.dataset = dataset
+        // } catch (error) {
+        //   console.error(error)
+        // }
       },
       /**
        * @author haodongdong
