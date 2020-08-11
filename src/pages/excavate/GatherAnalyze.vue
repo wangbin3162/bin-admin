@@ -52,7 +52,7 @@
     </div>
     <b-modal v-model="analyzeModal" :title="`${depart.departName}-部门趋势分析`" width="800">
       <div class="chart-inner">
-        <b-charts height="350px" ref="chartGather" theme="charts-theme" :options="lineChartOption"/>
+        <b-charts height="350px" theme="charts-theme" :options="lineChartOption"/>
       </div>
     </b-modal>
   </div>
@@ -71,7 +71,7 @@ export default {
         grid: { top: 50, right: 50, left: 50, bottom: 50 },
         xAxis: { type: 'category' },
         yAxis: { type: 'value' },
-        series: [{ type: 'bar', name: '数量' }],
+        series: [{ type: 'bar', name: '数量', barWidth: '40%' }],
         dataset: { source: [['x', 'y']] }
       },
       yearList: [],

@@ -40,7 +40,7 @@ export default {
         resourceKey: '',
         resourceName: ''
       },
-      activeCode: 'person',
+      activeCode: 'resource',
       tabs: {
         resource: '资源分析',
         gather: '归集分析',
