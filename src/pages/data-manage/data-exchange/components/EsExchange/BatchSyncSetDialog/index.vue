@@ -22,7 +22,7 @@
             <!-- 查询条件 -->
             <v-filter-bar @keyup-enter="handleFilter">
               <v-filter-item title="资源名称" :span="8">
-                <b-input v-model.trim="listQuery.resName" placeholder="请输入" clearable></b-input>
+                <b-input v-model.trim="listQuery.resourceName" placeholder="请输入" clearable></b-input>
               </v-filter-item>
               <v-filter-item title="资源性质" :span="8">
                 <v-cascade :data="resPropertyOptions"
