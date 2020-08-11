@@ -1,11 +1,12 @@
 <template>
   <div class="collect-analysis-header">
     <div class="con">
-      <span class="title">归集分析</span>
+      <!-- <span class="title">归集分析</span> -->
+      <img src="../../assets/images/collect-analysis-icon/logo-gjfx.png" />
 
-      <span class="link-home">
-        首页
-      </span>
+      <b-button type="info" round plain @click="$router.push('index')">
+        返回首页
+      </b-button>
     </div>
   </div>
 </template>
@@ -30,7 +31,7 @@
 <style lang="stylus" scoped>
   .collect-analysis-header {
     height: 80px;
-    background: rgba(0, 0, 0, 0.7)
+    background: #ffffff;
     box-shadow: 0 0 8px rgba(100,100,100,0.5);
 
     .con {
@@ -38,17 +39,14 @@
       justify-content: space-between;
       align-items: center;
       height: 100%;
-      width: 1300px;
-      margin: 0 auto;
+      padding: 0 30px;
 
-      .title {
-        font-size: 27px;
-        color: #ffffff;
+      img {
+        max-height: 80px;
       }
 
       .link-home {
         font-size: 16px;
-        color: #ffffff;
       }
     }
   }

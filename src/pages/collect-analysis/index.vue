@@ -1,10 +1,7 @@
 <template>
   <div>
-    <div class="nav">
-      <b-button type="text" icon="ios-undo" @click="$router.push('/index')">
-        归集分析
-      </b-button>
-    </div>
+    <collect-analysis-header class="mb-20">
+    </collect-analysis-header>
 
     <div class="my-gather-data">
       <div class="header mb-20">
@@ -216,12 +213,13 @@
     xxgjNew, resMergeTrend
   } from '@/api/collect-analysis.api'
   import QuickDateSelect from './QuickDateSelect'
+  import CollectAnalysisHeader from './CollectAnalysisHeader'
 
   require('bin-charts/src/theme/charts-theme')
 
   export default {
     name: 'CollectAnalysis',
-    components: { QuickDateSelect },
+    components: { QuickDateSelect, CollectAnalysisHeader },
     data() {
       return {
         firstLineData: null, // 首行数据
@@ -682,9 +680,6 @@
 <style scoped lang="stylus">
   i {
     font-style: normal
-  }
-  .nav {
-    padding: 5px 30px;
   }
 
   .my-gather-data {

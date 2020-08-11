@@ -1,4 +1,7 @@
-// 类目管理
+/**
+ * @author haodongdong
+ * @description 归集分析
+ */
 import request from './request'
 import store from '@/store'
 
