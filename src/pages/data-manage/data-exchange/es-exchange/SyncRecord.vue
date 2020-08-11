@@ -79,15 +79,12 @@
 </template>
 
 <script>
-  import { mapState } from 'vuex'
-  import commonMixin from '../../../../common/mixins/mixin'
-  import permission from '../../../../common/mixins/permission'
-  import {
-    getSingleResourceResult,
-    syncESData
-  } from '@/api/data-manage/es-exchange.api'
+    import {mapState} from 'vuex'
+    import commonMixin from '../../../../common/mixins/mixin'
+    import permission from '../../../../common/mixins/permission'
+    import {getSingleResourceResult, syncESData} from '@/api/data-manage/es-exchange.api'
 
-  export default {
+    export default {
     name: 'SyncRecord',
     mixins: [commonMixin, permission],
     props: {
@@ -188,7 +185,7 @@
         this.btnLoading = true
         try {
           let param = {
-            id: row.id,
+            importId: row.id,
             isAll: '',
             resourceKeys: [row.resourceKey]
           }

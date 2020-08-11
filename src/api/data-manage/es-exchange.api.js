@@ -153,7 +153,7 @@ export async function syncESData(param) {
         url: '/api/batch/es/syncBaseFullLoad',
         method: 'post',
         data: {
-          id: param.id || null,
+          importId: param.importId || null,
           isAll: param.isAll,
           resourceKeys: param.resourceKeys || null,
           beginDate: param.beginDate || '',
