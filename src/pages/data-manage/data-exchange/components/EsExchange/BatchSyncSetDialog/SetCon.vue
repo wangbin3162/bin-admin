@@ -40,13 +40,14 @@
             </b-date-picker>
           </b-form-item>
 
-          <b-form-item>
+          <!-- 此处传递prop，防止需要校验的item项全被if隐藏后，b-form表单校验函数锁死 -->
+          <b-form-item prop="hack">
             <div flex="main:justify">
               <b-button style="width: 49%;" @click="$emit('close')">
                 取消
               </b-button>
               <b-button type="primary" style="width: 49%;" :loading="btnLoading"
-                :disabled="btnLoading"
+                :disabled="btnLoading || (!isAllRes && resourceList.length === 0)"
                 @click="handleSubmit">
                 执行同步
               </b-button>
