@@ -35,7 +35,13 @@
           <template v-slot:queryTimeCondtions="{ row }">
             <span v-if="row.queryTimeCondtions.length > 0" t-ellipsis
               :title="row.queryTimeCondtions[0] + '~' + row.queryTimeCondtions[1]">
-              {{ row.queryTimeCondtions[0] }} ~ {{ row.queryTimeCondtions[1] }}
+              <span>
+                {{ $util.parseTime(new Date(row.queryTimeCondtions[0]), '{y}-{m}-{d}') }}
+              </span>
+               ~
+               <span>
+                 {{ $util.parseTime(new Date(row.queryTimeCondtions[1]), '{y}-{m}-{d}') }}
+               </span>
             </span>
           </template>
 
@@ -111,7 +117,7 @@
           { title: '开始时间', slot: 'jobBeginDate', align: 'center' },
           { title: '结束时间', slot: 'jobEndDate', align: 'center' },
           { title: '总耗时', key: 'totalCost' },
-          { title: '条件', slot: 'queryTimeCondtions', align: 'center' },
+          { title: '条件', slot: 'queryTimeCondtions', align: 'left' },
           { title: '任务状态', slot: 'exeStatus' },
           { title: '数据总量', key: 'syncTotal', align: 'center' },
           { title: '操作', slot: 'action', width: 120, align: 'center' }

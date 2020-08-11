@@ -17,13 +17,13 @@
           <v-filter-item title="资源名称">
             <b-input v-model.trim="listQuery.jobName" placeholder="请输入" clearable></b-input>
           </v-filter-item>
-          <v-filter-item title="运行状态">
+          <!-- <v-filter-item title="运行状态">
             <b-select v-model="listQuery.esSyncStatus" clearable>
               <b-option v-for="(value, key) in esSyncStatusEnum" :key="key" :value="key">
                 {{ value }}
               </b-option>
             </b-select>
-          </v-filter-item>
+          </v-filter-item> -->
           <!-- 添加查询按钮位置 -->
           <v-filter-item @on-search="handleFilter" @on-reset="resetQuery"></v-filter-item>
         </v-filter-bar>
