@@ -83,18 +83,12 @@
                       format="yyyy-MM-dd" @on-change="handleDepartDateChange"
                       placeholder="请选择">
                     </b-date-picker>
-                    <b-button type="text" :disabled="bmsjgjfxLoading" @click="handleMoreBtn('bmsjgjfx', '部门数据归集统计分析')">更多>></b-button>
+                    <b-button type="text" :disabled="centerStatisLoading" @click="handleMoreBtn('bmsjgjfx', '部门数据归集统计分析')">更多>></b-button>
                   </div>
                 </div>
               </template>
               <div class="pl-15 pr-15">
-                <b-table :columns="bmsjgjfxColumns" :data="bmsjgjfxData.slice(2, 7)" :loading="bmsjgjfxLoading">
-                  <template v-slot:departId="{ row }">
-                    <div class="t-ellipsis" :title="compTransferEnum[row.departId]">
-                      {{ compTransferEnum[row.departId] }}
-                    </div>
-                  </template>
-
+                <b-table :columns="bmsjgjfxColumns" :data="bmsjgjfxData.slice(2, 7)" :loading="centerStatisLoading">
                   <template v-slot:percent="{ row }">
                     {{ row.percent }}%
                     <b-progress :percent="row.percent"
@@ -150,13 +144,13 @@
                     <div flex="main:justify cross:center" class="header-height">
                       <span class="title-text">最新提报部门</span>
                       <div>
-                        <b-button type="text" :disabled="zxtbbmLoadig" @click="handleMoreBtn('zxtbbm', '最新提报部门')">更多>></b-button>
+                        <b-button type="text" :disabled="centerStatisLoading" @click="handleMoreBtn('zxtbbm', '最新提报部门')">更多>></b-button>
                       </div>
                     </div>
                   </template>
                   <div class="pl-20 pr-20">
                     <b-table :columns="zxtbbmColumns" :data="zxtbbmData.slice(0, 6)" size="small"
-                      :loading="zxtbbmLoadig">
+                      :loading="centerStatisLoading">
                     </b-table>
                   </div>
                 </b-card>
@@ -171,12 +165,12 @@
                   <span class="title-text">信息归集记录</span>
                   <div>
                     <span class="mr-10">{{ curDate }}</span>
-                    <b-button type="text" :disabled="xxgjjlLoading" @click="handleMoreBtn('xxgjjl', '信息归集记录')">更多>></b-button>
+                    <b-button type="text" :disabled="xxgjNewLoading" @click="handleMoreBtn('xxgjjl', '信息归集记录')">更多>></b-button>
                   </div>
                 </div>
               </template>
               <div class="pl-20 pr-20">
-                <b-table :columns="xxgjjlColumns" :data="xxgjjlData.slice(1, 7)" size="small" class="mb-10" :loading="xxgjjlLoading">
+                <b-table :columns="xxgjjlColumns" :data="xxgjjlData.slice(1, 7)" size="small" class="mb-10" :loading="xxgjNewLoading">
                 </b-table>
               </div>
             </b-card>
@@ -203,27 +197,11 @@
       </div>
       <b-modal v-model="modal" footer-hide :title="title" width="60%">
         <b-table :columns="columns" :data="list" size="small" class="mb-10" max-height="500">
-          <template v-slot:departId="{ row }">
-            <div class="t-ellipsis" :title="row.departId === 'other' ? '其他' : compTransferEnum[row.departId]">
-              {{ row.departId === 'other' ? '其他' : compTransferEnum[row.departId] }}
-            </div>
-          </template>
-
-          <template v-slot:resourceKey="{ row }">
-            <div class="t-ellipsis" :title="directoryTransferEnum[row.resourceKey]">
-              {{ directoryTransferEnum[row.resourceKey] }}
-            </div>
-          </template>
-
           <template v-slot:percent="{ row }">
             {{ row.percent }}%
             <b-progress :percent="row.percent"
               :showText="false">
             </b-progress>
-          </template>
-
-          <template v-slot:count="{ row }">
-            {{ row.count }}
           </template>
         </b-table>
       </b-modal>
@@ -233,7 +211,6 @@
 
 <script>
   import { formatDataSet, formatSeries } from 'bin-charts/src/utils/util'
-  import * as api from '@/api/collect-analysis.api'
   import {
     firstLineStatis, centerStatis,
     xxgjNew, resMergeTrend
@@ -248,8 +225,6 @@
     data() {
       return {
         firstLineData: null, // 首行数据
-        directoryTransferEnum: {}, // 资源信息枚举
-        compTransferEnum: {}, // 部门信息枚举
         commonDate: [], // 部门数据归集统计分析、资源信息分类统计、最新提报部门使用的时间参数
         departDate: [], // 部门数据归集统计分析日期选择框
         curDate: this.$util.parseTime(new Date(), '{y}-{m}-{d}'),
@@ -318,52 +293,6 @@
               ['12', '0', '0']
             ] }
         },
-        lineChartOption: {
-          tooltip: { trigger: 'axis' },
-            xAxis: {
-              type: 'category',
-              boundaryGap: false,
-              axisLine: {
-                lineStyle: {
-                  color: '#b8b8b8'
-                }
-              },
-              axisLabel: {
-                color: '#333'
-              },
-              splitLine: {
-                show: true,
-                lineStyle: {
-                  color: '#eee'
-                }
-              }
-            },
-            yAxis: {
-              type: 'value',
-              axisLine: {
-                lineStyle: {
-                  color: '#b8b8b8'
-                }
-              },
-              axisLabel: {
-                color: '#333'
-              },
-              splitLine: {
-                show: true,
-                lineStyle: {
-                  color: '#eee'
-                }
-              }
-            },
-            series: { type: 'line', areaStyle: { opacity: 0.45 }, color: '#a2a4fe' },
-            dataset: { source: [
-              ['departName', 'value'],
-              ['部门1', '0'],
-              ['部门2', '0'],
-              ['部门3', '0'],
-              ['部门4', '0']
-            ] }
-        },
         barChartOption: {
           color: '#3cd7c1',
             tooltip: {
@@ -416,57 +345,12 @@
               ['其他信息', '0']
             ] }
         },
-        pieChartOption: {
-          tooltip: {
-              trigger: 'item',
-              formatter: '{a} <br/>{b}: {c} ({d}%)'
-            },
-            grid: {
-              left: '10%',
-              right: '10%',
-              bottom: '20%',
-              top: '20%'
-            },
-            series: [
-              {
-                color: ['#607de6', '#92d2fa'],
-                type: 'pie',
-                selectedMode: 'single',
-                radius: [0, '30%'],
-                label: {
-                  formatter: '{b}\n{c}',
-                  position: 'inner'
-                },
-                labelLine: {
-                  show: false
-                },
-                data: [
-                  { name: '自然人', value: '0' },
-                  { name: '法人和其他组织', value: '0' }
-                ]
-              },
-              {
-                color: ['#4065e0', '#6ac3f7'],
-                type: 'pie',
-                radius: ['40%', '60%'],
-                label: {
-                  formatter: '{b}\n{c}'
-                },
-                data: [
-                  { name: '基础信息', value: '0' },
-                  { name: '行政信息', value: '0' },
-                  { name: '基础信息', value: '0' },
-                  { name: '行政信息', value: '0' }
-                ]
-              }
-            ]
-        },
         columns: [], // 弹框通用
         list: [], // 弹框通用
         bmsjgjfxParams: {}, // 存储部门数据归集统计分析需要用到的参数
         bmsjgjfxColumns: [ // 部门数据归集分析统计
-          { title: '部门名称', slot: 'departId' },
-          { title: '归集数量（条）', key: 'count', align: 'left' },
+          { title: '部门名称', key: 'key' },
+          { title: '归集数量（条）', key: 'docCount', align: 'left' },
           { title: '完整率(%)', key: 'wzl', align: 'left' },
           { title: '占比', slot: 'percent', align: 'center' }
         ],
@@ -481,9 +365,8 @@
           { title: '归集数量（条）', key: 'docCount', align: 'right', ellipsis: true, tooltip: true }
         ],
         xxgjjlData: [], // 信息归集记录
-        bmsjgjfxLoading: false,
-        zxtbbmLoadig: false,
-        xxgjjlLoading: false,
+        centerStatisLoading: false,
+        xxgjNewLoading: false,
         title: '',
         modal: false
       }
@@ -699,6 +582,7 @@
        * @param {string} query.personClass
        */
       async getCenterStatis (query) {
+        this.centerStatisLoading = true
         try {
           const res = await centerStatis(query)
 
@@ -721,6 +605,7 @@
         } catch (error) {
           console.error(error)
         }
+        this.centerStatisLoading = false
       },
 
       /**
@@ -731,12 +616,14 @@
        * @param {number} query.pageSize
        */
       async getXxgjNew (query) {
+        this.xxgjNewLoading = true
         try {
           const res = await xxgjNew(query)
           this.xxgjjlData = res.xxgjls
         } catch (error) {
           console.error(error)
         }
+        this.xxgjNewLoading = false
       },
 
       /**
@@ -749,7 +636,6 @@
       async getResMergeTrend (query) {
         try {
           const res = await resMergeTrend(query)
-          console.log(res)
           const source = [
             {
               legend: '自然人',
