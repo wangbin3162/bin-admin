@@ -36,7 +36,7 @@ export async function getClassifyTree(code) {
  * @description 获取ES交换右侧列表信息
  * @param {Object} query 查询参数对象
  * @param {string} query.resourceCode 左侧树编码
- * @param {string} [query.jobName] 资源名称
+ * @param {string} [query.resourceName] 资源名称
  * @param {string} [query.esSyncStatus] 运行状态
  * @param {number} query.size 分页大小
  * @param {number} query.page 当前页
@@ -50,7 +50,7 @@ export async function getResourcesSyncResult(query) {
         method: 'get',
         params: {
           resourceCode: query.resourceCode,
-          jobName: query.jobName,
+          resourceName: query.jobName,
           esSyncStatus: query.esSyncStatus,
           size: query.size,
           page: query.page - 1
