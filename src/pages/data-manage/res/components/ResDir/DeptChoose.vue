@@ -120,7 +120,7 @@
               children: (node.children && node.children.map(mapper)) || []
             }
           }
-          let data = tree[0] && tree[0].code === '10000' ? mapper(tree[0]) : []
+          let data = tree[0] ? mapper(tree[0]) : []
           this.treeData.push(data)
           if (this.treeData.length > 0) {
             this.currentTreeNode = this.treeData[0]
