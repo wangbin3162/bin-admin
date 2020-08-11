@@ -23,7 +23,7 @@
             </div>
           </div>
         </template>
-        <b-charts height="350px" ref="chartGather" theme="charts-theme" :options="lineChartOption"/>
+        <b-charts height="350px" ref="chartGather" theme="charts-theme" :options="barChartOption"/>
       </b-card>
     </div>
     <div class="chart-widget-item">
@@ -31,17 +31,30 @@
         <template v-slot:header>
           <div flex="main:justify cross:center">
             <span>部门数据归集统计分析</span>
+            <div class="right" flex="main:justify cross:center">
+              <b-button-group style="margin: 0 16px;">
+                <b-button v-for="year in yearList" :key="year"
+                          :type="activeDeptTabYear===year?'primary':'default'" @click="changeYear(year)">
+                  {{ year }}年
+                </b-button>
+              </b-button-group>
+            </div>
           </div>
         </template>
         <b-table :columns="columns" :data="data" border>
           <template #ctrl="{row}">
-            <b-button type="text">
+            <b-button type="text" @click="handleClickDept(row)">
               <svg-icon icon-class="areachart" style="width: 22px;height:22px;"/>
             </b-button>
           </template>
         </b-table>
       </b-card>
     </div>
+    <b-modal v-model="analyzeModal" :title="`${depart.departName}-部门趋势分析`" width="800">
+      <div class="chart-inner">
+        <b-charts height="350px" ref="chartGather" theme="charts-theme" :options="lineChartOption"/>
+      </div>
+    </b-modal>
   </div>
 </template>
 
@@ -53,7 +66,7 @@ export default {
   name: 'GatherAnalyze',
   data() {
     return {
-      lineChartOption: {
+      barChartOption: {
         tooltip: {},
         grid: { top: 50, right: 50, left: 50, bottom: 50 },
         xAxis: { type: 'category' },
@@ -71,19 +84,26 @@ export default {
         { title: '占比', key: 'proportion', align: 'center' },
         { title: '趋势分析', slot: 'ctrl', align: 'center' }
       ],
-      data: [
-        { departName: '部门名称', gatherCount: 888234, proportion: '8%' },
-        { departName: '部门名称', gatherCount: 123231, proportion: '5%' },
-        { departName: '部门名称', gatherCount: 1244, proportion: '1%' },
-        { departName: '部门名称', gatherCount: 123123, proportion: '5%' },
-        { departName: '部门名称', gatherCount: 45523, proportion: '5%' }
-      ]
+      data: [],
+      analyzeModal: false,
+      depart: {},
+      activeDeptTabYear: 2020,
+      lineChartOption: {
+        tooltip: { trigger: 'axis' },
+        grid: { top: 30, right: 30, left: 30, bottom: 30 },
+        xAxis: { type: 'category', axisTick: { alignWithLabel: true } },
+        yAxis: { type: 'value' },
+        series: [{ type: 'line', name: '数量' }],
+        dataset: { source: [['x', 'y']] }
+      }
     }
   },
   created() {
     let currentYear = new Date().getFullYear()
+    this.activeDeptTabYear = currentYear
     this.yearList = [currentYear - 2, currentYear - 1, currentYear]
     this.getYearData()
+    this.initDeparts()
   },
   mounted() {
     // 注册图表点击事件
@@ -98,7 +118,7 @@ export default {
       for (let i = 0; i < this.yearList.length; i++) {
         data.push({ year: `${this.yearList[i]}年`, value: this.$util.getRandomInt(100, 1000) })
       }
-      this.lineChartOption.dataset = formatDataSet({ xField: 'year', yField: 'value' }, data)
+      this.barChartOption.dataset = formatDataSet({ xField: 'year', yField: 'value' }, data)
       // 清空季度月度标识
       this.showMonthData = false
       this.activeTab = ''
@@ -109,7 +129,7 @@ export default {
       for (let i = 1; i <= 4; i++) {
         data.push({ quarter: `${i}季度`, value: this.$util.getRandomInt(100, 1000) })
       }
-      this.lineChartOption.dataset = formatDataSet({ xField: 'quarter', yField: 'value' }, data)
+      this.barChartOption.dataset = formatDataSet({ xField: 'quarter', yField: 'value' }, data)
     },
     // 根据某一年获取对应的12个月份度数据
     getMonthData(year) {
@@ -117,7 +137,7 @@ export default {
       for (let i = 1; i <= 12; i++) {
         data.push({ month: `${i}月`, value: this.$util.getRandomInt(100, 1000) })
       }
-      this.lineChartOption.dataset = formatDataSet({ xField: 'month', yField: 'value' }, data)
+      this.barChartOption.dataset = formatDataSet({ xField: 'month', yField: 'value' }, data)
     },
     // 改变季度月度
     changeTab(type) {
@@ -129,14 +149,50 @@ export default {
         this.getMonthData()
       }
     },
+    // 改变年份
+    changeYear(year) {
+      if (this.activeDeptTabYear === year) return
+      this.activeDeptTabYear = year
+      this.getDepartList()
+    },
+    // 图表选中点击事件
     chartClick(params) {
       const { componentType, name, dimensionNames } = params
-      console.log(params)
       if (componentType === 'series' && dimensionNames[0] === 'year' && !this.showMonthData) {
         this.showMonthData = true
         this.currentYear = name
         this.changeTab('quarter')
       }
+    },
+    // 部门选中查看趋势分析
+    handleClickDept(dept) {
+      this.depart = { ...dept }
+      // 根据选择年份，获取这个部门本年度12个月的数据信息
+      console.log(this.activeDeptTabYear, this.depart)
+
+      let data = []
+      for (let i = 1; i <= 12; i++) {
+        data.push({ month: `${i}月`, value: this.$util.getRandomInt(100, 1000) })
+      }
+      this.lineChartOption.dataset = formatDataSet({ xField: 'month', yField: 'value' }, data)
+      this.analyzeModal = true
+    },
+    // 获取部门数据归集分析数据
+    initDeparts() {
+      this.getDepartList()
+    },
+    // 获取部门数据
+    getDepartList() {
+      let data = []
+      for (let i = 0; i < 5; i++) {
+        data.push({
+          id: '_id' + i,
+          departName: '部门名称' + i,
+          gatherCount: this.$util.getRandomInt(1000, 8000),
+          proportion: this.$util.getRandomInt(1, 100) + '%'
+        })
+      }
+      this.data = data
     }
   }
 }
