@@ -188,14 +188,19 @@
           try {
             this.loadingBtn = true
 
-            // 查询选中的报告模型，用于配置导出pdf接口的参数
-            const model = this.modelList.find(item => item.id === this.form.modelId)
             const pdfParam = {
               personId: this.form.personId,
               configId: this.form.configId,
               maskCode: JSON.parse(this.form.maskCode),
-              modelId: model.id,
-              modelName: model.name
+              modelId: null,
+              modelName: null
+            }
+
+            // 查询选中的报告模型，用于配置导出pdf接口的参数
+            const model = this.modelList.find(item => item.id === this.form.modelId)
+            if (model) {
+              pdfParam.modelId = model.id
+              pdfParam.modelName = model.name
             }
 
             // 判断当前选择的报告类型(信用报告配置)为信用报告还是核查报告
