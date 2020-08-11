@@ -33,7 +33,7 @@
 
         <b-form label-position="top" :model="form" :rules="rules" ref="form">
           <b-form-item label="时间范围" prop="endDate" v-if="form.syncMode === '增量'">
-            <b-date-picker type="datetimerange" style="width: 100%;" :value="dateStrArr"
+            <b-date-picker type="daterange" style="width: 100%;" :value="dateStrArr"
               placement="top-end"
               placeholder="请选择执行时间"
               @on-change="handleDateChange">

@@ -25,11 +25,11 @@
         <!-- 中央表格 -->
         <b-table :columns="columns" :data="list" :loading="listLoading">
           <template v-slot:jobBeginDate="{ row }">
-            {{ $util.parseTime(new Date(row.jobBeginDate), '{y}-{m}-{d} {h}:{m}:{s}') }}
+            {{ row.jobBeginDate }}
           </template>
 
           <template v-slot:jobEndDate="{ row }">
-            {{ $util.parseTime(new Date(row.jobEndDate), '{y}-{m}-{d} {h}:{m}:{s}') }}
+            {{ row.jobEndDate }}
           </template>
 
           <template v-slot:queryTimeCondtions="{ row }">
@@ -111,7 +111,7 @@
           { title: '开始时间', slot: 'jobBeginDate', align: 'center' },
           { title: '结束时间', slot: 'jobEndDate', align: 'center' },
           { title: '总耗时', key: 'totalCost' },
-          { title: '条件', slot: 'queryTimeCondtions' },
+          { title: '条件', slot: 'queryTimeCondtions', align: 'center' },
           { title: '任务状态', slot: 'exeStatus' },
           { title: '数据总量', key: 'syncTotal', align: 'center' },
           { title: '操作', slot: 'action', width: 120, align: 'center' }
