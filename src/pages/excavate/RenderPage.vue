@@ -15,7 +15,7 @@
       <div class="content">
         <exc-analyze v-if="activeCode==='resource'"/>
         <gather-analyze v-if="activeCode==='gather'"/>
-        <div v-if="activeCode==='person'">群体分析</div>
+        <person-analyze v-if="activeCode==='person'"/>
       </div>
     </div>
   </exc-layout>
@@ -29,17 +29,18 @@ import ExcTabs from '@/pages/excavate/components/ExcTabs'
 import ExcAnalyze from '@/pages/excavate/ExcAnalyze'
 import ResSearchInput from '@/pages/excavate/components/ResSearchInput'
 import GatherAnalyze from '@/pages/excavate/GatherAnalyze'
+import PersonAnalyze from '@/pages/excavate/PersonAnalyze'
 
 export default {
   name: 'RenderPage',
-  components: { GatherAnalyze, ResSearchInput, ExcAnalyze, ExcTabs, ExcHeader, ExcLayout },
+  components: { PersonAnalyze, GatherAnalyze, ResSearchInput, ExcAnalyze, ExcTabs, ExcHeader, ExcLayout },
   data() {
     return {
       resource: {
         resourceKey: '',
         resourceName: ''
       },
-      activeCode: 'gather',
+      activeCode: 'person',
       tabs: {
         resource: '资源分析',
         gather: '归集分析',
