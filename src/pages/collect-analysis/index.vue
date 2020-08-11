@@ -511,7 +511,7 @@
           pageSize: this.query.pageSize,
           pageNo: this.query.pageNo,
           personClass: this.query.personClass
-        })
+        }, 'handlePersonClassBtn')
       },
 
       /**
@@ -578,9 +578,10 @@
        * @param {number} query.pageSize
        * @param {number} query.pageNo
        * @param {string} query.personClass
+       * @param {string} trigger 用于表示谁触发了此函数
        */
-      async getCenterStatis (query) {
-        this.centerStatisLoading = true
+      async getCenterStatis (query, trigger = undefined) {
+        if (trigger !== 'handlePersonClassBtn') this.centerStatisLoading = true
         try {
           const res = await centerStatis(query)
 
