@@ -13,8 +13,6 @@
 </template>
 
 <script>
-  import { getTimeRange } from '../../../common/utils/util'
-
   export default {
     name: 'QuickDateSelect',
     props: {
@@ -50,13 +48,13 @@
         this.tab = index
         let res = {}
         if (index === 0) {
-          res = getTimeRange(7, this.dateMode)
+          res = this.$util.rangeTime(-7, this.dateMode)
         }
         if (index === 1) {
-          res = getTimeRange(30, this.dateMode)
+          res = this.$util.rangeTime(-30, this.dateMode)
         }
         if (index === 2) {
-          res = getTimeRange(365, this.dateMode)
+          res = this.$util.rangeTime(-365, this.dateMode)
         }
         this.$emit('tab-click', { ...res, index })
       }

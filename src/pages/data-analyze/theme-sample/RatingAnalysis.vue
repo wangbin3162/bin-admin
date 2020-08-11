@@ -155,8 +155,6 @@
   import { formatDataSet, formatSeries } from 'bin-charts/src/utils/util'
   import { getTimeRange } from '../../../common/utils/util'
 
-  import * as api from '../../../api/data-manage/collect-analysis.api.js'
-
   import GrooveSelect from '../components/GrooveSelect'
   import TypeSwitchBtn from '../components/TypeSwitchBtn'
 
@@ -446,7 +444,7 @@
       }
     },
     created() {
-      this.init()
+      // this.init()
     },
     methods: {
       /**
