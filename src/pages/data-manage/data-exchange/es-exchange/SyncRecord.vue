@@ -188,6 +188,7 @@
         this.btnLoading = true
         try {
           let param = {
+            id: row.id,
             isAll: '',
             resourceKeys: [row.resourceKey]
           }

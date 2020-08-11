@@ -139,6 +139,7 @@ export function getResInfoList(query) {
  * @author haodongdong
  * @description 同步Es数据，时间参数传空字符串表示为全量、反之为增量。
  * @param {Object} param 参数对象
+ * @param {string} [param.id] 需要重启的任务记录id，可选参数
  * @param {string} param.isAll 是否选择全部资源 全部传 all 反之空字符串
  * @param {string[]} param.resourceKeys resourceKey 数组
  * @param {string} [param.beginDate] 开始时间字符串
@@ -151,7 +152,13 @@ export async function syncESData(param) {
       const res = await request({
         url: '/api/batch/es/syncBaseFullLoad',
         method: 'post',
-        data: param
+        data: {
+          id: param.id || null,
+          isAll: param.isAll,
+          resourceKeys: param.resourceKeys || null,
+          beginDate: param.beginDate || '',
+          endDate: param.endDate || ''
+        }
       })
      if (res.data.successful) {
        resolve()

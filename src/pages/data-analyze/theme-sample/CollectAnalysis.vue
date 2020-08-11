@@ -572,6 +572,7 @@
        * @param {number} query.pageSize
        * @param {number} query.pageNo
        * @param {string} query.personClass
+       * @param {string} trigger 用于表示谁触发了此函数
        */
       async getCenterStatis (query, trigger = undefined) {
         if (trigger !== 'handlePersonClassBtn') this.centerStatisLoading = true
