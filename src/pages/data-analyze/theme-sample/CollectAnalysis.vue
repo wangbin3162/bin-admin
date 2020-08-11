@@ -505,7 +505,7 @@
           pageSize: this.query.pageSize,
           pageNo: this.query.pageNo,
           personClass: this.query.personClass
-        })
+        }, 'handlePersonClassBtn')
       },
 
       /**
@@ -573,8 +573,8 @@
        * @param {number} query.pageNo
        * @param {string} query.personClass
        */
-      async getCenterStatis (query) {
-        this.centerStatisLoading = true
+      async getCenterStatis (query, trigger = undefined) {
+        if (trigger !== 'handlePersonClassBtn') this.centerStatisLoading = true
         try {
           const res = await centerStatis(query)
 
