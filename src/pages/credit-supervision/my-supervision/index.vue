@@ -4,32 +4,23 @@
       <cre-sup-header></cre-sup-header>
 
       <div class="search">
-        <p>风险预警 尽在掌握</p>
-        <div flex class="btn-con">
-          <b-dropdown class="dropdown">
-            <b-button type="primary" style="width: 94px;">
-              {{ personClassName }}
-              <b-icon name="ios-arrow-down"></b-icon>
-            </b-button>
-            <b-dropdown-menu slot="list">
-                <b-dropdown-item @click.native="personClassName = '自然人'">
-                  自然人
-                </b-dropdown-item>
-                <b-dropdown-item @click.native="personClassName = '法人'">
-                  法人
-                </b-dropdown-item>
-            </b-dropdown-menu>
-          </b-dropdown>
-          <b-input placeholder="请输入查询主体"></b-input>
-          <b-button type="primary" class="search-btn">
-            查询
-          </b-button>
+        <p>我的监管</p>
+        <span>及时掌握主体信用变动，关注我的信用领域</span>
+      </div>
+
+      <div class="sec-nav-con">
+        <div class="sec-nav">
+          <div class="tabs">
+            <b-tabs ref="tabs" v-model="activeTab" :data="tabs"
+              @on-change="handleTabsChange">
+            </b-tabs>
+          </div>
         </div>
       </div>
 
       <div class="main-con">
         <div class="left">
-          <div class="header">
+          <!-- <div class="header">
             <h4>监管动态</h4>
           </div>
           <ul>
@@ -62,7 +53,8 @@
               :page-size="query.size"
               @on-change="handlePageChange">
             </b-page>
-          </div>
+          </div> -->
+          <market-supervision></market-supervision>
         </div>
 
         <div class="right">
@@ -81,6 +73,7 @@
   import CreSupHeader from '@/pages/credit-supervision/components/CreSupHeader'
   import MarketWarn from '@/pages/credit-supervision/components/MarketWarn'
   import IndustryBlackList from '@/pages/credit-supervision/components/IndustryBlackList'
+  import MarketSupervision from '@/pages/credit-supervision/my-supervision/market-supervision'
 
   export default {
     name: 'MySupervision',
@@ -88,24 +81,41 @@
       CreSupLayout,
       CreSupHeader,
       MarketWarn,
-      IndustryBlackList
+      IndustryBlackList,
+      MarketSupervision
     },
     data () {
       return {
         personClassName: '法人',
-        total: 0,
-        query: {
-          size: 10,
-          page: 1
-        }
+        activeTab: 'tab1',
+        tabs: [
+          { key: 'tab1', title: '市场主体监管' },
+          { key: 'tab2', title: '重点人群监管' },
+          { key: 'tab3', title: '重点领域监管' },
+          { key: 'tab4', title: '行业监管' }
+        ]
       }
     },
     created () {
 
     },
     methods: {
-      handlePageChange () {
-
+      /**
+       * @author haodongdong
+       * @description b-tabs组件当前tab改变回调
+       * @param {Object} tab 当前tab对象
+       */
+      async handleTabsChange (tab) {
+        if (this.visible) { // 界面渲染后b-tabs组件切换的回调才有效
+          this.curRootTab = tab
+          await this.getSectionChildren(tab.id)
+          this.contentList = []
+          if (this.subSecList.length > 0) {
+            this.query.page = 1
+            this.query.columnId = this.curSubTab.id
+            this.getContentList(this.query)
+          }
+        }
       }
     }
   }
@@ -113,36 +123,31 @@
 
 <style lang="stylus">
   .my-supervision {
-    .search {
-      .dropdown {
-        .bin-button {
-          border-radius: 2px 0 0 2px;
-        }
-        .bin-button,
-        .bin-button--primary,
-        .bin-button--primary:active,
-        .bin-button--primary:focus,
-        .bin-button--primary:hover {
-          background: rgba(255, 255, 255, 0.3);
-          border-color: rgba(255, 255, 255, 0);
+    .sec-nav-con {
+      .bin-tabs-wrapper.default:after {
+        height: 0px;
+      }
+      .bin-tabs-wrapper .nav-wrapper .tabs-active-bar {
+        height: 2px;
+      }
+      .bin-tabs-wrapper .nav-wrapper .tab-item {
+        position: relative;
+        top: -11px;
+        font-size: 16px;
+        &:hover {
+          color: rgba(0,0,0,.65);
         }
       }
-
-      .bin-input {
-        border-radius: 0;
-        color: #ffffff;
+      .bin-tabs-wrapper .nav-wrap.is-scrollable .nav-prev {
+        top: -12px;
       }
-      .bin-input,
-      .bin-input:focus,
-      .bin-input:hover {
-        background: rgba(255, 255, 255, 0.3);
-        border: 1px solid rgba(255, 255, 255, 0);
-        box-shadow: 0 0 0 2px rgba(13, 133, 255, 0);
+      .bin-tabs-wrapper .nav-wrap.is-scrollable .nav-next {
+        top: -12px;
       }
-
-      .search-btn.bin-button {
-          border-radius: 0 2px 2px 0;
-        }
+      .bin-tabs-wrapper .nav-wrapper .tab-item.active {
+        color: rgba(0,0,0,.65);
+        font-weight: 600;
+      }
     }
   }
 </style>
@@ -166,8 +171,35 @@
         color: #ffffff;
       }
 
+      span {
+        color: #ffffff;
+      }
+
      .btn-con {
         width: 50%;
+      }
+    }
+
+    .sec-nav-con {
+      background: #ffffff;
+      box-shadow: 0 2px 12px 0 rgba(0,0,0,0.12);
+
+      .sec-nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        height: 70px;
+        width: 1300px;
+        margin: 0 auto;
+
+        .tabs {
+          width:  700px;
+        }
+
+        .input {
+          height: 47px;
+          width: 400px;
+        }
       }
     }
 
@@ -182,79 +214,10 @@
         background: #ffffff;
         min-height: 400px;
 
-        .header {
-          display: flex;
-          align-items: center;
-          padding-left: 10px;
-          height: 50px;
-          border-bottom: 1px solid #d9d9d9;
-        }
-
-        ul {
-          margin-bottom: 20px;
-          padding: 0 10px 0;
-
-          li {
-            padding: 17px 0;
-            border-bottom: 1px solid #d9d9d9;
-
-            &.list-item {
-              display: flex;
-              justify-content: space-between;
-              align-items: center;
-
-              .title-con {
-                display: flex;
-                align-items: center;
-
-                .icon {
-                  margin-right: 10px;
-
-                  img {
-                    max-height: 32px;
-                  }
-                }
-
-                .text {
-                  p {
-                    margin-bottom: 7px;
-                    color: rgba(0, 0, 0, 0.75);
-                    font-weight: 600;
-
-                    span {
-                      font-weight: 600;
-                      color: #0d85ff;
-                    }
-                  }
-                  span {
-                    color: #8c8c8c;
-                  }
-                }
-              }
-
-              .button {
-                cursor: pointer;
-                padding: 5px 15px;
-                background: #ffffff;
-                border-radius: 4px;
-                border: 1px solid #d9d9d9;
-                color: rgba(0, 0, 0, 0.75)
-                box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.12);
-                transition: 0.3s;
-
-                &:hover {
-                  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.12);
-                }
-              }
-            }
-          }
-        }
       }
 
       .right {
         width: 35%;
-        // background: #ffffff;
-        // min-height: 400px;
       }
     }
   }
