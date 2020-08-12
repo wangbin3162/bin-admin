@@ -17,6 +17,12 @@ export default {
       name: 'ChartsConfig',
       component: () => import('../../pages/demo/charts-config'),
       meta: { title: '图表配置' }
+    },
+    {
+      path: 'flowConfig',
+      name: 'FlowConfig',
+      component: () => import('../../pages/demo/flow-config'),
+      meta: { title: '流程配置' }
     }
   ]
 }
