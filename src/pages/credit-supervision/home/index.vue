@@ -1,6 +1,10 @@
 <template>
   <cre-sup-layout>
     <div class="credit-supervision">
+      <b-modal v-model="modalFlag" title="普通的模态框标题"
+               @on-ok="$log.print('ok click')"  @on-cancel="$log.print('cancel click','success')">
+        <relation-chart></relation-chart>
+      </b-modal>
       <cre-sup-header></cre-sup-header>
 
       <div class="search">
@@ -21,7 +25,7 @@
             </b-dropdown-menu>
           </b-dropdown>
           <b-input placeholder="请输入查询主体"></b-input>
-          <b-button type="primary" class="search-btn">
+          <b-button type="primary" class="search-btn" @click="modalFlag = true">
             查询
           </b-button>
         </div>
@@ -84,6 +88,7 @@
   import TipNav from '@/pages/credit-supervision/home/TipNav'
   import MarketWarn from '@/pages/credit-supervision/components/MarketWarn'
   import IndustryBlackList from '@/pages/credit-supervision/components/IndustryBlackList'
+  import RelationChart from '@/pages/credit-supervision/home/RelationChart'
 
   export default {
     name: 'CreditSupervision',
@@ -92,7 +97,8 @@
       CreSupHeader,
       TipNav,
       MarketWarn,
-      IndustryBlackList
+      IndustryBlackList,
+      RelationChart
     },
     data () {
       return {
@@ -101,7 +107,8 @@
         query: {
           size: 10,
           page: 1
-        }
+        },
+        modalFlag: false
       }
     },
     created () {
