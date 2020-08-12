@@ -62,6 +62,16 @@
     <page-header-wrap v-show="isCheck" :title="editTitle+'详情'" show-close @on-close="handleCancel">
       <v-edit-wrap transparent v-if="batchDetail">
         <b-collapse-wrap title="任务详情">
+          <div slot="right">
+            <b-icon v-if="refreshBtnLoading" name="loading2"
+              class="icon-is-rotating"
+              color="#0d85ff">
+            </b-icon>
+            <b-button type="text" @click="handleRefreshBtn(batchDetail.id)"
+              :disabled="refreshBtnLoading">
+              刷新
+            </b-button>
+          </div>
           <div class="total-wrap">
             <div class="count-item">
               <span>交换数据总量</span><span>{{ batchDetail.totalCount }}</span>
@@ -131,7 +141,17 @@
               <v-simple-label label="开始日期">{{ batchDetail.finishDate}}</v-simple-label>
             </b-col>
             <b-col span="8">
-              <v-simple-label label="同步数据总量">{{ batchDetail.esSyncCount}}</v-simple-label>
+              <v-simple-label label="同步数据总量">
+                <div flex="main:justify">
+                  <span>{{ batchDetail.esSyncCount}}</span>
+                  <b-button type="primary" plain size="small" icon="md-play"
+                    :loading="reBootBtnLoading"
+                    :disabled="reBootBtnLoading"
+                    @click="HandleReBootBtn(batchDetail.id, batchDetail.resourceKey)">
+                    重启
+                  </b-button>
+                </div>
+              </v-simple-label>
             </b-col>
           </b-row>
           <v-simple-label label="错误信息" v-if="batchDetail.esSyncStatus ==='FAILED'">
@@ -145,12 +165,13 @@
 </template>
 
 <script>
-  import commonMixin from '../../../../../common/mixins/mixin'
-  import permission from '../../../../../common/mixins/permission'
-  import * as api from '../../../../../api/data-manage/excange-monitor.api'
-  import Util from '../../../../../common/utils/util'
-  import { deepCopy } from '../../../../../common/utils/assist'
-  import { initFormList } from '../../../../../components/Validator/FieldsCfg/cfg-util'
+  import commonMixin from '@/common/mixins/mixin'
+  import permission from '@/common/mixins/permission'
+  import * as api from '@/api/data-manage/excange-monitor.api'
+  import { syncESData } from '@/api/data-manage/es-exchange.api'
+  import Util from '@/common/utils/util'
+  import { deepCopy } from '@/common/utils/assist'
+  import { initFormList } from '@/components/Validator/FieldsCfg/cfg-util'
 
   export default {
     name: 'ExchangeList',
@@ -186,7 +207,9 @@
         cronStr: '', // 定时周期
         availableStatus: '', // 有效状态
         totalCount: '', // 执行次数,
-        batchDetail: null //  批量任务执行记录详情
+        batchDetail: null, //  批量任务执行记录详情
+        refreshBtnLoading: false, // 刷新按钮的加载效果
+        reBootBtnLoading: false // 同步详情下重启按钮效果
       }
     },
     computed: {
@@ -235,6 +258,38 @@
             this.openEditPage('check')
           }
         })
+      },
+      // 任务执行记录详情刷新按钮回调
+      handleRefreshBtn (id) {
+        this.refreshBtnLoading = true
+        api.queryDirBatchInfo(id).then(res => {
+          if (res.data.code === '0') {
+            this.batchDetail = res.data.data
+          }
+          this.refreshBtnLoading = false
+        })
+      },
+      // 同步详情下重启按钮回调
+      async HandleReBootBtn (id, resourceKey) {
+        this.reBootBtnLoading = true
+        try {
+          await syncESData({
+            importId: id,
+            isAll: '',
+            resourceKeys: [resourceKey],
+            beginDate: '',
+            endDate: ''
+          })
+          // 成功后更新详情
+          api.queryDirBatchInfo(id).then(res => {
+          if (res.data.code === '0') {
+            this.batchDetail = res.data.data
+          }
+        })
+        } catch (error) {
+          console.error(error)
+        }
+        this.reBootBtnLoading = false
       },
       // 下载验证错误文件
       handleDownloadError(id) {
