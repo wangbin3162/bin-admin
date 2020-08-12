@@ -8,7 +8,8 @@
 
           <div class="block-btn">
             <div style="margin: 0 17%;">
-              <i class="iconfont" :class="[item.brief]"></i>
+              <svg-icon :icon-class="item.brief">
+              </svg-icon>
             </div>
             {{ item.colName }}
           </div>
