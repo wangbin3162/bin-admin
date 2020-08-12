@@ -1,7 +1,8 @@
 <template>
   <div class="header-wrap">
     <div class="header-inner" flex="main:justify cross:center">
-      <img src="../../../assets/images/login/logo-white.png" @click="home" alt="logo" class="logo"/>
+      <img src="../../../assets/images/credit-supervision/logo.png"
+        @click="home" alt="logo" class="logo"/>
       <div class="info" flex="cross:center" v-if="userRoles">
         <div class="links">
           <div class="inner">
@@ -87,7 +88,7 @@ export default {
     margin: 0 auto;
     .logo {
       cursor: pointer;
-      height: 100%;
+      height: 64px;
     }
     .links {
       .inner {

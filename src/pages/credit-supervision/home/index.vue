@@ -161,7 +161,7 @@
 <style lang="stylus" scoped>
  .credit-supervision {
     height: 100%;
-    background: url("../../../assets/images/content/banner-bg0.png") no-repeat 0 0;
+    background: url("../../../assets/images/credit-supervision/banner-bg0.png") no-repeat 0 0;
     background-size: 100% 310px;
     transition: background .3s;
 
