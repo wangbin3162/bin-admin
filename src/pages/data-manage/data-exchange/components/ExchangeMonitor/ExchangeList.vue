@@ -144,7 +144,8 @@
               <v-simple-label label="同步数据总量">
                 <div flex="main:justify">
                   <span>{{ batchDetail.esSyncCount}}</span>
-                  <b-button type="primary" plain size="small" icon="md-play"
+                  <b-button v-if="batchDetail.esSyncStatus === 'FAILED'"
+                    type="primary" plain size="small" icon="md-play"
                     :loading="reBootBtnLoading"
                     :disabled="reBootBtnLoading"
                     @click="HandleReBootBtn(batchDetail.id, batchDetail.resourceKey)">
