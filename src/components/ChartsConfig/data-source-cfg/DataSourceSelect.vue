@@ -1,7 +1,7 @@
 <template>
   <div style="width: 100%;">
     <div flex="box:last">
-      <b-input v-model="current" placeholder="选择模板" readonly clearable
+      <b-input :value="defaultName" placeholder="选择模板" readonly clearable
                @on-clear="handleClear"></b-input>
       <b-button type="primary" plain @click="handleShowModal">选择</b-button>
     </div>
@@ -36,105 +36,97 @@
 </template>
 
 <script>
-  import commonMixin from '../../../common/mixins/mixin'
-  import permission from '../../../common/mixins/permission'
-  import * as api from '../../../api/excavate-analyze/excavate-cfg.api'
-  import { deepCopy } from '../../../common/utils/assist'
+import commonMixin from '@/common/mixins/mixin'
+import permission from '@/common/mixins/permission'
+import * as api from '@/api/excavate-analyze/excavate-cfg.api'
+import { deepCopy } from '@/common/utils/assist'
 
-  export default {
-    name: 'DataSourceSelect',
-    mixins: [commonMixin, permission],
-    inject: ['ConfigRoot'],
-    props: {
-      value: {
-        type: String,
-        default: ''
+export default {
+  name: 'DataSourceSelect',
+  mixins: [commonMixin, permission],
+  inject: ['ConfigRoot'],
+  props: {
+    value: {
+      type: String,
+      default: ''
+    },
+    defaultName: {
+      type: String,
+      default: ''
+    }
+  },
+  data() {
+    return {
+      listQuery: {
+        tempCode: '',
+        tempName: ''
       },
-      defaultName: {
-        type: String,
-        default: ''
+      columns: [
+        { type: 'index', width: 50, align: 'center' },
+        { title: '模板名称', key: 'tempName' },
+        { title: '模板编码', key: 'tempCode' },
+        { title: '模板操作', slot: 'action', width: 130, align: 'center' }
+      ],
+      treeData: [],
+      template: null,
+      dialogFormVisible: false
+    }
+  },
+  created() {
+    this.resetTemplate()
+  },
+  methods: {
+    handleShowModal() {
+      this.dialogFormVisible = true
+      this.resetQuery()
+    },
+    // 清空时触发调用
+    handleClear() {
+      this.current = ''
+      this.$emit('input', '')
+      this.$emit('on-clear', [])
+    },
+    // filter-Bar:重置查询条件
+    resetQuery() {
+      this.listQuery = {
+        page: 1,
+        size: 10,
+        tempName: '',
+        tempCode: ''
       }
+      this.searchList()
     },
-    data() {
-      return {
-        listQuery: {
-          tempCode: '',
-          tempName: ''
-        },
-        columns: [
-          { type: 'index', width: 50, align: 'center' },
-          { title: '模板名称', key: 'tempName' },
-          { title: '模板编码', key: 'tempCode' },
-          { title: '模板操作', slot: 'action', width: 130, align: 'center' }
-        ],
-        treeData: [],
-        template: null,
-        dialogFormVisible: false
+    // 选择一个对象
+    chooseOne(temp) {
+      // this.current = temp.tempName
+      this.$emit('input', temp.id)
+      this.$emit('on-select', deepCopy(temp))
+      this.dialogFormVisible = false
+    },
+    // 重置对象
+    resetTemplate() {
+      this.template = {
+        id: '',
+        tempName: '',
+        tempCode: '',
+        tempType: this.currentTreeNode ? this.currentTreeNode.code : '',
+        tempSource: '',
+        tempDesc: ''
       }
+      this.params = []
     },
-    watch: {
-      defaultName: {
-        handler(val) {
-          this.current = val
-        },
-        immediate: true
-      }
-    },
-    created() {
-      this.resetTemplate()
-    },
-    methods: {
-      handleShowModal() {
-        this.dialogFormVisible = true
-        this.resetQuery()
-      },
-      // 清空时触发调用
-      handleClear() {
-        this.current = ''
-        this.$emit('input', '')
-        this.$emit('on-clear', [])
-      },
-      // filter-Bar:重置查询条件
-      resetQuery() {
-        this.listQuery = {
-          page: 1,
-          size: 10,
-          tempName: '',
-          tempCode: ''
+    // 查询所有列表
+    searchList() {
+      this.setListData()
+      api.businessTemplateList(this.listQuery).then(response => {
+        if (response.status === 200) {
+          this.setListData({
+            list: response.data.rows,
+            total: response.data.total
+          })
         }
-        this.searchList()
-      },
-      // 选择一个对象
-      chooseOne(temp) {
-        this.current = temp.tempName
-        this.$emit('input', temp.id)
-        this.$emit('on-select', deepCopy(temp.fields))
-        this.dialogFormVisible = false
-      },
-      // 重置对象
-      resetTemplate() {
-        this.template = {
-          id: '',
-          tempName: '',
-          tempCode: '',
-          tempType: this.currentTreeNode ? this.currentTreeNode.code : '',
-          tempSource: '',
-          tempDesc: ''
-        }
-        this.params = []
-      },
-      // 查询所有列表
-      searchList() {
-        this.setListData()
-        api.businessTemplateList(this.listQuery).then(response => {
-          if (response.status === 200) {
-            this.setListData({
-              list: response.data.rows,
-              total: response.data.total
-            })
-          }
-        })
-      }
+      })
     }
   }
+}
 </script>

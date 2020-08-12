@@ -6,7 +6,6 @@
           <div class="title">
             {{ resourceTitle }}
             <b-icon name="ios-radio-button-on" v-if="isEdit" color="#fea638" size="14" style="margin-right: 16px;"/>
-            <b-icon name="ios-bug" @click.native="debug=true" style="margin-right: 16px;"/>
           </div>
           <div class="right">
             <b-icon name="close" @click.native="close"/>
@@ -17,16 +16,6 @@
         </div>
       </div>
     </transition>
-    <b-modal v-model="debug" footer-hide width="1000" stop-remove-scroll>
-      <div flex="box:mean">
-        <div>
-          <b-ace-editor :value="JSON.stringify(currentList,null,2)" readonly></b-ace-editor>
-        </div>
-        <div>
-          <b-ace-editor :value="JSON.stringify(updateList,null,2)" readonly></b-ace-editor>
-        </div>
-      </div>
-    </b-modal>
     <b-modal v-model="closeModal" footer-hide :mask-closable="false" width="400" :styles="{top: '200px'}"
              stop-remove-scroll>
       <div flex="main:justify">
@@ -51,7 +40,7 @@
 <script>
   import scrollbarMixin from 'bin-ui/src/mixins/scrollbar-mixin'
   import CtrlPanel from './CtrlPanel'
-  import { deepCopy } from '../../common/utils/assist'
+  import { deepCopy } from '@/common/utils/assist'
 
   export default {
     name: 'ChartsConfigPanel',
@@ -66,8 +55,7 @@
         currentList: [],
         updateList: [],
         resource: { resourceName: '' },
-        closeModal: false,
-        debug: false
+        closeModal: false
       }
     },
     watch: {

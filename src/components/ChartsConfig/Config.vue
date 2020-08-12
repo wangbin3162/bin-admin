@@ -593,8 +593,10 @@ export default {
       this.emitValue()
     },
     // 设置sourceParam
-    handleSetSourceParam(params) {
-      this.data.dataSourceParam = params.map(item => {
+    handleSetSourceParam(temp) {
+      let { tempName, fields } = temp
+      this.data.dataSourceName = tempName
+      this.data.dataSourceParam = fields.map(item => {
         let temp = { ...item }
         delete temp['createDate']
         delete temp['updateDate']
