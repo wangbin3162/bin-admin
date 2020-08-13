@@ -29,7 +29,7 @@
 </template>
 
 <script>
-  import AddSupervision from '@/pages/credit-supervision/my-supervision/focus-industry/AddSupervision'
+  import AddSupervision from './AddSupervision'
 
   export default {
     name: 'FocusIndustrSupervision',
@@ -61,7 +61,7 @@
           { title: '行业名称', key: 'a' },
           { title: '黑名单数量', key: 'b' },
           { title: '占比', key: 'c' },
-          { title: '操作', slot: 'd' }
+          { title: '操作', slot: 'd', align: 'center' }
         ]
       }
     },

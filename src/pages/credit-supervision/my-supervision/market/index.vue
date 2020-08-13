@@ -52,7 +52,7 @@
 </template>
 
 <script>
-  import AddSupervision from '@/pages/credit-supervision/my-supervision/market/AddSupervision'
+  import AddSupervision from './AddSupervision'
 
   export default {
     name: 'MarketSupervision',
