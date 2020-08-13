@@ -8,6 +8,7 @@ import 'echarts/lib/chart/pie'
 import 'echarts/lib/chart/radar'
 import 'echarts/lib/chart/scatter'
 import 'echarts/lib/chart/effectScatter'
+import 'echarts/lib/chart/graph'
 import 'echarts/lib/component/legend'
 import 'echarts/lib/component/tooltip'
 // 本项目的全局自定义组件

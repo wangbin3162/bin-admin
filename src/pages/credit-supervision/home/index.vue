@@ -1,7 +1,7 @@
 <template>
   <cre-sup-layout>
     <div class="credit-supervision">
-      <b-modal v-model="modalFlag" title="普通的模态框标题"
+      <b-modal v-model="modalFlag" title="关系图展示" width="1000" footer-hide
                @on-ok="$log.print('ok click')"  @on-cancel="$log.print('cancel click','success')">
         <relation-chart></relation-chart>
       </b-modal>
