@@ -20,41 +20,7 @@
 
       <div class="main-con">
         <div class="left">
-          <!-- <div class="header">
-            <h4>监管动态</h4>
-          </div>
-          <ul>
-            <li v-for="n in 7" :key="n" class="list-item">
-              <div class="title-con">
-                <div class="icon">
-                  <img v-if="n % 2 !== 0" class="cImg" src="https://img.xiaopiu.com/userImages/img343481737004f968.png">
-                  <img v-else class="cImg" src="https://img.xiaopiu.com/userImages/img22049171056e7810.png">
-                </div>
-
-                <div class="text">
-                  <p>
-                    江苏浮云网络科技有限公司 自然人红黑名单 增加了
-                    <span>2</span>
-                    条记录
-                  </p>
-                  <span>操作日期：2020-07-27 15:30:20</span>
-                </div>
-              </div>
-
-              <div class="button">
-                查看详情
-              </div>
-            </li>
-          </ul>
-
-          <div flex="main:right">
-            <b-page :total="total"
-              :current.sync="query.page"
-              :page-size="query.size"
-              @on-change="handlePageChange">
-            </b-page>
-          </div> -->
-          <market-supervision></market-supervision>
+          <router-view></router-view>
         </div>
 
         <div class="right">
@@ -73,7 +39,6 @@
   import CreSupHeader from '@/pages/credit-supervision/components/CreSupHeader'
   import MarketWarn from '@/pages/credit-supervision/components/MarketWarn'
   import IndustryBlackList from '@/pages/credit-supervision/components/IndustryBlackList'
-  import MarketSupervision from '@/pages/credit-supervision/my-supervision/market-supervision'
 
   export default {
     name: 'MySupervision',
@@ -81,41 +46,41 @@
       CreSupLayout,
       CreSupHeader,
       MarketWarn,
-      IndustryBlackList,
-      MarketSupervision
+      IndustryBlackList
     },
     data () {
       return {
         personClassName: '法人',
-        activeTab: 'tab1',
+        activeTab: 'MS',
         tabs: [
-          { key: 'tab1', title: '市场主体监管' },
-          { key: 'tab2', title: '重点人群监管' },
-          { key: 'tab3', title: '重点领域监管' },
-          { key: 'tab4', title: '行业监管' }
+          { key: 'MS', title: '市场主体监管' },
+          { key: 'KP', title: '重点人群监管' },
+          { key: 'IA', title: '重点领域监管' },
+          { key: 'KI', title: '重点行业监管' }
         ]
       }
     },
     created () {
-
+      this.init()
     },
     methods: {
+      /**
+       * @author haodongdong
+       * @description 一些初始化处理
+       */
+      init () {
+        const route = this.$route
+        this.activeTab = route.name
+      },
+
       /**
        * @author haodongdong
        * @description b-tabs组件当前tab改变回调
        * @param {Object} tab 当前tab对象
        */
       async handleTabsChange (tab) {
-        if (this.visible) { // 界面渲染后b-tabs组件切换的回调才有效
-          this.curRootTab = tab
-          await this.getSectionChildren(tab.id)
-          this.contentList = []
-          if (this.subSecList.length > 0) {
-            this.query.page = 1
-            this.query.columnId = this.curSubTab.id
-            this.getContentList(this.query)
-          }
-        }
+        this.activeTab = tab.key
+        this.$router.push(tab.key)
       }
     }
   }
@@ -154,9 +119,11 @@
 
 <style lang="stylus" scoped>
  .my-supervision {
+    min-width: 1300px;
     height: 100%;
     background: url("../../../assets/images/credit-supervision/banner-bg0.png") no-repeat 0 0;
     background-size: 100% 310px;
+    background-position: top center;
     transition: background .3s;
 
     .search {

@@ -3,7 +3,7 @@
     <div class="header">
       <span>一共20条数据</span>
 
-      <b-button type="text">
+      <b-button type="text" @click="open = true">
         + 添加监管
       </b-button>
     </div>
@@ -46,17 +46,25 @@
         @on-change="handlePageChange">
       </b-page>
     </div>
+
+    <add-supervision v-model="open"></add-supervision>
   </div>
 </template>
 
 <script>
+  import AddSupervision from '@/pages/credit-supervision/my-supervision/market/AddSupervision'
+
   export default {
     name: 'MarketSupervision',
     props: {
 
     },
+    components: {
+      AddSupervision
+    },
     data () {
       return {
+        open: false,
         total: 0,
         query: {
           size: 10,

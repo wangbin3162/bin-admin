@@ -6,10 +6,12 @@
       <div class="info" flex="cross:center" v-if="userRoles">
         <div class="links">
           <div class="inner">
-            <span class="item"><a href="" @click.stop.prevent="home">首页</a></span>
+            <span class="item"><a href="#/creditSupervision">首页</a></span>
             <span class="item"><a href="#/urp/index" target="_blank">市场主体预警</a></span>
             <span class="item"><a href="/#/excavate" target="_blank">行业黑名单排名</a></span>
-            <span class="item"><a href="">我的监管</a></span>
+            <span class="item">
+              <a href="#/creditSupervision/mySupervision">我的监管</a>
+            </span>
           </div>
         </div>
 
