@@ -1,5 +1,5 @@
 <template>
-  <div class="market-supervision">
+  <div class="focus-industry">
     <div class="header">
       <span>一共10条数据</span>
 
@@ -20,6 +20,7 @@
       <b-page :total="total"
         :current.sync="query.page"
         :page-size="query.size"
+        show-elevator
         @on-change="handlePageChange">
       </b-page>
     </div>
@@ -81,7 +82,7 @@
 </script>
 
 <style lang="stylus" scoped>
-  .market-supervision {
+  .focus-industry {
     .header {
       display: flex;
       justify-content: space-between;

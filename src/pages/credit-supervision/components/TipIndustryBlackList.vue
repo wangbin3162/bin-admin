@@ -1,5 +1,5 @@
 <template>
-  <div class="industry-black-list">
+  <div class="tip-industry-black-list">
     <b-card head-tip shadow="never"
       :body-style="{ padding: 0 }" divider="no">
       <div slot="header" flex="main:justify">
@@ -15,7 +15,7 @@
 
 <script>
   export default {
-    name: 'IndustryBlackList',
+    name: 'TipIndustryBlackList',
     data () {
       return {
         columns: [
@@ -42,7 +42,7 @@
 </script>
 
 <style lang="stylus" scoped>
-  .industry-black-list {
+  .tip-industry-black-list {
 
   }
 </style>

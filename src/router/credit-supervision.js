@@ -6,7 +6,25 @@ export default [
     meta: { title: '信用监管' }
   },
   {
-    path: '/CreditSupervision/mySupervision',
+    path: '/creditSupervision/search',
+    name: 'CreditSupervisionSearch',
+    component: () => import(/* webpackChunkName: "CreditSupervisionSearch" */ '@/pages/credit-supervision/credit-supervision-search'),
+    meta: { title: '监管查询' }
+  },
+  {
+    path: '/creditSupervision/marketPlayersWarn',
+    name: 'MarketPlayersWarn',
+    component: () => import(/* webpackChunkName: "MarketPlayersWarn" */ '@/pages/credit-supervision/market-players-warn'),
+    meta: { title: '市场主体预警' }
+  },
+  {
+    path: '/creditSupervision/industryBlackList',
+    name: 'IndustryBlackList',
+    component: () => import(/* webpackChunkName: "IndustryBlackList" */ '@/pages/credit-supervision/industry-black-list'),
+    meta: { title: '行业黑名单排行' }
+  },
+  {
+    path: '/creditSupervision/mySupervision',
     name: 'MySupervision',
     redirect: '/CreditSupervision/mySupervision/MS',
     component: () => import(/* webpackChunkName: "MySupervision" */ '@/pages/credit-supervision/my-supervision'),

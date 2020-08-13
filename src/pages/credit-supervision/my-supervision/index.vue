@@ -25,9 +25,9 @@
 
         <div class="right">
           <!-- 市场主体预警 -->
-          <market-warn class="mb-10"></market-warn>
+          <tip-market-warn class="mb-10"></tip-market-warn>
           <!-- 行业黑名单排行 -->
-          <industry-black-list></industry-black-list>
+          <tip-industry-black-list></tip-industry-black-list>
         </div>
       </div>
     </div>
@@ -37,16 +37,16 @@
 <script>
   import CreSupLayout from '@/pages/credit-supervision/components/CreSupLayout'
   import CreSupHeader from '@/pages/credit-supervision/components/CreSupHeader'
-  import MarketWarn from '@/pages/credit-supervision/components/MarketWarn'
-  import IndustryBlackList from '@/pages/credit-supervision/components/IndustryBlackList'
+  import TipMarketWarn from '@/pages/credit-supervision/components/TipMarketWarn'
+  import TipIndustryBlackList from '@/pages/credit-supervision/components/TipIndustryBlackList'
 
   export default {
     name: 'MySupervision',
     components: {
       CreSupLayout,
       CreSupHeader,
-      MarketWarn,
-      IndustryBlackList
+      TipMarketWarn,
+      TipIndustryBlackList
     },
     data () {
       return {
@@ -177,14 +177,14 @@
       margin: 25px auto 25px;
 
       .left {
-        width: 64%;
+        width: 69%;
         background: #ffffff;
         min-height: 400px;
 
       }
 
       .right {
-        width: 35%;
+        width: 30%;
       }
     }
   }

@@ -43,6 +43,7 @@
       <b-page :total="total"
         :current.sync="query.page"
         :page-size="query.size"
+        show-elevator
         @on-change="handlePageChange">
       </b-page>
     </div>

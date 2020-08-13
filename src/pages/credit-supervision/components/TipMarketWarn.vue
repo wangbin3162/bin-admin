@@ -1,5 +1,5 @@
 <template>
-  <div class="market-warn">
+  <div class="tip-market-warn">
     <b-card head-tip shadow="never"
       :body-style="{ padding: 0 }" divider="no">
       <div slot="header" flex="main:justify">
@@ -15,7 +15,7 @@
 
 <script>
   export default {
-    name: 'MarketWarn',
+    name: 'TipMarketWarn',
     data () {
       return {
         columns: [
@@ -41,7 +41,7 @@
 </script>
 
 <style lang="stylus" scoped>
-  .market-warn {
+  .tip-market-warn {
 
   }
 </style>

@@ -24,7 +24,7 @@
                 </b-dropdown-item>
             </b-dropdown-menu>
           </b-dropdown>
-          <b-input placeholder="请输入查询主体"></b-input>
+          <b-input placeholder="请输入查询主体" @on-enter="$router.push('/creditSupervision/search')"></b-input>
           <b-button type="primary" class="search-btn" @click="modalFlag = true">
             查询
           </b-button>
@@ -64,6 +64,7 @@
             <b-page :total="total"
               :current.sync="query.page"
               :page-size="query.size"
+              show-elevator
               @on-change="handlePageChange">
             </b-page>
           </div>
@@ -73,9 +74,9 @@
           <!-- 右侧头部导航 -->
           <tip-nav class="mb-10"></tip-nav>
           <!-- 市场主体预警 -->
-          <market-warn class="mb-10"></market-warn>
+          <tip-market-warn class="mb-10"></tip-market-warn>
           <!-- 行业黑名单排行 -->
-          <industry-black-list></industry-black-list>
+          <tip-industry-black-list></tip-industry-black-list>
         </div>
       </div>
     </div>
@@ -86,8 +87,8 @@
   import CreSupLayout from '@/pages/credit-supervision/components/CreSupLayout'
   import CreSupHeader from '@/pages/credit-supervision/components/CreSupHeader'
   import TipNav from '@/pages/credit-supervision/home/TipNav'
-  import MarketWarn from '@/pages/credit-supervision/components/MarketWarn'
-  import IndustryBlackList from '@/pages/credit-supervision/components/IndustryBlackList'
+  import TipMarketWarn from '@/pages/credit-supervision/components/TipMarketWarn'
+  import TipIndustryBlackList from '@/pages/credit-supervision/components/TipIndustryBlackList'
   import RelationChart from '@/pages/credit-supervision/home/RelationChart'
 
   export default {
@@ -96,8 +97,8 @@
       CreSupLayout,
       CreSupHeader,
       TipNav,
-      MarketWarn,
-      IndustryBlackList,
+      TipMarketWarn,
+      TipIndustryBlackList,
       RelationChart
     },
     data () {
@@ -189,7 +190,7 @@
       margin: 25px auto 25px;
 
       .left {
-        width: 64%;
+        width: 69%;
         background: #ffffff;
         min-height: 400px;
 
@@ -263,7 +264,7 @@
       }
 
       .right {
-        width: 35%;
+        width: 30%;
         // background: #ffffff;
         // min-height: 400px;
       }
