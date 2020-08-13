@@ -1,6 +1,6 @@
 <template>
   <b-modal v-model="open" title="添加监管" width="1000"
-    :append-to-body="false"
+    :append-to-body="false" :body-styles="{ padding: 0 }"
     @on-visible-change="handleVisibleChange">
     <v-table-wrap>
       <div slot="tree" class="tree">
@@ -10,18 +10,18 @@
         <b-loading showText="加载中..." v-if="treeLoading"></b-loading>
       </div>
 
-      <!-- <v-filter-bar @keyup-enter="handleFilter">
+      <v-filter-bar @keyup-enter="handleSearchBtn">
         <v-filter-item title="类别名称" :span="8">
           <b-input v-model="listQuery.typeName" placeholder="输入名称" clearable></b-input>
         </v-filter-item>
 
-        <v-filter-item title="类别编码" :span="8">
+        <!-- <v-filter-item title="类别编码" :span="8">
           <b-input v-model="listQuery.typeCode" placeholder="输入编码"></b-input>
-        </v-filter-item>
+        </v-filter-item> -->
 
-        <v-filter-item @on-search="handleFilter" @on-reset="resetQuery">
+        <v-filter-item @on-search="handleSearchBtn" @on-reset="resetQuery">
         </v-filter-item>
-      </v-filter-bar> -->
+      </v-filter-bar>
 
       <b-table :columns="columns" :data="list" :loading="listLoading" size="small">
         <template v-slot:typeName="{ row }">
@@ -29,8 +29,8 @@
         </template>
 
         <template v-slot:action="{ row }">
-          <b-button type="text" @click.stop="handleSelectBtn(row)">
-            选择
+          <b-button type="text" @click.stop="handleAddSupervisionBtn(row)">
+            加入监管
           </b-button>
         </template>
       </b-table>
@@ -44,7 +44,7 @@
 </template>
 
 <script>
-  // import { getConTypeTree, getConTypeList } from '../../../api/data-manage/res-info.api'
+  import { getConTypeTree, getConTypeList } from '@/api/credit-supervision/my-supervision.api'
 
   export default {
     name: 'MSAddsupervision',
@@ -89,12 +89,50 @@
     methods: {
       /**
        * @author haodongdong
+       * @description 获取左侧行政区域类别树
+       */
+      async getConTypeTree () {
+        this.treeLoading = true
+        try {
+          const res = await getConTypeTree('hydm')
+          const tree = this.buildTree(res)[0].children
+          this.curTreeNode = tree[0]
+          this.curTreeNode.expand = true
+          this.curTreeNode.selected = true
+          this.listQuery.parentId = this.curTreeNode.id
+          this.treeData = tree
+        } catch (error) {
+          console.error(error)
+          this.$notice.danger({ title: '加载失败', desc: error })
+        }
+        this.treeLoading = false
+      },
+
+      /**
+       * @author haodongdong
+       * @description 查询列表
+       */
+      async getList() {
+        this.listLoading = true
+        try {
+          const res = await getConTypeList(this.listQuery)
+          this.total = res.total
+          this.list = res.rows
+        } catch (error) {
+          console.error(error)
+          this.$notice.danger({ title: '加载失败', desc: error })
+        }
+        this.listLoading = false
+      },
+
+      /**
+       * @author haodongdong
        * @description b-modal组件显示状态改变回调
        * @param {boolean} visible
        */
       handleVisibleChange (visible) {
         if (visible) {
-          // this.init()
+          this.init()
         } else {
           this.listQuery.typeName = ''
           this.listQuery.typeCode = ''
@@ -104,6 +142,15 @@
           this.treeData = []
           this.list = []
         }
+      },
+
+      /**
+       * @author haodongdong
+       * @description 一些初始化操作
+       */
+      async init () {
+        await this.getConTypeTree()
+        this.getList()
       },
 
       /**
@@ -124,6 +171,15 @@
 
       /**
        * @author haodongdong
+       * @description 搜索按钮回调
+       */
+      handleSearchBtn () {
+        this.listQuery.page = 1
+        this.getList()
+      },
+
+      /**
+       * @author haodongdong
        * @description 重置按钮回调
        */
       resetQuery () {
@@ -131,7 +187,7 @@
         this.listQuery.typeCode = ''
         this.listQuery.size = 10
         this.listQuery.page = 1
-        this.handleFilter()
+        this.handleSearchBtn()
       },
 
       /**
@@ -141,52 +197,19 @@
        * @param {string} row.typeName 类别名称
        * @param {string} row.typeCode 类别编码
        */
-      handleSelectBtn (row) {
-        this.$emit('selected', row)
+      handleAddSupervisionBtn (row) {
+        this.$emit('added', row)
         this.open = false
       },
 
       /**
        * @author haodongdong
-       * @description 获取左侧行政区域类别树
+       * @descriptoin 分页组件页面切换回调
+       * @param {number} page 当前页
        */
-      async getConTypeTree () {
-        // this.treeLoading = true
-        // try {
-        //   const res = await getConTypeTree('hydm')
-        //   const tree = this.buildTree(res)[0].children
-        //   this.curTreeNode = tree[0]
-        //   this.curTreeNode.expand = true
-        //   this.curTreeNode.selected = true
-        //   this.listQuery.parentId = this.curTreeNode.id
-        //   this.treeData = tree
-        // } catch (error) {
-        //   console.error(error)
-        //   this.$notice.danger({ title: '加载失败', desc: error })
-        // }
-        // this.treeLoading = false
-      },
-
-      /**
-       * @author haodongdong
-       * @description 查询列表
-       */
-      async searchList() {
-        // this.setListData()
-        // try {
-        //   const res = await getConTypeList(this.listQuery)
-        //   this.setListData({
-        //     list: res.rows,
-        //     total: res.total
-        //   })
-        // } catch (error) {
-        //   console.error(error)
-        //   this.$notice.danger({ title: '加载失败', desc: error })
-        // }
-      },
-
-      handleCurrentChange () {
-
+      handleCurrentChange (page) {
+        this.listQuery.page = page
+        this.getList()
       },
 
       /**
@@ -209,12 +232,8 @@
         recFun(tree)
         recFun = null
         return tree
-      },
-
-      async init () {
-        await this.getConTypeTree()
-        this.searchList()
       }
+
     }
   }
 </script>
