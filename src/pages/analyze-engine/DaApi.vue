@@ -52,7 +52,7 @@
                   </b-select>
                 </b-form-item>
               </b-col>
-              <b-col span="8">
+              <b-col span="8" v-if="apiObj.type === 'SQL'">
                 <b-form-item label="响应类型" prop="recordType">
                   <b-select v-model="apiObj.recordType">
                     <b-option v-for="(value,key) in recordMap" :value="key" :key="key">{{ value }}</b-option>

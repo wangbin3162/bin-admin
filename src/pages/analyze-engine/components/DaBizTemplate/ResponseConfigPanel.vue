@@ -169,12 +169,11 @@
         treeData: [],
         columns: [
           { type: 'index', width: 50, align: 'center' },
-          { title: '键名', key: 'keyName' },
-          { title: '别名', key: 'keyAlias' },
-          { title: '键路径', key: 'keyPath' },
-          { title: '标题', key: 'title' },
           { title: '响应类型', slot: 'respKind', align: 'center', width: 90 },
           { title: '数据类型', slot: 'dataType', align: 'center', width: 90 },
+          { title: '别名', key: 'keyAlias',width: 80 },
+          { title: '键名', key: 'keyName',width: 150 },
+          { title: '键路径', key: 'keyPath' },
           { title: '说明', key: 'memo' },
           { title: '操作', slot: 'action', width: 130 }
         ],
@@ -335,7 +334,7 @@
       },
       // 键名更改事件
       keyNameChange() {
-        this.resp.keyAlias = this.resp.keyName
+        //this.resp.keyAlias = this.resp.keyName
         this.resp.keyPath = '/' + this.resp.keyName
       },
       // 表单提交

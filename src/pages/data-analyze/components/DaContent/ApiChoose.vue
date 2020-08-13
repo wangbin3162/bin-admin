@@ -7,6 +7,7 @@
     </b-button>
     <b-modal v-model="chooseDialog" title="选择接口" width="500px" min-height="400px">
       <b-table :columns="columns" :data="list" size="small">
+        <template v-slot:type="{row}">{{typeMap[row.type]}}</template>
         <!--操作栏-->
         <template v-slot:action="scope">
           <b-button type="text" @click="handleChoose(scope.row)">
@@ -32,12 +33,18 @@
     mixins: [commonMixin, permission],
     data() {
       return {
+        typeMap: {
+          SQL: '关系型数据库',
+          URL: '接口服务',
+          TEMPLATE: '分析模板'
+        },
         listQuery: {
           name: ''
         },
         chooseDialog: false,
         columns: [
           { title: '接口名称', key: 'name' },
+          { title: '接口类型', slot: 'type' },
           { title: '操作', slot: 'action', align: 'center', width: 120 }
         ],
         list: [],
