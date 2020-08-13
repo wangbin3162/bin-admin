@@ -38,16 +38,26 @@
             @end="handleMoveEnd"
           >
             <template v-for="(element, index) in currentList">
-              <charts-wrap
-                v-if="element && element.key"
-                :key="element.key"
-                :element="element"
-                :select.sync="selectWidget"
-                :index="index"
-                :list="currentList"
-                :log="chartLog"
-                @on-delete="handleDeleteWidget"
-              ></charts-wrap>
+              <template v-if="element && element.key">
+                <index-card v-if="element.type==='index'"
+                            :key="element.key"
+                            :element="element"
+                            :select.sync="selectWidget"
+                            :index="index"
+                            :list="currentList"
+                            @on-delete="handleDeleteWidget">
+                </index-card>
+                <charts-wrap
+                  v-else
+                  :key="element.key"
+                  :element="element"
+                  :select.sync="selectWidget"
+                  :index="index"
+                  :list="currentList"
+                  :log="chartLog"
+                  @on-delete="handleDeleteWidget"
+                ></charts-wrap>
+              </template>
             </template>
           </draggable>
         </div>
@@ -72,120 +82,121 @@
 </template>
 
 <script>
-  import Draggable from 'vuedraggable'
-  import { deepCopy, isEmpty, isNotEmpty } from '@/common/utils/assist'
-  import { basicComponents } from './utils/util'
-  import ChartsWrap from './ChartsWrap'
-  import Config from './Config'
-  import Preview from './preview/Preview'
+import Draggable from 'vuedraggable'
+import { deepCopy, isEmpty, isNotEmpty } from '@/common/utils/assist'
+import { basicComponents } from './utils/util'
+import ChartsWrap from './ChartsWrap'
+import Config from './Config'
+import Preview from './preview/Preview'
+import IndexCard from '@/components/ChartsConfig/IndexCard'
 
-  export default {
-    name: 'CtrlPanel',
-    components: { Preview, Config, ChartsWrap, Draggable },
-    inject: ['ConfigRoot'],
-    props: {
-      list: {
-        type: Array,
-        default() {
-          return []
-        }
-      }
-    },
-    data() {
-      return {
-        basicComponents: basicComponents,
-        currentList: [],
-        selectWidget: {}, // 当前选择的，
-        jsonModal: false,
-        jsonOptions: '',
-        chartLog: false // 是否打印图表参数
-      }
-    },
-    mounted() {
-      document.body.ondrop = function (event) {
-        let isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1
-        if (isFirefox) {
-          event.preventDefault()
-          event.stopPropagation()
-        }
-      }
-    },
-    watch: {
-      list: {
-        handler(val) {
-          this.currentList = deepCopy(val)
-          if (this.currentList.length > 0 && isEmpty(this.selectWidget)) {
-            this.selectWidget = this.currentList[0]
-          } else if (isNotEmpty(this.selectWidget)) {
-            let index = this.currentList.findIndex(i => i.key === this.selectWidget.key)
-            this.selectWidget = this.currentList[index]
-          }
-        },
-        immediate: true
-      }
-    },
-    methods: {
-      // 调试移动结束
-      handleMoveEnd() {
-        // this.$log.warning(`====MoveEnd-(newIndex:${newIndex})-(oldIndex:${oldIndex})====`)
-        this.emitUpdateData()
-      },
-      // 新增一个
-      handleWidgetAdd({ newIndex }) {
-        // 为拖拽到容器的元素添加唯一 key
-        const key = Date.parse(new Date().toString()) + '_' + Math.ceil(Math.random() * 99999)
-        let object = deepCopy(this.currentList[newIndex])
-        object.key = this.currentList[newIndex].type + '_' + key
-        this.$set(this.currentList, newIndex, object)
-        this.selectWidget = this.currentList[newIndex]
-        this.emitUpdateData()
-      },
-      // 移除一个
-      handleDeleteWidget() {
-        this.emitUpdateData()
-      },
-      // 更新列表值
-      updateData() {
-        let index = this.currentList.findIndex(i => i.key === this.selectWidget.key)
-        this.currentList.splice(index, 1, this.selectWidget) // 更新currentList
-      },
-      // 查看json
-      handleShowJson() {
-        this.jsonModal = true
-        this.jsonOptions = JSON.stringify(this.selectWidget.options, null, 2)
-      },
-      // 直接保存json
-      saveJson() {
-        try {
-          this.selectWidget.options = JSON.parse(this.jsonOptions)
-          this.updateData()
-          this.emitUpdateData()
-        } catch (e) {
-        }
-        this.jsonModal = false
-      },
-      // 保存配置项
-      handleSaveCfg() {
-        // this.$log.warning('====保存按钮触发,发送save指令====>')
-        this.$emit('on-save', this.currentList)
-      },
-      // 预览弹窗
-      handlePreview() {
-        this.$refs.preview.open(this.currentList, this.ConfigRoot.resource)
-      },
-      // 更新list
-      emitUpdateData() {
-        this.$emit('on-update', this.currentList)
-      }
-    },
-    computed: {
-      jsonDisable() {
-        return isEmpty(this.selectWidget)
+export default {
+  name: 'CtrlPanel',
+  components: { IndexCard, Preview, Config, ChartsWrap, Draggable },
+  inject: ['ConfigRoot'],
+  props: {
+    list: {
+      type: Array,
+      default() {
+        return []
       }
     }
+  },
+  data() {
+    return {
+      basicComponents: basicComponents,
+      currentList: [],
+      selectWidget: {}, // 当前选择的，
+      jsonModal: false,
+      jsonOptions: '',
+      chartLog: false // 是否打印图表参数
+    }
+  },
+  mounted() {
+    document.body.ondrop = function (event) {
+      let isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1
+      if (isFirefox) {
+        event.preventDefault()
+        event.stopPropagation()
+      }
+    }
+  },
+  watch: {
+    list: {
+      handler(val) {
+        this.currentList = deepCopy(val)
+        if (this.currentList.length > 0 && isEmpty(this.selectWidget)) {
+          this.selectWidget = this.currentList[0]
+        } else if (isNotEmpty(this.selectWidget)) {
+          let index = this.currentList.findIndex(i => i.key === this.selectWidget.key)
+          this.selectWidget = this.currentList[index]
+        }
+      },
+      immediate: true
+    }
+  },
+  methods: {
+    // 调试移动结束
+    handleMoveEnd() {
+      // this.$log.warning(`====MoveEnd-(newIndex:${newIndex})-(oldIndex:${oldIndex})====`)
+      this.emitUpdateData()
+    },
+    // 新增一个
+    handleWidgetAdd({ newIndex }) {
+      // 为拖拽到容器的元素添加唯一 key
+      const key = Date.parse(new Date().toString()) + '_' + Math.ceil(Math.random() * 99999)
+      let object = deepCopy(this.currentList[newIndex])
+      object.key = this.currentList[newIndex].type + '_' + key
+      this.$set(this.currentList, newIndex, object)
+      this.selectWidget = this.currentList[newIndex]
+      this.emitUpdateData()
+    },
+    // 移除一个
+    handleDeleteWidget() {
+      this.emitUpdateData()
+    },
+    // 更新列表值
+    updateData() {
+      let index = this.currentList.findIndex(i => i.key === this.selectWidget.key)
+      this.currentList.splice(index, 1, this.selectWidget) // 更新currentList
+    },
+    // 查看json
+    handleShowJson() {
+      this.jsonModal = true
+      this.jsonOptions = JSON.stringify(this.selectWidget.options, null, 2)
+    },
+    // 直接保存json
+    saveJson() {
+      try {
+        this.selectWidget.options = JSON.parse(this.jsonOptions)
+        this.updateData()
+        this.emitUpdateData()
+      } catch (e) {
+      }
+      this.jsonModal = false
+    },
+    // 保存配置项
+    handleSaveCfg() {
+      // this.$log.warning('====保存按钮触发,发送save指令====>')
+      this.$emit('on-save', this.currentList)
+    },
+    // 预览弹窗
+    handlePreview() {
+      this.$refs.preview.open(this.currentList, this.ConfigRoot.resource)
+    },
+    // 更新list
+    emitUpdateData() {
+      this.$emit('on-update', this.currentList)
+    }
+  },
+  computed: {
+    jsonDisable() {
+      return isEmpty(this.selectWidget)
+    }
   }
+}
 </script>
 
 <style lang="stylus">
-  @import './style.styl'
+@import './style.styl'
 </style>

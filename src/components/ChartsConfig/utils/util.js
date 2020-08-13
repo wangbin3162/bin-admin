@@ -1,7 +1,7 @@
 /**
  * 图表类型中文名映射
  */
-import { formatSeries, formatDataSet } from 'bin-charts/src/utils/util'
+import { formatSeries } from 'bin-charts/src/utils/util'
 import { deepCopy, isEmpty } from '@/common/utils/assist'
 import { oneOf } from 'bin-ui/src/utils/util'
 import { geoCoordMap } from './geoCoordMap'
@@ -48,10 +48,43 @@ export const WIDTH_MAP = {
   '100%': '100%'
 }
 
-/**
- * 图表基础配置对象
- */
+// 指标卡宽度枚举
+export const WIDTH_MAP_CARD = {
+  '1/5': '20%',
+  '1/4': '25%',
+  '1/3': '33.33%',
+  '1/2': '50%',
+  '1/1': '100%'
+}
+
+// 指标卡背景颜色预设
+export const COLOR_INDEX_CARD = [
+  '#4065e0', '#35a4ff', '#6fcafa', '#18e5e6',
+  '#5B8FF9', '#5AD8A6', '#5D7092', '#F6BD16',
+  '#E8684A', '#6DC8EC', '#9270CA', '#FF9D4D'
+]
+
+// 图表基础配置对象
 export const basicComponents = [
+  {
+    name: '指标卡',
+    type: 'index',
+    icon: 'index-card',
+    options: {
+      title: '指标标题',
+      backgroundColor: '#4065e0',
+      width: '25%',
+      height: 100,
+      icon: 'ios-albums',
+      iconSize: 24
+    },
+    isOpen: 'static',
+    staticDataSource: [{
+      value: 1234
+    }],
+    dataSource: '',
+    dataSourceParam: []
+  },
   {
     name: '折线图',
     type: 'line',
@@ -62,7 +95,7 @@ export const basicComponents = [
         color: '#686868',
         fontSize: 18
       },
-      width: '1/3',
+      width: '100%',
       height: 400,
       grid: { left: 40, top: 15, right: 20, bottom: 40 },
       tooltip: { show: false, trigger: 'axis' },
@@ -142,6 +175,7 @@ export const basicComponents = [
         }
       },
       series: {
+        name: '系列一',
         type: 'line',
         smooth: true,
         label: {
@@ -184,7 +218,7 @@ export const basicComponents = [
         color: '#686868',
         fontSize: 18
       },
-      width: '1/3',
+      width: '100%',
       height: 400,
       grid: { left: 40, top: 15, right: 20, bottom: 40 },
       tooltip: {
@@ -270,6 +304,7 @@ export const basicComponents = [
         }
       },
       series: {
+        name: '系列一',
         type: 'bar',
         smooth: true,
         label: {
@@ -321,7 +356,7 @@ export const basicComponents = [
         color: '#686868',
         fontSize: 18
       },
-      width: '1/3',
+      width: '100%',
       height: 400,
       grid: { left: 40, top: 15, right: 20, bottom: 40 },
       tooltip: {
@@ -407,6 +442,7 @@ export const basicComponents = [
         }
       },
       series: {
+        name: '系列一',
         type: 'bar',
         smooth: true,
         label: {
@@ -458,9 +494,9 @@ export const basicComponents = [
         color: '#686868',
         fontSize: 18
       },
-      width: '1/3',
+      width: '50%',
       height: 400,
-      tooltip: { show: false, trigger: 'item' },
+      tooltip: { show: false, trigger: 'item', formatter: '{a}<br>{c} ({d}%)' },
       legend: {
         show: false,
         textStyle: {
@@ -473,6 +509,7 @@ export const basicComponents = [
         bottom: 0
       },
       series: {
+        name: '系列一',
         type: 'pie',
         label: {
           show: true,
@@ -481,7 +518,7 @@ export const basicComponents = [
           position: 'outside' // 可选inside
         },
         roseType: false, // 饼图可选玫瑰图
-        center: ['50%', '40%'], // 饼图可选
+        center: ['50%', '50%'], // 饼图可选
         radius: ['0', '70%']// 饼图可选
       },
       color: DEFAULT_COLORS,
@@ -514,7 +551,7 @@ export const basicComponents = [
         color: '#686868',
         fontSize: 18
       },
-      width: '1/3',
+      width: '50%',
       height: 400,
       tooltip: { show: false, trigger: 'item' },
       legend: {
@@ -530,10 +567,11 @@ export const basicComponents = [
       },
       radar: { // 雷达图可选
         shape: 'circle', // polygon
-        center: ['50%', '55%'],
+        center: ['50%', '50%'],
         radius: '75%'
       },
       series: {
+        name: '系列一',
         type: 'radar',
         label: {
           show: false,
@@ -551,43 +589,33 @@ export const basicComponents = [
     isOpen: 'static',
     staticDataSource: [
       {
-        s: '维度1',
+        s: '系列一',
         data: [
-          { x: '类别一', y: 375 },
-          { x: '类别二', y: 200 },
-          { x: '类别三', y: 25 }
+          { x: '维度1', y: 375 },
+          { x: '维度2', y: 200 },
+          { x: '维度3', y: 234 },
+          { x: '维度4', y: 321 },
+          { x: '维度5', y: 405 }
         ]
       },
       {
-        s: '维度2',
+        s: '系列二',
         data: [
-          { x: '类别一', y: 111 },
-          { x: '类别二', y: 33 },
-          { x: '类别三', y: 234 }
+          { x: '维度1', y: 175 },
+          { x: '维度2', y: 300 },
+          { x: '维度3', y: 334 },
+          { x: '维度4', y: 221 },
+          { x: '维度5', y: 105 }
         ]
       },
       {
-        s: '维度3',
+        s: '系列三',
         data: [
-          { x: '类别一', y: 95 },
-          { x: '类别二', y: 100 },
-          { x: '类别三', y: 222 }
-        ]
-      },
-      {
-        s: '维度4',
-        data: [
-          { x: '类别一', y: 145 },
-          { x: '类别二', y: 300 },
-          { x: '类别三', y: 422 }
-        ]
-      },
-      {
-        s: '维度5',
-        data: [
-          { x: '类别一', y: 215 },
-          { x: '类别二', y: 200 },
-          { x: '类别三', y: 522 }
+          { x: '维度1', y: 115 },
+          { x: '维度2', y: 233 },
+          { x: '维度3', y: 434 },
+          { x: '维度4', y: 121 },
+          { x: '维度5', y: 215 }
         ]
       }
     ],
@@ -604,7 +632,7 @@ export const basicComponents = [
         color: '#686868',
         fontSize: 18
       },
-      width: '1/2',
+      width: '100%',
       height: 600,
       tooltip: { show: false, trigger: 'item' },
       visualMap: {
@@ -707,7 +735,7 @@ export function buildOptions(chartData, dynamic = false, dynamicData = []) {
   delete opts['sourceMap']
 
   let data = (dynamic && dynamicData) ? dynamicData : staticDataSource
-  let dataset = getDataset(sourceMap, data)
+  let dataset = getDataset(sourceMap, data, options.series.name)
 
   // 设置数据series和dataset
   if (oneOf(type, ['line', 'histogram', 'bar', 'pie'])) {
@@ -723,8 +751,15 @@ export function buildOptions(chartData, dynamic = false, dynamicData = []) {
   }
   // 雷达图特殊处理
   if (type === 'radar') {
-    opts.radar.indicator = dataset.source[0].slice(1).map(item => ({ name: item }))
-    let seriesData = dataset.source.slice(1).map(item => ({ name: item[0], value: item.slice(1) }))
+    let seriesList = dataset.source[0].slice(1)
+    let dataList = dataset.source.slice(1)
+    // 配置雷达图维度数据
+    opts.radar.indicator = dataList.map(item => ({ name: item[0] }))
+
+    let seriesData = []
+    for (let i = 0; i < seriesList.length; i++) {
+      seriesData.push({ name: seriesList[i], value: dataList.map(item => item[i + 1]) })
+    }
     let series = opts.series
     series.data = seriesData
     opts.series = [series]
@@ -740,11 +775,11 @@ export function buildOptions(chartData, dynamic = false, dynamicData = []) {
 }
 
 // 处理dataset数据
-function getDataset(sourceMap, data) {
+function getDataset(sourceMap, data, seriesName = '') {
   let _sourceMap = sourceMap || { xField: 'x', yField: 'y', seriesField: 's' }
   let _data = data || []
   if (_data.length === 1 && isEmpty(_data[0].s)) {
-    _data[0].s = '系列一'
+    _data[0].s = seriesName
   }
   return formatSeries(_sourceMap, _data)
 }

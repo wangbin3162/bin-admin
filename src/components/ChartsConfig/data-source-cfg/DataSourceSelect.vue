@@ -84,7 +84,7 @@ export default {
     handleClear() {
       this.current = ''
       this.$emit('input', '')
-      this.$emit('on-clear', [])
+      this.$emit('on-clear', { tempName: '', fields: [] })
     },
     // filter-Bar:重置查询条件
     resetQuery() {

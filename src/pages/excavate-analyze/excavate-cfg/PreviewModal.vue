@@ -4,11 +4,20 @@
            :body-styles="{backgroundColor:'#f9f9f9',padding:'16px 24px'}">
     <div class="preview-wrapper" v-if="previewModal">
       <render-filter v-model="conditionForm" :conditions="conditions" @on-change="handleFilter"/>
-      <template v-for="chart in charts">
-        <charts-preview-item v-if="chart && chart.key" :key="chart.key"
-                             ref="chartItems"
-                             :element="chart" :item-gap="16"
-                             dynamic :conditions="conditionForm"/>
+      <template v-for="element in charts">
+        <template v-if="element && element.key">
+          <index-card-preview-item v-if="element.type==='index'"
+                                   :key="element.key"
+                                   ref="chartItems"
+                                   :element="element" :item-gap="16"
+                                   dynamic :conditions="conditionForm">
+          </index-card-preview-item>
+          <charts-preview-item v-else :key="element.key"
+                               ref="chartItems"
+                               :element="element" :item-gap="16"
+                               dynamic :conditions="conditionForm"
+          ></charts-preview-item>
+        </template>
       </template>
     </div>
   </b-modal>
@@ -20,10 +29,11 @@ import { getRenderingConfig } from '@/api/excavate-analyze/excavate-cfg.api'
 import { basicComponents } from '@/components/ChartsConfig/utils/util'
 import RenderFilter from '@/components/ChartsConfig/preview/RenderFilter'
 import ChartsPreviewItem from '@/components/ChartsConfig/preview/ChartsPreviewItem'
+import IndexCardPreviewItem from '@/components/ChartsConfig/preview/IndexCardPreviewItem'
 
 export default {
   name: 'PreviewModal',
-  components: { ChartsPreviewItem, RenderFilter },
+  components: { IndexCardPreviewItem, ChartsPreviewItem, RenderFilter },
   data() {
     return {
       resource: {},

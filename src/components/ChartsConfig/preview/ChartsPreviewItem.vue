@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import { buildOptions, WIDTH_MAP } from '../utils/util'
+import { buildOptions } from '../utils/util'
 import 'echarts/lib/component/visualMap'
 import 'echarts/lib/component/geo'
 import china from 'echarts/map/json/china.json'
@@ -39,7 +39,6 @@ export default {
   },
   data() {
     return {
-      widthMap: WIDTH_MAP,
       chartOptions: {}
     }
   },
@@ -48,6 +47,7 @@ export default {
       handler() {
         this.initOptions()
       },
+      deep: true,
       immediate: true
     }
   },
@@ -70,7 +70,7 @@ export default {
           if (resp.data.code === '0') {
             this.chartOptions = buildOptions(this.element, this.dynamic, resp.data.data)
             // 打印options
-            this.log && console.log(this.chartOptions)
+            this.log && console.log('update:log==>', this.chartOptions)
           }
         })
       } else {
@@ -112,7 +112,7 @@ export default {
       let { width } = this.element.options
       let gap = this.itemGap / 2
       return {
-        width: width === '100%' ? width : `calc(${this.widthMap[width]} - ${this.itemGap}px)`,
+        width: width === '100%' ? width : `calc(${width} - ${this.itemGap}px)`,
         height: `${this.widgetHeight}px`,
         margin: `0 ${gap}px ${this.gapBottom}px`
       }

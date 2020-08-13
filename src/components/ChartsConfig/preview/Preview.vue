@@ -11,11 +11,20 @@
         <render-filter v-if="isOpen" v-model="conditionForm" :conditions="conditions" @on-change="handleFilter"/>
       </div>
       <div class="preview-wrapper" v-if="previewModal">
-        <template v-for="chart in charts">
-          <charts-preview-item v-if="chart && chart.key" :key="chart.key"
-                               ref="chartItems"
-                               :element="chart" :item-gap="16"
-                               :dynamic="isOpen" :conditions="conditionForm"/>
+        <template v-for="element in charts">
+          <template v-if="element && element.key">
+            <index-card-preview-item v-if="element.type==='index'"
+                                     :key="element.key"
+                                     ref="chartItems"
+                                     :element="element" :item-gap="16"
+                                     :dynamic="isOpen" :conditions="conditionForm">
+            </index-card-preview-item>
+            <charts-preview-item v-else :key="element.key"
+                                 ref="chartItems"
+                                 :element="element" :item-gap="16"
+                                 :dynamic="isOpen" :conditions="conditionForm"
+            ></charts-preview-item>
+          </template>
         </template>
       </div>
     </b-modal>
@@ -28,10 +37,11 @@ import { deepCopy } from '@/common/utils/assist'
 import { getRenderingConfig } from '@/api/excavate-analyze/excavate-cfg.api'
 import { basicComponents } from '../utils/util'
 import RenderFilter from './RenderFilter'
+import IndexCardPreviewItem from '@/components/ChartsConfig/preview/IndexCardPreviewItem'
 
 export default {
   name: 'Preview',
-  components: { RenderFilter, ChartsPreviewItem },
+  components: { IndexCardPreviewItem, RenderFilter, ChartsPreviewItem },
   data() {
     return {
       resource: {},
@@ -71,11 +81,9 @@ export default {
     // 查询条件查询
     handleFilter() {
       let charts = this.$refs.chartItems
-      if (charts && charts.length) {
-        charts.forEach(item => {
-          item.updateData()
-        })
-      }
+      charts.forEach(item => {
+        item.updateData()
+      })
     },
     // 格式化请求返回的图表列表
     formatCharts(list) {
