@@ -19,6 +19,12 @@ export default [
         meta: { title: '市场主体监管' }
       },
       {
+        path: 'KP',
+        name: 'KP',
+        component: () => import(/* webpackChunkName: "KP" */ '@/pages/credit-supervision/my-supervision/focus-crowd'),
+        meta: { title: '重点人群监管' }
+      },
+      {
         path: 'KI',
         name: 'KI',
         component: () => import(/* webpackChunkName: "KI" */ '@/pages/credit-supervision/my-supervision/focus-industry'),
