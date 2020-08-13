@@ -146,9 +146,9 @@
 <script>
     import commonMixin from '../../../../common/mixins/mixin'
     import permission from '../../../../common/mixins/permission'
-    import {requiredRule} from '../../../../common/utils/validate'
+    import { requiredRule } from '../../../../common/utils/validate'
     import * as api from '../../../../api/analyze-engine/da-business-temp.api.js'
-    import {queryLeftRespInfos} from '../../../../api/data-analyze/da-content.api'
+    import { queryLeftRespInfos } from '../../../../api/data-analyze/da-content.api'
     import RespParams from '../../../analyze-engine/components/DaBizTemplate/RespParams'
     import InterfaceTest from './InterfaceTest'
 
@@ -187,8 +187,8 @@
           { type: 'index', width: 50, align: 'center' },
           { title: '响应类型', slot: 'respKind', align: 'center', width: 90 },
           { title: '数据类型', slot: 'dataType', align: 'center', width: 90 },
-          { title: '别名', key: 'keyAlias',width: 80 },
-          { title: '键名', key: 'keyName',width: 80 },
+          { title: '别名', key: 'keyAlias', width: 80 },
+          { title: '键名', key: 'keyName', width: 80 },
           { title: '键路径', key: 'keyPath' },
           { title: '说明', key: 'memo' },
           { title: '操作', slot: 'action', width: 130 }
@@ -386,7 +386,7 @@
       },
       // 键名更改事件
       keyNameChange() {
-        //this.resp.keyAlias = this.resp.keyName
+        // this.resp.keyAlias = this.resp.keyName
         this.resp.keyPath = '/' + this.resp.keyName
       },
       // 表单提交

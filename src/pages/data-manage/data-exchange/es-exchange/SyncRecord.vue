@@ -79,10 +79,10 @@
 </template>
 
 <script>
-    import {mapState} from 'vuex'
+    import { mapState } from 'vuex'
     import commonMixin from '../../../../common/mixins/mixin'
     import permission from '../../../../common/mixins/permission'
-    import {getSingleResourceResult, syncESData} from '@/api/data-manage/es-exchange.api'
+    import { getSingleResourceResult, syncESData } from '@/api/data-manage/es-exchange.api'
 
     export default {
     name: 'SyncRecord',
