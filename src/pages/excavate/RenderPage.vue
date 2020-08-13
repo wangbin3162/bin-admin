@@ -62,6 +62,8 @@ export default {
       this.resource.resourceName = resourceName || ''
       if (isEmpty(resourceKey)) {
         this.$router.push('/excavate')
+      } else {
+        this.activeCode = 'resource'
       }
     }
   }

@@ -1,21 +1,23 @@
 <template>
   <div class="conditions-wrap">
     <div class="ctrl-item" v-for="(item,index) in conditionList" :key="item.id">
-      <div class="label">{{ item.fieldTitle }}</div>
-      <div class="input">
-        <template v-if="item.controlType==='SELECT'">
-          <b-select v-model="editList[index].value" multiple :max-tag-count="1" size="small"
-                    :placeholder="item.fieldTitle" @on-change="emitValue">
-            <b-option v-for="(val,key) in item.options" :key="key" :value="key" :label="val"></b-option>
-          </b-select>
-        </template>
-        <template v-else>
-          <b-date-picker type="daterange" :value="formatTimeRange(editList[index].value)" separator=" ~ "
-                         :placeholder="item.fieldTitle"
-                         @on-change="val=>{ timeChange(val,index) }" size="small" @on-clear="timeChange(['',''],index)"
-          ></b-date-picker>
-        </template>
-      </div>
+      <b-popover title="过滤条件" :content="item.fieldTitle" placement="top-start" trigger="hover" style="width: 100%;">
+        <div class="input">
+          <template v-if="item.controlType==='SELECT'">
+            <b-select v-model="editList[index].value" multiple :max-tag-count="1" size="small"
+                      :placeholder="item.fieldTitle" @on-change="emitValue">
+              <b-option v-for="(val,key) in item.options" :key="key" :value="key" :label="val"></b-option>
+            </b-select>
+          </template>
+          <template v-else>
+            <b-date-picker type="daterange" :value="formatTimeRange(editList[index].value)" separator=" ~ "
+                           :placeholder="item.fieldTitle"
+                           @on-change="val=>{ timeChange(val,index) }" size="small"
+                           @on-clear="timeChange(['',''],index)"
+            ></b-date-picker>
+          </template>
+        </div>
+      </b-popover>
     </div>
   </div>
 </template>
@@ -106,12 +108,9 @@ export default {
   display: inline-flex;
   align-items: center;
   padding-right: 16px;
-  width: 25%;
-  .label {
-    width: 80px;
-  }
+  width: 20%;
   .input {
-    width: calc(100% - 80px);
+    width: 100%;
   }
 }
 </style>
