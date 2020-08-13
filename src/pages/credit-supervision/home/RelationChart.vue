@@ -1,6 +1,6 @@
 <template>
   <div class="relation-chart">
-    <b-charts :options="relationOption" theme="charts-theme" height="600px"></b-charts>
+    <b-charts ref="chart" :options="relationOption" theme="charts-theme" height="600px" @click="handleChart"></b-charts>
   </div>
 </template>
 
@@ -109,12 +109,15 @@
         try {
           const res = await getRelationData(word)
           const { data, links } = res
+          console.log(data)
           let formatterData = data.map(item => {
             let size = (4 - item.level) * 20 + 40
             let obj = {
               name: item.personName,
               draggable: true,
               symbolSize: [size, size],
+              _id: item.personId,
+              _class: item.personClass,
               itemStyle: {
                 color: item.personClass === 'FO' ? item.level === 1 ? '#2e54eb' : '#0c85ff' : '#ff7254'
               },
@@ -130,10 +133,17 @@
         } catch (error) {
           console.error(error)
         }
+      },
+      handleChart(event) {
+        console.log(event)
       }
     },
     mounted() {
       this.renderRelationChart('personId=e46c7c4a47d74ef59042b6584da2e232&personClass=FO&personName=上海大米网络科技有限公司')
+      this.$refs.chart.chart.on('click', (e) => {
+        let word = `personId=${e.data._id}&personClass=${e.data._class}&personName=${e.name}`
+        this.renderRelationChart(word)
+      })
     }
   }
 </script>
