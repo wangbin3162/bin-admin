@@ -25,6 +25,12 @@ export default [
         meta: { title: '重点人群监管' }
       },
       {
+        path: 'IA',
+        name: 'IA',
+        component: () => import(/* webpackChunkName: "IA" */ '@/pages/credit-supervision/my-supervision/focus-scope'),
+        meta: { title: '重点领域监管' }
+      },
+      {
         path: 'KI',
         name: 'KI',
         component: () => import(/* webpackChunkName: "KI" */ '@/pages/credit-supervision/my-supervision/focus-industry'),

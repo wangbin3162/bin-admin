@@ -51,10 +51,10 @@
 </template>
 
 <script>
-  import AddSupervision from '@/pages/credit-supervision/my-supervision/focus-crowd/AddSupervision'
+  import AddSupervision from '@/pages/credit-supervision/my-supervision/focus-scope/AddSupervision'
 
   export default {
-    name: 'FocusCrowdSupervision',
+    name: 'FocusScopeSupervision',
     props: {
 
     },
@@ -116,7 +116,7 @@
 
           .title-con {
             display: flex;
-            align-items: center;
+            align-items: top;
 
             .icon {
               margin: 0 20px 0 10px;

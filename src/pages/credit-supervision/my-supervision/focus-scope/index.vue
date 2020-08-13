@@ -12,17 +12,17 @@
       <li v-for="n in 7" :key="n" class="list-item">
         <div class="title-con">
           <div class="icon">
-            <b-icon name="ios-stats" color="#0d85ff" size="30">
+            <b-icon name="ios-list-box" color="#0d85ff" size="30">
             </b-icon>
           </div>
 
           <div class="text">
             <p>
-              江苏浮云网络科技有限公司
+              法人行政处罚
             </p>
             <div>
-              <span>法定代表人：郭大宁</span>
-              <span>监管日期：2020-07-27 15:30:20</span>
+              <span>添加时间：2020-07-27 15:30:20</span>
+              <span>主体类别：2020-07-27 15:30:20</span>
             </div>
           </div>
         </div>
@@ -30,10 +30,6 @@
         <div>
           <b-button type="text">
             取消监管
-          </b-button>
-          <b-divider type="vertical"></b-divider>
-          <b-button type="text">
-            查看
           </b-button>
         </div>
       </li>
@@ -52,10 +48,10 @@
 </template>
 
 <script>
-  import AddSupervision from '@/pages/credit-supervision/my-supervision/market/AddSupervision'
+  import AddSupervision from '@/pages/credit-supervision/my-supervision/focus-crowd/AddSupervision'
 
   export default {
-    name: 'MarketSupervision',
+    name: 'FocusCrowdSupervision',
     props: {
 
     },
@@ -138,7 +134,7 @@
               span {
                 &:first-child {
                   display: inline-block;
-                  width: 150px;
+                  width: 240px;
                 }
                 color: #8c8c8c;
               }
