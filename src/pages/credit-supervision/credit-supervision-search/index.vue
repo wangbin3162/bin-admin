@@ -4,33 +4,37 @@
       <cre-sup-header></cre-sup-header>
 
       <div class="search">
-        <div style="width: 50%;">
-          <p>监管查询</p>
-          <div flex class="btn-con">
-            <b-dropdown class="dropdown">
-              <b-button type="primary" style="width: 94px;">
-                {{ personClassName }}
-                <b-icon name="ios-arrow-down"></b-icon>
+        <transition name="fade-scale-move">
+          <div style="width: 50%;" v-show="visible">
+            <p>监管查询</p>
+            <div flex class="btn-con">
+              <b-dropdown class="dropdown">
+                <b-button type="primary" style="width: 94px;">
+                  {{ personClassName }}
+                  <b-icon name="ios-arrow-down"></b-icon>
+                </b-button>
+                <b-dropdown-menu slot="list">
+                    <b-dropdown-item @click.native="personClassName = '自然人'">
+                      自然人
+                    </b-dropdown-item>
+                    <b-dropdown-item @click.native="personClassName = '法人'">
+                      法人
+                    </b-dropdown-item>
+                </b-dropdown-menu>
+              </b-dropdown>
+              <b-input placeholder="请输入查询主体"></b-input>
+              <b-button type="primary" class="search-btn" @click="modalFlag = true">
+                查询
               </b-button>
-              <b-dropdown-menu slot="list">
-                  <b-dropdown-item @click.native="personClassName = '自然人'">
-                    自然人
-                  </b-dropdown-item>
-                  <b-dropdown-item @click.native="personClassName = '法人'">
-                    法人
-                  </b-dropdown-item>
-              </b-dropdown-menu>
-            </b-dropdown>
-            <b-input placeholder="请输入查询主体"></b-input>
-            <b-button type="primary" class="search-btn" @click="modalFlag = true">
-              查询
-            </b-button>
+            </div>
           </div>
-        </div>
+        </transition>
       </div>
 
       <div class="main-con">
-        <search-list></search-list>
+        <transition name="fade-scale-move">
+          <search-list v-show="visible"></search-list>
+        </transition>
       </div>
 
     </div>
@@ -51,6 +55,7 @@
     },
     data () {
       return {
+        visible: false,
         personClassName: '法人',
         total: 0,
         query: {
@@ -62,6 +67,9 @@
     },
     created () {
 
+    },
+    mounted () {
+      this.visible = true
     },
     methods: {
       handlePageChange () {

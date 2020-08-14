@@ -50,8 +50,8 @@
       justify-content: center;
       align-items: center;
       background: #ffffff;
-      height: 110px;
-      width: 107px;
+      height: 100px;
+      width: 92px;
       cursor: pointer;
       transition: 0.3s;
 
