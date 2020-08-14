@@ -6,12 +6,6 @@ export default [
     meta: { title: '信用监管' }
   },
   {
-    path: '/creditSupervision/search',
-    name: 'CreditSupervisionSearch',
-    component: () => import(/* webpackChunkName: "CreditSupervisionSearch" */ '@/pages/credit-supervision/credit-supervision-search'),
-    meta: { title: '监管查询' }
-  },
-  {
     path: '/creditSupervision/marketPlayersWarn',
     name: 'MarketPlayersWarn',
     component: () => import(/* webpackChunkName: "MarketPlayersWarn" */ '@/pages/credit-supervision/market-players-warn'),

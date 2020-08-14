@@ -1,42 +1,50 @@
 <template>
   <cre-sup-layout>
     <div class="credit-supervision">
-      <b-modal v-model="modalFlag" title="关系图展示" width="1000" footer-hide
+      <!-- <b-modal v-model="modalFlag" title="关系图展示" width="1000" footer-hide
                @on-ok="$log.print('ok click')"  @on-cancel="$log.print('cancel click','success')">
         <relation-chart></relation-chart>
-      </b-modal>
+      </b-modal> -->
       <cre-sup-header></cre-sup-header>
 
-      <div class="search">
-        <p>风险预警 尽在掌握</p>
-        <div flex class="btn-con">
-          <b-dropdown class="dropdown">
-            <b-button type="primary" style="width: 94px;">
-              {{ personClassName }}
-              <b-icon name="ios-arrow-down"></b-icon>
+      <div ref="search" class="search">
+        <div style="width: 50%;">
+          <p>风险预警 尽在掌握</p>
+          <div flex class="btn-con">
+            <b-dropdown class="dropdown">
+              <b-button type="primary" style="width: 94px;" size="large">
+                {{ personClass === 1 ? '法人' : '自然人' }}
+                <b-icon name="ios-arrow-down"></b-icon>
+              </b-button>
+              <b-dropdown-menu slot="list">
+                  <b-dropdown-item @click.native="personClass = 2">
+                    自然人
+                  </b-dropdown-item>
+                  <b-dropdown-item @click.native="personClass = 1">
+                    法人
+                  </b-dropdown-item>
+              </b-dropdown-menu>
+            </b-dropdown>
+            <b-input v-model="keyword" placeholder="请输入查询关键字" clearable
+              size="large"
+              @on-enter="handleSearch"
+              @on-clear="handleSearchClear">
+            </b-input>
+            <b-button type="primary" class="search-btn" size="large"
+              @click="handleSearch">
+              查询
             </b-button>
-            <b-dropdown-menu slot="list">
-                <b-dropdown-item @click.native="personClassName = '自然人'">
-                  自然人
-                </b-dropdown-item>
-                <b-dropdown-item @click.native="personClassName = '法人'">
-                  法人
-                </b-dropdown-item>
-            </b-dropdown-menu>
-          </b-dropdown>
-          <b-input placeholder="请输入查询主体" @on-enter="$router.push('/creditSupervision/search')"></b-input>
-          <b-button type="primary" class="search-btn" @click="modalFlag = true">
-            查询
-          </b-button>
+          </div>
         </div>
       </div>
 
-      <div class="main-con">
+      <div v-show="!visible" class="main-con">
         <div class="left">
           <div class="header">
             <h4>监管动态</h4>
           </div>
           <ul>
+            <b-loading fix show-text="加载中...." v-if="listLoading"></b-loading>
             <li v-for="(item, index) in list" :key="index" class="list-item">
               <div class="title-con">
                 <div class="icon">
@@ -49,7 +57,7 @@
                     <!-- 江苏浮云网络科技有限公司 自然人红黑名单 增加了 -->
                     {{ item.objectName }}
                     <span>{{ item.resourceName }}</span>
-                     增加了
+                    增加了
                     <span>{{ item.count }}</span>
                     条记录
                   </p>
@@ -82,19 +90,26 @@
           <tip-industry-black-list></tip-industry-black-list>
         </div>
       </div>
+
+      <transition name="fade-scale-move">
+        <search-list ref="searchList" v-show="visible"></search-list>
+      </transition>
     </div>
   </cre-sup-layout>
 </template>
 
 <script>
   import { arrPgination } from '@/common/utils/util'
-  import { getSupervisionDynamicList } from '@/api/credit-supervision/home.api'
+  import {
+    getSupervisionDynamicList
+  } from '@/api/credit-supervision/home.api'
   import CreSupLayout from '@/pages/credit-supervision/components/CreSupLayout'
   import CreSupHeader from '@/pages/credit-supervision/components/CreSupHeader'
   import TipNav from '@/pages/credit-supervision/home/TipNav'
   import TipMarketWarn from '@/pages/credit-supervision/components/TipMarketWarn'
   import TipIndustryBlackList from '@/pages/credit-supervision/components/TipIndustryBlackList'
   import RelationChart from '@/pages/credit-supervision/home/RelationChart'
+  import SearchList from '@/pages/credit-supervision/home/SearchList'
 
   export default {
     name: 'CreditSupervision',
@@ -104,40 +119,106 @@
       TipNav,
       TipMarketWarn,
       TipIndustryBlackList,
-      RelationChart
+      // RelationChart,
+      SearchList
     },
     data () {
       return {
-        personClassName: '法人',
+        personClass: 1,
+        keyword: '',
+        visible: false,
         total: 0,
         query: {
           pageSize: 10,
           page: 1,
           month: 6
         },
+        resData: null, // 接口返回的数据容器
+        listLoading: false,
         list: [],
         modalFlag: false
       }
     },
     created () {
-      this.getSupervisionDynamicList(this.query)
+
+    },
+    mounted () {
+      this.$nextTick(() => {
+        this.init()
+      })
     },
     methods: {
+      /**
+       * @author haodongdong
+       * @description 一些初始化处理
+       */
+      init () {
+        this.getSupervisionDynamicList(this.query)
+        const routeQuery = this.$route.query
+        console.log(routeQuery)
+        if (JSON.stringify(routeQuery) !== '{}') {
+          this.keyword = routeQuery.q
+          this.personClass = Number(routeQuery.type)
+          this.handleSearch()
+        }
+      },
+
       /**
        * @author haodongdong
        * @description 获取监管动态列表
        * @param {Object} query 查询参数对象
        */
       async getSupervisionDynamicList (query) {
+        this.listLoading = true
         try {
           const res = await getSupervisionDynamicList(query.month)
+          this.resData = res
+
           const data = arrPgination(res, query.pageSize, query.page)
           this.total = data.total
           this.query.page = data.page
           this.list = data.arr
         } catch (error) {
           console.error(error)
+          this.$notice.danger({ title: '查询失败', desc: error })
         }
+        this.listLoading = false
+      },
+
+      /**
+       * @author haodongdong
+       * @description 搜索回调
+       */
+      handleSearch () {
+        if (this.keyword) {
+          this.$router.push({
+            path: 'creditSupervision',
+            query: {
+              q: this.keyword,
+              type: this.personClass
+            }
+          })
+          const searchList = this.$refs.searchList
+          searchList.search(this.keyword, this.personClass)
+
+          const el = this.$refs.search
+          el.style.height = '170px'
+          this.visible = true
+        } else {
+          this.$message({ type: 'warning', content: '请输入查询关键字！' })
+        }
+      },
+
+      /**
+       * @author haodongdong
+       * @description 搜索框清空按钮的回调
+       */
+      handleSearchClear () {
+        this.personClass = 1
+        this.keyword = ''
+        const el = this.$refs.search
+        el.style.height = '230px'
+        this.visible = false
       },
 
       /**
@@ -146,8 +227,9 @@
        * @param {number} page 当前页
        */
       handlePageChange (page) {
-        this.query.page = page
-        this.getSupervisionDynamicList(this.query)
+        const data = arrPgination(this.resData, this.query.pageSize, page)
+        this.query.page = data.page
+        this.list = data.arr
       }
     }
   }
@@ -197,19 +279,23 @@
     transition: background .3s;
 
     .search {
+      display: flex;
+      justify-content: center;
       padding-top: 50px;
       height: 230px;
       width: 1300px;
       margin: 0 auto;
+      transition: height 0.2s;
 
       p {
         margin-bottom: 5px;
         font-size: 27px;
         color: #ffffff;
+        text-align: center;
       }
 
      .btn-con {
-        width: 50%;
+        width: 100%;
       }
     }
 
@@ -233,6 +319,7 @@
         }
 
         ul {
+          position: relative;
           margin-bottom: 20px;
           padding: 0 10px 0;
 

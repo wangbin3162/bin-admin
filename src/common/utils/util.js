@@ -1,5 +1,6 @@
 import cookies from './util.cookies'
 import log from './log'
+import binUtil from 'bin-ui/src/utils/util'
 
 const util = {
   cookies,
@@ -70,7 +71,6 @@ export function arrPgination (arr, pageSize, page) {
   if (page >= totalPages) page = totalPages
   // 获取当前页数对应的起始index
   const index = page * pageSize - pageSize
-  console.log(index)
   // 截取对应数组
   const arrCache = arr.slice(index, index + pageSize)
   return {
