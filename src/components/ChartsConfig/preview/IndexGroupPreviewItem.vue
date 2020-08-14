@@ -84,7 +84,6 @@ export default {
                   this.dynamicIndex.push('')
                 }
               })
-              console.log(this.dynamicIndex)
             }
           }
         }
