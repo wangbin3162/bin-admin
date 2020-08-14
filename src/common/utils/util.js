@@ -49,3 +49,34 @@ util.downloadFile = function (content, fileName) {
 }
 
 export default util
+
+/**
+ * @author haodongdong
+ * @description 前端通用的数组分页函数，返回分页后的对应页数的数组
+ * @param {any[]} arr 需要分页的数组
+ * @param {number} pageSize 分页大小
+ * @param {number} page 当前页数
+ * @returns
+ */
+export function arrPgination (arr, pageSize, page) {
+  // 总条数
+  const total = arr.length
+  // 总页数 = 总条数 / 每页大小，有余数则 + 1
+  const isDivide = total % pageSize === 0
+  let totalPages = Math.floor((total / pageSize))
+  if (!isDivide) totalPages += 1
+  // 控制page极限值
+  if (page <= 0) page = 1
+  if (page >= totalPages) page = totalPages
+  // 获取当前页数对应的起始index
+  const index = page * pageSize - pageSize
+  console.log(index)
+  // 截取对应数组
+  const arrCache = arr.slice(index, index + pageSize)
+  return {
+    total,
+    totalPages,
+    page,
+    arr: arrCache
+  }
+}

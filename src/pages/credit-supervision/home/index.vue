@@ -37,20 +37,23 @@
             <h4>监管动态</h4>
           </div>
           <ul>
-            <li v-for="n in 7" :key="n" class="list-item">
+            <li v-for="(item, index) in list" :key="index" class="list-item">
               <div class="title-con">
                 <div class="icon">
-                  <img v-if="n % 2 !== 0" class="cImg" src="https://img.xiaopiu.com/userImages/img343481737004f968.png">
+                  <img v-if="item.objectType === 1" class="cImg" src="https://img.xiaopiu.com/userImages/img343481737004f968.png">
                   <img v-else class="cImg" src="https://img.xiaopiu.com/userImages/img22049171056e7810.png">
                 </div>
 
                 <div class="text">
                   <p>
-                    江苏浮云网络科技有限公司 自然人红黑名单 增加了
-                    <span>2</span>
+                    <!-- 江苏浮云网络科技有限公司 自然人红黑名单 增加了 -->
+                    {{ item.objectName }}
+                    <span>{{ item.resourceName }}</span>
+                     增加了
+                    <span>{{ item.count }}</span>
                     条记录
                   </p>
-                  <span>操作日期：2020-07-27 15:30:20</span>
+                  <span>操作日期：{{ item.createDate }}</span>
                 </div>
               </div>
 
@@ -63,7 +66,7 @@
           <div flex="main:right">
             <b-page :total="total"
               :current.sync="query.page"
-              :page-size="query.size"
+              :page-size="query.pageSize"
               show-elevator
               @on-change="handlePageChange">
             </b-page>
@@ -84,6 +87,8 @@
 </template>
 
 <script>
+  import { arrPgination } from '@/common/utils/util'
+  import { getSupervisionDynamicList } from '@/api/credit-supervision/home.api'
   import CreSupLayout from '@/pages/credit-supervision/components/CreSupLayout'
   import CreSupHeader from '@/pages/credit-supervision/components/CreSupHeader'
   import TipNav from '@/pages/credit-supervision/home/TipNav'
@@ -106,18 +111,43 @@
         personClassName: '法人',
         total: 0,
         query: {
-          size: 10,
-          page: 1
+          pageSize: 10,
+          page: 1,
+          month: 6
         },
+        list: [],
         modalFlag: false
       }
     },
     created () {
-
+      this.getSupervisionDynamicList(this.query)
     },
     methods: {
-      handlePageChange () {
+      /**
+       * @author haodongdong
+       * @description 获取监管动态列表
+       * @param {Object} query 查询参数对象
+       */
+      async getSupervisionDynamicList (query) {
+        try {
+          const res = await getSupervisionDynamicList(query.month)
+          const data = arrPgination(res, query.pageSize, query.page)
+          this.total = data.total
+          this.query.page = data.page
+          this.list = data.arr
+        } catch (error) {
+          console.error(error)
+        }
+      },
 
+      /**
+       * @author haodongdong
+       * @description 分页组件页面改变回调
+       * @param {number} page 当前页
+       */
+      handlePageChange (page) {
+        this.query.page = page
+        this.getSupervisionDynamicList(this.query)
       }
     }
   }
