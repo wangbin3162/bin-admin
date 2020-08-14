@@ -43,7 +43,7 @@
           </template>
           <template v-if="item.controlType==='ITEM'">
             <gui-field label="信息项:" label-width="60px">
-              <item-ctrl v-model="params[index].realVal" @on-change="emitValue"/>
+              <item-ctrl v-model="params[index].realVal" :param-type="item.paramType" @on-change="emitValue"/>
             </gui-field>
           </template>
           <template v-if="item.controlType==='PREFIX'">

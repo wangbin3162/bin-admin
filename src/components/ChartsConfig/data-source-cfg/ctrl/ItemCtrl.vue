@@ -9,58 +9,65 @@
 </template>
 
 <script>
-  import { deepCopy, isNotEmpty } from '../../../../common/utils/assist'
-  import { getFields } from '../../../../api/data-manage/res-info.api'
+import { deepCopy, isNotEmpty } from '@/common/utils/assist'
+import { getFields } from '@/api/data-manage/res-info.api'
 
-  export default {
-    name: 'ItemCtrl',
-    inject: ['ConfigRoot'],
-    props: {
-      value: {
-        type: Object,
-        default() {
-          return {
-            fieldName: '',
-            value: '',
-            type: 'val'
-          }
+export default {
+  name: 'ItemCtrl',
+  inject: ['ConfigRoot'],
+  props: {
+    value: {
+      type: Object,
+      default() {
+        return {
+          fieldName: '',
+          value: '',
+          type: 'val'
         }
       }
     },
-    data() {
-      return {
-        current: {},
-        options: []
-      }
-    },
-    watch: {
-      value: {
-        handler(val) {
-          this.current = val ? deepCopy(val) : {
-            fieldName: '',
-            value: '',
-            type: 'val'
-          }
-        },
-        immediate: true
-      }
-    },
-    methods: {
-      handleChange(val) {
-        this.current.fieldName = this.current.value = val
-        this.emitValue()
+    paramType: {
+      type: String,
+      default: 'string'
+    }
+  },
+  data() {
+    return {
+      current: {},
+      options: []
+    }
+  },
+  watch: {
+    value: {
+      handler(val) {
+        this.current = val ? deepCopy(val) : {
+          fieldName: '',
+          value: '',
+          type: 'val'
+        }
       },
-      emitValue() {
-        this.$emit('input', this.current)
-        this.$emit('on-change', this.current)
-      }
+      immediate: true
+    }
+  },
+  methods: {
+    handleChange(val) {
+      this.current.fieldName = this.current.value = val
+      this.emitValue()
     },
-    created() {
-      if (isNotEmpty(this.ConfigRoot.resource.resourceKey)) {
-        getFields(this.ConfigRoot.resource.resourceKey).then(resp => {
-          this.options = resp.data || []
-        })
-      }
+    emitValue() {
+      this.$emit('input', this.current)
+      this.$emit('on-change', this.current)
+    }
+  },
+  created() {
+    if (isNotEmpty(this.ConfigRoot.resource.resourceKey)) {
+      getFields(this.ConfigRoot.resource.resourceKey).then(resp => {
+        let options = resp.data || []
+        this.options = options
+          .filter(i => i.dataType === this.paramType && i.fieldName.indexOf('person_id') === -1)
+          .map(i => ({ id: i.id, fieldTitle: i.fieldTitle, fieldName: i.fieldName }))
+      })
     }
   }
+}
 </script>
