@@ -112,7 +112,7 @@ export default {
       let { width } = this.element.options
       let gap = this.itemGap / 2
       return {
-        width: width === '100%' ? width : `calc(${width} - ${this.itemGap}px)`,
+        width: `calc(${width} - ${this.itemGap}px)`,
         height: `${this.widgetHeight}px`,
         margin: `0 ${gap}px ${this.gapBottom}px`
       }

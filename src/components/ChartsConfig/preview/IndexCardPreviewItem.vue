@@ -13,7 +13,6 @@
 </template>
 
 <script>
-
 import { renderingChart } from '@/api/excavate-analyze/excavate-cfg.api'
 
 export default {

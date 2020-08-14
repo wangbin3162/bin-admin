@@ -41,6 +41,73 @@
               </gui-field>
             </gui-group>
           </template>
+          <!--指标组配置-->
+          <template v-else-if="isIndexGroup">
+            <gui-group group-name="基础属性">
+              <gui-field label="指标高度" label-width="65px">
+                <b-input-number v-model="data.options.height" size="small"
+                                @on-change="emitValue"></b-input-number>
+              </gui-field>
+            </gui-group>
+            <gui-group group-name="指标配置">
+              <div class="index-wrap">
+                <draggable :list="data.options.groupList"
+                           v-bind="{ group:'index-item', animation: 200, ghostClass:'ghost', handle:'.move-drag' }"
+                           @end="onDragEnd"
+                           @start="isDragging = true">
+                  <transition-group type="transition" name="flip-list">
+                    <div class="index-item" v-for="(item,index) in data.options.groupList" :key="index">
+                      <div class="move-drag">
+                        <b-icon name="ios-move" size="18" color="#1089ff"/>
+                      </div>
+                      <div class="remove-icon">
+                        <b-icon name="ios-remove-circle-outline" size="18" color="#f5222d"
+                                @click.native="removeEnumItem(index)"/>
+                      </div>
+                      <gui-field label="指标标题" label-width="65px">
+                        <b-input v-model="data.options.groupList[index].title" size="small"
+                                 @on-change="emitValue"></b-input>
+                      </gui-field>
+                      <gui-field label="图 标" label-width="65px">
+                        <icon-select v-model="data.options.groupList[index].icon" size="small"
+                                     @on-change="emitValue" stop-remove-scroll/>
+                      </gui-field>
+                      <div flex="box:mean">
+                        <gui-field label="图标大小" label-width="65px">
+                          <b-input-number v-model="data.options.groupList[index].iconSize" size="small"
+                                          @on-change="emitValue"></b-input-number>
+                        </gui-field>
+                        <gui-field label="背景颜色" label-width="65px">
+                          <b-color-picker v-model="data.options.groupList[index].backgroundColor"
+                                          size="small" :colors="colorsIndex"
+                                          @on-change="emitValue"></b-color-picker>
+                        </gui-field>
+                      </div>
+                      <div flex="box:mean">
+                        <gui-field label="指标值" label-width="65px">
+                          <b-input-number v-model="data.options.groupList[index].value" size="small"
+                                          @on-change="emitValue"></b-input-number>
+                        </gui-field>
+                        <gui-field label="指标字段" label-width="65px">
+                          <b-select v-model="data.options.groupList[index].field" size="small" @on-change="emitValue"
+                                    clearable>
+                            <b-option label="count" value="count"></b-option>
+                            <b-option label="avg" value="avg"></b-option>
+                            <b-option label="sum" value="sum"></b-option>
+                            <b-option label="max" value="max"></b-option>
+                            <b-option label="min" value="min"></b-option>
+                          </b-select>
+                        </gui-field>
+                      </div>
+                    </div>
+                  </transition-group>
+                </draggable>
+              </div>
+              <div style="padding: 5px 5px 16px;">
+                <b-button type="primary" dashed size="small" style="width: 100%;" @click="addIndex">新增指标</b-button>
+              </div>
+            </gui-group>
+          </template>
           <!--常规图表配置-->
           <template v-else>
             <gui-group group-name="基础属性">
@@ -375,7 +442,7 @@
               </template>
               <!--数据系列-->
               <b-collapse-panel title="数据系列" name="series" v-if="data.options.series">
-                <gui-field label="默认名称" >
+                <gui-field label="默认名称">
                   <b-input v-model="data.options.series.name" size="small" @on-change="emitValue" clearable></b-input>
                 </gui-field>
                 <gui-wrap label="指标" v-model="data.options.series.label.show" @on-change="emitValue">
@@ -493,8 +560,8 @@
         </div>
         <!--数据配置-->
         <div v-else>
-          <!--指标卡配置-->
-          <template v-if="isIndexCard">
+          <!--指标卡配置\指标组配置-->
+          <template v-if="isIndexCard||isIndexGroup">
             <gui-group group-name="数据配置">
               <gui-field label="数据来源">
                 <b-switch v-model="data.isOpen" size="large" true-value="dynamic" false-value="static"
@@ -503,11 +570,10 @@
                   <span slot="close">静态</span>
                 </b-switch>
               </gui-field>
-              <gui-field v-if="data.isOpen==='static'" label="静态数据源">
+              <gui-field v-if="isIndexCard&&data.isOpen==='static'" label="静态数据源">
                 <b-input-number v-model="data.staticDataSource[0].value" style="width: 100%;" @on-change="emitValue"/>
               </gui-field>
             </gui-group>
-
             <template v-if="data.isOpen==='dynamic'">
               <gui-group group-name="模板接口">
                 <div style="padding: 4px 12px;">
@@ -520,6 +586,7 @@
               </gui-group>
             </template>
           </template>
+          <!--常规图表配置-->
           <template v-else>
             <gui-group group-name="数据映射">
               <gui-field label="字段映射">
@@ -565,6 +632,7 @@
 </template>
 
 <script>
+import Draggable from 'vuedraggable'
 import { isNotEmpty } from '@/common/utils/assist'
 import GuiWrap from './gui/gui-wrap'
 import GuiGroup from './gui/gui-group'
@@ -576,9 +644,27 @@ import DataSourceSelect from './data-source-cfg/DataSourceSelect'
 import DataSourceParam from './data-source-cfg/DataSourceParam'
 import IconSelect from '@/components/IconSelect/IconSelect'
 
+const normalGroupBase = {
+  title: '指标标题',
+  backgroundColor: '#4065e0',
+  icon: 'ios-albums',
+  iconSize: 24,
+  value: 8888,
+  field: ''
+}
 export default {
   name: 'Config',
-  components: { IconSelect, DataSourceParam, DataSourceSelect, GuiInline, GuiField, GuiGroup, GuiWrap, VSlider },
+  components: {
+    IconSelect,
+    DataSourceParam,
+    DataSourceSelect,
+    GuiInline,
+    GuiField,
+    GuiGroup,
+    GuiWrap,
+    VSlider,
+    Draggable
+  },
   props: {
     data: {
       type: Object,
@@ -594,6 +680,10 @@ export default {
     // 指标卡
     isIndexCard() {
       return this.data.type === 'index'
+    },
+    // 指标组
+    isIndexGroup() {
+      return this.data.type === 'indexGroup'
     },
     showGrid() {
       return this.data.options && this.data.options.grid
@@ -627,6 +717,7 @@ export default {
   },
   data() {
     return {
+      isDragging: false,
       tabs: [
         { key: 'tab1', title: '图表配置' },
         { key: 'tab2', title: '数据配置' }
@@ -641,6 +732,31 @@ export default {
     }
   },
   methods: {
+    addIndex() {
+      if (this.data.options.groupList.length === 5) {
+        this.$message({ type: 'danger', content: '指标组内指标建议5个以内!' })
+        return
+      }
+      this.data.options.groupList.push({ ...normalGroupBase })
+      this.emitValue()
+    },
+    // 删除一项指标
+    removeEnumItem(index) {
+      if (this.data.options.groupList.length === 2) {
+        this.$message({ type: 'danger', content: '指标组内指标需要保持至少2个!' })
+        return
+      }
+      this.data.options.groupList.splice(index, 1)
+      this.emitValue()
+    },
+    // 枚举拖拽结束
+    onDragEnd(event) {
+      this.isDragging = false
+      let { oldIndex, newIndex } = event
+      if (oldIndex !== newIndex) {
+        this.emitValue()
+      }
+    },
     // 自适应按钮事件
     autoClick() {
       this.data.options.series.barWidth = 'auto'
@@ -654,7 +770,7 @@ export default {
       } catch (e) {
       }
     },
-    // 视觉影射类型改变
+    // 视觉映射类型改变
     visualMapChange(val) {
       if (val === 'piecewise') {
         this.data.options.visualMap.itemWidth = 10
@@ -691,3 +807,58 @@ export default {
   }
 }
 </script>
+
+<style lang="stylus" scoped>
+.index-item {
+  position: relative;
+  border: 1px solid #eaeaea;
+  margin: 0 5px 5px;
+  padding-top: 5px;
+  background-color: #fff;
+  .move-drag {
+    position absolute;
+    display: none;
+    top: -1px;
+    left: 2px;
+    cursor: grab;
+    z-index: 10;
+  }
+  .remove-icon {
+    position absolute;
+    display: none;
+    top: -1px;
+    right: 2px;
+    cursor: pointer;
+    z-index: 10;
+  }
+  &.ghost {
+    position: relative;
+    font-size: 0;
+    border: 1px dashed #ff4d4f;
+    height: 50px;
+    overflow: hidden;
+    &::after {
+      position: absolute;
+      content: '';
+      background: #e6f2ff;
+      display: block;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+    }
+  }
+  &:hover {
+    .move-drag, .remove-icon {
+      display: block;
+    }
+  }
+}
+.flip-list-move {
+  transition: transform 0.5s;
+}
+
+.no-move {
+  transition: transform 0s;
+}
+</style>

@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import { buildOptions } from './utils/util'
+import { buildOptions } from '../utils/util'
 import 'echarts/lib/component/visualMap'
 import 'echarts/lib/component/geo'
 import china from 'echarts/map/json/china.json'

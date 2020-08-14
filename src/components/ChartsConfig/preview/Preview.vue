@@ -19,11 +19,16 @@
                                      :element="element" :item-gap="16"
                                      :dynamic="isOpen" :conditions="conditionForm">
             </index-card-preview-item>
+            <index-group-preview-item v-else-if="element.type==='indexGroup'" :key="element.key"
+                                      ref="chartItems"
+                                      :element="element" :item-gap="16"
+                                      :dynamic="isOpen" :conditions="conditionForm">
+            </index-group-preview-item>
             <charts-preview-item v-else :key="element.key"
                                  ref="chartItems"
                                  :element="element" :item-gap="16"
-                                 :dynamic="isOpen" :conditions="conditionForm"
-            ></charts-preview-item>
+                                 :dynamic="isOpen" :conditions="conditionForm">
+            </charts-preview-item>
           </template>
         </template>
       </div>
@@ -38,10 +43,11 @@ import { getRenderingConfig } from '@/api/excavate-analyze/excavate-cfg.api'
 import { basicComponents } from '../utils/util'
 import RenderFilter from './RenderFilter'
 import IndexCardPreviewItem from '@/components/ChartsConfig/preview/IndexCardPreviewItem'
+import IndexGroupPreviewItem from '@/components/ChartsConfig/preview/IndexGroupPreviewItem'
 
 export default {
   name: 'Preview',
-  components: { IndexCardPreviewItem, RenderFilter, ChartsPreviewItem },
+  components: { IndexGroupPreviewItem, IndexCardPreviewItem, RenderFilter, ChartsPreviewItem },
   data() {
     return {
       resource: {},

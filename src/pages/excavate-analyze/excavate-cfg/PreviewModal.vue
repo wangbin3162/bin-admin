@@ -12,6 +12,11 @@
                                    :element="element" :item-gap="16"
                                    dynamic :conditions="conditionForm">
           </index-card-preview-item>
+          <index-group-preview-item v-else-if="element.type==='indexGroup'" :key="element.key"
+                                    ref="chartItems"
+                                    :element="element" :item-gap="16"
+                                    dynamic :conditions="conditionForm">
+          </index-group-preview-item>
           <charts-preview-item v-else :key="element.key"
                                ref="chartItems"
                                :element="element" :item-gap="16"
@@ -30,10 +35,11 @@ import { basicComponents } from '@/components/ChartsConfig/utils/util'
 import RenderFilter from '@/components/ChartsConfig/preview/RenderFilter'
 import ChartsPreviewItem from '@/components/ChartsConfig/preview/ChartsPreviewItem'
 import IndexCardPreviewItem from '@/components/ChartsConfig/preview/IndexCardPreviewItem'
+import IndexGroupPreviewItem from '@/components/ChartsConfig/preview/IndexGroupPreviewItem'
 
 export default {
   name: 'PreviewModal',
-  components: { IndexCardPreviewItem, ChartsPreviewItem, RenderFilter },
+  components: { IndexGroupPreviewItem, IndexCardPreviewItem, ChartsPreviewItem, RenderFilter },
   data() {
     return {
       resource: {},

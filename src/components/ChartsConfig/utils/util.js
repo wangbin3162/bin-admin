@@ -86,6 +86,53 @@ export const basicComponents = [
     dataSourceParam: []
   },
   {
+    name: '指标组',
+    type: 'indexGroup',
+    icon: 'index-group',
+    options: {
+      title: '指标组',
+      height: 100,
+      groupList: [
+        {
+          title: '指标标题1',
+          backgroundColor: '#4065e0',
+          icon: 'ios-albums',
+          iconSize: 24,
+          value: 1234,
+          field: ''
+        },
+        {
+          title: '指标标题2',
+          backgroundColor: '#4065e0',
+          icon: 'ios-albums',
+          iconSize: 24,
+          value: 8888,
+          field: ''
+        },
+        {
+          title: '指标标题3',
+          backgroundColor: '#4065e0',
+          icon: 'ios-albums',
+          iconSize: 24,
+          value: 9527,
+          field: ''
+        },
+        {
+          title: '指标标题4',
+          backgroundColor: '#4065e0',
+          icon: 'ios-albums',
+          iconSize: 24,
+          value: 2345,
+          field: ''
+        }
+      ]
+    },
+    isOpen: 'static',
+    staticDataSource: [],
+    dataSource: '',
+    dataSourceParam: []
+  },
+  {
     name: '折线图',
     type: 'line',
     icon: 'linechart',

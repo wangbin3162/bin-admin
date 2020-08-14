@@ -47,16 +47,23 @@
                             :list="currentList"
                             @on-delete="handleDeleteWidget">
                 </index-card>
-                <charts-wrap
-                  v-else
-                  :key="element.key"
-                  :element="element"
-                  :select.sync="selectWidget"
-                  :index="index"
-                  :list="currentList"
-                  :log="chartLog"
-                  @on-delete="handleDeleteWidget"
-                ></charts-wrap>
+                <index-group v-else-if="element.type==='indexGroup'"
+                             :key="element.key"
+                             :element="element"
+                             :select.sync="selectWidget"
+                             :index="index"
+                             :list="currentList"
+                             @on-delete="handleDeleteWidget">
+                </index-group>
+                <charts-wrap v-else
+                             :key="element.key"
+                             :element="element"
+                             :select.sync="selectWidget"
+                             :index="index"
+                             :list="currentList"
+                             :log="chartLog"
+                             @on-delete="handleDeleteWidget">
+                </charts-wrap>
               </template>
             </template>
           </draggable>
@@ -85,14 +92,15 @@
 import Draggable from 'vuedraggable'
 import { deepCopy, isEmpty, isNotEmpty } from '@/common/utils/assist'
 import { basicComponents } from './utils/util'
-import ChartsWrap from './ChartsWrap'
+import ChartsWrap from './widget/ChartsWrap'
 import Config from './Config'
 import Preview from './preview/Preview'
-import IndexCard from '@/components/ChartsConfig/IndexCard'
+import IndexCard from '@/components/ChartsConfig/widget/IndexCard'
+import IndexGroup from '@/components/ChartsConfig/widget/IndexGroup'
 
 export default {
   name: 'CtrlPanel',
-  components: { IndexCard, Preview, Config, ChartsWrap, Draggable },
+  components: { IndexGroup, IndexCard, Preview, Config, ChartsWrap, Draggable },
   inject: ['ConfigRoot'],
   props: {
     list: {
