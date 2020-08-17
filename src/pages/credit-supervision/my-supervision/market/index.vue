@@ -9,7 +9,7 @@
     </div>
 
     <ul>
-      <li v-for="n in 7" :key="n" class="list-item">
+      <li v-for="item in list" :key="item.id" class="list-item">
         <div class="title-con">
           <div class="icon">
             <b-icon name="ios-stats" color="#0d85ff" size="30">
@@ -18,11 +18,11 @@
 
           <div class="text">
             <p>
-              江苏浮云网络科技有限公司
+              {{ item.objectName }}
             </p>
             <div>
               <span>法定代表人：郭大宁</span>
-              <span>监管日期：2020-07-27 15:30:20</span>
+              <span>监管日期：{{ item.createDate }}</span>
             </div>
           </div>
         </div>
@@ -53,6 +53,7 @@
 </template>
 
 <script>
+  import { jgUserConfigSearch } from '@/api/credit-supervision/my-supervision.api'
   import AddSupervision from './AddSupervision'
 
   export default {
@@ -68,15 +69,43 @@
         open: false,
         total: 0,
         query: {
+          jgType: 'MS',
           size: 10,
           page: 1
-        }
+        },
+        listLoading: false,
+        list: []
       }
     },
     created () {
-
+      this.getList(this.query)
     },
     methods: {
+
+      /**
+       * @author haodongdong
+       * @description 获取市场主体监管列表
+       *  @param {Object} query 查询参数
+       * @param {string} query.jgType 监管类型，MS 市场主体 KP 重点人群 IA 重点领域
+       * @param {number} query.size 分页大小
+       * @param {string} query.page 当前页
+       */
+      async getList (query) {
+        this.listLoading = true
+        try {
+          const { total, rows } = await jgUserConfigSearch(query)
+          this.list = rows
+          this.total = total
+        } catch (error) {
+          console.error(error)
+          this.$notice.danger({
+            title: '加载失败',
+            desc: error
+          })
+        }
+        this.listLoading = false
+      },
+
       /**
        * @author haodongdong
        * @description 分页组件页面切换回调

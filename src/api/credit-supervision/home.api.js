@@ -15,8 +15,8 @@ import Qs from 'qs'
  /**
   * @typedef {Object} personClass 主体信息
   * @property {string} id 主体id
-  * @property {number} supervision 是否监管，0 未监管 1 监管
-  * @property {number} redBlack 红黑名单状态 0 黑名单 1 红名单 空 无红黑名单
+  * @property {string} supervision 是否监管，0 未监管 1 监管
+  * @property {string} redBlack 红黑名单状态 0 黑名单 1 红名单 空 无红黑名单
   * @property {string} [comp_name] 企业名称
   * @property {string} [highlight] 企业名是否高亮
   * @property {string} [clrq] 成立日期

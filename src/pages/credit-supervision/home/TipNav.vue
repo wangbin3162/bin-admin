@@ -17,10 +17,26 @@
     data () {
       return {
         tips: [
-          { icon: 'verified_user', title: '市场主体', link: '' },
-          { icon: 'assignment-ind', title: '重点人群', link: '' },
-          { icon: 'reorder', title: '重点领域', link: '' },
-          { icon: 'view_carousel', title: '重点行业', link: '' }
+          {
+            icon: 'verified_user',
+            title: '市场主体',
+            link: '/creditSupervision/mySupervision/MS'
+          },
+          {
+            icon: 'assignment-ind',
+            title: '重点人群',
+            link: '/creditSupervision/mySupervision/KP'
+          },
+          {
+            icon: 'reorder',
+            title: '重点领域',
+            link: '/creditSupervision/mySupervision/IA'
+          },
+          {
+            icon: 'view_carousel',
+            title: '重点行业',
+            link: '/creditSupervision/mySupervision/KI'
+          }
         ]
       }
     },

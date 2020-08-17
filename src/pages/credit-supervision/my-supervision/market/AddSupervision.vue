@@ -5,21 +5,17 @@
     <v-table-wrap>
       <v-filter-bar @keyup-enter="handleSearchBtn">
         <v-filter-item title="名称" :span="8">
-          <b-input v-model="listQuery.typeName" placeholder="输入名称" clearable></b-input>
+          <b-input v-model="query.keyValues.comp_name" placeholder="输入名称" clearable></b-input>
         </v-filter-item>
 
-        <v-filter-item @on-search="handleSearchBtn" @on-reset="resetQuery">
+        <v-filter-item @on-search="handleSearchBtn" @on-reset="resetBtn">
         </v-filter-item>
       </v-filter-bar>
 
       <b-table :columns="columns" :data="list" :loading="listLoading" size="small">
-        <template v-slot:typeName="{ row }">
-          <span class="t-ellipsis" :title="row.typeName">{{ row.typeName }}</span>
-        </template>
-
         <template v-slot:action="{ row }">
-          <b-button type="text" @click.stop="handleSelectBtn(row)">
-            选择
+          <b-button type="text" @click.stop="handleAddSupervisiontBtn(row)">
+            加入监管
           </b-button>
         </template>
       </b-table>
@@ -27,13 +23,13 @@
 
     <div slot="footer">
       <!--下方分页器-->
-      <b-page :total="total" :current.sync="listQuery.page" @on-change="handleCurrentChange"/>
+      <b-page :total="total" :current.sync="query.page" @on-change="handleCurrentChange"/>
     </div>
   </b-modal>
 </template>
 
 <script>
-  // import { getConTypeTree, getConTypeList } from '../../../api/data-manage/res-info.api'
+  import { getGatherList } from '@/api/credit-supervision/my-supervision.api'
 
   export default {
     name: 'MSAddsupervision',
@@ -46,14 +42,15 @@
     data () {
       return {
         open: this.value,
-        treeLoading: false,
-        curTreeNode: null,
-        treeData: [],
         total: 0,
-        listQuery: {
-          parentId: '',
-          typeName: '',
-          typeCode: '',
+        query: {
+          resourceKey: 'DIR-20191014-173239-707', // 市场主体的resourceKey
+          keyValues: {
+            comp_name: ''
+          },
+          ops: {
+            comp_name: 'LIKE'
+          },
           size: 10,
           page: 1
         },
@@ -61,11 +58,11 @@
         list: [],
         columns: [
           { type: 'index', width: 50 },
-          { title: '名称', key: '' },
-          { title: '主体类别', key: '' },
-          { title: '组织结构码', key: '' },
-          { title: '工商注册号', key: '' },
-          { title: '操作', slot: 'action', width: 70 }
+          { title: '名称', key: 'comp_name' },
+          { title: '统一社会信用码', key: 'id_shxym', ellipsis: true, tooltip: true },
+          { title: '组织结构码', key: 'id_zzjg', ellipsis: true, tooltip: true },
+          { title: '工商注册号', key: 'id_gszc', ellipsis: true, tooltip: true },
+          { title: '操作', slot: 'action', width: 70, align: 'center' }
         ]
       }
     },
@@ -80,20 +77,26 @@
     methods: {
       /**
        * @author haodongdong
-       * @description 查询列表
+       * @description 获取需要添加监管的市场主体列表
+       * @param {Object} query 查询参数
+       * @param {string} query.resourceKey 资源key，市场主体：DIR-20191014-173239-707 重点人群：DIR-20191014-173845-746
+       * @param {number} query.size 分页大小
+       * @param {string} query.page 当前页
        */
-      async searchList() {
-        // this.setListData()
-        // try {
-        //   const res = await getConTypeList(this.listQuery)
-        //   this.setListData({
-        //     list: res.rows,
-        //     total: res.total
-        //   })
-        // } catch (error) {
-        //   console.error(error)
-        //   this.$notice.danger({ title: '加载失败', desc: error })
-        // }
+      async getList (query) {
+        this.listLoading = true
+        try {
+          const { total, rows } = await getGatherList(query)
+          this.total = total
+          this.list = rows
+        } catch (error) {
+          console.error(error)
+          this.$notice.danger({
+            title: '加载失败',
+            desc: error
+          })
+        }
+        this.listLoading = false
       },
 
       /**
@@ -103,46 +106,42 @@
        */
       handleVisibleChange (visible) {
         if (visible) {
-          this.init()
+          this.getList(this.query)
         } else {
-          this.listQuery.typeName = ''
-          this.listQuery.typeCode = ''
-          this.listQuery.size = 10
-          this.listQuery.page = 1
-          this.curTreeNode = null
-          this.treeData = []
+          this.query.size = 10
+          this.query.page = 1
           this.list = []
         }
       },
 
-      async init () {
-        this.searchList()
-      },
-
+      /**
+       * @author haodongdong
+       * @description 搜索按钮回调
+       */
       handleSearchBtn () {
-
+        this.query.page = 1
+        this.getList(this.query)
       },
 
       /**
        * @author haodongdong
        * @description 重置按钮回调
        */
-      resetQuery () {
-        this.listQuery.typeName = ''
-        this.listQuery.typeCode = ''
-        this.listQuery.size = 10
-        this.listQuery.page = 1
+      resetBtn () {
+        this.query.size = 10
+        this.query.page = 1
+        this.query.keyValues.comp_name = ''
         this.handleSearchBtn()
       },
 
       /**
        * @author haodongdong
-       * @description 选择按钮回调
+       * @description 加入监管按钮回调
        * @param {Object} row 当前行数据
        * @param {string} row.typeName 类别名称
        * @param {string} row.typeCode 类别编码
        */
-      handleSelectBtn (row) {
+      handleAddSupervisiontBtn (row) {
         this.$emit('selected', row)
         this.open = false
       },

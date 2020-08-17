@@ -20,7 +20,7 @@ export default [
   {
     path: '/creditSupervision/mySupervision',
     name: 'MySupervision',
-    redirect: '/CreditSupervision/mySupervision/MS',
+    redirect: '/creditSupervision/mySupervision/MS',
     component: () => import(/* webpackChunkName: "MySupervision" */ '@/pages/credit-supervision/my-supervision'),
     meta: { title: '我的监管' },
     children: [
