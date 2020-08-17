@@ -1,27 +1,8 @@
 <template>
   <div class="gather-analyze">
-    <div class="filter">
-      <b-date-picker style="width: 200px;" type="date" separator=" ~ " size="small"
-                     placeholder="select date"></b-date-picker>
-    </div>
     <!--图表区域-->
     <div class="chart-widget-item">
-      <b-card class="box-card" head-tip>
-        <template v-slot:header>
-          <div flex="main:justify cross:center">
-            <span>自然人分析</span>
-            <div style="width: 200px;text-align: right;">
-              <b-date-picker :open="dateRangeOpen" :value="dateRange" confirm type="daterange" placement="bottom-end"
-                             @on-change="handleChange" @on-clear="dateRangeOpen = false" @on-ok="dateRangeOpen = false"
-              >
-                <a href="javascript:void(0)" @click="dateRangeOpen = !dateRangeOpen">
-                  <template v-if="dateRange.length===0">选择日期区间</template>
-                  <template v-else>{{ dateRange[0] }} ~ {{ dateRange[1] }}</template>
-                </a>
-              </b-date-picker>
-            </div>
-          </div>
-        </template>
+      <b-card class="box-card" head-tip header="自然人分析">
         <div flex="box:mean">
           <div class="chart-wrap">
             <b-charts height="350px" ref="chart1" theme="charts-theme" :options="chartOption1"/>
@@ -33,31 +14,45 @@
       </b-card>
     </div>
     <div class="chart-widget-item">
-      <b-card class="box-card" head-tip>
-        <template v-slot:header>
-          <div flex="main:justify cross:center">
-            <span>法人成立日期范围分组分析</span>
-            <div style="width: 200px;text-align: right;">
-              <b-date-picker :open="dateRangeOpen2" :value="dateRange2" confirm type="daterange" placement="bottom-end"
-                             @on-change="handleChange2" @on-clear="dateRangeOpen2 = false"
-                             @on-ok="dateRangeOpen2 = false"
-              >
-                <a href="javascript:void(0)" @click="dateRangeOpen2 = !dateRangeOpen2">
-                  <template v-if="dateRange2.length===0">选择日期区间</template>
-                  <template v-else>{{ dateRange2[0] }} ~ {{ dateRange2[1] }}</template>
-                </a>
-              </b-date-picker>
-            </div>
-          </div>
-        </template>
+      <b-card class="box-card" head-tip header="法人成立日期范围分组分析">
         <b-charts height="350px" theme="charts-theme" :options="chartOption3"/>
       </b-card>
     </div>
+    <div class="chart-widget-item">
+      <b-card class="box-card" head-tip>
+        <template v-slot:header>
+          <div flex="main:justify cross:center">
+            <span>企业行业种类分析</span>
+            <div class="right" flex="main:justify cross:center">
+              <b-button-group style="margin: 0 16px;">
+                <b-button v-for="year in yearList" :key="year"
+                          :type="activeDeptTabYear===year?'primary':'default'" @click="changeYear(year)">
+                  {{ year }}年
+                </b-button>
+              </b-button-group>
+            </div>
+          </div>
+        </template>
+        <b-table :columns="columns" :data="data" border>
+          <template #ctrl="{row}">
+            <b-button type="text" @click="handleClickHy(row)">
+              <svg-icon icon-class="areachart" style="width: 22px;height:22px;"/>
+            </b-button>
+          </template>
+        </b-table>
+      </b-card>
+    </div>
+    <b-modal v-model="analyzeModal" :title="`${hy.codeName}-趋势分析`" width="800">
+      <div class="chart-inner">
+        <b-charts height="350px" theme="charts-theme" :options="lineChartOption"/>
+      </div>
+    </b-modal>
   </div>
 </template>
 
 <script>
 import { formatDataSet } from 'bin-charts/src/utils/util'
+import * as api from '@/api/excavate.api'
 
 require('bin-charts/src/theme/charts-theme')
 export default {
@@ -146,13 +141,37 @@ export default {
             data: [1, 25, 25, 15, 12]
           }
         ]
+      },
+      columns: [
+        { title: '行业', key: 'codeName' },
+        { title: '数量', key: 'count', align: 'center' },
+        { title: '占比', key: 'percent', align: 'center' },
+        { title: '趋势分析', slot: 'ctrl', align: 'center' }
+      ],
+      data: [],
+      yearList: [],
+      currentYear: '',
+      activeDeptTabYear: 2020,
+      analyzeModal: false,
+      hy: {},
+      lineChartOption: {
+        tooltip: { trigger: 'axis' },
+        grid: { top: 30, right: 30, left: 30, bottom: 30 },
+        xAxis: { type: 'category', axisTick: { alignWithLabel: true } },
+        yAxis: { type: 'value' },
+        series: [{ type: 'line', name: '数量' }],
+        dataset: { source: [['x', 'y']] }
       }
     }
   },
   created() {
+    let currentYear = new Date().getFullYear()
+    this.currentYear = currentYear.toString()
+    this.activeDeptTabYear = currentYear
+    this.yearList = [currentYear - 2, currentYear - 1, currentYear]
     this.initChart1()
-    this.initChart2()
     this.initChart3()
+    this.getLegHydm()
   },
   mounted() {
     // 注册图表点击事件
@@ -161,23 +180,6 @@ export default {
     }
   },
   methods: {
-    // 日期区间1改变事件
-    handleChange(date) {
-      if (date[0] === '' && date[1] === '') {
-        this.dateRange = []
-        return
-      }
-      this.dateRange = date
-    },
-    // 日期区间2改变事件
-    handleChange2(date) {
-      if (date[0] === '' && date[1] === '') {
-        this.dateRange2 = []
-        return
-      }
-      this.dateRange2 = date
-      this.initChart3()
-    },
     // 图表选中点击事件
     chartClick(params) {
       const { componentType, name } = params
@@ -193,44 +195,97 @@ export default {
     },
     // 自然人年龄分布图
     initChart1() {
-      let data = [
-        { x: '≤19岁', y: this.$util.getRandomInt(100, 500) },
-        { x: '20-29岁', y: this.$util.getRandomInt(100, 500) },
-        { x: '30-39岁', y: this.$util.getRandomInt(100, 500) },
-        { x: '40-49岁', y: this.$util.getRandomInt(100, 500) },
-        { x: '≥50岁', y: this.$util.getRandomInt(100, 500) }
-      ]
-      this.chartOption1.dataset = formatDataSet({ xField: 'x', yField: 'y' }, data)
+      let { resourceKey } = this.$route.query
+      api.getGenderRatio(resourceKey).then(resp => {
+        if (resp.data.code === '0') {
+          let { data } = resp.data
+          this.sumAndMap(data)
+          this.initChart2() // 加载全部男女
+          this.chartOption1.dataset = formatDataSet({ xField: 'range', yField: 'count' }, data)
+        }
+      })
     },
     // 根据点选或查询所有男女分布图
     initChart2(type) {
+      let data = []
       if (!type) {
         this.chartOption2.title.text = '全部年龄段性别分布'
+        data = [
+          { x: '女', y: this.totalFemale },
+          { x: '男', y: this.totalMale }
+        ]
       } else {
         this.chartOption2.title.text = type + '性别分布'
+        data = [
+          { x: '女', y: this.ageMap[type].sexGroup['女'] || 0 },
+          { x: '男', y: this.ageMap[type].sexGroup['男'] || 0 }
+        ]
       }
-      let data = [
-        { x: '女', y: this.$util.getRandomInt(100, 500) },
-        { x: '男', y: this.$util.getRandomInt(100, 500) }
-      ]
       this.chartOption2.dataset = formatDataSet({ xField: 'x', yField: 'y' }, data)
+    },
+    // 分别求和男女总数和年龄分布映射
+    sumAndMap(data) {
+      let map = {}
+      let sumFemale = 0
+      let sumMale = 0
+      data.forEach(item => {
+        map[item.range] = { count: item.count, sexGroup: item.sexGroup }
+        if (item.count > 0) {
+          if (item.sexGroup['女']) {
+            sumFemale += Number.parseInt(item.sexGroup['女'])
+          }
+          if (item.sexGroup['男']) {
+            sumMale += Number.parseInt(item.sexGroup['男'])
+          }
+        }
+      })
+      this.ageMap = map
+      this.totalFemale = sumFemale
+      this.totalMale = sumMale
     },
     // 法人成立日期范围分组分析
     initChart3() {
-      let data1 = []
-      let data2 = []
-      let sum = 0
-      for (let i = 0; i < 5; i++) {
-        let num = this.$util.getRandomInt(100, 500)
-        data1.push(num)
-        sum += num
-      }
-      for (let i = 0; i < 5; i++) {
-        let percent = (data1[i] / sum * 100).toFixed(2)
-        data2.push(percent)
-      }
-      this.chartOption3.series[0].data = data1
-      this.chartOption3.series[1].data = data2
+      let { resourceKey } = this.$route.query
+      api.getLegClrq(resourceKey).then(resp => {
+        if (resp.data.code === '0') {
+          let { data } = resp.data
+          let sum = data.map(i => i.count).reduce((total, currentValue) => total + currentValue)
+          let data1 = data.map(i => i.count)
+          let data2 = data.map(i => (i.count / sum * 100).toFixed(2))
+          this.chartOption3.series[0].data = data1
+          this.chartOption3.series[1].data = data2
+        }
+      })
+    },
+    // 行业分布
+    getLegHydm() {
+      let { resourceKey } = this.$route.query
+      api.getLegHydm(resourceKey).then(resp => {
+        if (resp.data.code === '0') {
+          let { data } = resp.data
+          // let sum = data.map(i => i.count).reduce((total, currentValue) => total + currentValue)
+          this.data = data
+        }
+      })
+    },
+    // 改变年份
+    changeYear(year) {
+      if (this.activeDeptTabYear === year) return
+      this.activeDeptTabYear = year
+      this.getLegHydm()
+    },
+    // 部门行业查看趋势分析
+    handleClickHy(row) {
+      this.hy = { ...row }
+      // 根据选择年份，获取这个部门本年度12个月的数据信息
+      let { resourceKey } = this.$route.query
+      api.getGatherDeptTrend(resourceKey, this.activeDeptTabYear, row.code).then(resp => {
+        if (resp.data.code === '0') {
+          let data = resp.data.data.map(i => ({ month: i.range + '月', value: i.count }))
+          this.lineChartOption.dataset = formatDataSet({ xField: 'month', yField: 'value' }, data)
+          this.analyzeModal = true
+        }
+      })
     }
   }
 }

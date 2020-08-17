@@ -46,3 +46,98 @@ export function renderingChart(chartId, condition) {
     }
   })
 }
+
+/* 归集分析-信息归集趋势分析接口 */
+export function getGatherData(resourceKey, type = 'Y', year) {
+  return request({
+    url: '/api/wj/ext/gather/data',
+    method: 'get',
+    params: {
+      resourceKey,
+      type,
+      year
+    }
+  })
+}
+
+/* 归集分析-部门采集数据排行分析 */
+export function getGatherDeptData(resourceKey, year) {
+  return request({
+    url: '/api/wj/ext/gather/dept/top',
+    method: 'get',
+    params: {
+      resourceKey,
+      year
+    }
+  })
+}
+
+/* 归集分析-部门采集数据趋势分析 */
+export function getGatherDeptTrend(resourceKey, year, createDept) {
+  return request({
+    url: '/api/wj/ext/gather/dept/trend',
+    method: 'get',
+    params: {
+      resourceKey,
+      year,
+      createDept
+    }
+  })
+}
+
+/* 主体分析-男女年龄区间和性别比例分析 */
+export function getGenderRatio(resourceKey) {
+  return request({
+    url: '/api/wj/ext/nat/genderRatio',
+    method: 'get',
+    params: {
+      resourceKey
+    }
+  })
+}
+
+/* 主体分析-企业注册资本分析 */
+export function getLegZczb(resourceKey) {
+  return request({
+    url: '/api/wj/ext/leg/zczb',
+    method: 'get',
+    params: {
+      resourceKey
+    }
+  })
+}
+
+/* 主体分析-企业成立日期分析 */
+export function getLegClrq(resourceKey) {
+  return request({
+    url: '/api/wj/ext/leg/clrq',
+    method: 'get',
+    params: {
+      resourceKey
+    }
+  })
+}
+
+/* 主体分析-企业行业种类分析 */
+export function getLegHydm(resourceKey) {
+  return request({
+    url: '/api/wj/ext/leg/hydm',
+    method: 'get',
+    params: {
+      resourceKey
+    }
+  })
+}
+
+/* 主体分析-企业行业种类趋势分析 */
+export function getLegHydmTrend(resourceKey, year, code) {
+  return request({
+    url: '/api/wj/ext/leg/hydm/trend',
+    method: 'get',
+    params: {
+      resourceKey,
+      year,
+      code
+    }
+  })
+}

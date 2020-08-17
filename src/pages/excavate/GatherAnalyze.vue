@@ -1,9 +1,5 @@
 <template>
   <div class="gather-analyze">
-    <div class="filter">
-      <b-date-picker style="width: 200px;" type="date" separator=" ~ " size="small"
-                     placeholder="select date"></b-date-picker>
-    </div>
     <!--图表区域-->
     <div class="chart-widget-item">
       <b-card class="box-card" head-tip>
@@ -60,6 +56,7 @@
 
 <script>
 import { formatDataSet } from 'bin-charts/src/utils/util'
+import * as api from '@/api/excavate.api'
 
 require('bin-charts/src/theme/charts-theme')
 export default {
@@ -69,7 +66,7 @@ export default {
       barChartOption: {
         tooltip: {},
         grid: { top: 50, right: 50, left: 50, bottom: 50 },
-        xAxis: { type: 'category' },
+        xAxis: { type: 'category', name: '年' },
         yAxis: { type: 'value' },
         series: [{ type: 'bar', name: '数量', barWidth: '40%' }],
         dataset: { source: [['x', 'y']] }
@@ -79,9 +76,9 @@ export default {
       showMonthData: false, // 显示月份内容
       activeTab: 'quarter',
       columns: [
-        { title: '部门', key: 'departName' },
-        { title: '归集数量', key: 'gatherCount', align: 'center' },
-        { title: '占比', key: 'proportion', align: 'center' },
+        { title: '部门', key: 'deptName' },
+        { title: '归集数量', key: 'count', align: 'center' },
+        { title: '占比', key: 'percent', align: 'center' },
         { title: '趋势分析', slot: 'ctrl', align: 'center' }
       ],
       data: [],
@@ -100,6 +97,7 @@ export default {
   },
   created() {
     let currentYear = new Date().getFullYear()
+    this.currentYear = currentYear.toString()
     this.activeDeptTabYear = currentYear
     this.yearList = [currentYear - 2, currentYear - 1, currentYear]
     this.getYearData()
@@ -114,30 +112,40 @@ export default {
   methods: {
     // 获取年份的方法
     getYearData() {
-      let data = []
-      for (let i = 0; i < this.yearList.length; i++) {
-        data.push({ year: `${this.yearList[i]}年`, value: this.$util.getRandomInt(100, 1000) })
-      }
-      this.barChartOption.dataset = formatDataSet({ xField: 'year', yField: 'value' }, data)
+      let { resourceKey } = this.$route.query
+      let currentYear = new Date().getFullYear()
+      api.getGatherData(resourceKey, 'Y', currentYear).then(resp => {
+        if (resp.data.code === '0') {
+          let data = resp.data.data.map(i => ({ year: i.range + '年', value: i.count }))
+          this.barChartOption.xAxis.name = '年'
+          this.barChartOption.dataset = formatDataSet({ xField: 'year', yField: 'value' }, data)
+        }
+      })
       // 清空季度月度标识
       this.showMonthData = false
       this.activeTab = ''
     },
     // 根据某一年获取对应的4个季度数据
-    getQuarterData(year) {
-      let data = []
-      for (let i = 1; i <= 4; i++) {
-        data.push({ quarter: `${i}季度`, value: this.$util.getRandomInt(100, 1000) })
-      }
-      this.barChartOption.dataset = formatDataSet({ xField: 'quarter', yField: 'value' }, data)
+    getQuarterData() {
+      let { resourceKey } = this.$route.query
+      api.getGatherData(resourceKey, 'Q', this.currentYear).then(resp => {
+        if (resp.data.code === '0') {
+          let data = resp.data.data.map(i => ({ quarter: i.range + '季度', value: i.count }))
+          this.barChartOption.xAxis.name = '季度'
+          this.barChartOption.dataset = formatDataSet({ xField: 'quarter', yField: 'value' }, data)
+        }
+      })
     },
     // 根据某一年获取对应的12个月份度数据
-    getMonthData(year) {
-      let data = []
-      for (let i = 1; i <= 12; i++) {
-        data.push({ month: `${i}月`, value: this.$util.getRandomInt(100, 1000) })
-      }
-      this.barChartOption.dataset = formatDataSet({ xField: 'month', yField: 'value' }, data)
+    getMonthData() {
+      let { resourceKey } = this.$route.query
+      api.getGatherData(resourceKey, 'M', this.currentYear).then(resp => {
+        if (resp.data.code === '0') {
+          let data = resp.data.data.map(i => ({ month: i.range + '月', value: i.count }))
+          this.barChartOption.xAxis.name = '月'
+          this.barChartOption.dataset = formatDataSet({ xField: 'month', yField: 'value' }, data)
+        }
+      })
     },
     // 改变季度月度
     changeTab(type) {
@@ -160,7 +168,7 @@ export default {
       const { componentType, name, dimensionNames } = params
       if (componentType === 'series' && dimensionNames[0] === 'year' && !this.showMonthData) {
         this.showMonthData = true
-        this.currentYear = name
+        this.currentYear = name.slice(0, name.length - 1)
         this.changeTab('quarter')
       }
     },
@@ -168,14 +176,14 @@ export default {
     handleClickDept(dept) {
       this.depart = { ...dept }
       // 根据选择年份，获取这个部门本年度12个月的数据信息
-      console.log(this.activeDeptTabYear, this.depart)
-
-      let data = []
-      for (let i = 1; i <= 12; i++) {
-        data.push({ month: `${i}月`, value: this.$util.getRandomInt(100, 1000) })
-      }
-      this.lineChartOption.dataset = formatDataSet({ xField: 'month', yField: 'value' }, data)
-      this.analyzeModal = true
+      let { resourceKey } = this.$route.query
+      api.getGatherDeptTrend(resourceKey, this.activeDeptTabYear, this.depart.deptId).then(resp => {
+        if (resp.data.code === '0') {
+          let data = resp.data.data.map(i => ({ month: i.range + '月', value: i.count }))
+          this.lineChartOption.dataset = formatDataSet({ xField: 'month', yField: 'value' }, data)
+          this.analyzeModal = true
+        }
+      })
     },
     // 获取部门数据归集分析数据
     initDeparts() {
@@ -183,16 +191,14 @@ export default {
     },
     // 获取部门数据
     getDepartList() {
-      let data = []
-      for (let i = 0; i < 5; i++) {
-        data.push({
-          id: '_id' + i,
-          departName: '部门名称' + i,
-          gatherCount: this.$util.getRandomInt(1000, 8000),
-          proportion: this.$util.getRandomInt(1, 100) + '%'
-        })
-      }
-      this.data = data
+      let { resourceKey } = this.$route.query
+      api.getGatherDeptData(resourceKey, this.activeDeptTabYear).then(resp => {
+        if (resp.data.code === '0') {
+          let { data } = resp.data
+          // let sum = data.map(i => i.count).reduce((total, currentValue) => total + currentValue)
+          this.data = data
+        }
+      })
     }
   }
 }
