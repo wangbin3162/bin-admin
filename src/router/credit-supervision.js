@@ -49,5 +49,11 @@ export default [
         meta: { title: '重点行业监管' }
       }
     ]
+  },
+  {
+    path: '/creditSupervision/detail',
+    name: 'CreditSupervisionDetail',
+    component: () => import(/* webpackChunkName: "CreditSupervisionDetail" */ '@/pages/credit-supervision/detail'),
+    meta: { title: '信用监管-详情' }
   }
 ]
