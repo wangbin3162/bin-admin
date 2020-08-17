@@ -58,7 +58,7 @@
   } from '@/api/credit-supervision/home.api'
   import NoData from '@/components/NoData'
   import Keywords from '@/components/Keywords'
-  import IconBtn from '@/pages/credit-supervision/home/IconBtn'
+  import IconBtn from '@/pages/credit-supervision/home/search/IconBtn'
 
   export default {
     name: 'SearchList',
@@ -150,7 +150,7 @@
     padding-bottom: 198px;
     min-height: 497px;
     margin: 0 auto;
-    background: #fff url("../../../assets/images/list-bg.png") no-repeat center bottom;
+    background: #fff url("../../../../assets/images/list-bg.png") no-repeat center bottom;
     border: 1px solid #eee;
     border-bottom: none;
     .total {
@@ -166,7 +166,7 @@
       border-bottom: 1px solid #eee;
       &:hover {
         box-shadow: 0 0 8px #eee;
-        background: #fff url("../../../assets/images/list-item-bg.png") no-repeat center center;
+        background: #fff url("../../../../assets/images/list-item-bg.png") no-repeat center center;
       }
       .center {
         padding: 0 40px;

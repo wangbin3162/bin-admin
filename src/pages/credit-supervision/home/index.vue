@@ -109,7 +109,7 @@
   import TipMarketWarn from '@/pages/credit-supervision/components/TipMarketWarn'
   import TipIndustryBlackList from '@/pages/credit-supervision/components/TipIndustryBlackList'
   import RelationChart from '@/pages/credit-supervision/home/RelationChart'
-  import SearchList from '@/pages/credit-supervision/home/SearchList'
+  import SearchList from '@/pages/credit-supervision/home/search/SearchList'
 
   export default {
     name: 'CreditSupervision',
