@@ -53,7 +53,28 @@ export default [
   {
     path: '/creditSupervision/detail',
     name: 'CreditSupervisionDetail',
+    redirect: '/creditSupervision/detail/recentDynamic',
     component: () => import(/* webpackChunkName: "CreditSupervisionDetail" */ '@/pages/credit-supervision/detail'),
-    meta: { title: '信用监管-详情' }
+    meta: { title: '信用监管-详情' },
+    children: [
+      {
+        path: 'recentDynamic',
+        name: 'recentDynamic',
+        component: () => import(/* webpackChunkName: "RecentDynamic" */ '@/pages/credit-supervision/detail/extend-info/recent-dynamic'),
+        meta: { title: '近期动态' }
+      },
+      {
+        path: 'redBlackListInfo',
+        name: 'redBlackListInfo',
+        component: () => import(/* webpackChunkName: "RedBlackListInfo" */ '@/pages/credit-supervision/detail/extend-info/red-black-list-info'),
+        meta: { title: '红黑名单信息' }
+      },
+      {
+        path: 'focusScopeSupervision',
+        name: 'focusScopeSupervision',
+        component: () => import(/* webpackChunkName: "FocusScopeSupervision" */ '@/pages/credit-supervision/detail/extend-info/focus-scope-supervision'),
+        meta: { title: '重点领域监管' }
+      }
+    ]
   }
 ]

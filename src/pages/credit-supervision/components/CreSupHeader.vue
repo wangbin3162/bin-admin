@@ -1,5 +1,5 @@
 <template>
-  <div class="header-wrap">
+  <div class="header-wrap" :style="{ backgroundColor: backgroundColor }">
     <div class="header-inner" flex="main:justify cross:center">
       <img src="../../../assets/images/credit-supervision/logo.png"
         @click="home" alt="logo" class="logo"/>
@@ -41,7 +41,10 @@
 export default {
   name: 'CreSupHeader',
   props: {
-
+    backgroundColor: {
+      type: String,
+      default: 'rgba(16, 103, 222, 0.5)'
+    }
   },
   components: {
 
@@ -78,7 +81,7 @@ export default {
 
 <style scoped lang="stylus">
 .header-wrap {
-  background: rgba(16, 103, 222, 0.5);
+  // background: rgba(16, 103, 222, 0.5);
   box-shadow: 0 0 8px rgba(143, 143, 143, 0.51);
   height: 80px;
   &.detail {
