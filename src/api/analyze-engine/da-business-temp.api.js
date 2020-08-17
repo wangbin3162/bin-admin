@@ -234,3 +234,25 @@ export function removeResp(id) {
 export function hasResp(bizId) {
   return request.get('/da/bizResp/exists', { params: { bizId } })
 }
+
+/**
+ * @author haodongdong
+ * @description 批量同步业务模板到es数据库
+ */
+export async function syncBizTemplate() {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/da/businessTemplate/syncBizTemplate',
+        method: 'post'
+      })
+      if (res.data.successful) {
+        resolve()
+      } else {
+        reject(res.data.message)
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}

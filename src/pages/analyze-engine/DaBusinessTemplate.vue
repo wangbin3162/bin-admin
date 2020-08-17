@@ -19,6 +19,10 @@
         <!--操作栏-->
         <v-table-tool-bar>
           <b-button v-if="canCreate" type="primary" icon="ios-add-circle-outline" @click="handleCreate">新 增</b-button>
+          <b-button v-if="canCreate" type="primary"
+            @click="handleBatchSyncBtn" :disabled="!havePermission('batchSync')">
+            批量同步
+          </b-button>
         </v-table-tool-bar>
         <!--中央表格-->
         <b-table :columns="columns" :data="list" :loading="listLoading">
@@ -262,6 +266,24 @@
         this.resetTemplate()
         this.template.tempCode = 'biz_'
         this.openEditPage('create')
+      },
+      // 批量同步按钮回调
+      handleBatchSyncBtn () {
+        this.$confirm({
+          title: '确认要执行批量同步吗？',
+          content: '批量同步可能较慢,确认需要执行批量同步吗?',
+          loading: true,
+          okType: 'danger',
+          onOk: async () => {
+            try {
+              await api.syncBizTemplate()
+              this.$message({ type: 'success', content: '操作成功' })
+            } catch (error) {
+              this.$notice.danger({ title: '操作错误', desc: error })
+            }
+            this.$modal.remove()
+          }
+        })
       },
       // 提取模板参数
       extractParams() {
