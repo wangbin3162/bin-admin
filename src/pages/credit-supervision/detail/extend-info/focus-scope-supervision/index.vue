@@ -9,9 +9,11 @@
           </div>
       </template>
 
-      <b-table :columns="columns" :data="list">
+      <b-table :columns="columns" :data="list" :loading="listLoading">
         <template v-slot:action>
-          操作
+          <b-button type="text">
+            查看
+          </b-button>
         </template>
       </b-table>
     </b-card>
@@ -19,24 +21,67 @@
 </template>
 
 <script>
+  import { getRedBlackOrFocusScope } from '@/api/credit-supervision/detail.api'
+
   export default {
     name: 'FocusScopeSupervision',
     data () {
       return {
+        listLoading: false,
+        total: 0,
+        query: {
+          personId: '',
+          jgType: 'IA', // 重点领域的type
+          size: 10,
+          page: 1
+        },
         columns: [
-          { title: '资源名称', key: '' },
-          { title: '创建部门', key: '' },
-          { title: '创建日期', key: '' },
+          { title: '资源名称', key: 'resourceName' },
+          { title: '创建部门', key: 'createDept' },
+          { title: '创建日期', key: 'createDate' },
           { title: '操作', slot: 'action', width: 70 }
         ],
         list: []
       }
     },
     created () {
-
+      this.init()
     },
     methods: {
+      /**
+       * @author haodongdong
+       * @description 一些初始化处理
+       */
+      init () {
+        const query = this.$route.query
+        this.query.personId = query.id
+        this.getRedBlackOrFocusScope(this.query)
+      },
 
+      /**
+       * @author haodongdong
+       * @description 获取重点领域监管
+       * @param {Object} query 查询参数对象
+       * @param {string} query.personId 主体id
+       * @param {string} query.jgType 监管类型
+       * @param {number} query.size 分页大小
+       * @param {number} query.page 当前页
+       */
+      async getRedBlackOrFocusScope (query) {
+        this.listLoading = true
+        try {
+          const { total, rows } = await getRedBlackOrFocusScope(query)
+          this.total = total
+          this.list = rows
+        } catch (error) {
+          console.error(error)
+          this.$notice.danger({
+            title: '加载失败',
+            desc: error
+          })
+        }
+        this.listLoading = false
+      }
     }
   }
 </script>

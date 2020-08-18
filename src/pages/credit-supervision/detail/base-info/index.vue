@@ -39,15 +39,28 @@
             </div>
 
             <div class="info-other">
-              <span>省份证号码：{{ detail.id_sfz }}</span>
+              <span>{{ detail.id_type }}：{{ detail.id_code }}</span>
             </div>
           </template>
 
           <div class="info-tag">
             <!-- tag info -->
-            <div v-for="n in 7" :key="n" class="tag">
+            <!-- <div v-for="n in 20" :key="n" class="tag t-ellipsis">
+              <span class="dot" :class="{ red: n % 2 === 0}">
+              </span>
               海关认证企业
-            </div>
+            </div> -->
+            <template v-for="item in redBlackList" >
+              <b-tooltip :key="item.resourceKey"
+                :content="item.nameListType === '1' ? '红名单' : '黑名单'"
+                placement="top-start">
+                <div class="tag t-ellipsis">
+                  <span class="dot" :class="{ red: item.nameListType === '1'}">
+                  </span>
+                  {{ item.resourceName }}
+                </div>
+              </b-tooltip>
+            </template>
           </div>
         </div>
       </div>
@@ -56,7 +69,7 @@
 </template>
 
 <script>
-  import { getDetail } from '@/api/credit-supervision/detail.api'
+  import { getDetail, getRedBlackOrFocusScope } from '@/api/credit-supervision/detail.api'
   import Keywords from '@/components/Keywords/index'
   import IconBtn from './IconBtn'
 
@@ -70,6 +83,7 @@
       return {
         visible: false, // 是否显示
         routeQuery: {}, // 路由参数
+        redBlackList: [], // 红黑名单
         detail: {}, // 详情信息
         mapping: {} // 用于映射的字段名
       }
@@ -93,6 +107,11 @@
         const query = this.$route.query
         this.routeQuery = query
         this.getDetail(query)
+        this.getRedBlackOrFocusScope({
+          personId: query.id,
+          size: 1000,
+          page: 1
+        })
       },
 
       /**
@@ -109,6 +128,27 @@
           this.detail = data
           this.visible = true
           this.$emit('loaded')
+        } catch (error) {
+          console.error(error)
+          this.$notice.danger({
+            title: '加载失败',
+            desc: error
+          })
+        }
+      },
+
+      /**
+       * @author haodongdong
+       * @description 获取红黑名单信息
+       * @param {Object} query 查询参数对象
+       * @param {string} query.personId 主体id
+       * @param {number} query.size 分页大小
+       * @param {number} query.page 当前页
+       */
+      async getRedBlackOrFocusScope (query) {
+        try {
+          const { rows } = await getRedBlackOrFocusScope(query)
+          this.redBlackList = rows
         } catch (error) {
           console.error(error)
           this.$notice.danger({
@@ -164,13 +204,29 @@
 
       .info-tag {
         display: flex;
+        flex-wrap: wrap;
 
         .tag {
+          margin-bottom: 10px;
           padding: 10px 15px;
+          width: 130px;
           background: #f9fafc;
           margin-right: 10px;
           color: rgba(0, 0, 0, 0.7);
           font-size: 12px;
+
+          .dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            margin-right: 5px;
+            border-radius: 50%;
+            background: #d9d9d9;
+
+            &.red {
+              background: #eb7d7d;
+            }
+          }
         }
       }
     }

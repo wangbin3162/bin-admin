@@ -66,3 +66,33 @@ export async function getPersonDynamic (query) {
     }
   })
 }
+
+/**
+ * @author haodongdong
+ * @description 获取红黑名单信息或者重点领域信息
+ * @param {Object} query 查询参数对象
+ * @param {string} query.personId 主体id
+ * @param {number} [query.jgType] 监管类型，不传则获取红黑名单信息
+ * @param {number} query.size 分页大小
+ * @param {number} query.page 当前页
+ * @returns {Promise<SiperVisionDynamic[]>}
+ */
+export async function getRedBlackOrFocusScope (query) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/api/credit/jgDocs/searchByPage',
+        method: 'get',
+        params: {
+          personId: query.personId,
+          jgType: query.type || '',
+          size: query.size,
+          page: query.page - 1
+        }
+      })
+      resolve(res.data)
+    } catch (error) {
+      reject(error)
+    }
+  })
+}

@@ -9,10 +9,6 @@
           </b-button>
         </div>
       </template>
-
-      <div v-for="o in 4" :key="o" class="text item">
-        {{'这是内容区域 ' + o }}
-      </div>
     </b-card>
 
     <b-card head-tip shadow="never"
@@ -28,7 +24,7 @@
         </div>
       </template>
 
-      <b-table :columns="columns" :data="list">
+      <b-table :columns="columns" :data="list" :loading="listLoading">
         <template v-slot:action>
           <b-button type="text">
             查看
@@ -52,6 +48,7 @@
     name: 'RecentDynamic',
     data () {
       return {
+        listLoading: false,
         total: 0,
         query: {
           id: '',
@@ -96,6 +93,7 @@
        * @param {number} query.page 当前页
        */
       async getPersonDynamic (query) {
+        this.listLoading = true
         try {
           const res = await getPersonDynamic(query)
           this.total = res.total
@@ -107,6 +105,7 @@
             desc: error
           })
         }
+        this.listLoading = false
       },
 
       /**
