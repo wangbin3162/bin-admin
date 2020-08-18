@@ -1,4 +1,7 @@
-// 通知公告相关api接口
+/**
+ * @author haodongdong
+ * @description 信用监管首页相关接口
+ */
 import request from '../request'
 import Qs from 'qs'
 

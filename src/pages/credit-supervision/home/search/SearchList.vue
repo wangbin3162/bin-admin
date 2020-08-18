@@ -5,7 +5,7 @@
       <template v-for="item in list">
         <div :key="item.id" class="item">
           <keywords :size="68">{{ item.keywords[0] }}</keywords>
-          <template v-if="query.type === 1">
+          <template v-if="isLeg">
             <div class="center" flex-box="1">
               <div flex>
                 <h2>
@@ -68,13 +68,20 @@
         loading: false,
         query: {
           q: '',
-          type: 1,
+          type: '1',
           size: 10,
           page: 1
         },
         total: 0,
         list: [],
         mapping: {} // 映射的字段
+      }
+    },
+    computed: {
+      isLeg () {
+        let res = true
+        if (this.query.type === '2') res = false
+        return res
       }
     },
     methods: {
@@ -90,7 +97,6 @@
         this.loading = true
         try {
           const res = await getPersonClassList(query)
-          console.log(res)
           this.mapping = res.mapping
           this.total = res.total
           this.list = res.rows
@@ -102,9 +108,9 @@
 
       /**
        * @author haodongdong
-       * @description 使外部组件调用的查询函数
+       * @description 使外部组件调用的查询函数，相当于该组件的初始化函数的功能。
        * @param {string} q 查询关键字
-       * @param {number} 查询类型，1：自然人 2：法人
+       * @param {string} 查询类型，1：自然人 2：法人
        */
       search (q, type) {
         this.query.q = q
@@ -122,7 +128,14 @@
       },
 
       handleCheck(id) {
-        this.$emit('on-check-detail', id)
+        // this.$emit('on-check-detail', id)
+        this.$router.push({
+          name: 'recentDynamic',
+          query: {
+            id,
+            type: this.query.type
+          }
+        })
       },
 
       /**

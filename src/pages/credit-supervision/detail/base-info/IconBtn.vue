@@ -1,21 +1,23 @@
 <template>
   <div class="icon-btn">
-    <template v-if="supervisionStatus === '1'">
-      <b-tooltip content="已监管" placement="top-start">
-        <svg-icon icon-class="visibility"
-          class="icon supervision on"
-          @click.native="handleSupervision(supervisionStatus)">
-        </svg-icon>
-      </b-tooltip>
-    </template>
+    <template v-if="supervisionStatus !== undefined && supervisionStatus !== null">
+      <template v-if="supervisionStatus === '1'">
+        <b-tooltip content="已监管" placement="top-start">
+          <svg-icon icon-class="visibility"
+            class="icon supervision on"
+            @click.native="handleSupervision(supervisionStatus)">
+          </svg-icon>
+        </b-tooltip>
+      </template>
 
-    <template v-else>
-      <b-tooltip content="未监管" placement="top-start">
-        <svg-icon icon-class="visibility off"
-          class="icon supervision"
-          @click.native="handleSupervision(supervisionStatus)">
-        </svg-icon>
-      </b-tooltip>
+      <template v-else>
+        <b-tooltip content="未监管" placement="top-start">
+          <svg-icon icon-class="visibility off"
+            class="icon supervision"
+            @click.native="handleSupervision(supervisionStatus)">
+          </svg-icon>
+        </b-tooltip>
+      </template>
     </template>
   </div>
 </template>
@@ -26,7 +28,7 @@
     props: {
       supervisionStatus: {
         type: String,
-        required: true
+        default: null
       }
     },
     data () {

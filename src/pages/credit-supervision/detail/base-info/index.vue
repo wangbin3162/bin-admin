@@ -1,41 +1,62 @@
 <template>
-  <div class="base-info">
-    <div flex>
-      <!-- 基本信息 -->
-      <keywords cls="color-0" :size="68">
-        浮云
-      </keywords>
+  <transition name="fade-scale-move">
+    <div v-show="visible" class="base-info">
+      <div flex>
+        <!-- 基本信息 -->
+        <keywords cls="color-0" :size="68">
+          {{ detail.keywords ? detail.keywords[0] : '' }}
+        </keywords>
 
-      <div class="info-con">
-        <div class="info-title">
-          <span class="name">
-            江苏浮云网络科技有限公司
-          </span>
+        <div class="info-con">
+          <template v-if="isLeg">
+            <div class="info-title">
+              <span class="name">
+                <!-- 主体名称 -->
+                {{ detail.comp_name }}
+              </span>
 
-          <span  type="success" class="status-tag">
-            续存（在营、开业、在册）
-          </span>
+              <span  type="success" class="status-tag">
+                {{ detail.djzt }}
+              </span>
 
-          <icon-btn supervisionStatus="1"></icon-btn>
-        </div>
+              <icon-btn :supervisionStatus="detail.supervise"></icon-btn>
+            </div>
 
-        <div class="info-other">
-          <span>法定代表人：黎环乐</span>
-          <span>成立日期：2020-07-07</span>
-        </div>
+            <div class="info-other">
+              <span>{{ mapping.fddbr }}：{{ detail.fddbr }}</span>
+              <span>{{ mapping.clrq }}：{{ detail.clrq }}</span>
+            </div>
+          </template>
 
-        <div class="info-tag">
-          <!-- tag info -->
-          <div v-for="n in 7" :key="n" class="tag">
-            海关认证企业
+          <template v-else>
+            <div class="info-title">
+              <span class="name">
+                <!-- 主体名称 -->
+                {{ detail.name }}
+              </span>
+
+              <icon-btn :supervisionStatus="detail.supervise"></icon-btn>
+            </div>
+
+            <div class="info-other">
+              <span>省份证号码：{{ detail.id_sfz }}</span>
+            </div>
+          </template>
+
+          <div class="info-tag">
+            <!-- tag info -->
+            <div v-for="n in 7" :key="n" class="tag">
+              海关认证企业
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
+  </transition>
 </template>
 
 <script>
+  import { getDetail } from '@/api/credit-supervision/detail.api'
   import Keywords from '@/components/Keywords/index'
   import IconBtn from './IconBtn'
 
@@ -47,14 +68,55 @@
     },
     data () {
       return {
-
+        visible: false, // 是否显示
+        routeQuery: {}, // 路由参数
+        detail: {}, // 详情信息
+        mapping: {} // 用于映射的字段名
+      }
+    },
+    computed: {
+      isLeg () { // 根据路由参数判断主体类型是法人还是自然人
+        let res = true
+        if (this.routeQuery.type === '2') res = false
+        return res
       }
     },
     created () {
-
+      this.init()
     },
     methods: {
+      /**
+       * @author haodongdong
+       * @description 一些初始化处理
+       */
+      init () {
+        const query = this.$route.query
+        this.routeQuery = query
+        this.getDetail(query)
+      },
 
+      /**
+       * @author haodongdong
+       * @descriptoin 获取主体详情
+       * @param {Object} query 查询参数对象
+       * @param {string} query.id 主体id
+       * @param {number} query.type 主体类型 1 法人 2 自然人
+       */
+      async getDetail (query) {
+        try {
+          const { mapping, data } = await getDetail(query)
+          this.mapping = mapping
+          this.detail = data
+          this.visible = true
+          this.$emit('loaded')
+        } catch (error) {
+          console.error(error)
+          this.$notice.danger({
+            title: '加载失败',
+            desc: error
+          })
+        }
+      }
     }
   }
 </script>

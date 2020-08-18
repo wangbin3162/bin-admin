@@ -45,7 +45,10 @@
        */
       async handleTabsChange (tab) {
         this.activeTab = tab.key
-        this.$router.push(tab.key)
+        this.$router.push({
+          path: tab.key,
+          query: this.$route.query
+        })
       }
     }
   }

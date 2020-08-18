@@ -8,9 +8,6 @@
         <base-info></base-info>
         <!-- 扩展信息 -->
         <extend-info class="mt-20"></extend-info>
-          <!-- 近期动态 -->
-          <!-- 红黑名单信息 -->
-          <!-- 重点领域监管 -->
       </div>
     </div>
   </cre-sup-layout>
@@ -32,7 +29,7 @@
     },
     data () {
       return {
-
+        query: {}
       }
     },
     created () {

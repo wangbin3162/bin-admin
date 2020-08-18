@@ -13,14 +13,14 @@
           <div flex class="btn-con">
             <b-dropdown class="dropdown">
               <b-button type="primary" style="width: 94px;" size="large">
-                {{ personClass === 1 ? '法人' : '自然人' }}
+                {{ personClass === '1' ? '法人' : '自然人' }}
                 <b-icon name="ios-arrow-down"></b-icon>
               </b-button>
               <b-dropdown-menu slot="list">
-                  <b-dropdown-item @click.native="personClass = 2">
+                  <b-dropdown-item @click.native="personClass = '2'">
                     自然人
                   </b-dropdown-item>
-                  <b-dropdown-item @click.native="personClass = 1">
+                  <b-dropdown-item @click.native="personClass = '1'">
                     法人
                   </b-dropdown-item>
               </b-dropdown-menu>
@@ -124,7 +124,7 @@
     },
     data () {
       return {
-        personClass: 1,
+        personClass: '1',
         keyword: '',
         visible: false,
         total: 0,
@@ -158,7 +158,7 @@
         console.log(routeQuery)
         if (JSON.stringify(routeQuery) !== '{}') {
           this.keyword = routeQuery.q
-          this.personClass = Number(routeQuery.type)
+          this.personClass = routeQuery.type
           this.handleSearch()
         }
       },
@@ -214,7 +214,7 @@
        * @description 搜索框清空按钮的回调
        */
       handleSearchClear () {
-        this.personClass = 1
+        this.personClass = '1'
         this.keyword = ''
         const el = this.$refs.search
         el.style.height = '230px'
