@@ -94,7 +94,8 @@ export default {
             value: this.currentValue,
             maxlength: this.dataLength,
             placeholder: `${this.fieldDesc ? this.fieldDesc : '请输入' + this.fieldTitle}`,
-            autosize: { minRows: 1, maxRows: 4 },
+            autosize: { minRows: 2, maxRows: 4 },
+            showWordCount: true,
             type: 'textarea'
           },
           on: { 'input': this.handleInput }
