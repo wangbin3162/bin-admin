@@ -10,23 +10,39 @@
       </template>
 
       <b-table :columns="columns" :data="list" :loading="listLoading">
-        <template v-slot:action>
-          <b-button type="text">
+        <template v-slot:action="{ row }">
+          <b-button type="text" @click="handleViewBtn(row)">
             查看
           </b-button>
         </template>
       </b-table>
+
+      <div flex="main:right" class="mt-20 mb-5">
+        <b-page :total="total" show-elevator
+          @on-change="handlePageChange">
+        </b-page>
+     </div>
     </b-card>
+
+    <detail-modal v-model="open"
+      :resourceKey="curRow.resourcekey"
+      :title="curRow.resourceName">
+    </detail-modal>
   </div>
 </template>
 
 <script>
   import { getRedBlackOrFocusScope } from '@/api/credit-supervision/detail.api'
+  import DetailModal from '@/pages/credit-supervision/components/DetailModal'
 
   export default {
     name: 'RedBlackListInfo',
+    components: {
+      DetailModal
+    },
     data () {
       return {
+        open: false,
         listLoading: false,
         total: 0,
         query: {
@@ -40,7 +56,8 @@
           { title: '创建日期', key: 'createDate' },
           { title: '操作', slot: 'action', width: 70 }
         ],
-        list: []
+        list: [],
+        curRow: {}
       }
     },
     created () {
@@ -54,7 +71,7 @@
       init () {
         const query = this.$route.query
         this.query.personId = query.id
-        this.getRedBlackOrFocusScope(this.query)
+        this.getList(this.query)
       },
 
       /**
@@ -65,7 +82,7 @@
        * @param {number} query.size 分页大小
        * @param {number} query.page 当前页
        */
-      async getRedBlackOrFocusScope (query) {
+      async getList (query) {
         this.listLoading = true
         try {
           const { total, rows } = await getRedBlackOrFocusScope(query)
@@ -79,6 +96,26 @@
           })
         }
         this.listLoading = false
+      },
+
+      /**
+       * @author haodongdong
+       * @description 查看按钮回调
+       * @param {Object} row 当前行数据
+       */
+      handleViewBtn (row) {
+        this.curRow = row
+        this.open = true
+      },
+
+      /**
+       * @author haodongdong
+       * @description 分页组件页面改变回调
+       * @param {number} page 当前页
+       */
+      handlePageChange (page) {
+        this.query.page = page
+        this.getList(this.query)
       }
     }
   }

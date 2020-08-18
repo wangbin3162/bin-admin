@@ -96,3 +96,35 @@ export async function getRedBlackOrFocusScope (query) {
     }
   })
 }
+
+/**
+ * @author haodongdong
+ * @description 获取资源信息详情
+ * @param {string} id 主体id
+ * @param {string} resourceKey 资源key
+ * @param {string} type 主体类别
+ * @param {string} [categoryType] 类别
+ */
+export async function getQueryDetail(id, resourceKey, type, categoryType = 'BASE') {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/api/docs/query/detail',
+        method: 'get',
+        params: {
+          id, resourceKey, type, categoryType
+        }
+      })
+      if (res.data.code === '0') {
+        resolve({
+          mapping: res.data.mapping,
+          data: res.data.data
+        })
+      } else {
+        reject(res.data.message)
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
