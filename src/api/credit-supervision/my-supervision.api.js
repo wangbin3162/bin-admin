@@ -143,6 +143,34 @@ export async function getCompAndPerson (query) {
 
 /**
  * @author haodongdong
+ * @description 重点领域监管，新增时显示的列表
+ * @param {Object} query 查询参数
+ * @param {Object} query.resourceName 资源名称
+ * @param {number} query.size 分页大小
+ * @param {string} query.page 当前页
+ * @returns {Promise<any>}
+ */
+export async function getAddArea (query) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/api/credit/jgUserConfig/addArea',
+        method: 'get',
+        params: {
+          resourceName: query.resourceName,
+          size: query.size,
+          page: query.page - 1
+        }
+      })
+      resolve(res.data)
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
  * @description 添加监管
  * @param {Object} param 查询参数
  * @param {number} param.jgType 监管类型

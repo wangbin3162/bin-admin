@@ -13,10 +13,6 @@
       </v-filter-bar>
 
       <b-table :columns="columns" :data="list" :loading="listLoading" size="small">
-        <template v-slot:typeName="{ row }">
-          <span class="t-ellipsis" :title="row.typeName">{{ row.typeName }}</span>
-        </template>
-
         <template v-slot:action="{ row }">
           <b-button type="text" @click.stop="handleAddSupervisiontBtn(row)">
             加入监管
