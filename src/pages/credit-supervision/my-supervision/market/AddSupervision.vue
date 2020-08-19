@@ -66,7 +66,7 @@
           { title: '统一社会信用码', key: 'id_shxym', ellipsis: true, tooltip: true },
           { title: '组织结构码', key: 'id_zzjg', ellipsis: true, tooltip: true },
           { title: '工商注册号', key: 'id_gszc', ellipsis: true, tooltip: true },
-          { title: '操作', slot: 'action', width: 70, align: 'center' }
+          { title: '操作', slot: 'action', width: 120, align: 'center' }
         ]
       }
     },
@@ -101,6 +101,15 @@
         this.listLoading = true
         try {
           const { total, rows } = await getCompAndPerson(this.query)
+          rows.forEach(item => { // 处理空内容为 暂无 占位符
+            for (const key in item) {
+              if (item.hasOwnProperty(key)) {
+                if (!item[key]) {
+                  item[key] = '暂无'
+                }
+              }
+            }
+          })
           this.total = total
           this.list = rows
         } catch (error) {

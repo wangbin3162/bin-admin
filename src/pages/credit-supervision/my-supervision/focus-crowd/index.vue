@@ -98,7 +98,6 @@
         this.listLoading = true
         try {
           const { total, rows } = await jgUserConfigSearch(this.query)
-          console.log(total)
           this.list = rows
           this.total = total
         } catch (error) {

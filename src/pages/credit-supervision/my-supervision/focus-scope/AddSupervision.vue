@@ -58,7 +58,7 @@
           { type: 'index', width: 50 },
           { title: '名称', key: 'resourceName' },
           { title: '主体类别', key: 'subjectType' },
-          { title: '操作', slot: 'action', width: 70 }
+          { title: '操作', slot: 'action', width: 120, align: 'center' }
         ]
       }
     },

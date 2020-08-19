@@ -76,9 +76,9 @@
         list: [],
         columns: [
           { type: 'index', width: 50 },
-          { title: '类别名称', slot: 'typeName' },
+          { title: '类别名称', slot: 'typeName', ellipsis: true, tooltip: true },
           { title: '类别编码', key: 'typeCode' },
-          { title: '操作', slot: 'action', width: 70 }
+          { title: '操作', slot: 'action', width: 120, align: 'center' }
         ]
       }
     },

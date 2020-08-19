@@ -65,7 +65,7 @@
           { title: '名称', key: 'name' },
           { title: '证件类型', key: 'id_type', ellipsis: true, tooltip: true },
           { title: '证件号码', key: 'id', ellipsis: true, tooltip: true },
-          { title: '操作', slot: 'action', width: 70 }
+          { title: '操作', slot: 'action', width: 120, align: 'center' }
         ]
       }
     },

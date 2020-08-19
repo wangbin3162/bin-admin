@@ -100,9 +100,9 @@
       /**
        * @author haodongdong
        * @description 取消监管按钮回调
-       * @param {string} id 当前记录的id
+       * @param {string} code 当前记录的code
        */
-      handleCancelSupervisionBtn (id) {
+      handleCancelSupervisionBtn (code) {
         this.$confirm({
           title: '提示',
           content: '确认要取消监管吗？',
@@ -110,7 +110,7 @@
           okType: 'danger',
           onOk: async () => {
             try {
-              await cancelSupervision(id)
+              await cancelSupervision(code, 'KI')
               this.getList()
               this.$message({ type: 'success', content: '操作成功' })
             } catch (error) {
