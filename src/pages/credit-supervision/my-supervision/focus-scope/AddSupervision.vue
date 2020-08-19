@@ -56,8 +56,8 @@
         list: [],
         columns: [
           { type: 'index', width: 50 },
-          { title: '名称', key: '' },
-          { title: '主体类别', key: '' },
+          { title: '名称', key: 'resourceName' },
+          { title: '主体类别', key: 'subjectType' },
           { title: '操作', slot: 'action', width: 70 }
         ]
       }
@@ -129,14 +129,14 @@
        * @author haodongdong
        * @description 加入监管按钮回调
        * @param {Object} row 当前行数据
-       * @param {string} row.id 主体id
-       * @param {string} row.name 主体名称
+       * @param {string} row.resourceKey 资源key
+       * @param {string} row.resourceName 资源名称
        */
       async handleAddSupervisionBtn (row) {
         try {
           await addSupervision({
-            objectId: row.id,
-            objectName: row.name,
+            objectId: row.resourceKey,
+            objectName: row.resourceName,
             jgType: 'IA'
           })
           this.$message({

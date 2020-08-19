@@ -46,7 +46,8 @@
       </b-page>
     </div>
 
-    <add-supervision v-model="open"></add-supervision>
+    <add-supervision v-model="open" @success="getList">
+    </add-supervision>
   </div>
 </template>
 
