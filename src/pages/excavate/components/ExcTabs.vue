@@ -22,9 +22,9 @@ export default {
   data() {
     return {
       tabs: [
-        { code: 'resource', name: '资源分析', icon: 'ios-trending-up' },
-        { code: 'gather', name: '归集分析', icon: 'ios-analytics' },
-        { code: 'person', name: '群体分析', icon: 'ios-contacts' }
+        { code: 'resource', name: '业务分析', icon: 'ios-trending-up' },
+        { code: 'person', name: '群体分析', icon: 'ios-contacts' },
+        { code: 'gather', name: '归集分析', icon: 'ios-analytics' }
       ],
       currentCode: ''
     }

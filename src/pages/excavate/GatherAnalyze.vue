@@ -23,6 +23,11 @@
       </b-card>
     </div>
     <div class="chart-widget-item">
+      <b-card class="box-card" head-tip header="归集增长率分析">
+        <b-charts height="350px" ref="chartGather" theme="charts-theme" :options="gatherOptions"/>
+      </b-card>
+    </div>
+    <div class="chart-widget-item">
       <b-card class="box-card" head-tip>
         <template v-slot:header>
           <div flex="main:justify cross:center">
@@ -37,20 +42,27 @@
             </div>
           </div>
         </template>
-        <b-table :columns="columns" :data="data" border>
-          <template #ctrl="{row}">
-            <b-button type="text" @click="handleClickDept(row)">
-              <svg-icon icon-class="areachart" style="width: 22px;height:22px;"/>
-            </b-button>
-          </template>
-        </b-table>
+        <div class="dept-wrap" flex>
+          <div style="width: 40%">
+            <div style="min-height: 300px;">
+              <b-table :columns="columns" :data="data" border ref="deptTable"
+                       highlight-row @on-current-change="currentRowChange">
+              </b-table>
+            </div>
+            <div style="padding-top: 10px;text-align: right;">
+              <b-page :total="50" :current.sync="currentPage" :page-size="5"></b-page>
+            </div>
+          </div>
+          <div style="width: 40px;" class="center-box">
+            <span class="row-tip" v-if="currentRow>-1" :style="{top:64+currentRow*50 +'px'}"></span>
+          </div>
+          <div style="width: calc(60% - 40px);border: 1px solid #eee;padding: 16px;">
+            <h4 style="font-size: 14px;text-align: center;">{{ depart.departName }}部门趋势分析</h4>
+            <b-charts height="300px" theme="charts-theme" :options="lineChartOption"/>
+          </div>
+        </div>
       </b-card>
     </div>
-    <b-modal v-model="analyzeModal" :title="`${depart.departName}-部门趋势分析`" width="800">
-      <div class="chart-inner">
-        <b-charts height="350px" theme="charts-theme" :options="lineChartOption"/>
-      </div>
-    </b-modal>
   </div>
 </template>
 
@@ -71,6 +83,14 @@ export default {
         series: [{ type: 'bar', name: '数量', barWidth: '40%' }],
         dataset: { source: [['x', 'y']] }
       },
+      gatherOptions: {
+        tooltip: { trigger: 'axis' },
+        grid: { top: 30, right: 30, left: 30, bottom: 30 },
+        xAxis: { type: 'category', axisTick: { alignWithLabel: true } },
+        yAxis: { type: 'value', name: '单位（个）', nameTextStyle: { color: '#666' } },
+        series: [{ type: 'line', name: '数量' }],
+        dataset: { source: [['x', 'y']] }
+      },
       yearList: [],
       currentYear: '',
       showMonthData: false, // 显示月份内容
@@ -78,18 +98,18 @@ export default {
       columns: [
         { title: '部门', key: 'deptName' },
         { title: '归集数量', key: 'count', align: 'center' },
-        { title: '占比', key: 'percent', align: 'center' },
-        { title: '趋势分析', slot: 'ctrl', align: 'center' }
+        { title: '占比', key: 'percent', align: 'center' }
       ],
       data: [],
-      analyzeModal: false,
+      currentPage: 1,
+      currentRow: -1,
       depart: {},
       activeDeptTabYear: 2020,
       lineChartOption: {
         tooltip: { trigger: 'axis' },
         grid: { top: 30, right: 30, left: 30, bottom: 30 },
         xAxis: { type: 'category', axisTick: { alignWithLabel: true } },
-        yAxis: { type: 'value' },
+        yAxis: { type: 'value', name: '单位（个）', nameTextStyle: { color: '#666' } },
         series: [{ type: 'line', name: '数量' }],
         dataset: { source: [['x', 'y']] }
       }
@@ -101,6 +121,7 @@ export default {
     this.activeDeptTabYear = currentYear
     this.yearList = [currentYear - 2, currentYear - 1, currentYear]
     this.getYearData()
+    this.initGatherData()
     this.initDeparts()
   },
   mounted() {
@@ -181,9 +202,13 @@ export default {
         if (resp.data.code === '0') {
           let data = resp.data.data.map(i => ({ month: i.range + '月', value: i.count }))
           this.lineChartOption.dataset = formatDataSet({ xField: 'month', yField: 'value' }, data)
-          this.analyzeModal = true
         }
       })
+    },
+    // 部门选中事件
+    currentRowChange(currentRow, oldRow, index) {
+      this.currentRow = index
+      this.handleClickDept(this.data[index])
     },
     // 获取部门数据归集分析数据
     initDeparts() {
@@ -197,8 +222,26 @@ export default {
           let { data } = resp.data
           // let sum = data.map(i => i.count).reduce((total, currentValue) => total + currentValue)
           this.data = data
+
+          if (this.data.length === 0) {
+            this.currentRow = -1
+            this.lineChartOption.dataset = formatDataSet({ xField: 'month', yField: 'value' }, [])
+            return
+          }
+          // 默认选中第一行
+          this.$nextTick(() => {
+            this.$refs.deptTable.clickCurrentRow(0)
+          })
         }
       })
+    },
+    // 归集增长率分析
+    initGatherData() {
+      let data = []
+      for (let i = 1; i <= 12; i++) {
+        data.push({ month: i + '月', value: this.$util.getRandomInt(0, 50) })
+      }
+      this.gatherOptions.dataset = formatDataSet({ xField: 'month', yField: 'value' }, data)
     }
   }
 }
@@ -235,6 +278,22 @@ export default {
           width: 2px;
           background-color: #1089ff;
         }
+      }
+    }
+  }
+  .dept-wrap {
+    .center-box {
+      position: relative;
+      .row-tip {
+        position: absolute;
+        left: 12px;
+        top: 64px;
+        width: 0;
+        height: 0;
+        transition: top .3s;
+        border-top: 10px solid transparent;
+        border-left: 14px solid #0d85ff;
+        border-bottom: 10px solid transparent;
       }
     }
   }

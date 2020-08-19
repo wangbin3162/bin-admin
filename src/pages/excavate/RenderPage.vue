@@ -14,8 +14,8 @@
       </div>
       <div class="content">
         <exc-analyze v-if="activeCode==='resource'"/>
-        <gather-analyze v-if="activeCode==='gather'"/>
         <person-analyze v-if="activeCode==='person'"/>
+        <gather-analyze v-if="activeCode==='gather'"/>
       </div>
     </div>
   </exc-layout>
@@ -42,9 +42,9 @@ export default {
       },
       activeCode: 'resource',
       tabs: {
-        resource: '资源分析',
-        gather: '归集分析',
-        person: '群体分析'
+        resource: '业务分析',
+        person: '群体分析',
+        gather: '归集分析'
       }
     }
   },
