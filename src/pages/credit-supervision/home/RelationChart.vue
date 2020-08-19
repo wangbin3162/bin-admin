@@ -36,16 +36,17 @@
             edgeSymbol: ['arrow', 'none'],
             type: 'graph', // 系列类型:关系图
             top: '10%', // 图表距离容器顶部的距离
-            roam: true, // 是否开启鼠标缩放和平移漫游。默认不开启。如果只想要开启缩放或者平移，可以设置成 'scale' 或者 'move'。设置成 true 为都开启
-            focusNodeAdjacency: true, // 是否在鼠标移到节点上的时候突出显示节点以及节点的边和邻接节点。[ default: false ]
+            // roam: false, // 是否开启鼠标缩放和平移漫游。默认不开启。如果只想要开启缩放或者平移，可以设置成 'scale' 或者 'move'。设置成 true 为都开启
+            focusNodeAdjacency: false, // 是否在鼠标移到节点上的时候突出显示节点以及节点的边和邻接节点。[ default: false ]
             force: { // 力引导布局相关的配置项，力引导布局是模拟弹簧电荷模型在每两个节点之间添加一个斥力，每条边的两个节点之间添加一个引力，每次迭代节点会在各个斥力和引力的作用下移动位置，多次迭代后节点会静止在一个受力平衡的位置，达到整个模型的能量最小化。
               // 力引导布局的结果有良好的对称性和局部聚合性，也比较美观。
               repulsion: 1000, // [ default: 50 ]节点之间的斥力因子(关系对象之间的距离)。支持设置成数组表达斥力的范围，此时不同大小的值会线性映射到不同的斥力。值越大则斥力越大
-              edgeLength: [300, 200] // [ default: 30 ]边的两个节点之间的距离(关系对象连接线两端对象的距离,会根据关系对象值得大小来判断距离的大小)，
+              edgeLength: [300, 200], // [ default: 30 ]边的两个节点之间的距离(关系对象连接线两端对象的距离,会根据关系对象值得大小来判断距离的大小)，
               // 这个距离也会受 repulsion。支持设置成数组表达边长的范围，此时不同大小的值会线性映射到不同的长度。值越小则长度越长。如下示例:
               // 值最大的边长度会趋向于 10，值最小的边长度会趋向于 50      edgeLength: [10, 50]
+              friction: 0.2
             },
-            layout: 'force', // 图的布局。[ default: 'none' ]
+            layout: 'circular', // 图的布局。[ default: 'none' ]
             // 'none' 不采用任何布局，使用节点中提供的 x， y 作为节点的位置。
             // 'circular' 采用环形布局;'force' 采用力引导布局.
             // 标记的图形
@@ -109,25 +110,42 @@
         try {
           const res = await getRelationData(word)
           const { data, links } = res
-          console.log(data)
           let formatterData = data.map(item => {
-            let size = (4 - item.level) * 20 + 40
+            let size = 60
             let obj = {
-              name: item.personName,
+              name: item.objectName,
               draggable: true,
               symbolSize: [size, size],
-              _id: item.personId,
-              _class: item.personClass,
+              animation: true,
+              focusNodeAdjacency: true,
+              _id: item.objectId,
+              _class: item.type,
               itemStyle: {
-                color: item.personClass === 'FO' ? item.level === 1 ? '#2e54eb' : '#0c85ff' : '#ff7254'
+                color: item.type === 1 ? '#0c85ff' : '#ff7254'
+                // opacity: item.level === 1 || item.level === 2 ? 1 : 0
               },
-              class: item.personClass === 'FO' ? '法人' : '自然人',
+              class: item.type === 1 ? '法人' : '自然人',
               level: item.level,
               category: '收入支出分析'
             }
             return obj
           })
           let formatterLinks = links
+          // formatterLinks.map(item=>{
+          //   item.lineStyle={}
+          //   let flag
+          //   listInlevelTwo.forEach(i=>{
+          //     item.target === i .name? flag = true:''
+          //   })
+          //   if(flag){
+          //     item.lineStyle={opacity: 1}
+          //     item.label = {show: true}
+          //   }else{
+          //     item.lineStyle={opacity: 0}
+          //     item.label = {show: false}
+          //   }
+          //   return item
+          // })
           this.relationOption.series[0].data = formatterData
           this.relationOption.series[0].links = formatterLinks
         } catch (error) {
@@ -139,10 +157,23 @@
       }
     },
     mounted() {
-      this.renderRelationChart('personId=e46c7c4a47d74ef59042b6584da2e232&personClass=FO&personName=上海大米网络科技有限公司')
+      this.renderRelationChart('objectId=a0e89523d75e4467bfe893d021b6c7bd&type=1&objectName=共享单车')
       this.$refs.chart.chart.on('click', (e) => {
-        let word = `personId=${e.data._id}&personClass=${e.data._class}&personName=${e.name}`
-        this.renderRelationChart(word)
+        // flag = !flag
+        // if(flag){
+        //   this.relationOption.series[0].data = this.copy.data
+        //   this.relationOption.series[0].links = this.copy.links
+        // }else{
+        //   this.relationOption.series[0].data.forEach(item=>{
+        //     item.itemStyle.opacity = 1
+        //   })
+        //   this.relationOption.series[0].links.forEach(item=>{
+        //     if(item.target === e.name||item.source===e.name){
+        //       item.lineStyle.opacity = 1
+        //       item.label.show = true
+        //     }
+        //   })
+        // }
       })
     }
   }

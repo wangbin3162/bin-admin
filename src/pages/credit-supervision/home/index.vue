@@ -1,10 +1,10 @@
 <template>
   <cre-sup-layout>
     <div class="credit-supervision">
-      <!-- <b-modal v-model="modalFlag" title="关系图展示" width="1000" footer-hide
+      <b-modal v-model="modalFlag" title="关系图展示" width="1000" footer-hide
                @on-ok="$log.print('ok click')"  @on-cancel="$log.print('cancel click','success')">
         <relation-chart></relation-chart>
-      </b-modal> -->
+      </b-modal>
       <cre-sup-header></cre-sup-header>
 
       <div ref="search" class="search">
@@ -65,8 +65,14 @@
                 </div>
               </div>
 
-              <div class="button">
-                查看详情
+              <div flex>
+                <div class="button" style="margin-right: 20px;" @click="modalFlag = true">
+                  test
+                </div>
+
+                <div class="button">
+                  查看详情
+                </div>
               </div>
             </li>
           </ul>
@@ -119,7 +125,7 @@
       TipNav,
       TipMarketWarn,
       TipIndustryBlackList,
-      // RelationChart,
+      RelationChart,
       SearchList
     },
     data () {
@@ -136,7 +142,7 @@
         resData: null, // 接口返回的数据容器
         listLoading: false,
         list: [],
-        modalFlag: false
+        modalFlag: true
       }
     },
     created () {

@@ -7,7 +7,7 @@ export async function getRelationData (word) {
   return new Promise(async (resolve, reject) => {
     try {
       const res = await request({
-        url: '/api/docs/graphDisplay?' + word,
+        url: '/api/credit/jgDocs/graphDisplay?' + word,
         method: 'get'
       })
       resolve(res.data.data)
