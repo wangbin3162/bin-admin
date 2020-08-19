@@ -43,7 +43,7 @@
           <div class="header">
             <h4>监管动态</h4>
           </div>
-          <ul>
+          <ul class="list">
             <b-loading fix show-text="加载中...." v-if="listLoading"></b-loading>
             <li v-for="(item, index) in list" :key="index" class="list-item">
               <div class="title-con">
@@ -70,7 +70,7 @@
             </li>
           </ul>
 
-          <div flex="main:right">
+          <div flex="main:right" class="mb-20 pr-10">
             <b-page :total="total"
               :current.sync="query.page"
               :page-size="query.pageSize"
@@ -337,10 +337,11 @@
           border-bottom: 1px solid #d9d9d9;
         }
 
-        ul {
+        ul.list {
           position: relative;
           margin-bottom: 20px;
           padding: 0 10px 0;
+          min-height: 90px;
 
           li {
             padding: 17px 0;

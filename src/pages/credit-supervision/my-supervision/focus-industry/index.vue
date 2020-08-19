@@ -1,7 +1,7 @@
 <template>
   <div class="focus-industry">
     <div class="header">
-      <span>一共10条数据</span>
+      <span>一共{{ total }}条数据</span>
 
       <b-button type="text" @click="open = true">
         + 添加监管
