@@ -29,7 +29,9 @@
 </template>
 
 <script>
-  import { getGatherList } from '@/api/credit-supervision/my-supervision.api'
+  import {
+    getCompAndPerson, addSupervision
+  } from '@/api/credit-supervision/my-supervision.api'
 
   export default {
     name: 'MSAddsupervision',
@@ -77,30 +79,6 @@
     methods: {
       /**
        * @author haodongdong
-       * @description 获取需要添加监管的市场主体列表
-       * @param {Object} query 查询参数
-       * @param {string} query.resourceKey 资源key，市场主体：DIR-20191014-173239-707 重点人群：DIR-20191014-173845-746
-       * @param {number} query.size 分页大小
-       * @param {string} query.page 当前页
-       */
-      async getList (query) {
-        this.listLoading = true
-        try {
-          const { total, rows } = await getGatherList(query)
-          this.total = total
-          this.list = rows
-        } catch (error) {
-          console.error(error)
-          this.$notice.danger({
-            title: '加载失败',
-            desc: error
-          })
-        }
-        this.listLoading = false
-      },
-
-      /**
-       * @author haodongdong
        * @description b-modal组件显示状态改变回调
        * @param {boolean} visible
        */
@@ -112,6 +90,30 @@
           this.query.page = 1
           this.list = []
         }
+      },
+
+      /**
+       * @author haodongdong
+       * @description 获取需要添加监管的市场主体列表
+       * @param {Object} query 查询参数
+       * @param {string} query.resourceKey 资源key，市场主体：DIR-20191014-173239-707 重点人群：DIR-20191014-173845-746
+       * @param {number} query.size 分页大小
+       * @param {string} query.page 当前页
+       */
+      async getList (query) {
+        this.listLoading = true
+        try {
+          const { total, rows } = await getCompAndPerson(query)
+          this.total = total
+          this.list = rows
+        } catch (error) {
+          console.error(error)
+          this.$notice.danger({
+            title: '加载失败',
+            desc: error
+          })
+        }
+        this.listLoading = false
       },
 
       /**
@@ -141,9 +143,28 @@
        * @param {string} row.typeName 类别名称
        * @param {string} row.typeCode 类别编码
        */
-      handleAddSupervisiontBtn (row) {
-        this.$emit('selected', row)
-        this.open = false
+      async handleAddSupervisiontBtn (row) {
+        try {
+          await addSupervision({
+            objectId: row.id,
+            objectName: row.comp_name,
+            jgName: '市场主体',
+            jgType: 'MS',
+            jgDesc: ''
+          })
+          this.$message({
+            type: 'success',
+            content: '操作成功'
+          })
+          this.$emit('success')
+          this.open = false
+        } catch (error) {
+          console.error(error)
+          this.$notice.danger({
+            title: '操作失败',
+            desc: error
+          })
+        }
       },
 
       handleCurrentChange () {

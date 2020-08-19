@@ -1,4 +1,7 @@
-// 通知公告相关api接口
+/**
+ * @author haodongdong
+ * @description 我的监管相关接口
+ */
 import request from '../request'
 import Qs from 'qs'
 
@@ -111,11 +114,11 @@ export async function jgUserConfigSearch (query) {
  * @param {string} query.page 当前页
  * @returns {Promise<any>}
  */
-export async function getGatherList (query) {
+export async function getCompAndPerson (query) {
   return new Promise(async (resolve, reject) => {
     try {
       const res = await request({
-        url: '/api/dir/gather/search',
+        url: '/api/credit/jgUserConfig/addCompAndPerson',
         method: 'post',
         data: {
           resourceKey: query.resourceKey,
@@ -156,7 +159,38 @@ export async function addSupervision (param) {
         method: 'post',
         data: param
       })
-      resolve(res.data)
+      if (res.data.successful) {
+        resolve()
+      } else {
+        reject(res.data.message)
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
+ * @description 取消监管接口
+ * @param {string} id 监管记录的id
+ * @returns {Promise<any>}
+ */
+export async function cancelSupervision (id) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/api/credit/jgUserConfig/remove',
+        method: 'post',
+        params: {
+          id
+        }
+      })
+      if (res.data.successful) {
+        resolve()
+      } else {
+        reject(res.data.message)
+      }
     } catch (error) {
       reject(error)
     }

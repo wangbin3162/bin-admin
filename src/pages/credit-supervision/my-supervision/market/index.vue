@@ -1,14 +1,14 @@
 <template>
   <div class="market-supervision">
     <div class="header">
-      <span>一共20条数据</span>
+      <span>一共{{ total }}条数据</span>
 
       <b-button type="text" @click="open = true">
         + 添加监管
       </b-button>
     </div>
 
-    <ul>
+    <ul class="list">
       <li v-for="item in list" :key="item.id" class="list-item">
         <div class="title-con">
           <div class="icon">
@@ -21,25 +21,29 @@
               {{ item.objectName }}
             </p>
             <div>
-              <span>法定代表人：郭大宁</span>
+              <span>法定代表人：{{ item.otherInfo | valueFilter }}</span>
               <span>监管日期：{{ item.createDate }}</span>
             </div>
           </div>
         </div>
 
         <div>
-          <b-button type="text">
+          <b-button type="text" @click="handleCancelSupervisionBtn(item.id)">
             取消监管
           </b-button>
           <b-divider type="vertical"></b-divider>
-          <b-button type="text">
+          <b-button type="text" @click="handleViewBtn(item)">
             查看
           </b-button>
         </div>
       </li>
+      <li v-if="list.length === 0">
+        <no-data></no-data>
+      </li>
+      <b-loading v-if="listLoading" fix show-text="加载中...."></b-loading>
     </ul>
 
-    <div flex="main:right">
+    <div flex="main:right" class="pr-10">
       <b-page :total="total"
         :current.sync="query.page"
         :page-size="query.size"
@@ -48,20 +52,31 @@
       </b-page>
     </div>
 
-    <add-supervision v-model="open"></add-supervision>
+    <add-supervision v-model="open" @success="getList">
+    </add-supervision>
   </div>
 </template>
 
 <script>
-  import { jgUserConfigSearch } from '@/api/credit-supervision/my-supervision.api'
+  import { jgUserConfigSearch, cancelSupervision } from '@/api/credit-supervision/my-supervision.api'
+  import NoData from '@/components/NoData'
   import AddSupervision from './AddSupervision'
 
   export default {
     name: 'MarketSupervision',
+    filters: {
+      valueFilter(value) {
+        if (!value) {
+          return '-'
+        }
+        return value
+      }
+    },
     props: {
 
     },
     components: {
+      NoData,
       AddSupervision
     },
     data () {
@@ -78,22 +93,19 @@
       }
     },
     created () {
-      this.getList(this.query)
+      this.getList()
     },
     methods: {
 
       /**
        * @author haodongdong
        * @description 获取市场主体监管列表
-       *  @param {Object} query 查询参数
-       * @param {string} query.jgType 监管类型，MS 市场主体 KP 重点人群 IA 重点领域
-       * @param {number} query.size 分页大小
-       * @param {string} query.page 当前页
        */
-      async getList (query) {
+      async getList () {
         this.listLoading = true
         try {
-          const { total, rows } = await jgUserConfigSearch(query)
+          const { total, rows } = await jgUserConfigSearch(this.query)
+          console.log(total)
           this.list = rows
           this.total = total
         } catch (error) {
@@ -108,10 +120,54 @@
 
       /**
        * @author haodongdong
-       * @description 分页组件页面切换回调
+       * @description 取消监管按钮回调
+       * @param {string} id 当前记录的id
        */
-      handlePageChange () {
+      handleCancelSupervisionBtn (id) {
+        this.$confirm({
+          title: '提示',
+          content: '确认要取消监管吗？',
+          loading: true,
+          okType: 'danger',
+          onOk: async () => {
+            try {
+              await cancelSupervision(id)
+              this.getList()
+              this.$message({ type: 'success', content: '操作成功' })
+            } catch (error) {
+              console.error(error)
+              this.$notice.danger({ title: '操作错误', desc: error })
+            }
+            this.$modal.remove()
+          }
+        })
+      },
 
+      /**
+       * @author haodongdong
+       * @description 查看按钮回调
+       * @param {Object} row 当前行数据
+       * @param {string} row.objectId 主体id
+       */
+      handleViewBtn (row) {
+        console.log(row)
+        this.$router.push({
+          name: 'recentDynamic',
+          query: {
+            id: row.objectId,
+            type: '1' // 法人
+          }
+        })
+      },
+
+      /**
+       * @author haodongdong
+       * @description 分页组件页面切换回调
+       * @param {number} page
+       */
+      handlePageChange (page) {
+        this.query.page = page
+        this.getList()
       }
     }
   }
@@ -132,9 +188,11 @@
       }
     }
 
-    ul {
+    ul.list {
+      position: relative;
       margin-bottom: 20px;
       padding: 0 10px 0;
+      min-height: 365px;
 
       li {
         padding: 17px 0;
