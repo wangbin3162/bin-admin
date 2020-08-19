@@ -12,14 +12,14 @@
 
       <v-filter-bar @keyup-enter="handleSearchBtn">
         <v-filter-item title="类别名称" :span="8">
-          <b-input v-model="listQuery.typeName" placeholder="输入名称" clearable></b-input>
+          <b-input v-model="query.typeName" placeholder="输入名称" clearable></b-input>
         </v-filter-item>
 
         <!-- <v-filter-item title="类别编码" :span="8">
-          <b-input v-model="listQuery.typeCode" placeholder="输入编码"></b-input>
+          <b-input v-model="query.typeCode" placeholder="输入编码"></b-input>
         </v-filter-item> -->
 
-        <v-filter-item @on-search="handleSearchBtn" @on-reset="resetQuery">
+        <v-filter-item @on-search="handleSearchBtn" @on-reset="resetBtn">
         </v-filter-item>
       </v-filter-bar>
 
@@ -37,14 +37,18 @@
     </v-table-wrap>
 
     <div slot="footer">
-      <!--下方分页器-->
-      <b-page :total="total" :current.sync="listQuery.page" @on-change="handleCurrentChange"/>
+      <b-page :total="total"
+        :current.sync="query.page"
+        @on-change="handleCurrentChange"/>
     </div>
   </b-modal>
 </template>
 
 <script>
-  import { getConTypeTree, getConTypeList } from '@/api/credit-supervision/my-supervision.api'
+  import {
+    getConTypeTree, getConTypeList,
+    addSupervision
+  } from '@/api/credit-supervision/my-supervision.api'
 
   export default {
     name: 'MSAddsupervision',
@@ -61,7 +65,7 @@
         curTreeNode: null,
         treeData: [],
         total: 0,
-        listQuery: {
+        query: {
           parentId: '',
           typeName: '',
           typeCode: '',
@@ -95,11 +99,11 @@
         this.treeLoading = true
         try {
           const res = await getConTypeTree('hydm')
-          const tree = this.buildTree(res)[0].children
+          const tree = this.buildTree(res)
           this.curTreeNode = tree[0]
           this.curTreeNode.expand = true
           this.curTreeNode.selected = true
-          this.listQuery.parentId = this.curTreeNode.id
+          this.query.parentId = this.curTreeNode.id
           this.treeData = tree
         } catch (error) {
           console.error(error)
@@ -115,7 +119,7 @@
       async getList() {
         this.listLoading = true
         try {
-          const res = await getConTypeList(this.listQuery)
+          const res = await getConTypeList(this.query)
           this.total = res.total
           this.list = res.rows
         } catch (error) {
@@ -134,10 +138,10 @@
         if (visible) {
           this.init()
         } else {
-          this.listQuery.typeName = ''
-          this.listQuery.typeCode = ''
-          this.listQuery.size = 10
-          this.listQuery.page = 1
+          this.query.typeName = ''
+          this.query.typeCode = ''
+          this.query.size = 10
+          this.query.page = 1
           this.curTreeNode = null
           this.treeData = []
           this.list = []
@@ -163,8 +167,8 @@
         if (this.curTreeNode.id === curNode.id) {
           curNode.selected = true
         } else {
-          this.listQuery.parentId = curNode.id
-          this.resetQuery()
+          this.query.parentId = curNode.id
+          this.resetBtn()
         }
         this.curTreeNode = curNode
       },
@@ -174,7 +178,7 @@
        * @description 搜索按钮回调
        */
       handleSearchBtn () {
-        this.listQuery.page = 1
+        this.query.page = 1
         this.getList()
       },
 
@@ -182,24 +186,41 @@
        * @author haodongdong
        * @description 重置按钮回调
        */
-      resetQuery () {
-        this.listQuery.typeName = ''
-        this.listQuery.typeCode = ''
-        this.listQuery.size = 10
-        this.listQuery.page = 1
+      resetBtn () {
+        this.query.typeName = ''
+        this.query.typeCode = ''
+        this.query.size = 10
+        this.query.page = 1
         this.handleSearchBtn()
       },
 
       /**
        * @author haodongdong
-       * @description 选择按钮回调
+       * @description 加入监管按钮回调
        * @param {Object} row 当前行数据
-       * @param {string} row.typeName 类别名称
-       * @param {string} row.typeCode 类别编码
+       * @param {string} row.id 行业id
+       * @param {string} row.typeName 行业名称
        */
-      handleAddSupervisionBtn (row) {
-        this.$emit('added', row)
-        this.open = false
+      async handleAddSupervisionBtn (row) {
+        try {
+          await addSupervision({
+            objectId: row.id,
+            objectName: row.typeName,
+            jgType: 'KI'
+          })
+          this.$message({
+            type: 'success',
+            content: '操作成功'
+          })
+          this.$emit('success')
+          this.open = false
+        } catch (error) {
+          console.error(error)
+          this.$notice.danger({
+            title: '操作失败',
+            desc: error
+          })
+        }
       },
 
       /**
@@ -208,7 +229,7 @@
        * @param {number} page 当前页
        */
       handleCurrentChange (page) {
-        this.listQuery.page = page
+        this.query.page = page
         this.getList()
       },
 

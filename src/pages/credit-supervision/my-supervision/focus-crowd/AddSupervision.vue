@@ -14,7 +14,7 @@
 
       <b-table :columns="columns" :data="list" :loading="listLoading" size="small">
         <template v-slot:action="{ row }">
-          <b-button type="text" @click.stop="handleAddSupervisiontBtn(row)">
+          <b-button type="text" @click.stop="handleAddSupervisionBtn(row)">
             加入监管
           </b-button>
         </template>
@@ -136,10 +136,10 @@
        * @author haodongdong
        * @description 加入监管按钮回调
        * @param {Object} row 当前行数据
-       * @param {string} row.typeName 类别名称
-       * @param {string} row.typeCode 类别编码
+       * @param {string} row.id 主体id
+       * @param {string} row.name 主体名称
        */
-      async handleAddSupervisiontBtn (row) {
+      async handleAddSupervisionBtn (row) {
         try {
           await addSupervision({
             objectId: row.id,

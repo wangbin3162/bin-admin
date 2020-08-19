@@ -8,15 +8,20 @@
       </b-button>
     </div>
 
-    <b-table :columns="columns" :data="list" class="m15">
-      <template v-slot:d>
-        <b-button type="text">
+    <b-table :columns="columns" :data="list" class="m15" :loading="listLoading">
+      <template v-slot:ratio="{ row }">
+        <b-progress :percent="row.ratio">
+        </b-progress>
+      </template>
+
+      <template v-slot:action="{ row }">
+        <b-button type="text" @click="handleCancelSupervisionBtn(row.code)">
           取消监管
         </b-button>
       </template>
     </b-table>
 
-    <div flex="main:right" class="mr-15">
+    <div flex="main:right" class="mb-20 pr-10">
       <b-page :total="total"
         :current.sync="query.page"
         :page-size="query.size"
@@ -25,11 +30,13 @@
       </b-page>
     </div>
 
-    <add-supervision v-model="open"></add-supervision>
+    <add-supervision v-model="open" @success="getList">
+    </add-supervision>
   </div>
 </template>
 
 <script>
+  import { getFocusIndustry, cancelSupervision } from '@/api/credit-supervision/my-supervision.api'
   import AddSupervision from './AddSupervision'
 
   export default {
@@ -48,34 +55,81 @@
           size: 10,
           page: 1
         },
-        list: [
-          { a: '建筑', b: '700', c: '15%' },
-          { a: '建筑', b: '700', c: '15%' },
-          { a: '建筑', b: '700', c: '15%' },
-          { a: '建筑', b: '700', c: '15%' },
-          { a: '建筑', b: '700', c: '15%' },
-          { a: '建筑', b: '700', c: '15%' },
-          { a: '建筑', b: '700', c: '15%' }
-        ],
         columns: [
           { type: 'index', width: 50 },
-          { title: '行业名称', key: 'a' },
-          { title: '黑名单数量', key: 'b' },
-          { title: '占比', key: 'c' },
-          { title: '操作', slot: 'd', align: 'center' }
-        ]
+          { title: '行业名称', key: 'name' },
+          { title: '黑名单数量', key: 'count', align: 'center' },
+          { title: '占比', slot: 'ratio', align: 'center' },
+          { title: '操作', slot: 'action', width: 120, align: 'center' }
+        ],
+        listLoading: false,
+        list: []
       }
     },
     created () {
-
+      this.getList()
     },
     methods: {
       /**
        * @author haodongdong
-       * @description 分页组件页面切换回调
+       * @description 获取市场主体监管列表
        */
-      handlePageChange () {
+      async getList () {
+        this.listLoading = true
+        try {
+          const { total, rows } = await getFocusIndustry(this.query)
+          rows.forEach(item => {
+            if (item.ratio) {
+              item.ratio = Number((item.ratio * 100).toFixed(2))
+            } else {
+              item.ratio = 0
+            }
+          })
+          this.list = rows
+          this.total = total
+        } catch (error) {
+          console.error(error)
+          this.$notice.danger({
+            title: '加载失败',
+            desc: error
+          })
+        }
+        this.listLoading = false
+      },
 
+      /**
+       * @author haodongdong
+       * @description 取消监管按钮回调
+       * @param {string} id 当前记录的id
+       */
+      handleCancelSupervisionBtn (id) {
+        this.$confirm({
+          title: '提示',
+          content: '确认要取消监管吗？',
+          loading: true,
+          okType: 'danger',
+          onOk: async () => {
+            try {
+              await cancelSupervision(id)
+              this.getList()
+              this.$message({ type: 'success', content: '操作成功' })
+            } catch (error) {
+              console.error(error)
+              this.$notice.danger({ title: '操作错误', desc: error })
+            }
+            this.$modal.remove()
+          }
+        })
+      },
+
+      /**
+       * @author haodongdong
+       * @description 分页组件页面切换回调
+       * @param {number} page
+       */
+      handlePageChange (page) {
+        this.query.page = page
+        this.getList()
       }
     }
   }

@@ -105,6 +105,32 @@ export async function jgUserConfigSearch (query) {
 
 /**
  * @author haodongdong
+ * @description 重点行业监管列表接口
+ * @param {Object} query 查询参数
+ * @param {number} query.size 分页大小
+ * @param {string} query.page 当前页
+ * @returns {Promise<any>}
+ */
+export async function getFocusIndustry (query) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/api/credit/trade/searchJg',
+        method: 'get',
+        params: {
+          size: query.size,
+          page: query.page - 1
+        }
+      })
+      resolve(res.data)
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
  * @description 市场主体、重点人群监管，新增时显示的列表
  * @param {Object} query 查询参数
  * @param {string} query.resourceKey 资源key，市场主体：DIR-20191014-173239-707 重点人群：DIR-20191014-173845-746
@@ -157,6 +183,7 @@ export async function getAddArea (query) {
         url: '/api/credit/jgUserConfig/addArea',
         method: 'get',
         params: {
+          resourceCode: 'C',
           resourceName: query.resourceName,
           size: query.size,
           page: query.page - 1
