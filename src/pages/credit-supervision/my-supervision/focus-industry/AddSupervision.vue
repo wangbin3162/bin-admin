@@ -198,13 +198,13 @@
        * @author haodongdong
        * @description 加入监管按钮回调
        * @param {Object} row 当前行数据
-       * @param {string} row.id 行业id
+       * @param {string} row.route 行业编码路径
        * @param {string} row.typeName 行业名称
        */
       async handleAddSupervisionBtn (row) {
         try {
           await addSupervision({
-            objectId: row.id,
+            objectId: row.route,
             objectName: row.typeName,
             jgType: 'KI'
           })
