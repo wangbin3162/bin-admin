@@ -1,4 +1,7 @@
-// 通知公告相关api接口
+/**
+ * @author haodongdong
+ * @description 我的监管相关接口
+ */
 import request from '../request'
 import Qs from 'qs'
 
@@ -74,7 +77,7 @@ export async function getConTypeList (query) {
 
 /**
  * @author haodongdong
- * @description 我的监管下，市场主体、重点人群、重点领域三个内容的通用列表接口。
+ * @description 市场主体、重点人群、重点领域三个内容的通用列表接口。
  * @param {Object} query 查询参数
  * @param {string} query.jgType 监管类型，MS 市场主体 KP 重点人群 IA 重点领域
  * @param {number} query.size 分页大小
@@ -102,7 +105,33 @@ export async function jgUserConfigSearch (query) {
 
 /**
  * @author haodongdong
- * @description 我的监管下，市场主体、重点人群监管，新增时显示的列表
+ * @description 重点行业监管列表接口
+ * @param {Object} query 查询参数
+ * @param {number} query.size 分页大小
+ * @param {string} query.page 当前页
+ * @returns {Promise<any>}
+ */
+export async function getFocusIndustry (query) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/api/credit/trade/searchJg',
+        method: 'get',
+        params: {
+          size: query.size,
+          page: query.page - 1
+        }
+      })
+      resolve(res.data)
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
+ * @description 市场主体、重点人群监管，新增时显示的列表
  * @param {Object} query 查询参数
  * @param {string} query.resourceKey 资源key，市场主体：DIR-20191014-173239-707 重点人群：DIR-20191014-173845-746
  * @param {number} query.keyValues 需要查询的关键字对象 eg. { name: '张' }
@@ -111,11 +140,11 @@ export async function jgUserConfigSearch (query) {
  * @param {string} query.page 当前页
  * @returns {Promise<any>}
  */
-export async function getGatherList (query) {
+export async function getCompAndPerson (query) {
   return new Promise(async (resolve, reject) => {
     try {
       const res = await request({
-        url: '/api/dir/gather/search',
+        url: '/api/credit/jgUserConfig/addCompAndPerson',
         method: 'post',
         data: {
           resourceKey: query.resourceKey,
@@ -140,12 +169,40 @@ export async function getGatherList (query) {
 
 /**
  * @author haodongdong
+ * @description 重点领域监管，新增时显示的列表
+ * @param {Object} query 查询参数
+ * @param {Object} query.resourceName 资源名称
+ * @param {number} query.size 分页大小
+ * @param {string} query.page 当前页
+ * @returns {Promise<any>}
+ */
+export async function getAddArea (query) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/api/credit/jgUserConfig/addArea',
+        method: 'get',
+        params: {
+          resourceCode: 'C',
+          resourceName: query.resourceName,
+          size: query.size,
+          page: query.page - 1
+        }
+      })
+      resolve(res.data)
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
  * @description 添加监管
  * @param {Object} param 查询参数
  * @param {number} param.jgType 监管类型
- * @param {number} [param.jgDesc] 监管描述
  * @param {number} param.objectId 监管主体id
- * @param {string} param.objectName 监管主题名称
+ * @param {string} param.objectName 监管主体名称
  * @returns {Promise<any>}
  */
 export async function addSupervision (param) {
@@ -156,7 +213,40 @@ export async function addSupervision (param) {
         method: 'post',
         data: param
       })
-      resolve(res.data)
+      if (res.data.successful) {
+        resolve()
+      } else {
+        reject(res.data.message)
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
+ * @description 取消监管接口
+ * @param {string} item 监管记录的id属性或code属性，取消重点行业监管时传递code属性
+ * @param {string} [jgType] 监管类型，只在取消重点行业监管时传递KI
+ * @returns {Promise<any>}
+ */
+export async function cancelSupervision (item, jgType = undefined) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/api/credit/jgUserConfig/remove',
+        method: 'post',
+        params: {
+          item,
+          jgType
+        }
+      })
+      if (res.data.successful) {
+        resolve()
+      } else {
+        reject(res.data.message)
+      }
     } catch (error) {
       reject(error)
     }

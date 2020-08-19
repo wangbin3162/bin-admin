@@ -14,7 +14,7 @@
 
       <b-table :columns="columns" :data="list" :loading="listLoading" size="small">
         <template v-slot:action="{ row }">
-          <b-button type="text" @click.stop="handleAddSupervisiontBtn(row)">
+          <b-button type="text" @click.stop="handleAddSupervisionBtn(row)">
             加入监管
           </b-button>
         </template>
@@ -22,14 +22,18 @@
     </v-table-wrap>
 
     <div slot="footer">
-      <!--下方分页器-->
-      <b-page :total="total" :current.sync="query.page" @on-change="handleCurrentChange"/>
+      <b-page :total="total"
+        :current.sync="query.page"
+        :page-size="query.size"
+        @on-change="handlePageChange"/>
     </div>
   </b-modal>
 </template>
 
 <script>
-  import { getGatherList } from '@/api/credit-supervision/my-supervision.api'
+  import {
+    getCompAndPerson, addSupervision
+  } from '@/api/credit-supervision/my-supervision.api'
 
   export default {
     name: 'MSAddsupervision',
@@ -62,7 +66,7 @@
           { title: '统一社会信用码', key: 'id_shxym', ellipsis: true, tooltip: true },
           { title: '组织结构码', key: 'id_zzjg', ellipsis: true, tooltip: true },
           { title: '工商注册号', key: 'id_gszc', ellipsis: true, tooltip: true },
-          { title: '操作', slot: 'action', width: 70, align: 'center' }
+          { title: '操作', slot: 'action', width: 120, align: 'center' }
         ]
       }
     },
@@ -77,16 +81,35 @@
     methods: {
       /**
        * @author haodongdong
-       * @description 获取需要添加监管的市场主体列表
-       * @param {Object} query 查询参数
-       * @param {string} query.resourceKey 资源key，市场主体：DIR-20191014-173239-707 重点人群：DIR-20191014-173845-746
-       * @param {number} query.size 分页大小
-       * @param {string} query.page 当前页
+       * @description b-modal组件显示状态改变回调
+       * @param {boolean} visible
        */
-      async getList (query) {
+      handleVisibleChange (visible) {
+        if (visible) {
+          this.getList()
+        } else {
+          this.query.page = 1
+          this.list = []
+        }
+      },
+
+      /**
+       * @author haodongdong
+       * @description 获取需要添加监管的市场主体列表
+       */
+      async getList () {
         this.listLoading = true
         try {
-          const { total, rows } = await getGatherList(query)
+          const { total, rows } = await getCompAndPerson(this.query)
+          rows.forEach(item => { // 处理空内容为 暂无 占位符
+            for (const key in item) {
+              if (item.hasOwnProperty(key)) {
+                if (!item[key]) {
+                  item[key] = '暂无'
+                }
+              }
+            }
+          })
           this.total = total
           this.list = rows
         } catch (error) {
@@ -97,21 +120,6 @@
           })
         }
         this.listLoading = false
-      },
-
-      /**
-       * @author haodongdong
-       * @description b-modal组件显示状态改变回调
-       * @param {boolean} visible
-       */
-      handleVisibleChange (visible) {
-        if (visible) {
-          this.getList(this.query)
-        } else {
-          this.query.size = 10
-          this.query.page = 1
-          this.list = []
-        }
       },
 
       /**
@@ -138,18 +146,40 @@
        * @author haodongdong
        * @description 加入监管按钮回调
        * @param {Object} row 当前行数据
-       * @param {string} row.typeName 类别名称
-       * @param {string} row.typeCode 类别编码
+       * @param {string} row.id 主体id
+       * @param {string} row.comp_name 主体名称
        */
-      handleAddSupervisiontBtn (row) {
-        this.$emit('selected', row)
-        this.open = false
+      async handleAddSupervisionBtn (row) {
+        try {
+          await addSupervision({
+            objectId: row.id,
+            objectName: row.comp_name,
+            jgType: 'MS'
+          })
+          this.$message({
+            type: 'success',
+            content: '操作成功'
+          })
+          this.$emit('success')
+          this.open = false
+        } catch (error) {
+          console.error(error)
+          this.$notice.danger({
+            title: '操作失败',
+            desc: error
+          })
+        }
       },
 
-      handleCurrentChange () {
-
+      /**
+       * @author haodongdong
+       * @description 分页组件页面切换回调
+       * @param {number} page
+       */
+      handlePageChange (page) {
+        this.query.page = page
+        this.getList()
       }
-
     }
   }
 </script>
