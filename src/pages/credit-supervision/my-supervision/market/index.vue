@@ -144,7 +144,6 @@
        * @param {string} row.objectId 主体id
        */
       handleViewBtn (row) {
-        console.log(row)
         this.$router.push({
           name: 'recentDynamic',
           query: {

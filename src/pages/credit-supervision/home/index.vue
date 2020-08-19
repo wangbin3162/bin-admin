@@ -54,7 +54,6 @@
 
                 <div class="text">
                   <p>
-                    <!-- 江苏浮云网络科技有限公司 自然人红黑名单 增加了 -->
                     {{ item.objectName }}
                     <span>{{ item.resourceName }}</span>
                     增加了
@@ -65,14 +64,8 @@
                 </div>
               </div>
 
-              <div flex>
-                <div class="button" style="margin-right: 20px;" @click="modalFlag = true">
-                  test
-                </div>
-
-                <div class="button">
-                  查看详情
-                </div>
+              <div class="button" @click="handleViewDetailBtn(item)">
+                查看详情
               </div>
             </li>
           </ul>
@@ -142,7 +135,7 @@
         resData: null, // 接口返回的数据容器
         listLoading: false,
         list: [],
-        modalFlag: true
+        modalFlag: false
       }
     },
     created () {
@@ -161,7 +154,6 @@
       init () {
         this.getSupervisionDynamicList(this.query)
         const routeQuery = this.$route.query
-        console.log(routeQuery)
         if (JSON.stringify(routeQuery) !== '{}') {
           this.keyword = routeQuery.q
           this.personClass = routeQuery.type
@@ -220,11 +212,32 @@
        * @description 搜索框清空按钮的回调
        */
       handleSearchClear () {
+        this.$router.push({ // 用于清空url参数
+          path: 'creditSupervision',
+          query: {}
+        })
         this.personClass = '1'
         this.keyword = ''
         const el = this.$refs.search
         el.style.height = '230px'
         this.visible = false
+      },
+
+      /**
+       * @author haodongdong
+       * @description 查看详情按钮回调
+       * @param {Object} row 当前行数据
+       * @param {string} row.objectId 主体id
+       * @param {string} row.objectType 主体类别 1 法人 2 自然人
+       */
+      handleViewDetailBtn (row) {
+        this.$router.push({
+          name: 'recentDynamic',
+          query: {
+            id: row.objectId,
+            type: String(row.objectType) // 这里需要转为String，因为后续的其他模块是按照字符型严格判断的
+          }
+        })
       },
 
       /**
