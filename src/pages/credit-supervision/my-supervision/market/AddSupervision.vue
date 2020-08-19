@@ -22,8 +22,10 @@
     </v-table-wrap>
 
     <div slot="footer">
-      <!--下方分页器-->
-      <b-page :total="total" :current.sync="query.page" @on-change="handleCurrentChange"/>
+      <b-page :total="total"
+        :current.sync="query.page"
+        :page-size="query.size"
+        @on-change="handlePageChange"/>
     </div>
   </b-modal>
 </template>
@@ -84,9 +86,8 @@
        */
       handleVisibleChange (visible) {
         if (visible) {
-          this.getList(this.query)
+          this.getList()
         } else {
-          this.query.size = 10
           this.query.page = 1
           this.list = []
         }
@@ -95,15 +96,11 @@
       /**
        * @author haodongdong
        * @description 获取需要添加监管的市场主体列表
-       * @param {Object} query 查询参数
-       * @param {string} query.resourceKey 资源key，市场主体：DIR-20191014-173239-707 重点人群：DIR-20191014-173845-746
-       * @param {number} query.size 分页大小
-       * @param {string} query.page 当前页
        */
-      async getList (query) {
+      async getList () {
         this.listLoading = true
         try {
-          const { total, rows } = await getCompAndPerson(query)
+          const { total, rows } = await getCompAndPerson(this.query)
           this.total = total
           this.list = rows
         } catch (error) {
@@ -148,9 +145,7 @@
           await addSupervision({
             objectId: row.id,
             objectName: row.comp_name,
-            jgName: '市场主体',
-            jgType: 'MS',
-            jgDesc: ''
+            jgType: 'MS'
           })
           this.$message({
             type: 'success',
@@ -167,10 +162,15 @@
         }
       },
 
-      handleCurrentChange () {
-
+      /**
+       * @author haodongdong
+       * @description 分页组件页面切换回调
+       * @param {number} page
+       */
+      handlePageChange (page) {
+        this.query.page = page
+        this.getList()
       }
-
     }
   }
 </script>

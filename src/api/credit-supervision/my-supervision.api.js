@@ -77,7 +77,7 @@ export async function getConTypeList (query) {
 
 /**
  * @author haodongdong
- * @description 我的监管下，市场主体、重点人群、重点领域三个内容的通用列表接口。
+ * @description 市场主体、重点人群、重点领域三个内容的通用列表接口。
  * @param {Object} query 查询参数
  * @param {string} query.jgType 监管类型，MS 市场主体 KP 重点人群 IA 重点领域
  * @param {number} query.size 分页大小
@@ -105,7 +105,7 @@ export async function jgUserConfigSearch (query) {
 
 /**
  * @author haodongdong
- * @description 我的监管下，市场主体、重点人群监管，新增时显示的列表
+ * @description 市场主体、重点人群监管，新增时显示的列表
  * @param {Object} query 查询参数
  * @param {string} query.resourceKey 资源key，市场主体：DIR-20191014-173239-707 重点人群：DIR-20191014-173845-746
  * @param {number} query.keyValues 需要查询的关键字对象 eg. { name: '张' }
@@ -146,9 +146,8 @@ export async function getCompAndPerson (query) {
  * @description 添加监管
  * @param {Object} param 查询参数
  * @param {number} param.jgType 监管类型
- * @param {number} [param.jgDesc] 监管描述
  * @param {number} param.objectId 监管主体id
- * @param {string} param.objectName 监管主题名称
+ * @param {string} param.objectName 监管主体名称
  * @returns {Promise<any>}
  */
 export async function addSupervision (param) {

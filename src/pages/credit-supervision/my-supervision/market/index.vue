@@ -37,13 +37,11 @@
           </b-button>
         </div>
       </li>
-      <li v-if="list.length === 0">
-        <no-data></no-data>
-      </li>
-      <b-loading v-if="listLoading" fix show-text="加载中...."></b-loading>
+      <no-data v-if="!listLoading && list.length === 0"></no-data>
+      <b-loading fix v-if="listLoading" show-text="加载中...."></b-loading>
     </ul>
 
-    <div flex="main:right" class="pr-10">
+    <div flex="main:right" class="mb-20 pr-10">
       <b-page :total="total"
         :current.sync="query.page"
         :page-size="query.size"
@@ -72,9 +70,6 @@
         return value
       }
     },
-    props: {
-
-    },
     components: {
       NoData,
       AddSupervision
@@ -96,7 +91,6 @@
       this.getList()
     },
     methods: {
-
       /**
        * @author haodongdong
        * @description 获取市场主体监管列表
@@ -192,7 +186,7 @@
       position: relative;
       margin-bottom: 20px;
       padding: 0 10px 0;
-      min-height: 365px;
+      min-height: 90px;
 
       li {
         padding: 17px 0;
