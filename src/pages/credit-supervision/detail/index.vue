@@ -10,7 +10,7 @@
         </transition>
         <!-- 扩展信息 -->
         <transition name="fade-scale-move">
-          <extend-info v-show="visible" class="mt-20"></extend-info>
+          <extend-info v-if="visible" class="mt-20"></extend-info>
         </transition>
       </div>
     </div>
