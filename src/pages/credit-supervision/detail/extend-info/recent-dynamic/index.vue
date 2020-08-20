@@ -11,7 +11,7 @@
       </template>
 
       <div class="charts-con">
-        <relation-chart :relationData="relationData"></relation-chart>
+        <relation-chart :relationData="relationData" ref="relationChart"></relation-chart>
       </div>
     </b-card>
 
@@ -136,6 +136,9 @@
     created () {
       this.init()
     },
+    mounted() {
+      this.touchMoveRelationChart()
+    },
     methods: {
       /**
        * @author haodongdong
@@ -193,6 +196,27 @@
       handlePageChange (page) {
         this.query.page = page
         this.getList(this.recentDynamic, this.query)
+      },
+      touchMoveRelationChart() {
+        console.log()
+        const dom = this.$refs.relationChart.$children[0].$el
+        let recordObj = {
+
+        }
+        function handleMove(e) {
+          let obj = { x: e.clientX, y: e.clientY }
+          let currentObj = {
+
+          }
+        }
+        dom.addEventListener('mousedown', () => {
+          console.log('down')
+          dom.addEventListener('mousemove', handleMove)
+        })
+        dom.addEventListener('mouseup', () => {
+          console.log('up')
+          dom.removeEventListener('mousemove', handleMove)
+        })
       }
     }
   }
