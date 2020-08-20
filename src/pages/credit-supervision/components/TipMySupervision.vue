@@ -21,10 +21,26 @@
     data () {
       return {
         tips: [
-          { icon: 'verified_user', title: '市场主体监管', link: '' },
-          { icon: 'assignment-ind', title: '重点人群监管', link: '' },
-          { icon: 'reorder', title: '重点领域监管', link: '' },
-          { icon: 'view_carousel', title: '重点行业监管', link: '' }
+          {
+            icon: 'verified_user',
+            title: '市场主体监管',
+            link: '/creditSupervision/mySupervision/MS'
+          },
+          {
+            icon: 'assignment-ind',
+            title: '重点人群监管',
+            link: '/creditSupervision/mySupervision/KP'
+          },
+          {
+            icon: 'reorder',
+            title: '重点领域监管',
+            link: '/creditSupervision/mySupervision/IA'
+          },
+          {
+            icon: 'view_carousel',
+            title: '重点行业监管',
+            link: '/creditSupervision/mySupervision/KI'
+          }
         ]
       }
     },

@@ -11,13 +11,13 @@
       <div class="main-con">
         <div class="left">
           <div class="header">
-            <span>一共4条数据</span>
+            <span>一共{{ total }}条数据</span>
           </div>
 
-          <b-table :columns="columns" :data="list" class="m15">
-            <template v-slot:action="{ index }">
-              <span v-if="index % 2 === 0">已添加</span>
-              <b-button v-else type="text">
+          <b-table :columns="columns" :data="list" :loading="listLoading" class="m15">
+            <template v-slot:action="{ row }">
+              <span v-if="row.supervise === '1'">已添加</span>
+              <b-button v-else type="text" @click="handleAddSupervisionBtn(row)">
                 添加监管
               </b-button>
             </template>
@@ -45,6 +45,8 @@
 </template>
 
 <script>
+  import { getMarketWarnList } from '@/api/credit-supervision/market-players-warn.api'
+  import { addSupervision } from '@/api/credit-supervision/my-supervision.api'
   import CreSupLayout from '@/pages/credit-supervision/components/CreSupLayout'
   import CreSupHeader from '@/pages/credit-supervision/components/CreSupHeader'
   import TipMySupervision from '@/pages/credit-supervision/components/TipMySupervision'
@@ -60,31 +62,81 @@
     },
     data () {
       return {
+        listLoading: false,
         total: 0,
         query: {
           size: 10,
           page: 1
         },
-        list: [
-          { a: '江苏浮云网络科技有限公司', b: '行政处罚(一般)' },
-          { a: '神马网络科技有限公司', b: '行政处罚(一般)' },
-          { a: '某某公司', b: '行政处罚(一般)' },
-          { a: '某某某某公司', b: '未报送年报' }
-        ],
+        list: [],
         columns: [
           { type: 'index', width: 50 },
-          { title: '企业名称', key: 'a', ellipsis: true, tooltip: true },
-          { title: '预警原因', key: 'b', ellipsis: true, tooltip: true },
-          { title: '操作', slot: 'action', width: 70 }
+          { title: '企业名称', key: 'compName', ellipsis: true, tooltip: true },
+          { title: '预警原因', key: 'resourceName', ellipsis: true, tooltip: true },
+          { title: '操作', slot: 'action', width: 120, align: 'center' }
         ]
       }
     },
     created () {
-
+      this.getList()
     },
     methods: {
-      handlePageChange () {
+      /**
+       * @author haodongdong
+       * @description 获取市场主体预警列表
+       */
+      async getList () {
+        this.listLoading = true
+        try {
+          const { total, rows } = await getMarketWarnList(this.query)
+          this.total = total
+          this.list = rows
+        } catch (error) {
+          console.error(error)
+          this.$notice.danger({
+            title: '加载失败',
+            desc: error
+          })
+        }
+        this.listLoading = false
+      },
 
+      /**
+       * @author haodongdong
+       * @description 添加监管按钮回调
+       * @param {Object} row 当前行数据
+       * @param {string} row.id 主体id
+       * @param {string} row.compName 主体名称
+       */
+      async handleAddSupervisionBtn (row) {
+        try {
+          await addSupervision({
+            objectId: row.id,
+            objectName: row.compName,
+            jgType: 'MS'
+          })
+          this.$message({
+            type: 'success',
+            content: '操作成功'
+          })
+          this.getList()
+        } catch (error) {
+          console.error(error)
+          this.$notice.danger({
+            title: '操作失败',
+            desc: error
+          })
+        }
+      },
+
+      /**
+       * @author haodongdong
+       * @description 分页组件页面改变回调
+       * @param {number} page 当前页
+       */
+      handlePageChange (page) {
+        this.query.page = page
+        this.getList()
       }
     }
   }
