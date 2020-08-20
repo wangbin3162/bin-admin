@@ -1,14 +1,18 @@
 <template>
   <div class="recent-dynamic">
-    <b-card shadow="never">
+    <b-card head-tip shadow="never">
       <template v-slot:header>
         <div flex="main:justify cross:center">
-          <span>企业关联图谱</span>
-          <b-button type="text">
+          <span>{{ objectName }} - 关系图谱</span>
+          <b-button type="text" @click="openRelationChartModal = true">
             全屏查看 >>
           </b-button>
         </div>
       </template>
+
+      <div class="charts-con">
+        <relation-chart :relationData="relationData"></relation-chart>
+      </div>
     </b-card>
 
     <b-card head-tip shadow="never"
@@ -49,22 +53,39 @@
       :resourceKey="curRow.resourcekey"
       :title="curRow.resourceName">
     </detail-modal>
+
+    <b-modal v-model="openRelationChartModal"
+      :title="objectName + '- 关系图谱'"
+      fullscreen
+      footer-hide>
+      <relation-chart height="100%"
+        :relationData="relationData">
+      </relation-chart>
+    </b-modal>
   </div>
 </template>
 
 <script>
   import { mapState } from 'vuex'
   import { arrPgination } from '@/common/utils/util'
+  import { getRelationData } from '@/api/credit-supervision/relation-chart.api'
+  import RelationChart from '@/pages/credit-supervision/components/RelationChart'
   import DetailModal from '@/pages/credit-supervision/components/DetailModal'
 
   export default {
     name: 'RecentDynamic',
     components: {
+      RelationChart,
       DetailModal
     },
     data () {
       return {
         open: false,
+        openRelationChartModal: false,
+        relationData: { // 关系图数据容器
+          data: [],
+          links: []
+        },
         listLoading: false,
         total: 0,
         query: {
@@ -90,6 +111,17 @@
     },
     computed: {
       ...mapState({
+        objectName (state) {
+          let res = ''
+          const { type } = this.$route.query
+          const detailRes = state.creSupDetail.detailRes
+          if (type === '1') {
+            res = detailRes.data ? detailRes.data.comp_name : ''
+          } else {
+            res = detailRes.data ? detailRes.data.name : ''
+          }
+          return res
+        },
         recentDynamic: state => state.creSupDetail.recentDynamic
       })
     },
@@ -102,9 +134,33 @@
       }
     },
     created () {
-
+      this.init()
     },
     methods: {
+      /**
+       * @author haodongdong
+       * @description 一些初始化处理
+       */
+      init () {
+        const { type, id, objectName } = this.$route.query
+        this.getRelationData(id, objectName, type)
+      },
+
+       /**
+       * @description 获取关系图数据
+       * @param {string} type 主体类别 '1' 法人 '2' 自然人
+       * @param {string} objectId 主体id
+       * @param {string} objectName 主体名称
+       */
+      async getRelationData (objectId, objectName, type) {
+        try {
+          const res = await getRelationData(objectId, objectName, type)
+          this.relationData = res
+        } catch (error) {
+          console.error(error)
+        }
+      },
+
       /**
        * @author haodongdong
        * @description 静态分页
@@ -146,6 +202,20 @@
  .recent-dynamic {
    .tip-text {
      color: #8c8c8c;
+   }
+   .charts-con {
+     position: relative;
+     height: 200px;
+     width: 100%;
+     overflow: hidden;
+
+     >>>.bin-chart {
+       position: absolute;
+       width: 100%;
+       top: 50%;
+       left: 50%;
+       transform: translate(-50%, -50%)
+     }
    }
  }
 </style>

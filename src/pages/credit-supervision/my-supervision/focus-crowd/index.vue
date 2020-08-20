@@ -141,14 +141,15 @@
        * @description 查看按钮回调
        * @param {Object} row 当前行数据
        * @param {string} row.objectId 主体id
+       * @param {string} row.objectName 主体名称
        */
       handleViewBtn (row) {
-        console.log(row)
         this.$router.push({
           name: 'recentDynamic',
           query: {
+            type: '2', // 自然人
             id: row.objectId,
-            type: '2' // 自然人
+            objectName: row.objectName
           }
         })
       },

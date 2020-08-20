@@ -40,7 +40,7 @@
             </div>
           </template>
           <div class="ctrl">
-            <span v-waves @click="handleCheck(item.id)">查看详情</span>
+            <span v-waves @click="handleCheck(item)">查看详情</span>
           </div>
         </div>
       </template>
@@ -130,12 +130,15 @@
         this.search(q, type)
       },
 
-      handleCheck(id) {
+      handleCheck(row) {
+        const type = this.query.type
+        const objectName = type === '1' ? row.comp_name : row.name // '1' 法人 '2' 自然人
         this.$router.push({
           name: 'recentDynamic',
           query: {
-            id,
-            type: this.query.type
+            type,
+            id: row.id,
+            objectName
           }
         })
       },

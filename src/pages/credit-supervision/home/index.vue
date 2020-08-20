@@ -1,10 +1,6 @@
 <template>
   <cre-sup-layout>
     <div class="credit-supervision">
-      <b-modal v-model="modalFlag" title="关系图展示" width="1000" footer-hide
-               @on-ok="$log.print('ok click')"  @on-cancel="$log.print('cancel click','success')">
-        <relation-chart></relation-chart>
-      </b-modal>
       <cre-sup-header></cre-sup-header>
 
       <div ref="search" class="search">
@@ -107,7 +103,6 @@
   import TipNav from '@/pages/credit-supervision/home/TipNav'
   import TipMarketWarn from '@/pages/credit-supervision/components/TipMarketWarn'
   import TipIndustryBlackList from '@/pages/credit-supervision/components/TipIndustryBlackList'
-  import RelationChart from '@/pages/credit-supervision/home/RelationChart'
   import SearchList from '@/pages/credit-supervision/home/search/SearchList'
 
   export default {
@@ -118,7 +113,6 @@
       TipNav,
       TipMarketWarn,
       TipIndustryBlackList,
-      RelationChart,
       SearchList
     },
     data () {
@@ -134,8 +128,7 @@
         },
         resData: null, // 接口返回的数据容器
         listLoading: false,
-        list: [],
-        modalFlag: false
+        list: []
       }
     },
     created () {
@@ -234,8 +227,9 @@
         this.$router.push({
           name: 'recentDynamic',
           query: {
+            type: String(row.objectType), // 这里需要转为String，因为后续的其他模块是按照字符型严格判断的
             id: row.objectId,
-            type: String(row.objectType) // 这里需要转为String，因为后续的其他模块是按照字符型严格判断的
+            objectName: row.objectName
           }
         })
       },

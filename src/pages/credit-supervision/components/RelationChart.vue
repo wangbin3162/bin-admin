@@ -1,6 +1,9 @@
 <template>
   <div class="relation-chart">
-    <b-charts ref="chart" :options="relationOption" theme="charts-theme" height="600px" @click="handleChart"></b-charts>
+    <b-charts ref="chart" :options="relationOption" theme="charts-theme"
+      :height="height"
+      @click="handleChart">
+    </b-charts>
   </div>
 </template>
 
@@ -9,6 +12,16 @@
 
   export default {
     name: 'RelationChart',
+    props: {
+      height: {
+        type: String,
+        default: '600px'
+      },
+      relationData: { // 关系图数据
+        type: Object,
+        default: null
+      }
+    },
     data() {
       return {
         relationOption: {
@@ -105,11 +118,42 @@
         }
       }
     },
+    watch: {
+      relationData: {
+        handler (newVal) {
+          if (newVal) {
+            this.renderRelationChart(newVal.data, newVal.links)
+          }
+        }
+      }
+    },
+    mounted() {
+      this.$refs.chart.chart.on('click', (e) => {
+        // flag = !flag
+        // if(flag){
+        //   this.relationOption.series[0].data = this.copy.data
+        //   this.relationOption.series[0].links = this.copy.links
+        // }else{
+        //   this.relationOption.series[0].data.forEach(item=>{
+        //     item.itemStyle.opacity = 1
+        //   })
+        //   this.relationOption.series[0].links.forEach(item=>{
+        //     if(item.target === e.name||item.source===e.name){
+        //       item.lineStyle.opacity = 1
+        //       item.label.show = true
+        //     }
+        //   })
+        // }
+      })
+    },
     methods: {
-      async renderRelationChart(word) {
+      /**
+       * @description 共外部调用，渲染关系图
+       * @param {Array} data 数据
+       * @param {Array} links 关系
+       */
+      async renderRelationChart(data, links) {
         try {
-          const res = await getRelationData(word)
-          const { data, links } = res
           let formatterData = data.map(item => {
             let size = 60
             let obj = {
@@ -152,33 +196,16 @@
           console.error(error)
         }
       },
+
       handleChart(event) {
         console.log(event)
       }
-    },
-    mounted() {
-      this.renderRelationChart('objectId=a0e89523d75e4467bfe893d021b6c7bd&type=1&objectName=共享单车')
-      this.$refs.chart.chart.on('click', (e) => {
-        // flag = !flag
-        // if(flag){
-        //   this.relationOption.series[0].data = this.copy.data
-        //   this.relationOption.series[0].links = this.copy.links
-        // }else{
-        //   this.relationOption.series[0].data.forEach(item=>{
-        //     item.itemStyle.opacity = 1
-        //   })
-        //   this.relationOption.series[0].links.forEach(item=>{
-        //     if(item.target === e.name||item.source===e.name){
-        //       item.lineStyle.opacity = 1
-        //       item.label.show = true
-        //     }
-        //   })
-        // }
-      })
     }
   }
 </script>
 
-<style scoped>
-
+<style lang="stylus" scoped>
+ .relation-chart {
+   height: 100%;
+ }
 </style>
