@@ -228,10 +228,10 @@ export async function addSupervision (param) {
  * @author haodongdong
  * @description 取消监管接口
  * @param {string} item 监管记录的id属性或code属性，取消重点行业监管时传递code属性
- * @param {string} [jgType] 监管类型，只在取消重点行业监管时传递KI
+ * @param {string} jgType 监管类型，只在取消重点行业监管时传递KI
  * @returns {Promise<any>}
  */
-export async function cancelSupervision (item, jgType = undefined) {
+export async function cancelSupervision (item, jgType) {
   return new Promise(async (resolve, reject) => {
     try {
       const res = await request({

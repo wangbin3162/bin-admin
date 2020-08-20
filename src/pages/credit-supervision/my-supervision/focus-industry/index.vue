@@ -15,7 +15,7 @@
       </template>
 
       <template v-slot:action="{ row }">
-        <b-button type="text" @click="handleCancelSupervisionBtn(row.code)">
+        <b-button type="text" @click="handleCancelSupervisionBtn(row.code, 'KI')">
           取消监管
         </b-button>
       </template>
@@ -101,8 +101,9 @@
        * @author haodongdong
        * @description 取消监管按钮回调
        * @param {string} code 当前记录的code
+       * @param {string} jgType 监管类型
        */
-      handleCancelSupervisionBtn (code) {
+      handleCancelSupervisionBtn (code, jgType) {
         this.$confirm({
           title: '提示',
           content: '确认要取消监管吗？',
@@ -110,7 +111,7 @@
           okType: 'danger',
           onOk: async () => {
             try {
-              await cancelSupervision(code, 'KI')
+              await cancelSupervision(code, jgType)
               this.getList()
               this.$message({ type: 'success', content: '操作成功' })
             } catch (error) {

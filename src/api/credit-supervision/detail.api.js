@@ -42,8 +42,8 @@ export async function getDetail (query) {
  * @param {string} query.id 主体id
  * @param {number} query.type 主体类型 1 法人 2 自然人
  * @param {string} query.month 查询月数
- * @param {number} query.size 分页大小
- * @param {number} query.page 当前页
+ * @param {number} [query.size] 分页大小
+ * @param {number} [query.page] 当前页
  * @returns {Promise<SiperVisionDynamic[]>}
  */
 export async function getPersonDynamic (query) {
@@ -57,7 +57,7 @@ export async function getPersonDynamic (query) {
           type: query.type,
           month: query.month,
           size: query.size,
-          page: query.page - 1
+          page: query.page ? query.page - 1 : query.page
         }
       })
       resolve(res.data)
@@ -73,21 +73,17 @@ export async function getPersonDynamic (query) {
  * @param {Object} query 查询参数对象
  * @param {string} query.personId 主体id
  * @param {number} [query.jgType] 监管类型，不传则获取红黑名单信息
- * @param {number} query.size 分页大小
- * @param {number} query.page 当前页
  * @returns {Promise<SiperVisionDynamic[]>}
  */
 export async function getRedBlackOrFocusScope (query) {
   return new Promise(async (resolve, reject) => {
     try {
       const res = await request({
-        url: '/api/credit/jgDocs/searchByPage',
+        url: '/api/credit/jgDocs/searchByPageNew',
         method: 'get',
         params: {
           personId: query.personId,
-          jgType: query.type || '',
-          size: query.size,
-          page: query.page - 1
+          jgType: query.jgType || ''
         }
       })
       resolve(res.data)

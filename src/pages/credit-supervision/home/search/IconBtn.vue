@@ -1,13 +1,13 @@
 <template>
   <div class="icon-btn">
-    <b-tooltip v-if="obj.redBlack !== undefined"
+    <!-- <b-tooltip v-if="obj.redBlack !== undefined"
       :content="obj.redBlack === '1' ? '存在于红名单中': '存在于黑名单中'"
       placement="top-start">
       <svg-icon
         icon-class="assignment-ind" class="icon"
         :class="{ red: obj.redBlack === '1' }">
       </svg-icon>
-    </b-tooltip>
+    </b-tooltip> -->
 
     <template v-if="obj.supervise === '1'">
       <b-tooltip content="已监管" placement="top-start">

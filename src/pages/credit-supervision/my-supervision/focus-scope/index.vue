@@ -28,7 +28,7 @@
         </div>
 
         <div>
-          <b-button type="text" @click="handleCancelSupervisionBtn(item.id)">
+          <b-button type="text" @click="handleCancelSupervisionBtn(item.objectId, 'IA')">
             取消监管
           </b-button>
         </div>
@@ -105,9 +105,10 @@
       /**
        * @author haodongdong
        * @description 取消监管按钮回调
-       * @param {string} id 当前记录的id
+       * @param {string} objectId 当前记录的objectId
+       * @param {string} jgType 监管类型
        */
-      handleCancelSupervisionBtn (id) {
+      handleCancelSupervisionBtn (objectId, jgType) {
         this.$confirm({
           title: '提示',
           content: '确认要取消监管吗？',
@@ -115,7 +116,7 @@
           okType: 'danger',
           onOk: async () => {
             try {
-              await cancelSupervision(id)
+              await cancelSupervision(objectId, jgType)
               this.getList()
               this.$message({ type: 'success', content: '操作成功' })
             } catch (error) {

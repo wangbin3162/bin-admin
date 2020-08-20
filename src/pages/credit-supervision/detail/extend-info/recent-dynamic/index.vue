@@ -37,7 +37,9 @@
       </b-table>
 
      <div flex="main:right" class="mt-20 mb-5">
-        <b-page :total="total" show-elevator
+        <b-page :total="total" :page-size="query.size"
+          :current.sync="query.page"
+          show-elevator
           @on-change="handlePageChange">
         </b-page>
      </div>
@@ -51,7 +53,8 @@
 </template>
 
 <script>
-  import { getPersonDynamic } from '@/api/credit-supervision/detail.api'
+  import { mapState } from 'vuex'
+  import { arrPgination } from '@/common/utils/util'
   import DetailModal from '@/pages/credit-supervision/components/DetailModal'
 
   export default {
@@ -65,8 +68,6 @@
         listLoading: false,
         total: 0,
         query: {
-          id: '',
-          type: '',
           month: 1,
           size: 10,
           page: 1
@@ -87,45 +88,35 @@
         curRow: {}
       }
     },
+    computed: {
+      ...mapState({
+        recentDynamic: state => state.creSupDetail.recentDynamic
+      })
+    },
+    watch: {
+      recentDynamic: {
+        handler (newVal) {
+          this.getList(newVal, this.query)
+        },
+        immediate: true
+      }
+    },
     created () {
-      this.init()
+
     },
     methods: {
       /**
        * @author haodongdong
-       * @description 一些初始化处理
-       */
-      init () {
-        const query = this.$route.query
-        this.query.id = query.id
-        this.query.type = query.type
-        this.getList(this.query)
-      },
-
-      /**
-       * @author haodongdong
-       * @descriptoin 获取近期动态
-       * @param {Object} query 查询参数对象
-       * @param {string} query.id 主体id
-       * @param {number} query.type 主体类型 1 法人 2 自然人
-       * @param {string} query.month 查询月数
+       * @description 静态分页
+       * @param {Array} array 需要分页的数组
+       * @param {Object} query 分页参数
        * @param {number} query.size 分页大小
        * @param {number} query.page 当前页
        */
-      async getList (query) {
-        this.listLoading = true
-        try {
-          const res = await getPersonDynamic(query)
-          this.total = res.total
-          this.list = res.rows
-        } catch (error) {
-          console.error(error)
-          this.$notice.danger({
-            title: '加载失败',
-            desc: error
-          })
-        }
-        this.listLoading = false
+      getList (array, query) {
+        const { total, page, arr } = arrPgination(array, query.size, query.page)
+        this.total = total
+        this.list = arr
       },
 
       /**
@@ -145,7 +136,7 @@
        */
       handlePageChange (page) {
         this.query.page = page
-        this.getList(this.query)
+        this.getList(this.recentDynamic, this.query)
       }
     }
   }

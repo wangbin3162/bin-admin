@@ -1,94 +1,111 @@
 <template>
-  <transition name="fade-scale-move">
-    <div v-show="visible" class="base-info">
-      <div flex>
-        <!-- 基本信息 -->
-        <keywords cls="color-0" :size="68">
-          {{ detail.keywords ? detail.keywords[0] : '' }}
-        </keywords>
+  <div class="base-info">
+    <div flex>
+      <!-- 基本信息 -->
+      <keywords cls="color-0" :size="68">
+        {{ detail.keywords ? detail.keywords[0] : '' }}
+      </keywords>
 
-        <div class="info-con">
-          <template v-if="isLeg">
-            <div class="info-title">
-              <span class="name">
-                <!-- 主体名称 -->
-                {{ detail.comp_name }}
-              </span>
+      <div class="info-con">
+        <template v-if="isLeg">
+          <div class="info-title">
+            <span class="name">
+              <!-- 主体名称 -->
+              {{ detail.comp_name }}
+            </span>
 
-              <span  type="success" class="status-tag">
-                {{ detail.djzt }}
-              </span>
+            <span  type="success" class="status-tag">
+              {{ detail.djzt }}
+            </span>
 
-              <icon-btn :supervisionStatus="detail.supervise"></icon-btn>
-            </div>
-
-            <div class="info-other">
-              <span>{{ mapping.fddbr }}：{{ detail.fddbr }}</span>
-              <span>{{ mapping.clrq }}：{{ detail.clrq }}</span>
-            </div>
-          </template>
-
-          <template v-else>
-            <div class="info-title">
-              <span class="name">
-                <!-- 主体名称 -->
-                {{ detail.name }}
-              </span>
-
-              <icon-btn :supervisionStatus="detail.supervise"></icon-btn>
-            </div>
-
-            <div class="info-other">
-              <span>{{ detail.id_type }}：{{ detail.id_code }}</span>
-            </div>
-          </template>
-
-          <div class="info-tag">
-            <!-- tag info -->
-            <!-- <div v-for="n in 20" :key="n" class="tag t-ellipsis">
-              <span class="dot" :class="{ red: n % 2 === 0}">
-              </span>
-              海关认证企业
-            </div> -->
-            <template v-for="item in redBlackList" >
-              <b-tooltip :key="item.resourceKey"
-                :content="item.nameListType === '1' ? '红名单' : '黑名单'"
-                placement="top-start">
-                <div class="tag t-ellipsis">
-                  <span class="dot" :class="{ red: item.nameListType === '1'}">
-                  </span>
-                  {{ item.resourceName }}
-                </div>
-              </b-tooltip>
-            </template>
+            <icon-btn :supervisionStatus="detail.supervise"
+              :objectId="detail.id"
+              :objectName="detail.comp_name"
+              @success="handleSuccess">
+            </icon-btn>
           </div>
+
+          <div class="info-other">
+            <span>{{ mapping.fddbr }}：{{ detail.fddbr | valueFilter }}</span>
+            <span>{{ mapping.clrq }}：{{ detail.clrq }}</span>
+          </div>
+        </template>
+
+        <template v-else>
+          <div class="info-title">
+            <span class="name">
+              <!-- 主体名称 -->
+              {{ detail.name }}
+            </span>
+
+            <icon-btn :supervisionStatus="detail.supervise"
+              :objectId="detail.id"
+              :objectName="detail.name"
+              @success="handleSuccess">
+            </icon-btn>
+          </div>
+
+          <div class="info-other">
+            <span>{{ detail.id_type }}：{{ detail.id_code }}</span>
+          </div>
+        </template>
+
+        <div class="info-tag">
+          <!-- tag info -->
+          <!-- <div v-for="n in 20" :key="n" class="tag t-ellipsis">
+            <span class="dot" :class="{ red: n % 2 === 0}">
+            </span>
+            海关认证企业
+          </div> -->
+          <template v-for="item in redBlackList" >
+            <b-tooltip :key="item.resourceKey"
+              :content="item.nameListType === '1' ? '红名单' : '黑名单'"
+              placement="top-start">
+              <div class="tag t-ellipsis">
+                <span class="dot" :class="{ red: item.nameListType === '1'}">
+                </span>
+                {{ item.resourceName }}
+              </div>
+            </b-tooltip>
+          </template>
         </div>
       </div>
     </div>
-  </transition>
+  </div>
 </template>
 
 <script>
-  import { getDetail, getRedBlackOrFocusScope } from '@/api/credit-supervision/detail.api'
+  import { mapMutations, mapState } from 'vuex'
+  import { getDetail } from '@/api/credit-supervision/detail.api'
   import Keywords from '@/components/Keywords/index'
   import IconBtn from './IconBtn'
 
   export default {
     name: 'CreditSupervisionDetailBaseInfo',
+    filters: {
+      valueFilter (value) {
+        let res = value
+        if (!value) {
+          res = '-'
+        }
+        return res
+      }
+    },
     components: {
       Keywords,
       IconBtn
     },
     data () {
       return {
-        visible: false, // 是否显示
-        routeQuery: {}, // 路由参数
-        redBlackList: [], // 红黑名单
-        detail: {}, // 详情信息
-        mapping: {} // 用于映射的字段名
+        routeQuery: {} // 路由参数
       }
     },
     computed: {
+      ...mapState({
+        mapping: state => state.creSupDetail.detailRes.mapping || {}, // 用于映射的字段名
+        detail: state => state.creSupDetail.detailRes.data || {}, // 详情信息
+        redBlackList: state => state.creSupDetail.redBlackListInfo // 红黑名单
+      }),
       isLeg () { // 根据路由参数判断主体类型是法人还是自然人
         let res = true
         if (this.routeQuery.type === '2') res = false
@@ -96,23 +113,12 @@
       }
     },
     created () {
-      this.init()
+      this.routeQuery = this.$route.query
     },
     methods: {
-      /**
-       * @author haodongdong
-       * @description 一些初始化处理
-       */
-      init () {
-        const query = this.$route.query
-        this.routeQuery = query
-        this.getDetail(query)
-        this.getRedBlackOrFocusScope({
-          personId: query.id,
-          size: 1000,
-          page: 1
-        })
-      },
+      ...mapMutations({
+        setDetailRes: 'SET_DETAIL_RES'
+      }),
 
       /**
        * @author haodongdong
@@ -123,11 +129,8 @@
        */
       async getDetail (query) {
         try {
-          const { mapping, data } = await getDetail(query)
-          this.mapping = mapping
-          this.detail = data
-          this.visible = true
-          this.$emit('loaded')
+          const res = await getDetail(query)
+          this.setDetailRes(res)
         } catch (error) {
           console.error(error)
           this.$notice.danger({
@@ -139,23 +142,11 @@
 
       /**
        * @author haodongdong
-       * @description 获取红黑名单信息
-       * @param {Object} query 查询参数对象
-       * @param {string} query.personId 主体id
-       * @param {number} query.size 分页大小
-       * @param {number} query.page 当前页
+       * @description icon-btn组件success事件回调
        */
-      async getRedBlackOrFocusScope (query) {
-        try {
-          const { rows } = await getRedBlackOrFocusScope(query)
-          this.redBlackList = rows
-        } catch (error) {
-          console.error(error)
-          this.$notice.danger({
-            title: '加载失败',
-            desc: error
-          })
-        }
+      handleSuccess () {
+        const { id, type } = this.$route.query
+        this.getDetail({ id, type })
       }
     }
   }
