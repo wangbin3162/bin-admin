@@ -8,19 +8,18 @@
           <template v-if="isLeg">
             <div class="center" flex-box="1">
               <div flex>
-                <h2>
-                  {{ item.comp_name }}
-                </h2>
+                <h2>{{ item.comp_name }}</h2>
 
-                <icon-btn :obj="item"></icon-btn>
+                <icon-btn :supervisionStatus="item.supervise"
+                  :objectId="item.id"
+                  :objectName="item.comp_name"
+                  @success="handleSuccess">
+                </icon-btn>
               </div>
               <p flex="main:justify" style="width: 45%;">
                 <span>{{ mapping.fddbr }}：{{ item.fddbr }}</span>
                 <span>{{ mapping.clrq }}：{{ item.clrq }}</span>
               </p>
-              <!-- <p>
-                <span>查看到5条信息</span>
-              </p> -->
             </div>
           </template>
 
@@ -28,7 +27,12 @@
             <div class="center" flex-box="1">
               <div flex>
                 <h2>{{ item.name }}</h2>
-                <icon-btn :obj="item"></icon-btn>
+
+                <icon-btn :supervisionStatus="item.supervise"
+                  :objectId="item.id"
+                  :objectName="item.name"
+                  @success="handleSuccess">
+                </icon-btn>
               </div>
               <p>
                 <span>{{ mapping.id_sfz}}：{{ item.id_sfz }}</span>
@@ -46,6 +50,7 @@
 
     <div flex="main:right" class="mt-15" v-if="total > 0">
       <b-page :total="total" :current.sync="query.page"
+        :page-size="query.pageSize"
         show-total @on-change="handlePageChange">
       </b-page>
     </div>
@@ -53,12 +58,10 @@
 </template>
 
 <script>
-  import {
-    getPersonClassList
-  } from '@/api/credit-supervision/home.api'
+  import { getPersonClassList } from '@/api/credit-supervision/home.api'
   import NoData from '@/components/NoData'
   import Keywords from '@/components/Keywords'
-  import IconBtn from '@/pages/credit-supervision/home/search/IconBtn'
+  import IconBtn from '@/pages/credit-supervision/components/IconBtn'
 
   export default {
     name: 'SearchList',
@@ -120,15 +123,14 @@
 
       /**
        * @author haodongdong
-       * @description 监管按钮的回调
-       * @param {string} supervise 是否监管
+       * @description icon-btn组件success事件回调
        */
-      handleSupervision (supervise) {
-
+      handleSuccess () {
+        const { q, type } = this.$route.query
+        this.search(q, type)
       },
 
       handleCheck(id) {
-        // this.$emit('on-check-detail', id)
         this.$router.push({
           name: 'recentDynamic',
           query: {

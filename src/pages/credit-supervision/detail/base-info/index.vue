@@ -78,7 +78,7 @@
   import { mapMutations, mapState } from 'vuex'
   import { getDetail } from '@/api/credit-supervision/detail.api'
   import Keywords from '@/components/Keywords/index'
-  import IconBtn from './IconBtn'
+  import IconBtn from '@/pages/credit-supervision/components/IconBtn'
 
   export default {
     name: 'CreditSupervisionDetailBaseInfo',
