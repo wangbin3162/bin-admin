@@ -425,10 +425,10 @@
             list = this.bmsjgjfxData.slice(2)
             if (this.bmsjgjfxData.length > 22) {
               list.push({
-                departId: 'other',
+                key: '其他',
                 count: this.bmsjgjfxData[1].otherNum,
                 wzl: '',
-                percent: Number(((this.bmsjgjfxData[1].otherNum / this.bmsjgjfxData[0].totalNum) * 100).toFixed(2))
+                percent: Number(((this.bmsjgjfxData[1].otherSum / this.bmsjgjfxData[0].totalNum) * 100).toFixed(2))
               })
             }
             break
