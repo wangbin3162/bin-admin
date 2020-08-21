@@ -49,7 +49,8 @@
                    :total="total" :data="searchList"
                    :mapping="mapping" :loading="loading"
                    :current-type="query.type"
-                   @on-check-detail="handleCheckDetail"></base-list>
+                   @on-check-detail="handleCheckDetail"
+                   @refresh="searchListData"></base-list>
       </transition>
 
       <div class="page-wrap">
@@ -64,6 +65,7 @@
 
 <script>
 import { getSearchList } from '@/api/search.api'
+import { getPersonClassList } from '@/api/credit-supervision/home.api'
 import { isEmpty, isNotEmpty } from '@/common/utils/assist'
 import BaseList from '../components/BaseList/index'
 import BaseContent from '../components/BaseContent'
@@ -158,10 +160,18 @@ export default {
       this.searchList = []
       const queryData = { ...this.listQuery, ...this.query }
       // api查询返回列表
-      getSearchList(queryData).then(res => {
-        this.searchList = res.data.rows
-        this.mapping = res.data.mapping
-        this.total = res.data.total
+      // getSearchList(queryData).then(res => {
+      //   this.searchList = res.data.rows
+      //   this.mapping = res.data.mapping
+      //   this.total = res.data.total
+      //   this.showList = true
+      //   this.loading = false
+      // })
+      // 应后端要求改成此接口
+      getPersonClassList(queryData).then(res => {
+        this.searchList = res.rows
+        this.mapping = res.mapping
+        this.total = res.total
         this.showList = true
         this.loading = false
       })
