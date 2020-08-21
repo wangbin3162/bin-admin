@@ -6,7 +6,14 @@
         <keywords :size="68">{{ item.keywords[0] }}</keywords>
         <div class="center" flex-box="1">
           <template v-if="currentType==='1'">
-            <h2 v-html="item.highlight"></h2>
+           <div flex>
+              <h2 v-html="item.highlight"></h2>
+              <icon-btn :supervisionStatus="item.supervise"
+                :objectId="item.id"
+                :objectName="item.comp_name"
+                @success="handleSuccess">
+              </icon-btn>
+           </div>
             <p>
               <span class="mr-20">{{ mapping.fddbr }}：<a>{{ item.fddbr }}</a></span>
               <span>{{ mapping.zczb }}：{{ item.zczb }}万人民币</span>
@@ -16,7 +23,14 @@
             </p>
           </template>
           <template v-else>
-            <h2>{{ item.name }}</h2>
+            <div flex>
+              <h2>{{ item.name }}</h2>
+              <icon-btn :supervisionStatus="item.supervise"
+                :objectId="item.id"
+                :objectName="item.name"
+                @success="handleSuccess">
+              </icon-btn>
+            </div>
             <p>
               <span>身份证号码：{{ item.id_sfz }}</span>
             </p>
@@ -35,10 +49,11 @@
 <script>
   import NoData from '../NoData/index'
   import Keywords from '../Keywords/index'
+  import IconBtn from '@/pages/credit-supervision/components/IconBtn'
 
   export default {
     name: 'BaseList',
-    components: { Keywords, NoData },
+    components: { Keywords, NoData, IconBtn },
     props: {
       data: {
         type: Array,
@@ -65,6 +80,10 @@
     methods: {
       handleCheck(id) {
         this.$emit('on-check-detail', id)
+      },
+
+      handleSuccess () {
+        this.$emit('refresh')
       }
     }
   }

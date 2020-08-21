@@ -10,7 +10,7 @@
         </b-button>
       </div>
 
-      <b-table :columns="columns" :data="list" size="small" :loading="listLoading">
+      <b-table :columns="columns" :data="list" size="small">
       </b-table>
     </b-card>
   </div>

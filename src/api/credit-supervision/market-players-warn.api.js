@@ -21,7 +21,7 @@ export async function getMarketWarnList (query) {
         method: 'get',
         params: {
           size: query.size,
-          page: query.page // 这里不需要 - 1，貌似后端处理了
+          page: query.page - 1
         }
       })
       resolve(res.data)
