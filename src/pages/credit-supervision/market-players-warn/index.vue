@@ -146,8 +146,9 @@
 <style lang="stylus" scoped>
  .market-players-wran {
     height: 100%;
-    background: url("../../../assets/images/credit-supervision/banner-bg0.png") no-repeat 0 0;
-    background-size: 100% 310px;
+    background: url("../../../assets/images/credit-supervision/banner-bg2.png") no-repeat 0 0;
+    background-size: 1920px 310px;
+    background-position: center top;
     transition: background .3s;
 
     .search {
