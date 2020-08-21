@@ -12,7 +12,7 @@
 
       <div v-show="!showList" class="center-banner">
 
-        <div class="card">
+        <div class="card" @click="handleCardClick('#/creditSupervision')">
           <div class="inner">
             <h2>信用监控</h2>
             <img src="../assets/images/exchange.png" alt="bigdata">

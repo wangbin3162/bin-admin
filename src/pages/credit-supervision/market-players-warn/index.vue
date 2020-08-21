@@ -73,6 +73,7 @@
           { type: 'index', width: 50 },
           { title: '企业名称', key: 'compName', ellipsis: true, tooltip: true },
           { title: '预警原因', key: 'resourceName', ellipsis: true, tooltip: true },
+          { title: '时间', key: 'createDate' },
           { title: '操作', slot: 'action', width: 120, align: 'center' }
         ]
       }
