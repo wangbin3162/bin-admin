@@ -24,7 +24,7 @@
     </div>
     <div class="chart-widget-item">
       <b-card class="box-card" head-tip header="归集增长率分析">
-        <b-charts height="350px" ref="chartGather" theme="charts-theme" :options="gatherOptions"/>
+        <b-charts height="350px" theme="charts-theme" :options="gatherOptions"/>
       </b-card>
     </div>
     <div class="chart-widget-item">
@@ -50,7 +50,7 @@
               </b-table>
             </div>
             <div style="padding-top: 10px;text-align: right;">
-              <b-page :total="50" :current.sync="currentPage" :page-size="5"></b-page>
+              <b-page :total="total" :current.sync="currentPage" :page-size="5" @on-change="getDepartList"></b-page>
             </div>
           </div>
           <div style="width: 40px;" class="center-box">
@@ -69,6 +69,7 @@
 <script>
 import { formatDataSet } from 'bin-charts/src/utils/util'
 import * as api from '@/api/excavate.api'
+import { deepCopy } from '@/common/utils/assist'
 
 require('bin-charts/src/theme/charts-theme')
 export default {
@@ -100,8 +101,10 @@ export default {
         { title: '归集数量', key: 'count', align: 'center' },
         { title: '占比', key: 'percent', align: 'center' }
       ],
+      allDeparts: [], // 所有部门
       data: [],
       currentPage: 1,
+      total: 0,
       currentRow: -1,
       depart: {},
       activeDeptTabYear: 2020,
@@ -182,7 +185,7 @@ export default {
     changeYear(year) {
       if (this.activeDeptTabYear === year) return
       this.activeDeptTabYear = year
-      this.getDepartList()
+      this.initDeparts()
     },
     // 图表选中点击事件
     chartClick(params) {
@@ -212,36 +215,45 @@ export default {
     },
     // 获取部门数据归集分析数据
     initDeparts() {
-      this.getDepartList()
-    },
-    // 获取部门数据
-    getDepartList() {
       let { resourceKey } = this.$route.query
       api.getGatherDeptData(resourceKey, this.activeDeptTabYear).then(resp => {
         if (resp.data.code === '0') {
           let { data } = resp.data
-          // let sum = data.map(i => i.count).reduce((total, currentValue) => total + currentValue)
-          this.data = data
-
-          if (this.data.length === 0) {
-            this.currentRow = -1
-            this.lineChartOption.dataset = formatDataSet({ xField: 'month', yField: 'value' }, [])
-            return
+          this.total = data.length
+          this.allDeparts = []
+          for (let i = 0; i < data.length; i += 5) {
+            this.allDeparts.push(data.slice(i, i + 5))
           }
-          // 默认选中第一行
-          this.$nextTick(() => {
-            this.$refs.deptTable.clickCurrentRow(0)
-          })
+          this.getDepartList(1)
         }
+      })
+    },
+    // 获取部门数据
+    getDepartList(page) {
+      if (page > 0 && page <= this.allDeparts.length) {
+        this.data = deepCopy(this.allDeparts[page - 1])
+      }
+      if (this.data.length === 0) {
+        this.currentRow = -1
+        this.lineChartOption.dataset = formatDataSet({ xField: 'month', yField: 'value' }, [])
+        return
+      }
+      // 默认选中第一行
+      this.$nextTick(() => {
+        this.$refs.deptTable.clickCurrentRow(0)
       })
     },
     // 归集增长率分析
     initGatherData() {
-      let data = []
-      for (let i = 1; i <= 12; i++) {
-        data.push({ month: i + '月', value: this.$util.getRandomInt(0, 50) })
-      }
-      this.gatherOptions.dataset = formatDataSet({ xField: 'month', yField: 'value' }, data)
+      let { resourceKey } = this.$route.query
+      let currentYear = new Date().getFullYear()
+      api.getGatherTrendData(resourceKey, currentYear).then(resp => {
+        if (resp.data.code === '0') {
+          let data = resp.data.data.map(i => ({ month: i.range + '月', value: i.count }))
+          this.gatherOptions.xAxis.name = '月'
+          this.gatherOptions.dataset = formatDataSet({ xField: 'month', yField: 'value' }, data)
+        }
+      })
     }
   }
 }

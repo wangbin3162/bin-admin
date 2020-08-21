@@ -5,7 +5,7 @@
         <div class="top-card" style="background-color:#2AC6C3;">
           <div class="right">
             <p>男</p>
-            <h2>{{ totalMale }} 人 占比：{{ (totalMale / (totalMale + totalFemale) * 100).toFixed(2) }}%</h2>
+            <h2 v-if="total[1]&&total[1].key==='男'">{{ total[1].count }} 人 占比：{{ total[1].percent }} </h2>
           </div>
         </div>
       </b-col>
@@ -13,7 +13,7 @@
         <div class="top-card" style="background-color:#3982ED;">
           <div class="right">
             <p>女</p>
-            <h2>{{ totalFemale }} 人 占比：{{ (totalFemale / (totalMale + totalFemale) * 100).toFixed(2) }}%</h2>
+            <h2 v-if="total[0]&&total[0].key==='女'">{{ total[0].count }} 人 占比：{{ total[0].percent }} </h2>
           </div>
         </div>
       </b-col>
@@ -27,7 +27,7 @@
       <b-card class="box-card" head-tip header="人群占比">
         <div class="pie-wrap">
           <div class="pie-item" v-for="(val,key) in ageMap" :key="key">
-            <b-charts height="200px" theme="charts-theme" :options="val.chartOption"/>
+            <b-charts height="240px" theme="charts-theme" :options="val.chartOption"/>
             <div class="center-box">
               <h2>{{ key }}(人)</h2>
               <p>{{ val.count }}</p>
@@ -54,58 +54,84 @@ export default {
     return {
       chartOption1: {
         color: ['#1089ff'],
-        tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+        tooltip: { trigger: 'axis' },
+        legend: { show: true, itemWidth: 8, itemHeight: 8, data: ['男', '女'] },
         grid: { top: 55, right: 60, left: 60, bottom: 30 },
-        xAxis: { type: 'category', name: '年龄', nameTextStyle: { color: '#666', align: 'left' } },
+        xAxis: {
+          type: 'category',
+          name: '年龄',
+          nameTextStyle: { color: '#666', align: 'left' },
+          axisTick: {
+            alignWithLabel: true
+          }
+        },
         yAxis: {
           type: 'value',
           name: '人数',
           nameTextStyle: { color: '#666' },
           splitLine: { lineStyle: { type: 'dashed' } }
         },
-        series: [{ type: 'bar', name: '年龄分布', barWidth: '60%', label: { show: true, position: 'top' } }],
-        dataset: { source: [['x', 'y']] }
+        series: [
+          { type: 'bar', name: '男', label: { show: true, position: 'top' }, barWidth: 50 },
+          { type: 'bar', name: '女', label: { show: true, position: 'top' }, barWidth: 50 }
+        ]
       },
       pieOption: {
         tooltip: { trigger: 'item' },
-        series: [
-          {
-            name: '人群占比',
-            type: 'pie',
-            radius: ['50%', '70%'],
-            center: ['50%', '50%'], // 饼图可选
-            label: { show: true, position: 'inside', formatter: '{c}' },
-            labelLine: { show: false },
-            data: []
-          }
-        ]
+        series: {
+          name: '人群占比',
+          type: 'pie',
+          radius: ['50%', '70%'],
+          center: ['50%', '50%'], // 饼图可选
+          label: { show: true, position: 'inside', formatter: '{c}' },
+          labelLine: { show: false },
+          data: []
+        }
       },
       pieList: [],
       ageMap: {},
       totalFemale: 0,
-      totalMale: 0
+      totalMale: 0,
+      total: []
     }
   },
   created() {
+    this.getGenderType()
     this.initChart1()
   },
   methods: {
+    // 获取所有男女比例
+    getGenderType() {
+      let { resourceKey } = this.$route.query
+      api.getGenderType(resourceKey).then(resp => {
+        if (resp.data.code === '0') {
+          this.total = resp.data.data
+        }
+      })
+    },
     // 自然人年龄分布图
     initChart1() {
       let { resourceKey } = this.$route.query
       api.getGenderRatio(resourceKey).then(resp => {
         if (resp.data.code === '0') {
-          let { data } = resp.data
+          let data = resp.data.data.reverse()
           this.sumAndMap(data)
-          this.chartOption1.dataset = formatDataSet({ xField: 'range', yField: 'count' }, data)
+          this.chartOption1 = {
+            xAxis: { data: this.xData },
+            series: [
+              { name: '男', data: this.maleList },
+              { name: '女', data: this.femaleList }
+            ]
+          }
         }
       })
     },
     // 分别求和男女总数和年龄分布映射
     sumAndMap(data) {
       let map = {}
-      let sumFemale = 0
-      let sumMale = 0
+      let femaleList = []
+      let maleList = []
+      this.xData = []
       data.forEach(item => {
         let obj = {
           count: item.count
@@ -115,6 +141,8 @@ export default {
         if (item.count > 0) {
           female = item.sexGroup['女'] ? Number.parseInt(item.sexGroup['女']) : 0
           male = item.sexGroup['男'] ? Number.parseInt(item.sexGroup['男']) : 0
+          maleList.push(male)
+          femaleList.push(female)
           // 扩展map对象
           obj.group = {
             male,
@@ -122,9 +150,9 @@ export default {
             malePercent: (male / (male + female) * 100).toFixed(0) + '%',
             femalePercent: (female / (male + female) * 100).toFixed(0) + '%'
           }
-          sumFemale += female
-          sumMale += male
         } else {
+          maleList.push(0)
+          femaleList.push(0)
           obj.group = {
             male: 0,
             female: 0,
@@ -133,14 +161,14 @@ export default {
           }
         }
         obj.chartOption = deepCopy(this.pieOption)
-
-        obj.chartOption.series[0].data = [{ value: female, name: '女' }, { value: male, name: '男' }]
+        obj.chartOption.series.data = [{ value: female, name: '女' }, { value: male, name: '男' }]
 
         map[item.range] = { ...obj }
+        this.xData.push(item.range)
       })
       this.ageMap = map
-      this.totalFemale = sumFemale
-      this.totalMale = sumMale
+      this.maleList = maleList
+      this.femaleList = femaleList
     }
   }
 }

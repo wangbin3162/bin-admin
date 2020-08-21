@@ -15,48 +15,8 @@ export default {
   components: { LegPerson, NatPerson },
   computed: {
     isLeg() {
-      return false
+      return this.$route.query.personType === 'LEG'
     }
   }
 }
 </script>
-
-<style scoped lang="stylus">
-.gather-analyze {
-  .filter {
-    text-align: right;
-    margin-bottom: 8px;
-  }
-
-  .chart-widget-item {
-    position: relative;
-    background: #fff;
-    border-radius: 4px;
-    box-shadow: 0 0 5px 1px rgba(100, 100, 100, .1);
-    margin-bottom: 16px;
-    h2 {
-      font-weight: normal;
-      font-size: 16px;
-      border-bottom: 1px solid #eeeeee;
-      padding: 6px 2px;
-      span {
-        position: relative;
-        line-height: 30px;
-        padding: 0 18px;
-        &:before {
-          content: '';
-          position: absolute;
-          left: 2px
-          top: 2px;
-          bottom: 2px;
-          width: 2px;
-          background-color: #1089ff;
-        }
-      }
-    }
-    .chart-wrap {
-      padding: 0 16px;
-    }
-  }
-}
-</style>

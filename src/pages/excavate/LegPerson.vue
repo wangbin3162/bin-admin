@@ -35,7 +35,7 @@
               </b-table>
             </div>
             <div style="padding-top: 10px;text-align: right;">
-              <b-page :total="50" :current.sync="currentPage" :page-size="5"></b-page>
+              <b-page :total="total" :current.sync="currentPage" :page-size="5" @on-change="changeHyPage"></b-page>
             </div>
           </div>
           <div style="width: 40px;" class="center-box">
@@ -54,6 +54,7 @@
 <script>
 import * as api from '@/api/excavate.api'
 import { formatDataSet } from 'bin-charts/src/utils/util'
+import { deepCopy } from '@/common/utils/assist'
 
 const colorList = [
   '#1089ff',
@@ -91,7 +92,7 @@ export default {
             name: '主体数量',
             barWidth: '30%',
             barGap: '10%',
-            data: [100, 234, 458, 300, 192]
+            data: []
           }
         ]
       },
@@ -100,21 +101,17 @@ export default {
       pieOption: {
         color: colorList,
         tooltip: { trigger: 'item' },
-        legend: { show: false },
-        series: [
-          {
-            name: '企业占比',
-            type: 'pie',
-            radius: ['50%', '70%'],
-            center: ['30%', '50%'], // 饼图可选
-            avoidLabelOverlap: false,
-            label: { show: false },
-            labelLine: { show: false },
-            data: []
-          }
-        ]
+        series: {
+          name: '企业占比',
+          type: 'pie',
+          radius: ['50%', '70%'],
+          center: ['30%', '50%'], // 饼图可选
+          avoidLabelOverlap: false,
+          label: { show: true, position: 'inside', formatter: '{c}' },
+          labelLine: { show: false },
+          data: []
+        }
       },
-      total: 0,
       qyList: [],
       qyzbList: [],
       columns: [
@@ -122,8 +119,10 @@ export default {
         { title: '数量', key: 'count', align: 'center' },
         { title: '占比', key: 'percent', align: 'center' }
       ],
+      allHy: [], // 所有行业
       data: [],
       currentPage: 1,
+      total: 0,
       currentRow: -1,
       hy: {},
       lineChartOption: {
@@ -151,7 +150,7 @@ export default {
           this.qyList = data.map(i => i.count)
           this.qyzbList = data.map(i => (i.count / this.total * 100).toFixed(2))
           this.chartOption.series[0].data = this.qyList
-          this.pieOption.series[0].data = this.qyList
+          this.pieOption.series.data = this.qyList.map((item, index) => ({ name: this.pieList[index], value: item }))
         }
       })
     },
@@ -161,31 +160,40 @@ export default {
       api.getLegHydm(resourceKey).then(resp => {
         if (resp.data.code === '0') {
           let { data } = resp.data
-          // let sum = data.map(i => i.count).reduce((total, currentValue) => total + currentValue)
-          this.data = data
-          if (this.data.length === 0) {
-            this.currentRow = -1
-            this.lineChartOption.dataset = formatDataSet({ xField: 'month', yField: 'value' }, [])
-            return
+          this.total = data.length
+          this.allHy = []
+          for (let i = 0; i < data.length; i += 5) {
+            this.allHy.push(data.slice(i, i + 5))
           }
-          // 默认选中第一行
-          this.$nextTick(() => {
-            this.$refs.deptTable.clickCurrentRow(0)
-          })
+          this.changeHyPage(1)
         }
       })
     },
-    // 部门选中事件
+    changeHyPage(page) {
+      if (page > 0 && page <= this.allHy.length) {
+        this.data = deepCopy(this.allHy[page - 1])
+      }
+      if (this.data.length === 0) {
+        this.currentRow = -1
+        this.lineChartOption.dataset = formatDataSet({ xField: 'month', yField: 'value' }, [])
+        return
+      }
+      // 默认选中第一行
+      this.$nextTick(() => {
+        this.$refs.deptTable.clickCurrentRow(0)
+      })
+    },
+    // 行业选中事件
     currentRowChange(currentRow, oldRow, index) {
       this.currentRow = index
       this.handleClickHy(this.data[index])
     },
-    // 部门行业查看趋势分析
+    // 行业查看趋势分析
     handleClickHy(row) {
       this.hy = { ...row }
       // 根据选择年份，获取这个部门本年度12个月的数据信息
       let { resourceKey } = this.$route.query
-      api.getGatherDeptTrend(resourceKey, this.activeDeptTabYear, row.code).then(resp => {
+      api.getLegHydmTrend(resourceKey, this.activeDeptTabYear, row.code).then(resp => {
         if (resp.data.code === '0') {
           let data = resp.data.data.map(i => ({ month: i.range + '月', value: i.count }))
           this.lineChartOption.dataset = formatDataSet({ xField: 'month', yField: 'value' }, data)

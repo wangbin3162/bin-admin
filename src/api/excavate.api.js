@@ -60,6 +60,18 @@ export function getGatherData(resourceKey, type = 'Y', year) {
   })
 }
 
+/* 归集分析-信息归集增长趋势分析 */
+export function getGatherTrendData(resourceKey, year) {
+  return request({
+    url: '/api/wj/ext/gather/trend',
+    method: 'get',
+    params: {
+      resourceKey,
+      year
+    }
+  })
+}
+
 /* 归集分析-部门采集数据排行分析 */
 export function getGatherDeptData(resourceKey, year) {
   return request({
@@ -88,7 +100,7 @@ export function getGatherDeptTrend(resourceKey, year, createDept) {
 /* 主体分析-男女年龄区间和性别比例分析 */
 export function getGenderRatio(resourceKey) {
   return request({
-    url: '/api/wj/ext/nat/genderRatio',
+    url: '/api/wj/ext/nat/ageRange',
     method: 'get',
     params: {
       resourceKey
@@ -96,10 +108,10 @@ export function getGenderRatio(resourceKey) {
   })
 }
 
-/* 主体分析-企业注册资本分析 */
-export function getLegZczb(resourceKey) {
+/* 主体分析-全部男女人员人数 */
+export function getGenderType(resourceKey) {
   return request({
-    url: '/api/wj/ext/leg/zczb',
+    url: '/api/wj/ext/nat/genderType',
     method: 'get',
     params: {
       resourceKey
