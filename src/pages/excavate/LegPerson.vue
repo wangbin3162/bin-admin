@@ -197,7 +197,6 @@ export default {
         if (resp.data.code === '0') {
           let data = resp.data.data.map(i => ({ month: i.range + '月', value: i.count }))
           this.lineChartOption.dataset = formatDataSet({ xField: 'month', yField: 'value' }, data)
-          this.analyzeModal = true
         }
       })
     }
