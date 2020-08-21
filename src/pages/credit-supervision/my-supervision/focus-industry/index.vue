@@ -58,8 +58,8 @@
         columns: [
           { type: 'index', width: 50 },
           { title: '行业名称', key: 'name' },
-          { title: '黑名单数量', key: 'count', align: 'center' },
-          { title: '占比', slot: 'ratio', align: 'center' },
+          { title: '黑名单数量', key: 'count', align: 'left' },
+          // { title: '占比', slot: 'ratio', align: 'center' },
           { title: '操作', slot: 'action', width: 120, align: 'center' }
         ],
         listLoading: false,

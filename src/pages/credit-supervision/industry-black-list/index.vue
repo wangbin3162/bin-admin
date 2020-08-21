@@ -124,7 +124,7 @@
       async handleAddSupervisionBtn (row) {
         try {
           await addSupervision({
-            objectId: row.id,
+            objectId: row.code,
             objectName: row.name,
             jgType: 'KI'
           })
