@@ -314,7 +314,7 @@
   import Draggable from 'vuedraggable'
   import VToggleShow from '../VToggleShow/index'
   import { RULE, ruleNameMap } from './cfg-util'
-  import { typeOf } from '../../../common/utils/assist'
+  import { typeOf } from '@/common/utils/assist'
 
   export default {
     name: 'Validator',

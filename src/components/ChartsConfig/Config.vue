@@ -733,8 +733,8 @@ export default {
   },
   methods: {
     addIndex() {
-      if (this.data.options.groupList.length === 5) {
-        this.$message({ type: 'danger', content: '指标组内指标建议5个以内!' })
+      if (this.data.options.groupList.length === 6) {
+        this.$message({ type: 'danger', content: '指标组内指标建议6个以内!' })
         return
       }
       this.data.options.groupList.push({ ...normalGroupBase })

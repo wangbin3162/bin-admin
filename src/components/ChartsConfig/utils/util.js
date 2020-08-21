@@ -95,7 +95,7 @@ export const basicComponents = [
       groupList: [
         {
           title: '指标标题1',
-          backgroundColor: '#4065e0',
+          backgroundColor: '#5B8FF9',
           icon: 'ios-albums',
           iconSize: 24,
           value: 1234,
@@ -103,7 +103,7 @@ export const basicComponents = [
         },
         {
           title: '指标标题2',
-          backgroundColor: '#4065e0',
+          backgroundColor: '#5AD8A6',
           icon: 'ios-albums',
           iconSize: 24,
           value: 8888,
@@ -111,7 +111,7 @@ export const basicComponents = [
         },
         {
           title: '指标标题3',
-          backgroundColor: '#4065e0',
+          backgroundColor: '#5D7092',
           icon: 'ios-albums',
           iconSize: 24,
           value: 9527,
@@ -119,7 +119,7 @@ export const basicComponents = [
         },
         {
           title: '指标标题4',
-          backgroundColor: '#4065e0',
+          backgroundColor: '#FF9D4D',
           icon: 'ios-albums',
           iconSize: 24,
           value: 2345,

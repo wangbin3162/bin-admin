@@ -235,12 +235,13 @@
           <v-key-label label="资源性质" is-half is-first>{{ resPropertyMap[resource.resProperty] }}
           </v-key-label>
           <v-key-label label="更新周期" is-half>{{ updateMap[resource.updatePeriod] }}</v-key-label>
-          <v-key-label label="有效期限" is-bottom>{{ resource.expiryLimit }}</v-key-label>
+          <v-key-label label="有效期限" is-bottom>{{ resource.expiryLimit }} (月)</v-key-label>
         </b-collapse-wrap>
         <b-collapse-wrap title="信息项" collapse>
           <b-table disabled-hover :data="resource.items" :columns="checkItemsTableColumns" size="small">
             <template v-slot:dataType="{row}">{{ dataTypeMap[row.dataType] }}</template>
             <template v-slot:status="{row}">{{ fieldStatusMap[row.status] }}</template>
+            <template v-slot:tokenizer="{row}">{{ tokenizerMap[row.tokenizer] }}</template>
           </b-table>
         </b-collapse-wrap>
         <b-collapse-wrap title="扩展配置" collapse>
@@ -396,6 +397,7 @@ export default {
         { title: '名称', key: 'fieldName' },
         { title: '标题', key: 'fieldTitle' },
         { title: '数据类型', slot: 'dataType' },
+        { title: '是否分词', slot: 'tokenizer' },
         { title: '启用状态', slot: 'status' }
       ],
       resource: null,
@@ -437,6 +439,10 @@ export default {
         date: '日期型',
         datetime: '日期时间型',
         text: '备注型'
+      },
+      tokenizerMap: {
+        'N': '否',
+        'Y': '是'
       },
       fieldStatusMap: { use: '选用', ignore: '不选用' }, // 资源信息项状态#static
       previewModal: false,

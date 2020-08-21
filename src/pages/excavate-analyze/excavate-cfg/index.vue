@@ -17,10 +17,15 @@
         </v-filter-bar>
         <!--中央表格-->
         <b-table :columns="columns" :data="list" :loading="listLoading">
-          <template v-slot:personClass="{row}">{{ personClassMap[row.personClass] }}</template>
-          <template v-slot:resProperty="{row}">{{ resPropertyMap[row.resProperty] }}</template>
+          <template #personClass="{row}">{{ personClassMap[row.personClass] }}</template>
+          <template #resProperty="{row}">{{ resPropertyMap[row.resProperty] }}</template>
+          <template #resourceName="{row}">
+            <b-button type="text" @click="handleCheck(row)" t-ellipsis
+                      :title="row.resourceName">{{ row.resourceName }}
+            </b-button>
+          </template>
           <!--操作栏-->
-          <template v-slot:action="{row}">
+          <template #action="{row}">
             <b-tooltip content="条件配置" theme="light" max-width="200" style="padding-top: 3px;">
               <b-button type="text" icon="ios-filing"
                         :icon-style="{fontSize:'20px'}" @click="handleConditionConfig(row)"/>
@@ -41,6 +46,36 @@
                 @on-page-size-change="handleSizeChange"></b-page>
       </v-table-wrap>
     </page-header-wrap>
+    <page-header-wrap v-show="isCheck" :title="editTitle" show-close @on-close="handleCancel">
+      <v-edit-wrap transparent>
+        <b-collapse-wrap title="基本信息" collapse>
+          <v-key-label label="资源名称" is-half is-first>{{ resource.resourceName }}</v-key-label>
+          <v-key-label label="所属类目" is-half>{{ resource.dirClassifyName }}</v-key-label>
+          <v-key-label label="资源代码">{{ resource.resourceCode }}</v-key-label>
+          <v-key-label label="资源摘要">{{ resource.resourceDesc }}</v-key-label>
+          <v-key-label label="主体类别" is-half is-first>{{ personClassMap[resource.personClass] }}
+          </v-key-label>
+          <v-key-label label="共享属性" is-half>{{ shareMap[resource.sharedType] }}</v-key-label>
+          <v-key-label label="共享条件" is-half is-first>{{ resource.shareCondition }}</v-key-label>
+          <v-key-label label="共享方式" is-half>{{ resource.shareMode }}</v-key-label>
+          <v-key-label label="开放属性" is-half is-first>{{ openMap[resource.isOpen] }}</v-key-label>
+          <v-key-label label="开放条件" is-half>{{ resource.openCondition }}</v-key-label>
+          <v-key-label label="资源性质" is-half is-first>{{ resPropertyMap[resource.resProperty] }}
+          </v-key-label>
+          <v-key-label label="更新周期" is-half>{{ updateMap[resource.updatePeriod] }}</v-key-label>
+          <v-key-label label="有效期限" is-bottom>{{ resource.expiryLimit }} (月)</v-key-label>
+        </b-collapse-wrap>
+        <b-collapse-wrap title="信息项" collapse>
+          <b-table disabled-hover :data="resource.items" :columns="checkItemsTableColumns" size="small">
+            <template v-slot:dataType="{row}">{{ dataTypeMap[row.dataType] }}</template>
+            <template v-slot:tokenizer="{row}">{{ tokenizerMap[row.tokenizer] }}</template>
+          </b-table>
+        </b-collapse-wrap>
+        <template slot="footer">
+          <b-button @click="handleCancel">返 回</b-button>
+        </template>
+      </v-edit-wrap>
+    </page-header-wrap>
     <condition-config ref="conditionConfig" @on-close="handleCancel"/>
     <charts-config-panel ref="cfgPanel" @on-save="handleSave"/>
     <!--预览窗口-->
@@ -58,6 +93,7 @@ import ChartsConfigPanel from '@/components/ChartsConfig/ChartConfigPanel'
 import { basicComponents } from '@/components/ChartsConfig/utils/util'
 import PreviewModal from './PreviewModal'
 import ConditionConfig from './ConditionConfig'
+import { getResDetail } from '@/api/data-manage/res-info.api'
 
 export default {
   name: 'ExcavateCfg',
@@ -65,6 +101,29 @@ export default {
   mixins: [commonMixin, permission],
   data() {
     return {
+      shareMap: { PUBLIC: '共享', PRIVATE: '不共享', DEPART_RANGE: '有条件共享' }, // 共享属性 #static
+      openMap: { '1': '是', '0': '否' }, // 开放属性#static
+      updateMap: {
+        '0_IN_TIME_M': '实时',
+        '1_IN_DAY_M': '每天',
+        '2_IN_WEEK_M': '每周',
+        '3_IN_MONTH_M': '每月',
+        '4_IN_QUARTER_Q': '每季',
+        '5_IN_YEAR_Y': '每年'
+      }, // 更新周期#static
+      dataTypeMap: {
+        string: '字符型',
+        number: '数值型',
+        money: '货币型',
+        boolean: '逻辑型',
+        date: '日期型',
+        datetime: '日期时间型',
+        text: '备注型'
+      },
+      tokenizerMap: {
+        'N': '否',
+        'Y': '是'
+      },
       moduleName: '资源信息',
       listQuery: {
         resourceCode: '', // 所属分类
@@ -73,13 +132,19 @@ export default {
       },
       treeData: [],
       columns: [
-        { title: '资源名称', key: 'resourceName' },
+        { title: '资源名称', slot: 'resourceName' },
         { title: '主体类别', slot: 'personClass' },
         { title: '资源性质', slot: 'resProperty', width: 150, align: 'center' },
         { title: '数据来源', key: 'source', width: 150, align: 'center' },
         { title: '操作', slot: 'action', width: 150 }
       ],
       resource: null,
+      checkItemsTableColumns: [
+        { title: '名称', key: 'fieldName' },
+        { title: '标题', key: 'fieldTitle' },
+        { title: '数据类型', slot: 'dataType' },
+        { title: '是否分词', slot: 'tokenizer' }
+      ],
       fieldCtrlMap: {}, // 字段控件类型
       resPropertyMap: {}, // 资源性质映射
       resPropertyOptions: [],
@@ -122,6 +187,14 @@ export default {
         hasConfig: false // 已配置
       }
       this.handleFilter()
+    },
+    // 查看按钮事件
+    handleCheck(row) {
+      getResDetail(row.id).then(res => {
+        this.resource = res.data.data
+        this.resource.items = this.resource.items.filter(item => item.status === 'use')
+        this.openEditPage('check')
+      })
     },
     // 条件配置列表
     handleConditionConfig(row) {

@@ -124,7 +124,7 @@
 
 <script>
   import enumObj from './enum'
-  import { isNotEmpty } from '../../../common/utils/assist'
+  import { isNotEmpty } from '@/common/utils/assist'
   import VDragItems from '../VDragItems/index'
   import ValidValue from './ValidValue'
   import Validator from './Validator'
