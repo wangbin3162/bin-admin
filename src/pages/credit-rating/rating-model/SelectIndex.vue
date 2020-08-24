@@ -19,6 +19,7 @@
               <v-filter-item title="名称">
                 <b-input v-model.trim="listQuery.indexName" placeholder="请输入" clearable></b-input>
               </v-filter-item>
+
               <v-filter-item title="指标性质">
                 <b-select v-model="listQuery.indexKind" clearable>
                   <b-option v-for="(value, key) in natureEnum" :key="key" :value="key">
@@ -26,8 +27,10 @@
                   </b-option>
                 </b-select>
               </v-filter-item>
+
               <v-filter-item @on-search="handleFilter" @on-reset="resetQuery"></v-filter-item>
             </v-filter-bar>
+
             <!-- table -->
             <div class="table">
               <b-table :columns="columns" :data="list"
@@ -35,23 +38,27 @@
                 <template v-slot:indexName="{ row }">
                   {{ row.indexName }}
                 </template>
+
                 <template v-slot:indexKind="{ row }">
                   {{ natureEnum[row.indexKind] }}
                 </template>
+
                 <template v-slot:indexScale="{ row }">
                   {{ scaleEnum[row.indexScale] }}
                 </template>
+
                 <template v-slot:validMonth="{ row }">
                   {{ row.validMonth }} 月
                 </template>
+
                 <!-- 操作栏 -->
                 <template v-slot:action="{ row }">
                   <b-button v-if="!radio" :type="checkRowSelected(row) ? 'danger' : 'primary'" plain
                     @click="chooseOne(row)">
                     {{ checkRowSelected(row) ? '取消' : '选择' }}
                   </b-button>
-                  <b-button v-else type="primary" plain
-                    @click="handleRadio(row)">
+                  <b-button v-else type="primary" plain size="small"
+                    @click.stop="handleRadio(row)">
                     选择
                   </b-button>
                 </template>
@@ -109,8 +116,8 @@
         },
         columns: [
           { type: 'index', width: 50, align: 'center' },
-          { title: '编码', key: 'indexCode', align: 'center' },
-          { title: '名称', slot: 'indexName', align: 'center' },
+          { title: '编码', key: 'indexCode', align: 'left', ellipsis: true, tooltip: true },
+          { title: '名称', key: 'indexName', align: 'left', ellipsis: true, tooltip: true },
           { title: '指标性质', slot: 'indexKind', align: 'center' },
           { title: '标度', slot: 'indexScale', align: 'center' },
           { title: '有效期限', slot: 'validMonth', align: 'center' },
