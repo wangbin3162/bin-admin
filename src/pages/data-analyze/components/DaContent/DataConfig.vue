@@ -158,6 +158,11 @@
           this.exampleData = newVal
         }
       },
+      exampleData: {
+        handler (newVal) {
+          this.$emit('static-data-update', newVal)
+        }
+      },
       initMappingFields: { // 此watcher用于赋初始值
         handler (newVal) {
           this.mappingFields = JSON.parse(newVal)

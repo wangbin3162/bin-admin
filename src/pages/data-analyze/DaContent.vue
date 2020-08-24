@@ -141,7 +141,8 @@
           <data-config ref="dataConfig" v-model="content.toggle"
             :isEdit="isEdit"
             :data="content.data"
-            :initMappingFields="content.mappingFields">
+            :initMappingFields="content.mappingFields"
+            @static-data-update="staticData => { content.data = staticData }">
           </data-config>
         </b-collapse-wrap>
         <!--保存提交-->
@@ -404,6 +405,7 @@
         this.$refs.form.validate(async (valid) => {
           let valid2 = true
           if (tmpContent.toggle === 'ON') {
+            // 动态数据开启时验证动态数据相关form
             valid2 = await this.$refs.dataConfig.validate()
             // 获取data-config组件维护的数据
             tmpContent.mappingFields = JSON.stringify(this.$refs.dataConfig.mappingFields)

@@ -7,8 +7,10 @@
             <img src="../../../assets/images/big-data-icon/icon_xxsl.png" alt="">
           </span>
           <span class="info" flex="dir:top">
-            <i t-ellipsis title="资源信息数量（条）">资源信息数量（条）</i>
-            <i class="count">{{counts.totalResource}}</i>
+            <i t-ellipsis :title="`资源信息数量（${firstLineUnit}）`">
+              资源信息数量（{{ firstLineUnit }}）
+            </i>
+            <i class="count">{{ zyxxsl }}</i>
           </span>
         </div>
         <div class="tip-item" flex>
@@ -16,8 +18,10 @@
             <img src="../../../assets/images/big-data-icon/icon_gjzl.png" alt="">
           </span>
           <span class="info" flex="dir:top">
-            <i t-ellipsis title="数据归集总量（条）">数据归集总量（条）</i>
-            <i class="count">{{counts.totalCount}}</i>
+            <i t-ellipsis :title="`数据归集总量（${firstLineUnit}）`">
+              数据归集总量（{{ firstLineUnit }}）
+            </i>
+            <i class="count">{{ ssgjzl }}</i>
           </span>
         </div>
         <div class="tip-item" flex>
@@ -25,8 +29,10 @@
             <img src="../../../assets/images/big-data-icon/icon_gjsj.png" alt="">
           </span>
           <span class="info" flex="dir:top">
-            <i t-ellipsis title="本月归集数据量（条）">本月归集数据量（条）</i>
-            <i class="count">{{counts.monthCount}}</i>
+            <i t-ellipsis :title="`本月归集数据量（${firstLineUnit}）`">
+              本月归集数据量（{{ firstLineUnit }}）
+            </i>
+            <i class="count">{{ bygjs }}</i>
           </span>
         </div>
         <div class="tip-item" flex>
@@ -34,8 +40,8 @@
             <img src="../../../assets/images/big-data-icon/icon_sjzl.png" alt="">
           </span>
           <span class="info" flex="dir:top">
-            <i t-ellipsis title="自然人数据总量（人）">上月归集数据量（人）</i>
-            <i class="count">{{counts.preMonthCount}}</i>
+            <i t-ellipsis title="上月归集数据量（条）">上月归集数据量（条）</i>
+            <i class="count">{{ sygjs }}</i>
           </span>
         </div>
         <div class="tip-item" flex>
@@ -44,14 +50,13 @@
           </span>
           <span class="info" flex="dir:top">
             <i>数据完整率</i>
-            <i class="count">{{counts.completeRate}}%</i>
+            <i class="count">{{ sjwzl }}</i>
           </span>
         </div>
       </div>
     </div>
     <div class="main">
       <div class="card-layout mb-20">
-        <!--本月信息归集统计-->
         <div class="left">
           <b-card class="box-card" head-tip divider="no" :bordered="false" radius="10px"
             :body-style="{padding:0,height:'310px'}" shadow="never">
@@ -63,26 +68,26 @@
             <div flex="main:justify">
               <div class="summary" flex="dir:top">
                 <span>归集数据汇总</span>
-                <span><i class="summary-count">{{counts.curCount}}</i>条</span>
+                <span><i class="summary-count">{{ curCount }}</i>{{ byxxgjtjUnit }}</span>
                 <span>本月已归集数据</span>
                 <span>
-                  <b-progress :percent="counts.percent" color="#fff" bgColor="#ffffff55"
+                  <b-progress :percent="percent" color="#fff" bgColor="#ffffff55"
                     :stroke-width="14"
                     :showText="false">
                   </b-progress>
                 </span>
 
-                <span v-if="counts.curCount ===  0"
+                <span v-if="curCount ===  0"
                   t-ellipsis title="本月您还未填报数据。">
                   本月您还未填报数据。
                 </span>
-                <span v-else-if="counts.curCount <  counts.preCount / 2"
+                <span v-else-if="curCount < preCount / 2"
                   t-ellipsis title="本月上报数据未到一半，请注意填报。">
                   本月上报数据未到一半，请注意填报。
                 </span>
-                <span v-else-if="counts.curCount >=  counts.preCount / 2 && counts.curCount < counts.preCount"
-                  t-ellipsis :title="`再录${counts.preCount - counts.curCount}条就赶超上月了哦，继续加油！`">
-                  再录{{counts.preCount - counts.curCount}}条就赶超上月了哦，继续加油！
+                <span v-else-if="curCount >=  preCount / 2 && curCount < preCount"
+                  t-ellipsis :title="`再录${preCount - curCount}条就赶超上月了哦，继续加油！`">
+                  再录{{ preCount - curCount }}条就赶超上月了哦，继续加油！
                 </span>
                 <span v-else>
                   恭喜您已完成哦！
@@ -103,7 +108,7 @@
             </div>
           </b-card>
         </div>
-        <!--信息归集日历-->
+
         <div class="right">
           <b-card class="box-card" head-tip divider="no" :bordered="false" radius="10px"
             :body-style="{padding:0,height:'310px'}" shadow="never">
@@ -121,7 +126,7 @@
         </div>
       </div>
       <div class="card-layout">
-        <!-- 年度信息归集趋势-->
+
         <div class="left">
           <b-card class="box-card" head-tip divider="no" :bordered="false" radius="10px"
             :body-style="{padding:0,height:'310px'}" shadow="never">
@@ -130,12 +135,12 @@
                 <span class="title-text">年度信息归集趋势</span>
                 <div flex="main:justify cross:baseline">
                   <b-select style="width: 150px; margin-right: 30px;"
-                            size="mini" clearable filterable @on-change="handleResourceChange">
+                    size="mini" clearable filterable @on-change="handleResourceChange">
                     <b-option v-for="(value, key) in directoryTransferEnum" :value="key" :key="key">
                       {{ value }}
                     </b-option>
                   </b-select>
-                  <!-- 年份切换tab -->
+
                   <groove-select @tab-click="handleTabBtn"></groove-select>
                 </div>
               </div>
@@ -146,7 +151,7 @@
             </div>
           </b-card>
         </div>
-        <!--信息归集历史-->
+
         <div class="right">
           <b-card class="box-card" head-tip divider="no" :bordered="false" radius="10px"
             :body-style="{ padding: 0, height:'310px'}" shadow="never">
@@ -160,10 +165,7 @@
               </div>
             </template>
             <div class="pl-20 pr-20">
-              <b-table :columns="columns" :data="historyList.slice(0, 6)" size="small" :loading="loading">
-                <template v-slot:resourceKey="{ row }">
-                  {{ directoryTransferEnum[row.resourceKey] }}
-                </template>
+              <b-table :columns="columns" :data="historyList.slice(1, 6)" size="small" :loading="loading">
               </b-table>
             </div>
           </b-card>
@@ -172,11 +174,6 @@
     </div>
     <b-modal v-model="modal" footer-hide title="信息归集记录" width="60%">
       <b-table :columns="columns" :data="moreList" size="small" class="mb-10" max-height="500">
-        <template v-slot:resourceKey="{ row }">
-          <div class="t-ellipsis" :title="directoryTransferEnum[row.resourceKey]">
-            {{ directoryTransferEnum[row.resourceKey] }}
-          </div>
-        </template>
       </b-table>
     </b-modal>
   </div>
@@ -186,7 +183,11 @@
   import commonMixin from '../../../common/mixins/mixin'
   import permission from '../../../common/mixins/permission'
   import { formatDataSet } from 'bin-charts/src/utils/util'
-  import * as api from '../../../api/data-analyze/data-analysis.api'
+  import {
+    getDirectoryTransfer, firstLineStatis,
+    byxxgjNew, ydxxgjNew,
+    ndxxgjNew, xxgjNew
+  } from '@/api/data-analyze/data-analysis.api'
   import GrooveSelect from '../components/GrooveSelect'
 
   require('bin-charts/src/theme/charts-theme')
@@ -198,28 +199,17 @@
     },
     data() {
       return {
+        firstLineData: null, // 首行数据
+        byxxgjtj: null, // 本月信息归集统计
         directoryTransferEnum: {}, // 资源信息枚举
-        yearsText: [],
-        resources: [],
         curDate: null,
-        listQuery: {
-          departId: '',
-          startDate: '',
-          endDate: '',
-          resourceKey: null
-        },
-        counts: {
-          totalResource: '',
-          totalCount: '',
-          monthCount: '',
-          preMonthCount: '',
-          completeRate: 0.0,
-          curCount: '',
-          preCount: '',
-          percent: 0.90
-        },
         lineChartOption: {
-          tooltip: { trigger: 'axis' },
+          tooltip: {
+            trigger: 'axis'
+            // formatter: ({ seriesName, value }) => {
+            //   return seriesName + ':' + value[1]
+            // }
+          },
           grid: {
             top: 20,
             bottom: 20
@@ -234,7 +224,7 @@
             showSymbol: false
           }],
           dataset: formatDataSet(
-            { xField: 'name', yField: 'value' },
+            { xField: 'month', yField: 'value' },
             []
           )
         },
@@ -255,13 +245,13 @@
             areaStyle: { opacity: 0.4 }
           }],
           dataset: formatDataSet(
-            { xField: 'name', yField: 'value' },
+            { xField: 'month', yField: 'value' },
             []
           )
         },
         columns: [
-          { title: '资源信息', slot: 'resourceKey', tooltip: true },
-          { title: '归集数量（条）', key: 'count', align: 'center' }
+          { title: '资源信息', key: 'resourceKey', tooltip: true },
+          { title: '归集数量（条）', key: 'docCount', align: 'center' }
         ],
         loading: false,
         historyList: [],
@@ -269,161 +259,147 @@
         modal: false
       }
     },
+    computed: {
+      firstLineUnit () { // 首行数据的单位
+        let res = ''
+        if (this.firstLineData) {
+          res = this.firstLineData.unit
+        }
+        return res
+      },
+      byxxgjtjUnit () { // 本月信息归集统计单位
+        let res = ''
+        if (this.byxxgjtj) {
+          res = this.byxxgjtj.unit
+        }
+        return res
+      },
+      zyxxsl () {
+        let res = 0
+        if (this.firstLineData) {
+          res = this.firstLineData.zyxxsl.cnt
+        }
+        return res
+      },
+      ssgjzl () {
+        let res = 0
+        if (this.firstLineData) {
+          res = this.firstLineData.ssgjzl[0].dataMergeTempValue
+        }
+        return res
+      },
+      bygjs () {
+        let res = 0
+        if (this.firstLineData) {
+          res = this.firstLineData.bygjs[0].monthCount
+        }
+        return res
+      },
+      sygjs () {
+        let res = 0
+        if (this.firstLineData) {
+          res = this.firstLineData.sygjs[0].preMonthCount
+        }
+        return res
+      },
+      sjwzl () {
+        let res = 0
+        if (this.firstLineData) {
+          res = this.firstLineData.sjwzl[0].wzl.toFixed(2) + '%'
+        }
+        return res
+      },
+      preCount () { // 本月信息归集统计上月数据
+        let res = 0
+        if (this.byxxgjtj) {
+          res = this.byxxgjtj.byxxgjtj[0].count
+        }
+        return res
+      },
+      curCount () { // 本月信息归集统计本月数据
+        let res = 0
+        if (this.byxxgjtj) {
+          res = this.byxxgjtj.byxxgjtj[1].count
+        }
+        return res
+      },
+      percent () { // curCount / preCount
+        let res = 0
+        if (this.byxxgjtj) {
+          res = Math.round(this.byxxgjtj.byxxgjtj[1].count / this.byxxgjtj.byxxgjtj[0].count * 100)
+          if (res > 100) res = 100
+        }
+        return res
+      }
+    },
     created() {
       this.init()
     },
     methods: {
-      // 临时设置departId
-      resetListQuery() {
-        this.listQuery.departId = this.$store.state.user.info.departId
+      /**
+       * @author haodongdong
+       * @description 一些初始化处理
+       */
+      async init() {
+        await this.getEnum()
+        this.buildDefaultDataYear()
+        this.buildDefaultDataMonth()
+        // new api
+        this.getFirstLineStatis()
+        this.getByxxgjNew()
+        this.getYdxxgjNew()
+        this.getNdxxgjNew()
       },
-      // 日历切换事件
+
+      /**
+       * @author haodongdong
+       * @description 日历切换事件，组件创建时就会调用一次
+       * @param {Object} date 包含相关日期数据的对象
+       */
       HandleCalendarChange (date) {
         this.curDate = this.$util.parseTime(date.date, '{y}-{m}-{d}')
-        // 2.4.10 信息归集历史
-        this.getDataHistory({
+        this.getXxgjNew({
           startDate: this.curDate,
           pageSize: 20
         })
       },
-      // 更多按钮回调
+
+      /**
+       * @author haodongdong
+       * @description 更多按钮回调
+       */
       handleMoreBtn () {
-        this.moreList = this.historyList.slice(0)
+        this.moreList = this.historyList.slice(1)
         this.modal = true
       },
-      // 年度归集信息select回调
+
+      /**
+       * @author haodongdong
+       * @description 年度归集信息select回调
+       * @param {string} val resourceKey
+       */
       handleResourceChange(val) {
-        if (val) {
-          this.listQuery.resourceKey = val
-        } else {
-          this.listQuery.resourceKey = null
-        }
-        this.getYearData(this.tab)
+        let resourceKey = null
+        if (val) resourceKey = val
+        this.getNdxxgjNew(this.tab, resourceKey)
       },
-      // 年度归集信息tab按钮回调
+
+      /**
+       * @author haodongdong
+       * @description 年度归集信息tab按钮回调
+       * @param {number} curTab 当前tab的下标
+       */
       handleTabBtn(curTab) {
         this.tab = curTab // curTab可用做计算之前的年份的偏移量
-        this.getYearData(curTab)
+        this.getNdxxgjNew(this.tab)
       },
-      // 查询所有数据
-      searchAll() {
-        this.resetListQuery()
-        // 2.4.1 资源信息数量
-        api.getZyxxsl(this.listQuery).then(res => {
-          if (res.data.code === '0') {
-            this.counts.totalResource = res.data.data.data.cnt
-          }
-        })
-        // 2.4.2 数据归集总量
-        api.getSjgjzl(this.listQuery).then(res => {
-          if (res.data.code === '0') {
-            this.counts.totalCount = res.data.data.data[0].value
-          }
-        })
-        // 2.4.3 本月归集数据量
-        api.getBygjsjl(this.listQuery).then(res => {
-          if (res.data.code === '0') {
-            this.counts.monthCount = res.data.data.data[0].monthCount
-          }
-        })
-        // 2.4.4 上月归集数据量
-        api.getSygjsjl(this.listQuery).then(res => {
-          if (res.data.code === '0') {
-            this.counts.preMonthCount = res.data.data.data[0].preMonthCount
-          }
-        })
-        // 2.4.5 数据完整率
-        api.getSjwzl(this.listQuery).then(res => {
-          if (res.data.code === '0') {
-            this.counts.completeRate = res.data.data.data[0].completeRate.toFixed(1)
-          }
-        })
-        // 2.4.6 本月信息归集统计
-        api.getByxxgjtj(this.listQuery).then(res => {
-          if (res.data.code === '0') {
-            const [{ count: preCount }, { count: curCount }] = res.data.data.data
-            this.counts.preCount = Number(preCount)
-            this.counts.curCount = Number(curCount)
-            this.counts.percent = Math.round(this.counts.curCount / this.counts.preCount * 100)
-            if (this.counts.percent > 100) this.counts.percent = 100
-          }
-        })
-        // // 2.4.7 月度信息归集趋势
-        this.getMonthData()
-        // // 年度信息归集趋势
-        this.getYearData()
-      },
-      // 获取信息归集记录
-      async getDataHistory (query) {
-        this.loading = true
-        try {
-          const res = await api.getDataHistory(query)
-          if (res.data.successful) {
-            this.historyList = res.data.data.data
-          }
-        } catch (error) {
-          console.error(error)
-        }
-        this.loading = false
-      },
-      // 2.4.7 月度信息归集趋势
-      getMonthData() {
-        // 取当前时间半年前
-        const [startDate, endDate] = this.timeHandler(150)
-        this.listQuery.startDate = startDate
-        this.listQuery.endDate = endDate
 
-        api.getMonthData(this.listQuery).then(res => {
-          if (res.data.code === '0') {
-            let data = res.data.data.data
-            this.lineChartOption.dataset = formatDataSet({ xField: 'name', yField: 'value' }, data)
-          }
-        })
-      },
-      // 获取年度归集趋势
-      getYearData(offset = 0) {
-        // 如果是当前年则取当前时间一年前
-        let [startDate, endDate] = this.timeHandler(360)
-        if (offset > 0) { // 不是当前年则取之前年份的01-12
-          startDate = (new Date().getFullYear() - offset) + '-01'
-          endDate = (new Date().getFullYear() - offset) + '-12'
-        }
-        this.listQuery.startDate = startDate
-        this.listQuery.endDate = endDate
-
-        api.getYearData(this.listQuery).then(res => {
-          if (res.data.code === '0') {
-            let data = res.data.data.data
-            this.smoothLineChartOption.dataset = formatDataSet({ xField: 'name', yField: 'value' }, data)
-          }
-        })
-      },
-      // 处理时间，取多天之前。例如一月前 30 三月前 90类似情况。
-      timeHandler(days) {
-        let getDateStr = (date) => {
-          const year = date.getFullYear()
-          let month = date.getMonth() + 1
-          if (month < 10) month = '0' + month // 小于10补零
-          return year + '-' + month
-        }
-
-        const end = new Date()
-        const start = new Date()
-        start.setTime(start.getTime() - 3600 * 1000 * 24 * days)
-
-        const startDate = getDateStr(start)
-        const endDate = getDateStr(end)
-
-        getDateStr = null
-
-        return [startDate, endDate]
-      },
       getRandom(start, end, fixed = 0) {
         let differ = end - start
         let random = Math.random()
         return (start + differ * random).toFixed(fixed)
       },
-      // 构建月度归集信息默认图表数据
+
       buildDefaultDataMonth() {
         const date = new Date()
         const year = date.getFullYear()
@@ -438,14 +414,15 @@
             monthStr = 13 - 1
           }
           dateArr.push({
-            name: yearStr + '-' + monthStr,
+            month: yearStr + '-' + monthStr,
             // value: this.getRandom(100, 2000)
             value: 0
           })
         }
         dateArr.reverse()
-        this.lineChartOption.dataset = formatDataSet({ xField: 'name', yField: 'value' }, dateArr)
+        this.lineChartOption.dataset = formatDataSet({ xField: 'month', yField: 'value' }, dateArr)
       },
+
       buildDefaultDataYear() {
         // 构建年度归集信息默认图表数据
         const date = new Date()
@@ -459,7 +436,7 @@
             value: 0
           })
         }
-        this.smoothLineChartOption.dataset = formatDataSet({ xField: 'name', yField: 'value' }, dateArr)
+        this.smoothLineChartOption.dataset = formatDataSet({ xField: 'month', yField: 'value' }, dateArr)
       },
       /**
        * @author haodongdong
@@ -467,18 +444,97 @@
        */
       async getEnum () {
         try {
-          const res = await api.getDirectoryTransfer()
+          const res = await getDirectoryTransfer()
           this.directoryTransferEnum = res
         } catch (error) {
           console.error(error)
         }
       },
-      // 一些初始化操作
-      async init() {
-        await this.getEnum()
-        this.buildDefaultDataYear()
-        this.buildDefaultDataMonth()
-        this.searchAll()
+
+      /**
+       * @author haodongdong
+       * @description 获取首行数据
+       */
+      async getFirstLineStatis () {
+        try {
+          const res = await firstLineStatis()
+          this.firstLineData = res
+        } catch (error) {
+          console.error(error)
+        }
+      },
+
+      /**
+       * @author haodongdong
+       * @description 获取本月信息归集统计
+       */
+      async getByxxgjNew () {
+        try {
+          const res = await byxxgjNew()
+          this.byxxgjtj = res
+        } catch (error) {
+          console.error(error)
+        }
+      },
+
+      /**
+       * @author haodongdong
+       * @description 获取阅读信息归集趋势
+       */
+      async getYdxxgjNew () {
+        const { startDateStr, endDateStr } = this.$util.rangeTime(-150, '{y}-{m}')
+        try {
+          const res = await ydxxgjNew({
+            startDate: startDateStr,
+            endDate: endDateStr
+          })
+          this.lineChartOption.dataset = formatDataSet({ xField: 'month', yField: 'value' }, res.ydxxgj)
+        } catch (error) {
+          console.error(error)
+        }
+      },
+
+      /**
+       * @author haodongdong
+       * @description 获取阅读信息归集趋势
+       * @param {number} [offset = 0] 偏移量
+       * @param {string} [resourceKey] 资源key
+       */
+      async getNdxxgjNew (offset = 0, resourceKey = undefined) {
+        try {
+          let { startDateStr, endDateStr } = this.$util.rangeTime(-360, '{y}-{m}')
+          if (offset > 0) { // 不是当前年则取之前年份的01-12
+            startDateStr = (new Date().getFullYear() - offset) + '-01'
+            endDateStr = (new Date().getFullYear() - offset) + '-12'
+          }
+
+          const res = await ndxxgjNew({
+            resourceKey,
+            startDate: startDateStr,
+            endDate: endDateStr
+          })
+          this.smoothLineChartOption.dataset = formatDataSet({ xField: 'month', yField: 'value' }, res.ndxxgjqszy)
+        } catch (error) {
+          console.error(error)
+        }
+      },
+
+      /**
+       * @author haodongdong
+       * @description 获取信息归集记录
+       * @param {Object} query 查询参数
+       * @param {number} query.pageSize 查询数量
+       * @param {string} querystartDate 开始时间
+       */
+      async getXxgjNew (query) {
+        this.loading = true
+        try {
+          const res = await xxgjNew(query)
+          this.historyList = res.xxgjls
+        } catch (error) {
+          console.error(error)
+        }
+        this.loading = false
       }
     }
   }

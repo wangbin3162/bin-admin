@@ -9,146 +9,8 @@ function isAdmin () {
   return store.state.user.info.roleCodes === 'ROLE_ADMIN'
 }
 
-/**
- * @author haodongdong
- * @description 获取资源列表
- * @returns Promise
- */
-export async function getResources() {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const res = await request({
-        url: '/api/dir/getResources',
-        method: 'get'
-      })
-      if (res.data.successful) {
-        resolve(res.data.data)
-      } else {
-        reject(res.data.message)
-      }
-    } catch (error) {
-      reject(error)
-    }
-  })
-}
-
-/* 2.4.1 资源信息数量 */
-export function getZyxxsl(query) {
-  return request({
-    url: '/da/data/gather/zyxxsl',
-    method: 'get',
-    params: {
-      gatherDept: isAdmin() ? null : query.departId,
-      isDomain: isDomain()
-    }
-  })
-}
-
-/* 2.4.2 数据归集总量 */
-export function getSjgjzl(query) {
-  return request({
-    url: '/da/data/gather/sjgjzl',
-    method: 'get',
-    params: {
-      gatherDept: isAdmin() ? null : query.departId,
-      isDomain: isDomain()
-    }
-  })
-}
-
-/* 2.4.3 本月归集数据量 */
-export function getBygjsjl(query) {
-  return request({
-    url: '/da/data/gather/bygjsjl',
-    method: 'get',
-    params: {
-      gatherDept: isAdmin() ? null : query.departId,
-      isDomain: isDomain()
-    }
-  })
-}
-
-/* 2.4.4 上月归集数据量 */
-export function getSygjsjl(query) {
-  return request({
-    url: '/da/data/gather/sygjsjl',
-    method: 'get',
-    params: {
-      gatherDept: isAdmin() ? null : query.departId,
-      isDomain: isDomain()
-    }
-  })
-}
-
-/* 2.4.5 数据完整率 */
-export function getSjwzl(query) {
-  return request({
-    url: '/da/data/gather/sjwzl',
-    method: 'get',
-    params: {
-      gatherDept: isAdmin() ? null : query.departId,
-      isDomain: isDomain()
-    }
-  })
-}
-
-/* 2.4.6 本月信息归集统计 */
-export function getByxxgjtj(query) {
-  return request({
-    url: '/da/data/gather/byxxgjtj',
-    method: 'get',
-    params: {
-      gatherDept: isAdmin() ? null : query.departId,
-      isDomain: isDomain()
-    }
-  })
-}
-
-/* 2.4.7 月度信息归集趋势 */
-export function getMonthData(query) {
-  return request({
-    url: '/da/data/gather/ydxxgjqs',
-    method: 'get',
-    params: {
-      gatherDept: isAdmin() ? null : query.departId,
-      startDate: query.startDate,
-      endDate: query.endDate,
-      isDomain: isDomain()
-    }
-  })
-}
-
-/**
- * @author haodongdong
- * @description 获取年度归集趋势
- * @param {*} query
- */
-export function getYearData(query) {
-  return request({
-    url: '/da/data/gather/ndxxgjqszy',
-    method: 'get',
-    params: {
-      gatherDept: isAdmin() ? null : query.departId,
-      startDate: query.startDate,
-      endDate: query.endDate,
-      resourceKey: query.resourceKey,
-      isDomain: isDomain()
-    }
-  })
-}
-
-/* 2.4.10 信息归集历史 */
-export function getDataHistory(query) {
-  return request({
-    url: '/da/data/gather/xxgjls',
-    method: 'get',
-    params: {
-      gatherDept: isAdmin() ? null : query.departId,
-      isDomain: isDomain(),
-      startDate: query.startDate,
-      pageSize: query.pageSize
-    }
-  })
+function getDepartId() {
+  return store.state.user.info.departId
 }
 
 /**
@@ -162,6 +24,152 @@ export async function getDirectoryTransfer() {
       const res = await request({
         url: '/da/data/api/directoryTransfer',
         method: 'get'
+      })
+      if (res.data.successful) {
+        resolve(res.data.data)
+      } else {
+        reject(res.data.message)
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
+ * @description 首行数据
+ * @returns {Promise}
+ */
+export async function firstLineStatis () {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/da/data/gather/firstLineStatis',
+        method: 'get'
+      })
+      if (res.data.successful) {
+        resolve(res.data.data)
+      } else {
+        reject(res.data.message)
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
+ * @description 本月信息归集统计
+ * @returns {Promise}
+ */
+export async function byxxgjNew () {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/da/data/gather/byxxgjNew',
+        method: 'get',
+        params: {
+          gatherDept: isAdmin() ? null : getDepartId(),
+          isDomain: isDomain()
+        }
+      })
+      if (res.data.successful) {
+        resolve(res.data.data)
+      } else {
+        reject(res.data.message)
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
+ * @description 月度信息归集趋势
+ * @param {Object} query 查询参数
+ * @param {string} query.startDate 开始时间
+ * @param {string} query.endDate 结束时间
+ * @returns {Promise}
+ */
+export async function ydxxgjNew (query) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/da/data/gather/ydxxgjNew',
+        method: 'get',
+        params: {
+          gatherDept: isAdmin() ? null : getDepartId(),
+          isDomain: isDomain(),
+          startDate: query.startDate,
+          endDate: query.endDate
+        }
+      })
+      if (res.data.successful) {
+        resolve(res.data.data)
+      } else {
+        reject(res.data.message)
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
+ * @description 年度信息归集趋势
+ * @param {Object} query 查询参数
+ * @param {string} query.startDate 开始时间
+ * @param {string} query.endDate 结束时间
+ * @param {string} [query.resourceKey] 资源key
+ * @returns {Promise}
+ */
+export async function ndxxgjNew (query) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/da/data/gather/ndxxgjNew',
+        method: 'get',
+        params: {
+          gatherDept: isAdmin() ? null : query.departId,
+          isDomain: isDomain(),
+          resourceKey: query.resourceKey,
+          startDate: query.startDate,
+          endDate: query.endDate
+        }
+      })
+      if (res.data.successful) {
+        resolve(res.data.data)
+      } else {
+        reject(res.data.message)
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
+ * @description 信息归集记录
+ * @param {Object} query 查询参数
+ * @param {string} query.startDate 开始时间
+ * @param {number} query.pageSize 查询数量
+ * @returns {Promise}
+ */
+export async function xxgjNew (query) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/da/data/gather/xxgjNew',
+        method: 'get',
+        params: {
+          pageSize: query.pageSize,
+          startDate: query.startDate
+        }
       })
       if (res.data.successful) {
         resolve(res.data.data)
