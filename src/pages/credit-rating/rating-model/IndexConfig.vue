@@ -40,17 +40,17 @@
                   :data="list"
                   :loading="listLoading">
                   <template v-slot:indexName="{ index }">
-                    <b-input v-model="listCopy[index].indexName"
-                      :disabled="listCopy[index].indexType === 'Index'"></b-input>
+                    <b-input v-model="listEdit[index].indexName"
+                      :disabled="listEdit[index].indexType === 'Index'"></b-input>
                   </template>
 
                   <template v-slot:indexType="{ row, index }">
                     <!-- 已提交的数据不允许修改性质 -->
-                    <!-- Boolean(listCopy[index].id) 把id转为Boolean类型，提交过的数据id一定存在，未提交的则不存在 -->
-                    <!-- Boolean(listCopy[index].uSelected) 用于新增时，如果已从指标选择组件选择指标，则不允许切换性质 -->
-                    <b-select v-model="listCopy[index].indexType" append-to-body
+                    <!-- Boolean(listEdit[index].id) 把id转为Boolean类型，提交过的数据id一定存在，未提交的则不存在 -->
+                    <!-- Boolean(listEdit[index].uSelected) 用于新增时，如果已从指标选择组件选择指标，则不允许切换性质 -->
+                    <b-select v-model="listEdit[index].indexType" append-to-body
                       @on-change="handleIndexTypeChange($event, index, row.level)"
-                      :disabled="Boolean(listCopy[index].id)">
+                      :disabled="Boolean(listEdit[index].id)">
                       <b-option v-for="(value, key) in natureEnum" :key="key" :value="key">
                         {{ value }}
                       </b-option>
@@ -60,7 +60,7 @@
                   <template v-slot:weight="{ index }">
                     <div flex>
                       <b-input-number style="width: 100%;"
-                        v-model="listCopy[index].weight"
+                        v-model="listEdit[index].weight"
                         :max="100" :min="0">
                       </b-input-number>
                       <span style="line-height: 30px;">%</span>
@@ -68,16 +68,16 @@
                   </template>
 
                   <template v-slot:indexDesc="{ index }">
-                    <b-input v-model="listCopy[index].indexDesc"
-                      :disabled="listCopy[index].indexType === 'Index'"></b-input>
+                    <b-input v-model="listEdit[index].indexDesc"
+                      :disabled="listEdit[index].indexType === 'Index'"></b-input>
                   </template>
 
                   <template v-slot:action="{ index, row }">
                     <b-button type="text" @click="handleRemove(index, row.id)">删除</b-button>
-                    <!-- 为指标时显示 or 层级大于3时一直显示，且性质会改变所以需要绑定listCopy数据 -->
-                    <b-button v-if="listCopy[index].indexType === 'Index' || row.level > 3"
+                    <!-- 为指标时显示 or 层级大于3时一直显示，且性质会改变所以需要绑定listEdit数据 -->
+                    <b-button v-if="listEdit[index].indexType === 'Index' || row.level > 3"
                       type="text"
-                      @click="handleSelectBtn(row.level, listCopy[index].indexType, index)">
+                      @click="handleSelectBtn(row.level, listEdit[index].indexType, index)">
                         选择
                     </b-button>
                   </template>
@@ -166,7 +166,7 @@
           indexType: 'Index'
         },
         list: [],
-        listCopy: [], // 用作数据绑定的副本，避免input等相关操作会重新刷新列表挂壁==关闭已展开列。
+        listEdit: [], // 用作数据绑定的副本，避免input等相关操作会重新刷新列表挂壁==关闭已展开列。
         columns: [
           { type: 'index', width: 50, align: 'center' },
           { title: '名称', key: 'indexName', ellipsis: true, tooltip: true, align: 'center' },
@@ -231,28 +231,28 @@
           weight: 0,
           indexDesc: ''
         }
-        this.listCopy.push(obj) // 用于数据操作
+        this.listEdit.push(obj) // 用于数据操作
         this.list.push(JSON.parse(JSON.stringify(obj))) // 用于显示，深拷贝解除响应式依赖
       },
 
       // 性质下拉框change回调
       handleIndexTypeChange (indexType, index, level) {
         // 切换时清空之前类型的数据
-        this.listCopy[index].indexName = ''
-        this.listCopy[index].indexDesc = ''
-        this.listCopy[index].weight = 0
+        this.listEdit[index].indexName = ''
+        this.listEdit[index].indexDesc = ''
+        this.listEdit[index].weight = 0
         if (indexType === 'Index') {
-          this.listCopy[index].children = []
+          this.listEdit[index].children = []
           // 选择指标时自动打开选择指标弹框
           this.handleSelectBtn(level, indexType, index)
         } else {
-          this.listCopy[index].calIndexId = null
+          this.listEdit[index].calIndexId = null
         }
       },
 
       // 展开列下删除按钮回调
       async handleRemoveIndex(index, cIndex, id) {
-        const curRowChildren = this.listCopy[index].children
+        const curRowChildren = this.listEdit[index].children
         this.$confirm({
           title: '删除',
           content: '删除当前项后不可恢复，确认删除吗？',
@@ -291,14 +291,14 @@
 
       // 选择指标组件的多选回调
       handleChooseMul (mulVal) {
-        const curRowObj = this.listCopy[this.curIndex]
+        const curRowObj = this.listEdit[this.curIndex]
         curRowObj.children = this.mergeFiveList(curRowObj.children, mulVal, curRowObj.id)
         this.$set(curRowObj, 'uSelected', true) // 用于选择后禁止切换性质下拉框, 与指标下拉框关联
       },
 
       // 选择指标组件的单选回调
       handleChooseSing (singVal) {
-        const curRowObj = this.listCopy[this.curIndex]
+        const curRowObj = this.listEdit[this.curIndex]
         curRowObj.indexName = singVal.indexName
         curRowObj.indexDesc = singVal.indexDesc
         curRowObj.calIndexId = singVal.id
@@ -320,16 +320,16 @@
 
                 await deleteIndexModel(id)
                 this.list.splice(index, 1) // 同步显示
-                this.listCopy.splice(index, 1) // 删除绑定数据
+                this.listEdit.splice(index, 1) // 删除绑定数据
 
                 // 准备需要更新的节点数据，排除后续添加但未提交的数据
-                const newArr = this.listCopy.filter(item => item.id !== undefined)
+                const newArr = this.listEdit.filter(item => item.id !== undefined)
 
                 // 更新右侧table数据(子节点)至当前左侧树选中节点的children
                 this.updateSubNodeToTreeCom(newArr, map)
               } else {
                 this.list.splice(index, 1) // 同步显示
-                this.listCopy.splice(index, 1) // 删除绑定数据
+                this.listEdit.splice(index, 1) // 删除绑定数据
               }
               this.$message({ type: 'success', content: '操作成功' })
             } catch (error) {
@@ -344,21 +344,21 @@
       // 编辑模式下提交按钮的回调
       async handleSubmit () {
         try {
-          await this.validate(this.listCopy)
+          await this.validate(this.listEdit)
           this.loadingBtn = true
 
           try {
-            for (const item of this.listCopy) { // 由于table的数据来自于左侧树接口，因此可能包含有子节点数据，提交的时候并不需要，所以过滤掉。
+            for (const item of this.listEdit) { // 由于table的数据来自于左侧树接口，因此可能包含有子节点数据，提交的时候并不需要，所以过滤掉。
               item.children = []
             }
 
             const map = this.tileTreeToMap(this.curNode.children) // 保存当前节点下的展开状态为map
 
-            await updatedIndexModel(this.listCopy) // 请求接口更新数据
-            await this.searchList() // 主要用于更新已选节点下数据后获取id，且这一步函数内会覆盖掉listCopy的展开状态
+            await updatedIndexModel(this.listEdit) // 请求接口更新数据
+            await this.searchList() // 主要用于更新已选节点下数据后获取id，且这一步函数内会覆盖掉listEdit的展开状态
 
             // 更新右侧table数据(子节点)至当前左侧树选中节点的children
-            this.updateSubNodeToTreeCom(this.listCopy, map) // 节点更新至树组件
+            this.updateSubNodeToTreeCom(this.listEdit, map) // 节点更新至树组件
 
             this.editStatus = false // 退出编辑模式
             this.$message({ type: 'success', content: '操作成功' })
@@ -374,14 +374,14 @@
 
       // 编辑按钮的回调
       handleEditBtn () {
-        this.listCopy = JSON.parse(JSON.stringify(this.list)) // 复制用于数据绑定的副本
+        this.listEdit = JSON.parse(JSON.stringify(this.list)) // 复制用于数据绑定的副本
         this.editStatus = true
       },
 
       // 取消与返回按钮的回调
       handleCancelBtn () {
         // 清除未保存的数据
-        this.listCopy = this.listCopy.filter(item => item.id !== undefined)
+        this.listEdit = this.listEdit.filter(item => item.id !== undefined)
         this.list = this.list.filter(item => item.id !== undefined)
         this.editStatus = false
       },
@@ -410,7 +410,7 @@
             // 每次请求都需要构建tree组件使用的数据结构，传入当前选中节点的层级，便于准确构建子节点层级
             this.list = this.buildTree(this.list, this.curNode.level)
           }
-          this.listCopy = JSON.parse(JSON.stringify(this.list)) // 复制用于数据绑定的副本
+          this.listEdit = JSON.parse(JSON.stringify(this.list)) // 复制用于数据绑定的副本
         } catch (error) {
           console.error(error)
           this.$log.pretty('searchList Error', error, 'danger')
@@ -574,10 +574,10 @@
         })
       },
 
-      async validate (listCopy) {
+      async validate (listEdit) {
         return new Promise(async (resolve, reject) => {
           try {
-            for (const item of listCopy) {
+            for (const item of listEdit) {
               for (const key in item) {
                 if (item.hasOwnProperty(key)) {
                   if (key === 'indexName' || key === 'weight') {
@@ -592,10 +592,10 @@
             }
             try {
               // 验证当前层级的权重之和是否为100%
-              await this.isCount100(listCopy)
+              await this.isCount100(listEdit)
               // 如果是第四层的话，则验证四层内的子节点权重之和是否为100%
               if (this.curNode.level >= 3) {
-                listCopy.forEach(async (item, index) => {
+                listEdit.forEach(async (item, index) => {
                   try {
                     await this.isCount100(item.children)
                     resolve()
