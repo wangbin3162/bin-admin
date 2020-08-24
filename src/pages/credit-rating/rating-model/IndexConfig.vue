@@ -8,14 +8,15 @@
         <div flex v-show="mainTab === 'editWeight'">
           <div class="tree-con">
             <b-tree :data="treeData" slot="tree" :lock-select="false"
-              @on-select-change="handTreeCurrentChange"></b-tree>
+              @on-select-change="handTreeCurrentChange">
+            </b-tree>
           </div>
 
           <div class="table-con">
             <sub-tabs class="mb-20" @tab-change="subTabKey => { subTab = subTabKey }">
             </sub-tabs>
 
-            <div v-show="subTab === 'indexManage'">
+            <div v-show="subTab === 'modelManage'">
               <!-- 展示用table -->
               <b-table id="customTable" v-if="!editStatus" size="small"
                 :key="editStatus"
@@ -125,10 +126,10 @@
   import {
     getIndexModleTree, updatedIndexModel, deleteIndexModel
   } from '../../../api/credit-rating/rating-model.api'
-  import MainTabs from '@/pages/credit-rating/rating-model/components/MainTabs'
-  import SubTabs from '@/pages/credit-rating/rating-model/components/SubTabs'
-  import GlobalWeight from '@/pages/credit-rating/rating-model/components/GlobalWeight'
-  import DecisionMatrix from '@/pages/credit-rating/rating-model/components/DecisionMatrix'
+  import MainTabs from '@/pages/credit-rating/rating-model/components/index-config/MainTabs'
+  import SubTabs from '@/pages/credit-rating/rating-model/components/index-config/SubTabs'
+  import GlobalWeight from '@/pages/credit-rating/rating-model/components/index-config/GlobalWeight'
+  import DecisionMatrix from '@/pages/credit-rating/rating-model/components/index-config/DecisionMatrix'
   import SelectIndex from './SelectIndex'
 
   export default {
@@ -145,7 +146,7 @@
     data () {
       return {
         mainTab: 'editWeight',
-        subTab: 'indexManage',
+        subTab: 'modelManage',
         loadingBtn: false,
         open: false, // 控制选择指标组件打开关闭
         radio: true, // 选择指标组件单选还是多选

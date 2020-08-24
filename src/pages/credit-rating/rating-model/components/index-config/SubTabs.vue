@@ -11,9 +11,9 @@
     name: 'SubTabs',
     data () {
       return {
-        activeTab: 'indexManage',
+        activeTab: 'modelManage',
         tabs: [
-          { key: 'indexManage', title: '指标管理' },
+          { key: 'modelManage', title: '模型管理' },
           { key: 'decisionMatrix', title: '判定矩阵' }
         ]
       }
