@@ -1,105 +1,101 @@
 <template>
   <div class="index-config">
     <page-header-wrap title="模型指标" show-close @on-close="$emit('close')">
-      <main-tabs @tab-change="mainSubKey => { mainTab = mainSubKey }">
-      </main-tabs>
-
       <v-edit-wrap class="cover">
         <div flex>
+          <!-- tree -->
           <div class="tree-con">
             <b-tree :data="treeData" slot="tree" :lock-select="false"
               @on-select-change="handTreeCurrentChange"></b-tree>
           </div>
-
           <div class="table-con">
-            <sub-tabs class="mb-20" @tab-change="subTabKey => { subTab = subTabKey }">
-            </sub-tabs>
+            <!-- search -->
+            <!-- <v-filter-bar @keyup-enter="handleFilter">
+              <v-filter-item title="名称">
+                <b-input v-model.trim="listQuery.indexName" placeholder="请输入" clearable></b-input>
+              </v-filter-item>
+              <v-filter-item @on-search="handleFilter" @on-reset="resetQuery"></v-filter-item>
+            </v-filter-bar> -->
 
-            <div v-show="subTab === 'indexManage'">
-              <!-- 展示用table -->
-              <b-table id="customTable" v-if="!editStatus" size="small"
+            <!-- 展示用table -->
+            <b-table id="customTable" v-if="!editStatus" size="small"
+              :key="editStatus"
+              :columns="columns"
+              :data="list"
+              :loading="listLoading">
+              <template v-slot:indexType="{ row }">
+                {{ natureEnum[row.indexType] }}
+              </template>
+
+              <template v-slot:weight="{ row }">
+                {{ row.weight }}%
+              </template>
+            </b-table>
+
+            <template v-else>
+              <!-- 编辑用table -->
+              <b-table id="customTable" size="small"
                 :key="editStatus"
-                :columns="columns"
+                :columns="columnsEdit"
                 :data="list"
                 :loading="listLoading">
-                <template v-slot:indexType="{ row }">
-                  {{ natureEnum[row.indexType] }}
+                <template v-slot:indexName="{ index }">
+                  <b-input v-model="listCopy[index].indexName"
+                    :disabled="listCopy[index].indexType === 'Index'"></b-input>
                 </template>
 
-                <template v-slot:weight="{ row }">
-                  {{ row.weight }}%
+                <template v-slot:indexType="{ row, index }">
+                  <!-- 已提交的数据不允许修改性质 -->
+                  <!-- Boolean(listCopy[index].id) 把id转为Boolean类型，提交过的数据id一定存在，未提交的则不存在 -->
+                  <!-- Boolean(listCopy[index].uSelected) 用于新增时，如果已从指标选择组件选择指标，则不允许切换性质 -->
+                  <b-select v-model="listCopy[index].indexType" append-to-body
+                    @on-change="handleIndexTypeChange($event, index, row.level)"
+                    :disabled="Boolean(listCopy[index].id)">
+                    <b-option v-for="(value, key) in natureEnum" :key="key" :value="key">
+                      {{ value }}
+                    </b-option>
+                  </b-select>
+                </template>
+
+                <template v-slot:weight="{ index }">
+                  <div flex>
+                    <b-input-number style="width: 100%;"
+                      v-model="listCopy[index].weight"
+                      :max="100" :min="0">
+                    </b-input-number>
+                    <span style="line-height: 30px;">%</span>
+                  </div>
+                </template>
+
+                <template v-slot:indexDesc="{ index }">
+                  <b-input v-model="listCopy[index].indexDesc"
+                    :disabled="listCopy[index].indexType === 'Index'"></b-input>
+                </template>
+
+                <template v-slot:action="{ index, row }">
+                  <b-button type="text" @click="handleRemove(index, row.id)">删除</b-button>
+                  <!-- 为指标时显示 or 层级大于3时一直显示，且性质会改变所以需要绑定listCopy数据 -->
+                  <b-button v-if="listCopy[index].indexType === 'Index' || row.level > 3"
+                    type="text"
+                    @click="handleSelectBtn(row.level, listCopy[index].indexType, index)">
+                      选择
+                  </b-button>
                 </template>
               </b-table>
 
-              <template v-else>
-                <!-- 编辑用table -->
-                <b-table id="customTable" size="small"
-                  :key="editStatus"
-                  :columns="columnsEdit"
-                  :data="list"
-                  :loading="listLoading">
-                  <template v-slot:indexName="{ index }">
-                    <b-input v-model="listCopy[index].indexName"
-                      :disabled="listCopy[index].indexType === 'Index'"></b-input>
-                  </template>
-
-                  <template v-slot:indexType="{ row, index }">
-                    <!-- 已提交的数据不允许修改性质 -->
-                    <!-- Boolean(listCopy[index].id) 把id转为Boolean类型，提交过的数据id一定存在，未提交的则不存在 -->
-                    <!-- Boolean(listCopy[index].uSelected) 用于新增时，如果已从指标选择组件选择指标，则不允许切换性质 -->
-                    <b-select v-model="listCopy[index].indexType" append-to-body
-                      @on-change="handleIndexTypeChange($event, index, row.level)"
-                      :disabled="Boolean(listCopy[index].id)">
-                      <b-option v-for="(value, key) in natureEnum" :key="key" :value="key">
-                        {{ value }}
-                      </b-option>
-                    </b-select>
-                  </template>
-
-                  <template v-slot:weight="{ index }">
-                    <div flex>
-                      <b-input-number style="width: 100%;"
-                        v-model="listCopy[index].weight"
-                        :max="100" :min="0">
-                      </b-input-number>
-                      <span style="line-height: 30px;">%</span>
-                    </div>
-                  </template>
-
-                  <template v-slot:indexDesc="{ index }">
-                    <b-input v-model="listCopy[index].indexDesc"
-                      :disabled="listCopy[index].indexType === 'Index'"></b-input>
-                  </template>
-
-                  <template v-slot:action="{ index, row }">
-                    <b-button type="text" @click="handleRemove(index, row.id)">删除</b-button>
-                    <!-- 为指标时显示 or 层级大于3时一直显示，且性质会改变所以需要绑定listCopy数据 -->
-                    <b-button v-if="listCopy[index].indexType === 'Index' || row.level > 3"
-                      type="text"
-                      @click="handleSelectBtn(row.level, listCopy[index].indexType, index)">
-                        选择
-                    </b-button>
-                  </template>
-                </b-table>
-
-                <div class="table-bottom">
-                  <b-button type="primary" plain style="width: 100%;"
-                  @click="handleAdd">
-                      + 添加
-                  </b-button>
-                  <p>注：此处权重总计100%；编辑时无法切换左侧树节点，保存或退出后方可。</p>
-                  <b-button type="primary" :loading="loadingBtn"
-                    @click="handleSubmit">
-                      保 存
-                  </b-button>
-                  <b-button @click="handleCancelBtn">取 消</b-button>
-                </div>
-              </template>
-            </div>
-
-            <div v-show="subTab === 'decisionMatrix'">
-              hello world
-            </div>
+              <div class="table-bottom">
+                <b-button type="primary" plain style="width: 100%;"
+                 @click="handleAdd">
+                    + 添加
+                </b-button>
+                <p>注：此处权重总计100%；编辑时无法切换左侧树节点，保存或退出后方可。</p>
+                <b-button type="primary" :loading="loadingBtn"
+                  @click="handleSubmit">
+                    保 存
+                </b-button>
+                <b-button @click="handleCancelBtn">取 消</b-button>
+              </div>
+            </template>
           </div>
         </div>
 
@@ -120,26 +116,20 @@
 
 <script>
   import commonMixin from '../../../common/mixins/mixin'
+  import SelectIndex from './SelectIndex'
   import {
     getIndexModleTree, updatedIndexModel, deleteIndexModel
   } from '../../../api/credit-rating/rating-model.api'
-  import MainTabs from '@/pages/credit-rating/rating-model/components/MainTabs'
-  import SubTabs from '@/pages/credit-rating/rating-model/components/SubTabs'
-  import SelectIndex from './SelectIndex'
 
   export default {
     name: 'IndexConfig',
     mixins: [commonMixin],
     props: ['modelId'],
     components: {
-      MainTabs,
-      SubTabs,
       SelectIndex
     },
     data () {
       return {
-        mainTab: 'editWeight',
-        subTab: 'indexManage',
         loadingBtn: false,
         open: false, // 控制选择指标组件打开关闭
         radio: true, // 选择指标组件单选还是多选
@@ -800,8 +790,6 @@
   width: 100%;
   .cover {
     padding: 0;
-    border: 1px solid #e4e7ed;
-    border-top: 0px solid #e4e7ed;
   }
   .tree-con {
     width: 340px;
