@@ -10,7 +10,9 @@
         <global-header></global-header>
         <main class="layout-main">
           <div class="layout-content-wrap">
-            <router-view/>
+            <transition name="fade-transverse" @before-leave="beforeLeave">
+              <router-view/>
+            </transition>
           </div>
         </main>
         <footer class="layout-footer" style="padding: 0;">
@@ -50,6 +52,13 @@ export default {
         position: 'relative',
         paddingLeft: (this.hasAside && this.fixedAside) ? (this.sidebar ? '256px' : '64px') : null
       }
+    }
+  },
+  methods: {
+    beforeLeave(el) {
+      el.style.position = 'absolute'
+      el.style.width = '100%'
+      el.style.top = '0'
     }
   }
 }
