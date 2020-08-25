@@ -3,7 +3,7 @@
     <b-dropdown>
       <span class="user-link">
         <b-icon name="ios-contact" size="20"></b-icon>&nbsp;
-        <span>你好,{{userInfo.name}}</span>
+        <span v-if="userInfo">你好,{{ userInfo.realName }}</span>
       </span>
       <b-dropdown-menu slot="list">
         <b-dropdown-item @click.native="handleLogout">
@@ -16,27 +16,27 @@
 </template>
 
 <script>
-  import { mapGetters } from 'vuex'
+import { mapGetters } from 'vuex'
 
-  export default {
-    name: 'UserAvatar',
-    computed: {
-      ...mapGetters(['userInfo'])
-    },
-    methods: {
-      handleLogout() {
-        this.$confirm({
-          title: '注销',
-          content: '确认退出登录吗？',
-          onOk: () => {
-            this.$store.dispatch('logout').then(() => {
-              this.$router.push('/login')
-            }).catch(err => {
-              this.$message({ type: 'danger', content: err.message })
-            })
-          }
-        })
-      }
+export default {
+  name: 'UserAvatar',
+  computed: {
+    ...mapGetters(['userInfo'])
+  },
+  methods: {
+    handleLogout() {
+      this.$confirm({
+        title: '注销',
+        content: '确认退出登录吗？',
+        onOk: () => {
+          this.$store.dispatch('logout').then(() => {
+            this.$router.push('/login')
+          }).catch(err => {
+            this.$message({ type: 'danger', content: err.message })
+          })
+        }
+      })
     }
   }
+}
 </script>

@@ -87,7 +87,7 @@
         })
       },
       loginSuccess(res) {
-        if (res.data.code === 0) {
+        if (res.data.code === '0') {
           const token = res.data.data
           this.$store.dispatch('setToken', token).then(() => {
             // 重定向对象不存在则返回顶层路径

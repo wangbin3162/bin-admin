@@ -1,33 +1,40 @@
-import { asyncRouterMap, constantRouterMap } from '../../router/routes'
+import { asyncRouterMap, addRoutes } from '@/router/routes'
 
 /**
- * 过滤账户是否拥有某一个权限，并将菜单从加载列表移除,这里暂时通过这种方式获取
- *
- * @param roles
- * @param route
- * @returns {boolean}
+ * 根据返回的树形菜单，递归筛选路由节点
+ * @param routes
+ * @param functions
+ * @returns {[]}
  */
-function hasPermission (roles, route) {
-  if (route.meta && route.meta.roles) {
-    return roles.some(role => route.meta.roles.includes(role))
-  } else {
-    return true
-  }
-}
-
-function filterAsyncRoutes (routes, roles) {
-  const res = []
-  routes.forEach(route => {
-    const tmp = { ...route }
-    if (hasPermission(roles, tmp)) {
-      if (tmp.children) {
-        tmp.children = filterAsyncRoutes(tmp.children, roles)
-      }
-      res.push(tmp)
+function filterAsyncRoutes(routes, functions) {
+  let menus = getAsyncRouter(functions)
+  const all = []
+  menus.forEach(menu => {
+    let matchIndex = routes.findIndex(item => item.name === menu.name)
+    if (matchIndex > -1) {
+      all.push(routes[matchIndex])
     }
   })
+  return all
+}
 
-  return res
+// 递归平铺菜单树
+function getAsyncRouter(functions) {
+  let all = []
+  const mapper = (route) => {
+    if (route.name && !route.children) {
+      all.push({ ...route })
+    }
+    if (route.children) {
+      route.children.forEach(item => {
+        mapper(item)
+      })
+    }
+  }
+  functions.forEach(item => {
+    mapper(item)
+  })
+  return all
 }
 
 const permission = {
@@ -38,13 +45,13 @@ const permission = {
   mutations: {
     SET_ROUTERS: (state, routers) => {
       state.addRouters = routers
-      state.routers = constantRouterMap.concat(routers)
+      state.routers = addRoutes(routers)
     }
   },
   actions: {
-    generateRoutes ({ commit }, roles) {
+    generateRoutes({ commit }, menus) {
       return new Promise(resolve => {
-        const accessedRouters = filterAsyncRoutes(asyncRouterMap, roles)
+        const accessedRouters = filterAsyncRoutes(asyncRouterMap, menus)
         commit('SET_ROUTERS', accessedRouters)
         resolve(accessedRouters)
       })

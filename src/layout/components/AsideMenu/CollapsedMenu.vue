@@ -9,64 +9,58 @@
     </a>
     <b-dropdown-menu ref="dropdown" slot="list" style="width: 150px;">
       <template v-for="child in menu.children">
-        <b-dropdown-item v-if="!child.children" :key="`drop-menu-${child.path}`"
-                         :name="resolvePath(child.path)" :selected="$route.path===resolvePath(child.path)">
+        <b-dropdown-item v-if="!child.children" :key="`drop-menu-${child.name}`"
+                         :name="child.name" :selected="$route.name===child.name">
           <b-icon :name="child.icon" size="14" style="position: relative;top:-1px;" v-if="child.icon"></b-icon>
           {{ child.title }}
         </b-dropdown-item>
-        <collapsed-menu v-else :menu="child" :key="`drop-menu-${child.path}`"
-                        :base-path="resolvePath(child.path)"></collapsed-menu>
+        <collapsed-menu v-else :menu="child" :key="`drop-menu-${child.name}`"></collapsed-menu>
       </template>
     </b-dropdown-menu>
   </b-dropdown>
 </template>
 
 <script>
-  import path from 'path'
-
-  export default {
-    name: 'CollapsedMenu',
-    props: {
-      menu: {
-        type: Object,
-        required: false,
-        default: () => {
-        }
-      },
-      basePath: {
-        type: String,
-        default: ''
-      },
-      hideTitle: Boolean,
-      theme: String
-    },
-    data () {
-      return {
-        placement: 'right-start'
+export default {
+  name: 'CollapsedMenu',
+  props: {
+    menu: {
+      type: Object,
+      required: false,
+      default: () => {
       }
     },
-    methods: {
-      handleClick (name) {
-        this.$emit('on-click', name)
-      },
-      resolvePath (routePath) {
-        return path.resolve(this.basePath, routePath)
-      },
-      findNodeUpperByClasses (ele, classes) {
-        let parentNode = ele.parentNode
-        if (parentNode) {
-          let classList = parentNode.classList
-          if (classList && classes.every(className => classList.contains(className))) {
-            return parentNode
-          } else {
-            return this.findNodeUpperByClasses(parentNode, classes)
-          }
-        }
-      }
+    basePath: {
+      type: String,
+      default: ''
     },
-    mounted () {
-      let dropdown = this.findNodeUpperByClasses(this.$refs.dropdown.$el, ['bin-select-dropdown', 'bin-dropdown-transfer'])
-      if (dropdown) dropdown.style.overflow = 'visible'
+    hideTitle: Boolean,
+    theme: String
+  },
+  data() {
+    return {
+      placement: 'right-start'
     }
+  },
+  methods: {
+    handleClick(name) {
+      this.$emit('on-click', name)
+    },
+    findNodeUpperByClasses(ele, classes) {
+      let parentNode = ele.parentNode
+      if (parentNode) {
+        let classList = parentNode.classList
+        if (classList && classes.every(className => classList.contains(className))) {
+          return parentNode
+        } else {
+          return this.findNodeUpperByClasses(parentNode, classes)
+        }
+      }
+    }
+  },
+  mounted() {
+    let dropdown = this.findNodeUpperByClasses(this.$refs.dropdown.$el, ['bin-select-dropdown', 'bin-dropdown-transfer'])
+    if (dropdown) dropdown.style.overflow = 'visible'
   }
+}
 </script>

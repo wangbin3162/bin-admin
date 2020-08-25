@@ -23,34 +23,34 @@
 </template>
 
 <script>
-  import { mapGetters } from 'vuex'
-  import GlobalFooter from './components/GlobalFooter'
-  import GlobalHeader from './components/GlobalHeader'
-  import AsideMenu from './components/AsideMenu'
+import { mapGetters } from 'vuex'
+import GlobalFooter from './components/GlobalFooter'
+import GlobalHeader from './components/GlobalHeader'
+import AsideMenu from './components/AsideMenu'
 
-  export default {
-    name: 'Layout',
-    components: { AsideMenu, GlobalHeader, GlobalFooter },
-    computed: {
-      ...mapGetters(['theme', 'sidebar', 'menuType', 'fixedHeader', 'fixedAside']),
-      hasAside() {
-        return this.menuType === 'aside'
-      },
-      asideStyle() {
-        const width = this.sidebar ? 256 : 64
-        return {
-          flex: `0 0 ${width}px`,
-          maxWidth: `${width}px`,
-          minWidth: `${width}px`,
-          width: `${width}px`
-        }
-      },
-      rightStyle() {
-        return {
-          position: 'relative',
-          paddingLeft: (this.hasAside && this.fixedAside) ? (this.sidebar ? '256px' : '64px') : null
-        }
+export default {
+  name: 'Layout',
+  components: { AsideMenu, GlobalHeader, GlobalFooter },
+  computed: {
+    ...mapGetters(['theme', 'sidebar', 'menuType', 'fixedHeader', 'fixedAside']),
+    hasAside() {
+      return this.menuType === 'aside'
+    },
+    asideStyle() {
+      const width = this.sidebar ? 256 : 64
+      return {
+        flex: `0 0 ${width}px`,
+        maxWidth: `${width}px`,
+        minWidth: `${width}px`,
+        width: `${width}px`
+      }
+    },
+    rightStyle() {
+      return {
+        position: 'relative',
+        paddingLeft: (this.hasAside && this.fixedAside) ? (this.sidebar ? '256px' : '64px') : null
       }
     }
   }
+}
 </script>

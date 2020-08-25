@@ -1,7 +1,7 @@
-import { getInfo } from '../../api/login.api'
+import { getInfo } from '@/api/login.api'
 import util from '../../common/utils/util'
-import { ACCESS_TOKEN } from '../../common/token-const'
-import { resetRouter } from '../../router'
+import { ACCESS_TOKEN } from '@/common/token-const'
+import { resetRouter } from '@/router'
 
 export default {
   state: {
@@ -22,7 +22,7 @@ export default {
   },
   actions: {
     // 登录
-    setToken ({ commit }, token) {
+    setToken({ commit }, token) {
       return new Promise((resolve, reject) => {
         try {
           util.cookies.set(ACCESS_TOKEN, token)
@@ -36,7 +36,7 @@ export default {
       })
     },
     // 登出
-    logout ({ commit }) {
+    logout({ commit }) {
       return new Promise((resolve) => {
         // 删除缓存的token
         commit('SET_TOKEN', '')
@@ -49,19 +49,19 @@ export default {
       })
     },
     // 获取用户信息
-    getUserInfo ({ commit }) {
+    getUserInfo({ commit }) {
       return new Promise((resolve, reject) => {
         getInfo().then(response => {
-          const result = response.data.data
+          const result = response.data
           // console.log(result)
-          // 判断角色权限是否存在
-          if (result.roles && result.roles.length > 0) {
-            commit('SET_ROLES', result.roles)
-            commit('SET_INFO', result)
-          } else {
-            reject(new Error('getInfo: roles must be a non-null array !'))
+          // 判断角色权限是否存在,这里约定为roleCodes
+          if (result.code === '0') {
+            commit('SET_ROLES', result.data.roleCodes)
+            commit('SET_INFO', result.data)
+            resolve(response)
+          } else { // 如果是403 即为无效的token则重定向到login页面
+            reject(result)
           }
-          resolve(response)
         }).catch(error => {
           reject(error)
         })
