@@ -334,7 +334,7 @@
       },
       // 键名更改事件
       keyNameChange() {
-        // this.resp.keyAlias = this.resp.keyName
+        this.resp.keyAlias = this.resp.keyName
         this.resp.keyPath = '/' + this.resp.keyName
       },
       // 表单提交
