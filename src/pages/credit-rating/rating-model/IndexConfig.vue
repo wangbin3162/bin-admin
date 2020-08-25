@@ -124,7 +124,7 @@
 <script>
   import commonMixin from '@/common/mixins/mixin'
   import {
-    getIndexModleTree, updatedIndexModel, deleteIndexModel
+    getIndexModleTree, saveOrUpdate, deleteIndexModel
   } from '@/api/credit-rating/rating-model.api'
   import MainTabs from '@/pages/credit-rating/rating-model/components/index-config/MainTabs'
   import SubTabs from '@/pages/credit-rating/rating-model/components/index-config/SubTabs'
@@ -260,7 +260,8 @@
           indexName: '',
           indexType: 'Dimension',
           calIndexId: null,
-          weight: 0,
+          weight: 0, // 权重
+          lastWeight: null, // 综合权重，类型为指标时必填
           indexDesc: ''
         }
         this.listEdit.push(obj) // 用于数据操作
@@ -379,7 +380,7 @@
 
             const map = this.tileTreeToMap(this.curNode.children) // 保存当前节点下的展开状态为map
 
-            await updatedIndexModel(this.listEdit) // 请求接口更新数据
+            await saveOrUpdate(this.listEdit) // 请求接口更新数据
             await this.searchList() // 主要用于更新已选节点下数据后获取id，且这一步函数内会覆盖掉listEdit的展开状态
 
             // 更新右侧table数据(子节点)至当前左侧树选中节点的children
@@ -562,10 +563,16 @@
       },
 
       async isRequired (obj, key) {
+        const msgMap = {
+          indexName: '名称',
+          weight: '权重',
+          lastWeight: '综合权重'
+        }
+
         return new Promise((resolve, reject) => {
           const el = obj[key]
           if (el === '' || el === null) {
-            reject(new Error(key + '字段不能为空'))
+            reject(new Error(msgMap[key] + '不能为空'))
           } else {
             resolve()
           }
@@ -578,7 +585,7 @@
             return total + curItem.weight
           }, 0)
           if (num !== 100) {
-            reject(new Error('每层权重之和必须为100%'))
+            reject(new Error('当前层级权重之和必须为100%'))
           }
           resolve()
         })
@@ -586,41 +593,32 @@
 
       async validate (listEdit) {
         return new Promise(async (resolve, reject) => {
+          const keys = ['indexName', 'weight']
+
           try {
             for (const item of listEdit) {
               for (const key in item) {
                 if (item.hasOwnProperty(key)) {
-                  if (key === 'indexName' || key === 'weight') {
+                  if (keys.includes(key)) {
                     try {
                       await this.isRequired(item, key)
                     } catch (error) {
-                      reject(new Error('名称或权重不能为空！'))
+                      throw error
                     }
                   }
                 }
               }
             }
+
             try {
               // 验证当前层级的权重之和是否为100%
               await this.isCount100(listEdit)
-              // 如果是第四层的话，则验证四层内的子节点权重之和是否为100%
-              if (this.curNode.level >= 3) {
-                listEdit.forEach(async (item, index) => {
-                  try {
-                    await this.isCount100(item.children)
-                    resolve()
-                  } catch (error) {
-                    reject(new Error('第5层指标权重之和必须为100%！'))
-                  }
-                })
-              } else {
-                resolve()
-              }
+              resolve()
             } catch (error) {
-              reject(new Error('当前层级权重之和必须为100%！'))
+              throw error
             }
           } catch (error) {
-            reject(new Error('名称或权重不能为空！'))
+            reject(error)
           }
         })
       }

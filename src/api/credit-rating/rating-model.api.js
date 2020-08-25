@@ -292,6 +292,30 @@ export async function updatedIndexModel(params) {
 
 /**
  * @author haodongdong
+ * @description 更新指标模型，拥有综合权重字段的新增、更新接口
+ * @returns Promise
+ */
+export async function saveOrUpdate(params) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/api/eval/model/index/saveOrUpdate',
+        method: 'post',
+        data: params
+      })
+      if (res.data.successful) { // 不是标准的restful，200中还可能包含接口错误。
+        resolve()
+      } else {
+        reject(new Error(res.data.message))
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
  * @description 删除指标模型
  * @returns Promise
  */
