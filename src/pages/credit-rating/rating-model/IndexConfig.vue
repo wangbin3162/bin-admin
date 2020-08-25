@@ -98,7 +98,9 @@
               </template>
             </div>
 
-            <decision-matrix v-show="subTab === 'decisionMatrix'">
+            <decision-matrix v-show="subTab === 'decisionMatrix'"
+              :modelId="modelId"
+              :pId="curNode === null ? '' : curNode.id || ''">
             </decision-matrix>
           </div>
         </div>
@@ -122,6 +124,7 @@
 </template>
 
 <script>
+  import { mapMutations } from 'vuex'
   import commonMixin from '@/common/mixins/mixin'
   import {
     getIndexModleTree, saveOrUpdate, deleteIndexModel
@@ -188,7 +191,14 @@
       this.searchList()
     },
     methods: {
-      // 获取列表
+      ...mapMutations({
+        setCurMatrixCol: 'SET_CUR_MATRIX_COL'
+      }),
+
+      /**
+       * @author haodongdong
+       * @description 用于获取左侧树结构数据，并构建左侧树与右侧列表。
+       */
       async searchList() {
         this.listLoading = true
         try {
@@ -213,9 +223,9 @@
             this.list = this.buildTree(this.list, this.curNode.level)
           }
           this.listEdit = JSON.parse(JSON.stringify(this.list)) // 复制用于编辑时的数据绑定的副本
+          this.setCurMatrixCol(this.listEdit) // 存储判定矩阵需要使用的数据
         } catch (error) {
           console.error(error)
-          this.$log.pretty('searchList Error', error, 'danger')
         }
         this.listLoading = false
       },
@@ -281,31 +291,6 @@
         } else {
           this.listEdit[index].calIndexId = null
         }
-      },
-
-      // 展开列下删除按钮回调
-      async handleRemoveIndex(index, cIndex, id) {
-        const curRowChildren = this.listEdit[index].children
-        this.$confirm({
-          title: '删除',
-          content: '删除当前项后不可恢复，确认删除吗？',
-          loading: true,
-          okType: 'danger',
-          onOk: async () => {
-            try {
-              const isSubmitted = id !== undefined // 存在id说明提交过
-              if (isSubmitted) {
-                await deleteIndexModel(id)
-              }
-              curRowChildren.splice(cIndex, 1)
-              this.$message({ type: 'success', content: '操作成功' })
-            } catch (error) {
-              console.error(error)
-              this.$notice.danger({ title: '操作错误', desc: error })
-            }
-            this.$modal.remove()
-          }
-        })
       },
 
       // 编辑模式下选择按钮回调

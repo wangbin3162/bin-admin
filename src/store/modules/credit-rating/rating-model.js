@@ -20,7 +20,8 @@ const ratingModel = {
     subjectType: [], // 主体类别级联框数据结构
     personClassEnum: {}, // 主体类别枚举结构
     statusEnum: {}, // 启用禁用枚举
-    defaultEnum: {} // 缺省模型枚举
+    defaultEnum: {}, // 缺省模型枚举
+    curMatrixCol: [] // 模型指标右侧的table内显示的数据，用于渲染矩阵结构
   },
   mutations: {
     SET_SBUJECT_TYPE (state, subjectType) {
@@ -34,6 +35,9 @@ const ratingModel = {
     },
     SET_DEFAULT_ENUM(state, defaultEnum) {
       state.defaultEnum = defaultEnum
+    },
+    SET_CUR_MATRIX_COL (state, curMatrixCol) {
+      state.curMatrixCol = curMatrixCol
     }
   },
   actions: {
