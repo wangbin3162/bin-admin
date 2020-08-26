@@ -17,73 +17,93 @@
             </sub-tabs>
 
             <div v-show="subTab === 'modelManage'">
-              <b-table id="customTable" size="small"
-                :columns="columnsEdit"
-                :data="listEdit"
+              <!-- 展示用table -->
+              <b-table id="customTable" v-if="!editStatus" size="small"
+                :key="editStatus"
+                :columns="columns"
+                :data="list"
                 :loading="listLoading">
-                <template v-slot:indexName="{ index }">
-                  <b-input v-model="listEdit[index].indexName"
-                    :disabled="listEdit[index].indexType === 'Index'"></b-input>
+                <template v-slot:indexType="{ row }">
+                  {{ natureEnum[row.indexType] }}
                 </template>
 
-                <template v-slot:indexType="{ row, index }">
-                  <!-- 已提交的数据不允许修改性质 -->
-                  <!-- Boolean(listEdit[index].id) 把id转为Boolean类型，提交过的数据id一定存在，未提交的则不存在 -->
-                  <!-- Boolean(listEdit[index].uSelected) 用于新增时，如果已从指标选择组件选择指标，则不允许切换性质 -->
-                  <b-select v-model="listEdit[index].indexType" append-to-body
-                    @on-change="handleIndexTypeChange($event, index, row.level)"
-                    :disabled="Boolean(listEdit[index].id)">
-                    <b-option v-for="(value, key) in natureEnum" :key="key" :value="key">
-                      {{ value }}
-                    </b-option>
-                  </b-select>
-                </template>
-
-                <template v-slot:weight="{ index }">
-                  <div flex>
-                    <b-input-number style="width: 100%;"
-                      v-model="listEdit[index].weight"
-                      :max="100" :min="0" :precision="2">
-                    </b-input-number>
-                    <span style="line-height: 30px;">%</span>
-                  </div>
-                </template>
-
-                <template v-slot:indexDesc="{ index }">
-                  <b-input v-model="listEdit[index].indexDesc"
-                    :disabled="listEdit[index].indexType === 'Index'"></b-input>
-                </template>
-
-                <template v-slot:action="{ index, row }">
-                  <b-button type="text" @click="handleRemove(index, row.id)">删除</b-button>
-                  <!-- 为指标时显示 -->
-                  <b-button v-if="listEdit[index].indexType === 'Index'"
-                    type="text"
-                    @click="handleSelectBtn(row.level, listEdit[index].indexType, index)">
-                      选择
-                  </b-button>
+                <template v-slot:weight="{ row }">
+                  {{ row.weight }}%
                 </template>
               </b-table>
 
-              <div class="table-bottom">
-                <b-button type="primary" plain style="width: 100%;"
-                @click="handleAdd">
-                    + 添加
-                </b-button>
-                <p>注：此处权重总计100%；编辑时无法切换左侧树节点，保存或退出后方可。</p>
-                <b-button type="primary" :loading="loadingBtn"
-                  @click="handleSubmit">
-                    保 存
-                </b-button>
-              </div>
+              <template v-else>
+                <!-- 编辑用table -->
+                <b-table id="customTable" size="small"
+                  :key="editStatus"
+                  :columns="columnsEdit"
+                  :data="list"
+                  :loading="listLoading">
+                  <template v-slot:indexName="{ index }">
+                    <b-input v-model="listEdit[index].indexName"
+                      :disabled="listEdit[index].indexType === 'Index'"></b-input>
+                  </template>
+
+                  <template v-slot:indexType="{ row, index }">
+                    <!-- 已提交的数据不允许修改性质 -->
+                    <!-- Boolean(listEdit[index].id) 把id转为Boolean类型，提交过的数据id一定存在，未提交的则不存在 -->
+                    <!-- Boolean(listEdit[index].uSelected) 用于新增时，如果已从指标选择组件选择指标，则不允许切换性质 -->
+                    <b-select v-model="listEdit[index].indexType" append-to-body
+                      @on-change="handleIndexTypeChange($event, index, row.level)"
+                      :disabled="Boolean(listEdit[index].id)">
+                      <b-option v-for="(value, key) in natureEnum" :key="key" :value="key">
+                        {{ value }}
+                      </b-option>
+                    </b-select>
+                  </template>
+
+                  <template v-slot:weight="{ index }">
+                    <div flex>
+                      <b-input-number style="width: 100%;"
+                        v-model="listEdit[index].weight"
+                        :max="100" :min="0" :precision="2">
+                      </b-input-number>
+                      <span style="line-height: 30px;">%</span>
+                    </div>
+                  </template>
+
+                  <template v-slot:indexDesc="{ index }">
+                    <b-input v-model="listEdit[index].indexDesc"
+                      :disabled="listEdit[index].indexType === 'Index'"></b-input>
+                  </template>
+
+                  <template v-slot:action="{ index, row }">
+                    <b-button type="text" @click="handleRemove(index, row.id)">删除</b-button>
+                    <!-- 为指标时显示 -->
+                    <b-button v-if="listEdit[index].indexType === 'Index'"
+                      type="text"
+                      @click="handleSelectBtn(row.level, listEdit[index].indexType, index)">
+                        选择
+                    </b-button>
+                  </template>
+                </b-table>
+
+                <div class="table-bottom">
+                  <b-button type="primary" plain style="width: 100%;"
+                  @click="handleAdd">
+                      + 添加
+                  </b-button>
+                  <p>注：此处权重总计100%；编辑时无法切换左侧树节点，保存或退出后方可。</p>
+                  <b-button type="primary" :loading="loadingBtn"
+                    @click="handleSubmit">
+                      保 存
+                  </b-button>
+                  <b-button @click="handleCancelBtn">取 消</b-button>
+                </div>
+              </template>
             </div>
 
             <decision-matrix v-show="subTab === 'decisionMatrix'"
+              :editStatus="editStatus"
               :modelId="modelId"
               :pId="pId"
               :pWeight="pWeight"
-              :pWeights="pWeights"
-              @use-weight="handleUseWeight">
+              :pWeights="pWeights">
             </decision-matrix>
           </div>
         </div>
@@ -92,7 +112,8 @@
         </global-weight>
 
         <template slot="footer">
-          <b-button @click="$emit('close')">返 回</b-button>
+          <b-button v-if="!editStatus" type="primary" @click="handleEditBtn">编 辑</b-button>
+          <b-button v-else @click="handleCancelBtn">返 回</b-button>
         </template>
       </v-edit-wrap>
     </page-header-wrap>
@@ -136,6 +157,7 @@
         open: false, // 控制选择指标组件打开关闭
         radio: true, // 选择指标组件单选还是多选
         isInit: true, // 是否初始化过tree组件数据
+        editStatus: false, // 标识是否是编辑
         natureEnum: { // 模型指标下指标性质枚举
           Dimension: '维度',
           Index: '指标'
@@ -149,7 +171,15 @@
           indexName: '',
           indexType: 'Index'
         },
+        list: [],
         listEdit: [], // 用作数据绑定的副本，避免input等相关操作会重新刷新列表挂壁==关闭已展开列。
+        columns: [
+          { type: 'index', width: 50, align: 'center' },
+          { title: '名称', key: 'indexName', ellipsis: true, tooltip: true, align: 'center' },
+          { title: '性质', slot: 'indexType', align: 'center' },
+          { title: '权重', slot: 'weight', align: 'center' },
+          { title: '描述', key: 'indexDesc', ellipsis: true, tooltip: true, align: 'center' }
+        ],
         columnsEdit: [ // 编辑用table
           { type: 'index', width: 50, align: 'center' },
           { title: '名称', slot: 'indexName', ellipsis: true, tooltip: true, align: 'center' },
@@ -182,7 +212,7 @@
           if (this.isInit) { // 第一次载入时做相关初始化
             this.treeData = this.initTree(res) // 构建左侧树
             this.curNode = this.treeData[0] // 把根节点存储至当前节点
-            this.listEdit = this.treeData[0].children
+            this.list = this.treeData[0].children
             this.isInit = false
             // 填充需要传递给decision-matrix组件的参数
             this.pid = null
@@ -195,21 +225,22 @@
              * 所以获取当前节点的子节点需要自己处理
              */
             if (!this.curNode.root) { // 表示不是根节点
-              this.listEdit = res[0].children || []
+              this.list = res[0].children || []
               // 填充需要传递给decision-matrix组件的参数
               this.pid = res[0].id || null
               this.pWeight = res[0].weight
               this.pWeights = res[0].weights || []
             } else {
-              this.listEdit = res
+              this.list = res
               // 填充需要传递给decision-matrix组件的参数
               this.pid = null
               this.pWeight = null
               this.pWeights = []
             }
             // 每次请求都需要构建tree组件使用的数据结构，传入当前选中节点的层级，便于准确构建子节点层级
-            this.listEdit = this.buildTree(this.listEdit, this.curNode.level)
+            this.list = this.buildTree(this.list, this.curNode.level)
           }
+          this.listEdit = JSON.parse(JSON.stringify(this.list)) // 复制用于编辑时的数据绑定的副本
           this.setCurMatrixCol(this.listEdit) // 存储判定矩阵需要使用的数据
         } catch (error) {
           console.error(error)
@@ -223,9 +254,24 @@
         if (this.curNode.id === curNode.id) { // 点击已选择的
           curNode.selected = true
         } else {
-          this.curNode = curNode
-          this.listQuery.indexId = curNode.id // 设置右侧table查询条件为当前节点id
-          this.handleFilter()
+          if (this.editStatus) {
+            const ok = await this.confirm({
+              title: '提示！',
+              content: '切换会丢弃当前未保存的操作，确认切换吗？',
+              okType: 'warning'
+            })
+            if (ok) {
+              this.editStatus = false // 关闭当前编辑
+            } else {
+              curNode.selected = false
+              this.curNode.selected = true
+            }
+          }
+          if (!this.editStatus) {
+            this.curNode = curNode
+            this.listQuery.indexId = curNode.id // 设置右侧table查询条件为当前节点id
+            this.handleFilter()
+          }
         }
       },
 
@@ -247,6 +293,7 @@
           indexDesc: ''
         }
         this.listEdit.push(obj) // 用于数据操作
+        this.list.push(JSON.parse(JSON.stringify(obj))) // 用于显示，深拷贝解除响应式依赖
       },
 
       // 性质下拉框change回调
@@ -301,6 +348,7 @@
                 const map = this.tileTreeToMap(this.curNode.children) // 保存当前节点下的展开状态为map
 
                 await deleteIndexModel(id)
+                this.list.splice(index, 1) // 同步显示
                 this.listEdit.splice(index, 1) // 删除绑定数据
 
                 // 准备需要更新的节点数据，排除后续添加但未提交的数据
@@ -309,6 +357,7 @@
                 // 更新右侧table数据(子节点)至当前左侧树选中节点的children
                 this.updateSubNodeToTreeCom(newArr, map)
               } else {
+                this.list.splice(index, 1) // 同步显示
                 this.listEdit.splice(index, 1) // 删除绑定数据
               }
               this.$message({ type: 'success', content: '操作成功' })
@@ -340,6 +389,7 @@
             // 更新右侧table数据(子节点)至当前左侧树选中节点的children
             this.updateSubNodeToTreeCom(this.listEdit, map) // 节点更新至树组件
 
+            this.editStatus = false // 退出编辑模式
             this.$message({ type: 'success', content: '操作成功' })
           } catch (error) {
             console.error(error)
@@ -353,22 +403,22 @@
 
       /**
        * @author haodongdong
-       * @description decision-matrix组件use-weight事件回调
-       * @param {Array} weightArr 矩阵计算出的相关权重数组
+       * @description 编辑按钮的回调
        */
-      handleUseWeight (weightArr) {
-        this.subTab = 'modelManage'
-        console.log(weightArr)
-        for (const item of this.listEdit) {
-          console.log(item)
-          if (item.indexType === 'Index') {
-            const obj = weightArr.shift()
-            item.lastWeight = obj.lastWeight
-            item.weight = obj.decisionWeight
-          } else {
-            item.weight = weightArr.shift().decisionWeight
-          }
-        }
+      handleEditBtn () {
+        this.listEdit = this.$util.deepClone(this.list) // 复制用于数据绑定的副本
+        this.editStatus = true
+      },
+
+      /**
+       * @author haodongdong
+       * @description 取消与返回按钮的回调
+       */
+      handleCancelBtn () {
+        // 清除未保存的数据
+        this.listEdit = this.listEdit.filter(item => item.id !== undefined)
+        this.list = this.list.filter(item => item.id !== undefined)
+        this.editStatus = false
       },
 
       /**
