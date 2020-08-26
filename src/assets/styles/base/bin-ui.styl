@@ -21,3 +21,33 @@
 .bin-table-cell [t-ellipsis] {
   text-align: left;
 }
+
+.tags-view-container {
+  .bin-tabs-wrapper {
+    .nav-wrapper {
+      height: 32px;
+      .tab-item {
+        height: 32px;
+        line-height: 32px;
+        background: #fff;
+        border-radius: 3px;
+        border: none;
+        margin-right: 6px;
+        color: #808695;
+        &::before {
+          content: none;
+        }
+        &:hover {
+          color: #515a6e;
+        }
+        &.active {
+          color: #1089ff;
+        }
+      }
+    }
+  }
+  .bin-tabs-wrapper.tag .nav-wrap.is-scrollable .nav-next,
+  .bin-tabs-wrapper.tag .nav-wrap.is-scrollable .nav-prev {
+    line-height: 32px;
+  }
+}

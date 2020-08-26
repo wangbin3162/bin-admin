@@ -43,8 +43,6 @@ export default {
         commit('SET_ROLES', [])
         // 删除cookie
         util.cookies.remove(ACCESS_TOKEN)
-        // 清空路由
-        resetRouter()
         resolve()
       })
     },

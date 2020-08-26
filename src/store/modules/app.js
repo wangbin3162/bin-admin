@@ -5,6 +5,7 @@ const app = {
     setting: {
       theme: 'dark',
       sidebar: true, // 侧边栏开启状态
+      tagsView: true, // 多页签开启状态
       menuType: 'aside',
       wideType: 'flow', // 内容区域宽度 [wide:固定,flow:流式]
       fixedHeader: false,
@@ -21,6 +22,10 @@ const app = {
     },
     SET_SIDEBAR: (state) => {
       state.setting.sidebar = !state.setting.sidebar
+      setAdminSetting(state.setting)
+    },
+    SET_TAGS_VIEW: (state) => {
+      state.setting.tagsView = !state.setting.tagsView
       setAdminSetting(state.setting)
     },
     SET_THEME: (state, theme) => {
@@ -58,6 +63,9 @@ const app = {
     },
     toggleSideBar: ({ commit }) => {
       commit('SET_SIDEBAR')
+    },
+    toggleTagsView: ({ commit }) => {
+      commit('SET_TAGS_VIEW')
     },
     setThemeMode: ({ commit }, theme) => {
       document.body.className = `theme-${theme}`

@@ -66,7 +66,7 @@
   import FieldsCfg from '../../../components/Validator/FieldsCfg/FieldsCfg'
   import metadata from './metadata'
   import items from './items'
-  import { initFormList } from '../../../components/Validator/FieldsCfg/cfg-util'
+  import { initFormList } from '@/components/Validator/FieldsCfg/cfg-util'
   import FormItem from '../../../components/Validator/FormControl/FormItem'
   import FormControl from '../../../components/Validator/FormControl/FormControl'
   import dynamicForm from '../../../common/mixins/dynamic-form'

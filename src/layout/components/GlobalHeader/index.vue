@@ -1,14 +1,16 @@
 <template>
   <header class="layout-header" :class="{'fixed-header':fixedHeader}" :style="fixedHeaderStyle">
-    <div v-if="hasAside" class="global-header">
+    <div v-if="isAside" class="global-header">
       <div class="global-header-trigger" @click="toggleSideBar">
         <b-icon :name="sidebar?'outdent':'indent'"></b-icon>
       </div>
-      <div style="flex: 1 1 0;"></div>
+      <div style="flex: 1 1 0;padding-left: 8px;">
+        <v-breadcrumb v-if="showTagsView"></v-breadcrumb>
+      </div>
       <div class="global-header-right">
-        <div class="dropdown-trigger" @click="themeModal=true">
-          <b-icon name="ios-color-palette" size="20"></b-icon>
-        </div>
+        <weather/>
+        <search/>
+        <setting/>
         <user-avatar/>
       </div>
     </div>
@@ -24,128 +26,54 @@
           <header-menu/>
         </div>
         <div class="global-header-right">
-          <div class="dropdown-trigger" @click="themeModal=true">
-            <b-icon name="ios-color-palette" size="20"></b-icon>
-          </div>
+          <setting/>
           <user-avatar/>
         </div>
       </div>
     </div>
-    <b-drawer v-model="themeModal" append-to-body :closable="false">
-      <div class="setting-panel">
-        <h3 class="setting-theme-title">整体风格设置:</h3>
-        <div class="mb-20">
-          <div class="theme-tab">
-            <b-tooltip content="亮色主题风格" theme="dark">
-            <span @click="themChange('light')">
-              <img src="../../../assets/images/light.svg" alt="">
-              <i v-if="theme === 'light'" class="iconfont icon-ios-checkmark"></i>
-            </span>
-            </b-tooltip>
-          </div>
-          <div class="theme-tab">
-            <b-tooltip content="暗色主题风格" theme="dark">
-            <span @click="themChange('dark')">
-              <img src="../../../assets/images/dark.svg" alt="">
-              <i v-if="theme === 'dark'" class="iconfont icon-ios-checkmark"></i>
-            </span>
-            </b-tooltip>
-          </div>
-        </div>
-        <b-divider></b-divider>
-        <h3 class="setting-theme-title">导航栏模式:</h3>
-        <div class="mb-20">
-          <div class="theme-tab">
-            <b-tooltip content="侧边导航" theme="dark">
-            <span @click="menuTypeChange('aside')">
-              <img src="../../../assets/images/dark.svg" alt="">
-              <i v-if="menuType === 'aside'" class="iconfont icon-ios-checkmark"></i>
-            </span>
-            </b-tooltip>
-          </div>
-          <div class="theme-tab">
-            <b-tooltip content="顶部导航" theme="dark">
-            <span @click="menuTypeChange('header')">
-              <img src="../../../assets/images/header.svg" alt="">
-              <i v-if="menuType === 'header'" class="iconfont icon-ios-checkmark"></i>
-            </span>
-            </b-tooltip>
-          </div>
-        </div>
-        <div class="setting-list-item">
-          <span>内容区域宽度</span>
-          <b-select size="mini" style="width:100px;" :value="wideType" @on-change="changeWideType">
-            <b-option value="wide" v-if="menuType==='header'">固定</b-option>
-            <b-option value="flow">流式</b-option>
-          </b-select>
-        </div>
-        <div class="setting-list-item">
-          <span>固定Header</span>
-          <b-switch size="small" :value="fixedHeader" @on-change="changeFixedHeader"></b-switch>
-        </div>
-        <div class="setting-list-item">
-          <span>固定侧边栏</span>
-          <b-switch size="small" :disabled="menuType==='header'" :value="fixedAside"
-                    @on-change="changeFixedAside"></b-switch>
-        </div>
-      </div>
-    </b-drawer>
+    <!--tagsView-->
+    <tags-view v-if="showTagsView"/>
   </header>
 </template>
 
 <script>
-  import { mapGetters } from 'vuex'
-  import HeaderMenu from './HeaderMenu'
-  import UserAvatar from './UserAvatar'
+import { mapGetters } from 'vuex'
+import HeaderMenu from './HeaderMenu'
+import UserAvatar from './UserAvatar'
+import TagsView from '@/layout/components/GlobalHeader/TagsView'
+import VBreadcrumb from '@/components/VBreadcrumb/index'
+import Weather from '@/layout/components/GlobalHeader/Weather/index'
+import Setting from '@/layout/components/GlobalHeader/Setting'
+import Search from '@/layout/components/GlobalHeader/Search'
 
-  export default {
-    name: 'GlobalHeader',
-    components: { HeaderMenu, UserAvatar },
-    data() {
+export default {
+  name: 'GlobalHeader',
+  components: { Search, Setting, Weather, VBreadcrumb, TagsView, HeaderMenu, UserAvatar },
+  computed: {
+    ...mapGetters(['sidebar', 'menuType', 'tagsView', 'wideType', 'fixedHeader']),
+    isAside() {
+      return this.menuType === 'aside'
+    },
+    isWide() {
+      return this.menuType === 'header' && this.wideType === 'wide'
+    },
+    fixedHeaderStyle() {
       return {
-        themeModal: false
+        padding: 0,
+        width: this.isAside ? (this.fixedHeader ? `calc(100% - ${this.sidebar ? 256 : 64}px)` : '100%') : '100%',
+        height: this.showTagsView ? '108px' : null,
+        zIndex: 9,
+        right: this.fixedHeader ? 0 : null
       }
     },
-    computed: {
-      ...mapGetters(['theme', 'sidebar', 'menuType', 'wideType', 'fixedHeader', 'fixedAside']),
-      hasAside() {
-        return this.menuType === 'aside'
-      },
-      isWide() {
-        return this.menuType === 'header' && this.wideType === 'wide'
-      },
-      fixedHeaderStyle() {
-        return {
-          padding: 0,
-          width: this.hasAside ? (this.fixedHeader ? `calc(100% - ${this.sidebar ? 256 : 64}px)` : '100%') : '100%',
-          zIndex: 9,
-          right: this.fixedHeader ? 0 : null
-        }
-      }
-    },
-    methods: {
-      toggleSideBar() {
-        this.$store.dispatch('toggleSideBar')
-      },
-      themChange(val) {
-        this.$store.dispatch('setThemeMode', val)
-      },
-      menuTypeChange(type) {
-        this.$store.dispatch('setMenuType', type)
-        // 如果是侧边栏模式,则设置宽度类型为流式flow
-        this.changeWideType(this.hasAside ? 'flow' : 'wide')
-        // 重定向当前页面
-        this.$router.replace('/refresh')
-      },
-      changeWideType(type) {
-        this.$store.dispatch('setWideType', type)
-      },
-      changeFixedHeader(val) {
-        this.$store.dispatch('toggleFixedHeader', val)
-      },
-      changeFixedAside(val) {
-        this.$store.dispatch('toggleFixedAside', val)
-      }
+    showTagsView() {
+      return this.isAside && this.tagsView
+    }
+  },
+  methods: {
+    toggleSideBar() {
+      this.$store.dispatch('toggleSideBar')
     }
   }
+}
 </script>

@@ -39,13 +39,13 @@ function getAsyncRouter(functions) {
 
 const permission = {
   state: {
-    routers: [],
+    routes: [],
     addRouters: [] // 左侧菜单栏的缓存路由
   },
   mutations: {
     SET_ROUTERS: (state, routers) => {
       state.addRouters = routers
-      state.routers = addRoutes(routers)
+      state.routes = addRoutes(routers)
     }
   },
   actions: {

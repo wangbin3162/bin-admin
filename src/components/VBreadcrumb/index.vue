@@ -1,5 +1,5 @@
 <template>
-  <b-breadcrumb class="app-breadcrumb" separator="/">
+  <b-breadcrumb class="app-breadcrumb" separator="/" v-if="$route.name!=='index'">
     <b-breadcrumb-item v-for="(item,index) in levelList" :key="item.name">
       <router-link v-if="index===0" :to="{name:item.name}" class="redirect">
         {{ item.title }}
@@ -46,7 +46,9 @@ export default {
   methods: {
     getBreadcrumb() {
       this.levelList = []
-      let names = this.getMenuItemNamePath(this.$route.name)
+      const { name } = this.$route
+      if (name === 'index') return []
+      let names = this.getMenuItemNamePath(name)
       this.levelList.push({ name: 'index', title: '首页' })
       names.forEach(name => {
         let route = this.menuItems.find(item => item.name === name)

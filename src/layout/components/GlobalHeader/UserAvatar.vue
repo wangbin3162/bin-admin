@@ -30,7 +30,7 @@ export default {
         content: '确认退出登录吗？',
         onOk: () => {
           this.$store.dispatch('logout').then(() => {
-            this.$router.push('/login')
+            this.$router.push(`/login?redirect=${this.$route.fullPath}`)
           }).catch(err => {
             this.$message({ type: 'danger', content: err.message })
           })

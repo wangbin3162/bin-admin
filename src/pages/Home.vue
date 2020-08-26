@@ -1,5 +1,5 @@
 <template>
-  <div class="home-wrap">
+  <div class="home-wrap p20">
     <div class="home-header">
       <b-row :gutter="24">
         <b-col span="6">

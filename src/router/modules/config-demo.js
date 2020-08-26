@@ -1,7 +1,7 @@
 export default [
   {
-    path: 'formCfg',
-    name: 'FormCfg',
+    path: 'formDemo',
+    name: 'FormDemo',
     component: () => import('../../pages/demo/form/FormDemo'),
     meta: { title: '动态表单' }
   },

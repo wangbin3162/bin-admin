@@ -24,7 +24,7 @@ export default [
     title: '动态配置',
     icon: 'ios-create',
     children: [
-      { name: 'FormCfg', title: '动态表单' },
+      { name: 'FormDemo', title: '动态表单' },
       { name: 'ChartsConfig', title: '图表配置' },
       { name: 'FlowConfig', title: '流程配置' }
     ]
