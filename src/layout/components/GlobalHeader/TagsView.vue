@@ -33,9 +33,6 @@ export default {
       return [{ key: 'index', title: '首页', noClose: true }]
         .concat(this.visitedViews.map(i => ({ key: i.name, title: i.title })))
     },
-    routes() {
-      return this.$store.state.permission.routes
-    },
     // 所有存在的菜单项
     menuItems() {
       let functions = this.navMenu

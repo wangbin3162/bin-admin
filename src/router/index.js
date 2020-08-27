@@ -56,10 +56,10 @@ router.beforeEach(async (to, from, next) => {
       try {
         let res = await store.dispatch('getUserInfo')
         let menus = getMenus(res.data.data.functions || [])
-        console.log('menus: ', menus)
+        // console.log('menus: ', menus)
         await store.dispatch('setRouterMenu', menus)
         let asyncRoute = await store.dispatch('generateRoutes', menus)
-        console.log('asyncRoute: ', asyncRoute)
+        // console.log('asyncRoute: ', asyncRoute)
         // [ 路由 ] 计算路由
         const routes = addRoutes(asyncRoute)
         // [ 路由 ] 重新设置路由

@@ -109,7 +109,7 @@ export default {
     }
   }
   &-children-content {
-    margin: 20px 20px 0;
+    padding: 20px 20px 0;
   }
 }
 .grid-content {
