@@ -13,7 +13,7 @@
           </div>
 
           <div class="table-con">
-            <sub-tabs class="mb-20" @tab-change="subTabKey => { subTab = subTabKey }">
+            <sub-tabs class="mb-20" v-model="subTab" ref="subTabs">
             </sub-tabs>
 
             <div v-show="subTab === 'modelManage'">
@@ -70,7 +70,7 @@
                 @click="handleAdd">
                     + 添加
                 </b-button>
-                <p>注：此处权重总计100%；编辑时无法切换左侧树节点，保存或退出后方可。</p>
+                <p>注：此处权重总计必须为100%</p>
                 <b-button type="primary" :loading="loadingBtn"
                   @click="handleSubmit">
                     保 存
@@ -78,7 +78,8 @@
               </div>
             </div>
 
-            <decision-matrix v-show="subTab === 'decisionMatrix'"
+            <decision-matrix v-show="subTab === 'decisionMatrix'" ref="decisionMtrix"
+              :displayStatus="subTab === 'decisionMatrix'"
               :modelId="modelId"
               :pId="pId"
               :pWeight="pWeight"
@@ -100,8 +101,8 @@
     <select-index :open="open"
       :radio="radio"
       @close="open = false"
-      @choose-sing="handleChooseSing"
-      @choose-mul="handleChooseMul"></select-index>
+      @choose-sing="handleChooseSing">
+    </select-index>
   </div>
 </template>
 
@@ -185,7 +186,7 @@
             this.listEdit = this.treeData[0].children
             this.isInit = false
             // 填充需要传递给decision-matrix组件的参数
-            this.pid = null
+            this.pId = null
             this.pWeight = null
             this.pWeights = []
           } else {
@@ -197,13 +198,13 @@
             if (!this.curNode.root) { // 表示不是根节点
               this.listEdit = res[0].children || []
               // 填充需要传递给decision-matrix组件的参数
-              this.pid = res[0].id || null
+              this.pId = res[0].id || null
               this.pWeight = res[0].weight
               this.pWeights = res[0].weights || []
             } else {
               this.listEdit = res
               // 填充需要传递给decision-matrix组件的参数
-              this.pid = null
+              this.pId = null
               this.pWeight = null
               this.pWeights = []
             }
@@ -211,6 +212,8 @@
             this.listEdit = this.buildTree(this.listEdit, this.curNode.level)
           }
           this.setCurMatrixCol(this.listEdit) // 存储判定矩阵需要使用的数据
+          // 这里获取decision-matrix组件保存的矩阵图数据
+          this.$refs.decisionMtrix.getMatrixData(this.modelId, this.curNode.id)
         } catch (error) {
           console.error(error)
         }
@@ -271,13 +274,6 @@
         this.open = true
       },
 
-      // 选择指标组件的多选回调
-      handleChooseMul (mulVal) {
-        const curRowObj = this.listEdit[this.curIndex]
-        curRowObj.children = this.mergeFiveList(curRowObj.children, mulVal, curRowObj.id)
-        this.$set(curRowObj, 'uSelected', true) // 用于选择后禁止切换性质下拉框, 与指标下拉框关联
-      },
-
       // 选择指标组件的单选回调
       handleChooseSing (singVal) {
         const curRowObj = this.listEdit[this.curIndex]
@@ -289,15 +285,15 @@
 
       // 编辑模式下删除按钮回调
       async handleRemove (index, id) {
-        this.$confirm({
-          title: '删除',
-          content: '删除当前项目会删除其子项，确认删除吗？',
-          loading: true,
-          okType: 'danger',
-          onOk: async () => {
-            try {
-              const isSubmitted = id !== undefined // 存在id说明提交过
-              if (isSubmitted) {
+        const isSubmitted = id !== undefined // 存在id说明提交过
+        if (isSubmitted) {
+          this.$confirm({
+            title: '删除',
+            content: '删除当前项目会删除其子项，确认删除吗？',
+            loading: true,
+            okType: 'danger',
+            onOk: async () => {
+              try {
                 const map = this.tileTreeToMap(this.curNode.children) // 保存当前节点下的展开状态为map
 
                 await deleteIndexModel(id)
@@ -308,17 +304,18 @@
 
                 // 更新右侧table数据(子节点)至当前左侧树选中节点的children
                 this.updateSubNodeToTreeCom(newArr, map)
-              } else {
-                this.listEdit.splice(index, 1) // 删除绑定数据
+
+                this.$message({ type: 'success', content: '操作成功' })
+              } catch (error) {
+                console.error(error)
+                this.$notice.danger({ title: '操作错误', desc: error })
               }
-              this.$message({ type: 'success', content: '操作成功' })
-            } catch (error) {
-              console.error(error)
-              this.$notice.danger({ title: '操作错误', desc: error })
+              this.$modal.remove()
             }
-            this.$modal.remove()
-          }
-        })
+          })
+        } else {
+          this.listEdit.splice(index, 1) // 删除绑定数据
+        }
       },
 
       // 编辑模式下提交按钮的回调
@@ -333,6 +330,9 @@
             }
 
             const map = this.tileTreeToMap(this.curNode.children) // 保存当前节点下的展开状态为map
+
+            // 这里保存decision-matrix组件内判定矩阵的数据
+            await this.$refs.decisionMtrix.saveMatrixData()
 
             await saveOrUpdate(this.listEdit) // 请求接口更新数据
             await this.searchList() // 主要用于更新已选节点下数据后获取id，且这一步函数内会覆盖掉listEdit的展开状态
@@ -358,9 +358,7 @@
        */
       handleUseWeight (weightArr) {
         this.subTab = 'modelManage'
-        console.log(weightArr)
         for (const item of this.listEdit) {
-          console.log(item)
           if (item.indexType === 'Index') {
             const obj = weightArr.shift()
             item.lastWeight = obj.lastWeight
@@ -384,33 +382,6 @@
       },
 
       // 合并第五级的数据
-      mergeFiveList (oldList, newList, pid) {
-        const cacheList = [] // 用于存放不重复的元素
-        newList.map(newItem => {
-          const oldEl = oldList.find(oldItem => oldItem.calIndexId === newItem.calIndexId) // 返回已存在的新元素
-          console.log(oldEl)
-          if (oldEl) { // 如果存在重复元素, 则更新
-            oldEl.indexName = newItem.indexName
-            oldEl.indexDesc = newItem.indexDesc
-          } else { // 如果不存在重复元素，则构建后缓存到cacheList
-            const obj = {
-              title: '',
-              expand: false,
-              selected: false,
-              children: [], // 不设置为null可少一步判断
-              modelId: this.modelId,
-              parentIndex: pid,
-              indexName: newItem.indexName,
-              indexType: 'Index',
-              calIndexId: newItem.calIndexId,
-              weight: 0,
-              indexDesc: newItem.IndexDesc
-            }
-            cacheList.push(obj)
-          }
-        })
-        return [...oldList, ...cacheList] // 返回合并后的结果
-      },
 
       /**
        * @author haodongdong
@@ -544,7 +515,7 @@
         })
       },
 
-      async validate (listEdit) {
+      async validate (listEdit, mode = 'all') {
         return new Promise(async (resolve, reject) => {
           const keys = ['indexName', 'weight']
 
@@ -553,23 +524,15 @@
               for (const key in item) {
                 if (item.hasOwnProperty(key)) {
                   if (keys.includes(key)) {
-                    try {
-                      await this.isRequired(item, key)
-                    } catch (error) {
-                      throw error
-                    }
+                    await this.isRequired(item, key)
                   }
                 }
               }
             }
 
-            try {
-              // 验证当前层级的权重之和是否为100%
-              await this.isCount100(listEdit)
-              resolve()
-            } catch (error) {
-              throw error
-            }
+            // 验证当前层级的权重之和是否为100%
+            if (mode === 'all') await this.isCount100(listEdit)
+            resolve()
           } catch (error) {
             reject(error)
           }

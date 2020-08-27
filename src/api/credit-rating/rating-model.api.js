@@ -380,3 +380,77 @@ export async function matrixCalculate(params) {
     }
   })
 }
+
+/**
+ * @author haodongdong
+ * @description 存储判定矩阵数据
+ * @param {Object} params 请求参数
+ * @param {Object} [params.id] 请求参数的id
+ * @param {string} params.modelId 模型id
+ * @param {string} params.modelIndexId 父级维度、指标的id，顶层则传null
+ * @param {string} params.item 当前层级维度、指标的id，暂时无用，传null
+ * @param {string} params.algorithm 算法
+ * @param {number} params.degree 计算结果保留的位数
+ * @param {number} params.itemData 矩阵的配置参数
+ * @returns {Promise}
+ */
+export async function saveMatrixData(params) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const data = new FormData()
+      data.append('id', params.id || '')
+      data.append('modelId', params.modelId)
+      data.append('modelIndexId', params.modelIndexId || '')
+      data.append('item', params.item || '')
+      data.append('algorithm', params.algorithm)
+      data.append('degree', params.degree)
+      data.append('itemData', JSON.stringify(params.itemData))
+
+      const res = await request({
+        url: '/api/eval/modelMatrixDiagram/saveMatrix',
+        method: 'post',
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        },
+        data: data
+      })
+
+      if (res.data.successful) {
+        resolve()
+      } else {
+        reject(new Error(res.data.message))
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+/**
+ * @author haodongdong
+ * @description 读取保存的矩阵图数据
+ * @param {string} modelId 所属模型id
+ * @param {string} modelIndexId 矩阵图所属的父级维度、指标id
+ */
+export async function getMatrixData(modelId, modelIndexId) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/api/eval/modelMatrixDiagram/matrixDiagram',
+        method: 'get',
+        params: {
+          modelId,
+          modelIndexId: modelIndexId || ''
+        }
+      })
+
+      if (res.data.successful) {
+        resolve(res.data.data)
+      } else {
+        reject(new Error(res.data.message))
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}

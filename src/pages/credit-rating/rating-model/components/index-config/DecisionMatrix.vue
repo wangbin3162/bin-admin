@@ -21,7 +21,10 @@
 
     <b-collapse-wrap title="比值设置" collapse>
       <div slot="right">
-        <b-button type="text" @click="handleCalBtn">
+        <b-icon v-if="calBtnLoading" name="loading2" color="#0d85ff"
+          class="icon-is-rotating">
+        </b-icon>
+        <b-button type="text" @click="handleCalBtn" :disabled="calBtnLoading">
           计算
         </b-button>
       </div>
@@ -68,7 +71,7 @@
       </b-table>
 
       <div flex="main:left" class="mt-20">
-        <b-button type="primary" :disabled="!useStatus"
+        <b-button type="primary"
           @click="handleUseBtn">
           使用权重
         </b-button>
@@ -79,12 +82,16 @@
 
 <script>
   import { mapState } from 'vuex'
-  import { matrixCalculate } from '@/api/credit-rating/rating-model.api'
+  import { matrixCalculate, saveMatrixData, getMatrixData } from '@/api/credit-rating/rating-model.api'
   import MatrixInput from './MatrixInput'
 
   export default {
     name: 'DecisionMatrix',
     props: {
+      displayStatus: { // 当前组件的显示状态，此状态由外部控制
+        type: Boolean,
+        required: true
+      },
       modelId: {
         type: String,
         required: true
@@ -109,20 +116,23 @@
     },
     data () {
       return {
-        crfFlag: false, // 计算的一致性校验是否失败
-        useStatus: false,
+        crFlag: false, // 计算的一致性校验是否失败
+        calBtnLoading: false,
+        pIdCache: this.pId, // 用于curMatrixCol变动时判断是自身的变动还是其他层级的变动
         algorithmEnum: {
           hjf: '和积法',
           fgf: '方根法'
         },
         form: {
+          id: '',
           modelId: this.modelId, // 模型id
           modelIndexId: '', // 父级维度、指标id
           algorithm: 'fgf', // 算法
           degree: 3, // 保留的小数位数
-          item: null, // 暂时无用
+          item: '', // 暂时无用
           itemData: [] // 矩阵数据
         },
+        matrixDataCache: [],
         list: [], // 权重设置的list
         columns: [ // 权重设置的columns
           { type: 'index', width: 50 },
@@ -138,12 +148,26 @@
       })
     },
     watch: {
-      curMatrixCol: {
+      curMatrixCol: { // curMatrixCol变动时构建矩阵图结构、数据
         handler (newVal) {
-          const { matrixData, weightList } = this.buildMatrixData(newVal)
-          this.form.itemData = matrixData
-          this.list = weightList
-        }
+          if (newVal) {
+            // 构建矩阵图使用的数据结构
+            const { matrixData, weightList } = this.buildMatrixData(newVal)
+            if (matrixData.length === this.matrixDataCache.length) {
+              this.form.itemData = this.matrixDataCache // 使用缓存数据
+            } else {
+              this.form.itemData = matrixData // 使用新数据
+            }
+            this.list = weightList
+          }
+        },
+        deep: true
+      },
+      'form.itemData': {
+        handler (newVal) {
+          this.matrixDataCache = this.$util.deepClone(newVal)
+        },
+        deep: true
       }
     },
     created () {
@@ -152,33 +176,74 @@
     methods: {
       /**
        * @author haodongdong
-       * @description 计算按钮回调
+       * @description 计算按钮回调，维度指标不需要计算综合权重，指标类型需要计算综合权重，综合权重为判定权重乘以所有父级的权重。
        */
       async handleCalBtn () {
+        this.calBtnLoading = true
+
         try {
           await this.validateMatrixData(this.form.itemData)
 
           this.form.modelIndexId = this.pId
           const { crFlag, vector } = await matrixCalculate(this.form)
 
-          for (let i = 0; i < this.list.length; i++) {
-            const el = this.list[i]
-            el.decisionWeight = vector[i] * 100
-            el.decisionWeight = Number(el.decisionWeight.toFixed(2))
-            el.lastWeight = el.decisionWeight
-            if (el.indexType === 'Index') {
-              for (const weight of this.pWeights) {
-                el.lastWeight *= weight
-              }
-              el.lastWeight *= this.pWeight
-              el.lastWeight /= 100
-              el.lastWeight = el.lastWeight.toFixed(2)
-            }
-          }
+          this.crFlag = crFlag // 矩阵图一致性校验flag
 
-          this.crfFlag = Boolean(crFlag)
-          this.useStatus = true
-          this.$message({ type: 'success', content: '操作成功' })
+          if (this.crFlag) {
+            for (let i = 0; i < this.list.length; i++) {
+              const el = this.list[i]
+              el.decisionWeight = Number((vector[i] * 100).toFixed(2))
+              el.lastWeight = el.decisionWeight
+              if (el.indexType === 'Index') {
+                for (const weight of this.pWeights) {
+                  el.lastWeight *= weight
+                }
+                el.lastWeight *= this.pWeight
+                el.lastWeight /= 100
+                el.lastWeight = el.lastWeight.toFixed(2)
+              }
+            }
+
+            this.$message({ type: 'success', content: '操作成功' })
+          } else { // 校验不通过则不填充判定权重，且后端不会保存矩阵图数据
+            this.$message({ type: 'warning', content: '一致性校验出错，请重新配置比值' })
+          }
+        } catch (error) {
+          console.error(error)
+        }
+
+        this.calBtnLoading = false
+      },
+
+      /**
+       * @author haodongdong
+       * @description 保存判定矩阵数据，暂时由外部组件调用
+       */
+      async saveMatrixData () {
+        try {
+          this.form.modelIndexId = this.pId
+          await saveMatrixData(this.form)
+        } catch (error) {
+          console.error(error)
+        }
+      },
+
+      /**
+       * @author haodongdong
+       * @description 获取保存的矩阵图数据
+       * @param {string} modelId 模型id
+       * @param {string} pId 所要保存数据的父节点的id
+       */
+      async getMatrixData (modelId, pId) {
+        try {
+          const res = await getMatrixData(modelId, pId)
+          if (res) {
+            this.form.id = res.id
+            this.form.algorithm = res.algorithm
+            this.form.degree = res.degree
+            this.form.item = res.item
+            this.form.itemData = JSON.parse(res.itemData)
+          }
         } catch (error) {
           console.error(error)
         }
@@ -201,22 +266,26 @@
        * @author haodongdong
        * @description 使用权重按钮回调
        */
-      handleUseBtn () {
-        const arr = []
-        for (const item of this.list) {
-          if (item.indexType === 'Index') {
-            arr.push({
-              lastWeight: item.lastWeight,
-              decisionWeight: item.decisionWeight
-            })
-          } else {
-            arr.push({
-              decisionWeight: item.decisionWeight
-            })
+      async handleUseBtn () {
+        try {
+          await this.validateWeightListData(this.list)
+          const arr = []
+          for (const item of this.list) {
+            if (item.indexType === 'Index') {
+              arr.push({
+                lastWeight: item.lastWeight,
+                decisionWeight: item.decisionWeight
+              })
+            } else {
+              arr.push({
+                decisionWeight: item.decisionWeight
+              })
+            }
           }
+          this.$emit('use-weight', arr)
+        } catch (error) {
+          this.$message({ type: 'warning', content: error })
         }
-        console.log(JSON.stringify(arr))
-        this.$emit('use-weight', arr)
       },
 
       /**
@@ -242,10 +311,10 @@
 
           weightList.push({
             ...this.$util.deepClone(curMatrixCol[i]),
+            lastWeight: null,
             decisionWeight: null
           })
         }
-        console.log(matrixData)
         return { matrixData, weightList }
       },
 
@@ -276,8 +345,29 @@
             reject(error)
           }
         })
-      }
+      },
 
+      /**
+       * @author haodongdong
+       * @description 验证权重设置列表内的判定权重是否必填
+       * @param {Array} list 需要验证的数据
+       * @returns {Promise}
+       */
+      async validateWeightListData (list) {
+        return new Promise(async (resolve, reject) => {
+          try {
+            for (const item of list) {
+              if (!item.decisionWeight) {
+                let msg = '判定权重不能为空'
+                throw msg
+              }
+            }
+            resolve()
+          } catch (error) {
+            reject(error)
+          }
+        })
+      }
     }
   }
 </script>
