@@ -63,8 +63,8 @@
   import Edit from './Edit'
   import Detail from './Detail'
   import SetScore from './SetScore'
-  import { getLevelStandardList, deleteLevelStandard } from '../../../api/credit-rating/level-standard.api'
-  import { getPointsType } from '../../../api/enum.api'
+  import { getLevelStandardList, deleteLevelStandard } from '@/api/credit-rating/level-standard.api'
+  import { getPointsType } from '@/api/enum.api'
 
   export default {
     name: 'LevelStandard',

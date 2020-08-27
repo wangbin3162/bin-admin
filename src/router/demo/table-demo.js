@@ -1,16 +1,8 @@
-import layout from '../../layout/index'
-
-export default {
-  path: '/tableDemo',
-  component: layout,
-  redirect: { name: 'container' },
-  meta: { title: '表格示例', icon: 'md-grid', roles: true },
-  children: [
-    {
-      path: 'tableDemo',
-      name: 'TableDemo',
-      component: () => import('../../pages/demo/table/TableDemo'),
-      meta: { title: '表格示例1', roles: true }
-    }
-  ]
-}
+export default [
+  {
+    path: 'tableDemo',
+    name: 'TableDemo',
+    component: () => import('../../pages/demo/table/TableDemo'),
+    meta: { title: '表格示例' }
+  }
+]

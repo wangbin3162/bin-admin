@@ -147,9 +147,9 @@
     <div class="bin-result-title">401</div>
     <div class="bin-result-subtitle">抱歉，你无权访问该页面。</div>
     <div class="bin-result-extra">
-      <a href="/">
+      <router-link :to="{name:'index'}">
         <b-button type="primary">返回首页</b-button>
-      </a>
+      </router-link>
     </div>
   </div>
 </template>

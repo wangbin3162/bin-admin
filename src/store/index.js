@@ -4,6 +4,7 @@ import getters from '@/store/getters'
 import app from '@/store/modules/app'
 import user from '@/store/modules/user'
 import permission from '@/store/modules/permission'
+import tagsView from './modules/tagsView'
 import ratingModel from '@/store/modules/credit-rating/rating-model'
 import creditReportConfig from '@/store/modules/credit-rating/credit-report-config'
 import modelCount from '@/store/modules/credit-rating/model-count'
@@ -21,6 +22,7 @@ export default new Vuex.Store({
     app,
     user,
     permission,
+    tagsView,
     ratingModel,
     creditReportConfig,
     modelCount,

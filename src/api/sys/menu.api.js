@@ -9,6 +9,14 @@ export function getMenuTree() {
   })
 }
 
+/* 获取权限菜单树 */
+export function getMenuByAuth() {
+  return request({
+    url: '/management/function/treeByAuthorize',
+    method: 'get'
+  })
+}
+
 /* 获取所有菜单列表 */
 export function getMenuList(query) {
   const data = new URLSearchParams()

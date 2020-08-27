@@ -179,9 +179,9 @@
     <div class="bin-result-title">500</div>
     <div class="bin-result-subtitle">抱歉，服务器出错了。</div>
     <div class="bin-result-extra">
-      <a href="/">
+      <router-link :to="{name:'index'}">
         <b-button type="primary">返回首页</b-button>
-      </a>
+      </router-link>
     </div>
   </div>
 </template>

@@ -1,62 +1,57 @@
-import { asyncRouterMap, constantRouterMap } from '../../router/routes'
-import path from 'path'
+import { asyncRouterMap, addRoutes } from '@/router/routes'
 
 /**
- * 过滤账户是否拥有某一个权限，并将菜单从加载列表移除,这里暂时通过这种方式获取
- *
- * @param functions 所有用户路由权限列表
- * @param  route 路由
- * @param basePath
- * @returns {boolean}
+ * 根据返回的树形菜单，递归筛选路由节点
+ * @param routes
+ * @param functions
+ * @returns {[]}
  */
-function hasPermission(functions, route, basePath = '') {
-  if (route.meta && route.meta.roles) {
-    return true
-  } else {
-    const tempPath = path.resolve(basePath, route.path)
-    // 开锁调试查看匹配路由是否正确
-    // const flag = tempPath === '/*' || functions.includes(tempPath)
-    // let title = route.meta ? route.meta.title : basePath.length === 0 ? '父路由' : '子路由'
-    // console.log(title, `${tempPath} 匹配${flag ? '成功' : '失败'}`, flag ? 'primary' : 'danger')
-    // return flag
-    return tempPath === '/*' || functions.includes(tempPath)
-  }
-}
-
-function filterAsyncRoutes(routes, functions, basePath = '') {
-  const res = []
-  routes.forEach(route => {
-    const tmp = { ...route }
-    if (hasPermission(functions, tmp, basePath)) {
-      const tempPath = path.resolve(basePath, tmp.path)
-      if (tmp.children) {
-        tmp.children = filterAsyncRoutes(tmp.children, functions, tempPath)
-      }
-      if (!tmp.children || tmp.children.length > 0) {
-        res.push(tmp)
-      }
+function filterAsyncRoutes(routes, functions) {
+  let menus = getAsyncRouter(functions)
+  const all = []
+  menus.forEach(menu => {
+    let matchIndex = routes.findIndex(item => item.name === menu.name)
+    if (matchIndex > -1) {
+      all.push(routes[matchIndex])
     }
   })
+  return all
+}
 
-  return res
+// 递归平铺菜单树
+function getAsyncRouter(functions) {
+  let all = []
+  const mapper = (route) => {
+    if (route.name && !route.children) {
+      all.push({ ...route })
+    }
+    if (route.children) {
+      route.children.forEach(item => {
+        mapper(item)
+      })
+    }
+  }
+  functions.forEach(item => {
+    mapper(item)
+  })
+  return all
 }
 
 const permission = {
   state: {
-    routers: [],
+    routes: [],
     addRouters: [] // 左侧菜单栏的缓存路由
   },
   mutations: {
     SET_ROUTERS: (state, routers) => {
       state.addRouters = routers
-      state.routers = constantRouterMap.concat(routers)
+      state.routes = addRoutes(routers)
     }
   },
   actions: {
-    generateRoutes({ commit }, functions) {
+    generateRoutes({ commit }, menus) {
       return new Promise(resolve => {
-        // console.log(functions)
-        const accessedRouters = filterAsyncRoutes(asyncRouterMap, functions)
+        const accessedRouters = filterAsyncRoutes(asyncRouterMap, menus)
         commit('SET_ROUTERS', accessedRouters)
         resolve(accessedRouters)
       })

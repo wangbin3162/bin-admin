@@ -1,12 +1,13 @@
-import { getAdminSetting, setAdminSetting } from '../../common/config/datastore'
+import { getAdminSetting, setAdminSetting } from '@/common/config/datastore'
 
 const app = {
   state: {
     setting: {
-      sidebar: true,
-      theme: '',
-      menuType: '',
-      wideType: 'wide', // 内容区域宽度 [wide:固定,flow:流式]
+      theme: 'dark',
+      sidebar: true, // 侧边栏开启状态
+      tagsView: true, // 多页签开启状态
+      menuType: 'aside',
+      wideType: 'flow', // 内容区域宽度 [wide:固定,flow:流式]
       fixedHeader: false,
       fixedAside: false
     },
@@ -22,6 +23,10 @@ const app = {
     },
     SET_SIDEBAR: (state) => {
       state.setting.sidebar = !state.setting.sidebar
+      setAdminSetting(state.setting)
+    },
+    SET_TAGS_VIEW: (state) => {
+      state.setting.tagsView = !state.setting.tagsView
       setAdminSetting(state.setting)
     },
     SET_THEME: (state, theme) => {
@@ -56,13 +61,15 @@ const app = {
       commit('SAVE_SETTING', setting)
       document.body.className = `theme-${setting.theme}`
     },
-    setRouterMenu: ({ commit, state }, routes) => {
-      const menu = filterMenu(routes)
-      menu.unshift({ path: '/index', title: '首页', icon: 'ios-home' })
+    setRouterMenu: ({ commit, state }, menus) => {
+      const menu = setMenu(menus)
       commit('SET_MENU', menu)
     },
     toggleSideBar: ({ commit }) => {
       commit('SET_SIDEBAR')
+    },
+    toggleTagsView: ({ commit }) => {
+      commit('SET_TAGS_VIEW')
     },
     setThemeMode: ({ commit }, theme) => {
       document.body.className = `theme-${theme}`
@@ -83,28 +90,34 @@ const app = {
   }
 }
 
-// 过滤菜单
-function filterMenu(routes) {
-  let arr = []
-  routes.forEach(route => {
-    const tmp = { ...route }
-    if (tmp.path !== '*' || !tmp.hidden) { // 过滤顶级菜单，即，404和已经隐藏的
-      if (tmp.children) {
-        tmp.children = filterMenu(tmp.children)
-      }
-      let obj = {}
-      obj.path = tmp.path // 这里的路由path默认都为不带/
-      obj.title = tmp.meta.title
-      if (tmp.meta.icon) {
-        obj.icon = tmp.meta.icon
-      }
-      if (tmp.children) {
-        obj.children = tmp.children
-      }
-      arr.push(obj)
+// 递归平铺菜单树
+function setMenu(menus) {
+  let all = []
+  const mapper = (route, parent) => {
+    let parents = parent ? parent.split(',') : []
+    parents.push(route.name)
+    let child = []
+    if (route.children) {
+      route.children.forEach(item => {
+        child.push(mapper(item, parents.join(',')))
+      })
     }
+    if (child.length === 0) {
+      return {
+        ...route,
+        parents: parents
+      }
+    }
+    return {
+      ...route,
+      parents: parents,
+      children: child
+    }
+  }
+  menus.forEach(item => {
+    all.push(mapper(item))
   })
-  return arr
+  return all
 }
 
 export default app

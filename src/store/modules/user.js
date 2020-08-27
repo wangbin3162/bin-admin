@@ -1,7 +1,9 @@
-import { getInfo } from '../../api/login.api'
+import { getInfo } from '@/api/login.api'
 import util from '../../common/utils/util'
-import { ACCESS_TOKEN } from '../../common/token-const'
-import { resetRouter } from '../../router'
+import { ACCESS_TOKEN } from '@/common/token-const'
+import { resetRouter } from '@/router'
+import menuList from '@/common/config/menuList'
+import { getMenuByAuth } from '@/api/sys/menu.api'
 
 export default {
   state: {
@@ -22,7 +24,7 @@ export default {
   },
   actions: {
     // 登录
-    setToken ({ commit }, token) {
+    setToken({ commit }, token) {
       return new Promise((resolve, reject) => {
         try {
           util.cookies.set(ACCESS_TOKEN, token)
@@ -36,7 +38,7 @@ export default {
       })
     },
     // 登出
-    logout ({ commit }) {
+    logout({ commit }) {
       return new Promise((resolve) => {
         // 删除缓存的token
         commit('SET_TOKEN', '')
@@ -49,7 +51,7 @@ export default {
       })
     },
     // 获取用户信息
-    getUserInfo ({ commit }) {
+    getUserInfo({ commit }) {
       return new Promise((resolve, reject) => {
         getInfo().then(response => {
           const result = response.data
@@ -61,6 +63,16 @@ export default {
           } else { // 如果是403 即为无效的token则重定向到login页面
             reject(result)
           }
+        }).catch(error => {
+          reject(error)
+        })
+      })
+    },
+    // 获取所有用户权限菜单
+    getUserMenus() {
+      return new Promise((resolve, reject) => {
+        getMenuByAuth().then(resp => {
+          resolve(menuList)
         }).catch(error => {
           reject(error)
         })

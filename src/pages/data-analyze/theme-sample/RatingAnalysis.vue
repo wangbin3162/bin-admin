@@ -1,5 +1,5 @@
 <template>
-  <div id="app" class="my-gather-data">
+  <div id="app" class="my-gather-data p20">
     <div class="header mb-20">
       <div class="msg-tips" flex="main:justify">
         <div class="tip-item" flex>

@@ -10,90 +10,80 @@ import creditService from './modules/credit-service'
 import cms from './modules/cms'
 
 /**
- * router自定义配置项
- * hidden: true                   如果设置true则左侧路由菜单隐藏
- * name:'router-name'             <keep-alive>使用必须设置 (must set!!!)
- * meta : {
-    roles: false,                  如果设置roles则不需要去验证过滤，直接全部显示为菜单栏
-    title: 'title',                当前路由的中文名称
-    icon: 'a-icon',                当前菜单的图标样式，使用阿里iconfont
-    activeMenu: '/example/list'    如果设置路径，侧栏将突出显示您设置的路径,即默认选择的菜单
-  }
- **/
+ * 开发对应的菜单路由映射
+ * @type {*[]}
+ */
 export const asyncRouterMap = [
-  sys, dataManage, analyzeEngine, dataAnalyze, excavateAnalyze, urp, creditRating, creditService, cms,
-  { path: '*', redirect: '/404', hidden: true }
+  ...sys,
+  ...dataManage,
+  ...analyzeEngine,
+  ...dataAnalyze,
+  ...excavateAnalyze,
+  ...urp,
+  ...creditRating,
+  ...creditService,
+  ...cms
+]
+
+/**
+ * @description 创建在 layout 中显示的路由设置
+ * @param {Array} routes 动态路由设置
+ */
+export function createRoutesInLayout(routes = []) {
+  return [
+    {
+      path: '/',
+      redirect: { name: 'index' },
+      component: layout,
+      children: [
+        { path: 'index', name: 'index', meta: { title: '首页' }, component: () => import('../pages/Home.vue') },
+        // 刷新页面 必须保留
+        {
+          path: 'refresh',
+          name: 'refresh',
+          hidden: true,
+          component: {
+            beforeRouteEnter(to, from, next) {
+              next(vm => vm.$router.replace(from.fullPath))
+            },
+            render: h => h()
+          }
+        },
+        // 页面重定向 必须保留
+        {
+          path: 'redirect/:route*',
+          name: 'redirect',
+          hidden: true,
+          component: {
+            beforeRouteEnter(to, from, next) {
+              next(vm => vm.$router.replace(JSON.parse(from.params.route)))
+            },
+            render: h => h()
+          }
+        },
+        ...routes
+      ]
+    }
+  ]
+}
+
+// 新增动态route
+export function addRoutes(routes = []) {
+  return createRoutesInLayout(routes).concat(routesOutLayout)
+}
+
+// 在 layout 之外显示的路由
+export const routesOutLayout = [
+  // 登录
+  { path: '/login', name: 'login', component: () => import('../pages/Login.vue') },
+  { path: '/401', component: () => import(/* webpackChunkName: "error" */ '../pages/error/Error401.vue') },
+  { path: '/403', component: () => import(/* webpackChunkName: "error" */ '../pages/error/Error403.vue') },
+  { path: '/404', component: () => import(/* webpackChunkName: "error" */ '../pages/error/Error404.vue') },
+  { path: '/500', component: () => import(/* webpackChunkName: "error" */ '../pages/error/Error500.vue') }
 ]
 
 /**
  * 基础路由
  * @type { *[] }
  */
-export const constantRouterMap = [
-  {
-    path: '/',
-    component: layout,
-    redirect: { name: 'index' },
-    children: [
-      // 首页 必须 name:index
-      {
-        path: 'index',
-        name: 'index',
-        meta: { title: '首页', icon: 'icon-ios-home', noCache: false, affix: true },
-        component: () => import('../pages/Home.vue')
-      },
-      // 刷新页面 必须保留
-      {
-        path: 'refresh',
-        name: 'refresh',
-        hidden: true,
-        component: {
-          beforeRouteEnter(to, from, next) {
-            next(vm => vm.$router.replace(from.fullPath))
-          },
-          render: h => h()
-        }
-      },
-      // 页面重定向 必须保留
-      {
-        path: 'redirect/:route*',
-        name: 'redirect',
-        hidden: true,
-        component: {
-          beforeRouteEnter(to, from, next) {
-            next(vm => vm.$router.replace(JSON.parse(from.params.route)))
-          },
-          render: h => h()
-        }
-      }
-    ]
-  },
-  // 登录
-  {
-    path: '/login',
-    name: 'login',
-    component: () => import('../pages/Login.vue')
-  },
-  {
-    path: '/401',
-    component: () => import(/* webpackChunkName: "error" */ '../pages/error/Error401.vue')
-  },
-  {
-    path: '/403',
-    component: () => import(/* webpackChunkName: "error" */ '../pages/error/Error403.vue')
-  },
-  {
-    path: '/404',
-    component: () => import(/* webpackChunkName: "error" */ '../pages/error/Error404.vue')
-  },
-  {
-    path: '/500',
-    component: () => import(/* webpackChunkName: "error" */ '../pages/error/Error500.vue')
-  }
-]
-
-// 重新组织后导出
-export default [
-  ...asyncRouterMap,
-  ...constantRouterMap
-]
+export const constantRoutes = createRoutesInLayout().concat(routesOutLayout)
