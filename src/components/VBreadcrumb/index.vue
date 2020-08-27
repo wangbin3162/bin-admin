@@ -40,6 +40,11 @@ export default {
       return all
     }
   },
+  watch: {
+    $route() {
+      this.getBreadcrumb()
+    }
+  },
   created() {
     this.getBreadcrumb()
   },

@@ -147,19 +147,19 @@
     <div class="bin-result-title">403</div>
     <div class="bin-result-subtitle">抱歉，登录超时啦！</div>
     <div class="bin-result-extra">
-      <a href="/">
+      <router-link :to="{name:'index'}">
         <b-button type="primary">返回首页</b-button>
-      </a>
+      </router-link>
     </div>
   </div>
 </template>
 
 <script>
-  export default {
-    name: 'Error403'
-  }
+export default {
+  name: 'Error403'
+}
 </script>
 
 <style scoped lang="stylus">
-  @import "error-style.styl"
+@import "error-style.styl"
 </style>

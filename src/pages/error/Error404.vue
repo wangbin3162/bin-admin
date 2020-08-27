@@ -158,19 +158,19 @@
     <div class="bin-result-title">404</div>
     <div class="bin-result-subtitle">抱歉，你访问的页面不存在。</div>
     <div class="bin-result-extra">
-      <a href="/">
+      <router-link :to="{name:'index'}">
         <b-button type="primary">返回首页</b-button>
-      </a>
+      </router-link>
     </div>
   </div>
 </template>
 
 <script>
-  export default {
-    name: 'Error404'
-  }
+export default {
+  name: 'Error404'
+}
 </script>
 
 <style scoped lang="stylus">
-  @import "error-style.styl"
+@import "error-style.styl"
 </style>
