@@ -56,7 +56,7 @@
                            @end="onDragEnd"
                            @start="isDragging = true">
                   <transition-group type="transition" name="flip-list">
-                    <div class="index-item" v-for="(item,index) in data.options.groupList" :key="index">
+                    <div class="index-item" v-for="(item,index) in data.options.groupList" :key="'_'+index">
                       <div class="move-drag">
                         <b-icon name="ios-move" size="18" color="#1089ff"/>
                       </div>

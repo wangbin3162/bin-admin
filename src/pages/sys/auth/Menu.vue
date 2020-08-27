@@ -29,11 +29,13 @@
           <template v-slot:name="scope">
             <b-button type="text" @click="handleCheck(scope.row)">{{ scope.row.name }}</b-button>
           </template>
+          <!--菜单图标-->
+          <template v-slot:icon="scope">
+            <b-icon v-if="scope.row.icon" :name="scope.row.icon"/>
+          </template>
           <!--菜单类型-->
           <template v-slot:type="scope">
-            <b-tag>
-              {{ menuTypeMap[scope.row.type] }}
-            </b-tag>
+            <b-tag no-border type="primary">{{ menuTypeMap[scope.row.type] }}</b-tag>
           </template>
           <!--状态-->
           <template v-slot:delFlag="scope">
@@ -198,307 +200,346 @@
 </template>
 
 <script>
-  import commonMixin from '../../../common/mixins/mixin'
-  import permission from '../../../common/mixins/permission'
-  import * as api from '../../../api/sys/menu.api'
-  import { getYn, getMenuType } from '../../../api/enum.api'
-  import { validateRoutePath, requiredRule } from '../../../common/utils/validate'
-  import { deepCopy } from '../../../common/utils/assist'
-  import { downGo, upGo } from '../../../common/utils/arr-utils'
+import commonMixin from '../../../common/mixins/mixin'
+import permission from '../../../common/mixins/permission'
+import * as api from '../../../api/sys/menu.api'
+import { getYn, getMenuType } from '@/api/enum.api'
+import { requiredRule } from '@/common/utils/validate'
+import { deepCopy } from '@/common/utils/assist'
+import { downGo, upGo } from '@/common/utils/arr-utils'
 
-  export default {
-    name: 'Menu',
-    mixins: [commonMixin, permission],
-    data() {
-      const validateMenuName = (rule, value, callback) => {
-        if (value.length > 200) {
-          callback(new Error('菜单名称必须小于200个字符'))
-        } else {
-          api.oneMenuName(this.menu).then(response => {
-            if (response.data.data) {
-              callback(new Error('菜单名称重复'))
+export default {
+  name: 'Menu',
+  mixins: [commonMixin, permission],
+  data() {
+    const validateMenuName = (rule, value, callback) => {
+      if (value.length > 200) {
+        callback(new Error('菜单名称必须小于200个字符'))
+      } else {
+        api.oneMenuName(this.menu).then(response => {
+          if (response.data.data) {
+            callback(new Error('菜单名称重复'))
+          } else {
+            callback()
+          }
+        }).catch(() => {
+          callback(new Error('请求验证重复性出错'))
+        })
+      }
+    }
+    const checkMenuPath = (rule, value, callback) => {
+      if (value) {
+        if (this.menuPathBuffer === value) {
+          callback()
+          return
+        }
+        api.getMenuByAuth().then(resp => {
+          if (resp.data.code === '0') {
+            let menus = resp.data.data.children
+            let activeRoute = this.getNewMenus(menus).find(item => item.name === value)
+            if (activeRoute) {
+              callback(new Error(`路由名称和[${activeRoute.title}]重复`))
             } else {
               callback()
             }
-          }).catch(() => {
-            callback(new Error('请求验证重复性出错'))
-          })
-        }
-      }
-      const checkMenuPath = (rule, value, callback) => {
-        if (value && validateRoutePath(value)) {
-          callback(new Error('请输入正确的菜单路由(如:/ace ; /ace/menu)'))
-        }
+          }
+        }).catch(() => {
+          callback(new Error('请求最新权限菜单出错'))
+        })
+      } else {
         callback()
       }
-      return {
-        moduleName: '菜单',
-        listQuery: {
-          menuName: '',
-          parentId: '', // 父菜单id
-          delFlag: 'N'
-        },
-        treeData: [],
-        columns: [
-          { type: 'index', width: 50, align: 'center' },
-          { title: '菜单名称', slot: 'name', width: 120 },
-          { title: '前端路由', key: 'path' },
-          { title: '菜单类型', slot: 'type', width: 95, align: 'center' },
-          { title: '排序编号', key: 'sortNum', width: 95, align: 'center' },
-          { title: '状态', slot: 'delFlag', width: 100, align: 'center' },
-          { title: '操作', slot: 'action', width: 120 }
-        ],
-        menu: null,
-        ruleValidate: {
-          name: [requiredRule, { validator: validateMenuName, trigger: 'blur' }],
-          path: [requiredRule, { validator: checkMenuPath, trigger: 'blur' }]
-        },
-        ynMap: { 'N': '否', 'Y': '是' }, // 默认值这里Y是可以删除，可删除状态及为禁用
-        menuTypeMap: { '1': '功能菜单', '2': '目录菜单', '3': '动作菜单' },
-        TYPE: { FUN: '1', DIR: '2', ACT: '3' }
+    }
+    return {
+      moduleName: '菜单',
+      listQuery: {
+        menuName: '',
+        parentId: '', // 父菜单id
+        delFlag: 'N'
+      },
+      treeData: [],
+      columns: [
+        { type: 'index', width: 50, align: 'center' },
+        { title: '菜单名称', slot: 'name' },
+        { title: '路由名称', key: 'path' },
+        { title: '菜单图标', slot: 'icon', width: 95, align: 'center' },
+        { title: '菜单类型', slot: 'type', width: 95, align: 'center' },
+        { title: '排序编号', key: 'sortNum', width: 95, align: 'center' },
+        { title: '状态', slot: 'delFlag', width: 100, align: 'center' },
+        { title: '操作', slot: 'action', width: 120 }
+      ],
+      menu: null,
+      ruleValidate: {
+        name: [requiredRule, { validator: validateMenuName, trigger: 'blur' }],
+        path: [requiredRule, { validator: checkMenuPath, trigger: 'blur' }]
+      },
+      ynMap: { 'N': '否', 'Y': '是' }, // 默认值这里Y是可以删除，可删除状态及为禁用
+      menuTypeMap: { '1': '功能菜单', '2': '目录菜单', '3': '动作菜单' },
+      TYPE: { FUN: '1', DIR: '2', ACT: '3' }
+    }
+  },
+  computed: {
+    ENUM() {
+      return { N: 'N', Y: 'Y' } // 常量比对键值对
+    }
+  },
+  created() {
+    this.getYnEnum()
+    this.getMenuTypeEnum()
+    this.resetMenu()
+    this.initTree()
+  },
+  methods: {
+    /* [事件响应] */
+    handTreeCurrentChange(data, node) {
+      if (this.currentTreeNode.id === node.id) {
+        node.selected = true
+      }
+      this.currentTreeNode = node
+      this.listQuery.parentId = node.id
+      this.handleFilter()
+    },
+    // filter-Bar:重置查询条件
+    resetQuery() {
+      this.listQuery = {
+        page: 1,
+        size: 10,
+        menuName: '',
+        delFlag: this.ENUM.N,
+        parentId: this.currentTreeNode ? this.currentTreeNode.id : ''
       }
     },
-    computed: {
-      ENUM() {
-        return { N: 'N', Y: 'Y' } // 常量比对键值对
-      }
-    },
-    created() {
-      this.getYnEnum()
-      this.getMenuTypeEnum()
+    // 新增按钮事件
+    handleCreate() {
       this.resetMenu()
-      this.initTree()
+      this.menuPathBuffer = ''
+      this.openEditPage('create')
     },
-    methods: {
-      /* [事件响应] */
-      handTreeCurrentChange(data, node) {
-        if (this.currentTreeNode.id === node.id) {
-          node.selected = true
+    // 编辑事件
+    handleModify(row) {
+      this.resetMenu()
+      api.getMenuDetail(row.id).then(res => {
+        if (res.data.code === '0') {
+          this.menu = { ...this.menu, ...res.data.data }
+          this.menuPathBuffer = this.menu.path // 记录缓存
+          this.openEditPage('modify')
         }
-        this.currentTreeNode = node
-        this.listQuery.parentId = node.id
-        this.handleFilter()
-      },
-      // filter-Bar:重置查询条件
-      resetQuery() {
-        this.listQuery = {
-          page: 1,
-          size: 10,
-          menuName: '',
-          delFlag: this.ENUM.N,
-          parentId: this.currentTreeNode ? this.currentTreeNode.id : ''
+      })
+    },
+    // 查看按钮事件
+    handleCheck(row) {
+      this.resetMenu()
+      api.getMenuDetail(row.id).then(res => {
+        if (res.data.code === '0') {
+          this.menu = { ...this.menu, ...res.data.data }
+          this.openEditPage('check')
         }
-      },
-      // 新增按钮事件
-      handleCreate() {
-        this.resetMenu()
-        this.openEditPage('create')
-      },
-      // 编辑事件
-      handleModify(row) {
-        this.resetMenu()
-        api.getMenuDetail(row.id).then(res => {
-          if (res.data.code === '0') {
-            this.menu = { ...this.menu, ...res.data.data }
-            this.openEditPage('modify')
-          }
-        })
-      },
-      // 查看按钮事件
-      handleCheck(row) {
-        this.resetMenu()
-        api.getMenuDetail(row.id).then(res => {
-          if (res.data.code === '0') {
-            this.menu = { ...this.menu, ...res.data.data }
-            this.openEditPage('check')
-          }
-        })
-      },
-      // 弹窗提示是否删除
-      handleRemove(row) {
-        let menu = { ...row }
-        this.$confirm({
-          title: '确实要删除当前菜单吗',
-          content: '删除后不可恢复。',
-          loading: true,
-          okType: 'danger',
-          onOk: () => {
-            api.removeMenu(menu).then(res => {
-              if (res.data.code === '0') {
-                this.$message({ type: 'success', content: '操作成功' })
-                this.$modal.remove()
-                this.searchList()
-              } else {
-                this.$modal.remove()
-                this.$notice.danger({ title: '操作错误', desc: res.data.message })
-              }
-            })
-          }
-        })
-      },
-      // 表单提交
-      handleSubmit() {
-        this.$refs.form.validate((valid) => {
-          if (valid) {
-            this.btnLoading = true
-            let tmp = this.menu.permissions
-              .filter(i => i.name.length > 0 && i.path.length > 0)
-              .map((item, index) => ({ ...item, sortNum: index }))
-            this.menu.permissions = deepCopy(tmp)
-            let fun = this.dialogStatus === 'create' ? api.createMenu : api.modifyMenu
-            fun(this.menu).then(res => {
-              if (res.data.code === '0') {
-                this.submitDone(true)
-                this.initTree()
-              } else {
-                this.submitDone(false)
-                this.$notice.danger({ title: '操作错误', desc: res.data.message })
-              }
-            })
-          }
-        })
-      },
-      // 单个启用禁用
-      handleChangeDelFlag(row) {
-        let menu = { ...row }
-        api.changeDelFlag(menu).then(res => {
-          if (res.data.code === '0') {
-            this.$message({ type: 'success', content: '操作成功' })
-            this.initTree()
-          } else {
-            this.$message({ type: 'danger', content: '操作失败' })
-          }
-        })
-      },
-      // 禁用系统管理，授权管理，菜单管理三个状态控制
-      isSysOrMenu(path) {
-        return ['/sys', '/sys/auth', '/sys/auth/menu'].indexOf(path) > -1
-      },
-      /* [动作菜单操作相关] */
-      // 初始化4个基本动作菜单
-      initPermissions() {
-        // 创建时动作缓存初始化3个动作
-        this.menu.permissions = [
-          { id: '', name: '查询', path: 'search', desc: '列表数据的查找、查看权限', url: '', type: this.TYPE.ACT },
-          { id: '', name: '新增', path: 'create', desc: '新增单条数据', url: '', type: this.TYPE.ACT },
-          { id: '', name: '更新', path: 'modify', desc: '数据的修改权限', url: '', type: this.TYPE.ACT },
-          { id: '', name: '删除', path: 'remove', desc: '删除单条数据', url: '', type: this.TYPE.ACT }
-        ]
-      },
-      // 添加一行选项
-      addBufferRow() {
-        if (this.checkBufferValueNotEmpty()) {
-          this.menu.permissions.push({ id: '', name: '', path: '', url: '', type: this.TYPE.ACT })
-        } else {
-          this.$message({ content: '名称和前端路径必填', type: 'danger' })
-        }
-      },
-      // 删除一行
-      removeBufferRow(item, index) {
-        if (item.id.length === 0) {
-          this.menu.permissions.splice(index, 1)
-        } else {
-          let menu = { ...item }
+      })
+    },
+    // 弹窗提示是否删除
+    handleRemove(row) {
+      let menu = { ...row }
+      this.$confirm({
+        title: '确实要删除当前菜单吗',
+        content: '删除后不可恢复。',
+        loading: true,
+        okType: 'danger',
+        onOk: () => {
           api.removeMenu(menu).then(res => {
             if (res.data.code === '0') {
               this.$message({ type: 'success', content: '操作成功' })
               this.$modal.remove()
-              this.menu.permissions.splice(index, 1)
+              this.searchList()
             } else {
               this.$modal.remove()
               this.$notice.danger({ title: '操作错误', desc: res.data.message })
             }
           })
         }
-      },
-      // 检查bufferValue中的值是否都不为空
-      checkBufferValueNotEmpty() {
-        return this.menu.permissions.every(item => item.path.length > 0 && item.name.length > 0)
-      },
-      // 是否是只读的动作
-      permissionReadOnly(per) {
-        return ['create', 'modify', 'search', 'remove'].includes(per)
-      },
-      // 菜单动作排序
-      handleSort(type, index) {
-        // 复制一个data
-        let arr = deepCopy(this.menu.permissions)
-        if (type === 'up') { // 上移操作
-          if (index > 0) {
-            let newArr = upGo(arr, index)
-            this.menu.permissions = deepCopy(newArr)
-          }
-        } else if (type === 'down') { // 下移一层操作
-          if (index !== arr.length - 1) {
-            let newArr = downGo(arr, index)
-            this.menu.permissions = deepCopy(newArr)
-          }
-        }
-      },
-      /* [数据接口] */
-      // 重置对象
-      resetMenu() {
-        this.menu = {
-          id: '',
-          parentId: this.currentTreeNode ? this.currentTreeNode.id : '',
-          name: '',
-          sortNum: 0,
-          url: '',
-          type: this.TYPE.FUN, // 默认只创建功能菜单
-          path: '',
-          permissions: []
-        }
-      },
-      // 通用枚举
-      getYnEnum() {
-        getYn().then(res => {
-          if (res.status === 200) {
-            this.ynMap = res.data.data
-          }
-        })
-      },
-      // 菜单类型
-      getMenuTypeEnum() {
-        getMenuType().then(res => {
-          if (res.status === 200) {
-            this.menuTypeMap = res.data.data
-          }
-        })
-      },
-      // tree:初始化树结构
-      initTree() {
-        this.treeData = []
-        // 请求响应返回树结构
-        api.getMenuTree().then(response => {
-          const tree = response.data.data
-          // 根据返回的数组格式化为树结构的格式，并追加parents用于级联选择和展开
-          let data = tree ? this.treeMapper(tree) : {}
-          this.treeData.push(data)
-          if (this.treeData.length > 0) {
-            // 如果没有当前选中节点则初始化为第一个选中
-            if (!this.currentTreeNode) {
-              this.currentTreeNode = this.treeData[0]
-              // 这里要注意，扩展响应式属性需要这么写
-              this.$set(this.treeData[0], 'selected', true)
-              this.$set(this.treeData[0], 'expand', true)
+      })
+    },
+    // 表单提交
+    handleSubmit() {
+      this.$refs.form.validate((valid) => {
+        if (valid) {
+          this.btnLoading = true
+          let tmp = this.menu.permissions
+            .filter(i => i.name.length > 0 && i.path.length > 0)
+            .map((item, index) => ({ ...item, sortNum: index }))
+          this.menu.permissions = deepCopy(tmp)
+          let fun = this.dialogStatus === 'create' ? api.createMenu : api.modifyMenu
+          fun(this.menu).then(res => {
+            if (res.data.code === '0') {
+              this.submitDone(true)
+              this.initTree()
+            } else {
+              this.submitDone(false)
+              this.$notice.danger({ title: '操作错误', desc: res.data.message })
             }
-            this.listQuery.parentId = this.currentTreeNode.id
-            this.handleFilter()
-          }
-        })
-      },
-      // 查询所有部门列表
-      searchList() {
-        this.setListData()
-        api.getMenuList(this.listQuery).then(response => {
-          if (response.status === 200) {
-            this.setListData({
-              list: response.data.rows,
-              total: response.data.total
-            })
+          })
+        }
+      })
+    },
+    // 单个启用禁用
+    handleChangeDelFlag(row) {
+      let menu = { ...row }
+      api.changeDelFlag(menu).then(res => {
+        if (res.data.code === '0') {
+          this.$message({ type: 'success', content: '操作成功' })
+          this.initTree()
+        } else {
+          this.$message({ type: 'danger', content: '操作失败' })
+        }
+      })
+    },
+    // 禁用系统管理，授权管理，菜单管理三个状态控制
+    isSysOrMenu(path) {
+      return ['/sys', '/sys/auth', '/sys/auth/menu'].indexOf(path) > -1
+    },
+    /* [动作菜单操作相关] */
+    // 初始化4个基本动作菜单
+    initPermissions() {
+      // 创建时动作缓存初始化3个动作
+      this.menu.permissions = [
+        { id: '', name: '查询', path: 'search', desc: '列表数据的查找、查看权限', url: '', type: this.TYPE.ACT },
+        { id: '', name: '新增', path: 'create', desc: '新增单条数据', url: '', type: this.TYPE.ACT },
+        { id: '', name: '更新', path: 'modify', desc: '数据的修改权限', url: '', type: this.TYPE.ACT },
+        { id: '', name: '删除', path: 'remove', desc: '删除单条数据', url: '', type: this.TYPE.ACT }
+      ]
+    },
+    // 添加一行选项
+    addBufferRow() {
+      if (this.checkBufferValueNotEmpty()) {
+        this.menu.permissions.push({ id: '', name: '', path: '', url: '', type: this.TYPE.ACT })
+      } else {
+        this.$message({ content: '名称和前端路径必填', type: 'danger' })
+      }
+    },
+    // 删除一行
+    removeBufferRow(item, index) {
+      if (item.id.length === 0) {
+        this.menu.permissions.splice(index, 1)
+      } else {
+        let menu = { ...item }
+        api.removeMenu(menu).then(res => {
+          if (res.data.code === '0') {
+            this.$message({ type: 'success', content: '操作成功' })
+            this.$modal.remove()
+            this.menu.permissions.splice(index, 1)
+          } else {
+            this.$modal.remove()
+            this.$notice.danger({ title: '操作错误', desc: res.data.message })
           }
         })
       }
+    },
+    // 检查bufferValue中的值是否都不为空
+    checkBufferValueNotEmpty() {
+      return this.menu.permissions.every(item => item.path.length > 0 && item.name.length > 0)
+    },
+    // 是否是只读的动作
+    permissionReadOnly(per) {
+      return ['create', 'modify', 'search', 'remove'].includes(per)
+    },
+    // 菜单动作排序
+    handleSort(type, index) {
+      // 复制一个data
+      let arr = deepCopy(this.menu.permissions)
+      if (type === 'up') { // 上移操作
+        if (index > 0) {
+          let newArr = upGo(arr, index)
+          this.menu.permissions = deepCopy(newArr)
+        }
+      } else if (type === 'down') { // 下移一层操作
+        if (index !== arr.length - 1) {
+          let newArr = downGo(arr, index)
+          this.menu.permissions = deepCopy(newArr)
+        }
+      }
+    },
+    /* [数据接口] */
+    // 重置对象
+    resetMenu() {
+      this.menu = {
+        id: '',
+        parentId: this.currentTreeNode ? this.currentTreeNode.id : '',
+        name: '',
+        sortNum: 0,
+        url: '',
+        type: this.TYPE.FUN, // 默认只创建功能菜单
+        path: '',
+        permissions: []
+      }
+    },
+    // 通用枚举
+    getYnEnum() {
+      getYn().then(res => {
+        if (res.status === 200) {
+          this.ynMap = res.data.data
+        }
+      })
+    },
+    // 菜单类型
+    getMenuTypeEnum() {
+      getMenuType().then(res => {
+        if (res.status === 200) {
+          this.menuTypeMap = res.data.data
+        }
+      })
+    },
+    // tree:初始化树结构
+    initTree() {
+      this.treeData = []
+      // 请求响应返回树结构
+      api.getMenuTree().then(response => {
+        const tree = response.data.data
+        // 根据返回的数组格式化为树结构的格式，并追加parents用于级联选择和展开
+        let data = tree ? this.treeMapper(tree) : {}
+        this.treeData.push(data)
+        if (this.treeData.length > 0) {
+          // 如果没有当前选中节点则初始化为第一个选中
+          if (!this.currentTreeNode) {
+            this.currentTreeNode = this.treeData[0]
+            // 这里要注意，扩展响应式属性需要这么写
+            this.$set(this.treeData[0], 'selected', true)
+            this.$set(this.treeData[0], 'expand', true)
+          }
+          this.listQuery.parentId = this.currentTreeNode.id
+          this.handleFilter()
+        }
+      })
+    },
+    // 查询所有部门列表
+    searchList() {
+      this.setListData()
+      api.getMenuList(this.listQuery).then(response => {
+        if (response.status === 200) {
+          this.setListData({
+            list: response.data.rows,
+            total: response.data.total
+          })
+        }
+      })
+    },
+    // 请求权限菜单获取最新的权限菜单
+    getNewMenus(menuTree) {
+      let all = []
+      let mapper = (route) => {
+        if (route.name) {
+          all.push({ ...route })
+        }
+        if (route.children) {
+          route.children.forEach(item => {
+            mapper(item)
+          })
+        }
+      }
+      menuTree.forEach(item => {
+        mapper(item)
+      })
+      mapper = null
+      return all
     }
   }
+}
 </script>
