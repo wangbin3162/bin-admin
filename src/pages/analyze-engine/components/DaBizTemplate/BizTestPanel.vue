@@ -10,7 +10,7 @@
             <b-form v-else :model="form" ref="form" label-position="top">
               <b-form-item v-for="item in params" :key="item.paramCode"
                            :label="item.paramName" :prop="item.paramCode"
-                           :rules="{ required: true, message: `${item.paramName}不能为空`, trigger: 'blur' }"
+                           :rules="{ required: item.isRequired === 'Y', message: `${item.paramName}不能为空`, trigger: 'blur' }"
                            style="display: inline-block;width: calc(50% - 8px);margin-right: 8px;">
                 <b-input v-model="form[item.paramCode]" clearable placeholder="请输入"/>
               </b-form-item>

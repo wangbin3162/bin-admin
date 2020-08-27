@@ -154,7 +154,10 @@
             let field = this.fieldMap[key]
             // 两个比较对象共有的内容
             if (obj0.hasOwnProperty(key) && obj1.hasOwnProperty(key)) {
-              if (obj0[key] !== obj1[key]) { // 两个字段不同
+                if(obj0[key] === ""){
+                    obj0[key] = null;
+                }
+                if (obj0[key] !== obj1[key]) { // 两个字段不同
                 data.push({
                   field: field.title,
                   [item0.key]: obj0[key],
@@ -237,7 +240,7 @@
                 // console.log('掩码后：' + value)
               }
               if (field.options) {
-                tmp[key] = field.options[obj[key]] !== undefined ? field.options[obj[key]] : ""
+                tmp[key] = field.options[obj[key]] !== undefined ? field.options[obj[key]] : null
               }
             }
           }
