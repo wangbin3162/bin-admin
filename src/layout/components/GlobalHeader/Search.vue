@@ -54,6 +54,11 @@ export default {
   },
   methods: {
     handleGoto(val) {
+      if (val === this.$route.name) {
+        this.showInput = false
+        this.search = ''
+        return
+      }
       this.$router.push({ name: val })
       this.showInput = false
     },
@@ -64,7 +69,10 @@ export default {
         this.showInput = !this.showInput
         if (this.showInput) {
           this.$nextTick(_ => {
-            this.$refs.input && this.$refs.input.toggleMenu()
+            if (!this.$refs.input) return
+            let inputEl = this.$refs.input.$el.querySelector('.bin-select-input')
+            inputEl && inputEl.focus()
+            this.$refs.input.toggleMenu()
           })
         }
       }
