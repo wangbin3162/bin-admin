@@ -454,3 +454,30 @@ export async function getMatrixData(modelId, modelIndexId) {
     }
   })
 }
+
+/**
+ * @author haodongdong
+ * @description 获取全局权重
+ * @param {string} modelId 所属模型id
+ */
+export async function getGlobalWeight(modelId) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/api/eval/model/index/weightClos',
+        method: 'get',
+        params: {
+          modelId
+        }
+      })
+
+      if (res.data.successful) {
+        resolve(res.data.data)
+      } else {
+        reject(new Error(res.data.message))
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}

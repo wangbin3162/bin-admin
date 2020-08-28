@@ -89,7 +89,8 @@
           </div>
         </div>
 
-        <global-weight v-show="mainTab === 'globalWeight'">
+        <global-weight v-if="mainTab === 'globalWeight'"
+          :modelId="modelId">
         </global-weight>
 
         <template slot="footer">
@@ -338,10 +339,9 @@
 
             const map = this.tileTreeToMap(this.curNode.children) // 保存当前节点下的展开状态为map
 
+            await saveOrUpdate(this.listEdit) // 请求接口更新数据
             // 这里保存decision-matrix组件内判定矩阵的数据
             await this.$refs.decisionMtrix.saveMatrixData()
-
-            await saveOrUpdate(this.listEdit) // 请求接口更新数据
             await this.searchList() // 主要用于更新已选节点下数据后获取id，且这一步函数内会覆盖掉listEdit的展开状态
 
             // 更新右侧table数据(子节点)至当前左侧树选中节点的children
