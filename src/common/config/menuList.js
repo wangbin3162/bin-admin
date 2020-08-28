@@ -1,5 +1,3 @@
-import layout from '@/layout/index'
-
 /**
  * default menu list
  */
