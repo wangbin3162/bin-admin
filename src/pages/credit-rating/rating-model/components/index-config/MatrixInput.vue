@@ -3,7 +3,7 @@
     <b-input-number v-model="dividend" style="width: 55px;"
       :max="9" :min="1" :precision="0">
     </b-input-number>
-    <div style="width: 30px;"> / </div>
+    <div class="pl-10 pr-10"> / </div>
     <b-input-number v-model="divisor" style="width: 55px;"
       :max="9" :min="1" :precision="0">
     </b-input-number>

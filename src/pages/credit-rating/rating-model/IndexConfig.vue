@@ -211,6 +211,8 @@
             // 每次请求都需要构建tree组件使用的数据结构，传入当前选中节点的层级，便于准确构建子节点层级
             this.listEdit = this.buildTree(this.listEdit, this.curNode.level)
           }
+          // 设置curMatrixCol变动来源
+          this.$refs.decisionMtrix.setMutationSource('node-switch')
           this.setCurMatrixCol(this.listEdit) // 存储判定矩阵需要使用的数据
           // 这里获取decision-matrix组件保存的矩阵图数据
           this.$refs.decisionMtrix.getMatrixData(this.modelId, this.curNode.id)
@@ -252,6 +254,46 @@
         this.listEdit.push(obj) // 用于数据操作
       },
 
+      // 编辑模式下删除按钮回调
+      async handleRemove (index, id) {
+        const isSubmitted = id !== undefined // 存在id说明提交过
+        if (isSubmitted) {
+          this.$confirm({
+            title: '删除',
+            content: '删除当前项目会删除其子项，确认删除吗？',
+            loading: true,
+            okType: 'danger',
+            onOk: async () => {
+              try {
+                const map = this.tileTreeToMap(this.curNode.children) // 保存当前节点下的展开状态为map
+
+                await deleteIndexModel(id)
+                this.listEdit.splice(index, 1) // 删除绑定数据
+
+                this.$nextTick(() => { // 保持数据更新顺序
+                  // 这里保存decision-matrix组件内判定矩阵的数据
+                  this.$refs.decisionMtrix.saveMatrixData()
+                })
+
+                // 准备需要更新的节点数据，排除后续添加但未提交的数据
+                const newArr = this.listEdit.filter(item => item.id !== undefined)
+
+                // 更新右侧table数据(子节点)至当前左侧树选中节点的children
+                this.updateSubNodeToTreeCom(newArr, map)
+
+                this.$message({ type: 'success', content: '操作成功' })
+              } catch (error) {
+                console.error(error)
+                this.$notice.danger({ title: '操作错误', desc: error })
+              }
+              this.$modal.remove()
+            }
+          })
+        } else {
+          this.listEdit.splice(index, 1) // 删除绑定数据
+        }
+      },
+
       // 性质下拉框change回调
       handleIndexTypeChange (indexType, index, level) {
         // 切换时清空之前类型的数据
@@ -281,41 +323,6 @@
         curRowObj.indexDesc = singVal.indexDesc
         curRowObj.calIndexId = singVal.id
         this.$set(curRowObj, 'uSelected', true) // 用于选择后禁止切换性质下拉框, 与指标下拉框关联
-      },
-
-      // 编辑模式下删除按钮回调
-      async handleRemove (index, id) {
-        const isSubmitted = id !== undefined // 存在id说明提交过
-        if (isSubmitted) {
-          this.$confirm({
-            title: '删除',
-            content: '删除当前项目会删除其子项，确认删除吗？',
-            loading: true,
-            okType: 'danger',
-            onOk: async () => {
-              try {
-                const map = this.tileTreeToMap(this.curNode.children) // 保存当前节点下的展开状态为map
-
-                await deleteIndexModel(id)
-                this.listEdit.splice(index, 1) // 删除绑定数据
-
-                // 准备需要更新的节点数据，排除后续添加但未提交的数据
-                const newArr = this.listEdit.filter(item => item.id !== undefined)
-
-                // 更新右侧table数据(子节点)至当前左侧树选中节点的children
-                this.updateSubNodeToTreeCom(newArr, map)
-
-                this.$message({ type: 'success', content: '操作成功' })
-              } catch (error) {
-                console.error(error)
-                this.$notice.danger({ title: '操作错误', desc: error })
-              }
-              this.$modal.remove()
-            }
-          })
-        } else {
-          this.listEdit.splice(index, 1) // 删除绑定数据
-        }
       },
 
       // 编辑模式下提交按钮的回调

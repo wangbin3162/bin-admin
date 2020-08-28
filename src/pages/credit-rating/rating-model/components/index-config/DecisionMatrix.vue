@@ -38,7 +38,8 @@
         <tr v-for="(item, rowIndex) in curMatrixCol" :key="item.id">
           <th>{{ item.indexName }}</th>
           <td v-for="(colData, colIndex) in form.itemData" :key="colIndex"
-            :class="{ oneBg: rowIndex === colIndex }">
+            :class="{ oneBg: rowIndex === colIndex }"
+            @mouseenter="handleTdMouseenter">
             <template v-if="rowIndex === colIndex">
               <span>1</span>
             </template>
@@ -88,10 +89,6 @@
   export default {
     name: 'DecisionMatrix',
     props: {
-      displayStatus: { // 当前组件的显示状态，此状态由外部控制
-        type: Boolean,
-        required: true
-      },
       modelId: {
         type: String,
         required: true
@@ -116,6 +113,7 @@
     },
     data () {
       return {
+        mutationSource: null, // 导致curMatrixCol变动的来源
         crFlag: false, // 计算的一致性校验是否失败
         calBtnLoading: false,
         pIdCache: this.pId, // 用于curMatrixCol变动时判断是自身的变动还是其他层级的变动
@@ -150,15 +148,24 @@
     watch: {
       curMatrixCol: { // curMatrixCol变动时构建矩阵图结构、数据
         handler (newVal) {
+          console.log('mutationSource', this.mutationSource)
           if (newVal) {
             // 构建矩阵图使用的数据结构
             const { matrixData, weightList } = this.buildMatrixData(newVal)
-            if (matrixData.length === this.matrixDataCache.length) {
-              this.form.itemData = this.matrixDataCache // 使用缓存数据
-            } else {
+            console.log(matrixData)
+            // 这里需要判断此次变动是自身层级的变动，还是层级切换的变动
+            if (this.mutationSource === 'node-change') { // 自身变动
+              if (matrixData.length === this.matrixDataCache.length) { // 判断结构是否相同，相同结构则取缓存
+                this.form.itemData = this.matrixDataCache // 使用缓存数据
+              } else {
+                this.form.itemData = matrixData // 使用新数据
+              }
+            } else { // 节点切换
               this.form.itemData = matrixData // 使用新数据
             }
             this.list = weightList
+            // 设置变动来源
+            this.setMutationSource('node-change')
           }
         },
         deep: true
@@ -171,6 +178,9 @@
       }
     },
     created () {
+
+    },
+    mounted () {
 
     },
     methods: {
@@ -222,6 +232,7 @@
       async saveMatrixData () {
         try {
           this.form.modelIndexId = this.pId
+          console.log(this.form.itemData)
           await saveMatrixData(this.form)
         } catch (error) {
           console.error(error)
@@ -243,6 +254,11 @@
             this.form.degree = res.degree
             this.form.item = res.item
             this.form.itemData = JSON.parse(res.itemData)
+          } else {
+            this.form.id = ''
+            this.form.algorithm = 'fgf'
+            this.form.degree = 3
+            this.form.item = ''
           }
         } catch (error) {
           console.error(error)
@@ -367,6 +383,19 @@
             reject(error)
           }
         })
+      },
+
+      /**
+       * @author haodongdong
+       * @description 共外部组件使用，明确是谁导致了curMatrixCol变动
+       * @param {string} mutationSource
+       */
+      setMutationSource (mutationSource) {
+        this.mutationSource = mutationSource
+      },
+
+      handleTdMouseenter () {
+        console.log('????')
       }
     }
   }
