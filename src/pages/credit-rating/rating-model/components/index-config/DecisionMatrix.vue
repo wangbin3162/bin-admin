@@ -148,11 +148,9 @@
     watch: {
       curMatrixCol: { // curMatrixCol变动时构建矩阵图结构、数据
         handler (newVal) {
-          console.log('mutationSource', this.mutationSource)
           if (newVal) {
             // 构建矩阵图使用的数据结构
             const { matrixData, weightList } = this.buildMatrixData(newVal)
-            console.log(matrixData)
             // 这里需要判断此次变动是自身层级的变动，还是层级切换的变动
             if (this.mutationSource === 'node-change') { // 自身变动
               if (matrixData.length === this.matrixDataCache.length) { // 判断结构是否相同，相同结构则取缓存
@@ -395,7 +393,7 @@
       },
 
       handleTdMouseenter () {
-        console.log('????')
+
       }
     }
   }

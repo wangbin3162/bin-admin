@@ -23,7 +23,8 @@
                 :loading="listLoading">
                 <template v-slot:indexName="{ index }">
                   <b-input v-model="listEdit[index].indexName"
-                    :disabled="listEdit[index].indexType === 'Index'"></b-input>
+                    :disabled="listEdit[index].indexType === 'Index'">
+                  </b-input>
                 </template>
 
                 <template v-slot:indexType="{ row, index }">
@@ -43,7 +44,7 @@
                   <div flex>
                     <b-input-number style="width: 100%;"
                       v-model="listEdit[index].weight"
-                      :max="100" :min="0" :precision="2">
+                      :max="100" :min="1" :precision="2">
                     </b-input-number>
                     <span style="line-height: 30px;">%</span>
                   </div>
@@ -70,7 +71,7 @@
                 @click="handleAdd">
                     + 添加
                 </b-button>
-                <p>注：此处权重总计必须为100%</p>
+                <p>注：此处权重总计必须为100%，当前总和为{{ allWeight }}%</p>
                 <b-button type="primary" :loading="loadingBtn"
                   @click="handleSubmit">
                     保 存
@@ -165,6 +166,14 @@
         pWeights: []
       }
     },
+    computed: {
+      allWeight () {
+        let res = this.listEdit.reduce((total, curItem) => {
+          return total + curItem.weight
+        }, 0)
+        return res
+      }
+    },
     created () {
       this.searchList()
     },
@@ -248,7 +257,7 @@
           indexName: '',
           indexType: 'Dimension',
           calIndexId: null,
-          weight: 0, // 权重
+          weight: null, // 权重
           lastWeight: null, // 综合权重，类型为指标时必填
           indexDesc: ''
         }
@@ -548,6 +557,7 @@
           }
         })
       }
+
     }
   }
 </script>
