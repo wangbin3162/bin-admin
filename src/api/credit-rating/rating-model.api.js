@@ -464,7 +464,7 @@ export async function getGlobalWeight(modelId) {
   return new Promise(async (resolve, reject) => {
     try {
       const res = await request({
-        url: '/api/eval/model/index/weightClos',
+        url: '/api/eval/model/index/weightCols',
         method: 'get',
         params: {
           modelId

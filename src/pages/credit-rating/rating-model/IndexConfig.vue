@@ -283,6 +283,7 @@
                 this.updateSubNodeToTreeCom(newArr, map)
 
                 this.$message({ type: 'success', content: '操作成功' })
+                // this.listEdit.splice(index, 1) // 删除绑定数据
               } catch (error) {
                 console.error(error)
                 this.$notice.danger({ title: '操作错误', desc: error })
@@ -293,37 +294,6 @@
         } else {
           this.listEdit.splice(index, 1) // 删除绑定数据
         }
-      },
-
-      // 性质下拉框change回调
-      handleIndexTypeChange (indexType, index, level) {
-        // 切换时清空之前类型的数据
-        this.listEdit[index].indexName = ''
-        this.listEdit[index].indexDesc = ''
-        this.listEdit[index].weight = 0
-        if (indexType === 'Index') {
-          this.listEdit[index].children = []
-          // 选择指标时自动打开选择指标弹框
-          this.handleSelectBtn(level, indexType, index)
-        } else {
-          this.listEdit[index].calIndexId = null
-        }
-      },
-
-      // 编辑模式下选择按钮回调
-      handleSelectBtn (level, indexType, index) {
-        this.curIndex = index // 缓存点击选择按钮所在行的index
-        this.radio = true
-        this.open = true
-      },
-
-      // 选择指标组件的单选回调
-      handleChooseSing (singVal) {
-        const curRowObj = this.listEdit[this.curIndex]
-        curRowObj.indexName = singVal.indexName
-        curRowObj.indexDesc = singVal.indexDesc
-        curRowObj.calIndexId = singVal.id
-        this.$set(curRowObj, 'uSelected', true) // 用于选择后禁止切换性质下拉框, 与指标下拉框关联
       },
 
       // 编辑模式下提交按钮的回调
@@ -356,6 +326,37 @@
         } catch (error) {
           this.$message({ type: 'warning', content: error.message })
         }
+      },
+
+      // 性质下拉框change回调
+      handleIndexTypeChange (indexType, index, level) {
+        // 切换时清空之前类型的数据
+        this.listEdit[index].indexName = ''
+        this.listEdit[index].indexDesc = ''
+        this.listEdit[index].weight = 0
+        if (indexType === 'Index') {
+          this.listEdit[index].children = []
+          // 选择指标时自动打开选择指标弹框
+          this.handleSelectBtn(level, indexType, index)
+        } else {
+          this.listEdit[index].calIndexId = null
+        }
+      },
+
+      // 编辑模式下选择按钮回调
+      handleSelectBtn (level, indexType, index) {
+        this.curIndex = index // 缓存点击选择按钮所在行的index
+        this.radio = true
+        this.open = true
+      },
+
+      // 选择指标组件的单选回调
+      handleChooseSing (singVal) {
+        const curRowObj = this.listEdit[this.curIndex]
+        curRowObj.indexName = singVal.indexName
+        curRowObj.indexDesc = singVal.indexDesc
+        curRowObj.calIndexId = singVal.id
+        this.$set(curRowObj, 'uSelected', true) // 用于选择后禁止切换性质下拉框, 与指标下拉框关联
       },
 
       /**
@@ -512,11 +513,13 @@
 
       async isCount100 (list) {
         return new Promise((resolve, reject) => {
-          const num = list.reduce((total, curItem) => {
-            return total + curItem.weight
-          }, 0)
-          if (num !== 100) {
-            reject(new Error('当前层级权重之和必须为100%'))
+          if (list.length > 0) {
+            const num = list.reduce((total, curItem) => {
+              return total + curItem.weight
+            }, 0)
+            if (num !== 100) {
+              reject(new Error('当前层级权重之和必须为100%'))
+            }
           }
           resolve()
         })
