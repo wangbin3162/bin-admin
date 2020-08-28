@@ -51,22 +51,22 @@
                 </b-form-item>
               </b-col>
               <b-col span="12">
-                <b-form-item label="连接类型" prop="dbType">
-                  <b-select v-model="ds.dbType" clearable>
-                    <b-option v-for="(value,key) in dsTypeMap" :key="key" :value="key">{{ value }}</b-option>
-                  </b-select>
+                <b-form-item label="数据库名称" prop="dbName">
+                  <b-input v-model="ds.dbName" placeholder="请输入数据库名称" :maxlength="20" clearable></b-input>
                 </b-form-item>
               </b-col>
             </b-row>
             <b-row>
               <b-col span="12">
-                <b-form-item label="连接驱动" prop="driverClass">
-                  <b-input v-model="ds.driverClass" placeholder="请输入连接驱动" :maxlength="50" clearable></b-input>
+                <b-form-item label="连接类型" prop="dbType">
+                  <b-select v-model="ds.dbType" clearable @on-change="handleDbTypeChange">
+                    <b-option v-for="(value,key) in dsTypeMap" :key="key" :value="key">{{ key }}</b-option>
+                  </b-select>
                 </b-form-item>
               </b-col>
               <b-col span="12">
-                <b-form-item label="数据库名称" prop="dbName">
-                  <b-input v-model="ds.dbName" placeholder="请输入数据库名称" :maxlength="20" clearable></b-input>
+                <b-form-item label="连接驱动" prop="driverClass">
+                  <b-input v-model="ds.driverClass" :maxlength="50" clearable disabled></b-input>
                 </b-form-item>
               </b-col>
             </b-row>
@@ -128,14 +128,14 @@
 </template>
 
 <script>
-  import commonMixin from '../../../common/mixins/mixin'
-  import permission from '../../../common/mixins/permission'
-  import { requiredRule } from '../../../common/utils/validate'
-  import { getDataSourceType } from '../../../api/enum.api'
-  import * as api from '../../../api/data-manage/data-source.api'
-  import SourceInfo from './components/SwitchingNode/SourceInfo'
+    import commonMixin from '../../../common/mixins/mixin'
+    import permission from '../../../common/mixins/permission'
+    import {requiredRule} from '../../../common/utils/validate'
+    import {getDataSourceType} from '../../../api/enum.api'
+    import * as api from '../../../api/data-manage/data-source.api'
+    import SourceInfo from './components/SwitchingNode/SourceInfo'
 
-  export default {
+    export default {
     name: 'DataSource',
     components: { SourceInfo },
     mixins: [commonMixin, permission],
@@ -176,6 +176,9 @@
       this.searchList()
     },
     methods: {
+      handleDbTypeChange(val) {
+        this.ds.driverClass = this.dsTypeMap[val];
+      },
       // filter-Bar:重置查询条件
       resetQuery() {
         this.listQuery = {
@@ -259,7 +262,8 @@
         // 数据源类型枚举
         getDataSourceType().then(res => {
           if (res.status === 200) {
-            this.dsTypeMap = res.data.data
+              console.log(res.data.data);
+              this.dsTypeMap = res.data.data
           }
         })
       },
