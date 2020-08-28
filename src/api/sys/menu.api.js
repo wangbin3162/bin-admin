@@ -44,6 +44,7 @@ export function createMenu(menu) {
       name: menu.name,
       type: menu.type,
       url: menu.url,
+      icon: menu.icon,
       path: menu.path,
       sortNum: menu.sortNum,
       permissions: menu.permissions
@@ -71,6 +72,7 @@ export function modifyMenu(menu) {
       name: menu.name,
       type: menu.type,
       url: menu.url,
+      icon: menu.icon,
       path: menu.path,
       sortNum: menu.sortNum,
       permissions: menu.permissions

@@ -45,8 +45,6 @@ export default {
         commit('SET_ROLES', [])
         // 删除cookie
         util.cookies.remove(ACCESS_TOKEN)
-        // 清空路由
-        resetRouter()
         resolve()
       })
     },
@@ -72,7 +70,13 @@ export default {
     getUserMenus() {
       return new Promise((resolve, reject) => {
         getMenuByAuth().then(resp => {
-          resolve(menuList)
+          const result = resp.data
+          if (result.code === '0') {
+            resolve(result.data || [])
+            // resolve(menuList)
+          } else { // 如果是403 即为无效的token则重定向到login页面
+            reject(result)
+          }
         }).catch(error => {
           reject(error)
         })

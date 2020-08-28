@@ -7,7 +7,6 @@ import { ACCESS_TOKEN } from '@/common/token-const'
 // 路由数据
 import { addRoutes, constantRoutes } from '@/router/routes'
 import { getMenus } from '@/common/config/menuList'
-import { console } from 'vuedraggable/src/util/helper'
 
 // fix vue-router NavigationDuplicated
 const VueRouterPush = VueRouter.prototype.push

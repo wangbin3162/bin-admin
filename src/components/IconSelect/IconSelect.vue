@@ -1,6 +1,9 @@
 <template>
   <div class="icon-select">
-    <b-input :prefix="iconName" :size="size" :value="iconName" readonly clearable @on-clear="selectIcon('')"></b-input>
+    <b-input :size="size" :value="iconName"
+             readonly clearable @on-clear="selectIcon('')">
+      <b-icon :name="iconName" slot="prefix"></b-icon>
+    </b-input>
     <b-button :type="buttonType" :size="size" @click="openIcon">选择</b-button>
     <b-modal title="选择图标" v-model="iconDialog" width="1000"
              :body-styles="{padding:0}" footer-hide :stop-remove-scroll="stopRemoveScroll">

@@ -31,7 +31,7 @@
           </template>
           <!--菜单图标-->
           <template v-slot:icon="scope">
-            <b-icon v-if="scope.row.icon" :name="scope.row.icon"/>
+            <b-icon v-if="scope.row.icon" :name="scope.row.icon" size="20"/>
           </template>
           <!--菜单类型-->
           <template v-slot:type="scope">
@@ -76,22 +76,20 @@
                 </b-form-item>
               </b-col>
               <b-col span="12">
-                <b-form-item label="菜单类型" class="bin-form-item-required">
-                  <b-select :value="menu.type">
-                    <b-option :value="menu.type">{{ menuTypeMap[menu.type] }}</b-option>
-                  </b-select>
+                <b-form-item label="菜单名称" prop="name">
+                  <b-input v-model="menu.name" placeholder="请输入菜单名称" clearable></b-input>
                 </b-form-item>
               </b-col>
             </b-row>
             <b-row>
               <b-col span="12">
-                <b-form-item label="菜单名称" prop="name">
-                  <b-input v-model="menu.name" placeholder="请输入菜单名称" clearable></b-input>
+                <b-form-item label="前端路由" prop="path">
+                  <b-input v-model="menu.path" placeholder="请输入前端路由" clearable></b-input>
                 </b-form-item>
               </b-col>
               <b-col span="12">
-                <b-form-item label="前端路由" prop="path">
-                  <b-input v-model="menu.path" placeholder="请输入前端路由" clearable></b-input>
+                <b-form-item label="菜单图标">
+                  <icon-select v-model="menu.icon"></icon-select>
                 </b-form-item>
               </b-col>
             </b-row>
@@ -207,9 +205,11 @@ import { getYn, getMenuType } from '@/api/enum.api'
 import { requiredRule } from '@/common/utils/validate'
 import { deepCopy } from '@/common/utils/assist'
 import { downGo, upGo } from '@/common/utils/arr-utils'
+import IconSelect from '@/components/IconSelect/IconSelect'
 
 export default {
   name: 'Menu',
+  components: { IconSelect },
   mixins: [commonMixin, permission],
   data() {
     const validateMenuName = (rule, value, callback) => {
@@ -235,13 +235,15 @@ export default {
         }
         api.getMenuByAuth().then(resp => {
           if (resp.data.code === '0') {
-            let menus = resp.data.data.children
+            let menus = resp.data.data
             let activeRoute = this.getNewMenus(menus).find(item => item.name === value)
             if (activeRoute) {
               callback(new Error(`路由名称和[${activeRoute.title}]重复`))
             } else {
               callback()
             }
+          } else {
+            callback()
           }
         }).catch(() => {
           callback(new Error('请求最新权限菜单出错'))
@@ -261,8 +263,8 @@ export default {
       columns: [
         { type: 'index', width: 50, align: 'center' },
         { title: '菜单名称', slot: 'name' },
-        { title: '路由名称', key: 'path' },
-        { title: '菜单图标', slot: 'icon', width: 95, align: 'center' },
+        { title: '路由名称', key: 'path', align: 'center' },
+        { title: '菜单图标', slot: 'icon', align: 'center' },
         { title: '菜单类型', slot: 'type', width: 95, align: 'center' },
         { title: '排序编号', key: 'sortNum', width: 95, align: 'center' },
         { title: '状态', slot: 'delFlag', width: 100, align: 'center' },
@@ -372,11 +374,31 @@ export default {
             if (res.data.code === '0') {
               this.submitDone(true)
               this.initTree()
+              // this.successRefresh()
             } else {
               this.submitDone(false)
               this.$notice.danger({ title: '操作错误', desc: res.data.message })
             }
           })
+        }
+      })
+    },
+    // 修改新增提示是否刷新
+    successRefresh() {
+      this.$confirm({
+        title: '操作成功',
+        iconName: 'success',
+        content: '菜单发生改变，是否载入最新菜单？',
+        okText: '确定',
+        cancelText: '稍后手动刷新',
+        onOk: () => {
+          this.$modal.remove()
+          window.location.reload()
+        },
+        onCancel: () => {
+          this.dialogStatus = '' // 状态需要改回默认
+          this.btnLoading = false // 按钮状态清空
+          this.initTree()
         }
       })
     },
@@ -466,6 +488,7 @@ export default {
         name: '',
         sortNum: 0,
         url: '',
+        icon: '',
         type: this.TYPE.FUN, // 默认只创建功能菜单
         path: '',
         permissions: []
