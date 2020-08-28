@@ -372,9 +372,9 @@ export default {
           let fun = this.dialogStatus === 'create' ? api.createMenu : api.modifyMenu
           fun(this.menu).then(res => {
             if (res.data.code === '0') {
-              this.submitDone(true)
-              this.initTree()
-              // this.successRefresh()
+              // this.submitDone(true)
+              // this.initTree()
+              this.successRefresh()
             } else {
               this.submitDone(false)
               this.$notice.danger({ title: '操作错误', desc: res.data.message })

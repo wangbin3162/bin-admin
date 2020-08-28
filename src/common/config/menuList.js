@@ -12,7 +12,7 @@ export default [
       {
         name: 'Org',
         title: '组织管理',
-        icon: 'ios-git-network',
+        icon: 'ios-people',
         children: [
           { name: 'Dept', title: '部门管理', icon: '' },
           { name: 'User', title: '用户管理', icon: '' }
