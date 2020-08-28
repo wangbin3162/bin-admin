@@ -16,6 +16,10 @@
         </v-filter-bar>
         <!--中央表格-->
         <b-table :columns="columns" :data="list" :loading="listLoading">
+          <template v-slot:memoName="{row}">
+            <b-button type="text"   style="overflow: hidden;text-overflow: ellipsis;white-space: nowrap; width: 100%;text-align: left"
+                      :title="row.memoName"  @click="handleCheck(row)">{{ row.memoName }}</b-button>
+          </template>
           <template v-slot:action="{row}">
             <b-button type="text" @click="handleCheck(row)">查看</b-button>
           </template>
@@ -66,7 +70,7 @@
         },
         columns: [
           { type: 'index', width: 50, align: 'center' },
-          { title: '备忘录名称', key: 'memoName' },
+          { title: '备忘录名称', slot: 'memoName', key: 'memoName' },
           { title: '主体名称', key: 'name', align: 'center' },
           { title: '证件号码', key: 'idCode', align: 'center', width: 200 },
           { title: '统一社会信用代码', key: 'unifiedCode', align: 'center', width: 200 },
