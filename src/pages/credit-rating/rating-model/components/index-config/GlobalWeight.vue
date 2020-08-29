@@ -22,6 +22,10 @@
 
             <td v-else-if="colIndex !== row.length - 1 || row.length === 1" :key="col.id" :rowspan="col.rowSpan">
               {{ col.indexName }}
+              <br />
+              <span class="weight">
+                {{ col.weight }}%
+              </span>
             </td>
 
           </template>
@@ -50,7 +54,6 @@
 <script>
   import Big from 'big.js'
   import { getGlobalWeight, saveLastWeight } from '@/api/credit-rating/rating-model.api'
-import { last } from 'bin-ace-editor'
 
   export default {
     name: 'GolbalWeight',
@@ -222,6 +225,13 @@ import { last } from 'bin-ace-editor'
         border: 1px solid #e8eaec;
         color: #666;
         height: 40px;
+      }
+
+      td {
+        .weight {
+          font-size: 13.5px;
+          color: rgba(0, 0, 0, 0.75);
+        }
       }
 
       tr:hover {
