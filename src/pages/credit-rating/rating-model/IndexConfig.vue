@@ -71,7 +71,10 @@
                 @click="handleAdd">
                     + 添加
                 </b-button>
-                <p>注：此处权重总计必须为100%，当前总和为{{ allWeight }}%</p>
+                <p>
+                  注：此处权重总计必须为<span>100%</span>，
+                  还差<span>{{ allWeight }}%</span>
+                </p>
                 <b-button type="primary" :loading="loadingBtn"
                   @click="handleSubmit">
                     保 存
@@ -172,7 +175,7 @@
         let res = this.listEdit.reduce((total, curItem) => {
           return Number(Big(total).plus(curItem.weight || 0))
         }, 0)
-        return res
+        return Number(Big(100).minus(res))
       }
     },
     created () {
@@ -525,7 +528,7 @@
         return new Promise((resolve, reject) => {
           if (list.length > 0) {
             const num = list.reduce((total, curItem) => {
-              return total + curItem.weight
+              return Number(Big(total).plus(curItem.weight || 0))
             }, 0)
             if (num !== 100) {
               reject(new Error('当前层级权重之和必须为100%'))
@@ -591,6 +594,10 @@
         height: 40px;
         text-align: left;
         background-color: #fafafa;
+
+        span {
+          color: #0d85ff;
+        }
       }
     }
   }

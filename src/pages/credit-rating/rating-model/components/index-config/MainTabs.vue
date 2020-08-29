@@ -13,8 +13,8 @@
       return {
         activeTab: 'editWeight',
         tabs: [
-          { key: 'editWeight', title: '编辑权重' },
-          { key: 'globalWeight', title: '全局权重' }
+          { key: 'globalWeight', title: '全局权重' },
+          { key: 'editWeight', title: '编辑权重' }
         ]
       }
     },

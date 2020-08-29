@@ -481,3 +481,27 @@ export async function getGlobalWeight(modelId) {
     }
   })
 }
+
+/**
+ * @author haodongdong
+ * @description 保存全局权重指标
+ * @returns Promise
+ */
+export async function saveLastWeight(params) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await request({
+        url: '/api/eval/model/index/saveLastWeight',
+        method: 'post',
+        data: params
+      })
+      if (res.data.successful) { // 不是标准的restful，200中还可能包含接口错误。
+        resolve()
+      } else {
+        reject(new Error(res.data.message))
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
