@@ -111,6 +111,7 @@
 <script>
   import { mapMutations } from 'vuex'
   import commonMixin from '@/common/mixins/mixin'
+  import Big from 'big.js'
   import {
     getIndexModleTree, saveOrUpdate, deleteIndexModel
   } from '@/api/credit-rating/rating-model.api'
@@ -169,7 +170,7 @@
     computed: {
       allWeight () {
         let res = this.listEdit.reduce((total, curItem) => {
-          return total + curItem.weight
+          return Number(Big(total).plus(curItem.weight || 0))
         }, 0)
         return res
       }

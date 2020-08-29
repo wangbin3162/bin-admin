@@ -83,6 +83,7 @@
 
 <script>
   import { mapState } from 'vuex'
+  import Big from 'big.js'
   import { matrixCalculate, saveMatrixData, getMatrixData } from '@/api/credit-rating/rating-model.api'
   import MatrixInput from './MatrixInput'
 
@@ -200,16 +201,22 @@
           if (this.crFlag) {
             for (let i = 0; i < this.list.length; i++) {
               const el = this.list[i]
-              el.decisionWeight = Number((vector[i] * 100).toFixed(2))
+
+              el.decisionWeight = Number(Big(vector[i]).times(100))
               el.lastWeight = el.decisionWeight
+
+              let big = new Big(el.lastWeight)
+
               if (el.indexType === 'Index') {
                 for (const weight of this.pWeights) {
-                  el.lastWeight *= weight
+                  big = big.times(weight)
                 }
-                el.lastWeight *= this.pWeight
-                el.lastWeight /= 100
-                el.lastWeight = el.lastWeight.toFixed(2)
+                big = big.times(this.pWeight)
+                big = big.div(100)
+                el.lastWeight = Number(big)
               }
+
+              big = null
             }
 
             this.$message({ type: 'success', content: '操作成功' })
