@@ -467,10 +467,10 @@ export default {
      * @param {string} dateObj.endDateStr 结束时间的日期字符串 默认为yyyy-mm-dd
      */
     handleTabClick({ startDateStr, endDateStr }) {
-      this.commonDate = [startDateStr, endDateStr]
+      this.commonDate = this.timeTool([startDateStr, endDateStr])
       this.getCenterStatis({
-        startDate: startDateStr,
-        endDate: endDateStr,
+        startDate: this.commonDate[0],
+        endDate: this.commonDate[1],
         pageSize: this.query.pageSize,
         pageNo: this.query.pageNo,
         personClass: this.query.personClass
@@ -489,10 +489,10 @@ export default {
       } else {
         this.tabSelected = -1
       }
-      this.commonDate = date
+      this.commonDate = this.timeTool(date)
       this.getCenterStatis({
-        startDate: date[0],
-        endDate: date[1],
+        startDate: this.commonDate[0],
+        endDate: this.commonDate[1],
         pageSize: this.query.pageSize,
         pageNo: this.query.pageNo,
         personClass: this.query.personClass
@@ -558,6 +558,15 @@ export default {
     timeHandler(days, mode = '{y}-{m}') {
       const { startDateStr, endDateStr } = this.$util.rangeTime(days, mode)
       return [startDateStr, endDateStr]
+    },
+
+    /**
+     * @author haodongdong
+     * @descriptio 用于给日期字符串数组拼接时分秒 00:00:00 23:59:59
+     * @param {Array} dateStrArr
+     */
+    timeTool(dateStrArr) {
+      return dateStrArr
     },
 
     /**
@@ -662,7 +671,7 @@ export default {
      */
     async init() {
       // 初始化查询做需要的时间参数
-      this.commonDate = this.timeHandler(-365, '{y}-{m}-{d}')
+      this.commonDate = this.timeTool(this.timeHandler(-365, '{y}-{m}-{d}'))
       this.resInfoDate = this.timeHandler(-365)
 
       this.getFirstLineStatis()
