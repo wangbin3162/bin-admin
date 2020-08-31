@@ -85,7 +85,8 @@
               <b-col span="6">
                 <v-simple-label label="错误数据量">
                   {{ detail.errorCount }}
-                  <b-button type="text" v-if="detail.errorCount>0" @click="handleDownloadImportFile(detail.id)">
+                  <b-button type="text" v-if="detail.errorCount>0  && detail.jobStatus !== 'STARTED'"
+                            @click="handleDownloadImportFile(detail.id)">
                     下载：错误数据
                   </b-button>
                 </v-simple-label>
