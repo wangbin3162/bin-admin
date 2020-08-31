@@ -658,8 +658,18 @@
        */
       async init() {
         // 初始化查询做需要的时间参数
-        this.commonDate = this.timeHandler(-365, '{y}-{m}-{d}')
-        this.resInfoDate = this.timeHandler(-365)
+        const curYear = new Date().getFullYear()
+        let curYearDays = 0
+        if ((curYear % 4 === 0 && curYear % 100 !== 0) || curYear % 400 === 0) {
+          // 闰年
+          curYearDays = 366
+        } else {
+          // 平年
+          curYearDays = 365
+        }
+        // 处理函数会多取一天，所以这里+1，使之取正确的天数
+        this.commonDate = this.timeHandler(-curYearDays + 1, '{y}-{m}-{d}')
+        this.resInfoDate = this.timeHandler(-curYearDays + 1)
 
         this.getFirstLineStatis()
         this.getCenterStatis({
