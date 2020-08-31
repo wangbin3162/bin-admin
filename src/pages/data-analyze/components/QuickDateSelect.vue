@@ -45,16 +45,31 @@
     },
     methods: {
       handleClick (index) {
+        // 获取当前月天数
+        const date = new Date()
+        const curYear = date.getFullYear()
+        const curDate = new Date(date.getFullYear(), date.getMonth() + 1, 0)
+        const curMonthDays = curDate.getDate() // 获取当月多少天
+
+        let curYearDays = 0
+        if ((curYear % 4 === 0 && curYear % 100 !== 0) || curYear % 400 === 0) {
+          // 闰年
+          curYearDays = 366
+        } else {
+          // 平年
+          curYearDays = 365
+        }
+
         this.tab = index
         let res = {}
         if (index === 0) {
-          res = this.$util.rangeTime(-7, this.dateMode)
+          res = this.$util.rangeTime(-7 + 1, this.dateMode)
         }
         if (index === 1) {
-          res = this.$util.rangeTime(-30, this.dateMode)
+          res = this.$util.rangeTime(-curMonthDays + 1, this.dateMode)
         }
         if (index === 2) {
-          res = this.$util.rangeTime(-365, this.dateMode)
+          res = this.$util.rangeTime(-curYearDays + 1, this.dateMode)
         }
         this.$emit('tab-click', { ...res, index })
       }

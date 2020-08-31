@@ -1,6 +1,7 @@
 
 import request from '../request'
 import store from '@/store'
+import BinUtil from 'bin-ui/src/utils/util'
 
 function isDomain() {
   return store.state.user.info.departKind === 'DOMAIN'
@@ -51,6 +52,11 @@ export async function firstLineStatis () {
  * @returns {Promise}
  */
 export async function centerStatis (query) {
+  //  主要用于给结束的日期字符串多加一天，后端要求centerStatis传参的结束日期要多加一天。
+  const endDate = new Date(query.endDate)
+  endDate.setDate(endDate.getDate() + 1)
+  const endDateStr = BinUtil.parseTime(endDate, '{y}-{m}-{d}')
+
   return new Promise(async (resolve, reject) => {
     try {
       const res = await request({
@@ -58,7 +64,7 @@ export async function centerStatis (query) {
         method: 'get',
         params: {
           startDate: query.startDate,
-          endDate: query.endDate,
+          endDate: endDateStr,
           pageSize: query.pageSize,
           pageNo: query.pageNo,
           personClass: query.personClass,
