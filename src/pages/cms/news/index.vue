@@ -55,11 +55,11 @@
             <template v-if="contentList.length > 0">
               <ul>
                 <li v-for="item in contentList" :key="item.id">
-                  <div class="title-con">
+                  <div class="title-con" @click="handleTitleBtnClick(item.id, item.colId)">
                     <img v-if="item.thumbnailPath !== null"
                       :src="item.imgBase64" alt="">
                     <div class="title-text">
-                      <p v-html="item.title" @click="handleTitleBtnClick(item.id, item.colId)"></p>
+                      <p v-html="item.title"></p>
                       <div v-html="item.summary"></div>
                     </div>
                   </div>
