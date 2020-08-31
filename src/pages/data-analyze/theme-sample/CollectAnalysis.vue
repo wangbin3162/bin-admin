@@ -358,7 +358,7 @@ export default {
       ],
       bmsjgjfxData: [], // 部门数据归集分析
       zxtbbmColumns: [ // 最新提报部门
-        { title: '部门名称', key: 'createDept', ellipsis: true, tooltip: true },
+        { title: '部门名称', key: 'depart', ellipsis: true, tooltip: true },
         { title: '资源信息', key: 'resourceKey', ellipsis: true, tooltip: true, align: 'right' }
       ],
       zxtbbmData: [], // 最新提报部门
@@ -599,7 +599,7 @@ export default {
           return item
         })
 
-        this.zxtbbmData = res.zxtbbm
+        this.zxtbbmData = res.zxtbbm.content
 
         this.barChartOption.dataset = formatDataSet(
           { xField: 'classifycode', yField: 'count' },
