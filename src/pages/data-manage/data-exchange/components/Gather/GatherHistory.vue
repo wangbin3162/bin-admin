@@ -157,6 +157,9 @@
                 if (obj0[key] === '') {
                     obj0[key] = null
                 }
+                if (obj1[key] === '') {
+                    obj1[key] = null
+                }
                 if (obj0[key] !== obj1[key]) { // 两个字段不同
                 data.push({
                   field: field.title,
