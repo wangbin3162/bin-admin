@@ -37,7 +37,7 @@
               <h3>栏目信息</h3>
             </div>
 
-            <div class="nav-btn-list">
+            <div>
               <div v-for="item in subSecList" :key="item.id"
                 @click="handleSubSecClick(item)"
                 class="nav-btn" :class="{ actived: item.id === curSubTab.id }">
@@ -358,9 +358,7 @@
       margin: 25px auto 25px;
 
       .left {
-        max-height: 400px;
         width: 300px;
-        background: #ffffff;
 
         .col-title {
           display: flex;
@@ -368,15 +366,11 @@
           padding: 0 15px;
           height: 55px;
           border-bottom: 1px dashed  #d9d9d9;
+          background: #ffffff;
 
           h3 {
             margin-left: 15px;
           }
-        }
-
-        .nav-btn-list {
-          max-height: 345px;
-          overflow: auto;
         }
 
         .nav-btn {
@@ -387,6 +381,7 @@
           font-size: 15px;
           border-bottom: 1px dashed  #d9d9d9;
           cursor: pointer;
+          background: #ffffff;
           transition: all 0.4s;
 
           &:hover {
