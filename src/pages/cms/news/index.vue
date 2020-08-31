@@ -56,8 +56,8 @@
               <ul>
                 <li v-for="item in contentList" :key="item.id">
                   <div class="title-con">
-                    <img :src="`/api/cms/attach/download?attachmentId=${item.thumbnailPath}`" alt=""
-                      v-show="item.thumbnailPath !== null">
+                    <img v-if="item.thumbnailPath !== null"
+                      :src="item.imgBase64" alt="">
                     <div class="title-text">
                       <p v-html="item.title" @click="handleTitleBtnClick(item.id, item.colId)"></p>
                       <div v-html="item.summary"></div>
@@ -94,6 +94,7 @@
     getSectionRoots, getSectionChildren,
     getContentList
   } from '../../../api/cms/news.api'
+  import { fileDownLoad } from '@/api/common.api'
 
   export default {
     name: 'News',
@@ -195,10 +196,30 @@
           const res = await getContentList(query)
           this.contentList = res.rows
           this.total = res.total
+          this.downLoadImg(this.contentList)
         } catch (error) {
           console.error(error)
         }
         this.loading = false
+      },
+
+      /**
+       * @author haodongdong
+       * @description 下载新闻图片
+       * @param {Array} 新闻列表
+       */
+      async downLoadImg (list) {
+        list.forEach(item => {
+          if (item.thumbnailPath) {
+            fileDownLoad(item.thumbnailPath, 'cms', 'thumbnail').then(res => {
+              const reader = new FileReader()
+              reader.readAsDataURL(res)
+              reader.onload = e => {
+                this.$set(item, 'imgBase64', e.target.result)
+              }
+            })
+          }
+        })
       },
 
       /**
