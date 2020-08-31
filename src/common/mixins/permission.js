@@ -8,7 +8,7 @@ export default {
     currentPermission() {
       const permissions = store.getters.userInfo.permissions || null
       if (permissions) {
-        return permissions[this.$route.fullPath]
+        return permissions[this.$route.name]
       }
       return null
     },
