@@ -30,8 +30,7 @@
         },
         list: [],
         columns: [
-          { type: 'index', width: 50 },
-          { title: '行业名称', key: 'name', ellipsis: true, tooltip: true },
+          { title: '行业名称', key: 'name', ellipsis: true, tooltip: true, align: 'left' },
           { title: '黑名单数量', key: 'count', align: 'center' },
           { title: '占比', key: 'ratio', align: 'center' }
         ]

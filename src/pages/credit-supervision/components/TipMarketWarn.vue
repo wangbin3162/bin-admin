@@ -30,9 +30,8 @@
         },
         list: [],
         columns: [
-          { type: 'index', width: 50 },
-          { title: '企业名称', key: 'compName', ellipsis: true, tooltip: true },
-          { title: '预警原因', key: 'resourceName', ellipsis: true, tooltip: true }
+          { title: '企业名称', key: 'compName', ellipsis: true, tooltip: true, align: 'left' },
+          { title: '预警原因', key: 'resourceName', ellipsis: true, tooltip: true, align: 'center' }
         ]
       }
     },
