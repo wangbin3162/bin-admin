@@ -23,6 +23,16 @@
             @click="handleBatchSyncBtn" :disabled="!havePermission('batchSync')">
             批量同步
           </b-button>
+
+          <template slot="right">
+            <b-popover title="数据分析引导图" placement="right-start"
+              appendToBody word-wrap trigger="hover">
+              <div slot="content" class="p10">
+                <img src="@/assets/images/data-analyze/数据分析引导图.png" />
+              </div>
+              <b-button type="text" icon="md-images">引导图</b-button>
+            </b-popover>
+          </template>
         </v-table-tool-bar>
         <!--中央表格-->
         <b-table :columns="columns" :data="list" :loading="listLoading">
