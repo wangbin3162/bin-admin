@@ -92,7 +92,7 @@
           <b-col span="12">
             <b-form-item label="响应类型" prop="respKind">
               <b-select v-model="resp.respKind" placeholder="请选择" clearable>
-                <b-option v-for="(value,key) in respTypeMap" :key="key" :value="key">{{ value }}</b-option>
+                <b-option v-for="(value,key) in respTypeMapFilter" :key="key" :value="key">{{ value }}</b-option>
               </b-select>
             </b-form-item>
           </b-col>
@@ -116,7 +116,13 @@
         </b-row>
         <b-row :gutter="20">
           <b-col span="12">
-            <b-form-item label="数据类型" prop="dataType">
+            <!-- 子节点数据类型必填 -->
+            <b-form-item v-if="nodeOptType === 'sub'" label="数据类型" prop="dataType" :key="nodeOptType">
+              <b-select v-model="resp.dataType" placeholder="请选择" clearable>
+                <b-option v-for="(value,key) in dataTypeMap" :key="key" :value="key">{{ value }}</b-option>
+              </b-select>
+            </b-form-item>
+            <b-form-item v-else label="数据类型" :key="nodeOptType">
               <b-select v-model="resp.dataType" placeholder="请选择" clearable>
                 <b-option v-for="(value,key) in dataTypeMap" :key="key" :value="key">{{ value }}</b-option>
               </b-select>
@@ -180,17 +186,18 @@
             pattern: /^(\/[a-zA-Z0-9_]+)+$/,
             message: '合法路径以/开头(包含字母、数字和下划线)',
             trigger: 'blur'
-          }]
+          }],
+          dataType: [{ required: true, message: '必填项', trigger: 'change' }]
         },
         treeData: [],
         columns: [
           { type: 'index', width: 50, align: 'center' },
           { title: '响应类型', slot: 'respKind', align: 'center', width: 90 },
           { title: '数据类型', slot: 'dataType', align: 'center', width: 90 },
-          { title: '别名', key: 'keyAlias', width: 80 },
-          { title: '键名', key: 'keyName', width: 80 },
-          { title: '键路径', key: 'keyPath' },
-          { title: '说明', key: 'memo' },
+          { title: '别名', key: 'keyAlias', width: 80, ellipsis: true, tooltip: true },
+          { title: '键名', key: 'keyName', width: 80, ellipsis: true, tooltip: true },
+          { title: '键路径', key: 'keyPath', ellipsis: true, tooltip: true },
+          { title: '说明', key: 'memo', ellipsis: true, tooltip: true },
           { title: '操作', slot: 'action', width: 130 }
         ],
         drawerVisible: false,
@@ -225,6 +232,22 @@
         let res = false
         if (this.currentTreeNode && !this.currentTreeNode.root) {
           if (this.currentTreeNode.id === null) res = true
+        }
+        return res
+      },
+      respTypeMapFilter () {
+        let res = {}
+        for (const key in this.respTypeMap) {
+          if (this.respTypeMap.hasOwnProperty(key)) {
+            const el = this.respTypeMap[key]
+            if (this.nodeOptType === 'root') {
+              if (key !== 'RECORD') {
+                res[key] = el
+              }
+            } else {
+              if (key === 'RECORD') res[key] = el
+            }
+          }
         }
         return res
       }
@@ -529,10 +552,7 @@
       // 根据节点类型(根节点 子节点) 根节点 root 子节点 sub
       buildRespTypeMap (type) {
         this.nodeOptType = type
-        if (type === 'root') {
-          this.respTypeMap = { QUERY: '查询', METRIC: '度量', BUCKET: '分组' }
-        } else {
-          this.respTypeMap = { RECORD: '记录' }
+        if (type === 'sub') {
           this.resp.respKind = 'RECORD'
         }
       }
