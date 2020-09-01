@@ -117,12 +117,7 @@
         <b-row :gutter="20">
           <b-col span="12">
             <!-- 子节点数据类型必填 -->
-            <b-form-item v-if="nodeOptType === 'sub'" label="数据类型" prop="dataType" :key="nodeOptType">
-              <b-select v-model="resp.dataType" placeholder="请选择" clearable>
-                <b-option v-for="(value,key) in dataTypeMap" :key="key" :value="key">{{ value }}</b-option>
-              </b-select>
-            </b-form-item>
-            <b-form-item v-else label="数据类型" :key="nodeOptType">
+            <b-form-item v-if="nodeOptType === 'sub'" label="数据类型" prop="dataType">
               <b-select v-model="resp.dataType" placeholder="请选择" clearable>
                 <b-option v-for="(value,key) in dataTypeMap" :key="key" :value="key">{{ value }}</b-option>
               </b-select>
@@ -235,7 +230,7 @@
         }
         return res
       },
-      respTypeMapFilter () {
+      respTypeMapFilter () { // 左侧树节点与右侧table列表所触发的编辑弹框内的相应类型数据不同
         let res = {}
         for (const key in this.respTypeMap) {
           if (this.respTypeMap.hasOwnProperty(key)) {

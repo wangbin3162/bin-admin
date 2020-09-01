@@ -78,7 +78,7 @@
           <b-col span="12">
             <b-form-item label="响应类型" prop="respKind">
               <b-select v-model="resp.respKind" placeholder="请选择" clearable>
-                <b-option v-for="(value,key) in respTypeMap" :key="key" :value="key">{{ value }}</b-option>
+                <b-option v-for="(value,key) in respTypeMapFilter" :key="key" :value="key">{{ value }}</b-option>
               </b-select>
             </b-form-item>
           </b-col>
@@ -102,7 +102,8 @@
         </b-row>
         <b-row :gutter="20">
           <b-col span="12">
-            <b-form-item label="数据类型" prop="dataType">
+            <!-- 子节点数据类型必填 -->
+            <b-form-item v-if="nodeOptType === 'sub'" label="数据类型" prop="dataType">
               <b-select v-model="resp.dataType" placeholder="请选择" clearable>
                 <b-option v-for="(value,key) in dataTypeMap" :key="key" :value="key">{{ value }}</b-option>
               </b-select>
@@ -164,7 +165,8 @@
             pattern: /^(\/[a-zA-Z0-9_]+)+$/,
             message: '合法路径以/开头(包含字母、数字和下划线)',
             trigger: 'blur'
-          }]
+          }],
+          dataType: [{ required: true, message: '必填项', trigger: 'change' }]
         },
         treeData: [],
         columns: [
@@ -191,7 +193,26 @@
           datetime: '日期时间',
           boolean: '布尔',
           map: 'map集合'
+        },
+        nodeOptType: null // 表示当前编辑框是由根节点还是子节点触发的操作, 左侧树此处为根节点, 右侧列表为子节点, 状态由各自的按钮更新
+      }
+    },
+    computed: {
+      respTypeMapFilter () { // 左侧树节点与右侧table列表所触发的编辑弹框内的相应类型数据不同
+        let res = {}
+        for (const key in this.respTypeMap) {
+          if (this.respTypeMap.hasOwnProperty(key)) {
+            const el = this.respTypeMap[key]
+            if (this.nodeOptType === 'root') {
+              if (key !== 'RECORD') {
+                res[key] = el
+              }
+            } else {
+              if (key === 'RECORD') res[key] = el
+            }
+          }
         }
+        return res
       }
     },
     created() {
@@ -222,12 +243,14 @@
       // 添加跟响应节点
       handleCreateRoot() {
         this.resetResp(null)
+        this.buildRespTypeMap('root')
         this.openEditPage('create')
         this.drawerVisible = true
       },
       // 编辑节点事件
       handleModifyRoot() {
         this.resp = { ...this.currentTreeNode.obj }
+        this.buildRespTypeMap('root')
         this.openEditPage('modify')
         this.drawerVisible = true
       },
@@ -237,6 +260,7 @@
           return
         }
         this.resetResp(this.currentTreeNode.id)
+        this.buildRespTypeMap('sub')
         this.openEditPage('create')
         this.drawerVisible = true
       },
@@ -329,6 +353,7 @@
       handleModify(row) {
         this.resetResp(this.currentTreeNode.id)
         this.resp = { ...row }
+        this.buildRespTypeMap('sub')
         this.openEditPage('modify')
         this.drawerVisible = true
       },
@@ -453,6 +478,13 @@
             })
           }
         })
+      },
+      // 根据节点类型(根节点 子节点) 根节点 root 子节点 sub
+      buildRespTypeMap (type) {
+        this.nodeOptType = type
+        if (type === 'sub') {
+          this.resp.respKind = 'RECORD'
+        }
       }
     }
   }
