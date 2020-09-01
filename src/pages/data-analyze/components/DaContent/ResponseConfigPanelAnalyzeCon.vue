@@ -210,7 +210,8 @@
         },
         // 以下为重构后需要的参数
         interfaceTestInitParam: null, // 接口测试组件interface-test需要使用的参数
-        openInterfaceTest: false // 用于控制interface-test组件测生命周期
+        openInterfaceTest: false, // 用于控制interface-test组件测生命周期
+        nodeCoordinate: [0, 0] // 当前选中节点坐标，主要用于刷新后恢复选中状态
       }
     },
     computed: { // 重构新增计算属性
@@ -258,6 +259,8 @@
        * @param {Object} node 当前节点
        */
       handTreeCurrentChange(data, node) {
+        // 缓存选中的节点坐标，用于刷新左侧树时保存节点选中状态
+        this.nodeCoordinate = node.coordinate
         if (this.currentTreeNode.id === node.id) {
           node.selected = true
         }
@@ -485,7 +488,9 @@
           if (item.children && item.children.length) {
             item.children.forEach((subItem, subIndex) => {
               subItem.obj = { ...subItem } // 需要提交的数据结构放入obj字段
-              if (index === 0 && subIndex === 0) { // 如果是第一个根节点的第一个子节点则设置默认选中
+              // 因为这里固定只有两层，所以给予子节点固定坐标坐标
+              subItem.coordinate = [index, subIndex]
+              if (index === this.nodeCoordinate[0] && subIndex === this.nodeCoordinate[1]) {
                 subItem.selected = true
                 this.currentTreeNode = subItem
                 this.handleFilter()
