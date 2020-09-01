@@ -211,7 +211,8 @@
         // 以下为重构后需要的参数
         interfaceTestInitParam: null, // 接口测试组件interface-test需要使用的参数
         openInterfaceTest: false, // 用于控制interface-test组件测生命周期
-        nodeCoordinate: [0, 0] // 当前选中节点坐标，主要用于刷新后恢复选中状态
+        nodeCoordinate: [0, 0], // 当前选中节点坐标，主要用于刷新后恢复选中状态
+        nodeOptType: null // 表示当前编辑框是由根节点还是子节点触发的操作, 左侧树此处为根节点, 右侧列表为子节点, 状态由各自的按钮更新
       }
     },
     computed: { // 重构新增计算属性
@@ -241,6 +242,7 @@
         this.listQuery.bizId = bizId
         this.cfgTitle = title
         this.visible = true
+        this.nodeCoordinate = [0, 0] // 初始化节点坐标
         this.queryLeftRespInfos(bizId)
         this.openInterfaceTest = true // 用于控制interface-test组件测生命周期
       },
@@ -274,12 +276,14 @@
       // 添加跟响应节点
       handleCreateRoot() {
         this.resetResp(null, this.currentTreeNode.apiId)
+        this.buildRespTypeMap('root')
         this.openEditPage('create')
         this.drawerVisible = true
       },
       // 编辑节点事件
       handleModifyRoot() {
         this.resp = { ...this.currentTreeNode.obj }
+        this.buildRespTypeMap('root')
         this.openEditPage('modify')
         this.drawerVisible = true
       },
@@ -289,6 +293,7 @@
           return
         }
         this.resetResp(this.currentTreeNode.id, this.currentTreeNode.apiId)
+        this.buildRespTypeMap('sub')
         this.openEditPage('create')
         this.drawerVisible = true
       },
@@ -384,6 +389,7 @@
       handleModify(row) {
         this.resetResp(this.currentTreeNode.id, row.apiId)
         this.resp = { ...row }
+        this.buildRespTypeMap('sub')
         this.openEditPage('modify')
         this.drawerVisible = true
       },
@@ -484,12 +490,19 @@
           item.selected = false
           item.expand = true
           item.root = true
+          item.level = 0
+          item.coordinate = [index] // 构建坐标
+          // 点击树节点时会缓存树节点在二维数组中的坐标, 此处取缓存设置
+          if (this.nodeCoordinate[0] === index && this.nodeCoordinate[1] === undefined) {
+            item.selected = true
+          }
 
           if (item.children && item.children.length) {
             item.children.forEach((subItem, subIndex) => {
               subItem.obj = { ...subItem } // 需要提交的数据结构放入obj字段
-              // 因为这里固定只有两层，所以给予子节点固定坐标坐标
-              subItem.coordinate = [index, subIndex]
+              subItem.coordinate = [index, subIndex] // 构建坐标
+              subItem.level = 1
+              // 点击树节点时会缓存树节点在二维数组中的坐标, 此处取缓存设置
               if (index === this.nodeCoordinate[0] && subIndex === this.nodeCoordinate[1]) {
                 subItem.selected = true
                 this.currentTreeNode = subItem
@@ -511,6 +524,16 @@
           this.treeData = this.buildTree(res)
         } catch (error) {
           console.error(error)
+        }
+      },
+      // 根据节点类型(根节点 子节点) 根节点 root 子节点 sub
+      buildRespTypeMap (type) {
+        this.nodeOptType = type
+        if (type === 'root') {
+          this.respTypeMap = { QUERY: '查询', METRIC: '度量', BUCKET: '分组' }
+        } else {
+          this.respTypeMap = { RECORD: '记录' }
+          this.resp.respKind = 'RECORD'
         }
       }
     }
