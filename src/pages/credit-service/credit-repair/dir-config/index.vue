@@ -14,7 +14,11 @@
         </v-filter-bar>
         <!-- 操作栏 -->
         <v-table-tool-bar>
-          <b-button type="primary" icon="ios-add-circle-outline" @click="handleCreate">新 增</b-button>
+          <b-button type="primary" icon="ios-add-circle-outline"
+            v-if="canCreate"
+            @click="handleCreate">
+            新 增
+          </b-button>
         </v-table-tool-bar>
         <b-table :columns="columns" :data="list" :loading="listLoading">
 
@@ -23,12 +27,16 @@
           </template>
 
           <template v-slot:action="{ row }">
-            <b-button type="text" @click="handleModify(row)">
+            <b-button type="text"
+              :disabled="!canModify"
+              @click="handleModify(row)">
               修改
             </b-button>
             <template>
               <b-divider type="vertical"></b-divider>
-              <b-button type="text" text-color="danger" @click="handleRemove(row.id)">
+              <b-button type="text" text-color="danger"
+                :disabled="!canRemove"
+                @click="handleRemove(row.id)">
                 删除
               </b-button>
             </template>

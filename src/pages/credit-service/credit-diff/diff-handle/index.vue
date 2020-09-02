@@ -19,7 +19,9 @@
         <!-- table -->
         <b-table :columns="columns" :data="list" :loading="listLoading">
           <template v-slot:action="{ row }">
-            <b-button type="text" @click="handleCheck(row)">
+            <b-button type="text"
+              :disabled="!havePermission('handle')"
+              @click="handleCheck(row)">
               处理
             </b-button>
           </template>

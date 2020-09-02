@@ -23,7 +23,11 @@
 
         <!-- 操作栏 -->
         <v-table-tool-bar>
-          <b-button type="primary" icon="ios-add-circle-outline" @click="handleCreate">修复申请</b-button>
+          <b-button type="primary" icon="ios-add-circle-outline"
+            v-if="havePermission('repairApply')"
+            @click="handleCreate">
+            修复申请
+          </b-button>
         </v-table-tool-bar>
 
         <!-- table -->
@@ -45,7 +49,9 @@
               <!-- <b-button type="text" @click="handleModify(row)">
                 修改
               </b-button> -->
-              <b-button type="text" text-color="danger" @click="handleRemove(row.id)">
+              <b-button type="text" text-color="danger"
+                :disabled="!canRemove"
+                @click="handleRemove(row.id)">
                 删除
               </b-button>
             </template>

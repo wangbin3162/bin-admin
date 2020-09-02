@@ -35,9 +35,11 @@
             <b-button type="text" @click="handleCheck(row)">
               查看
             </b-button>
-            <!-- 待审核的可以删除 -->
+            <!-- 待审核的可以审核 -->
             <template v-if="row.status === '1'">
-              <b-button type="text" @click="handleModify(row)">
+              <b-button type="text"
+                :disabled="!havePermission('review')"
+                @click="handleModify(row)">
                 审核
               </b-button>
             </template>
