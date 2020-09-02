@@ -24,13 +24,13 @@
             @click="handleCreate">新 增
           </b-button>
           <template slot="right" v-if="hasBatchOperate">
-            <b-popover title="数据分析引导图" placement="right-start"
+            <!--<b-popover title="数据分析引导图" placement="right-start"
               appendToBody word-wrap trigger="hover">
               <div slot="content" class="p10">
                 <img src="@/assets/images/data-analyze/数据分析引导图.png" />
               </div>
-              <b-button type="text" icon="md-images">引导图</b-button>
-            </b-popover>
+              <b-button type="text" icon="md-images">帮助</b-button>
+            </b-popover>-->
             <b-divider type="vertical"></b-divider>
             <b-button type="text" @click="handleBatchOff">批量静态数据</b-button>
             <b-divider type="vertical"></b-divider>
