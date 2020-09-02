@@ -80,7 +80,7 @@
               <b-col span="8">
                 <v-simple-label label="错误数据量">
                   {{ importDetail.validationCount }}
-                  <b-button type="text" v-if="importDetail.validationCount>0"
+                  <b-button type="text" v-if="importDetail.validationCount>0 && importDetail.jobStatus !== 'STARTED'"
                             @click="handleDownloadExport(importDetail.batchInfoId,importDetail.uploadDate,'导入记录-错误报告')">
                     下载：错误数据
                   </b-button>

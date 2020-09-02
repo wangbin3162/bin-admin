@@ -95,7 +95,13 @@
             </b-row>
             <b-row :gutter="20">
               <b-col span="6">
-                <b-form-item label="默认值" style="margin-bottom: 17px;" prop="defaultVal">
+                <b-form-item v-if="totalData[index].analysisType === 'ALL'" :key="totalData[index].analysisType"
+                  label="默认值" style="margin-bottom: 17px;" prop="defaultVal">
+                  <b-input type="text" v-model="totalData[index].defaultVal" size="small" @on-change="emitValue"
+                           clearable/>
+                </b-form-item>
+                <b-form-item v-else :key="totalData[index].analysisType"
+                  label="默认值" style="margin-bottom: 17px;">
                   <b-input type="text" v-model="totalData[index].defaultVal" size="small" @on-change="emitValue"
                            clearable/>
                 </b-form-item>
@@ -144,7 +150,8 @@ export default {
         paramName: [{ required: true, message: '参数名称必填', trigger: 'blur' }],
         paramCode: [{ required: true, message: '参数编码必填', trigger: 'blur' }],
         controlType: [{ required: true, message: '控件类型必填', trigger: 'change' }],
-        analysisType: [{ required: true, message: '参数类型必填', trigger: 'change' }]
+        analysisType: [{ required: true, message: '参数类型必填', trigger: 'change' }],
+        defaultVal: [{ required: true, message: '默认值必填', trigger: 'blur' }]
       }
     }
   },

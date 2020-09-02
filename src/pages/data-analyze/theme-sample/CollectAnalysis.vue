@@ -358,7 +358,7 @@ export default {
       ],
       bmsjgjfxData: [], // 部门数据归集分析
       zxtbbmColumns: [ // 最新提报部门
-        { title: '部门名称', key: 'createDept', ellipsis: true, tooltip: true },
+        { title: '部门名称', key: 'depart', ellipsis: true, tooltip: true },
         { title: '资源信息', key: 'resourceKey', ellipsis: true, tooltip: true, align: 'right' }
       ],
       zxtbbmData: [], // 最新提报部门
@@ -467,7 +467,7 @@ export default {
      * @param {string} dateObj.endDateStr 结束时间的日期字符串 默认为yyyy-mm-dd
      */
     handleTabClick({ startDateStr, endDateStr }) {
-      this.commonDate = this.timeTool([startDateStr, endDateStr])
+      this.commonDate = [startDateStr, endDateStr]
       this.getCenterStatis({
         startDate: this.commonDate[0],
         endDate: this.commonDate[1],
@@ -489,7 +489,7 @@ export default {
       } else {
         this.tabSelected = -1
       }
-      this.commonDate = this.timeTool(date)
+      this.commonDate = date
       this.getCenterStatis({
         startDate: this.commonDate[0],
         endDate: this.commonDate[1],
@@ -540,8 +540,9 @@ export default {
     handleResDateChange(date) {
       if (date[0] === '' && date[1] === '') {
         date = this.timeHandler(-365)
-        this.resInfoDate = date
       }
+      this.resInfoDate = date
+      console.log(this.resInfoDate)
       this.getResMergeTrend({
         startDate: this.resInfoDate[0],
         endDate: this.resInfoDate[1]
@@ -558,15 +559,6 @@ export default {
     timeHandler(days, mode = '{y}-{m}') {
       const { startDateStr, endDateStr } = this.$util.rangeTime(days, mode)
       return [startDateStr, endDateStr]
-    },
-
-    /**
-     * @author haodongdong
-     * @descriptio 用于给日期字符串数组拼接时分秒 00:00:00 23:59:59
-     * @param {Array} dateStrArr
-     */
-    timeTool(dateStrArr) {
-      return dateStrArr
     },
 
     /**
@@ -608,7 +600,7 @@ export default {
           return item
         })
 
-        this.zxtbbmData = res.zxtbbm
+        this.zxtbbmData = res.zxtbbm.content
 
         this.barChartOption.dataset = formatDataSet(
           { xField: 'classifycode', yField: 'count' },
@@ -671,8 +663,18 @@ export default {
      */
     async init() {
       // 初始化查询做需要的时间参数
-      this.commonDate = this.timeTool(this.timeHandler(-365, '{y}-{m}-{d}'))
-      this.resInfoDate = this.timeHandler(-365)
+      const curYear = new Date().getFullYear()
+      let curYearDays = 0
+      if ((curYear % 4 === 0 && curYear % 100 !== 0) || curYear % 400 === 0) {
+        // 闰年
+        curYearDays = 366
+      } else {
+        // 平年
+        curYearDays = 365
+      }
+      // 处理函数会多取一天，所以这里+1，使之取正确的天数
+      this.commonDate = this.timeHandler(-curYearDays + 1, '{y}-{m}-{d}')
+      this.resInfoDate = this.timeHandler(-curYearDays + 1)
 
       this.getFirstLineStatis()
       this.getCenterStatis({

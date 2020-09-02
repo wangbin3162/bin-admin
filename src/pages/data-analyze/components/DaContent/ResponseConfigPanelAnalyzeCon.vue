@@ -92,7 +92,7 @@
           <b-col span="12">
             <b-form-item label="响应类型" prop="respKind">
               <b-select v-model="resp.respKind" placeholder="请选择" clearable>
-                <b-option v-for="(value,key) in respTypeMap" :key="key" :value="key">{{ value }}</b-option>
+                <b-option v-for="(value,key) in respTypeMapFilter" :key="key" :value="key">{{ value }}</b-option>
               </b-select>
             </b-form-item>
           </b-col>
@@ -116,7 +116,8 @@
         </b-row>
         <b-row :gutter="20">
           <b-col span="12">
-            <b-form-item label="数据类型" prop="dataType">
+            <!-- 子节点数据类型必填 -->
+            <b-form-item v-if="nodeOptType === 'sub'" label="数据类型" prop="dataType">
               <b-select v-model="resp.dataType" placeholder="请选择" clearable>
                 <b-option v-for="(value,key) in dataTypeMap" :key="key" :value="key">{{ value }}</b-option>
               </b-select>
@@ -180,17 +181,18 @@
             pattern: /^(\/[a-zA-Z0-9_]+)+$/,
             message: '合法路径以/开头(包含字母、数字和下划线)',
             trigger: 'blur'
-          }]
+          }],
+          dataType: [{ required: true, message: '必填项', trigger: 'change' }]
         },
         treeData: [],
         columns: [
           { type: 'index', width: 50, align: 'center' },
           { title: '响应类型', slot: 'respKind', align: 'center', width: 90 },
           { title: '数据类型', slot: 'dataType', align: 'center', width: 90 },
-          { title: '别名', key: 'keyAlias', width: 80 },
-          { title: '键名', key: 'keyName', width: 80 },
-          { title: '键路径', key: 'keyPath' },
-          { title: '说明', key: 'memo' },
+          { title: '别名', key: 'keyAlias', width: 80, ellipsis: true, tooltip: true },
+          { title: '键名', key: 'keyName', width: 80, ellipsis: true, tooltip: true },
+          { title: '键路径', key: 'keyPath', ellipsis: true, tooltip: true },
+          { title: '说明', key: 'memo', ellipsis: true, tooltip: true },
           { title: '操作', slot: 'action', width: 130 }
         ],
         drawerVisible: false,
@@ -210,7 +212,9 @@
         },
         // 以下为重构后需要的参数
         interfaceTestInitParam: null, // 接口测试组件interface-test需要使用的参数
-        openInterfaceTest: false // 用于控制interface-test组件测生命周期
+        openInterfaceTest: false, // 用于控制interface-test组件测生命周期
+        nodeCoordinate: [0, 0], // 当前选中节点坐标，主要用于刷新后恢复选中状态
+        nodeOptType: null // 表示当前编辑框是由根节点还是子节点触发的操作, 左侧树此处为根节点, 右侧列表为子节点, 状态由各自的按钮更新
       }
     },
     computed: { // 重构新增计算属性
@@ -223,6 +227,22 @@
         let res = false
         if (this.currentTreeNode && !this.currentTreeNode.root) {
           if (this.currentTreeNode.id === null) res = true
+        }
+        return res
+      },
+      respTypeMapFilter () { // 左侧树节点与右侧table列表所触发的编辑弹框内的相应类型数据不同
+        let res = {}
+        for (const key in this.respTypeMap) {
+          if (this.respTypeMap.hasOwnProperty(key)) {
+            const el = this.respTypeMap[key]
+            if (this.nodeOptType === 'root') {
+              if (key !== 'RECORD') {
+                res[key] = el
+              }
+            } else {
+              if (key === 'RECORD') res[key] = el
+            }
+          }
         }
         return res
       }
@@ -240,6 +260,7 @@
         this.listQuery.bizId = bizId
         this.cfgTitle = title
         this.visible = true
+        this.nodeCoordinate = [0, 0] // 初始化节点坐标
         this.queryLeftRespInfos(bizId)
         this.openInterfaceTest = true // 用于控制interface-test组件测生命周期
       },
@@ -258,6 +279,8 @@
        * @param {Object} node 当前节点
        */
       handTreeCurrentChange(data, node) {
+        // 缓存选中的节点坐标，用于刷新左侧树时保存节点选中状态
+        this.nodeCoordinate = node.coordinate
         if (this.currentTreeNode.id === node.id) {
           node.selected = true
         }
@@ -271,12 +294,14 @@
       // 添加跟响应节点
       handleCreateRoot() {
         this.resetResp(null, this.currentTreeNode.apiId)
+        this.buildRespTypeMap('root')
         this.openEditPage('create')
         this.drawerVisible = true
       },
       // 编辑节点事件
       handleModifyRoot() {
         this.resp = { ...this.currentTreeNode.obj }
+        this.buildRespTypeMap('root')
         this.openEditPage('modify')
         this.drawerVisible = true
       },
@@ -286,6 +311,7 @@
           return
         }
         this.resetResp(this.currentTreeNode.id, this.currentTreeNode.apiId)
+        this.buildRespTypeMap('sub')
         this.openEditPage('create')
         this.drawerVisible = true
       },
@@ -381,6 +407,7 @@
       handleModify(row) {
         this.resetResp(this.currentTreeNode.id, row.apiId)
         this.resp = { ...row }
+        this.buildRespTypeMap('sub')
         this.openEditPage('modify')
         this.drawerVisible = true
       },
@@ -481,11 +508,20 @@
           item.selected = false
           item.expand = true
           item.root = true
+          item.level = 0
+          item.coordinate = [index] // 构建坐标
+          // 点击树节点时会缓存树节点在二维数组中的坐标, 此处取缓存设置
+          if (this.nodeCoordinate[0] === index && this.nodeCoordinate[1] === undefined) {
+            item.selected = true
+          }
 
           if (item.children && item.children.length) {
             item.children.forEach((subItem, subIndex) => {
               subItem.obj = { ...subItem } // 需要提交的数据结构放入obj字段
-              if (index === 0 && subIndex === 0) { // 如果是第一个根节点的第一个子节点则设置默认选中
+              subItem.coordinate = [index, subIndex] // 构建坐标
+              subItem.level = 1
+              // 点击树节点时会缓存树节点在二维数组中的坐标, 此处取缓存设置
+              if (index === this.nodeCoordinate[0] && subIndex === this.nodeCoordinate[1]) {
                 subItem.selected = true
                 this.currentTreeNode = subItem
                 this.handleFilter()
@@ -506,6 +542,13 @@
           this.treeData = this.buildTree(res)
         } catch (error) {
           console.error(error)
+        }
+      },
+      // 根据节点类型(根节点 子节点) 根节点 root 子节点 sub
+      buildRespTypeMap (type) {
+        this.nodeOptType = type
+        if (type === 'sub') {
+          this.resp.respKind = 'RECORD'
         }
       }
     }
