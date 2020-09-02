@@ -540,8 +540,9 @@ export default {
     handleResDateChange(date) {
       if (date[0] === '' && date[1] === '') {
         date = this.timeHandler(-365)
-        this.resInfoDate = date
       }
+      this.resInfoDate = date
+      console.log(this.resInfoDate)
       this.getResMergeTrend({
         startDate: this.resInfoDate[0],
         endDate: this.resInfoDate[1]
