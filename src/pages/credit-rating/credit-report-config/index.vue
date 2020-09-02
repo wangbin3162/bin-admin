@@ -14,14 +14,14 @@
               </b-option>
             </b-select>
           </v-filter-item>
-           <v-filter-item title="主体类别" :span="4">
+           <v-filter-item title="主体类别" :span="5">
             <b-select v-model="listQuery.personClass" clearable>
               <b-option v-for="(value, key) in personClassEnum" :key="key" :value="key">
                 {{ value }}
               </b-option>
             </b-select>
           </v-filter-item>
-          <v-filter-item title="状态" :span="4">
+          <v-filter-item title="状态" :span="3">
             <b-select v-model="listQuery.reportDefault" clearable>
               <b-option v-for="(value, key) in reportDefaultEnum" :key="key" :value="key">
                 {{ value }}
@@ -34,7 +34,9 @@
         <!-- 操作栏 -->
         <v-table-tool-bar>
           <b-button type="primary" icon="ios-add-circle-outline"
-            @click="handleCreate">添加</b-button>
+            v-if="canCreate" @click="handleCreate">
+            新 增
+          </b-button>
         </v-table-tool-bar>
 
         <!-- table -->
@@ -59,18 +61,19 @@
             <b-switch :value="row.reportDefault"
               true-value="Y" false-value="D"
               inactive-color="#ff4949"
+              :disabled="!havePermission('changeStatus')"
               @on-change="handleSwitch($event, row.id)">
-              <!-- <span slot="open">启用</span>
-              <span slot="close">禁用</span> -->
             </b-switch>
           </template>
 
           <template v-slot:action="{ row, index }">
-            <b-button type="text" @click="handleModify(row)">
+            <b-button type="text" @click="handleModify(row)"
+              :disabled="!canModify">
               修改
             </b-button>
             <b-divider type="vertical"></b-divider>
-            <b-button type="text" @click="handleTempPre(row, index)" :disabled="btnLoading && curRowIndex === index">
+            <b-button type="text" @click="handleTempPre(row, index)"
+              :disabled="!havePermission('templatePreview') || btnLoading && curRowIndex === index">
               <template v-if="btnLoading && curRowIndex === index">
                 <b-icon name="loading2" class="icon-is-rotating"></b-icon>生成中
               </template>
@@ -85,15 +88,18 @@
                 <b-icon name="ios-arrow-down"></b-icon>
               </b-button>
               <b-dropdown-menu slot="list">
-                <b-dropdown-item :style="colorPrimary" @click.native="handleDefault(row)">
+                <b-dropdown-item :style="colorPrimary" @click.native="handleDefault(row)"
+                  :disabled="!havePermission('setDefault')">
                   设为默认
                 </b-dropdown-item>
 
-                <b-dropdown-item :style="colorPrimary" @click.native="handleInfoClass(row)">
+                <b-dropdown-item :style="colorPrimary" @click.native="handleInfoClass(row)"
+                  :disabled="!havePermission('infoClass')">
                   信息分类
                 </b-dropdown-item>
 
-                <b-dropdown-item :style="colorDanger" @click.native="handleRemove(row.id)">
+                <b-dropdown-item :style="colorDanger" @click.native="handleRemove(row.id)"
+                  :disabled="!canRemove">
                   删除
                 </b-dropdown-item>
               </b-dropdown-menu>

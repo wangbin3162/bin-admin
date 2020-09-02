@@ -25,7 +25,7 @@
         </v-filter-bar>
 
         <v-table-tool-bar>
-          <b-button type="primary" icon="ios-add-circle-outline" @click="handleCreate">新 增</b-button>
+          <b-button v-if="canCreate" type="primary" icon="ios-add-circle-outline" @click="handleCreate">新 增</b-button>
         </v-table-tool-bar>
 
         <b-table :columns="columns" :data="list" :loading="listLoading">
@@ -38,10 +38,16 @@
             </span>
           </template>
           <template v-slot:ratingId="{ row }">
-            <b-button type="text" @click="handleSetLevel(row)">{{ row.ratingName }} ></b-button>
+            <b-button type="text" @click="handleSetLevel(row)"
+              :disabled="!havePermission('level')">
+              {{ row.ratingName }} >
+            </b-button>
           </template>
           <template v-slot:modelIndex="{ row }">
-            <b-button type="text" @click="handleIndexConfig(row)">指标配置 ></b-button>
+            <b-button type="text" @click="handleIndexConfig(row)"
+              :disabled="!havePermission('indexModel')">
+              指标配置 >
+            </b-button>
           </template>
           <template v-slot:sysDefault="{ row }">
             {{ defaultEnum[row.sysDefault] }}
@@ -50,11 +56,13 @@
             <b-switch true-value="Y" false-value="D"
               v-model="row.modelStatus"
               inactive-color="#ff4949"
-              @on-change="handleSwitchChange($event, row)"></b-switch>
+              :disabled="!havePermission('changeStatus')"
+              @on-change="handleSwitchChange($event, row)">
+            </b-switch>
           </template>
           <!-- 操作栏 -->
           <template v-slot:action="{ row }">
-            <b-button type="text" @click="handleModify(row)">
+            <b-button :disabled="!canModify" type="text" @click="handleModify(row)">
               修改
             </b-button>
             <b-divider type="vertical"></b-divider>
@@ -64,11 +72,20 @@
               </b-button>
               <b-dropdown-menu slot="list">
                 <b-dropdown-item :style="colorPrimary"
-                  @click.native="handleSetDefault(row.id)">设为默认</b-dropdown-item>
+                  @click.native="handleSetDefault(row.id)"
+                  :disabled="!havePermission('setDefault')">
+                    设为默认
+                  </b-dropdown-item>
                 <b-dropdown-item :style="colorSuccess"
-                  @click.native="handleClone(row.id)">克隆</b-dropdown-item>
+                  @click.native="handleClone(row.id)"
+                  :disabled="!havePermission('clone')">
+                    克隆
+                  </b-dropdown-item>
                 <b-dropdown-item :style="colorDanger"
-                  @click.native="handleRemove(row.id)">删除</b-dropdown-item>
+                  @click.native="handleRemove(row.id)"
+                  :disabled="!canRemove">
+                    删除
+                  </b-dropdown-item>
               </b-dropdown-menu>
             </b-dropdown>
           </template>

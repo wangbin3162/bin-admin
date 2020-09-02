@@ -17,7 +17,8 @@
         </v-filter-bar>
         <!-- 操作栏 -->
         <v-table-tool-bar>
-          <b-button type="primary" icon="ios-add-circle-outline" @click="handleCreate">新 增</b-button>
+          <b-button type="primary" icon="ios-add-circle-outline" @click="handleCreate"
+            v-if="canCreate">新 增</b-button>
         </v-table-tool-bar>
         <b-table :columns="columns" :data="list" :loading="listLoading">
           <template v-slot:varName="{ row }">
@@ -35,15 +36,13 @@
           </template>
 
           <template v-slot:action="{ row }">
-            <b-button type="text" @click="handleModify(row)">
+            <b-button :disabled="!canModify" type="text" @click="handleModify(row)">
               修改
             </b-button>
-            <template>
-              <b-divider type="vertical"></b-divider>
-              <b-button type="text" text-color="danger" @click="handleRemove(row.id)">
-                删除
-              </b-button>
-            </template>
+            <b-divider type="vertical"></b-divider>
+            <b-button :disabled="!canRemove" type="text" text-color="danger" @click="handleRemove(row.id)">
+              删除
+            </b-button>
           </template>
         </b-table>
         <!-- 分页器 -->
@@ -98,7 +97,7 @@
           { title: '数据类型', slot: 'dataType' },
           { title: '模板内容', key: 'tplContent', ellipsis: true, tooltip: true },
           { title: '描述', key: 'varDesc', ellipsis: true, tooltip: true },
-          { title: '操作', slot: 'action', width: 120 }
+          { title: '操作', slot: 'action', width: 120, align: 'center' }
         ],
         varTypeEnum: {},
         dataTypeEnum: {},

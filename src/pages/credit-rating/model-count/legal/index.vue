@@ -29,19 +29,25 @@
         <!-- 操作栏 -->
         <v-table-tool-bar>
           <b-button type="primary" icon="ios-add-circle-outline"
+            v-if="havePermission('createReport')"
             @click="handleReport">
             生成报告
           </b-button>
-          <b-button plain type="primary" icon="md-list" @click="handleTempCount">
+          <b-button plain type="primary" icon="md-list"
+            v-if="havePermission('batchImportCalc')"
+            @click="handleTempCount">
             批量导入计算
           </b-button>
 
           <template slot="right">
-            <temp-dl-btn type="text" :personClass="personClass">
+            <temp-dl-btn type="text" :personClass="personClass"
+              v-if="havePermission('templateDownload')">
               模板下载
             </temp-dl-btn>
             <b-divider type="vertical"></b-divider>
-            <b-button type="text" @click="handleRecord">
+            <b-button type="text"
+              v-if="havePermission('importRecords')"
+              @click="handleRecord">
               导入记录
             </b-button>
           </template>
@@ -74,7 +80,9 @@
           </template>
 
           <template v-slot:action="{ row }">
-            <b-button type="text" @click="handleCreditReport(row)">
+            <b-button type="text"
+              :disabled="!havePermission('creditReport')"
+              @click="handleCreditReport(row)">
               信用报告
             </b-button>
           </template>

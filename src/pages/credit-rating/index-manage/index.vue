@@ -43,11 +43,11 @@
           </template>
           <!-- 操作栏 -->
           <template v-slot:action="{ row }">
-            <b-button type="text" @click="handleModify(row)">
+            <b-button :disabled="!canModify" type="text" @click="handleModify(row)">
               编辑
             </b-button>
             <b-divider type="vertical"></b-divider>
-            <b-button type="text" text-color="danger" @click="handleRemove(row.id)">
+            <b-button :disabled="!canRemove" type="text" text-color="danger" @click="handleRemove(row.id)">
                 删除
             </b-button>
           </template>

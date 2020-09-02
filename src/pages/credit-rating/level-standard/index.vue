@@ -10,7 +10,7 @@
         </v-filter-bar>
 
         <v-table-tool-bar>
-          <b-button type="primary" icon="ios-add-circle-outline" @click="handleCreate">新 增</b-button>
+          <b-button v-if="canCreate" type="primary" icon="ios-add-circle-outline" @click="handleCreate">新 增</b-button>
         </v-table-tool-bar>
 
         <b-table :columns="columns" :data="list" :loading="listLoading">
@@ -18,18 +18,19 @@
             <b-button type="text" @click="handleCheck(scope.row)">{{ scope.row.ratingName }}</b-button>
           </template>
           <template v-slot:levelDetails="scope">
-            <b-button type="text" @click="handleLevelStandard(scope.row.id)">设置评分标准</b-button>
+            <b-button :disabled="!havePermission('setScore')" type="text" @click="handleLevelStandard(scope.row.id)">设置评分标准</b-button>
           </template>
           <!-- 操作栏 -->
           <template v-slot:action="scope">
-            <b-button type="text" @click="handleModify(scope.row)">
+            <b-button :disabled="!canModify" type="text"
+              @click="handleModify(scope.row)">
               修改
             </b-button>
-            <!-- 是否有删除键 -->
-            <template>
-              <b-divider type="vertical"></b-divider>
-              <b-button type="text" text-color="danger" @click="handleRemove(scope.row.id)">删除</b-button>
-            </template>
+            <b-divider type="vertical"></b-divider>
+            <b-button :disabled="!canRemove" type="text" text-color="danger"
+              @click="handleRemove(scope.row.id)">
+                删除
+            </b-button>
           </template>
         </b-table>
 
@@ -86,7 +87,7 @@
           { title: '编码', key: 'ratingCode' },
           { title: '等级明细', slot: 'levelDetails' },
           { title: '描述', key: 'ratingDesc', ellipsis: true, tooltip: true },
-          { title: '操作', slot: 'action', width: 120 }
+          { title: '操作', slot: 'action', width: 120, align: 'center' }
         ],
         editData: null, // 需要编辑的数据，新增时设为null
         openEdit: false,
