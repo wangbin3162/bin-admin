@@ -91,7 +91,7 @@ export default {
       case 'TEXTAREA':
         node = h('b-input', {
           props: {
-            value: this.currentValue,
+            value: this.currentValue || '',
             maxlength: this.dataLength,
             placeholder: `${this.fieldDesc ? this.fieldDesc : '请输入' + this.fieldTitle}`,
             autosize: { minRows: 2, maxRows: 4 },
