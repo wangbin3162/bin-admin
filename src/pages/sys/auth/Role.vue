@@ -113,202 +113,204 @@
 </template>
 
 <script>
-  import commonMixin from '../../../common/mixins/mixin'
-  import permission from '../../../common/mixins/permission'
-  import { getRoleType } from '../../../api/enum.api'
-  import * as api from '../../../api/sys/role.api'
-  import RoleChoose from '../components/RoleChoose'
-  import { requiredRule } from '../../../common/utils/validate'
-  import EditAuth from '../components/EditAuth'
+import commonMixin from '@/common/mixins/mixin'
+import permission from '@/common/mixins/permission'
+import { getRoleType } from '@/api/enum.api'
+import * as api from '@/api/sys/role.api'
+import { requiredRule, isLetterW } from '@/common/utils/validate'
+import RoleChoose from '../components/RoleChoose'
+import EditAuth from '../components/EditAuth'
 
-  export default {
-    name: 'Role',
-    components: { EditAuth, RoleChoose },
-    mixins: [commonMixin, permission],
-    data() {
-      const validateName = (rule, value, callback) => {
-        if (value.length > 0) {
-          api.oneRoleName(this.role).then(response => {
-            if (response.data.data === 0) {
-              callback()
-            } else {
-              callback(new Error('角色名称重复'))
-            }
-          }).catch(() => {
-            callback(new Error('请求验证重复性出错'))
-          })
-        }
-      }
-      const validateCode = (rule, value, callback) => {
-        if (value.length > 0) {
-          api.oneRoleCode(this.role).then(response => {
-            if (response.data.data === 0) {
-              callback()
-            } else {
-              callback(new Error('角色编码重复'))
-            }
-          }).catch(() => {
-            callback(new Error('请求验证重复性出错'))
-          })
-        }
-      }
-      return {
-        moduleName: '角色',
-        listQuery: {
-          name: '',
-          code: ''
-        },
-        columns: [
-          { type: 'index', width: 50, align: 'center' },
-          { title: '角色名称', key: 'name' },
-          { title: '角色编码', key: 'code' },
-          { title: '父角色名称', key: 'parentName' },
-          { title: '角色类型', slot: 'roleType', width: 100, align: 'center' },
-          { title: '描述', key: 'desc', width: 350, ellipsis: true, tooltip: true },
-          { title: '角色授权', slot: 'auth', width: 100, align: 'center' },
-          { title: '操作', slot: 'action', width: 120 }
-        ],
-        role: null,
-        ruleValidate: {
-          name: [requiredRule, { validator: validateName, trigger: 'blur' }],
-          code: [requiredRule, { validator: validateCode, trigger: 'blur' }]
-        },
-        roleTypeMap: { 'S': '系统创建', 'I': '内置角色' }
-      }
-    },
-    computed: {
-      roleTypeOptions() {
-        let ret = []
-        Object.keys(this.roleTypeMap).forEach(key => {
-          ret.push({ value: key, label: this.roleTypeMap[key] })
-        })
-        return ret
-      },
-      ENUM() {
-        return { S: 'S', I: 'I' } // 常量比对键值对I:系统角色，S：应用角色
-      }
-    },
-    created() {
-      this.getRoleTypeEnum()
-      this.resetRole()
-      this.searchList()
-    },
-    methods: {
-      // 是否是内置角色
-      isNormalInner(row) {
-        return ['ROLE_LOGIN', 'ROLE_ADMIN'].indexOf(row.code) > -1
-      },
-      // filter-Bar:重置查询条件
-      resetQuery() {
-        this.listQuery = {
-          page: 1,
-          size: 10,
-          name: '',
-          code: ''
-        }
-      },
-      // 新增按钮事件
-      handleCreate() {
-        this.resetRole()
-        this.openEditPage('create')
-      },
-      // 编辑事件
-      handleModify(row) {
-        this.resetRole()
-        this.role = { ...this.role, ...row }
-        this.openEditPage('modify')
-      },
-      // 弹窗提示是否删除
-      handleRemove(row) {
-        let role = { ...row }
-        this.$confirm({
-          title: '确实要删除当前角色吗？',
-          content: '删除此角色，相关联的用户会自动解除该角色。',
-          loading: true,
-          okType: 'danger',
-          onOk: () => {
-            api.removeRole(role).then(res => {
-              if (res.data.code === '0') {
-                this.$message({ type: 'success', content: '操作成功' })
-                this.$modal.remove()
-                this.searchList()
-              } else {
-                this.$modal.remove()
-                this.$notice.danger({ title: '操作错误', desc: res.data.message })
-              }
-            })
+export default {
+  name: 'Role',
+  components: { EditAuth, RoleChoose },
+  mixins: [commonMixin, permission],
+  data() {
+    const validateName = (rule, value, callback) => {
+      if (value.length > 0) {
+        api.oneRoleName(this.role).then(response => {
+          if (response.data.data === 0) {
+            callback()
+          } else {
+            callback(new Error('角色名称重复'))
           }
-        })
-      },
-      // 表单提交
-      handleSubmit() {
-        this.$refs.form.validate((valid) => {
-          if (valid) {
-            this.btnLoading = true
-            let fun = this.dialogStatus === 'create' ? api.createRole : api.modifyRole
-            fun(this.role).then(res => {
-              if (res.data.code === '0') {
-                this.submitDone(true)
-                this.searchList()
-              } else {
-                this.submitDone(false)
-                this.$notice.danger({ title: '操作错误', desc: res.data.message })
-              }
-            })
-          }
-        })
-      },
-      // 弹窗选择角色
-      handleShowDialogChoose() {
-        this.$refs.roleChoose && this.$refs.roleChoose.open()
-      },
-      // 选中一个角色
-      handleChooseOne(one) {
-        // 获取选中角色并填充父角色id和名称
-        this.role.parentId = one.id
-        this.role.parentName = one.name
-      },
-      // 弹窗角色授权
-      handleRoleAuth(row) {
-        this.resetRole()
-        this.role = { ...this.role, ...row }
-        // 通过状态改变来弹出角色授权栏
-        this.dialogStatus = 'roleAuth'
-        this.$refs.roleAuth && this.$refs.roleAuth.open(this.role)
-      },
-      /* [数据接口] */
-      // 通用枚举
-      getRoleTypeEnum() {
-        getRoleType().then(res => {
-          if (res.status === 200) {
-            this.roleTypeMap = res.data.data
-          }
-        })
-      },
-      // 重置角色对象
-      resetRole() {
-        this.role = {
-          id: '',
-          name: '',
-          code: '',
-          roleType: this.ENUM.S,
-          desc: '',
-          parentId: '',
-          parentName: ''
-        }
-      },
-      // 查询所有部门列表
-      searchList() {
-        this.setListData()
-        api.getRoleList(this.listQuery).then(response => {
-          if (response.status === 200) {
-            this.setListData({
-              list: response.data.rows,
-              total: response.data.total
-            })
-          }
+        }).catch(() => {
+          callback(new Error('请求验证重复性出错'))
         })
       }
     }
+    const validateCode = (rule, value, callback) => {
+      if (isLetterW(value.length)) {
+        api.oneRoleCode(this.role).then(response => {
+          if (response.data.data === 0) {
+            callback()
+          } else {
+            callback(new Error('角色编码重复'))
+          }
+        }).catch(() => {
+          callback(new Error('请求验证重复性出错'))
+        })
+      } else {
+        callback(new Error('请输入字母数字下划线组合的角色编码'))
+      }
+    }
+    return {
+      moduleName: '角色',
+      listQuery: {
+        name: '',
+        code: ''
+      },
+      columns: [
+        { type: 'index', width: 50, align: 'center' },
+        { title: '角色名称', key: 'name' },
+        { title: '角色编码', key: 'code' },
+        { title: '父角色名称', key: 'parentName' },
+        { title: '角色类型', slot: 'roleType', width: 100, align: 'center' },
+        { title: '描述', key: 'desc', width: 350, ellipsis: true, tooltip: true },
+        { title: '角色授权', slot: 'auth', width: 100, align: 'center' },
+        { title: '操作', slot: 'action', width: 120 }
+      ],
+      role: null,
+      ruleValidate: {
+        name: [requiredRule, { validator: validateName, trigger: 'blur' }],
+        code: [requiredRule, { validator: validateCode, trigger: 'blur' }]
+      },
+      roleTypeMap: { 'S': '系统创建', 'I': '内置角色' }
+    }
+  },
+  computed: {
+    roleTypeOptions() {
+      let ret = []
+      Object.keys(this.roleTypeMap).forEach(key => {
+        ret.push({ value: key, label: this.roleTypeMap[key] })
+      })
+      return ret
+    },
+    ENUM() {
+      return { S: 'S', I: 'I' } // 常量比对键值对I:系统角色，S：应用角色
+    }
+  },
+  created() {
+    this.getRoleTypeEnum()
+    this.resetRole()
+    this.searchList()
+  },
+  methods: {
+    // 是否是内置角色
+    isNormalInner(row) {
+      return ['ROLE_LOGIN', 'ROLE_ADMIN'].indexOf(row.code) > -1
+    },
+    // filter-Bar:重置查询条件
+    resetQuery() {
+      this.listQuery = {
+        page: 1,
+        size: 10,
+        name: '',
+        code: ''
+      }
+    },
+    // 新增按钮事件
+    handleCreate() {
+      this.resetRole()
+      this.openEditPage('create')
+    },
+    // 编辑事件
+    handleModify(row) {
+      this.resetRole()
+      this.role = { ...this.role, ...row }
+      this.openEditPage('modify')
+    },
+    // 弹窗提示是否删除
+    handleRemove(row) {
+      let role = { ...row }
+      this.$confirm({
+        title: '确实要删除当前角色吗？',
+        content: '删除此角色，相关联的用户会自动解除该角色。',
+        loading: true,
+        okType: 'danger',
+        onOk: () => {
+          api.removeRole(role).then(res => {
+            if (res.data.code === '0') {
+              this.$message({ type: 'success', content: '操作成功' })
+              this.$modal.remove()
+              this.searchList()
+            } else {
+              this.$modal.remove()
+              this.$notice.danger({ title: '操作错误', desc: res.data.message })
+            }
+          })
+        }
+      })
+    },
+    // 表单提交
+    handleSubmit() {
+      this.$refs.form.validate((valid) => {
+        if (valid) {
+          this.btnLoading = true
+          let fun = this.dialogStatus === 'create' ? api.createRole : api.modifyRole
+          fun(this.role).then(res => {
+            if (res.data.code === '0') {
+              this.submitDone(true)
+              this.searchList()
+            } else {
+              this.submitDone(false)
+              this.$notice.danger({ title: '操作错误', desc: res.data.message })
+            }
+          })
+        }
+      })
+    },
+    // 弹窗选择角色
+    handleShowDialogChoose() {
+      this.$refs.roleChoose && this.$refs.roleChoose.open()
+    },
+    // 选中一个角色
+    handleChooseOne(one) {
+      // 获取选中角色并填充父角色id和名称
+      this.role.parentId = one.id
+      this.role.parentName = one.name
+    },
+    // 弹窗角色授权
+    handleRoleAuth(row) {
+      this.resetRole()
+      this.role = { ...this.role, ...row }
+      // 通过状态改变来弹出角色授权栏
+      this.dialogStatus = 'roleAuth'
+      this.$refs.roleAuth && this.$refs.roleAuth.open(this.role)
+    },
+    /* [数据接口] */
+    // 通用枚举
+    getRoleTypeEnum() {
+      getRoleType().then(res => {
+        if (res.status === 200) {
+          this.roleTypeMap = res.data.data
+        }
+      })
+    },
+    // 重置角色对象
+    resetRole() {
+      this.role = {
+        id: '',
+        name: '',
+        code: '',
+        roleType: this.ENUM.S,
+        desc: '',
+        parentId: '',
+        parentName: ''
+      }
+    },
+    // 查询所有部门列表
+    searchList() {
+      this.setListData()
+      api.getRoleList(this.listQuery).then(response => {
+        if (response.status === 200) {
+          this.setListData({
+            list: response.data.rows,
+            total: response.data.total
+          })
+        }
+      })
+    }
   }
+}
 </script>
