@@ -5,6 +5,7 @@
 
     <v-table-tool-bar>
       <b-button type="primary" icon="ios-add-circle-outline"
+        v-if="canCreate"
         @click="$emit('create')" :disabled="!Boolean(columnId)">
         添加
       </b-button>
@@ -16,19 +17,23 @@
       </template>
 
       <template v-slot:thumbnailPath="{ row }">
-        <b-button type="text" @click="thumbnailBtnHandler(row)">
+        <b-button type="text"
+          :disabled="!havePermission('thumbnail')"
+          @click="thumbnailBtnHandler(row)">
           {{ Boolean(row.thumbnailPath) ? '更新' : '新增' }}
         </b-button>
       </template>
 
       <template v-slot:isTop="{ row }">
         <b-switch v-model="row.isTop"
+          :disabled="!havePermission('top')"
           @on-change="topSwitchHandler($event, row)">
         </b-switch>
       </template>
 
       <template v-slot:contentStatus="{ row }">
         <b-select appendToBody v-model="row.contentStatus"
+          :disabled="!havePermission('changeStatus')"
           @on-change="contentStatusChangeHandler($event, row.id)">
           <b-option v-for="(value, key) in contentStatus" :key="key" :value="key">
             {{ value }}
@@ -37,10 +42,14 @@
       </template>
 
       <template v-slot:action="{ row }">
-        <b-button type="text" @click="editBtnHandler(row)">
+        <b-button type="text"
+          :disabled="!canModify"
+          @click="editBtnHandler(row)">
           编辑
         </b-button>
-        <b-button type="text" text-color="danger" @click="removeBtnHandler(row.id)">
+        <b-button type="text" text-color="danger"
+          :disabled="!canRemove"
+          @click="removeBtnHandler(row.id)">
           删除
         </b-button>
       </template>

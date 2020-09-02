@@ -5,6 +5,7 @@
 
     <v-table-tool-bar>
       <b-button type="primary" icon="ios-add-circle-outline"
+        v-if="canCreate"
         @click="$emit('create')">
         添加
       </b-button>
@@ -40,7 +41,9 @@
       </template>
 
       <template v-slot:action="{ row }">
-        <b-button type="text" text-color="danger" @click="removeBtnHandler(row.id)">
+        <b-button type="text" text-color="danger"
+          :disabled="!canRemove"
+          @click="removeBtnHandler(row.id)">
           删除
         </b-button>
 
@@ -53,10 +56,14 @@
               <b-icon name="ios-arrow-down"></b-icon>
             </b-button>
             <b-dropdown-menu slot="list">
-              <b-dropdown-item style="color: #0d85ff;" @click.native="editBtnHandler(row)">
+              <b-dropdown-item style="color: #0d85ff;"
+                :disabled="!canModify"
+                @click.native="editBtnHandler(row)">
                 编辑
               </b-dropdown-item>
-              <b-dropdown-item style="color: #0d85ff;" @click.native="pubBtnHandler(row.id)">
+              <b-dropdown-item style="color: #0d85ff;"
+                :disabled="!havePermission('publish')"
+                @click.native="pubBtnHandler(row.id)">
                 发布
               </b-dropdown-item>
             </b-dropdown-menu>

@@ -6,7 +6,8 @@
       <div class="section-btn">
         <template v-for="btn in btnList">
           <b-tooltip :content="btn.tip" placement="top-start" :key="btn.icon">
-            <b-button type="text" :icon="btn.icon" :disabled="btn.icon === 'loading'"
+            <b-button type="text" :icon="btn.icon"
+              :disabled="btn.icon === 'loading' || !permission(btn.type)"
               text-color="info" :icon-style="{fontSize: btn.size}"
               @click="openEditSectionHandler(btn.type)">
             </b-button>
@@ -28,6 +29,7 @@
 </template>
 
 <script>
+  import permission from '../../../../common/mixins/permission'
   import { getSectionRoots, getSectionChildren, removeSection } from '../../../../api/cms/news-mgmt.api'
   import EditSection from './EditSection'
 
@@ -37,6 +39,7 @@
 
   export default {
     name: 'SectionTree',
+    mixins: [permission],
     components: {
       EditSection
     },
@@ -308,6 +311,34 @@
             return a.colSort - b.colSort
           }
         })
+      },
+
+      /**
+       * @author haodongdong
+       * @description 判断用户是否拥有栏目操作按钮的权限
+       * @param {string} type 按钮类型 新增 c 编辑 u 删除 d
+       * @return {Boolean}
+       */
+      permission (type) {
+        let res = false
+        switch (type) {
+          case 'r':
+            res = this.havePermission('sectionRefresh')
+            break
+
+          case 'c':
+            res = this.havePermission('sectionCreate')
+            break
+
+          case 'u':
+            res = this.havePermission('sectionModify')
+            break
+
+          case 'd':
+            res = this.havePermission('sectionRemove')
+            break
+        }
+        return res
       }
     }
   }
