@@ -28,17 +28,25 @@
           </v-filter-bar>
 
           <v-table-tool-bar>
-            <batch-remove-btn :resourceKey="listQuery.resourceKey" @success="searchList">
+            <batch-remove-btn :resourceKey="listQuery.resourceKey" @success="searchList"
+              v-if="havePermission('batchRemove')">
               批量解除
             </batch-remove-btn>
-            <b-button :disabled="btnDisabled" @click="handleDownloadTemplate">模板下载</b-button>
+            <b-button :disabled="btnDisabled" @click="handleDownloadTemplate"
+              v-if="havePermission('templateDownload')">
+              模板下载
+            </b-button>
 
             <div slot="right">
-              <b-button type="text" @click="handleOpenRecordDialog" :disabled="isRoot">解除记录</b-button>
+              <b-button type="text" @click="handleOpenRecordDialog" :disabled="isRoot"
+                v-if="havePermission('removeRecords')">
+                解除记录
+              </b-button>
 
               <b-divider type="vertical"></b-divider>
 
-              <b-dropdown trigger="custom" :visible="visible" @on-click-outside="visible = false">
+              <b-dropdown trigger="custom" :visible="visible" @on-click-outside="visible = false"
+                v-if="havePermission('fieldSelect')">
                 <b-button type="text" @click="visible = true">
                   字段选择
                   <b-icon name="ios-arrow-down"></b-icon>
