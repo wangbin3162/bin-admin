@@ -6,6 +6,12 @@ export default [
     meta: { title: '动态表单' }
   },
   {
+    path: 'fromMaking',
+    name: 'FormMaking',
+    component: () => import('../../pages/demo/form-making/FormMaking'),
+    meta: { title: '表单设计' }
+  },
+  {
     path: 'chartsConfig',
     name: 'ChartsConfig',
     component: () => import('../../pages/demo/charts-config'),

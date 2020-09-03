@@ -25,6 +25,7 @@ export default [
     icon: 'ios-create',
     children: [
       { name: 'FormDemo', title: '动态表单' },
+      { name: 'FormMaking', title: '表单设计' },
       { name: 'ChartsConfig', title: '图表配置' },
       { name: 'FlowConfig', title: '流程配置' }
     ]
