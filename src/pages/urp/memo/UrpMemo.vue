@@ -33,6 +33,7 @@
           <!--操作栏-->
           <template v-slot:action="{row}">
             <b-button v-if="row.receiveStatus==='0'" type="text"
+                      :disabled="!havePermission('receive')"
                       @click="handleReceive(row)">
               接收
             </b-button>
