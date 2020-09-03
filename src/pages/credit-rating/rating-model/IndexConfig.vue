@@ -575,7 +575,7 @@
     border-top: 0px solid #e4e7ed;
   }
   .tree-con {
-    width: 340px;
+    width: 300px;
     border-right: 1px solid #eee;
     padding: 16px 10px;
     overflow: auto;
@@ -583,7 +583,7 @@
   }
   .table-con {
     padding: 16px;
-    width: calc(100% - 370px);
+    width: calc(100% - 300px);
 
     .table-bottom {
       margin-top: 20px;

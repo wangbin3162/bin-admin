@@ -29,29 +29,42 @@
         </b-button>
       </div>
 
-      <table class="table">
-        <tr>
-          <th>维度\维度</th>
-          <th v-for="item in curMatrixCol" :key="item.id">{{ item.indexName }}</th>
-        </tr>
+      <div class="table-con">
+        <table class="table">
+          <tr>
+            <th>维度\维度</th>
+            <th v-for="(item, index) in curMatrixCol" :key="item.id"
+              :class="{ tdBg: curCoordinate[1] === index }">
+              {{ item.indexName }}
+            </th>
+          </tr>
 
-        <tr v-for="(item, rowIndex) in curMatrixCol" :key="item.id">
-          <th>{{ item.indexName }}</th>
-          <td v-for="(colData, colIndex) in form.itemData" :key="colIndex"
-            :class="{ oneBg: rowIndex === colIndex }"
-            @mouseenter="handleTdMouseenter">
-            <template v-if="rowIndex === colIndex">
-              <span>1</span>
-            </template>
+          <tr v-for="(item, rowIndex) in curMatrixCol" :key="item.id"
+            :class="{trBg: curCoordinate[0] === rowIndex}">
+            <th>{{ item.indexName }}</th>
 
-            <template v-else>
-              <matrix-input v-model="form.itemData[rowIndex][colIndex]"
-                @input="handleMatrixInput($event, rowIndex, colIndex)">
-              </matrix-input>
-            </template>
-          </td>
-        </tr>
-      </table>
+            <td v-for="(colData, colIndex) in form.itemData" :key="colIndex"
+              :class="{
+                tdBg: curCoordinate[1] === colIndex,
+                oneBg: rowIndex === colIndex
+              }"
+              @mouseenter="handleTdMouseenter(rowIndex, colIndex)"
+              :title="curRowTitle + '/' + curColTitle">
+
+              <template v-if="rowIndex === colIndex">
+                <span>1</span>
+              </template>
+
+              <template v-else>
+                <matrix-input v-model="form.itemData[rowIndex][colIndex]"
+                  @input="handleMatrixInput($event, rowIndex, colIndex)">
+                </matrix-input>
+              </template>
+
+            </td>
+          </tr>
+        </table>
+      </div>
     </b-collapse-wrap>
 
     <b-collapse-wrap title="权重设置" collapse>
@@ -138,13 +151,28 @@
           { title: '指标名称', key: 'indexName', align: 'center' },
           { title: '综合权重', slot: 'lastWeight', align: 'center' },
           { title: '判定权重', slot: 'decisionWeight', align: 'center' }
-        ]
+        ],
+        curCoordinate: [] // 保存当前比值设置单元格的坐标
       }
     },
     computed: {
       ...mapState({
         curMatrixCol: state => state.ratingModel.curMatrixCol
-      })
+      }),
+      curRowTitle () {
+        let res = ''
+        if (this.curMatrixCol[this.curCoordinate[0]]) {
+          res = this.curMatrixCol[this.curCoordinate[0]].indexName
+        }
+        return res
+      },
+      curColTitle () {
+        let res = ''
+        if (this.curMatrixCol[this.curCoordinate[1]]) {
+          res = this.curMatrixCol[this.curCoordinate[1]].indexName
+        }
+        return res
+      }
     },
     watch: {
       curMatrixCol: { // curMatrixCol变动时构建矩阵图结构、数据
@@ -399,8 +427,14 @@
         this.mutationSource = mutationSource
       },
 
-      handleTdMouseenter () {
-
+      /**
+       * @author haodongdong
+       * @description 比值设置单元格鼠标进入的回调
+       * @param {number} rowIndex
+       * @param {number} colIndex
+       */
+      handleTdMouseenter (rowIndex, colIndex) {
+        this.curCoordinate = [rowIndex, colIndex]
       }
     }
   }
@@ -408,12 +442,17 @@
 
 <style lang="stylus" scoped>
  .decision-matrix {
+   .table-con {
+     width: 100%;
+     overflow: auto;
+   }
+
    .table {
       table-layout : fixed;
       border-collapse: collapse;
       margin: 0 auto;
       text-align: center;
-      width: 100%;
+      min-width: 100%;
 
       tr:first-child {
         background-color: #fafafa;
@@ -425,6 +464,9 @@
         border: 1px solid #e8eaec;
         color: #666;
         height: 40px;
+        min-width: 100px;
+        word-wrap: break-word;
+        word-break: break-all;
       }
 
       .con {
@@ -435,6 +477,16 @@
 
       .oneBg {
         background-color: #e9f8fc;
+      }
+
+      .trBg {
+        background-color: #e6f2ff;
+        transition: background-color 0.7s;
+      }
+
+      .tdBg {
+        background-color:#e6f2ff;
+        transition: background-color 0.7s;
       }
 
       td:nth-child(odd), th:nth-child(odd) {
