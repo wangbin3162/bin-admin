@@ -50,20 +50,20 @@
         <template v-if="row.notifyStatus === 'DRAFT'">
           <b-divider type="vertical"></b-divider>
 
-          <b-dropdown append-to-body>
+          <b-dropdown append-to-body @on-click="handleMoreBtn($event, row)">
             <b-button type="text">
               更多
               <b-icon name="ios-arrow-down"></b-icon>
             </b-button>
             <b-dropdown-menu slot="list">
               <b-dropdown-item style="color: #0d85ff;"
-                :disabled="!canModify"
-                @click.native="editBtnHandler(row)">
+                name="edit"
+                :disabled="!canModify">
                 编辑
               </b-dropdown-item>
               <b-dropdown-item style="color: #0d85ff;"
-                :disabled="!havePermission('publish')"
-                @click.native="pubBtnHandler(row.id)">
+                name="publish"
+                :disabled="!havePermission('publish')">
                 发布
               </b-dropdown-item>
             </b-dropdown-menu>
@@ -198,6 +198,24 @@
         } catch (error) {
           this.getNoticeList()
           console.error(error)
+        }
+      },
+
+      /**
+       * @author haodonghaodong
+       * @description 更多按钮的回调
+       * @param {string} name 触发的按钮名称
+       * @param {Boolean} row
+       */
+      handleMoreBtn (name, row) {
+        switch (name) {
+          case 'edit':
+            this.editBtnHandler(row)
+            break
+
+          case 'publish':
+            this.pubBtnHandler(row.id)
+            break
         }
       },
 

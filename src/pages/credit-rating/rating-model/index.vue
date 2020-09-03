@@ -66,23 +66,23 @@
               修改
             </b-button>
             <b-divider type="vertical"></b-divider>
-            <b-dropdown :appendToBody="true">
+            <b-dropdown :appendToBody="true" @on-click="handleMoreBtn($event, row.id)">
               <b-button type="text">更多
                 <b-icon name="ios-arrow-down"/>
               </b-button>
               <b-dropdown-menu slot="list">
                 <b-dropdown-item :style="colorPrimary"
-                  @click.native="handleSetDefault(row.id)"
+                  name="setDefault"
                   :disabled="!havePermission('setDefault')">
                     设为默认
                   </b-dropdown-item>
                 <b-dropdown-item :style="colorSuccess"
-                  @click.native="handleClone(row.id)"
+                  name="clone"
                   :disabled="!havePermission('clone')">
                     克隆
                   </b-dropdown-item>
                 <b-dropdown-item :style="colorDanger"
-                  @click.native="handleRemove(row.id)"
+                  name="remove"
                   :disabled="!canRemove">
                     删除
                   </b-dropdown-item>
@@ -228,6 +228,22 @@
       handleIndexConfigClose () {
         this.editData = null
         this.handleCancel()
+      },
+      // 更多按钮回调
+      handleMoreBtn (name, id) {
+        switch (name) {
+          case 'setDefault':
+            this.handleSetDefault(id)
+            break
+
+          case 'clone':
+            this.handleClone(id)
+            break
+
+          case 'remove':
+            this.handleRemove(id)
+            break
+        }
       },
       // 克隆的回调
       async handleClone (id) {

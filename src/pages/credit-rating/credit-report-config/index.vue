@@ -82,23 +82,26 @@
               </template>
             </b-button>
             <b-divider type="vertical"></b-divider>
-            <b-dropdown append-to-body>
+            <b-dropdown append-to-body @on-click="handleMoreBtn($event, row)">
               <b-button type="text">
                 更多
                 <b-icon name="ios-arrow-down"></b-icon>
               </b-button>
               <b-dropdown-menu slot="list">
-                <b-dropdown-item :style="colorPrimary" @click.native="handleDefault(row)"
+                <b-dropdown-item :style="colorPrimary"
+                  name="setDefault"
                   :disabled="!havePermission('setDefault')">
                   设为默认
                 </b-dropdown-item>
 
-                <b-dropdown-item :style="colorPrimary" @click.native="handleInfoClass(row)"
+                <b-dropdown-item :style="colorPrimary"
+                  name="infoClass"
                   :disabled="!havePermission('infoClass')">
                   信息分类
                 </b-dropdown-item>
 
-                <b-dropdown-item :style="colorDanger" @click.native="handleRemove(row.id)"
+                <b-dropdown-item :style="colorDanger"
+                  name="remove"
                   :disabled="!canRemove">
                   删除
                 </b-dropdown-item>
@@ -223,6 +226,22 @@
       handleModify (row) {
         this.detail = row
         this.openEditPage('modify')
+      },
+      // 更多按钮回调
+      handleMoreBtn (name, row) {
+        switch (name) {
+          case 'setDefault':
+            this.handleDefault(row)
+            break
+
+          case 'infoClass':
+            this.handleInfoClass(row)
+            break
+
+          case 'remove':
+            this.handleRemove(row.id)
+            break
+        }
       },
       // 设为默认按钮回调
       async handleDefault (row) {
