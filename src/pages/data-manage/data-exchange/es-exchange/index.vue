@@ -30,7 +30,7 @@
 
         <!-- 操作栏 -->
         <v-table-tool-bar>
-          <b-button v-if="canCreate" type="primary"
+          <b-button v-if="havePermission('batchSync')" type="primary"
             @click="handleBatchAsyncBtn">
             + 批量同步
           </b-button>
@@ -65,7 +65,7 @@
 
           <!-- 操作栏 -->
           <template v-slot:action="{ row }">
-            <b-button type="text" :disabled="row.exeCount === 0"
+            <b-button type="text" :disabled="!havePermission('viewTask') || row.exeCount === 0"
               @click="handleViewTaskBtn(row)">
               查看任务
             </b-button>
@@ -73,6 +73,7 @@
             <b-divider type="vertical"></b-divider>
 
             <b-button type="text"
+              :disabled="!havePermission('sync')"
               @click="handleAsyncBtn(row)">
                 同步
             </b-button>
@@ -225,7 +226,6 @@
             personClasses.forEach(item => {
               keyValue[item.key] = item.value
             })
-            console.log(keyValue)
             this.setPersonClass(keyValue)
             resolve(keyValue)
           } catch (error) {
@@ -269,7 +269,6 @@
             temp.forEach(item => {
               keyValue[item.key] = item.value
             })
-            console.log(keyValue)
             this.setResProperty(keyValue)
             this.setResPropertyOptions(data.children || [])
             resolve(keyValue)
