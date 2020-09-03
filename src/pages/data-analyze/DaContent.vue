@@ -65,7 +65,8 @@
                   配置响应
                 </b-dropdown-item>
                 <template v-if="hideTestAndConfigMapBtn(row.toggle, row.mappingFields)">
-                  <b-dropdown-item :style="colorPrimary" name="cfgMap">
+                  <b-dropdown-item :style="colorPrimary" name="cfgMap"
+                    :disabled="!havePermission('configMap')">
                     配置映射
                   </b-dropdown-item>
                   <b-dropdown-item :disabled="!havePermission('test')" :style="colorWarning" name="test">
