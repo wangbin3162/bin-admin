@@ -28,14 +28,17 @@
           <template #action="{row}">
             <b-tooltip content="条件配置" theme="light" max-width="200" style="padding-top: 3px;">
               <b-button type="text" icon="ios-filing"
+                        :disabled="!havePermission('conditionConfig')"
                         :icon-style="{fontSize:'20px'}" @click="handleConditionConfig(row)"/>
             </b-tooltip>&nbsp;
             <b-tooltip content="配置分析" theme="light" max-width="200" style="padding-top: 3px;">
               <b-button type="text" icon="ios-analytics"
+                        :disabled="!havePermission('configAnalysis')"
                         :icon-style="{fontSize:'20px'}" @click="handleCfgAnalyze(row)"/>
             </b-tooltip>&nbsp;
             <b-tooltip content="预览" theme="light" max-width="200" style="padding-top: 3px;">
               <b-button text-color="success" type="text" icon="ios-eye"
+                        :disabled="!havePermission('preview')"
                         :icon-style="{fontSize:'20px'}" @click="handlePreview(row)"/>
             </b-tooltip>
           </template>
