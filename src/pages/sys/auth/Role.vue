@@ -140,7 +140,7 @@ export default {
       }
     }
     const validateCode = (rule, value, callback) => {
-      if (isLetterW(value.length)) {
+      if (isLetterW(value)) {
         api.oneRoleCode(this.role).then(response => {
           if (response.data.data === 0) {
             callback()
