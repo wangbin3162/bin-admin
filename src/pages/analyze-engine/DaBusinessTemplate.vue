@@ -19,8 +19,7 @@
         <!--操作栏-->
         <v-table-tool-bar>
           <b-button v-if="canCreate" type="primary" icon="ios-add-circle-outline" @click="handleCreate">新 增</b-button>
-          <b-button v-if="canCreate" type="primary"
-            @click="handleBatchSyncBtn" :disabled="!havePermission('batchSync')">
+          <b-button v-if="havePermission('batchSync')" type="primary">
             批量同步
           </b-button>
 
