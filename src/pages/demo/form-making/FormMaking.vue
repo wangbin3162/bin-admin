@@ -98,7 +98,7 @@ export default {
           name: '表单名称',
           labelWidth: 100,
           labelPosition: 'right',
-          size: 'small'
+          size: 'default'
         }
       }
     },

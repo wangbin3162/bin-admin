@@ -13,7 +13,45 @@
           </div>
         </div>
         <div class="fm-content">
-          <div class="components-list">components-list</div>
+          <div class="components-list">
+            <!--基础字段-->
+            <template v-if="basicFields.length">
+              <div class="widget-cate">基础字段</div>
+              <draggable tag="ul" :list="basicComponents"
+                         v-bind="{group:{ name:'form', pull:'clone',put:false},sort:false, ghostClass: 'ghost'}"
+                         :move="handleMove"
+              >
+                <template v-for="(item, index) in basicComponents">
+                  <li v-if="basicFields.indexOf(item.type)>=0" class="form-edit-widget-label"
+                      :class="{'no-put': item.type === 'divider'}" :key="index"
+                      @click="handleAddWidget(item)">
+                    <a>
+                      <b-icon :name="item.icon"/>
+                      <span>{{ item.name }}</span>
+                    </a>
+                  </li>
+                </template>
+              </draggable>
+            </template>
+            <!--布局控件-->
+            <template v-if="layoutFields.length">
+              <div class="widget-cate">布局控件</div>
+              <draggable tag="ul" :list="layoutComponents"
+                         v-bind="{group:{ name:'form', pull:'clone',put:false},sort:false, ghostClass: 'ghost'}"
+                         :move="handleMove"
+              >
+                <template v-for="(item, index) in layoutComponents">
+                  <li v-if="layoutFields.indexOf(item.type) >=0" class="form-edit-widget-label no-put" :key="index"
+                      @click="handleAddWidget(item)">
+                    <a>
+                      <b-icon :name="item.icon"/>
+                      <span>{{ item.name }}</span>
+                    </a>
+                  </li>
+                </template>
+              </draggable>
+            </template>
+          </div>
           <div class="center-container">
             <div class="top-fix">
               <b-button type="text" @click="handleClear">
@@ -40,6 +78,10 @@
             </div>
             <div class="scroll-content">
               {{ activeTab }}
+              <div>
+                <b-divider align="left">data</b-divider>
+                <b-ace-editor :value="JSON.stringify(widgetForm.list,null,2)" readonly/>
+              </div>
             </div>
           </div>
         </div>
@@ -49,19 +91,35 @@
 </template>
 
 <script>
+import Draggable from 'vuedraggable'
 import scrollbarMixin from 'bin-ui/src/mixins/scrollbar-mixin'
 import { deepCopy } from '@/common/utils/assist'
 import WidgetForm from '@/components/FormMaking/WidgetForm'
+import { basicComponents, layoutComponents } from './config/componentsConfig.js'
 
 export default {
   name: 'fm-container',
-  components: { WidgetForm },
+  components: { Draggable, WidgetForm },
   mixins: [scrollbarMixin],
   provide() {
     return { ConfigRoot: this }
   },
+  props: {
+    // 基础字段列表
+    basicFields: {
+      type: Array,
+      default: () => ['input', 'textarea']
+    },
+    // 布局字段列表
+    layoutFields: {
+      type: Array,
+      default: () => ['grid']
+    }
+  },
   data() {
     return {
+      basicComponents,
+      layoutComponents,
       visible: false,
       widgetForm: {
         list: [],
@@ -69,7 +127,7 @@ export default {
           name: '表单名称',
           labelWidth: 100,
           labelPosition: 'right',
-          size: 'small'
+          size: 'default'
         }
       },
       tabs: [
@@ -102,6 +160,12 @@ export default {
       return false
     }
   },
+  mounted() {
+    document.addEventListener('keydown', this.keypadSave)
+  },
+  beforeDestroy() {
+    document.removeEventListener('keydown', this.keypadSave)
+  },
   methods: {
     // 打开弹窗参数为配置数据
     open(data) {
@@ -128,6 +192,24 @@ export default {
         }
       }
       this.widgetFormSelect = {}
+    },
+    // 键盘保存
+    keypadSave(e) {
+      if (e.keyCode === 83 && (navigator.platform.match('Mac') ? e.metaKey : e.ctrlKey)) {
+        e.preventDefault()
+      }
+      if (e.keyCode === 27) {
+        e.preventDefault()
+        this.close()
+      }
+    },
+    // 手动点击增加一个控件
+    handleAddWidget(item) {
+      this.widgetForm.list.push(item)
+      this.$refs.widgetForm.handleWidgetAdd({ newIndex: this.widgetForm.list.length - 1 })
+    },
+    handleMove() {
+      return true
     }
   }
 }
