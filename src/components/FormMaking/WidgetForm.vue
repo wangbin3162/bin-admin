@@ -51,6 +51,23 @@
                 </div>
               </b-row>
             </template>
+            <template v-else-if="element.type === 'divider'">
+              <div class="widget-col widget-view" v-if="element && element.key" :key="element.key"
+                   :class="{active: selectWidget.key === element.key}"
+                   @click="handleSelectWidget(index)">
+                <b-divider :align="element.options.align" :dashed="element.options.dashed"
+                           :style="{fontSize:element.options.fontSize,margin:element.options.margin}">
+                  {{ element.name }}
+                </b-divider>
+                <!--拖拽删除-->
+                <div class="widget-view-action widget-col-action" v-if="selectWidget.key === element.key">
+                  <i class="iconfont icon-ios-trash" title="删除" @click.stop="handleWidgetDelete(index)"></i>
+                </div>
+                <div class="widget-view-drag widget-col-drag" v-if="selectWidget.key === element.key">
+                  <i class="iconfont icon-ios-move drag-widget"></i>
+                </div>
+              </div>
+            </template>
             <template v-else>
               <widget-form-item v-if="element && element.key" :key="element.key" :element="element"
                                 :select.sync="selectWidget" :index="index" :data="data"></widget-form-item>
@@ -144,7 +161,6 @@ export default {
     cloneObjAndExtend(copyObj) {
       let cloneObj = deepCopy(copyObj)
       cloneObj.key = getKey()
-      cloneObj.options.size = this.data.config.size
       return cloneObj
     }
   },

@@ -80,7 +80,8 @@
               {{ activeTab }}
               <div>
                 <b-divider align="left">data</b-divider>
-                <b-ace-editor :value="JSON.stringify(widgetForm.list,null,2)" readonly/>
+                <b-ace-editor :value="JSON.stringify(widgetForm.list,null,2)"
+                              @on-change="jsonChange"/>
               </div>
             </div>
           </div>
@@ -108,12 +109,12 @@ export default {
     // 基础字段列表
     basicFields: {
       type: Array,
-      default: () => ['input', 'textarea']
+      default: () => ['input', 'textarea', 'number', 'radio', 'checkbox', 'select', 'time', 'date', 'switch', 'color', 'rate', 'slider']
     },
     // 布局字段列表
     layoutFields: {
       type: Array,
-      default: () => ['grid']
+      default: () => ['grid', 'divider']
     }
   },
   data() {
@@ -210,6 +211,14 @@ export default {
     },
     handleMove() {
       return true
+    },
+    // json修改
+    jsonChange(val) {
+      try {
+        this.widgetForm.list = JSON.parse(val)
+      } catch (err) {
+
+      }
     }
   }
 }
