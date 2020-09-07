@@ -1,5 +1,5 @@
 <template>
-  <div class="global-weight">
+  <div class="global-weight-table">
     <div class="con">
       <b-loading fix show-text="加载中...." v-if="listLoading"></b-loading>
       <table class="table">
@@ -14,9 +14,7 @@
 
             <template v-if="colIndex === row.length - 1 && col.indexType === 'Index'">
               <td :key="colIndex">
-                <b-input-number v-model="col.lastWeight"
-                  :max="100" :min="1" :precision="2">
-                </b-input-number>%
+                {{ col.lastWeight }}%
               </td>
             </template>
 
@@ -33,42 +31,34 @@
       </table>
     </div>
 
-    <p>
+    <p v-if="tip">
       注：此处综合权重总计必须为<span>100%</span>
       <template v-if="difference !== 0">
         ，还差<span>{{ difference }}%</span>
       </template>
     </p>
-
-    <div flex="main:center" class="mt-20">
-      <b-button type="primary"
-        :loading="btnLoading"
-        @click="handleSubmit">
-        保存
-      </b-button>
-      <b-button @click="handleReLoadBtn">
-        重新加载
-      </b-button>
-    </div>
   </div>
 </template>
 
 <script>
   import Big from 'big.js'
-  import { getGlobalWeight, saveLastWeight } from '@/api/credit-rating/rating-model.api'
+  import { getGlobalWeight } from '@/api/credit-rating/rating-model.api'
 
   export default {
-    name: 'GolbalWeight',
+    name: 'GlobalWeightTable',
     props: {
       modelId: {
         type: String,
         required: true
+      },
+      tip: {
+        type: Boolean,
+        default: false
       }
     },
     data () {
       return {
         listLoading: false,
-        btnLoading: false,
         list: [],
         cols: []
       }
@@ -132,81 +122,14 @@
           this.cols.push(`${i + 1}级指标及权重`)
         }
         this.cols.push(`综合权重`)
-      },
-
-      /**
-       * @author haodongdong
-       * @description 保存按钮回调
-       */
-      async handleSubmit () {
-        this.btnLoading = true
-        try {
-          await this.validate()
-          const arr = []
-          this.list.forEach(row => { // 取出所有指标类型的，目前后端返回的数据二维数组的子数组的最后一个元素一定是指标类型
-            arr.push(row[row.length - 1])
-          })
-          await saveLastWeight(arr)
-          this.$message({ type: 'success', content: '操作成功' })
-        } catch (error) {
-          console.error(error)
-          this.$notice.danger({
-            title: '操作失败',
-            desc: error
-          })
-        }
-        this.btnLoading = false
-      },
-
-      /**
-       * @author haodongdong
-       * @description 重新加载按钮回调
-       */
-      handleReLoadBtn () {
-        this.getGlobalWeight(this.modelId)
-      },
-
-      /**
-       * @author haodongdong
-       * @description 验证提交数据是否符合要求
-       */
-      validate () {
-        return new Promise(async (resolve, reject) => {
-          try {
-            this.list.forEach(row => {
-              const lastEl = row[row.length - 1]
-              if (lastEl.indexType !== 'Index') {
-                let msg = '维度必须配置指标'
-                throw msg
-              } else if (!lastEl.lastWeight) {
-                let msg = '综合权重必填且不能为0'
-                throw msg
-              }
-            })
-
-            if (this.difference !== 0) {
-              let msg = '综合权重总和必须为100%'
-              throw msg
-            }
-
-            resolve()
-          } catch (error) {
-            reject(error)
-          }
-        })
       }
     }
   }
 </script>
 
 <style lang="stylus" scoped>
-  .global-weight {
-    padding: 20px;
-
-    .con {
-      position: relative;
-      min-height: 200px;
-    }
+  .global-weight-table {
+     width: 100%;
 
     .table {
       table-layout : fixed;
