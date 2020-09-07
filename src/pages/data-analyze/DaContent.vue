@@ -112,7 +112,7 @@
                 </b-form-item>
               </b-col>
               <b-col span="6">
-                <b-form-item label="单位" prop="type">
+                <b-form-item label="单位" prop="unit">
                   <b-input v-model="content.unit"></b-input>
                 </b-form-item>
               </b-col>
@@ -275,7 +275,8 @@
           type: [{ required: true, message: '必填项', trigger: 'change', type: 'array' }],
           toggle: [{ required: true, message: '必填项', trigger: 'change' }],
           themeCode: [{ required: true, message: '必填项', trigger: 'change' }],
-          apiId: [{ required: true, message: '必填项', trigger: 'change,blur' }]
+          apiId: [{ required: true, message: '必填项', trigger: 'change,blur' }],
+          unit: [requiredRule]
         },
         statusMap: { 'I': '初始', 'Y': '启用', 'D': '禁用' },
         apiModel: true,

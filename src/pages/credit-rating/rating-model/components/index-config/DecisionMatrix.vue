@@ -29,7 +29,11 @@
         </b-button>
       </div>
 
-      <div class="table-con">
+      <div class="table-con" ref="tableCon"
+        @mousedown="handleTableMousedown"
+        @mousemove="handleTableMousemove"
+        @mouseup="handleTableMouseup"
+        @mouseleave ="handleTableMouseleave">
         <table class="table">
           <tr>
             <th>维度\维度</th>
@@ -152,7 +156,12 @@
           { title: '综合权重', slot: 'lastWeight', align: 'center' },
           { title: '判定权重', slot: 'decisionWeight', align: 'center' }
         ],
-        curCoordinate: [] // 保存当前比值设置单元格的坐标
+        curCoordinate: [], // 保存当前比值设置单元格的坐标
+        // 拖动相关
+        isMouseDown: false,
+        scrollLeft: 0,
+        startX: 0,
+        limitX: 0
       }
     },
     computed: {
@@ -434,7 +443,57 @@
        * @param {number} colIndex
        */
       handleTdMouseenter (rowIndex, colIndex) {
-        this.curCoordinate = [rowIndex, colIndex]
+        if (this.curMatrixCol.length > 4) {
+          this.curCoordinate = [rowIndex, colIndex]
+        }
+      },
+
+      /**
+       * @author haodongdong
+       * @description table鼠标按下事件
+       * @param {event} e
+       */
+      handleTableMousedown (e) {
+        // 设置table可以拖动的极限距离
+        const tableCon = this.$refs.tableCon
+        this.limitX = tableCon.scrollWidth - tableCon.offsetWidth
+
+        const rect = e.target.getBoundingClientRect()
+        this.startX = e.clientX - rect.x
+        // this.isMouseDown = true
+      },
+
+      handleTableMousemove (e) {
+        if (this.isMouseDown) {
+          // 获取鼠标按下后移动的距离
+          let offsetX = e.offsetX - this.startX
+          this.scrollLeft = this.scrollLeft - offsetX
+
+          console.log('t', this.scrollLeft)
+
+          if (this.scrollLeft >= this.limitX) {
+            // 当滑块移动到左侧时
+            this.scrollLeft = this.limitX
+          } else if (this.scrollLeft <= 0) {
+            // 当滑块移动到右侧时
+            this.scrollLeft = 0
+          }
+
+          console.log('b', this.scrollLeft)
+
+          // 将计算后的距离赋值给滚动条
+          const tableCon = this.$refs.tableCon
+          tableCon.scrollLeft = this.scrollLeft
+        }
+      },
+
+      handleTableMouseup (e) {
+        this.isMouseDown = false
+      },
+
+      handleTableMouseleave (e) {
+        this.isMouseDown = false
+        this.curCoordinate = []
       }
     }
   }
@@ -444,11 +503,13 @@
  .decision-matrix {
    .table-con {
      width: 100%;
+     max-height: 600px;
      overflow: auto;
    }
 
    .table {
       table-layout : fixed;
+      word-wrap: break-word;
       border-collapse: collapse;
       margin: 0 auto;
       text-align: center;
@@ -464,9 +525,8 @@
         border: 1px solid #e8eaec;
         color: #666;
         height: 40px;
-        min-width: 100px;
-        word-wrap: break-word;
-        word-break: break-all;
+        min-width: 130px;
+        max-width: 130px;
       }
 
       .con {
@@ -476,16 +536,18 @@
       }
 
       .oneBg {
-        background-color: #e9f8fc;
+        background-color: #e6f2ff;
       }
 
       .trBg {
-        background-color: #e6f2ff;
-        transition: background-color 0.7s;
+        th, td {
+          background-color: #e6f2ff;
+          transition: background-color 0.7s;
+        }
       }
 
       .tdBg {
-        background-color:#e6f2ff;
+        background-color: #e6f2ff;
         transition: background-color 0.7s;
       }
 
@@ -495,12 +557,6 @@
       td:nth-child(even), th:nth-child(even) {
 
       }
-      // tr:nth-child(odd) {
-      //   background: #f5fafa;
-      // }
-      // tr:nth-child(even) {
-      //   background: #ffffff;
-      // }
     }
  }
 </style>

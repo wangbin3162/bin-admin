@@ -67,18 +67,20 @@
 
                     <div flex>
                       <b-form-item label="类型" prop="type" class="mr-15 form-item">
-                        <b-select v-model="item.type" style="width: 100%;" appendToBody>
+                        <b-select v-model="item.type" style="width: 100%;" appendToBody
+                          @on-change="handleTypeChange($event, item)">
                           <b-option v-for="(value, key) in typeEnum" :key="key" :value="key">
                             {{ value }}
                           </b-option>
                         </b-select>
                       </b-form-item>
 
-                      <b-form-item label="配置" v-if="item.type === 'DICT'" prop="dictCode" class="mr-15 form-item">
+                      <b-form-item label="配置" v-if="item.type === 'DICT' || item.type === 'API_CLS'"
+                        class="mr-15 form-item" prop="typeContent">
                         <div flex>
-                          <b-input placeholder="选择字典" disabled :value="item.dictName"></b-input>
+                          <b-input placeholder="请选择相关配置" disabled :value="item.configName"></b-input>
                           <b-button type="primary" plain
-                            @click="handleSelectDictBtn(item)">
+                            @click="handleSelectConfigBtn(item)">
                             选择
                           </b-button>
                         </div>
@@ -110,6 +112,10 @@
       :contentId="contentId"
       @selected="handleSelectedRes">
     </select-response>
+
+    <select-class-info v-model="openSelectClassInfo"
+      @selected="handleSelectedClassInfo">
+    </select-class-info>
   </div>
 </template>
 
@@ -118,14 +124,15 @@
   import { updateInfoItemMap } from '../../../../api/data-analyze/da-content.api'
   import SelectResponse from './SelectResponse'
   import SelectDict from './SelectDict'
+  import SelectClassInfo from './SelectClassInfo'
 
   /**
    * @typedef {Object} InfoItem 信息项对象
    * @property {string} names 名称
    * @property {string} titles 标题
    * @property {string} type 类型
-   * @property {string} [dictCode] 字典编码
-   * @property {string} [dictName] 字典名称
+   * @property {string} [typeContent] 字典编码
+   * @property {string} [configName] 字典名称
    */
 
   export default {
@@ -146,12 +153,14 @@
     },
     components: {
       SelectResponse,
-      SelectDict
+      SelectDict,
+      SelectClassInfo
     },
     data () {
       return {
         openSelectResponse: false,
         openSelectDict: false,
+        openSelectClassInfo: false,
         typeEnum: {}, // 类型枚举
         mappingFields: JSON.parse(this.initMappingFields),
         rules: {
@@ -164,8 +173,8 @@
           type: [
             { required: true, message: '类型不能为空', trigger: 'change' }
           ],
-          dictCode: [
-            { required: true, message: '请选择字典', trigger: 'change' }
+          typeContent: [
+            { required: true, message: '请选相关配置', trigger: 'change' }
           ]
         },
         validateArr: [], // 存放未通过校验的index
@@ -227,8 +236,8 @@
           names: '',
           titles: '',
           type: '',
-          dictCode: null,
-          dictName: null
+          typeContent: null,
+          configName: null
         }
       },
 
@@ -263,12 +272,29 @@
 
       /**
        * @author haodongdong
-       * @description 字典项选择按钮回调
+       * @description 类别下拉框改变回调
+       * @param {string} type
        * @param {InfoItem} infoItem
        */
-      handleSelectDictBtn (infoItem) {
+      handleTypeChange (type, infoItem) {
         this.curMappingItem = infoItem
-        this.openSelectDict = true
+        this.curMappingItem.typeContent = ''
+        this.curMappingItem.configName = ''
+      },
+
+      /**
+       * @author haodongdong
+       * @description 配置选择按钮回调
+       * @param {InfoItem} infoItem
+       */
+      handleSelectConfigBtn (infoItem) {
+        this.curMappingItem = infoItem
+
+        if (infoItem.type === 'DICT') {
+          this.openSelectDict = true
+        } else if (infoItem.type === 'API_CLS') {
+          this.openSelectClassInfo = true
+        }
       },
 
       /**
@@ -279,8 +305,20 @@
        * @param {string} dict.groupName 字典名称
        */
       handleSelectedDict (dict) {
-        this.curMappingItem.dictCode = dict.groupCode
-        this.curMappingItem.dictName = dict.groupName
+        this.curMappingItem.typeContent = dict.groupCode + '-' + dict.groupName
+        this.curMappingItem.configName = dict.groupName
+      },
+
+      /**
+       * @author haodongdong
+       * @description select-class-info组件已选择的回调
+       * @param {Object} classInfo 类别信息
+       * @param {string} classInfo.typeCode 类别编码
+       * @param {string} classInfo.typeName 类别名称
+       */
+      handleSelectedClassInfo (classInfo) {
+        this.curMappingItem.typeContent = classInfo.typeCode + '-' + classInfo.typeName
+        this.curMappingItem.configName = classInfo.typeName
       },
 
       /**
@@ -298,7 +336,7 @@
        */
       async handleConfirmBtn () {
         const forms = this.$refs.form
-        console.log(forms)
+        // console.log(forms)
         this.updateInfoItemMap(this.contentId, this.mappingFields)
         this.$emit('success')
         this.$emit('close')

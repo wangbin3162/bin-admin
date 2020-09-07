@@ -1,10 +1,10 @@
 <template>
   <div class="matrix-input">
-    <b-input-number v-model="dividend" style="width: 55px;"
+    <b-input-number v-model="dividend"
       :max="9" :min="1" :precision="0">
     </b-input-number>
-    <div class="pl-10 pr-10"> / </div>
-    <b-input-number v-model="divisor" style="width: 55px;"
+    <div class="line"> / </div>
+    <b-input-number v-model="divisor"
       :max="9" :min="1" :precision="0">
     </b-input-number>
   </div>
@@ -38,16 +38,18 @@
       },
       dividend: {
         handler (newVal) {
-          if (this.dividend && this.divisor) {
-            this.$emit('input', this.dividend + '/' + this.divisor)
-          }
+          // if (this.dividend && this.divisor) {
+          //   }
+          let res = this.dividend + '/' + this.divisor
+          this.$emit('input', res.replace(/null/g, ''))
         }
       },
       divisor: {
         handler (newVal) {
-          if (this.dividend && this.divisor) {
-            this.$emit('input', this.dividend + '/' + this.divisor)
-          }
+          // if (this.dividend && this.divisor) {
+          //   }
+          let res = this.dividend + '/' + this.divisor
+          this.$emit('input', res.replace(/null/g, ''))
         }
       }
     },
@@ -61,11 +63,17 @@
 </script>
 
 <style lang="stylus" scoped>
- .matrix-input {
-   display: flex;
-   justify-content: center;
-   align-items: center;
-   flex-wrap: wrap;
+  .matrix-input {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    width: 110px;
 
- }
+    .line {
+      min-width: 7px;
+      max-width: 7px;
+      text-align: center;
+    }
+  }
 </style>
