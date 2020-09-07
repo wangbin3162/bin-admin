@@ -72,8 +72,10 @@
                     + 添加
                 </b-button>
                 <p>
-                  注：此处权重总计必须为<span>100%</span>，
-                  还差<span>{{ allWeight }}%</span>
+                  注：此处权重总计必须为<span>100%</span>
+                  <template v-if="allWeight !== 0">
+                    ，还差<span>{{ allWeight }}%</span>
+                  </template>
                 </p>
                 <b-button type="primary" :loading="loadingBtn"
                   @click="handleSubmit">

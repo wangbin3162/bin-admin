@@ -34,8 +34,10 @@
     </div>
 
     <p>
-      注：此处综合权重总计必须为<span>100%</span>，
-      还差<span>{{ difference }}%</span>
+      注：此处综合权重总计必须为<span>100%</span>
+      <template v-if="difference !== 0">
+        ，还差<span>{{ difference }}%</span>
+      </template>
     </p>
 
     <div flex="main:center" class="mt-20">
