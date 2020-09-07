@@ -246,14 +246,18 @@
       },
       // 测试连接
       checkLink() {
-        this.linkStatus = true
-        api.linkCheck(this.ds).then(res => {
-          if (res.data.code === '0') {
-            this.$alert({ type: 'success', title: '测试连接', content: '测试连接成功。' })
-          } else {
-            this.$alert({ type: 'danger', title: '测试连接', content: '测试连接失败，请检查配置信息。' })
+        this.$refs.form.validate((valid) => {
+          if (valid) {
+            this.linkStatus = true
+            api.linkCheck(this.ds).then(res => {
+              if (res.data.code === '0') {
+                this.$alert({type: 'success', title: '测试连接', content: '测试连接成功。'})
+              } else {
+                this.$alert({type: 'danger', title: '测试连接', content: '测试连接失败，请检查配置信息。'})
+              }
+              this.linkStatus = false
+            })
           }
-          this.linkStatus = false
         })
       },
       /* [数据接口] */
