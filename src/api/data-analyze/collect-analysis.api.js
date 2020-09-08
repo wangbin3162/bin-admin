@@ -1,4 +1,3 @@
-
 import request from '../request'
 import store from '@/store'
 import BinUtil from 'bin-ui/src/utils/util'
@@ -27,7 +26,11 @@ export async function firstLineStatis () {
     try {
       const res = await request({
         url: '/da/data/collect/firstLineStatis',
-        method: 'get'
+        method: 'get',
+        params: {
+          gatherDept: getDepartId(),
+          isDomain: isDomain()
+        }
       })
       if (res.data.successful) {
         resolve(res.data.data)
@@ -63,6 +66,7 @@ export async function centerStatis (query) {
         url: '/da/data/collect/centerStatis',
         method: 'get',
         params: {
+          gatherDept: getDepartId(),
           startDate: query.startDate,
           endDate: endDateStr,
           pageSize: query.pageSize,
@@ -97,6 +101,7 @@ export async function xxgjNew (query) {
         url: '/da/data/collect/xxgjNew',
         method: 'get',
         params: {
+          gatherDept: getDepartId(),
           startDate: query.startDate,
           pageSize: query.pageSize,
           isDomain: isDomain()
@@ -128,6 +133,7 @@ export async function resMergeTrend (query) {
         url: '/da/data/collect/resMergeTrend',
         method: 'get',
         params: {
+          gatherDept: getDepartId(),
           startDate: query.startDate,
           endDate: query.endDate,
           isDomain: isDomain()

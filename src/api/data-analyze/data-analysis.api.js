@@ -46,7 +46,11 @@ export async function firstLineStatis () {
     try {
       const res = await request({
         url: '/da/data/gather/firstLineStatis',
-        method: 'get'
+        method: 'get',
+        params: {
+          gatherDept: getDepartId(),
+          isDomain: isDomain()
+        }
       })
       if (res.data.successful) {
         resolve(res.data.data)
@@ -71,7 +75,7 @@ export async function byxxgjNew () {
         url: '/da/data/gather/byxxgjNew',
         method: 'get',
         params: {
-          gatherDept: isAdmin() ? null : getDepartId(),
+          gatherDept: getDepartId(),
           isDomain: isDomain()
         }
       })
@@ -101,7 +105,7 @@ export async function ydxxgjNew (query) {
         url: '/da/data/gather/ydxxgjNew',
         method: 'get',
         params: {
-          gatherDept: isAdmin() ? null : getDepartId(),
+          gatherDept: getDepartId(),
           isDomain: isDomain(),
           startDate: query.startDate,
           endDate: query.endDate
@@ -134,7 +138,7 @@ export async function ndxxgjNew (query) {
         url: '/da/data/gather/ndxxgjNew',
         method: 'get',
         params: {
-          gatherDept: isAdmin() ? null : query.departId,
+          gatherDept: getDepartId(),
           isDomain: isDomain(),
           resourceKey: query.resourceKey,
           startDate: query.startDate,
@@ -167,6 +171,7 @@ export async function xxgjNew (query) {
         url: '/da/data/gather/xxgjNew',
         method: 'get',
         params: {
+          gatherDept: getDepartId(),
           pageSize: query.pageSize,
           startDate: query.startDate
         }
