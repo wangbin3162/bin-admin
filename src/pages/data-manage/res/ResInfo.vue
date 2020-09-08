@@ -38,6 +38,7 @@
           <template v-slot:resourceName="{row}">
             <b-button type="text" @click="handleCheck(row)">{{ row.resourceName }}</b-button>
           </template>
+          <template v-slot:resourceKey="{row}">{{ row.resourceKey }}</template>
           <template v-slot:personClass="{row}">{{ personClassMap[row.personClass] }}</template>
           <template v-slot:resProperty="{row}">{{ resPropertyMap[row.resProperty] }}</template>
           <template v-slot:status="{row}">
@@ -386,6 +387,7 @@ export default {
       treeData: [],
       columns: [
         { title: '资源名称', slot: 'resourceName' },
+        { title: '资源信息key', slot: 'resourceKey' },
         { title: '主体类别', slot: 'personClass', width: 130 },
         { title: '资源性质', slot: 'resProperty', width: 120, align: 'center' },
         { title: '资源状态', slot: 'status', width: 90, align: 'center' },
