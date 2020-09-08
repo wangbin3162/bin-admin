@@ -11,7 +11,6 @@ export const basicComponents = [
       width: '100%',
       defaultValue: '',
       required: false,
-      dataType: 'string',
       pattern: '',
       placeholder: '',
       disabled: false
@@ -248,7 +247,7 @@ export const layoutComponents = [
       }
     ],
     options: {
-      gutter: 0,
+      gutter: 4,
       justify: 'start',
       align: 'top'
     }
@@ -259,7 +258,6 @@ export const layoutComponents = [
     icon: 'ios-remove',
     options: {
       align: 'left',
-      dashed: false,
       fontSize: '14px',
       margin: '12px 0'
     }

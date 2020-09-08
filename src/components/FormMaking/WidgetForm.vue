@@ -1,6 +1,6 @@
 <template>
   <div class="widget-form-container">
-    <b-empty class="form-empty" v-if="data.list.length === 0">从左侧拖拽来添加字段</b-empty>
+    <b-empty class="form-empty" v-if="data.list.length === 0">从左侧拖拽或点击来添加字段</b-empty>
     <b-form ref="form" :label-position="data.config.labelPosition" :label-width="data.config.labelWidth"
             :class="'form-'+data.config.size">
       <draggable class=""
@@ -13,35 +13,36 @@
           <template v-for="(element, index) in data.list">
             <!--布局-->
             <template v-if="element.type === 'grid'">
-              <b-row class="widget-col widget-view" v-if="element && element.key" :key="element.key"
-                     type="flex"
-                     :class="{active: selectWidget.key === element.key}"
-                     :gutter="element.options.gutter ? element.options.gutter : 0"
-                     :justify="element.options.justify"
-                     :align="element.options.align"
-                     @click.native="handleSelectWidget(index)">
-                <b-col v-for="(col, colIndex) in element.columns" :key="colIndex" :span="col.span ? col.span : 0">
-                  <draggable
-                    v-model="col.list"
-                    :no-transition-on-drag="true"
-                    v-bind="{group:'form', ghostClass: 'ghost',animation: 200, handle: '.drag-widget'}"
-                    @end="handleMoveEnd"
-                    @add="handleWidgetColAdd($event, element, colIndex)"
-                  >
-                    <transition-group name="fade" tag="div" class="widget-col-list">
-                      <template v-for="(el, i) in col.list">
-                        <widget-form-item
-                          :key="el.key"
-                          v-if="el.key"
-                          :element="el"
-                          :select.sync="selectWidget"
-                          :index="i"
-                          :data="col">
-                        </widget-form-item>
-                      </template>
-                    </transition-group>
-                  </draggable>
-                </b-col>
+              <div class="widget-col widget-view" v-if="element && element.key" :key="element.key"
+                   :class="{active: selectWidget.key === element.key}"
+                   @click="handleSelectWidget(index)">
+                <b-row type="flex"
+                       :gutter="element.options.gutter"
+                       :justify="element.options.justify"
+                       :align="element.options.align">
+                  <b-col v-for="(col, colIndex) in element.columns" :key="colIndex" :span="col.span ? col.span : 0">
+                    <draggable
+                      v-model="col.list"
+                      :no-transition-on-drag="true"
+                      v-bind="{group:'form', ghostClass: 'ghost',animation: 200, handle: '.drag-widget'}"
+                      @end="handleMoveEnd"
+                      @add="handleWidgetColAdd($event, element, colIndex)"
+                    >
+                      <transition-group name="fade" tag="div" class="widget-col-list">
+                        <template v-for="(el, i) in col.list">
+                          <widget-form-item
+                            :key="el.key"
+                            v-if="el.key"
+                            :element="el"
+                            :select.sync="selectWidget"
+                            :index="i"
+                            :data="col">
+                          </widget-form-item>
+                        </template>
+                      </transition-group>
+                    </draggable>
+                  </b-col>
+                </b-row>
                 <!--拖拽删除-->
                 <div class="widget-view-action widget-col-action" v-if="selectWidget.key === element.key">
                   <i class="iconfont icon-ios-trash" title="删除" @click.stop="handleWidgetDelete(index)"></i>
@@ -49,13 +50,13 @@
                 <div class="widget-view-drag widget-col-drag" v-if="selectWidget.key === element.key">
                   <i class="iconfont icon-ios-move drag-widget"></i>
                 </div>
-              </b-row>
+              </div>
             </template>
             <template v-else-if="element.type === 'divider'">
               <div class="widget-col widget-view" v-if="element && element.key" :key="element.key"
                    :class="{active: selectWidget.key === element.key}"
                    @click="handleSelectWidget(index)">
-                <b-divider :align="element.options.align" :dashed="element.options.dashed"
+                <b-divider v-if="!element.options.simple" :align="element.options.align"
                            :style="{fontSize:element.options.fontSize,margin:element.options.margin}">
                   {{ element.name }}
                 </b-divider>
@@ -159,8 +160,10 @@ export default {
     },
     // 克隆并扩展属性函数
     cloneObjAndExtend(copyObj) {
+      let key = getKey()
       let cloneObj = deepCopy(copyObj)
-      cloneObj.key = getKey()
+      cloneObj.key = key
+      cloneObj.fieldName = cloneObj.type + '_' + key
       return cloneObj
     }
   },

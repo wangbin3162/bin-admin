@@ -165,6 +165,10 @@
       <i class="iconfont icon-ios-move drag-widget"></i>
     </div>
 
+    <div class="widget-view-field-name" v-if="selectWidget.key === element.key">
+      <span>{{ element.fieldName }}</span>
+    </div>
+
   </b-form-item>
 </template>
 

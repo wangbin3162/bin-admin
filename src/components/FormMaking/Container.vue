@@ -77,12 +77,15 @@
               </div>
             </div>
             <div class="scroll-content">
-              {{ activeTab }}
-              <div>
-                <b-divider align="left">data</b-divider>
-                <b-ace-editor :value="JSON.stringify(widgetForm.list,null,2)"
-                              @on-change="jsonChange"/>
+              <div class="config-content">
+                <widget-config v-show="activeTab==='widget'" :data="widgetFormSelect"></widget-config>
+                <form-config v-show="activeTab==='form'" :data="widgetForm.config"></form-config>
               </div>
+              <!--              <div>-->
+              <!--                <b-divider align="left">data</b-divider>-->
+              <!--                <b-ace-editor :value="JSON.stringify(widgetForm.list,null,2)"-->
+              <!--                              @on-change="jsonChange"/>-->
+              <!--              </div>-->
             </div>
           </div>
         </div>
@@ -97,10 +100,12 @@ import scrollbarMixin from 'bin-ui/src/mixins/scrollbar-mixin'
 import { deepCopy } from '@/common/utils/assist'
 import WidgetForm from '@/components/FormMaking/WidgetForm'
 import { basicComponents, layoutComponents } from './config/componentsConfig.js'
+import FormConfig from '@/components/FormMaking/FormConfig'
+import WidgetConfig from '@/components/FormMaking/WidgetConfig'
 
 export default {
   name: 'fm-container',
-  components: { Draggable, WidgetForm },
+  components: { WidgetConfig, FormConfig, Draggable, WidgetForm },
   mixins: [scrollbarMixin],
   provide() {
     return { ConfigRoot: this }
@@ -132,10 +137,10 @@ export default {
         }
       },
       tabs: [
-        { key: 'tab1', title: '字段属性' },
-        { key: 'tab2', title: '表单属性' }
+        { key: 'widget', title: '控件属性' },
+        { key: 'form', title: '表单属性' }
       ],
-      activeTab: 'tab1',
+      activeTab: 'widget',
       widgetFormSelect: null,
       closeModal: false
     }

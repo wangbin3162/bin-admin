@@ -192,16 +192,6 @@ $primary-background-color = #ecf5ff;
   left: 0;
   right: 0;
   bottom: 0;
-  .form-empty {
-    position: absolute;
-    text-align: center;
-    height: 20px;
-    font-size: 20px;
-    top: 200px;
-    width: 100%;
-    color: #ccc;
-  }
-
   // 中间拖拽元素的样式
   .widget-form-list {
     background: #fff;
@@ -292,6 +282,15 @@ $primary-background-color = #ecf5ff;
           cursor: move;
         }
       }
+      .widget-view-field-name {
+        position: absolute;
+        top: 0;
+        right: 3px;
+        font-size: 12px;
+        color: #67c23a;
+        z-index: 9;
+        font-weight: 500;
+      }
       &.active {
         outline: 1px solid $primary-color;
         border: 1px solid $primary-color;
@@ -377,20 +376,76 @@ $primary-background-color = #ecf5ff;
     font-size: 0;
     overflow: hidden;
   }
+  // 覆盖ui
+  .bin-form .bin-form-item-content {
+    position: unset;
+  }
 }
 
-// 覆盖bin-ui
-.bin-form {
-  &.form-large .bin-form-item-label {
-    height: 42px;
+// 右侧配置面板
+.widget-config-container {
+  position: relative;
+  .config-content {
+    .bin-form-item-content {
+      position: relative;
+    }
+    .bin-form-item {
+      margin-bottom: 17px;
+    }
   }
-  &.form-small .bin-form-item-label {
-    height: 28px;
+  .ghost {
+    background: #fff;
+    border: 1px dashed $primary-color;
+
+    &::after {
+      background: #fff;
+      display: block;
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+    }
   }
-  &.form-mini .bin-form-item-label {
-    height: 24px;
+  ul {
+    margin: 0;
+    padding: 0;
   }
-  .bin-form-item-content {
-    position: unset;
+
+  li {
+    padding: 4px 0;
+  }
+  li.ghost {
+    list-style: none;
+    font-size: 0;
+    display: block;
+    position: relative;
+  }
+}
+// 空容器
+.form-empty {
+  position: absolute;
+  text-align: center;
+  height: 20px;
+  font-size: 20px;
+  top: 200px;
+  width: 100%;
+  color: #ccc;
+}
+
+.fm-container {
+  // 覆盖bin-ui
+  .bin-form {
+    &.form-large .bin-form-item-label {
+      height: 42px;
+    }
+    &.form-small .bin-form-item-label {
+      height: 28px;
+    }
+    &.form-mini .bin-form-item-label {
+      height: 24px;
+    }
+
   }
 }
