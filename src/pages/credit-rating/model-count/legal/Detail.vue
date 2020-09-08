@@ -57,7 +57,8 @@
         </b-collapse-wrap>
 
         <b-collapse-wrap title="信用信息详情" collapse :value="!loading">
-          <global-weight-table :modelId="modelId"></global-weight-table>
+          <global-weight-table :modelId="modelId" showModel>
+          </global-weight-table>
         </b-collapse-wrap>
 
         <template slot="footer">

@@ -15,7 +15,8 @@
           </b-collapse-wrap>
 
           <b-collapse-wrap title="指标信息" collapse>
-            <global-weight-table :modelId="id"></global-weight-table>
+            <global-weight-table :modelId="id" showModel>
+            </global-weight-table>
           </b-collapse-wrap>
         </div>
 
