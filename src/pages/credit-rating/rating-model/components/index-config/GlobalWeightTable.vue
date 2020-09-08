@@ -1,5 +1,5 @@
 <template>
-  <div class="global-weight">
+  <div class="global-weight-table">
     <div class="con">
       <b-loading fix show-text="加载中...." v-if="listLoading"></b-loading>
       <table class="table">
@@ -14,9 +14,15 @@
 
             <template v-if="colIndex === row.length - 1 && col.indexType === 'Index'">
               <td :key="colIndex">
-                <b-input-number v-model="col.lastWeight"
-                  :max="100" :min="1" :precision="2">
-                </b-input-number>%
+                <template v-if="!showModel">
+                  <b-input-number v-model="col.lastWeight"
+                    :max="100" :min="1" :precision="2">
+                  </b-input-number>
+                </template>
+                <template v-else>
+                  {{ col.lastWeight }}
+                </template>
+                %
               </td>
             </template>
 
@@ -33,23 +39,25 @@
       </table>
     </div>
 
-    <p>
-      注：此处综合权重总计必须为<span>100%</span>
-      <template v-if="difference !== 0">
-        ，还差<span>{{ difference }}%</span>
-      </template>
-    </p>
+    <template v-if="!showModel">
+      <p>
+        注：此处综合权重总计必须为<span>100%</span>
+        <template v-if="difference !== 0">
+          ，还差<span>{{ difference }}%</span>
+        </template>
+      </p>
 
-    <div flex="main:center" class="mt-20">
-      <b-button type="primary"
-        :loading="btnLoading"
-        @click="handleSubmit">
-        保存
-      </b-button>
-      <b-button @click="handleReLoadBtn">
-        重新加载
-      </b-button>
-    </div>
+      <div flex="main:center" class="mt-20">
+        <b-button type="primary"
+          :loading="btnLoading"
+          @click="handleSubmit">
+          保存
+        </b-button>
+        <b-button @click="handleReLoadBtn">
+          重新加载
+        </b-button>
+      </div>
+    </template>
   </div>
 </template>
 
@@ -58,11 +66,15 @@
   import { getGlobalWeight, saveLastWeight } from '@/api/credit-rating/rating-model.api'
 
   export default {
-    name: 'GolbalWeight',
+    name: 'GolbalWeightTable',
     props: {
       modelId: {
         type: String,
         required: true
+      },
+      showModel: {
+        type: Boolean,
+        default: false
       }
     },
     data () {
@@ -200,7 +212,7 @@
 </script>
 
 <style lang="stylus" scoped>
-  .global-weight {
+  .global-weight-table {
     padding: 20px;
 
     .con {

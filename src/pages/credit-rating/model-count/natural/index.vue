@@ -90,6 +90,7 @@
     <detail v-if="isCheck"
       @close="handleCancel"
       :id="curRow.id"
+      :modelId="curRow.modelId"
       :title="editTitle"
       :personId="curRow.personId"
       :resourceKey="curRow.natBaseInfo.resourceKey">

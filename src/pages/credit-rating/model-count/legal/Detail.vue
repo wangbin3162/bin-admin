@@ -57,27 +57,8 @@
         </b-collapse-wrap>
 
         <b-collapse-wrap title="信用信息详情" collapse :value="!loading">
-          <!-- <b-row class="mb-15">
-            <b-col span="12" class="field">
-              <label>信用主体：</label>
-              <p class="con">乐视网信息技术(北京)股份有限公司</p>
-            </b-col>
-            <b-col span="6" class="field">
-              <label>信用得分：</label>
-              <p class="con">1000</p>
-            </b-col>
-            <b-col span="6" class="field">
-              <label>信用级别：</label>
-              <p class="con">A</p>
-            </b-col>
-          </b-row> -->
-
-          <b-table :columns="columns" :data="list" size="small" class="mb-15"></b-table>
-          <div flex="main:right">
-            <b-page :total="total" :current.sync="query.page"
-              show-total size="small"
-              @on-change="handleCurrentChange"></b-page>
-          </div>
+          <global-weight-table :modelId="modelId" showModel>
+          </global-weight-table>
         </b-collapse-wrap>
 
         <template slot="footer">
@@ -89,32 +70,32 @@
 </template>
 
 <script>
-  import { Decode, MaskCode } from '../../../../common/utils/secret'
+  import { Decode, MaskCode } from '@/common/utils/secret'
   import {
     getCreditInfo, getLegalDetail,
     getResourceDetailField, getDetailContent
-  } from '../../../../api/credit-rating/model-count.api'
+  } from '@/api/credit-rating/model-count.api'
+  import GlobalWeightTable from '@/pages/credit-rating/rating-model/components/index-config/GlobalWeightTable'
 
   export default {
     name: 'ModelCountLegalDetail',
     props: [
       'id',
+      'modelId',
+      'test',
       'title',
       'personId',
       'resourceKey'
     ],
+    components: {
+      GlobalWeightTable
+    },
     data () {
       return {
         loading: false,
         fieldList: [], // 字段列表
         baseInfo: {}, // 法人主体详情
         detail: {},
-        query: {
-          id: this.id,
-          page: 1
-        },
-        total: 0,
-        list: [],
         columns: [
           { type: 'index', width: 50, align: 'center' },
           { title: '指标名称', key: 'indexName', align: 'center' },
@@ -124,34 +105,15 @@
       }
     },
     created () {
-      this.getCreditInfo(this.query)
       this.getLegalDetail(this.id)
       this.getBaseInfo(this.personId, this.resourceKey)
     },
     methods: {
-      // 分页按钮切换回调
-      handleCurrentChange (page) {
-        this.query.page = page
-        this.getCreditInfo(this.query)
-      },
       // 获取法人详情
       async getLegalDetail (id) {
-        this.loading = true
         try {
           const res = await getLegalDetail(id)
           this.detail = res
-        } catch (error) {
-          console.error(error)
-          this.$notice.danger({ title: '加载失败', desc: error })
-        }
-        this.loading = false
-      },
-      // 获取信用评级信息
-      async getCreditInfo (query) {
-        try {
-          const res = await getCreditInfo(query)
-          this.list = res.rows
-          this.total = res.total
         } catch (error) {
           console.error(error)
           this.$notice.danger({ title: '加载失败', desc: error })

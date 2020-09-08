@@ -72,8 +72,10 @@
                     + 添加
                 </b-button>
                 <p>
-                  注：此处权重总计必须为<span>100%</span>，
-                  还差<span>{{ allWeight }}%</span>
+                  注：此处权重总计必须为<span>100%</span>
+                  <template v-if="allWeight !== 0">
+                    ，还差<span>{{ allWeight }}%</span>
+                  </template>
                 </p>
                 <b-button type="primary" :loading="loadingBtn"
                   @click="handleSubmit">
@@ -93,9 +95,9 @@
           </div>
         </div>
 
-        <global-weight v-if="mainTab === 'globalWeight'"
+        <global-weight-table v-if="mainTab === 'globalWeight'"
           :modelId="modelId">
-        </global-weight>
+        </global-weight-table>
 
         <template slot="footer">
           <b-button @click="$emit('close')">返 回</b-button>
@@ -120,7 +122,7 @@
   } from '@/api/credit-rating/rating-model.api'
   import MainTabs from '@/pages/credit-rating/rating-model/components/index-config/MainTabs'
   import SubTabs from '@/pages/credit-rating/rating-model/components/index-config/SubTabs'
-  import GlobalWeight from '@/pages/credit-rating/rating-model/components/index-config/GlobalWeight'
+  import GlobalWeightTable from '@/pages/credit-rating/rating-model/components/index-config/GlobalWeightTable'
   import DecisionMatrix from '@/pages/credit-rating/rating-model/components/index-config/DecisionMatrix'
   import SelectIndex from './SelectIndex'
 
@@ -131,7 +133,7 @@
     components: {
       MainTabs,
       SubTabs,
-      GlobalWeight,
+      GlobalWeightTable,
       DecisionMatrix,
       SelectIndex
     },

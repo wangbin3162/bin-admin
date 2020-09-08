@@ -249,7 +249,8 @@
                   big = big.times(weight)
                 }
                 big = big.times(this.pWeight)
-                big = big.div(100)
+                // api: http://mikemcl.github.io/big.js/#toP
+                big = big.div(100).toPrecision(4)
                 el.lastWeight = Number(big)
               }
 
