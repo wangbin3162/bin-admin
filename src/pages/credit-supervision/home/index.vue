@@ -7,9 +7,11 @@
         <div style="width: 50%;">
           <p>风险预警 尽在掌握</p>
           <div flex class="btn-con">
-            <b-dropdown class="dropdown">
-              <b-button type="primary" style="width: 94px;" size="large">
-                {{ personClass === '1' ? '法人' : '自然人' }}
+            <b-dropdown class="dropdown" placement="bottom-start">
+              <b-button type="primary" size="large">
+                <span class="opt-text">
+                  {{ personClass === '1' ? '法人和其他组织' : '自然人' }}
+                </span>
                 <b-icon name="ios-arrow-down"></b-icon>
               </b-button>
               <b-dropdown-menu slot="list">
@@ -17,7 +19,7 @@
                     自然人
                   </b-dropdown-item>
                   <b-dropdown-item @click.native="personClass = '1'">
-                    法人
+                    法人和其他组织
                   </b-dropdown-item>
               </b-dropdown-menu>
             </b-dropdown>
@@ -310,6 +312,11 @@
 
      .btn-con {
         width: 100%;
+
+        .opt-text {
+          display: inline-block;
+          width: 114px;
+        }
       }
     }
 
