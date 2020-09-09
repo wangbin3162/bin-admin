@@ -45,6 +45,7 @@
 </template>
 
 <script>
+  import { arrPgination } from '@/common/utils/util'
   import { getMarketWarnList } from '@/api/credit-supervision/market-players-warn.api'
   import { addSupervision } from '@/api/credit-supervision/my-supervision.api'
   import CreSupLayout from '@/pages/credit-supervision/components/CreSupLayout'
@@ -68,6 +69,7 @@
           size: 10,
           page: 1
         },
+        resData: null, // 接口返回的数据容器
         list: [],
         columns: [
           { type: 'index', width: 50 },
@@ -89,9 +91,12 @@
       async getList () {
         this.listLoading = true
         try {
-          const { total, rows } = await getMarketWarnList(this.query)
+          const res = await getMarketWarnList(this.query)
+          this.resData = res
+
+          const { total, page, arr } = arrPgination(res, this.query.size, this.query.page)
           this.total = total
-          this.list = rows
+          this.list = arr
         } catch (error) {
           console.error(error)
           this.$notice.danger({
@@ -136,8 +141,9 @@
        * @param {number} page 当前页
        */
       handlePageChange (page) {
-        this.query.page = page
-        this.getList()
+        const data = arrPgination(this.resData, this.query.size, page)
+        this.query.page = data.page
+        this.list = data.arr
       }
     }
   }

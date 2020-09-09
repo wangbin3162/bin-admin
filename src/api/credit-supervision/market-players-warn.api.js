@@ -24,7 +24,11 @@ export async function getMarketWarnList (query) {
           page: query.page - 1
         }
       })
-      resolve(res.data)
+      if (res.data.successful) {
+        resolve(res.data.data)
+      } else {
+        reject(res.data.message)
+      }
     } catch (error) {
       reject(error)
     }

@@ -46,8 +46,8 @@
       async getList () {
         this.listLoading = true
         try {
-          const { rows } = await getMarketWarnList(this.query)
-          this.list = rows.splice(0, 5)
+          const res = await getMarketWarnList(this.query)
+          this.list = res.splice(0, 5)
         } catch (error) {
           console.error(error)
           this.$notice.danger({
