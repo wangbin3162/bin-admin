@@ -14,43 +14,45 @@
         </div>
         <div class="fm-content">
           <div class="components-list">
-            <!--基础字段-->
-            <template v-if="basicFields.length">
-              <div class="widget-cate">基础字段</div>
-              <draggable tag="ul" :list="basicComponents"
-                         v-bind="{group:{ name:'form', pull:'clone',put:false},sort:false, ghostClass: 'ghost'}"
-                         :move="handleMove"
-              >
-                <template v-for="(item, index) in basicComponents">
-                  <li v-if="basicFields.indexOf(item.type)>=0" class="form-edit-widget-label"
-                      :class="{'no-put': item.type === 'divider'}" :key="index"
-                      @click="handleAddWidget(item)">
-                    <a>
-                      <b-icon :name="item.icon"/>
-                      <span>{{ item.name }}</span>
-                    </a>
-                  </li>
-                </template>
-              </draggable>
-            </template>
-            <!--布局控件-->
-            <template v-if="layoutFields.length">
-              <div class="widget-cate">布局控件</div>
-              <draggable tag="ul" :list="layoutComponents"
-                         v-bind="{group:{ name:'form', pull:'clone',put:false},sort:false, ghostClass: 'ghost'}"
-                         :move="handleMove"
-              >
-                <template v-for="(item, index) in layoutComponents">
-                  <li v-if="layoutFields.indexOf(item.type) >=0" class="form-edit-widget-label no-put" :key="index"
-                      @click="handleAddWidget(item)">
-                    <a>
-                      <b-icon :name="item.icon"/>
-                      <span>{{ item.name }}</span>
-                    </a>
-                  </li>
-                </template>
-              </draggable>
-            </template>
+            <b-scrollbar style="height: 100%;">
+              <!--基础字段-->
+              <template v-if="basicFields.length">
+                <div class="widget-cate">基础字段</div>
+                <draggable tag="ul" :list="basicComponents"
+                           v-bind="{group:{ name:'form', pull:'clone',put:false},sort:false, ghostClass: 'ghost'}"
+                           :move="handleMove"
+                >
+                  <template v-for="(item, index) in basicComponents">
+                    <li v-if="basicFields.indexOf(item.type)>=0" class="form-edit-widget-label"
+                        :class="{'no-put': item.type === 'divider'}" :key="index"
+                        @click="handleAddWidget(item)">
+                      <a>
+                        <b-icon :name="item.icon"/>
+                        <span>{{ item.name }}</span>
+                      </a>
+                    </li>
+                  </template>
+                </draggable>
+              </template>
+              <!--布局控件-->
+              <template v-if="layoutFields.length">
+                <div class="widget-cate">布局控件</div>
+                <draggable tag="ul" :list="layoutComponents"
+                           v-bind="{group:{ name:'form', pull:'clone',put:false},sort:false, ghostClass: 'ghost'}"
+                           :move="handleMove"
+                >
+                  <template v-for="(item, index) in layoutComponents">
+                    <li v-if="layoutFields.indexOf(item.type) >=0" class="form-edit-widget-label no-put" :key="index"
+                        @click="handleAddWidget(item)">
+                      <a>
+                        <b-icon :name="item.icon"/>
+                        <span>{{ item.name }}</span>
+                      </a>
+                    </li>
+                  </template>
+                </draggable>
+              </template>
+            </b-scrollbar>
           </div>
           <div class="center-container">
             <div class="top-fix">
@@ -77,10 +79,12 @@
               </div>
             </div>
             <div class="scroll-content">
-              <div class="config-content">
-                <widget-config v-show="activeTab==='widget'" :data="widgetFormSelect"></widget-config>
-                <form-config v-show="activeTab==='form'" :data="widgetForm.config"></form-config>
-              </div>
+              <b-scrollbar style="height: 100%;">
+                <div class="config-content">
+                  <widget-config v-show="activeTab==='widget'" :data="widgetFormSelect"></widget-config>
+                  <form-config v-show="activeTab==='form'" :data="widgetForm.config"></form-config>
+                </div>
+              </b-scrollbar>
               <!--              <div>-->
               <!--                <b-divider align="left">data</b-divider>-->
               <!--                <b-ace-editor :value="JSON.stringify(widgetForm.list,null,2)"-->

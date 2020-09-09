@@ -11,9 +11,11 @@ export const basicComponents = [
       width: '100%',
       defaultValue: '',
       required: false,
-      pattern: '',
       placeholder: '',
-      disabled: false
+      disabled: false,
+      length: null,
+      showWordCount: false,
+      clearable: false
     }
   },
   {
@@ -25,8 +27,9 @@ export const basicComponents = [
       defaultValue: '',
       required: false,
       disabled: false,
-      pattern: '',
-      placeholder: ''
+      placeholder: '',
+      length: null,
+      showWordCount: false
     }
   },
   {
@@ -37,7 +40,7 @@ export const basicComponents = [
       width: '',
       required: false,
       defaultValue: null,
-      min: Infinity,
+      min: -Infinity,
       max: Infinity,
       step: 1,
       precision: null,
@@ -68,7 +71,7 @@ export const basicComponents = [
       required: false,
       width: '',
       disabled: false,
-      buttonModel: true, // 按钮模式
+      buttonModel: false, // 按钮模式
       size: 'small', // 按钮模式专属大小
       active: 'primary' // 按钮模式选中颜色
     }
@@ -141,7 +144,6 @@ export const basicComponents = [
       clearable: true,
       placeholder: '',
       isRange: false,
-      arrowControl: true,
       format: 'HH:mm:ss',
       required: false,
       width: '200px'
@@ -173,10 +175,6 @@ export const basicComponents = [
       required: false,
       disabled: false,
       size: 'default',
-      trueValue: true,
-      falseValue: false,
-      activeColor: null,
-      inactiveColor: null,
       openText: '',
       closeText: ''
     }
@@ -188,7 +186,7 @@ export const basicComponents = [
     options: {
       defaultValue: '',
       disabled: false,
-      showAlpha: false,
+      alpha: false,
       required: false,
       recommend: false
     }
@@ -203,10 +201,7 @@ export const basicComponents = [
       disabled: false,
       allowHalf: false,
       required: false,
-      showText: false,
-      texts: ['极差', '失望', '一般', '满意', '惊喜'],
-      showScore: false,
-      scoreTemplate: '{value}'
+      showScore: false
     }
   },
   {
@@ -221,7 +216,6 @@ export const basicComponents = [
       max: 100,
       step: 1,
       showInput: false,
-      range: false,
       width: ''
     }
   }
@@ -247,7 +241,7 @@ export const layoutComponents = [
       }
     ],
     options: {
-      gutter: 4,
+      gutter: 8,
       justify: 'start',
       align: 'top'
     }

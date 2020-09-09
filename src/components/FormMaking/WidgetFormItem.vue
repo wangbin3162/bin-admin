@@ -11,7 +11,10 @@
         :style="{width: element.options.width}"
         :placeholder="element.options.placeholder"
         :disabled="element.options.disabled"
+        :clearable="element.options.clearable"
         :size="size"
+        :maxlength="element.options.length"
+        :show-word-count="element.options.showWordCount"
       ></b-input>
     </template>
     <template v-if="element.type === 'textarea'">
@@ -20,12 +23,17 @@
                :style="{width: element.options.width}"
                :placeholder="element.options.placeholder"
                :disabled="element.options.disabled"
+               :maxlength="element.options.length"
+               :show-word-count="element.options.showWordCount"
       ></b-input>
     </template>
     <template v-if="element.type === 'number'">
       <b-input-number
         v-model="element.options.defaultValue"
         :disabled="element.options.disabled"
+        :min="element.options.min"
+        :max="element.options.max"
+        :step="element.options.step"
         :style="{width: element.options.width}"
         :size="size"
       ></b-input-number>
@@ -70,8 +78,10 @@
         :disabled="element.options.disabled"
         :multiple="element.options.multiple"
         :clearable="element.options.clearable"
+        :filterable="element.options.filterable"
         :placeholder="element.options.placeholder"
         :style="{width: element.options.width}"
+        :max-tag-count="element.options.maxTagCount"
         :size="size"
       >
         <b-option v-for="item in element.options.options" :key="item.value" :value="item.value"
@@ -87,6 +97,7 @@
         :disabled="element.options.disabled"
         :editable="element.options.editable"
         :clearable="element.options.clearable"
+        :format="element.options.format"
         :style="{width: element.options.width}"
         :size="size"
       >
@@ -102,7 +113,9 @@
         :editable="element.options.editable"
         :clearable="element.options.clearable"
         :style="{width: element.options.width}"
+        :format="element.options.format"
         :size="size"
+        separator=" ~ "
         @on-change="(val)=>{element.options.defaultValue=val}"
       >
       </b-date-picker>
@@ -125,7 +138,7 @@
       <b-color-picker
         v-model="element.options.defaultValue"
         :disabled="element.options.disabled"
-        :alpha="element.options.showAlpha"
+        :alpha="element.options.alpha"
         :recommend="element.options.recommend"
         :size="size"
       ></b-color-picker>
@@ -136,10 +149,7 @@
                 :max="element.options.max"
                 :disabled="element.options.disabled"
                 :allow-half="element.options.allowHalf"
-                :show-text="element.options.showText"
-                :texts="element.options.texts"
                 :show-score="element.options.showScore"
-                :score-template="element.options.scoreTemplate"
         ></b-rate>
       </div>
     </template>
@@ -153,6 +163,7 @@
         :show-input="element.options.showInput"
         :range="element.options.range"
         :style="{width: element.options.width}"
+        :input-size="size"
       ></b-slider>
     </template>
 

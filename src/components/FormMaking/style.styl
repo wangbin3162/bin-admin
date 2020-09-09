@@ -76,8 +76,6 @@ $primary-background-color = #ecf5ff;
     }
     .scroll-content {
       height: calc(100% - 45px);
-      overflow-y: auto;
-      overflow-x: hidden;
     }
   }
   .components-list {
@@ -200,7 +198,7 @@ $primary-background-color = #ecf5ff;
     margin: 10px;
     transition: .25s;
     .widget-view {
-      padding: 6px 4px 18px;
+      padding: 2px 2px 18px;
       position: relative;
       border: 1px dashed rgba(170, 170, 170, 0.7);
       background-color: rgba(236, 245, 255, .3);
@@ -284,8 +282,8 @@ $primary-background-color = #ecf5ff;
       }
       .widget-view-field-name {
         position: absolute;
-        top: 0;
-        right: 3px;
+        top: 2px;
+        right: 4px;
         font-size: 12px;
         color: #67c23a;
         z-index: 9;
@@ -386,11 +384,22 @@ $primary-background-color = #ecf5ff;
 .widget-config-container {
   position: relative;
   .config-content {
+    .bin-form-label-top .bin-form-item-label:after {
+      content: unset;
+    }
     .bin-form-item-content {
       position: relative;
     }
     .bin-form-item {
       margin-bottom: 17px;
+    }
+  }
+  .form-config-item {
+    padding: 4px 12px 0;
+    .bin-checkbox-wrapper {
+      width: 120px;
+      margin-right: 24px;
+      height: 28px;
     }
   }
   .ghost {
@@ -413,14 +422,14 @@ $primary-background-color = #ecf5ff;
     padding: 0;
   }
 
-  li {
+  .drag-li {
     padding: 4px 0;
-  }
-  li.ghost {
-    list-style: none;
-    font-size: 0;
-    display: block;
-    position: relative;
+    &.ghost {
+      list-style: none;
+      font-size: 0;
+      display: block;
+      position: relative;
+    }
   }
 }
 // 空容器
@@ -447,5 +456,8 @@ $primary-background-color = #ecf5ff;
       height: 24px;
     }
 
+  }
+  .bin-scrollbar__wrap {
+    overflow-x: hidden;
   }
 }
