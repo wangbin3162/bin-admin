@@ -3,3 +3,8 @@ export function getKey(prefix) {
   const key = Date.parse(new Date()) + '_' + Math.ceil(Math.random() * 99999)
   return prefix ? (prefix + '_' + key) : key
 }
+
+export function getUid(prefix) {
+  const key = Date.now()
+  return prefix ? (prefix + '_' + key) : key
+}

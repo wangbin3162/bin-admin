@@ -85,7 +85,7 @@
 <script>
 import Draggable from 'vuedraggable'
 import WidgetFormItem from '@/components/FormMaking/WidgetFormItem'
-import { getKey } from './config/utils'
+import { getKey, getUid } from './config/utils'
 import { deepCopy } from '@/common/utils/assist'
 
 export default {
@@ -162,10 +162,9 @@ export default {
     },
     // 克隆并扩展属性函数
     cloneObjAndExtend(copyObj) {
-      let key = getKey()
       let cloneObj = deepCopy(copyObj)
-      cloneObj.key = key
-      cloneObj.fieldName = cloneObj.type + '_' + key
+      cloneObj.key = getKey()
+      cloneObj.fieldName = getUid(cloneObj.type)
       cloneObj.rules = []
       return cloneObj
     }

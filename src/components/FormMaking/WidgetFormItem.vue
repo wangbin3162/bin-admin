@@ -184,8 +184,9 @@
 </template>
 
 <script>
-import { getKey } from './config/utils'
+import { getKey, getUid } from './config/utils'
 import BtnRadio from '@/components/FormMaking/components/BtnRadio'
+import { deepCopy } from '@/common/utils/assist'
 
 export default {
   name: 'WidgetFormItem',
@@ -227,30 +228,20 @@ export default {
       })
     },
     handleWidgetClone(index) {
-      const key = getKey()
-      let cloneData = {
-        ...this.data.list[index],
-        options: {
-          ...this.data.list[index].options
-        },
-        key
-      }
-
-      if (this.data.list[index].type === 'radio' || this.data.list[index].type === 'checkbox' || this.data.list[index].type === 'select') {
-        cloneData = {
-          ...cloneData,
-          options: {
-            ...cloneData.options,
-            options: cloneData.options.options.map(item => ({ ...item }))
-          }
-        }
-      }
-
-      this.data.list.splice(index, 0, cloneData)
+      let cloneObj = this.cloneObjAndExtend(this.data.list[index])
+      this.data.list.push(cloneObj)
 
       this.$nextTick(() => {
         this.selectWidget = this.data.list[index + 1]
       })
+    },
+    // 克隆并扩展属性函数
+    cloneObjAndExtend(copyObj) {
+      let cloneObj = deepCopy(copyObj)
+      cloneObj.key = getKey()
+      cloneObj.fieldName = getUid(cloneObj.type)
+      cloneObj.rules = []
+      return cloneObj
     }
   },
   watch: {

@@ -56,14 +56,14 @@
           </div>
           <div class="center-container">
             <div class="top-fix">
-              <b-button type="text" @click="handleClear">
-                <b-icon name="ios-trash"/>&nbsp;清空
-              </b-button>
-              <b-button type="text">
+              <b-button type="text" @click="handlePreview">
                 <b-icon name="ios-eye"/>&nbsp;预览
               </b-button>
               <b-button type="text" @click="handleShowJson">
                 <b-icon name="ios-paper"/>&nbsp;编辑JSON
+              </b-button>
+              <b-button type="text" text-color="danger" @click="handleClear">
+                <b-icon name="ios-trash"/>&nbsp;清空
               </b-button>
             </div>
             <div class="scroll-content">
@@ -98,6 +98,8 @@
         <b-button type="primary" @click="jsonChange">确定</b-button>
       </div>
     </b-modal>
+    <!--预览弹窗-->
+    <form-preview ref="formPreview"></form-preview>
   </div>
 </template>
 
@@ -109,10 +111,11 @@ import WidgetForm from '@/components/FormMaking/WidgetForm'
 import { basicComponents, layoutComponents } from './config/componentsConfig.js'
 import FormConfig from '@/components/FormMaking/FormConfig'
 import WidgetConfig from '@/components/FormMaking/WidgetConfig'
+import FormPreview from '@/components/FormMaking/preview/FormPreview'
 
 export default {
   name: 'fm-container',
-  components: { WidgetConfig, FormConfig, Draggable, WidgetForm },
+  components: { FormPreview, WidgetConfig, FormConfig, Draggable, WidgetForm },
   mixins: [scrollbarMixin],
   provide() {
     return { ConfigRoot: this }
@@ -202,16 +205,24 @@ export default {
     },
     // btn-bar
     handleClear() {
-      this.widgetForm = {
-        list: [],
-        config: {
-          name: '表单名称',
-          labelWidth: 100,
-          labelPosition: 'right',
-          size: 'small'
+      if (this.widgetForm.list.length === 0) return
+      this.$confirm({
+        iconName: 'danger',
+        title: '提示',
+        content: '确定要清空所有控件吗？',
+        onOk: () => {
+          this.widgetForm = {
+            list: [],
+            config: {
+              name: '表单名称',
+              labelWidth: 100,
+              labelPosition: 'right',
+              size: 'small'
+            }
+          }
+          this.widgetFormSelect = {}
         }
-      }
-      this.widgetFormSelect = {}
+      })
     },
     // 键盘保存
     keypadSave(e) {
@@ -242,6 +253,14 @@ export default {
         this.widgetForm = JSON.parse(val)
       } catch (err) {
       }
+    },
+    // 预览表单
+    handlePreview() {
+      if (this.widgetForm.list.length === 0) {
+        this.$message({ type: 'danger', content: '没有配置信息项，请配置后预览' })
+        return
+      }
+      this.$refs.formPreview.open(this.widgetForm)
     }
   }
 }

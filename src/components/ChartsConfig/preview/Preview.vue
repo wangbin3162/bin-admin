@@ -38,7 +38,7 @@ import IndexGroupPreviewItem from '@/components/ChartsConfig/preview/IndexGroupP
 
 export default {
   name: 'Preview',
-  components: { IndexGroupPreviewItem, IndexCardPreviewItem,ChartsPreviewItem },
+  components: { IndexGroupPreviewItem, IndexCardPreviewItem, ChartsPreviewItem },
   data() {
     return {
       resource: {},
