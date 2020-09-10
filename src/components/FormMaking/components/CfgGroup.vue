@@ -21,9 +21,10 @@ export default {
   .gui-group-name {
     border-top: 1px solid #e0e0e0;
     border-bottom: 1px solid #e0e0e0;
-    line-height: 39px;
+    line-height: 34px;
     cursor: pointer;
     text-align: left;
+    background-color: #fafafa;
     span {
       line-height: 24px;
       padding: 0 18px;
@@ -34,7 +35,6 @@ export default {
     border-top: none;
   }
   .gui-group-content {
-    background: #fdfdfd;
     padding: 5px 0;
   }
 }

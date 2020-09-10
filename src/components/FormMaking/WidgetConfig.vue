@@ -76,7 +76,8 @@
         </cfg-field>
         <cfg-field label="格式" v-if="hasProperty('format')">
           <b-input v-model="data.options.format" size="small" clearable/>
-          <b-button size="small" @click="data.options.format=data.type==='time'?'HH:mm:ss':'yyyy-MM-dd'">
+          <b-button size="small" @click="data.options.format=data.type==='time'?'HH:mm:ss':'yyyy-MM-dd'"
+                    style="margin-left: -1px;">
             复位
           </b-button>
         </cfg-field>
@@ -314,10 +315,16 @@
               <b-checkbox v-if="hasProperty('editable')" v-model="data.options.editable">文本框可输入</b-checkbox>
               <b-checkbox v-if="hasProperty('clearable')" v-model="data.options.clearable">显示清除按钮</b-checkbox>
             </b-form-item>
+            <b-divider style="margin: 16px 0;"/>
+            <rules-setting :data="data"/>
           </div>
         </template>
       </cfg-group>
     </b-form>
+    <div>
+      <b-divider align="left">data</b-divider>
+      <b-ace-editor :value="JSON.stringify(data,null,2)" readonly/>
+    </div>
   </div>
   <div v-else style="position:relative;">
     <b-empty class="form-empty">请添加字段</b-empty>
@@ -331,10 +338,11 @@ import CfgField from '@/components/FormMaking/components/CfgField'
 import BtnRadio from '@/components/FormMaking/components/BtnRadio'
 import { deepCopy } from '@/common/utils/assist'
 import CfgInline from '@/components/FormMaking/components/CfgInline'
+import RulesSetting from '@/components/FormMaking/components/RulesSetting'
 
 export default {
   name: 'WidgetConfig',
-  components: { CfgInline, BtnRadio, CfgField, CfgGroup, Draggable },
+  components: { RulesSetting, CfgInline, BtnRadio, CfgField, CfgGroup, Draggable },
   props: ['data'],
   data() {
     return {

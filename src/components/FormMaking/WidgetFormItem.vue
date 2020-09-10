@@ -177,14 +177,14 @@
     </div>
 
     <div class="widget-view-field-name" v-if="selectWidget.key === element.key">
-      <span>{{ element.fieldName }}</span>
+      <span draggable="true" @dragstart="onDrag($event,element.fieldName)">{{ element.fieldName }}</span>
     </div>
 
   </b-form-item>
 </template>
 
 <script>
-import { getKey } from './utils'
+import { getKey } from './config/utils'
 import BtnRadio from '@/components/FormMaking/components/BtnRadio'
 
 export default {
@@ -204,6 +204,10 @@ export default {
     }
   },
   methods: {
+    onDrag(e, index) {
+      // 拖拽字段名称并存储，用于自动填充使用
+      e.dataTransfer.setData('index', index)
+    },
     handleSelectWidget(index) {
       this.selectWidget = this.data.list[index]
     },
