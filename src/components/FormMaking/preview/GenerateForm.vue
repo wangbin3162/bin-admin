@@ -5,14 +5,63 @@
             :label-position="data.config.labelPosition"
             :label-width="data.config.labelWidth"
             :class="'form-'+data.config.size">
-
+      <template v-for="element in data.list">
+        <!--显示grid-->
+        <template v-if="element.type === 'grid'">
+          <b-row
+            :key="element.key"
+            type="flex"
+            :gutter="element.options.gutter"
+            :justify="element.options.justify"
+            :align="element.options.align"
+          >
+            <b-col v-for="(col, colIndex) in element.columns" :key="colIndex" :span="col.span">
+              <template v-for="el in col.list">
+                <generate-form-item
+                  :key="el.key"
+                  :models.sync="models"
+                  :form-config="data.config"
+                  :remote="remote"
+                  :rules="rules"
+                  :widget="el"
+                  @input-change="onInputChange">
+                </generate-form-item>
+              </template>
+            </b-col>
+          </b-row>
+        </template>
+        <!--显示分割线-->
+        <template v-else-if="element.type === 'divider'">
+          <b-divider v-if="!element.options.simple" :align="element.options.align" :key="element.key"
+                     :style="{fontSize:element.options.fontSize,margin:element.options.margin}">
+            {{ element.name }}
+          </b-divider>
+        </template>
+        <!--基础字段-->
+        <template v-else>
+          <generate-form-item
+            :key="element.key"
+            :models.sync="models"
+            :form-config="data.config"
+            :rules="rules"
+            :widget="element"
+            @input-change="onInputChange"
+            :remote="remote">
+          </generate-form-item>
+        </template>
+      </template>
     </b-form>
   </div>
 </template>
 
 <script>
+
+import { buildRules } from '../config/utils'
+import GenerateFormItem from '@/components/FormMaking/preview/GenerateFormItem'
+
 export default {
   name: 'GenerateForm',
+  components: { GenerateFormItem },
   props: ['data', 'remote', 'value'],
   data() {
     return {
@@ -23,6 +72,7 @@ export default {
     }
   },
   methods: {
+    // 动态组装models和rules
     generateModel(genList) {
       for (let i = 0; i < genList.length; i++) {
         if (genList[i].type === 'grid') {
@@ -31,9 +81,12 @@ export default {
           })
         }
         if (['grid', 'divider'].indexOf(genList[i].type) < 0) {
-          let value = ['number', 'rate', 'slider'].indexOf(genList[i].type) > -1 ? null : ''
           // 1、先根据filedName扩展form对象
-          this.$set(this.models, genList[i].fieldName.toLowerCase(), value)
+          this.$set(this.models, genList[i].model.toLowerCase(), genList[i].options.defaultValue)
+          let rules = buildRules(genList[i].rules, this.models)
+          if (rules.length > 0) {
+            this.$set(this.rules, genList[i].model, rules)
+          }
         }
       }
     },
@@ -50,6 +103,10 @@ export default {
     },
     reset() {
       this.$refs.generateForm.resetFields()
+    },
+    // 字段输入改变事件，字段名，值，models
+    onInputChange(value, field) {
+      this.$emit('on-change', field, value, this.models)
     }
   },
   watch: {

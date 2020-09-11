@@ -164,7 +164,7 @@ export default {
     cloneObjAndExtend(copyObj) {
       let cloneObj = deepCopy(copyObj)
       cloneObj.key = getKey()
-      cloneObj.fieldName = getUid(cloneObj.type)
+      cloneObj.model = getUid(cloneObj.type)
       cloneObj.rules = []
       return cloneObj
     }

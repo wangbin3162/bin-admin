@@ -137,7 +137,7 @@ export const basicComponents = [
     icon: 'ios-timer',
     name: '时间选择器',
     options: {
-      defaultValue: '00:00:00',
+      defaultValue: '',
       readonly: false,
       disabled: false,
       editable: true,

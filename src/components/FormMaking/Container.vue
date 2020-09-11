@@ -176,6 +176,37 @@ export default {
     },
     isEdit() {
       return false
+    },
+    allFields() {
+      let arr = []
+      let mapper = (list) => {
+        for (let i = 0; i < list.length; i++) {
+          if (list[i].type === 'grid') {
+            list[i].columns.forEach(item => {
+              mapper(item.list)
+            })
+          }
+          if (['grid', 'divider'].indexOf(list[i].type) < 0) {
+            arr.push(list[i])
+          }
+        }
+      }
+      mapper(this.widgetForm.list)
+      mapper = null
+      return arr
+    },
+    repeatModels() {
+      let repeat = []
+      let hash = {}
+      for (let i = 0; i < this.allFields.length; i++) {
+        if (hash.hasOwnProperty(this.allFields[i].model)) {
+          repeat.push(this.allFields[i].model)
+        } else {
+          // 不存在该元素，则赋值为true
+          hash[this.allFields[i].model] = true
+        }
+      }
+      return repeat
     }
   },
   mounted() {

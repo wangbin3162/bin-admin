@@ -154,17 +154,19 @@
       </div>
     </template>
     <template v-if="element.type === 'slider'">
-      <b-slider
-        v-model="element.options.defaultValue"
-        :min="element.options.min"
-        :max="element.options.max"
-        :disabled="element.options.disabled"
-        :step="element.options.step"
-        :show-input="element.options.showInput"
-        :range="element.options.range"
-        :style="{width: element.options.width}"
-        :input-size="size"
-      ></b-slider>
+      <div style="padding: 0 4px;">
+        <b-slider
+          v-model="element.options.defaultValue"
+          :min="element.options.min"
+          :max="element.options.max"
+          :disabled="element.options.disabled"
+          :step="element.options.step"
+          :show-input="element.options.showInput"
+          :range="element.options.range"
+          :style="{width: element.options.width}"
+          :input-size="size"
+        ></b-slider>
+      </div>
     </template>
 
     <div class="widget-view-action" v-if="selectWidget.key === element.key">
@@ -176,8 +178,9 @@
       <i class="iconfont icon-ios-move drag-widget"></i>
     </div>
 
-    <div class="widget-view-field-name" v-if="selectWidget.key === element.key">
-      <span draggable="true" @dragstart="onDrag($event,element.fieldName)">{{ element.fieldName }}</span>
+    <div class="widget-view-field-name"
+         :style="{color:repeatModel.indexOf(element.model)>=0?'#ff4d4f':'#52c41a'}">
+      <span draggable="true" @dragstart="onDrag($event,element.model)">{{ element.model }}</span>
     </div>
 
   </b-form-item>
@@ -202,6 +205,9 @@ export default {
   computed: {
     size() {
       return this.ConfigRoot.widgetForm.config.size
+    },
+    repeatModel() {
+      return this.ConfigRoot.repeatModels
     }
   },
   methods: {
@@ -239,7 +245,7 @@ export default {
     cloneObjAndExtend(copyObj) {
       let cloneObj = deepCopy(copyObj)
       cloneObj.key = getKey()
-      cloneObj.fieldName = getUid(cloneObj.type)
+      cloneObj.model = getUid(cloneObj.type)
       cloneObj.rules = []
       return cloneObj
     }

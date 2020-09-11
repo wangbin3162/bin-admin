@@ -1,10 +1,10 @@
 <template>
   <div v-if="show" class="widget-config-container">
-    <b-form :model="data" class="form-small" label-position="top" :rules="fieldRule">
+    <b-form :model="data" class="form-small" label-position="top">
       <cfg-group group-name="字段属性" v-if="data.type!=='grid'&&data.type!=='divider'">
         <div class="form-config-item">
-          <b-form-item label="字段标识" prop="fieldName">
-            <b-input v-model="data.fieldName" size="small"/>
+          <b-form-item label="字段标识" prop="model" class="bin-form-item-required">
+            <b-input v-model="data.model" size="small" @on-blur="checkModel"/>
           </b-form-item>
           <b-form-item label="标题" prop="name">
             <b-input v-model="data.name" size="small"/>
@@ -344,11 +344,40 @@ export default {
   name: 'WidgetConfig',
   components: { RulesSetting, CfgInline, BtnRadio, CfgField, CfgGroup, Draggable },
   props: ['data'],
+  inject: ['ConfigRoot'],
   data() {
+    const checkModel = (rule, value, callback) => {
+      let arr = []
+      let modelCount = 0
+      let mapper = (list) => {
+        for (let i = 0; i < list.length; i++) {
+          if (list[i].type === 'grid') {
+            list[i].columns.forEach(item => {
+              mapper(item.list)
+            })
+          }
+          if (['grid', 'divider'].indexOf(list[i].type) < 0) {
+            arr.push(list[i].model)
+          }
+        }
+      }
+      mapper(this.ConfigRoot.widgetForm.list)
+      mapper = null
+      for (let i = 0; i < arr.length; i++) {
+        if (arr[i] === value) modelCount++
+      }
+      if (modelCount > 1) {
+        callback(new Error('字段标识重复！'))
+      } else {
+        callback()
+      }
+    }
     return {
       fieldRule: {
-        fieldName: [{ required: true, message: '字段名必填', trigger: 'blur' }],
-        name: [{ required: true, message: '标题必填', trigger: 'blur' }]
+        model: [
+          { required: true, message: '字段名必填', trigger: 'blur' },
+          { validator: checkModel, trigger: 'blur' }
+        ]
       },
       justifyOptions: [
         { value: 'start', label: '左对齐' },
@@ -361,7 +390,8 @@ export default {
         { value: 'top', label: '顶部对齐' },
         { value: 'bottom', label: '底部对齐' },
         { value: 'middle', label: '居中对齐' }
-      ]
+      ],
+      fieldNames: []
     }
   },
   computed: {
@@ -446,6 +476,13 @@ export default {
     // 是否存在options属性
     hasProperty(property) {
       return this.dataOptions.indexOf(property) >= 0
+    },
+    // 判断是否有重复
+    checkModel() {
+      let repeatModels = this.ConfigRoot.repeatModels
+      if (repeatModels.indexOf(this.data.model) >= 0) {
+        this.$message({ type: 'danger', content: `当前字段标识{${this.data.model}}重复` })
+      }
     }
   }
 }
