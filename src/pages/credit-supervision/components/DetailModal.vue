@@ -7,9 +7,9 @@
       </title-bar>
       <b-loading show-text="加载中...." v-if="loading"></b-loading>
       <key-label-wrap v-if="!loading">
-        <key-label v-for="(label, key) in mapping" :key="key"
-          is-full :label="label" label-width="155px">
-          {{ detail[key] | valueFilter }}
+        <key-label v-for="col in columns" :key="col.key"
+          is-full :label="col.title" label-width="155px">
+          {{ detail[col.key] | valueFilter }}
         </key-label>
       </key-label-wrap>
     </b-modal>
@@ -34,6 +34,10 @@
         type: Boolean,
         required: true
       },
+      id: {
+        type: String,
+        default: null
+      },
       resourceKey: {
         type: String,
         default: null
@@ -47,7 +51,7 @@
       return {
         loading: false,
         open: this.value,
-        mapping: {},
+        columns: [],
         detail: {}
       }
     },
@@ -86,8 +90,8 @@
        * @description 一些初始化处理
        */
       init () {
-        const { id, type } = this.$route.query
-        this.getDetail(id, this.resourceKey, type)
+        const { type } = this.$route.query
+        this.getDetail(this.id, this.resourceKey, type)
       },
 
       /**
@@ -100,8 +104,8 @@
       async getDetail (id, resourceKey, type) {
         this.loading = true
         try {
-          const { mapping, data } = await getQueryDetail(id, resourceKey, type)
-          this.mapping = mapping
+          const { columns, data } = await getQueryDetail(id, resourceKey, type)
+          this.columns = columns.filter(col => !col.key.includes('person_id'))
           this.detail = data
         } catch (error) {
           console.error(error)

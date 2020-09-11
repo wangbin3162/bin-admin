@@ -113,6 +113,7 @@ export async function getQueryDetail(id, resourceKey, type, categoryType = 'BASE
       })
       if (res.data.code === '0') {
         resolve({
+          columns: res.data.columns,
           mapping: res.data.mapping,
           data: res.data.data
         })

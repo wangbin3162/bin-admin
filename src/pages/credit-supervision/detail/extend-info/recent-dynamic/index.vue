@@ -50,6 +50,7 @@
     </b-card>
 
     <detail-modal v-model="open"
+      :id="curRow.id"
       :resourceKey="curRow.resourcekey"
       :title="curRow.resourceName">
     </detail-modal>
@@ -96,6 +97,8 @@
         natureEnum: {
           B01: '正面',
           B02: '负面',
+          B0201: '严重负面',
+          B0202: '一般负面',
           B03: '中性'
         },
         columns: [

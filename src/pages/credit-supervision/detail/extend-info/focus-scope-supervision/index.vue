@@ -27,6 +27,7 @@
     </b-card>
 
     <detail-modal v-model="open"
+      :id="curRow.id"
       :resourceKey="curRow.resourcekey"
       :title="curRow.resourceName">
     </detail-modal>
