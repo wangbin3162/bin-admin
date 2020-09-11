@@ -148,8 +148,11 @@
   .table-page-wrap {
     padding-bottom: 20px;
     .page {
+      // padding: 15px 0;
+      // text-align: right;
+      display: flex;
+      justify-content: flex-end;
       padding: 15px 0;
-      text-align: right;
     }
   }
 </style>
