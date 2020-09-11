@@ -85,7 +85,8 @@
         this.loading = true
         api.getQueryList(this.listQuery, this.categoryType).then(res => {
           // 扩展columns
-          this.columns = this.formatColumn(res.data.columns)
+          const columns = this.filterPersonId(res.data.columns)
+          this.columns = this.formatColumn(columns)
           this.list = res.data.rows
           this.total = res.data.total
           this.loading = false
@@ -119,10 +120,16 @@
       handleCheck(row) {
         api.getQueryDetail(row.id, this.resourceKey, this.queryData.type, this.categoryType).then(res => {
           if (res.data.code === '0') {
-            this.detailColumns = res.data.columns
+            this.detailColumns = this.filterPersonId(res.data.columns)
             this.detailObj = res.data.data
             this.detailVisible = true
           }
+        })
+      },
+      // 过滤掉personId
+      filterPersonId (columns) {
+        return columns.filter(col => {
+          return !col.key.includes('person_id')
         })
       }
     },
