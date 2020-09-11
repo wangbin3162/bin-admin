@@ -429,7 +429,7 @@
         // 3.获取统计（聚集）查询接口（大小类）
         api.getAggs(this.currentDetailId, this.type, this.categoryType).then(res => {
           if (res.data.code === '0') {
-            this.classifyTabs = res.data.data
+            this.classifyTabs = res.data.data.filter(item => !item.text.includes('测试'))
             // 扁平化子类别对象
             this.classifyTabs.forEach(tab => {
               this.classifyMap[tab.code] = tab.children
