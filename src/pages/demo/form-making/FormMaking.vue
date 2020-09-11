@@ -581,7 +581,7 @@ export default {
           'size': 'default'
         }
       }
-      if (row.row === 0) {
+      if (row.id === 0) {
         this.$refs.fmContainer.open(testData)
       } else {
         this.$refs.fmContainer.open(testData2)
