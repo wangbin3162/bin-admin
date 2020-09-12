@@ -21,7 +21,6 @@
                   :key="el.key"
                   :models.sync="models"
                   :form-config="data.config"
-                  :remote="remote"
                   :rules="rules"
                   :widget="el"
                   @input-change="onInputChange">
@@ -45,8 +44,7 @@
             :form-config="data.config"
             :rules="rules"
             :widget="element"
-            @input-change="onInputChange"
-            :remote="remote">
+            @input-change="onInputChange">
           </generate-form-item>
         </template>
       </template>
@@ -62,7 +60,7 @@ import GenerateFormItem from '@/components/FormMaking/preview/GenerateFormItem'
 export default {
   name: 'GenerateForm',
   components: { GenerateFormItem },
-  props: ['data', 'remote', 'value'],
+  props: ['data'],
   data() {
     return {
       models: {
