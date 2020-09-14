@@ -109,7 +109,7 @@ export default {
         // this.$router.push({ path: '/refresh' })
         return
       }
-      if (this.addRouters.findIndex(item => item.name === name) > -1) {
+      if (name === 'index' || this.addRouters.findIndex(item => item.name === name) > -1) {
         this.$router.push({ name })
       } else {
         this.$router.push('/404')
