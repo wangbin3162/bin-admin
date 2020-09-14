@@ -100,6 +100,24 @@
     </b-modal>
     <!--预览弹窗-->
     <form-preview ref="formPreview"></form-preview>
+    <b-modal v-model="closeModal" footer-hide :mask-closable="false" width="400" :styles="{top: '200px'}"
+             stop-remove-scroll>
+      <div flex="main:justify">
+        <b-icon name="ios-warning" size="60" color="#fea638" style="padding-top: 6px;"/>
+        <div style="width: 280px;">
+          <div style="padding:4px 16px;color: rgba(0,0,0,.85);">
+            是否保存对当前表单的操作？
+          </div>
+          <div style="padding:8px 16px 0;" flex="main:justify">
+            <b-button size="small" @click="closeSave(false)">不保存</b-button>
+            <div>
+              <b-button size="small" @click="closeModal=false">取 消</b-button>
+              <b-button size="small" type="primary" @click="closeSave(true)">保 存</b-button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </b-modal>
   </div>
 </template>
 
@@ -146,6 +164,7 @@ export default {
           size: 'default'
         }
       },
+      widgetFormBuffer: null,
       tabs: [
         { key: 'widget', title: '控件属性' },
         { key: 'form', title: '表单属性' }
@@ -175,7 +194,7 @@ export default {
       return `表单设计 - ${this.widgetForm.config.name}`
     },
     isEdit() {
-      return false
+      return !(JSON.stringify(this.widgetForm) === JSON.stringify(this.widgetFormBuffer))
     },
     allFields() {
       let arr = []
@@ -220,6 +239,7 @@ export default {
     open(data) {
       this.visible = true
       this.widgetForm = deepCopy(data)
+      this.widgetFormBuffer = deepCopy(data)
       if (this.widgetForm.list.length > 0) {
         this.widgetFormSelect = this.widgetForm.list[0]
       } else {
@@ -233,6 +253,15 @@ export default {
       } else {
         this.visible = false
       }
+    },
+    // 是否保存并关闭
+    closeSave(save) {
+      if (save) {
+        // 触发一下保存按钮操作,此部分会触发保存按钮操作指令handleSave
+        this.handleSave()
+      }
+      this.closeModal = false
+      this.visible = false
     },
     // btn-bar
     handleClear() {
@@ -257,13 +286,21 @@ export default {
     },
     // 键盘保存
     keypadSave(e) {
+      // ctrl s 保存
       if (e.keyCode === 83 && (navigator.platform.match('Mac') ? e.metaKey : e.ctrlKey)) {
         e.preventDefault()
+        this.handleSave()
       }
+      // esc 退出
       if (e.keyCode === 27) {
         e.preventDefault()
         this.close()
       }
+    },
+    // 保存按钮操作指令
+    handleSave() {
+      this.widgetFormBuffer = deepCopy(this.widgetForm)
+      this.$emit('on-save', this.widgetForm)
     },
     // 手动点击增加一个控件
     handleAddWidget(item) {

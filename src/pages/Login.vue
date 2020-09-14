@@ -22,14 +22,17 @@
             <b-form ref="loginForm" label-position="top" :rules="rules" :model="formLogin" size="default">
               <b-form-item prop="username">
                 <b-input type="text" v-model="formLogin.username" placeholder="用户名" size="large"
+                         @on-keydown.enter="submit"
                          prefix="ios-contact"></b-input>
               </b-form-item>
               <b-form-item prop="password">
                 <b-input type="password" v-model="formLogin.password" size="large" placeholder="密码"
+                         @on-keydown.enter="submit"
                          prefix="ios-key"></b-input>
               </b-form-item>
               <b-form-item prop="code">
                 <b-input type="text" v-model="formLogin.code" placeholder="- - - -" style="width: 68%;"
+                         @on-keydown.enter="submit"
                          prefix="ios-bulb" size="large"></b-input>
                 <span class="login-code"><img src="../assets/images/login-code.png" alt="code"></span>
               </b-form-item>

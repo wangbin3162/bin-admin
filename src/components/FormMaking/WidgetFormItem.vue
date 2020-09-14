@@ -235,7 +235,7 @@ export default {
     },
     handleWidgetClone(index) {
       let cloneObj = this.cloneObjAndExtend(this.data.list[index])
-      this.data.list.push(cloneObj)
+      this.data.list.splice(index, 0, cloneObj)
 
       this.$nextTick(() => {
         this.selectWidget = this.data.list[index + 1]

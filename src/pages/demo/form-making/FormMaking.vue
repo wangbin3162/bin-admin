@@ -34,7 +34,7 @@
                 @on-page-size-change="handleSizeChange"></b-page>
       </v-table-wrap>
     </page-header-wrap>
-    <fm-container ref="fmContainer"></fm-container>
+    <fm-container ref="fmContainer" @on-save="handleSave"></fm-container>
   </div>
 </template>
 
@@ -594,6 +594,11 @@ export default {
     // 弹窗提示是否删除
     handleRemove(row) {
       this.$notice.success({ title: '删除成功' })
+    },
+    // 保存表单
+    handleSave(widgetForm) {
+      console.log(widgetForm)
+      this.$log.success('-------保存成功--------')
     },
     /* [数据接口] */
     // 重置栏目对象
