@@ -5,8 +5,26 @@
 本项目是基于 Vue2.6，配合使用 [bin-ui](https://github.com/wangbin3162/bin-ui/) 作为组件库来进行搭建wcm后台管理系统，在基于[vue-admin1.0](https://github.com/wangbin3162/vue-admin/)
 版本基础上进行二次重构，增加了登录的token验证和简单主题配置功能，现在已更新至Pro3.0版本，参照ant-design-pro重新构建的3.0系统
 
+[bin-ace-editor](https://gitee.com/wangbin3162/bin-ace-editor/) 
+
+[bin-charts](https://gitee.com/wangbin3162/bin-charts/)
+
 部分截图
 ![首页](/docs/images/index.png)
+
+![主题设置和全局设置](/docs/images/black.png)
+
+![bin-ace-editor](/docs/images/bin-ace-editor.png)
+
+![charts](/docs/images/charts.png)
+
+![图表设计器](/docs/images/chart-cfg.png)
+
+![表单设计器](/docs/images/form-marking.png)
+
+![表单预览](/docs/images/form-preview.png)
+
+![流程图](/docs/images/bpmj.png)
 
 ## 目录结构
 
