@@ -3,7 +3,7 @@ import { isEmpty, isNotEmpty } from '@/common/utils/assist'
 import { checkIdCard, validateDate } from '@/common/utils/validate'
 
 export function getKey(prefix) {
-  const key = Date.parse(new Date()) + '_' + Math.ceil(Math.random() * 99999)
+  const key = Date.now() + '_' + Math.ceil(Math.random() * 99999)
   return prefix ? (prefix + '_' + key) : key
 }
 
