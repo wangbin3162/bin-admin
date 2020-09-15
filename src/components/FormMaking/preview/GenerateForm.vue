@@ -4,7 +4,7 @@
             :model="models" :rules="rules"
             :label-position="data.config.labelPosition"
             :label-width="data.config.labelWidth"
-            :class="'form-'+data.config.size">
+            :size="data.config.size">
       <template v-for="element in data.list">
         <!--显示grid-->
         <template v-if="element.type === 'grid'">
@@ -32,7 +32,8 @@
         <!--显示分割线-->
         <template v-else-if="element.type === 'divider'">
           <b-divider v-if="!element.options.simple" :align="element.options.align" :key="element.key"
-                     :style="{fontSize:element.options.fontSize,margin:element.options.margin}">
+                     :dashed="element.options.dashed"
+                     :style="{margin:element.options.margin}">
             {{ element.name }}
           </b-divider>
         </template>

@@ -39,21 +39,14 @@
       ></b-input-number>
     </template>
     <template v-if="element.type === 'radio'">
-      <!--按钮模式-->
-      <div flex="cross:center" :style="{ height : sizeHeightMap[size]}" v-if="element.options.buttonModel">
-        <btn-radio v-model="element.options.defaultValue"
-                   :options="element.options.options"
-                   :disabled="element.options.disabled"
-                   :size="element.options.size"
-                   :active="element.options.active"></btn-radio>
-      </div>
-      <b-radio-group v-else v-model="element.options.defaultValue"
+      <b-radio-group v-model="element.options.defaultValue"
                      :style="{width: element.options.width}"
                      :disabled="element.options.disabled"
+                     :type="element.options.buttonModel?'button':null"
+                     :size="size"
       >
-        <b-radio
-          :style="{display: element.options.inline ? 'inline-block' : 'block',paddingTop:element.options.inline?'0':'4px'}"
-          :label="item.value" v-for="(item, index) in element.options.options" :key="item.value + index"
+        <b-radio :style="element.options.buttonModel?null:blockStyle" :key="item.value + index"
+                 :label="item.value" v-for="(item, index) in element.options.options"
         >
           {{ item.label }}
         </b-radio>
@@ -64,10 +57,8 @@
                         :style="{width: element.options.width}"
                         :disabled="element.options.disabled"
       >
-        <b-checkbox
-          :style="{display: element.options.inline ? 'inline-block' : 'block',paddingTop:element.options.inline?'0':'4px'}"
-          :label="item.value" v-for="(item, index) in element.options.options" :key="item.value + index"
-        >
+        <b-checkbox :style="blockStyle" :label="item.value" v-for="(item, index) in element.options.options"
+                    :key="item.value + index">
           {{ item.label }}
         </b-checkbox>
       </b-checkbox-group>
@@ -188,12 +179,10 @@
 
 <script>
 import { getKey, getUid } from './config/utils'
-import BtnRadio from '@/components/FormMaking/components/BtnRadio'
 import { deepCopy } from '@/common/utils/assist'
 
 export default {
   name: 'WidgetFormItem',
-  components: { BtnRadio },
   props: ['element', 'select', 'index', 'data'],
   inject: ['ConfigRoot'],
   data() {
@@ -205,6 +194,12 @@ export default {
   computed: {
     size() {
       return this.ConfigRoot.widgetForm.config.size
+    },
+    blockStyle() {
+      return {
+        display: this.element.options.inline ? 'inline-block' : 'block',
+        paddingTop: this.element.options.inline ? '0' : '4px'
+      }
     },
     repeatModel() {
       return this.ConfigRoot.repeatModels

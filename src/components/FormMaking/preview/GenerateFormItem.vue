@@ -34,21 +34,14 @@
       ></b-input-number>
     </template>
     <template v-if="widget.type === 'radio'">
-      <!--按钮模式-->
-      <div flex="cross:center" :style="{ height : sizeHeightMap[size]}" v-if="widget.options.buttonModel">
-        <btn-radio v-model="dataModel"
-                   :options="widget.options.options"
-                   :disabled="widget.options.disabled"
-                   :size="widget.options.size"
-                   :active="widget.options.active"></btn-radio>
-      </div>
-      <b-radio-group v-else v-model="dataModel"
+      <b-radio-group v-model="widget.options.defaultValue"
                      :style="{width: widget.options.width}"
                      :disabled="widget.options.disabled"
+                     :type="widget.options.buttonModel?'button':null"
+                     :size="size"
       >
-        <b-radio
-          :style="{display: widget.options.inline ? 'inline-block' : 'block',paddingTop:widget.options.inline?'0':'4px'}"
-          :label="item.value" v-for="(item, index) in widget.options.options" :key="item.value + index"
+        <b-radio :style="widget.options.buttonModel?null:blockStyle" :key="item.value + index"
+                 :label="item.value" v-for="(item, index) in widget.options.options"
         >
           {{ item.label }}
         </b-radio>
@@ -167,15 +160,18 @@
 </template>
 
 <script>
-import BtnRadio from '@/components/FormMaking/components/BtnRadio'
-
 export default {
   name: 'GenerateFormItem',
-  components: { BtnRadio },
   props: ['widget', 'models', 'rules', 'formConfig'],
   computed: {
     size() {
       return this.formConfig.size
+    },
+    blockStyle() {
+      return {
+        display: this.widget.options.inline ? 'inline-block' : 'block',
+        paddingTop: this.widget.options.inline ? '0' : '4px'
+      }
     }
   },
   data() {

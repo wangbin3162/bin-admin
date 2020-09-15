@@ -1870,10 +1870,10 @@ bin-charts@^0.6.0:
   dependencies:
     resize-observer-polyfill "^1.5.1"
 
-bin-ui@^3.5.0:
-  version "3.5.0"
-  resolved "https://registry.npmjs.org/bin-ui/-/bin-ui-3.5.0.tgz#73759bc0315810252f72ebcef8e199a63190d8ab"
-  integrity sha512-HrpoT7XJrMFtdiAJY9FCSoJklPxXBPxJ0g7R8uAaNU0M9kfzHEPtFkMmlpo/N/oxVKc9nt8sYrYlKLjJUA3NGA==
+bin-ui@^3.5.4:
+  version "3.5.4"
+  resolved "https://registry.npmjs.org/bin-ui/-/bin-ui-3.5.4.tgz#6bd490af502f164894729bd7c0140b3580d930a8"
+  integrity sha512-lif6/4NgeGr0T2ZtESUqZ5PNVSf8bZThDjgmldQp4ehTVp61w3GcP06fxvvfE3uJRAvduqnrMxnIQxYPOqXnXQ==
   dependencies:
     async-validator "^1.11.5"
     js-calendar "^1.2.3"

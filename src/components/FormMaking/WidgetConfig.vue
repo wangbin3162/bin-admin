@@ -1,22 +1,22 @@
 <template>
   <div v-if="show" class="widget-config-container">
-    <b-form :model="data" class="form-small" label-position="top">
+    <b-form :model="data" size="small" label-position="top">
       <cfg-group group-name="字段属性" v-if="data.type!=='grid'&&data.type!=='divider'">
         <div class="form-config-item">
           <b-form-item label="字段标识" prop="model" class="bin-form-item-required">
-            <b-input v-model="data.model" size="small" @on-blur="checkModel"/>
+            <b-input v-model="data.model" size="small" clearable @on-blur="checkModel"/>
           </b-form-item>
-          <b-form-item label="标题" prop="name">
+          <b-form-item label="标题" prop="name" clearable>
             <b-input v-model="data.name" size="small"/>
           </b-form-item>
         </div>
       </cfg-group>
       <cfg-group group-name="控件属性">
         <cfg-field label="控件宽度" v-if="hasProperty('width')">
-          <b-input v-model="data.options.width" size="small" placeholder="支持百分比(%)和像素(px)"/>
+          <b-input v-model="data.options.width" size="small" placeholder="支持百分比(%)和像素(px)" clearable/>
         </cfg-field>
         <cfg-field label="允许长度" v-if="hasProperty('length')">
-          <b-input-number v-model="data.options.length" size="small"></b-input-number>
+          <b-input-number v-model="data.options.length" size="small" clearable></b-input-number>
         </cfg-field>
         <cfg-field label="最小值" v-if="hasProperty('min')">
           <b-input-number v-model="data.options.min" size="small"></b-input-number>
@@ -63,8 +63,11 @@
           <b-switch v-model="data.options.buttonModel"/>
         </cfg-field>
         <cfg-field label="大小" v-if="hasProperty('size')">
-          <btn-radio v-model="data.options.size" size="small" :options="sizeOptions"
-                     :disabled="data.type==='radio'&&!data.options.buttonModel"/>
+          <b-radio-group v-model="data.options.size" size="small" type="button">
+            <b-radio label="large">大号</b-radio>
+            <b-radio label="default">默认</b-radio>
+            <b-radio label="small">小号</b-radio>
+          </b-radio-group>
         </cfg-field>
         <cfg-field label="开关文字" v-if="hasProperty('openText')&&hasProperty('closeText')">
           <cfg-inline label="open">
@@ -82,7 +85,7 @@
           </b-button>
         </cfg-field>
         <cfg-field label="占位内容" v-if="hasProperty('placeholder')">
-          <b-input v-model="data.options.placeholder" size="small"/>
+          <b-input v-model="data.options.placeholder" size="small" clearable/>
         </cfg-field>
         <cfg-field label="显示类型" v-if="hasProperty('type')">
           <b-select v-model="data.options.type">
@@ -272,22 +275,20 @@
         <template v-if="data.type==='divider'">
           <div class="form-config-item">
             <b-form-item label="标题" prop="name">
-              <b-input v-model="data.name" size="small"/>
+              <b-input v-model="data.name" size="small" clearable/>
             </b-form-item>
             <b-form-item label="标题位置" v-if="hasProperty('align')">
-              <btn-radio v-model="data.options.align"
-                         :options="[
-                            {value: 'left',label: '左侧'},
-                            {value: 'center',label: '居中'},
-                            {value: 'right',label: '右侧'}
-                          ]"
-                         size="small"></btn-radio>
-            </b-form-item>
-            <b-form-item label="文字大小" v-if="hasProperty('fontSize')">
-              <b-input v-model="data.options.fontSize" size="small"/>
+              <b-radio-group v-model="data.options.align" size="small" type="button">
+                <b-radio label="left">左侧</b-radio>
+                <b-radio label="center">居中</b-radio>
+                <b-radio label="right">右侧</b-radio>
+              </b-radio-group>
             </b-form-item>
             <b-form-item label="线间距" v-if="hasProperty('margin')">
               <b-input v-model="data.options.margin" size="small"/>
+            </b-form-item>
+            <b-form-item label="是否虚线" v-if="hasProperty('dashed')">
+              <b-switch v-model="data.options.dashed"/>
             </b-form-item>
           </div>
         </template>
@@ -335,14 +336,13 @@
 import Draggable from 'vuedraggable'
 import CfgGroup from './components/CfgGroup'
 import CfgField from '@/components/FormMaking/components/CfgField'
-import BtnRadio from '@/components/FormMaking/components/BtnRadio'
 import { deepCopy } from '@/common/utils/assist'
 import CfgInline from '@/components/FormMaking/components/CfgInline'
 import RulesSetting from '@/components/FormMaking/components/RulesSetting'
 
 export default {
   name: 'WidgetConfig',
-  components: { RulesSetting, CfgInline, BtnRadio, CfgField, CfgGroup, Draggable },
+  components: { RulesSetting, CfgInline, CfgField, CfgGroup, Draggable },
   props: ['data'],
   inject: ['ConfigRoot'],
   data() {
@@ -397,22 +397,6 @@ export default {
   computed: {
     show() {
       return !!(this.data && Object.keys(this.data).length > 0)
-    },
-    sizeOptions() {
-      if (this.data.type === 'switch') {
-        return [
-          { value: 'large', label: 'large' },
-          { value: 'default', label: 'default' },
-          { value: 'small', label: 'small' }
-        ]
-      } else {
-        return [
-          { value: 'large', label: 'large' },
-          { value: 'default', label: 'default' },
-          { value: 'small', label: 'small' },
-          { value: 'mini', label: 'mini' }
-        ]
-      }
     },
     dataOptions() {
       return Object.keys(this.data.options)

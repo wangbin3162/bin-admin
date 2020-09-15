@@ -3,7 +3,7 @@
     <b-scrollbar style="height: 100%;">
       <b-empty class="form-empty" v-if="data.list.length === 0">从左侧拖拽或点击来添加字段</b-empty>
       <b-form ref="form" :label-position="data.config.labelPosition" :label-width="data.config.labelWidth"
-              :class="'form-'+data.config.size">
+              :size="data.config.size">
         <draggable class=""
                    v-model="data.list"
                    v-bind="{group:'form', ghostClass: 'ghost',animation: 200, handle: '.drag-widget'}"
@@ -58,7 +58,8 @@
                      :class="{active: selectWidget.key === element.key}"
                      @click="handleSelectWidget(index)">
                   <b-divider v-if="!element.options.simple" :align="element.options.align"
-                             :style="{fontSize:element.options.fontSize,margin:element.options.margin}">
+                             :dashed="element.options.dashed"
+                             :style="{margin:element.options.margin}">
                     {{ element.name }}
                   </b-divider>
                   <!--拖拽删除-->

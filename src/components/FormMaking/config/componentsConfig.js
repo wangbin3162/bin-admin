@@ -71,9 +71,7 @@ export const basicComponents = [
       required: false,
       width: '',
       disabled: false,
-      buttonModel: false, // 按钮模式
-      size: 'small', // 按钮模式专属大小
-      active: 'primary' // 按钮模式选中颜色
+      buttonModel: false // 按钮模式
     }
   },
   {
@@ -252,8 +250,8 @@ export const layoutComponents = [
     icon: 'ios-remove',
     options: {
       align: 'left',
-      fontSize: '14px',
-      margin: '12px 0'
+      margin: '24px 0',
+      dashed: false
     }
   }
 ]
