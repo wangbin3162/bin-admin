@@ -7,14 +7,14 @@
   >
     <template v-if="element.type === 'input'">
       <b-input
-        v-model="element.options.defaultValue"
-        :style="{width: element.options.width}"
-        :placeholder="element.options.placeholder"
-        :disabled="element.options.disabled"
-        :clearable="element.options.clearable"
-        :size="size"
-        :maxlength="element.options.length"
-        :show-word-count="element.options.showWordCount"
+          v-model="element.options.defaultValue"
+          :style="{width: element.options.width}"
+          :placeholder="element.options.placeholder"
+          :disabled="element.options.disabled"
+          :clearable="element.options.clearable"
+          :size="size"
+          :maxlength="element.options.length"
+          :show-word-count="element.options.showWordCount"
       ></b-input>
     </template>
     <template v-if="element.type === 'textarea'">
@@ -29,13 +29,14 @@
     </template>
     <template v-if="element.type === 'number'">
       <b-input-number
-        v-model="element.options.defaultValue"
-        :disabled="element.options.disabled"
-        :min="element.options.min"
-        :max="element.options.max"
-        :step="element.options.step"
-        :style="{width: element.options.width}"
-        :size="size"
+          v-model="element.options.defaultValue"
+          :disabled="element.options.disabled"
+          :min="element.options.min"
+          :max="element.options.max"
+          :step="element.options.step"
+          :style="{width: element.options.width}"
+          :precision="element.options.precision"
+          :size="size"
       ></b-input-number>
     </template>
     <template v-if="element.type === 'radio'">
@@ -65,15 +66,15 @@
     </template>
     <template v-if="element.type === 'select'">
       <b-select
-        v-model="element.options.defaultValue"
-        :disabled="element.options.disabled"
-        :multiple="element.options.multiple"
-        :clearable="element.options.clearable"
-        :filterable="element.options.filterable"
-        :placeholder="element.options.placeholder"
-        :style="{width: element.options.width}"
-        :max-tag-count="element.options.maxTagCount"
-        :size="size"
+          v-model="element.options.defaultValue"
+          :disabled="element.options.disabled"
+          :multiple="element.options.multiple"
+          :clearable="element.options.clearable"
+          :filterable="element.options.filterable"
+          :placeholder="element.options.placeholder"
+          :style="{width: element.options.width}"
+          :max-tag-count="element.options.maxTagCount"
+          :size="size"
       >
         <b-option v-for="item in element.options.options" :key="item.value" :value="item.value"
                   :label="item.label"></b-option>
@@ -81,44 +82,44 @@
     </template>
     <template v-if="element.type === 'time'">
       <b-time-picker
-        v-model="element.options.defaultValue"
-        :type="element.options.isRange?'timerange':'time'"
-        :placeholder="element.options.placeholder"
-        :readonly="element.options.readonly"
-        :disabled="element.options.disabled"
-        :editable="element.options.editable"
-        :clearable="element.options.clearable"
-        :format="element.options.format"
-        :style="{width: element.options.width}"
-        :size="size"
+          v-model="element.options.defaultValue"
+          :type="element.options.isRange?'timerange':'time'"
+          :placeholder="element.options.placeholder"
+          :readonly="element.options.readonly"
+          :disabled="element.options.disabled"
+          :editable="element.options.editable"
+          :clearable="element.options.clearable"
+          :format="element.options.format"
+          :style="{width: element.options.width}"
+          :size="size"
       >
       </b-time-picker>
     </template>
     <template v-if="element.type === 'date'">
       <b-date-picker
-        :value="element.options.defaultValue"
-        :type="element.options.type"
-        :placeholder="element.options.placeholder"
-        :readonly="element.options.readonly"
-        :disabled="element.options.disabled"
-        :editable="element.options.editable"
-        :clearable="element.options.clearable"
-        :style="{width: element.options.width}"
-        :format="element.options.format"
-        :size="size"
-        separator=" ~ "
-        @on-change="(val)=>{element.options.defaultValue=val}"
+          :value="element.options.defaultValue"
+          :type="element.options.type"
+          :placeholder="element.options.placeholder"
+          :readonly="element.options.readonly"
+          :disabled="element.options.disabled"
+          :editable="element.options.editable"
+          :clearable="element.options.clearable"
+          :style="{width: element.options.width}"
+          :format="element.options.format"
+          :size="size"
+          separator=" ~ "
+          @on-change="(val)=>{element.options.defaultValue=val}"
       >
       </b-date-picker>
     </template>
     <template v-if="element.type === 'switch'">
       <label :style="{ lineHeight : sizeHeightMap[size]}">
         <b-switch
-          v-model="element.options.defaultValue"
-          :disabled="element.options.disabled"
-          :size="element.options.size"
-          :true-value="element.options.trueValue" :false-value="element.options.falseValue"
-          :active-color="element.options.activeColor" :inactive-color="element.options.inactiveColor"
+            v-model="element.options.defaultValue"
+            :disabled="element.options.disabled"
+            :size="element.options.size"
+            :true-value="element.options.trueValue" :false-value="element.options.falseValue"
+            :active-color="element.options.activeColor" :inactive-color="element.options.inactiveColor"
         >
           <span slot="open" v-if="element.options.openText">{{ element.options.openText }}</span>
           <span slot="close" v-if="element.options.closeText">{{ element.options.closeText }}</span>
@@ -127,11 +128,11 @@
     </template>
     <template v-if="element.type === 'color'">
       <b-color-picker
-        v-model="element.options.defaultValue"
-        :disabled="element.options.disabled"
-        :alpha="element.options.alpha"
-        :recommend="element.options.recommend"
-        :size="size"
+          v-model="element.options.defaultValue"
+          :disabled="element.options.disabled"
+          :alpha="element.options.alpha"
+          :recommend="element.options.recommend"
+          :size="size"
       ></b-color-picker>
     </template>
     <template v-if="element.type === 'rate'">
@@ -147,15 +148,15 @@
     <template v-if="element.type === 'slider'">
       <div style="padding: 0 4px;">
         <b-slider
-          v-model="element.options.defaultValue"
-          :min="element.options.min"
-          :max="element.options.max"
-          :disabled="element.options.disabled"
-          :step="element.options.step"
-          :show-input="element.options.showInput"
-          :range="element.options.range"
-          :style="{width: element.options.width}"
-          :input-size="size"
+            v-model="element.options.defaultValue"
+            :min="element.options.min"
+            :max="element.options.max"
+            :disabled="element.options.disabled"
+            :step="element.options.step"
+            :show-input="element.options.showInput"
+            :range="element.options.range"
+            :style="{width: element.options.width}"
+            :input-size="size"
         ></b-slider>
       </div>
     </template>

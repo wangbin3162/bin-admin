@@ -81,7 +81,7 @@
             <div class="config-content">
               <b-scrollbar style="height: 100%;">
                 <widget-config v-show="activeTab==='widget'" :data="widgetFormSelect"></widget-config>
-                <form-config v-show="activeTab==='form'" :data="widgetForm.config"></form-config>
+                <form-config v-show="activeTab==='form'" ref="formConfig" :data="widgetForm.config"></form-config>
               </b-scrollbar>
             </div>
           </div>
@@ -148,6 +148,10 @@ export default {
     layoutFields: {
       type: Array,
       default: () => ['grid', 'divider']
+    },
+    status: {
+      type: String,
+      default: 'create'
     }
   },
   data() {
@@ -158,7 +162,7 @@ export default {
       widgetForm: {
         list: [],
         config: {
-          name: '表单名称',
+          formName: '表单名称',
           labelWidth: 100,
           labelPosition: 'right',
           size: 'default'
@@ -191,7 +195,8 @@ export default {
   },
   computed: {
     topTitle() {
-      return `表单设计 - ${this.widgetForm.config.name}`
+      return `${this.status === 'create' ? '新增' : '编辑'}单据元数据
+      ${this.widgetForm.config.formName ? '[' + this.widgetForm.config.formName + ']' : ''}`
     },
     isEdit() {
       return !(JSON.stringify(this.widgetForm) === JSON.stringify(this.widgetFormBuffer))
@@ -240,6 +245,7 @@ export default {
       this.visible = true
       this.widgetForm = deepCopy(data)
       this.widgetFormBuffer = deepCopy(data)
+      this.activeTab = 'form'
       if (this.widgetForm.list.length > 0) {
         this.widgetFormSelect = this.widgetForm.list[0]
       } else {
@@ -299,13 +305,20 @@ export default {
     },
     // 保存按钮操作指令
     handleSave() {
-      this.widgetFormBuffer = deepCopy(this.widgetForm)
-      this.$emit('on-save', this.widgetForm)
+      // 校验表单属性
+      this.$refs.formConfig.validatorForm().then(data => {
+        this.widgetFormBuffer = deepCopy(this.widgetForm)
+        this.$emit('on-save', this.widgetForm, this.allFields)
+      }).catch(e => {
+        this.$notice.danger({ title: '校验失败', desc: '表单单据属性校验失败，请填写完整后保存。' })
+        this.activeTab = 'form'
+      })
     },
     // 手动点击增加一个控件
     handleAddWidget(item) {
       this.widgetForm.list.push(item)
       this.$refs.widgetForm.handleWidgetAdd({ newIndex: this.widgetForm.list.length - 1 })
+      this.activeTab = 'widget'
     },
     handleMove() {
       return true

@@ -3,20 +3,35 @@
     <b-form :model="data" size="small" label-position="top">
       <cfg-group group-name="字段属性" v-if="data.type!=='grid'&&data.type!=='divider'">
         <div class="form-config-item">
-          <b-form-item label="字段标识" prop="model" class="bin-form-item-required">
+          <b-form-item label="字段名称" prop="model" class="bin-form-item-required">
             <b-input v-model="data.model" size="small" clearable @on-blur="checkModel"/>
           </b-form-item>
-          <b-form-item label="标题" prop="name">
+          <b-form-item label="控件标题" prop="name">
             <b-input v-model="data.name" size="small" clearable/>
           </b-form-item>
+          <b-row :gutter="10">
+            <b-col span="12">
+              <b-form-item label="数据长度" prop="length">
+                <b-input-number v-model="data.length" size="small" :min="0" style="width:100%;"/>
+              </b-form-item>
+            </b-col>
+            <b-col span="12">
+              <b-form-item label="数据精度" prop="precision">
+                <b-input-number v-model="data.precision" size="small" :min="0" style="width:100%;"/>
+              </b-form-item>
+            </b-col>
+          </b-row>
         </div>
       </cfg-group>
       <cfg-group group-name="控件属性">
         <cfg-field label="控件宽度" v-if="hasProperty('width')">
           <b-input v-model="data.options.width" size="small" placeholder="支持百分比(%)和像素(px)" clearable/>
         </cfg-field>
-        <cfg-field label="允许长度" v-if="hasProperty('length')">
-          <b-input-number v-model="data.options.length" size="small" clearable></b-input-number>
+        <cfg-field label="文本长度" v-if="hasProperty('length')">
+          <b-input-number v-model="data.options.length" size="small" :max="data.length"></b-input-number>
+        </cfg-field>
+        <cfg-field label="数值精度" v-if="hasProperty('precision')">
+          <b-input-number v-model="data.options.precision" size="small" :max="data.precision"></b-input-number>
         </cfg-field>
         <cfg-field label="最小值" v-if="hasProperty('min')">
           <b-input-number v-model="data.options.min" size="small"></b-input-number>
@@ -88,14 +103,10 @@
           <b-input v-model="data.options.placeholder" size="small" clearable/>
         </cfg-field>
         <cfg-field label="显示类型" v-if="hasProperty('type')">
-          <b-select v-model="data.options.type">
-            <b-option value="year">year</b-option>
-            <b-option value="month">month</b-option>
-            <b-option value="date">date</b-option>
-            <b-option value="datetime">datetime</b-option>
-            <!--<b-option value="daterange">daterange</b-option>-->
-            <!--<b-option value="datetimerange">datetimerange</b-option>-->
-          </b-select>
+          <b-radio-group v-model="data.options.type" size="small" type="button">
+            <b-radio label="date">date</b-radio>
+            <b-radio label="datetime">datetime</b-radio>
+          </b-radio-group>
         </cfg-field>
         <!--不同组件的默认值-->
         <cfg-field label="默认值" v-if="hasProperty('defaultValue') && !hasOptions">
@@ -104,7 +115,7 @@
                    :clearable="data.options.clearable"/>
           <b-input v-if="data.type==='textarea'" type="textarea" :rows="3" show-word-count
                    v-model="data.options.defaultValue"/>
-          <b-input-number v-if="data.type==='number'" size="small"
+          <b-input-number v-if="data.type==='number'" size="small" :precision="data.options.precision"
                           v-model="data.options.defaultValue" :step="data.options.step"/>
           <b-switch v-if="data.type==='switch'" v-model="data.options.defaultValue"/>
           <template v-if="data.type==='color'">
@@ -346,39 +357,7 @@ export default {
   props: ['data'],
   inject: ['ConfigRoot'],
   data() {
-    const checkModel = (rule, value, callback) => {
-      let arr = []
-      let modelCount = 0
-      let mapper = (list) => {
-        for (let i = 0; i < list.length; i++) {
-          if (list[i].type === 'grid') {
-            list[i].columns.forEach(item => {
-              mapper(item.list)
-            })
-          }
-          if (['grid', 'divider'].indexOf(list[i].type) < 0) {
-            arr.push(list[i].model)
-          }
-        }
-      }
-      mapper(this.ConfigRoot.widgetForm.list)
-      mapper = null
-      for (let i = 0; i < arr.length; i++) {
-        if (arr[i] === value) modelCount++
-      }
-      if (modelCount > 1) {
-        callback(new Error('字段标识重复！'))
-      } else {
-        callback()
-      }
-    }
     return {
-      fieldRule: {
-        model: [
-          { required: true, message: '字段名必填', trigger: 'blur' },
-          { validator: checkModel, trigger: 'blur' }
-        ]
-      },
       justifyOptions: [
         { value: 'start', label: '左对齐' },
         { value: 'end', label: '右对齐' },
@@ -463,9 +442,13 @@ export default {
     },
     // 判断是否有重复
     checkModel() {
+      if (this.data.model.length === 0) {
+        this.$message({ type: 'danger', content: '字段名称必填' })
+        return
+      }
       let repeatModels = this.ConfigRoot.repeatModels
       if (repeatModels.indexOf(this.data.model) >= 0) {
-        this.$message({ type: 'danger', content: `当前字段标识{${this.data.model}}重复` })
+        this.$message({ type: 'danger', content: `当前字段名称 { ${this.data.model} } 重复` })
       }
     }
   }

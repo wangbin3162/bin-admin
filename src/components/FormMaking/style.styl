@@ -402,6 +402,9 @@ $primary-background-color = #ecf5ff;
       margin-right: 24px;
       height: 28px;
     }
+    .bin-form-item-label::after {
+      content: unset;
+    }
   }
   .validate-block {
     .message-input {
@@ -494,6 +497,17 @@ $primary-background-color = #ecf5ff;
       font-size: 0;
       display: block;
       position: relative;
+    }
+  }
+}
+.form-config-container {
+  .form-config-item {
+    padding: 4px 12px 0;
+    .bin-form-item {
+      margin-bottom: 20px !important;
+      .bin-form-item-label::after {
+        content: unset;
+      }
     }
   }
 }

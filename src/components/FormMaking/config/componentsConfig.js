@@ -7,6 +7,9 @@ export const basicComponents = [
     type: 'input',
     name: '单行文本',
     icon: 'ios-create',
+    length: 64,
+    precision: 0,
+    dataType: 'string',
     options: {
       width: '100%',
       defaultValue: '',
@@ -22,6 +25,9 @@ export const basicComponents = [
     type: 'textarea',
     name: '多行文本',
     icon: 'ios-paper',
+    length: 200,
+    precision: 0,
+    dataType: 'text',
     options: {
       width: '100%',
       defaultValue: '',
@@ -36,6 +42,9 @@ export const basicComponents = [
     type: 'number',
     name: '计数器',
     icon: 'ios-calculator',
+    length: 24,
+    precision: 0,
+    dataType: 'number',
     options: {
       width: '',
       required: false,
@@ -43,7 +52,7 @@ export const basicComponents = [
       min: -Infinity,
       max: Infinity,
       step: 1,
-      precision: null,
+      precision: 0,
       disabled: false
     }
   },
@@ -51,6 +60,9 @@ export const basicComponents = [
     type: 'radio',
     name: '单选框组',
     icon: 'ios-radio-button-on',
+    length: 20,
+    precision: 0,
+    dataType: 'string',
     options: {
       inline: true,
       defaultValue: '',
@@ -78,6 +90,9 @@ export const basicComponents = [
     type: 'checkbox',
     name: '多选框组',
     icon: 'ios-checkbox-outline',
+    length: 20,
+    precision: 0,
+    dataType: 'string',
     options: {
       inline: true,
       defaultValue: [],
@@ -104,6 +119,9 @@ export const basicComponents = [
     type: 'select',
     name: '下拉选择框',
     icon: 'ios-arrow-dropdown',
+    length: 20,
+    precision: 0,
+    dataType: 'string',
     options: {
       defaultValue: '',
       multiple: false,
@@ -134,6 +152,9 @@ export const basicComponents = [
     type: 'time',
     icon: 'ios-timer',
     name: '时间选择器',
+    length: 20,
+    precision: 0,
+    dataType: 'string',
     options: {
       defaultValue: '',
       readonly: false,
@@ -151,6 +172,8 @@ export const basicComponents = [
     type: 'date',
     name: '日期选择器',
     icon: 'ios-calendar',
+    length: 20,
+    precision: 0,
     options: {
       defaultValue: '',
       readonly: false,
@@ -168,6 +191,9 @@ export const basicComponents = [
     type: 'switch',
     name: '开关',
     icon: 'ios-switch',
+    length: 4,
+    precision: 0,
+    dataType: 'bool',
     options: {
       defaultValue: false,
       required: false,
@@ -181,6 +207,9 @@ export const basicComponents = [
     type: 'color',
     name: '颜色选择器',
     icon: 'ios-color-palette',
+    length: 64,
+    precision: 0,
+    dataType: 'string',
     options: {
       defaultValue: '',
       disabled: false,
@@ -193,6 +222,9 @@ export const basicComponents = [
     type: 'rate',
     name: '评分',
     icon: 'favor',
+    length: 24,
+    precision: 0,
+    dataType: 'number',
     options: {
       defaultValue: null,
       max: 5,
@@ -206,6 +238,9 @@ export const basicComponents = [
     type: 'slider',
     name: '滑块',
     icon: 'ios-options',
+    length: 64,
+    precision: 0,
+    dataType: 'number',
     options: {
       defaultValue: 0,
       disabled: false,

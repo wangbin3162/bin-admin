@@ -30,6 +30,7 @@
         :max="widget.options.max"
         :step="widget.options.step"
         :style="{width: widget.options.width}"
+        :precision="widget.options.precision"
         :size="size"
       ></b-input-number>
     </template>
