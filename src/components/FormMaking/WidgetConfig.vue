@@ -6,8 +6,8 @@
           <b-form-item label="字段标识" prop="model" class="bin-form-item-required">
             <b-input v-model="data.model" size="small" clearable @on-blur="checkModel"/>
           </b-form-item>
-          <b-form-item label="标题" prop="name" clearable>
-            <b-input v-model="data.name" size="small"/>
+          <b-form-item label="标题" prop="name">
+            <b-input v-model="data.name" size="small" clearable/>
           </b-form-item>
         </div>
       </cfg-group>
