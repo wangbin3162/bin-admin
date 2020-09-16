@@ -12,6 +12,16 @@ export function getUid(prefix) {
   return prefix ? (prefix + '_' + key) : key
 }
 
+// 字符串逗号分隔成数组
+export function splitValue(value) {
+  return value.length === 0 ? [] : value.split(',')
+}
+
+// 数组逗号拼接
+export function joinValue(arr) {
+  return isNotEmpty(arr) ? arr.join(',') : ''
+}
+
 /**
  * 校验生成器对象根据不同类型的校验返回符合form-item类型的校验对象
  */

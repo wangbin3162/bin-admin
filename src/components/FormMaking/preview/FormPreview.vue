@@ -1,18 +1,20 @@
 <template>
-  <!--预览弹窗-->
-  <b-modal v-model="previewModal" title="表单预览" fullscreen width="100%" stop-remove-scroll>
-    <generate-form v-if="previewModal" :data="widgetForm" ref="generateForm"></generate-form>
-    <b-modal v-model="modelDialog" title="数据结果" footer-hide stop-remove-scroll :body-styles="{padding:'16px'}">
-      <div style="height: 350px;">
-        <b-ace-editor :value="submitResult" readonly/>
+  <div>
+    <!--预览弹窗-->
+    <b-modal v-model="previewModal" title="表单预览" fullscreen width="100%" stop-remove-scroll>
+      <generate-form v-if="previewModal" :data="widgetForm" ref="generateForm"></generate-form>
+      <b-modal v-model="modelDialog" title="数据结果" footer-hide stop-remove-scroll :body-styles="{padding:'16px'}">
+        <div style="height: 350px;">
+          <b-ace-editor :value="submitResult" readonly/>
+        </div>
+      </b-modal>
+      <div slot="footer" style="text-align: center;">
+        <b-button type="primary" @click="formSubmit">获取数据</b-button>
+        <b-button @click="formReset">重 置</b-button>
+        <b-button @click="previewModal=false">关 闭</b-button>
       </div>
     </b-modal>
-    <div slot="footer" style="text-align: center;">
-      <b-button type="primary" @click="formSubmit">获取数据</b-button>
-      <b-button @click="formReset">重 置</b-button>
-      <b-button @click="previewModal=false">关 闭</b-button>
-    </div>
-  </b-modal>
+  </div>
 </template>
 
 <script>

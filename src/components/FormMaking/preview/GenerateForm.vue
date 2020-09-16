@@ -19,9 +19,8 @@
               <template v-for="el in col.list">
                 <generate-form-item
                   :key="el.key"
-                  :models.sync="models"
+                  v-model="models[el.model]"
                   :form-config="data.config"
-                  :rules="rules"
                   :widget="el"
                   @input-change="onInputChange">
                 </generate-form-item>
@@ -41,9 +40,8 @@
         <template v-else>
           <generate-form-item
             :key="element.key"
-            :models.sync="models"
+            v-model="models[element.model]"
             :form-config="data.config"
-            :rules="rules"
             :widget="element"
             @input-change="onInputChange">
           </generate-form-item>
@@ -105,19 +103,14 @@ export default {
     },
     // 字段输入改变事件，字段名，值，models
     onInputChange(value, field) {
+      console.log(value, field)
       this.$emit('on-change', field, value, this.models)
     }
   },
-  watch: {
-    data: {
-      deep: true,
-      handler(val) {
-        this.generateModel(val.list)
-        console.log(this.models)
-        console.log(this.rules)
-      },
-      immediate: true
-    }
+  created() {
+    this.generateModel(this.data.list)
+    console.log(this.models)
+    console.log(this.rules)
   }
 }
 </script>

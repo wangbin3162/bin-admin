@@ -95,6 +95,8 @@ $primary-background-color = #ecf5ff;
       height: calc(100% - 45px);
       position: relative;
       background: #fafafa;
+      overflow-y: auto;
+      overflow-x: hidden;
     }
   }
   .right-config-container {
@@ -198,17 +200,12 @@ $primary-background-color = #ecf5ff;
 }
 // 中间表单容器
 .widget-form-container {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
   // 中间拖拽元素的样式
   .widget-form-list {
     background: #fff;
     border: 1px dashed #999;
     min-height: 600px;
-    margin: 10px;
+    margin: 12px;
     transition: .25s;
     .widget-view {
       padding: 2px 2px 18px;

@@ -192,7 +192,8 @@
               </b-radio-group>
             </template>
             <template v-if="data.type==='checkbox' || (data.type==='select' && data.options.multiple)">
-              <b-checkbox-group v-model="data.options.defaultValue">
+              <b-checkbox-group :value="splitValue(data.options.defaultValue)"
+                                @on-change="(list)=>{data.options.defaultValue=joinValue(list)}">
                 <draggable tag="ul" :list="data.options.options"
                            v-bind="{group:{ name:'options'},animation:200,ghostClass: 'ghost',handle: '.drag-item'}"
                 >
@@ -350,6 +351,7 @@ import CfgField from '@/components/FormMaking/components/CfgField'
 import { deepCopy } from '@/common/utils/assist'
 import CfgInline from '@/components/FormMaking/components/CfgInline'
 import RulesSetting from '@/components/FormMaking/components/RulesSetting'
+import { joinValue, splitValue } from '@/components/FormMaking/config/utils'
 
 export default {
   name: 'WidgetConfig',
@@ -422,19 +424,7 @@ export default {
     },
     // 多选模式
     handleSelectMultiple(value) {
-      if (value) {
-        if (this.data.options.defaultValue) {
-          this.data.options.defaultValue = [this.data.options.defaultValue]
-        } else {
-          this.data.options.defaultValue = []
-        }
-      } else {
-        if (this.data.options.defaultValue.length > 0) {
-          this.data.options.defaultValue = this.data.options.defaultValue[0]
-        } else {
-          this.data.options.defaultValue = ''
-        }
-      }
+      this.data.options.defaultValue = ''
     },
     // 是否存在options属性
     hasProperty(property) {
@@ -450,6 +440,12 @@ export default {
       if (repeatModels.indexOf(this.data.model) >= 0) {
         this.$message({ type: 'danger', content: `当前字段名称 { ${this.data.model} } 重复` })
       }
+    },
+    splitValue(value) {
+      return splitValue(value)
+    },
+    joinValue(arr) {
+      return joinValue(arr)
     }
   }
 }

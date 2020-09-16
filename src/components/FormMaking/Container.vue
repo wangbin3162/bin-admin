@@ -67,7 +67,9 @@
               </b-button>
             </div>
             <div class="scroll-content">
-              <widget-form ref="widgetForm" :data="widgetForm" :select.sync="widgetFormSelect"></widget-form>
+              <b-scrollbar style="height: 100%;">
+                <widget-form ref="widgetForm" :data="widgetForm" :select.sync="widgetFormSelect"></widget-form>
+              </b-scrollbar>
             </div>
           </div>
           <div class="right-config-container">
@@ -272,23 +274,8 @@ export default {
     // btn-bar
     handleClear() {
       if (this.widgetForm.list.length === 0) return
-      this.$confirm({
-        iconName: 'danger',
-        title: '提示',
-        content: '确定要清空所有控件吗？',
-        onOk: () => {
-          this.widgetForm = {
-            list: [],
-            config: {
-              name: '表单名称',
-              labelWidth: 100,
-              labelPosition: 'right',
-              size: 'small'
-            }
-          }
-          this.widgetFormSelect = {}
-        }
-      })
+      this.widgetForm.list = []
+      this.widgetFormSelect = {}
     },
     // 键盘保存
     keypadSave(e) {

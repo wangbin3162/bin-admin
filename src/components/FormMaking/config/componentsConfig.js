@@ -90,12 +90,12 @@ export const basicComponents = [
     type: 'checkbox',
     name: '多选框组',
     icon: 'ios-checkbox-outline',
-    length: 20,
+    length: 64,
     precision: 0,
     dataType: 'string',
     options: {
       inline: true,
-      defaultValue: [],
+      defaultValue: '',
       options: [
         {
           value: 'Option 1',
@@ -119,13 +119,13 @@ export const basicComponents = [
     type: 'select',
     name: '下拉选择框',
     icon: 'ios-arrow-dropdown',
-    length: 20,
+    length: 64,
     precision: 0,
     dataType: 'string',
     options: {
       defaultValue: '',
       multiple: false,
-      maxTagCount: null,
+      maxTagCount: 2,
       disabled: false,
       clearable: false,
       placeholder: '',
@@ -231,7 +231,8 @@ export const basicComponents = [
       disabled: false,
       allowHalf: false,
       required: false,
-      showScore: false
+      showScore: false,
+      clearable: false
     }
   },
   {
