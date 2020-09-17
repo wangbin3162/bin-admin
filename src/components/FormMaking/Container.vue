@@ -135,6 +135,7 @@ import { basicComponents, layoutComponents } from './config/componentsConfig.js'
 import FormConfig from '@/components/FormMaking/FormConfig'
 import WidgetConfig from '@/components/FormMaking/WidgetConfig'
 import FormPreview from '@/components/FormMaking/preview/FormPreview'
+import { getFieldsByList } from '@/components/FormMaking/config/utils'
 
 export default {
   name: 'fm-container',
@@ -207,22 +208,7 @@ export default {
       return !(JSON.stringify(this.widgetForm) === JSON.stringify(this.widgetFormBuffer))
     },
     allFields() {
-      let arr = []
-      let mapper = (list) => {
-        for (let i = 0; i < list.length; i++) {
-          if (list[i].type === 'grid') {
-            list[i].columns.forEach(item => {
-              mapper(item.list)
-            })
-          }
-          if (['grid', 'divider'].indexOf(list[i].type) < 0) {
-            arr.push(list[i])
-          }
-        }
-      }
-      mapper(this.widgetForm.list)
-      mapper = null
-      return arr
+      return getFieldsByList(this.widgetForm.list)
     },
     repeatModels() {
       let repeat = []

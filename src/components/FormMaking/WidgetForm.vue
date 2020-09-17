@@ -2,7 +2,7 @@
   <div class="widget-form-container">
     <b-empty class="form-empty" v-if="data.list.length === 0">从左侧拖拽或点击来添加字段</b-empty>
     <b-form ref="form" :label-position="data.config.labelPosition" :label-width="data.config.labelWidth"
-            :size="data.config.size" class="widget-form-list">
+            :size="data.config.size">
       <draggable v-model="data.list"
                  v-bind="{group:'form', ghostClass: 'ghost',animation: 200, handle: '.drag-widget'}"
                  @end="handleMoveEnd"

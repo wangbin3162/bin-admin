@@ -52,9 +52,9 @@
 </template>
 
 <script>
-
 import { buildRules } from '../config/utils'
 import GenerateFormItem from '@/components/FormMaking/preview/GenerateFormItem'
+import { getFieldsByList } from '@/components/FormMaking/config/utils'
 
 export default {
   name: 'GenerateForm',
@@ -70,22 +70,15 @@ export default {
   },
   methods: {
     // 动态组装models和rules
-    generateModel(genList) {
-      for (let i = 0; i < genList.length; i++) {
-        if (genList[i].type === 'grid') {
-          genList[i].columns.forEach(item => {
-            this.generateModel(item.list)
-          })
+    generateModel() {
+      let allFields = getFieldsByList(this.data.list)
+      allFields.forEach(item => {
+        this.$set(this.models, item.model.toLowerCase(), item.options.defaultValue)
+        let rules = buildRules(item.rules, this.models)
+        if (rules.length > 0) {
+          this.$set(this.rules, item.model, rules)
         }
-        if (['grid', 'divider'].indexOf(genList[i].type) < 0) {
-          // 1、先根据filedName扩展form对象
-          this.$set(this.models, genList[i].model.toLowerCase(), genList[i].options.defaultValue)
-          let rules = buildRules(genList[i].rules, this.models)
-          if (rules.length > 0) {
-            this.$set(this.rules, genList[i].model, rules)
-          }
-        }
-      }
+      })
     },
     getData() {
       return new Promise((resolve, reject) => {
@@ -108,7 +101,7 @@ export default {
     }
   },
   created() {
-    this.generateModel(this.data.list)
+    this.generateModel()
     console.log(this.models)
     console.log(this.rules)
   }

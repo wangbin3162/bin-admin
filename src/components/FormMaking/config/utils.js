@@ -216,3 +216,23 @@ export function buildRules(rules, sourceObj) {
     return validator[rule.name](rule, sourceObj)
   })
 }
+
+/* 根据配置list，获取所有field字段 */
+export function getFieldsByList(configList) {
+  let arr = []
+  let mapper = (list) => {
+    for (let i = 0; i < list.length; i++) {
+      if (list[i].type === 'grid') {
+        list[i].columns.forEach(item => {
+          mapper(item.list)
+        })
+      }
+      if (['grid', 'divider'].indexOf(list[i].type) < 0) {
+        arr.push(list[i])
+      }
+    }
+  }
+  mapper(configList)
+  mapper = null
+  return arr
+}
