@@ -177,10 +177,10 @@
                 >
                   <li v-for="(item, index) in data.options.options" :key="index" class="drag-li">
                     <b-radio :label="item.value" style="margin-right: 0;" :key="index">
-                      <b-input style="width:100px;" size="small" v-model="item.value" placeholder="value"
-                               title="value"></b-input>
-                      <b-input style="width:100px;" size="small" v-model="item.label" placeholder="label"
-                               title="label"></b-input>
+                      <b-input style="width:120px;" size="small" v-model="item.value" placeholder="value"
+                               title="value" clearable></b-input>
+                      <b-input style="width:120px;" size="small" v-model="item.label" placeholder="label"
+                               title="label" clearable></b-input>
                     </b-radio>
                     <i class="drag-item iconfont icon-ios-menu" style="font-size: 20px;margin: 0 5px;cursor: move;"></i>
                     <b-button @click="handleOptionsRemove(index)" type="text" text-color="danger"
@@ -199,10 +199,10 @@
                 >
                   <li v-for="(item, index) in data.options.options" :key="index" class="drag-li">
                     <b-checkbox :label="item.value" style="margin-right: 0;width: auto;" :key="index">
-                      <b-input style="width:100px;" size="small" v-model="item.value" placeholder="value"
-                               title="value"></b-input>
-                      <b-input style="width:100px;" size="small" v-model="item.label" placeholder="label"
-                               title="label"></b-input>
+                      <b-input style="width:120px;" size="small" v-model="item.value" placeholder="value"
+                               title="value" clearable></b-input>
+                      <b-input style="width:120px;" size="small" v-model="item.label" placeholder="label"
+                               title="label" clearable></b-input>
                     </b-checkbox>
                     <i class="drag-item iconfont icon-ios-menu" style="font-size: 20px;margin: 0 5px;cursor: move;"></i>
                     <b-button @click="handleOptionsRemove(index)" type="text" text-color="danger"
