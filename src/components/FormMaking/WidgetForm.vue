@@ -8,7 +8,7 @@
                  @end="handleMoveEnd"
                  @add="handleWidgetAdd"
       >
-        <transition-group name="fade" tag="div">
+        <transition-group name="fade" tag="div" class="widget-form-list">
           <template v-for="(element, index) in data.list">
             <!--布局-->
             <template v-if="element.type === 'grid'">
