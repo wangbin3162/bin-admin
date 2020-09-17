@@ -62,6 +62,9 @@
               <b-button type="text" @click="handleShowJson">
                 <b-icon name="ios-paper"/>&nbsp;编辑JSON
               </b-button>
+              <b-button type="text" @click="handleSave">
+                <b-icon name="ios-save"/>&nbsp;保存
+              </b-button>
               <b-button type="text" text-color="danger" @click="handleClear">
                 <b-icon name="ios-trash"/>&nbsp;清空
               </b-button>
