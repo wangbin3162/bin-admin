@@ -69,13 +69,9 @@ export default {
   },
   methods: {
     validatorForm() {
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve) => {
         this.$refs.formConfig.validate(valid => {
-          if (valid) {
-            resolve(true)
-          } else {
-            reject(new Error('校验失败'))
-          }
+          resolve(valid)
         })
       })
     }

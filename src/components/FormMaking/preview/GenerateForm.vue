@@ -59,7 +59,7 @@ import { getFieldsByList } from '@/components/FormMaking/config/utils'
 export default {
   name: 'GenerateForm',
   components: { GenerateFormItem },
-  props: ['data'],
+  props: ['data', 'defaultModel'],
   data() {
     return {
       models: {
@@ -71,9 +71,16 @@ export default {
   methods: {
     // 动态组装models和rules
     generateModel() {
+      if (this.defaultModel && this.defaultModel.id) {
+        this.models.id = this.defaultModel.id
+      }
       let allFields = getFieldsByList(this.data.list)
       allFields.forEach(item => {
-        this.$set(this.models, item.model.toLowerCase(), item.options.defaultValue)
+        let value = item.options.defaultValue
+        if (this.defaultModel && this.defaultModel.hasOwnProperty(item.model)) {
+          value = this.defaultModel[item.model]
+        }
+        this.$set(this.models, item.model.toLowerCase(), value)
         let rules = buildRules(item.rules, this.models)
         if (rules.length > 0) {
           this.$set(this.rules, item.model, rules)
@@ -96,7 +103,7 @@ export default {
     },
     // 字段输入改变事件，字段名，值，models
     onInputChange(value, field) {
-      console.log(value, field)
+      // console.log(value, field)
       this.$emit('on-change', field, value, this.models)
     }
   },

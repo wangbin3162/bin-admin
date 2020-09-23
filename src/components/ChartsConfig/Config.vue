@@ -56,7 +56,7 @@
                            @end="onDragEnd"
                            @start="isDragging = true">
                   <transition-group type="transition" name="flip-list">
-                    <div class="index-item" v-for="(item,index) in data.options.groupList" :key="index">
+                    <div class="index-item" v-for="(item,index) in data.options.groupList" :key="'_'+index">
                       <div class="move-drag">
                         <b-icon name="ios-move" size="18" color="#1089ff"/>
                       </div>
@@ -718,8 +718,8 @@ export default {
   },
   methods: {
     addIndex() {
-      if (this.data.options.groupList.length === 5) {
-        this.$message({ type: 'danger', content: '指标组内指标建议5个以内!' })
+      if (this.data.options.groupList.length === 6) {
+        this.$message({ type: 'danger', content: '指标组内指标建议6个以内!' })
         return
       }
       this.data.options.groupList.push({ ...normalGroupBase })

@@ -144,7 +144,7 @@ export const basicComponents = [
       },
       width: '100%',
       height: 400,
-      grid: { left: 40, top: 15, right: 20, bottom: 40 },
+      grid: { left: 50, top: 40, right: 50, bottom: 40 },
       tooltip: { show: false, trigger: 'axis' },
       legend: {
         show: false,
@@ -267,7 +267,7 @@ export const basicComponents = [
       },
       width: '100%',
       height: 400,
-      grid: { left: 40, top: 15, right: 20, bottom: 40 },
+      grid: { left: 50, top: 40, right: 50, bottom: 40 },
       tooltip: {
         show: false,
         trigger: 'axis',
@@ -405,7 +405,7 @@ export const basicComponents = [
       },
       width: '100%',
       height: 400,
-      grid: { left: 40, top: 15, right: 20, bottom: 40 },
+      grid: { left: 50, top: 40, right: 50, bottom: 40 },
       tooltip: {
         show: false,
         trigger: 'axis',
@@ -489,7 +489,7 @@ export const basicComponents = [
         }
       },
       series: {
-        name: '系列一',
+        name: '',
         type: 'bar',
         smooth: true,
         label: {

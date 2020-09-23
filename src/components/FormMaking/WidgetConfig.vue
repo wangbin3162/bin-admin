@@ -6,8 +6,8 @@
           <b-form-item label="字段名称" prop="model" class="bin-form-item-required">
             <b-input v-model="data.model" size="small" clearable @on-blur="checkModel"/>
           </b-form-item>
-          <b-form-item label="控件标题" prop="name">
-            <b-input v-model="data.name" size="small" clearable/>
+          <b-form-item label="控件标题" prop="name" class="bin-form-item-required">
+            <b-input v-model="data.name" size="small" clearable @on-blur="checkName"/>
           </b-form-item>
           <b-row :gutter="10">
             <b-col span="12">
@@ -35,31 +35,9 @@
         </cfg-field>
         <cfg-field label="最小值" v-if="hasProperty('min')">
           <b-input-number v-model="data.options.min" size="small"></b-input-number>
-          <b-button-group style="margin-left: 8px;" v-if="data.type==='number'">
-            <b-button :type="data.options.min===-Infinity?'primary':'default'" size="small"
-                      @click="data.options.min = -Infinity">min
-            </b-button>
-            <b-button :type="data.options.min===0?'primary':'default'" size="small"
-                      @click="data.options.min = 0">0
-            </b-button>
-            <b-button :type="data.options.min===Infinity?'primary':'default'" size="small"
-                      @click="data.options.min = Infinity">max
-            </b-button>
-          </b-button-group>
         </cfg-field>
         <cfg-field label="最大值" v-if="hasProperty('max')">
           <b-input-number v-model="data.options.max" size="small"></b-input-number>
-          <b-button-group style="margin-left: 8px;" v-if="data.type==='number'">
-            <b-button :type="data.options.max===-Infinity?'primary':'default'" size="small"
-                      @click="data.options.max = -Infinity">min
-            </b-button>
-            <b-button :type="data.options.max===0?'primary':'default'" size="small"
-                      @click="data.options.max = 0">0
-            </b-button>
-            <b-button :type="data.options.max===Infinity?'primary':'default'" size="small"
-                      @click="data.options.max = Infinity">max
-            </b-button>
-          </b-button-group>
         </cfg-field>
         <cfg-field label="步长" v-if="hasProperty('step')">
           <b-input-number v-model="data.options.step" size="small" :min="1"></b-input-number>
@@ -176,12 +154,11 @@
                            v-bind="{group:{ name:'options'},animation:200,ghostClass: 'ghost',handle: '.drag-item'}"
                 >
                   <li v-for="(item, index) in data.options.options" :key="index" class="drag-li">
-                    <b-radio :label="item.value" style="margin-right: 0;" :key="index">
-                      <b-input style="width:120px;" size="small" v-model="item.value" placeholder="value"
-                               title="value" clearable></b-input>
-                      <b-input style="width:120px;" size="small" v-model="item.label" placeholder="label"
-                               title="label" clearable></b-input>
-                    </b-radio>
+                    <b-radio :label="item.value" style="margin-right: 0;" :key="item.value"><span></span></b-radio>
+                    <b-input style="width:120px;" size="small" v-model="item.value" placeholder="value"
+                             title="value" clearable></b-input>
+                    <b-input style="width:120px;" size="small" v-model="item.label" placeholder="label"
+                             title="label" clearable></b-input>
                     <i class="drag-item iconfont icon-ios-menu" style="font-size: 20px;margin: 0 5px;cursor: move;"></i>
                     <b-button @click="handleOptionsRemove(index)" type="text" text-color="danger"
                               style="margin-left: 5px;">
@@ -198,12 +175,11 @@
                            v-bind="{group:{ name:'options'},animation:200,ghostClass: 'ghost',handle: '.drag-item'}"
                 >
                   <li v-for="(item, index) in data.options.options" :key="index" class="drag-li">
-                    <b-checkbox :label="item.value" style="margin-right: 0;width: auto;" :key="index">
-                      <b-input style="width:120px;" size="small" v-model="item.value" placeholder="value"
-                               title="value" clearable></b-input>
-                      <b-input style="width:120px;" size="small" v-model="item.label" placeholder="label"
-                               title="label" clearable></b-input>
-                    </b-checkbox>
+                    <b-checkbox :label="item.value" style="margin-right: 0;width: auto;" :key="item.value"><span></span></b-checkbox>
+                    <b-input style="width:120px;" size="small" v-model="item.value" placeholder="value"
+                             title="value" clearable></b-input>
+                    <b-input style="width:120px;" size="small" v-model="item.label" placeholder="label"
+                             title="label" clearable></b-input>
                     <i class="drag-item iconfont icon-ios-menu" style="font-size: 20px;margin: 0 5px;cursor: move;"></i>
                     <b-button @click="handleOptionsRemove(index)" type="text" text-color="danger"
                               style="margin-left: 5px;">
@@ -439,6 +415,12 @@ export default {
       let repeatModels = this.ConfigRoot.repeatModels
       if (repeatModels.indexOf(this.data.model) >= 0) {
         this.$message({ type: 'danger', content: `当前字段名称 { ${this.data.model} } 重复` })
+      }
+    },
+    // 判断标题名称是否为空
+    checkName() {
+      if (this.data.name.length === 0) {
+        this.$message({ type: 'danger', content: '控件标题必填' })
       }
     },
     splitValue(value) {

@@ -49,8 +49,8 @@ export const basicComponents = [
       width: '',
       required: false,
       defaultValue: null,
-      min: -Infinity,
-      max: Infinity,
+      min: 0,
+      max: 1000,
       step: 1,
       precision: 0,
       disabled: false

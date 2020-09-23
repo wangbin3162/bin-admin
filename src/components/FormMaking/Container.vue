@@ -100,7 +100,7 @@
       </div>
       <div slot="footer">
         <b-button @click="jsonModal = false">取消</b-button>
-        <b-button type="primary" @click="jsonChange">确定</b-button>
+        <b-button type="primary" @click="jsonChange(jsonOptions)">确定</b-button>
       </div>
     </b-modal>
     <!--预览弹窗-->
@@ -243,22 +243,28 @@ export default {
         this.widgetFormSelect = null
       }
     },
+    setWidgetFormId(id) {
+      this.widgetForm.config.id = id
+      this.widgetFormBuffer.config.id = id
+    },
     // 关闭
     close() {
       if (this.isEdit) { // 如果已经修改过，则弹窗提示是否保存
         this.closeModal = true
       } else {
         this.visible = false
+        this.$emit('on-close')
       }
     },
     // 是否保存并关闭
-    closeSave(save) {
+    async closeSave(save) {
       if (save) {
         // 触发一下保存按钮操作,此部分会触发保存按钮操作指令handleSave
-        this.handleSave()
+        await this.handleSave()
       }
       this.closeModal = false
       this.visible = false
+      this.$emit('on-close')
     },
     // btn-bar
     handleClear() {
@@ -280,15 +286,16 @@ export default {
       }
     },
     // 保存按钮操作指令
-    handleSave() {
+    async handleSave() {
       // 校验表单属性
-      this.$refs.formConfig.validatorForm().then(data => {
+      let data = await this.$refs.formConfig.validatorForm()
+      if (data) {
         this.widgetFormBuffer = deepCopy(this.widgetForm)
         this.$emit('on-save', this.widgetForm, this.allFields)
-      }).catch(e => {
+      } else {
         this.$notice.danger({ title: '校验失败', desc: '表单单据属性校验失败，请填写完整后保存。' })
         this.activeTab = 'form'
-      })
+      }
     },
     // 手动点击增加一个控件
     handleAddWidget(item) {

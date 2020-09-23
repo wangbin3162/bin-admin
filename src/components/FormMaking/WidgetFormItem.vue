@@ -232,6 +232,7 @@ export default {
     },
     handleSelectWidget(index) {
       this.selectWidget = this.data.list[index]
+      this.ConfigRoot.activeTab = 'widget'
     },
     handleWidgetDelete(index) {
       if (this.data.list.length - 1 === index) {

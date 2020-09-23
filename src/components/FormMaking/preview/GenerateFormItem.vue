@@ -38,7 +38,7 @@
       ></b-input-number>
     </template>
     <template v-if="widget.type === 'radio'">
-      <b-radio-group v-model="widget.options.defaultValue"
+      <b-radio-group v-model="currentValue"
                      :style="{width: widget.options.width}"
                      :disabled="widget.options.disabled"
                      :type="widget.options.buttonModel?'button':null"
@@ -208,7 +208,7 @@ export default {
     }
   },
   methods: {
-    // 输入框输入时间
+    // 输入框输入
     handleInputEvent(event) {
       this.handleInput(event.target.value)
     },
