@@ -79,7 +79,6 @@ export default {
       })
     },
     delOthersViews({ commit, state }, view) {
-      console.log(view)
       return new Promise(resolve => {
         commit('DEL_OTHERS_VISITED_VIEWS', view)
         commit('DEL_OTHERS_CACHED_VIEWS', view)

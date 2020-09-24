@@ -1,7 +1,6 @@
 import { getInfo } from '@/api/login.api'
 import util from '../../common/utils/util'
 import { ACCESS_TOKEN } from '@/common/token-const'
-import { resetRouter } from '@/router'
 
 export default {
   state: {

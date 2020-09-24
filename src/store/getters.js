@@ -8,6 +8,8 @@ const getters = {
   fixedAside: state => state.app.setting.fixedAside,
   // 菜单
   navMenu: state => state.app.menu,
+  // 菜单
+  navMenuItems: state => state.app.menuItems,
   // 用户角色
   roles: state => state.user.roles,
   // 用户信息

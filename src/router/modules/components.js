@@ -1,12 +1,12 @@
 export default [
   {
-    path: 'editorDemo',
+    path: 'EditorDemo',
     name: 'EditorDemo',
     component: () => import('../../pages/demo/components/EditorDemo'),
     meta: { title: '代码编辑器' }
   },
   {
-    path: 'chartDemo',
+    path: 'ChartDemo',
     name: 'ChartDemo',
     component: () => import('../../pages/demo/components/ChartDemo'),
     meta: { title: '图表组件' }

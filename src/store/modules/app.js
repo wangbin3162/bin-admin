@@ -11,14 +11,16 @@ const app = {
       fixedHeader: false,
       fixedAside: false
     },
-    menu: []
+    menu: [],
+    menuItems: [] // 平铺菜单
   },
   mutations: {
     SAVE_SETTING: (state, setting) => {
       state.setting = { ...setting }
     },
-    SET_MENU: (state, menu) => {
+    SET_MENU: (state, { menu, menuItems }) => {
       state.menu = menu
+      state.menuItems = menuItems
     },
     SET_SIDEBAR: (state) => {
       state.setting.sidebar = !state.setting.sidebar
@@ -58,8 +60,12 @@ const app = {
       document.body.className = `theme-${setting.theme}`
     },
     setRouterMenu: ({ commit, state }, menus) => {
-      const menu = setMenu(menus)
-      commit('SET_MENU', menu)
+      return new Promise(resolve => {
+        const menu = setMenu(menus)
+        const menuItems = getMenuItems(menu)
+        commit('SET_MENU', { menu, menuItems })
+        resolve({ menu, menuItems })
+      })
     },
     toggleSideBar: ({ commit }) => {
       commit('SET_SIDEBAR')
@@ -86,7 +92,7 @@ const app = {
   }
 }
 
-// 递归平铺菜单树
+// 菜单树拼接子父级关系
 function setMenu(menus) {
   let all = []
   const mapper = (route, parent) => {
@@ -112,6 +118,25 @@ function setMenu(menus) {
   }
   menus.forEach(item => {
     all.push(mapper(item))
+  })
+  return all
+}
+
+// 递归平铺菜单树
+function getMenuItems(menus) {
+  let all = []
+  const mapper = (menu) => {
+    if (menu.name && !menu.children) {
+      all.push({ ...menu })
+    }
+    if (menu.children) {
+      menu.children.forEach(item => {
+        mapper(item)
+      })
+    }
+  }
+  menus.forEach(item => {
+    mapper(item)
   })
   return all
 }

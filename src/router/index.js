@@ -57,8 +57,8 @@ router.beforeEach(async (to, from, next) => {
         let res = await store.dispatch('getUserInfo')
         let menus = getMenus(res.data.data.functions || [])
         // console.log('menus: ', menus)
-        await store.dispatch('setRouterMenu', menus)
-        let asyncRoute = await store.dispatch('generateRoutes', menus)
+        let { menuItems } = await store.dispatch('setRouterMenu', menus)
+        let asyncRoute = await store.dispatch('generateRoutes', menuItems)
         // console.log('asyncRoute: ', asyncRoute)
         // [ 路由 ] 计算路由
         const routes = addRoutes(asyncRoute)
@@ -68,7 +68,7 @@ router.beforeEach(async (to, from, next) => {
 
         next({ ...to, replace: true })
       } catch (e) {
-        next(false)
+        next({ name: 'login', query: { redirect: to.fullPath } })
       }
     }
   } else {

@@ -8,7 +8,7 @@
     </div>
     <div class="layout-aside-children">
       <b-menu @on-select="handleMenuSelect" :theme="theme" class="aside-menu" v-if="sidebar"
-              style="width: 100%;" :open-names="openNames"
+              style="width: 100%;" :open-names="openNames" accordion
               :active-name="activeMenu" ref="sideMenu">
         <template v-for="(menu, menuIndex) in navMenu">
           <menu-item v-if="!menu.children" :menu="menu" :key="menuIndex"></menu-item>
@@ -49,7 +49,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['theme', 'sidebar', 'fixedAside', 'navMenu', 'addRouters']),
+    ...mapGetters(['theme', 'sidebar', 'fixedAside', 'navMenu', 'navMenuItems', 'addRouters']),
     asideStyle() {
       const width = this.sidebar ? 256 : 64
       return {
@@ -58,34 +58,16 @@ export default {
         minWidth: `${width}px`,
         width: `${width}px`
       }
-    },
-    menuItems() {
-      let functions = this.navMenu
-      let all = []
-      const mapper = (route) => {
-        if (route.name && !route.children) {
-          all.push({ ...route })
-        }
-        if (route.children) {
-          route.children.forEach(item => {
-            mapper(item)
-          })
-        }
-      }
-      functions.forEach(item => {
-        mapper(item)
-      })
-      return all
     }
   },
   watch: {
     $route: {
       handler: function (val) {
         // 展开的菜单
-        this.openNames = this.getMenuItemNamePath(val.name)
+        this.openNames = this.getMenuItemNamePath(val.path)
         this.$nextTick(() => {
           // 选中的菜单
-          this.activeMenu = val.name
+          this.activeMenu = val.path.replace('/', '')
           this.$refs.sideMenu && this.$refs.sideMenu.updateOpened()
         })
       },
@@ -95,7 +77,7 @@ export default {
   methods: {
     // 获取菜单项名称路径
     getMenuItemNamePath(name) {
-      let activeRoute = this.menuItems.find(item => item.name === name)
+      let activeRoute = this.navMenuItems.find(item => `/${item.name}` === name)
       if (activeRoute) {
         return activeRoute.parents
       }
@@ -105,12 +87,14 @@ export default {
       this.handleMenuSelect(name)
     },
     handleMenuSelect(name) {
-      if (name === this.$route.name) {
-        // this.$router.push({ path: '/refresh' })
+      let path = `/${name}`
+      if (path === this.$route.fullPath) {
+        console.log('refresh')
+        this.$router.push({ path: '/refresh' })
         return
       }
-      if (name === 'index' || this.addRouters.findIndex(item => item.name === name) > -1) {
-        this.$router.push({ name })
+      if (name === 'index' || this.addRouters.findIndex(item => item.path === name) > -1 || name.indexOf('Form/') === 0) {
+        this.$router.push({ path })
       } else {
         this.$router.push('/404')
       }

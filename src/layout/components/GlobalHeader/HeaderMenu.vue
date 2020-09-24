@@ -19,7 +19,7 @@
                 </p>
                 <p v-for="(item,index) in secondMenu.children" :key="item.name||index"
                    class="side-nav-menu"
-                   :class="{'active':$route.name===item.name}"
+                   :class="{'active':$route.path==='/'+item.name}"
                    @click="menuTo(item.name)">
                   <b-icon :name="item.icon" v-if="item.icon"></b-icon>
                   {{ item.title }}
@@ -28,7 +28,7 @@
               <!--第二级菜单没有第三级菜单-->
               <p v-else
                  class="side-nav-menu not-group"
-                 :class="{'active':$route.name===secondMenu.name}"
+                 :class="{'active':$route.path==='/'+secondMenu.name}"
                  @click="menuTo(secondMenu.name)">
                 <b-icon :name="secondMenu.icon" v-if="secondMenu.icon"></b-icon>
                 {{ secondMenu.title }}
@@ -57,14 +57,15 @@ export default {
   watch: {
     $route: {
       handler: function (val) {
-        let openNames = this.getMenuItemNamePath(val.name)
+        let openNames = this.getMenuItemNamePath(val.path)
+        console.log(openNames)
         this.activeMenu = openNames[0] || ''
       },
       immediate: true
     }
   },
   computed: {
-    ...mapGetters(['navMenu', 'theme']),
+    ...mapGetters(['navMenu', 'theme', 'navMenuItems']),
     menuList() {
       return this.navMenu.map(menu => {
         return {
@@ -74,30 +75,12 @@ export default {
           children: menu.children || null
         }
       })
-    },
-    menuItems() {
-      let functions = this.navMenu
-      let all = []
-      const mapper = (route) => {
-        if (route.name && !route.children) {
-          all.push({ ...route })
-        }
-        if (route.children) {
-          route.children.forEach(item => {
-            mapper(item)
-          })
-        }
-      }
-      functions.forEach(item => {
-        mapper(item)
-      })
-      return all
     }
   },
   methods: {
     // 获取菜单项名称路径
     getMenuItemNamePath(name) {
-      let activeRoute = this.menuItems.find(item => item.name === name)
+      let activeRoute = this.navMenuItems.find(item => `/${item.name}` === name)
       if (activeRoute) {
         return activeRoute.parents
       }
@@ -107,8 +90,9 @@ export default {
       if (tab.children) {
         this.openMenu(tab)
       } else {
-        if (this.$route.name !== tab.key) {
-          this.$router.push({ name: tab.key })
+        let path = `/${name}`
+        if (this.$route.path !== tab.key) {
+          this.$router.push({ path })
         }
       }
     },
@@ -117,9 +101,10 @@ export default {
       this.leftMenu = deepCopy([menu])
     },
     menuTo(name) {
-      if (this.$route.name !== name) {
+      let path = `/${name}`
+      if (this.$route.path !== path) {
         this.menuModal = false
-        this.$router.push({ name })
+        this.$router.push({ path })
       }
     }
   }

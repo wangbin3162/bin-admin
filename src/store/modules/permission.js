@@ -3,36 +3,16 @@ import { asyncRouterMap, addRoutes } from '@/router/routes'
 /**
  * 根据返回的树形菜单，递归筛选路由节点
  * @param routes
- * @param functions
+ * @param menuItems 所有平铺的菜单项
  * @returns {[]}
  */
-function filterAsyncRoutes(routes, functions) {
-  let menus = getAsyncRouter(functions)
+function filterAsyncRoutes(routes, menuItems) {
   const all = []
-  menus.forEach(menu => {
-    let matchIndex = routes.findIndex(item => item.name === menu.name)
+  menuItems.forEach(menu => {
+    let matchIndex = routes.findIndex(item => item.path.toLowerCase() === menu.name.toLowerCase())
     if (matchIndex > -1) {
       all.push(routes[matchIndex])
     }
-  })
-  return all
-}
-
-// 递归平铺菜单树
-function getAsyncRouter(functions) {
-  let all = []
-  const mapper = (route) => {
-    if (route.name && !route.children) {
-      all.push({ ...route })
-    }
-    if (route.children) {
-      route.children.forEach(item => {
-        mapper(item)
-      })
-    }
-  }
-  functions.forEach(item => {
-    mapper(item)
   })
   return all
 }
@@ -49,9 +29,9 @@ const permission = {
     }
   },
   actions: {
-    generateRoutes({ commit }, menus) {
+    generateRoutes({ commit }, menuItems) {
       return new Promise(resolve => {
-        const accessedRouters = filterAsyncRoutes(asyncRouterMap, menus)
+        const accessedRouters = filterAsyncRoutes(asyncRouterMap, menuItems)
         commit('SET_ROUTERS', accessedRouters)
         resolve(accessedRouters)
       })

@@ -28,29 +28,10 @@ export default {
     this.moveToCurrentTag()
   },
   computed: {
-    ...mapGetters(['addRouters', 'navMenu', 'visitedViews']),
+    ...mapGetters(['addRouters', 'navMenuItems', 'visitedViews']),
     viewTags() {
       return [{ key: 'index', title: '首页', noClose: true }]
         .concat(this.visitedViews.map(i => ({ key: i.name, title: i.title })))
-    },
-    // 所有存在的菜单项
-    menuItems() {
-      let functions = this.navMenu
-      let all = []
-      const mapper = (route) => {
-        if (route.name && !route.children) {
-          all.push({ ...route })
-        }
-        if (route.children) {
-          route.children.forEach(item => {
-            mapper(item)
-          })
-        }
-      }
-      functions.forEach(item => {
-        mapper(item)
-      })
-      return all
     }
   },
   watch: {
@@ -61,23 +42,23 @@ export default {
   },
   methods: {
     addTags() {
-      const { name } = this.$route
-      if (!name || name === 'index') return
-      let current = this.menuItems.find(item => item.name === name)
+      const { path } = this.$route
+      if (!path || path === '/index') return
+      let current = this.navMenuItems.find(item => `/${item.name}` === path)
       if (current) {
         this.$store.dispatch('tagsView/addView', { name: current.name, title: current.title })
       }
       return false
     },
     moveToCurrentTag() {
-      const { name } = this.$route
+      const { path } = this.$route
       this.$nextTick(_ => {
-        this.activeTag = name
+        this.activeTag = path.slice(1)
       })
     },
     // 选中一个tag
     handleSelect(tag) {
-      this.$router.push({ name: tag.key })
+      this.$router.push({ path: `/${tag.key}` })
     },
     handleRightClick(tag) {
       this.selectedTag = { ...tag }

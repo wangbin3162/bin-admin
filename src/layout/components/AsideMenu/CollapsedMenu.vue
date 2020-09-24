@@ -10,7 +10,7 @@
     <b-dropdown-menu ref="dropdown" slot="list" style="width: 150px;">
       <template v-for="child in menu.children">
         <b-dropdown-item v-if="!child.children" :key="`drop-menu-${child.name}`"
-                         :name="child.name" :selected="$route.name===child.name">
+                         :name="child.name" :selected="$route.path===`/${child.name}`">
           <b-icon :name="child.icon" size="14" style="position: relative;top:-1px;" v-if="child.icon"></b-icon>
           {{ child.title }}
         </b-dropdown-item>
@@ -29,10 +29,6 @@ export default {
       required: false,
       default: () => {
       }
-    },
-    basePath: {
-      type: String,
-      default: ''
     },
     hideTitle: Boolean,
     theme: String

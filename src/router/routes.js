@@ -49,6 +49,13 @@ export function createRoutesInLayout(routes = []) {
             render: h => h()
           }
         },
+        // 通用动态菜单路由
+        {
+          path: 'Form/:metadataKey',
+          name: 'Form',
+          meta: { title: '动态菜单' },
+          component: () => import('../pages/form-engine/DynamicMenu')
+        },
         ...routes
       ]
     }

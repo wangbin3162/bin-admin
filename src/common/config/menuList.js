@@ -56,6 +56,14 @@ export default [
  */
 export const staticMenu = [
   {
+    name: 'dynamicMenu',
+    title: '动态菜单',
+    icon: 'ios-aperture',
+    children: [
+      { name: 'Form/metadata_key_1234', title: '动态路由' }
+    ]
+  },
+  {
     name: 'errorPage',
     title: '错误页面',
     icon: 'ios-warning',

@@ -51,9 +51,9 @@ export default {
   methods: {
     getBreadcrumb() {
       this.levelList = []
-      const { name } = this.$route
-      if (name === 'index') return []
-      let names = this.getMenuItemNamePath(name)
+      const { path } = this.$route
+      if (path === '/index') return []
+      let names = this.getMenuItemNamePath(path)
       this.levelList.push({ name: 'index', title: '首页' })
       names.forEach(name => {
         let route = this.menuItems.find(item => item.name === name)
@@ -64,7 +64,7 @@ export default {
     },
     // 获取菜单项名称路径
     getMenuItemNamePath(name) {
-      let activeRoute = this.menuItems.find(item => item.name === name)
+      let activeRoute = this.menuItems.find(item => `/${item.name}` === name)
       if (activeRoute) {
         return activeRoute.parents
       }
