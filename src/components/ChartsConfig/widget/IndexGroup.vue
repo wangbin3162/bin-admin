@@ -75,7 +75,7 @@ export default {
       }
       this.$nextTick(() => {
         this.list.splice(index, 1)
-        this.$emit('on-delete')
+        this.$emit('delete')
       })
     },
     numberStyle(item) {

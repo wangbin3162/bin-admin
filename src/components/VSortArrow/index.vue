@@ -12,10 +12,10 @@
     name: 'VSortArrow',
     methods: {
       handleUp() {
-        this.$emit('on-up')
+        this.$emit('up')
       },
       handleDown() {
-        this.$emit('on-down')
+        this.$emit('down')
       }
     }
   }

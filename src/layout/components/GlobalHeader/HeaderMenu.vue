@@ -1,6 +1,6 @@
 <template>
   <div class="header-menu">
-    <b-tabs :value="activeMenu" :data="menuList" type="card" ref="menu" @on-change="handleMenuSelect"/>
+    <b-tabs :value="activeMenu" :data="menuList" type="card" ref="menu" @change="handleMenuSelect"/>
     <b-drawer v-model="menuModal" append-to-body :closable="false" placement="left" :styles="{padding:0}">
       <div class="menu-panel">
         <div v-for="menu in leftMenu" class="group-container" :key="menu.key">

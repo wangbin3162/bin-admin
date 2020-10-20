@@ -46,7 +46,7 @@
         <b-divider></b-divider>
         <div class="setting-list-item">
           <span>内容区域宽度</span>
-          <b-select size="mini" style="width:100px;" :value="wideType" @on-change="changeWideType">
+          <b-select size="mini" style="width:100px;" :value="wideType" @change="changeWideType">
             <b-option value="wide" v-if="menuType==='header'">固定</b-option>
             <b-option value="flow">流式</b-option>
           </b-select>
@@ -54,16 +54,16 @@
         <div class="setting-list-item">
           <span>是否开启多页签</span>
           <b-switch size="small" :disabled="menuType==='header'" :value="tagsView"
-                    @on-change="toggleTagsView"></b-switch>
+                    @change="toggleTagsView"></b-switch>
         </div>
         <div class="setting-list-item">
           <span>固定Header</span>
-          <b-switch size="small" :value="fixedHeader" @on-change="changeFixedHeader"></b-switch>
+          <b-switch size="small" :value="fixedHeader" @change="changeFixedHeader"></b-switch>
         </div>
         <div class="setting-list-item">
           <span>固定侧边栏</span>
           <b-switch size="small" :disabled="menuType==='header'" :value="fixedAside"
-                    @on-change="changeFixedAside"></b-switch>
+                    @change="changeFixedAside"></b-switch>
         </div>
       </div>
     </b-drawer>

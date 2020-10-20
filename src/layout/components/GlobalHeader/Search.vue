@@ -2,7 +2,7 @@
   <div class="header-top-search" :class="{show:showInput}" v-click-out-side="clickOutSide">
     <b-icon name="md-search" size="20" @click.native="showInput=!showInput"></b-icon>
     <div class="header-top-search-input" v-if="showInput">
-      <b-select v-model="search" filterable placeholder="search" @on-change="handleGoto" ref="input">
+      <b-select v-model="search" filterable placeholder="search" @change="handleGoto" ref="input">
         <b-option v-for="item in menuItems" :value="item.name" :key="item.name">{{ item.title }}</b-option>
       </b-select>
     </div>

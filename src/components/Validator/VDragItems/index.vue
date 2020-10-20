@@ -86,7 +86,7 @@
       onDrop(e, index) {
         const dragIndex = e.dataTransfer.getData('index')
         if (parseInt(dragIndex) !== index) {
-          this.$emit('on-drag-drop', dragIndex, index)
+          this.$emit('drag-drop', dragIndex, index)
         }
         removeClass(e.target, 'item-over')
         e.preventDefault()
@@ -111,11 +111,11 @@
       handleSelect(index) {
         if (this.currentIndex !== index) {
           this.currentIndex = index
-          this.$emit('on-select', this.currentIndex)
+          this.$emit('select', this.currentIndex)
         } else {
           if (this.selectCancel) {
             this.currentIndex = -1
-            this.$emit('on-select', this.currentIndex)
+            this.$emit('select', this.currentIndex)
           }
         }
       },
@@ -128,7 +128,7 @@
         if (oldIndex !== newIndex) {
           this.currentIndex = -1
           this.$emit('input', this.totalData)
-          this.$emit('on-drop')
+          this.$emit('drop')
         }
       }
     }

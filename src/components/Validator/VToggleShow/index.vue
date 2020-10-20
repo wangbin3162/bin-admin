@@ -45,7 +45,7 @@
       emitValue(value) {
         this.toggle = value
         this.$emit('input', this.toggle)
-        this.$emit('on-change', this.toggle)
+        this.$emit('change', this.toggle)
       }
     }
   }

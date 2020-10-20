@@ -1,5 +1,5 @@
 <template>
-  <b-dropdown ref="dropdown" @on-click="handleClick" :placement="placement" :append-to-body="hideTitle"
+  <b-dropdown ref="dropdown" @click="handleClick" :placement="placement" :append-to-body="hideTitle"
               :class="hideTitle ? '' : 'collased-menu-dropdown'"
               transfer-class-name="menu-dropdown">
     <a class="drop-menu-a" type="text">
@@ -40,7 +40,7 @@ export default {
   },
   methods: {
     handleClick(name) {
-      this.$emit('on-click', name)
+      this.$emit('click', name)
     },
     findNodeUpperByClasses(ele, classes) {
       let parentNode = ele.parentNode

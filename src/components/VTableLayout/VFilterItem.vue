@@ -49,13 +49,13 @@
     },
     methods: {
       handleFilter() {
-        this.$emit('on-search')
+        this.$emit('search')
       },
       handleReset() {
-        this.$emit('on-reset')
+        this.$emit('reset')
       },
       filterToggle() {
-        this.$emit('on-toggle')
+        this.$emit('toggle')
       }
     },
     computed: {

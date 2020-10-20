@@ -7,7 +7,7 @@
       </transition>
     </div>
     <div class="layout-aside-children">
-      <b-menu @on-select="handleMenuSelect" :theme="theme" class="aside-menu" v-if="sidebar"
+      <b-menu @select="handleMenuSelect" :theme="theme" class="aside-menu" v-if="sidebar"
               style="width: 100%;" :open-names="openNames" accordion
               :active-name="activeMenu" ref="sideMenu">
         <template v-for="(menu, menuIndex) in navMenu">
@@ -18,7 +18,7 @@
       <div v-else class="menu-collapsed">
         <template v-for="menu in navMenu">
           <collapsed-menu v-if="menu.children && menu.children.length > 0" :key="`drop-menu-${menu.name}`"
-                          :menu="menu" hide-title @on-click="handleSelect"
+                          :menu="menu" hide-title @click="handleSelect"
           ></collapsed-menu>
           <!--如果只有一级则需要显示提示-->
           <b-tooltip append-to-body v-else :content="menu.title" :theme="theme"

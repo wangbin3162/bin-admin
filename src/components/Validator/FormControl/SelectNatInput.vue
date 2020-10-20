@@ -1,7 +1,7 @@
 <template>
   <!--选择自然人控件 for form-control -->
   <div flex>
-    <b-input v-model="current" :placeholder="placeholder" readonly clearable @on-clear="handleClear"></b-input>
+    <b-input v-model="current" :placeholder="placeholder" readonly clearable @clear="handleClear"></b-input>
     <b-button type="primary" @click="handleShowModal" plain
               style="flex:0 0 auto;margin-left: 0;">
       选择
@@ -50,11 +50,11 @@
           idType: nat.idType,
           idCode: nat.idCode
         }
-        this.$emit('on-select', result, 'nat', null)
+        this.$emit('select', result, 'nat', null)
       },
       // 清空时触发调用
       handleClear() {
-        this.$emit('on-select', {
+        this.$emit('select', {
           id: '',
           name: '',
           idType: '',

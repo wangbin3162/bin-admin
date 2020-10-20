@@ -14,30 +14,30 @@
           <template v-if="isIndexCard">
             <gui-group group-name="基础属性">
               <gui-field label="指标标题">
-                <b-input v-model="data.options.title" size="small" @on-change="emitValue" clearable></b-input>
+                <b-input v-model="data.options.title" size="small" @change="emitValue" clearable></b-input>
               </gui-field>
               <gui-field label="指标尺寸">
                 <gui-inline label="宽度">
                   <b-select v-model="data.options.width" size="small"
-                            @on-change="emitValue">
+                            @change="emitValue">
                     <b-option v-for="(val,key) in widthMap2" :value="val" :key="key">{{ key }}</b-option>
                   </b-select>
                 </gui-inline>
                 <gui-inline label="高度">
                   <b-input-number v-model="data.options.height" size="small"
-                                  @on-change="emitValue"></b-input-number>
+                                  @change="emitValue"></b-input-number>
                 </gui-inline>
               </gui-field>
               <gui-field label="图标选择">
-                <icon-select v-model="data.options.icon" size="small" @on-change="emitValue" stop-remove-scroll/>
+                <icon-select v-model="data.options.icon" size="small" @change="emitValue" stop-remove-scroll/>
               </gui-field>
               <gui-field label="图标大小">
                 <b-input-number v-model="data.options.iconSize" size="small"
-                                @on-change="emitValue"></b-input-number>
+                                @change="emitValue"></b-input-number>
               </gui-field>
               <gui-field label="背景颜色">
                 <b-color-picker v-model="data.options.backgroundColor" size="small" :colors="colorsIndex"
-                                @on-change="emitValue"></b-color-picker>
+                                @change="emitValue"></b-color-picker>
               </gui-field>
             </gui-group>
           </template>
@@ -46,7 +46,7 @@
             <gui-group group-name="基础属性">
               <gui-field label="指标高度" label-width="65px">
                 <b-input-number v-model="data.options.height" size="small"
-                                @on-change="emitValue"></b-input-number>
+                                @change="emitValue"></b-input-number>
               </gui-field>
             </gui-group>
             <gui-group group-name="指标配置">
@@ -66,30 +66,30 @@
                       </div>
                       <gui-field label="指标标题" label-width="65px">
                         <b-input v-model="data.options.groupList[index].title" size="small"
-                                 @on-change="emitValue"></b-input>
+                                 @change="emitValue"></b-input>
                       </gui-field>
                       <gui-field label="图 标" label-width="65px">
                         <icon-select v-model="data.options.groupList[index].icon" size="small"
-                                     @on-change="emitValue" stop-remove-scroll/>
+                                     @change="emitValue" stop-remove-scroll/>
                       </gui-field>
                       <div flex="box:mean">
                         <gui-field label="图标大小" label-width="65px">
                           <b-input-number v-model="data.options.groupList[index].iconSize" size="small"
-                                          @on-change="emitValue"></b-input-number>
+                                          @change="emitValue"></b-input-number>
                         </gui-field>
                         <gui-field label="背景颜色" label-width="65px">
                           <b-color-picker v-model="data.options.groupList[index].backgroundColor"
                                           size="small" :colors="colorsIndex"
-                                          @on-change="emitValue"></b-color-picker>
+                                          @change="emitValue"></b-color-picker>
                         </gui-field>
                       </div>
                       <div flex="box:mean">
                         <gui-field label="指标值" label-width="65px">
                           <b-input-number v-model="data.options.groupList[index].value" size="small"
-                                          @on-change="emitValue"></b-input-number>
+                                          @change="emitValue"></b-input-number>
                         </gui-field>
                         <gui-field label="指标字段" label-width="65px">
-                          <b-select v-model="data.options.groupList[index].field" size="small" @on-change="emitValue"
+                          <b-select v-model="data.options.groupList[index].field" size="small" @change="emitValue"
                                     clearable>
                             <b-option label="count" value="count"></b-option>
                             <b-option label="avg" value="avg"></b-option>
@@ -112,28 +112,28 @@
           <template v-else>
             <gui-group group-name="基础属性">
               <gui-field label="标题">
-                <b-input v-model="data.options.title" size="small" @on-change="emitValue" clearable></b-input>
+                <b-input v-model="data.options.title" size="small" @change="emitValue" clearable></b-input>
               </gui-field>
               <gui-field label="标题文本">
                 <gui-inline label="字号">
                   <b-input-number v-model="data.options.titleStyle.fontSize" size="small"
-                                  :min="14" :max="22" @on-change="emitValue"></b-input-number>
+                                  :min="14" :max="22" @change="emitValue"></b-input-number>
                 </gui-inline>
                 <gui-inline label="颜色">
                   <b-color-picker v-model="data.options.titleStyle.color" size="small" :colors="colorsGary"
-                                  @on-change="emitValue"></b-color-picker>
+                                  @change="emitValue"></b-color-picker>
                 </gui-inline>
               </gui-field>
               <gui-field label="图表尺寸">
                 <gui-inline label="宽度">
                   <b-select v-model="data.options.width" size="small"
-                            @on-change="emitValue">
+                            @change="emitValue">
                     <b-option v-for="(val,key) in widthMap" :value="val" :key="key">{{ key }}</b-option>
                   </b-select>
                 </gui-inline>
                 <gui-inline label="高度">
                   <b-input-number v-model="data.options.height" size="small"
-                                  @on-change="emitValue"></b-input-number>
+                                  @change="emitValue"></b-input-number>
                 </gui-inline>
               </gui-field>
             </gui-group>
@@ -144,55 +144,55 @@
                   <gui-field label="上下边距">
                     <gui-inline label="顶部">
                       <b-input-number v-model="data.options.grid.top" size="small"
-                                      :min="0" :max="60" @on-change="emitValue"></b-input-number>
+                                      :min="0" :max="60" @change="emitValue"></b-input-number>
                     </gui-inline>
                     <gui-inline label="底部">
                       <b-input-number v-model="data.options.grid.bottom" size="small"
-                                      :min="0" :max="60" @on-change="emitValue"></b-input-number>
+                                      :min="0" :max="60" @change="emitValue"></b-input-number>
                     </gui-inline>
                   </gui-field>
                   <gui-field label="左右边距">
                     <gui-inline label="左侧">
                       <b-input-number v-model="data.options.grid.left" size="small"
-                                      :min="0" :max="60" @on-change="emitValue"></b-input-number>
+                                      :min="0" :max="60" @change="emitValue"></b-input-number>
                     </gui-inline>
                     <gui-inline label="右侧">
                       <b-input-number v-model="data.options.grid.right" size="small"
-                                      :min="0" :max="60" @on-change="emitValue"></b-input-number>
+                                      :min="0" :max="60" @change="emitValue"></b-input-number>
                     </gui-inline>
                   </gui-field>
                 </template>
                 <gui-field label="悬停提示">
-                  <b-checkbox v-model="data.options.tooltip.show" @on-change="emitValue"/>
+                  <b-checkbox v-model="data.options.tooltip.show" @change="emitValue"/>
                 </gui-field>
               </b-collapse-panel>
               <b-collapse-panel title="图例" name="legend" v-if="data.options.legend">
                 <gui-field label="是否显示">
-                  <b-checkbox v-model="data.options.legend.show" @on-change="emitValue"></b-checkbox>
+                  <b-checkbox v-model="data.options.legend.show" @change="emitValue"></b-checkbox>
                 </gui-field>
                 <gui-field label="文本样式">
                   <gui-inline label="字号">
                     <b-input-number v-model="data.options.legend.textStyle.fontSize"
-                                    size="small" :min="12" :max="20" @on-change="emitValue"></b-input-number>
+                                    size="small" :min="12" :max="20" @change="emitValue"></b-input-number>
                   </gui-inline>
                   <gui-inline label="颜色">
                     <b-color-picker v-model="data.options.legend.textStyle.color" :colors="colorsGary"
-                                    @on-change="emitValue" size="small"></b-color-picker>
+                                    @change="emitValue" size="small"></b-color-picker>
                   </gui-inline>
                 </gui-field>
                 <gui-field label="图形设置">
                   <gui-inline label="宽度">
                     <b-input-number v-model="data.options.legend.itemWidth"
-                                    size="small" :min="8" :max="25" @on-change="emitValue"></b-input-number>
+                                    size="small" :min="8" :max="25" @change="emitValue"></b-input-number>
                   </gui-inline>
                   <gui-inline label="高度">
                     <b-input-number v-model="data.options.legend.itemHeight"
-                                    size="small" :min="8" :max="25" @on-change="emitValue"></b-input-number>
+                                    size="small" :min="8" :max="25" @change="emitValue"></b-input-number>
                   </gui-inline>
                   <gui-inline label="图形">
                     <b-select v-model="data.options.legend.icon"
                               placeholder="默认" clearable
-                              @on-change="emitValue" size="small">
+                              @change="emitValue" size="small">
                       <b-option value="circle">圆形</b-option>
                       <b-option value="roundRect">矩形</b-option>
                       <b-option value="triangle">三角</b-option>
@@ -203,109 +203,109 @@
               </b-collapse-panel>
               <!--x轴-->
               <b-collapse-panel title="x轴" name="xAxis" v-if="showXAxis">
-                <gui-wrap label="坐标轴" v-model="data.options.xAxis.show" @on-change="emitValue">
+                <gui-wrap label="坐标轴" v-model="data.options.xAxis.show" @change="emitValue">
                   <gui-field label="标题">
                     <gui-inline label="标题名称">
                       <b-input v-model="data.options.xAxis.name" size="small" clearable
-                               @on-change="emitValue"></b-input>
+                               @change="emitValue"></b-input>
                     </gui-inline>
                     <gui-inline label="颜色">
                       <b-color-picker v-model="data.options.xAxis.nameTextStyle.color" :colors="colorsGary"
-                                      @on-change="emitValue" size="small"></b-color-picker>
+                                      @change="emitValue" size="small"></b-color-picker>
                     </gui-inline>
                   </gui-field>
                 </gui-wrap>
-                <gui-wrap label="轴线" v-model="data.options.xAxis.axisLine.show" @on-change="emitValue">
+                <gui-wrap label="轴线" v-model="data.options.xAxis.axisLine.show" @change="emitValue">
                   <gui-field label="颜色">
                     <b-color-picker v-model="data.options.xAxis.axisLine.lineStyle.color"
                                     placement="bottom-start" :colors="colorsGary"
-                                    @on-change="emitValue" size="small"></b-color-picker>
+                                    @change="emitValue" size="small"></b-color-picker>
                   </gui-field>
                 </gui-wrap>
-                <gui-wrap label="刻度" v-model="data.options.xAxis.axisTick.show" @on-change="emitValue">
+                <gui-wrap label="刻度" v-model="data.options.xAxis.axisTick.show" @change="emitValue">
                   <gui-field label="颜色">
                     <b-color-picker v-model="data.options.xAxis.axisTick.lineStyle.color"
                                     placement="bottom-start" :colors="colorsGary"
                                     style="margin-right: 24px;"
-                                    @on-change="emitValue" size="small"></b-color-picker>
+                                    @change="emitValue" size="small"></b-color-picker>
                     <b-checkbox v-model="data.options.xAxis.axisTick.alignWithLabel"
-                                v-if="isLine||isHistogram" size="small" @on-change="emitValue">
+                                v-if="isLine||isHistogram" size="small" @change="emitValue">
                       标签刻度对齐
                     </b-checkbox>
                   </gui-field>
                 </gui-wrap>
-                <gui-wrap label="标签" v-model="data.options.xAxis.axisLabel.show" @on-change="emitValue">
+                <gui-wrap label="标签" v-model="data.options.xAxis.axisLabel.show" @change="emitValue">
                   <gui-field label="样式">
                     <gui-inline label="字号">
                       <b-input-number v-model="data.options.xAxis.axisLabel.fontSize"
-                                      size="small" :min="12" :max="20" @on-change="emitValue"></b-input-number>
+                                      size="small" :min="12" :max="20" @change="emitValue"></b-input-number>
                     </gui-inline>
                     <gui-inline label="颜色">
                       <b-color-picker v-model="data.options.xAxis.axisLabel.color" :colors="colorsGary"
-                                      @on-change="emitValue" size="small"></b-color-picker>
+                                      @change="emitValue" size="small"></b-color-picker>
                     </gui-inline>
                   </gui-field>
                 </gui-wrap>
-                <gui-wrap label="网格线" v-model="data.options.xAxis.splitLine.show" @on-change="emitValue">
+                <gui-wrap label="网格线" v-model="data.options.xAxis.splitLine.show" @change="emitValue">
                   <gui-field label="颜色">
                     <b-color-picker v-model="data.options.xAxis.splitLine.lineStyle.color"
                                     placement="bottom-start" :colors="colorsGary"
-                                    @on-change="emitValue" size="small"></b-color-picker>
+                                    @change="emitValue" size="small"></b-color-picker>
                   </gui-field>
                 </gui-wrap>
               </b-collapse-panel>
               <!--y轴-->
               <b-collapse-panel title="y轴" name="yAxis" v-if="showYAxis">
-                <gui-wrap label="坐标轴" v-model="data.options.yAxis.show" @on-change="emitValue">
+                <gui-wrap label="坐标轴" v-model="data.options.yAxis.show" @change="emitValue">
                   <gui-field label="标题">
                     <gui-inline label="标题名称">
                       <b-input v-model="data.options.yAxis.name" size="small" clearable
-                               @on-change="emitValue"></b-input>
+                               @change="emitValue"></b-input>
                     </gui-inline>
                     <gui-inline label="颜色">
                       <b-color-picker v-model="data.options.yAxis.nameTextStyle.color" :colors="colorsGary"
-                                      @on-change="emitValue" size="small"></b-color-picker>
+                                      @change="emitValue" size="small"></b-color-picker>
                     </gui-inline>
                   </gui-field>
                 </gui-wrap>
                 <gui-wrap label="轴线" v-model="data.options.yAxis.axisLine.show"
-                          @on-change="emitValue">
+                          @change="emitValue">
                   <gui-field label="颜色">
                     <b-color-picker v-model="data.options.yAxis.axisLine.lineStyle.color"
                                     placement="bottom-start" :colors="colorsGary"
-                                    @on-change="emitValue" size="small"></b-color-picker>
+                                    @change="emitValue" size="small"></b-color-picker>
                   </gui-field>
                 </gui-wrap>
-                <gui-wrap label="刻度" v-model="data.options.yAxis.axisTick.show" @on-change="emitValue">
+                <gui-wrap label="刻度" v-model="data.options.yAxis.axisTick.show" @change="emitValue">
                   <gui-field label="颜色">
                     <b-color-picker v-model="data.options.yAxis.axisTick.lineStyle.color"
                                     placement="bottom-start" :colors="colorsGary"
                                     style="margin-right: 24px;"
-                                    @on-change="emitValue" size="small"></b-color-picker>
+                                    @change="emitValue" size="small"></b-color-picker>
                     <b-checkbox v-model="data.options.yAxis.axisTick.alignWithLabel"
-                                v-if="isBar" size="small" @on-change="emitValue">
+                                v-if="isBar" size="small" @change="emitValue">
                       标签刻度对齐
                     </b-checkbox>
                   </gui-field>
                 </gui-wrap>
-                <gui-wrap label="标签" v-model="data.options.yAxis.axisLabel.show" @on-change="emitValue">
+                <gui-wrap label="标签" v-model="data.options.yAxis.axisLabel.show" @change="emitValue">
                   <gui-field label="样式">
                     <gui-inline label="字号">
                       <b-input-number v-model="data.options.yAxis.axisLabel.fontSize"
-                                      size="small" :min="12" :max="20" @on-change="emitValue"></b-input-number>
+                                      size="small" :min="12" :max="20" @change="emitValue"></b-input-number>
                     </gui-inline>
                     <gui-inline label="颜色">
                       <b-color-picker v-model="data.options.yAxis.axisLabel.color" :colors="colorsGary"
-                                      @on-change="emitValue" size="small"></b-color-picker>
+                                      @change="emitValue" size="small"></b-color-picker>
                     </gui-inline>
                   </gui-field>
                 </gui-wrap>
                 <gui-wrap label="网格线" v-model="data.options.yAxis.splitLine.show"
-                          @on-change="emitValue">
+                          @change="emitValue">
                   <gui-field label="颜色">
                     <b-color-picker v-model="data.options.yAxis.splitLine.lineStyle.color"
                                     placement="bottom-start" :colors="colorsGary"
-                                    @on-change="emitValue" size="small"></b-color-picker>
+                                    @change="emitValue" size="small"></b-color-picker>
                   </gui-field>
                 </gui-wrap>
               </b-collapse-panel>
@@ -314,19 +314,19 @@
                 <gui-field label="中心坐标">
                   <gui-inline label="offsetX">
                     <b-input v-model="data.options.radar.center[0]" size="small"
-                             placeholder="支持百分比或像素" @on-change="emitValue"></b-input>
+                             placeholder="支持百分比或像素" @change="emitValue"></b-input>
                   </gui-inline>
                   <gui-inline label="offsetY">
                     <b-input v-model="data.options.radar.center[1]" size="small"
-                             placeholder="支持百分比或像素" @on-change="emitValue"></b-input>
+                             placeholder="支持百分比或像素" @change="emitValue"></b-input>
                   </gui-inline>
                 </gui-field>
                 <gui-field label="图形">
                   <gui-inline label="雷达图半径">
-                    <b-input v-model="data.options.radar.radius" size="small" @on-change="emitValue"></b-input>
+                    <b-input v-model="data.options.radar.radius" size="small" @change="emitValue"></b-input>
                   </gui-inline>
                   <gui-inline label="雷达图类型">
-                    <b-select v-model="data.options.radar.shape" @on-change="emitValue" size="small">
+                    <b-select v-model="data.options.radar.shape" @change="emitValue" size="small">
                       <b-option value="circle">圆形</b-option>
                       <b-option value="polygon">多边形</b-option>
                     </b-select>
@@ -337,12 +337,12 @@
               <template v-if="isMap">
                 <b-collapse-panel title="视觉映射" name="map">
                   <gui-field label="是否显示">
-                    <b-switch v-model="data.options.visualMap.show" size="small" @on-change="emitValue"></b-switch>
+                    <b-switch v-model="data.options.visualMap.show" size="small" @change="emitValue"></b-switch>
                   </gui-field>
                   <gui-field label="样式">
                     <gui-inline label="类型">
                       <b-select v-model="data.options.visualMap.type" size="small"
-                                @on-change="visualMapChange" :value="data.options.visualMap.type">
+                                @change="visualMapChange" :value="data.options.visualMap.type">
                         <b-option label="分段型" value="piecewise"></b-option>
                         <b-option label="连续型" value="continuous"></b-option>
                       </b-select>
@@ -350,92 +350,92 @@
                     <template v-if="data.options.visualMap.type==='piecewise'">
                       <gui-inline label="字号">
                         <b-input-number v-model="data.options.visualMap.textStyle.fontSize" size="small"
-                                        :min="12" :max="20" @on-change="emitValue"></b-input-number>
+                                        :min="12" :max="20" @change="emitValue"></b-input-number>
                       </gui-inline>
                       <gui-inline label="颜色">
                         <b-color-picker v-model="data.options.visualMap.textStyle.color"
-                                        :colors="colorsGary" size="small" @on-change="emitValue"></b-color-picker>
+                                        :colors="colorsGary" size="small" @change="emitValue"></b-color-picker>
                       </gui-inline>
                     </template>
                     <template v-else>
                       <gui-inline label="宽度">
                         <b-input-number v-model="data.options.visualMap.itemWidth" size="small"
-                                        :min="10" :max="20" @on-change="emitValue"></b-input-number>
+                                        :min="10" :max="20" @change="emitValue"></b-input-number>
                       </gui-inline>
                       <gui-inline label="高度">
                         <b-input-number v-model="data.options.visualMap.itemHeight" size="small"
-                                        :min="10" :max="140" @on-change="emitValue"></b-input-number>
+                                        :min="10" :max="140" @change="emitValue"></b-input-number>
                       </gui-inline>
                     </template>
                   </gui-field>
                   <gui-field label="极值">
                     <gui-inline label="最小值">
                       <b-input-number v-model="data.options.visualMap.min" size="small" :min="0"
-                                      @on-change="emitValue"></b-input-number>
+                                      @change="emitValue"></b-input-number>
                     </gui-inline>
                     <gui-inline label="最大值">
                       <b-input-number v-model="data.options.visualMap.max" size="small" :min="0"
-                                      @on-change="emitValue"></b-input-number>
+                                      @change="emitValue"></b-input-number>
                     </gui-inline>
                   </gui-field>
                   <gui-field label="图元大小">
                     <gui-inline label="最小值">
                       <b-input-number v-model="data.options.visualMap.inRange.symbolSize[0]" size="small" :min="0"
-                                      @on-change="emitValue"></b-input-number>
+                                      @change="emitValue"></b-input-number>
                     </gui-inline>
                     <gui-inline label="最大值">
                       <b-input-number v-model="data.options.visualMap.inRange.symbolSize[1]" size="small" :min="0"
-                                      @on-change="emitValue"></b-input-number>
+                                      @change="emitValue"></b-input-number>
                     </gui-inline>
                   </gui-field>
                   <gui-field label="图元颜色">
                     <div v-for="(c,index) of data.options.visualMap.inRange.color" :key="index+c"
                          style="display: inline-block;margin-right: 4px;">
                       <b-color-picker v-model="data.options.visualMap.inRange.color[index]"
-                                      size="small" :colors="colors" @on-change="emitValue"></b-color-picker>
+                                      size="small" :colors="colors" @change="emitValue"></b-color-picker>
                     </div>
                   </gui-field>
                 </b-collapse-panel>
                 <b-collapse-panel title="地理坐标系" name="geo">
                   <gui-field label="视角缩放">
                     <v-slider v-model="data.options.geo.zoom" :min="1" :max="2" :step="0.1"
-                              @on-change="emitValue">
+                              @change="emitValue">
                     </v-slider>
                   </gui-field>
-                  <gui-wrap label="文本" v-model="data.options.geo.label.normal.show" @on-change="emitValue">
+                  <gui-wrap label="文本" v-model="data.options.geo.label.normal.show" @change="emitValue">
                     <gui-field label="文本">
                       <gui-inline label="字号">
                         <b-input-number v-model="data.options.geo.label.normal.fontSize" size="small"
-                                        :min="12" :max="20" @on-change="emitValue"></b-input-number>
+                                        :min="12" :max="20" @change="emitValue"></b-input-number>
                       </gui-inline>
                       <gui-inline label="颜色">
                         <b-color-picker v-model="data.options.geo.label.normal.color"
                                         :colors="colorsGary" size="small"
-                                        @on-change="emitValue"></b-color-picker>
+                                        @change="emitValue"></b-color-picker>
                       </gui-inline>
                       <gui-inline label="高亮颜色">
                         <b-color-picker v-model="data.options.geo.label.emphasis.color"
                                         :colors="colorsGary" size="small"
-                                        @on-change="emitValue"></b-color-picker>
+                                        @change="emitValue"></b-color-picker>
                       </gui-inline>
                     </gui-field>
                   </gui-wrap>
                   <gui-field label="多边形">
                     <gui-inline label="区域颜色" style="width:auto;">
                       <b-color-picker v-model="data.options.geo.itemStyle.normal.areaColor" size="small"
-                                      alpha :colors="colors" @on-change="emitValue"></b-color-picker>
+                                      alpha :colors="colors" @change="emitValue"></b-color-picker>
                     </gui-inline>
                     <gui-inline label="边框颜色" style="width:auto;">
                       <b-color-picker v-model="data.options.geo.itemStyle.normal.borderColor" size="small"
-                                      alpha :colors="colors" @on-change="emitValue"></b-color-picker>
+                                      alpha :colors="colors" @change="emitValue"></b-color-picker>
                     </gui-inline>
                     <gui-inline label="高亮区域" style="width:auto;">
                       <b-color-picker v-model="data.options.geo.itemStyle.emphasis.areaColor" size="small"
-                                      alpha :colors="colors" @on-change="emitValue"></b-color-picker>
+                                      alpha :colors="colors" @change="emitValue"></b-color-picker>
                     </gui-inline>
                     <gui-inline label="高亮边框" style="width:auto;">
                       <b-color-picker v-model="data.options.geo.itemStyle.emphasis.borderColor" size="small"
-                                      alpha :colors="colors" @on-change="emitValue"></b-color-picker>
+                                      alpha :colors="colors" @change="emitValue"></b-color-picker>
                     </gui-inline>
                   </gui-field>
                 </b-collapse-panel>
@@ -443,17 +443,17 @@
               <!--数据系列-->
               <b-collapse-panel title="数据系列" name="series" v-if="data.options.series">
                 <gui-field label="默认名称">
-                  <b-input v-model="data.options.series.name" size="small" @on-change="emitValue" clearable></b-input>
+                  <b-input v-model="data.options.series.name" size="small" @change="emitValue" clearable></b-input>
                 </gui-field>
-                <gui-wrap label="指标" v-model="data.options.series.label.show" @on-change="emitValue">
+                <gui-wrap label="指标" v-model="data.options.series.label.show" @change="emitValue">
                   <gui-field label="指标文本">
                     <gui-inline label="字号">
                       <b-input-number v-model="data.options.series.label.fontSize" size="small"
-                                      :min="12" :max="40" @on-change="emitValue"></b-input-number>
+                                      :min="12" :max="40" @change="emitValue"></b-input-number>
                     </gui-inline>
                     <gui-inline label="位置">
                       <b-select v-model="data.options.series.label.position" size="small"
-                                @on-change="emitValue">
+                                @change="emitValue">
                         <b-option label="inside" value="inside"></b-option>
                         <b-option v-if="isPie" label="outside" value="outside"></b-option>
                         <b-option v-else label="top" value="top"></b-option>
@@ -461,21 +461,21 @@
                     </gui-inline>
                     <gui-inline label="颜色">
                       <b-color-picker v-model="data.options.series.label.color" size="small"
-                                      @on-change="emitValue" :colors="colorsGary"></b-color-picker>
+                                      @change="emitValue" :colors="colorsGary"></b-color-picker>
                     </gui-inline>
                   </gui-field>
                 </gui-wrap>
                 <gui-field label="区域透明度" v-if="isLine||isRadar">
                   <v-slider v-model="data.options.series.areaStyle.opacity" :max="0.5" :step="0.1"
-                            @on-change="emitValue">
+                            @change="emitValue">
                   </v-slider>
                 </gui-field>
                 <gui-field label="近似曲线" v-if="isLine">
-                  <b-switch v-model="data.options.series.smooth" size="small" @on-change="emitValue"></b-switch>
+                  <b-switch v-model="data.options.series.smooth" size="small" @change="emitValue"></b-switch>
                 </gui-field>
                 <gui-field label="柱条宽度" v-if="isHistogram||isBar">
                   <div flex>
-                    <b-input size="small" style="width:150px;" @on-change="emitValue"
+                    <b-input size="small" style="width:150px;" @change="emitValue"
                              v-model="data.options.series.barWidth" clearable/>
                     <b-button size="small" @click="autoClick">自适应</b-button>
                   </div>
@@ -483,30 +483,30 @@
                 <!--饼图独有-->
                 <template v-if="isPie">
                   <gui-field label="玫瑰图">
-                    <b-switch v-model="data.options.series.roseType" size="small" @on-change="emitValue"/>
+                    <b-switch v-model="data.options.series.roseType" size="small" @change="emitValue"/>
                   </gui-field>
                   <gui-field label="中心坐标">
                     <gui-inline label="offsetX">
                       <b-input v-model="data.options.series.center[0]" size="small"
                                placeholder="像素或百分比"
-                               @on-change="emitValue"></b-input>
+                               @change="emitValue"></b-input>
                     </gui-inline>
                     <gui-inline label="offsetY">
                       <b-input v-model="data.options.series.center[1]" size="small"
                                placeholder="像素或百分比%"
-                               @on-change="emitValue"></b-input>
+                               @change="emitValue"></b-input>
                     </gui-inline>
                   </gui-field>
                   <gui-field label="饼图半径">
                     <gui-inline label="内半径">
                       <b-input v-model="data.options.series.radius[0]" size="small"
                                placeholder="像素或百分比"
-                               @on-change="emitValue"></b-input>
+                               @change="emitValue"></b-input>
                     </gui-inline>
                     <gui-inline label="外半径">
                       <b-input v-model="data.options.series.radius[1]" size="small"
                                placeholder="像素或百分比%"
-                               @on-change="emitValue"></b-input>
+                               @change="emitValue"></b-input>
                     </gui-inline>
                   </gui-field>
                 </template>
@@ -522,7 +522,7 @@
                   <gui-field label="涟漪动画" v-if="data.options.series.type==='effectScatter'">
                     <gui-inline label="最大缩放比">
                       <b-input-number v-model="data.options.series.rippleEffect.scale" size="small"
-                                      :step="0.5" @on-change="emitValue"></b-input-number>
+                                      :step="0.5" @change="emitValue"></b-input-number>
                     </gui-inline>
                     <gui-inline label="波纹方式">
                       <b-select v-model="data.options.series.rippleEffect.brushType" size="small"
@@ -535,12 +535,12 @@
                   <gui-field label="气泡悬停">
                     <gui-inline label="边框宽度">
                       <b-input-number v-model="data.options.series.itemStyle.emphasis.borderWidth" size="small"
-                                      :min="0" :max="2" @on-change="emitValue"></b-input-number>
+                                      :min="0" :max="2" @change="emitValue"></b-input-number>
                     </gui-inline>
                     <gui-inline label="边框颜色" style="width:auto;">
                       <b-color-picker v-model="data.options.series.itemStyle.emphasis.borderColor"
                                       size="small" :colors="colors"
-                                      @on-change="emitValue"></b-color-picker>
+                                      @change="emitValue"></b-color-picker>
                     </gui-inline>
                   </gui-field>
                 </template>
@@ -551,7 +551,7 @@
                   <div v-for="(c,index) of data.options.color" :key="index+c"
                        style="display: inline-block;margin-right: 4px;">
                     <b-color-picker v-model="data.options.color[index]" :colors="colors" size="small"
-                                    @on-change="emitValue"></b-color-picker>
+                                    @change="emitValue"></b-color-picker>
                   </div>
                 </div>
               </b-collapse-panel>
@@ -565,24 +565,24 @@
             <gui-group group-name="数据配置">
               <gui-field label="数据来源">
                 <b-switch v-model="data.isOpen" size="large" true-value="dynamic" false-value="static"
-                          @on-change="emitValue">
+                          @change="emitValue">
                   <span slot="open">动态</span>
                   <span slot="close">静态</span>
                 </b-switch>
               </gui-field>
               <gui-field v-if="isIndexCard&&data.isOpen==='static'" label="静态数据源">
-                <b-input-number v-model="data.staticDataSource[0].value" style="width: 100%;" @on-change="emitValue"/>
+                <b-input-number v-model="data.staticDataSource[0].value" style="width: 100%;" @change="emitValue"/>
               </gui-field>
             </gui-group>
             <template v-if="data.isOpen==='dynamic'">
               <gui-group group-name="模板接口">
                 <div style="padding: 4px 12px;">
                   <data-source-select v-model="data.dataSource" :default-name="data.dataSourceName"
-                                      @on-select="handleSetSourceParam" @on-clear="handleSetSourceParam"/>
+                                      @select="handleSetSourceParam" @clear="handleSetSourceParam"/>
                 </div>
               </gui-group>
               <gui-group group-name="参数信息" v-if="data.dataSourceParam.length>0">
-                <data-source-param v-model="data.dataSourceParam" @on-change="emitValue"/>
+                <data-source-param v-model="data.dataSourceParam" @change="emitValue"/>
               </gui-group>
             </template>
           </template>
@@ -591,18 +591,18 @@
             <gui-group group-name="数据映射">
               <gui-field label="字段映射">
                 <gui-inline label="x轴字段">
-                  <b-input v-model="data.options.sourceMap.xField" size="small" @on-change="emitValue"/>
+                  <b-input v-model="data.options.sourceMap.xField" size="small" @change="emitValue"/>
                 </gui-inline>
                 <gui-inline label="y轴字段">
-                  <b-input v-model="data.options.sourceMap.yField" size="small" @on-change="emitValue"/>
+                  <b-input v-model="data.options.sourceMap.yField" size="small" @change="emitValue"/>
                 </gui-inline>
                 <gui-inline label="系列字段">
-                  <b-input v-model="data.options.sourceMap.seriesField" size="small" @on-change="emitValue"/>
+                  <b-input v-model="data.options.sourceMap.seriesField" size="small" @change="emitValue"/>
                 </gui-inline>
               </gui-field>
               <gui-field label="数据来源">
                 <b-switch v-model="data.isOpen" size="large" true-value="dynamic" false-value="static"
-                          @on-change="emitValue">
+                          @change="emitValue">
                   <span slot="open">动态</span>
                   <span slot="close">静态</span>
                 </b-switch>
@@ -610,7 +610,7 @@
             </gui-group>
             <gui-group v-if="data.isOpen==='static'" group-name="静态数据源">
               <b-ace-editor :value="JSON.stringify(data.staticDataSource,null,2)" height="500"
-                            @on-change="staticDataChange"/>
+                            @change="staticDataChange"/>
             </gui-group>
           </template>
         </div>

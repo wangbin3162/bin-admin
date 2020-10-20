@@ -5,15 +5,15 @@
         <div class="input">
           <template v-if="item.controlType==='SELECT'">
             <b-select v-model="editList[index].value" multiple :max-tag-count="1" size="small"
-                      :placeholder="item.fieldTitle" @on-change="emitValue">
+                      :placeholder="item.fieldTitle" @change="emitValue">
               <b-option v-for="(val,key) in item.options" :key="key" :value="key" :label="val"></b-option>
             </b-select>
           </template>
           <template v-else>
             <b-date-picker type="daterange" :value="formatTimeRange(editList[index].value)" separator=" ~ "
                            :placeholder="item.fieldTitle"
-                           @on-change="val=>{ timeChange(val,index) }" size="small"
-                           @on-clear="timeChange(['',''],index)"
+                           @change="val=>{ timeChange(val,index) }" size="small"
+                           @clear="timeChange(['',''],index)"
             ></b-date-picker>
           </template>
         </div>
@@ -93,7 +93,7 @@ export default {
     // 更新model值
     emitValue() {
       this.$emit('input', this.editList)
-      this.$emit('on-change', this.editList)
+      this.$emit('change', this.editList)
     }
   }
 }

@@ -11,7 +11,7 @@
         />
       </b-collapse-wrap>
     </page-header-wrap>
-    <charts-config-panel ref="chartsConfigPanel" @on-save="handleSave"/>
+    <charts-config-panel ref="chartsConfigPanel" @save="handleSave"/>
   </div>
 </template>
 

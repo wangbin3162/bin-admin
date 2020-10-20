@@ -8,7 +8,7 @@
           <b-input v-model.trim="listQuery.name" placeholder="输入名称" clearable></b-input>
         </v-filter-item>
         <!--添加查询按钮位置-->
-        <v-filter-item @on-search="handleFilter" @on-reset="resetQuery"></v-filter-item>
+        <v-filter-item @search="handleFilter" @reset="resetQuery"></v-filter-item>
       </v-filter-bar>
       <!--中央表格-->
       <b-table :columns="columns" :data="list" :loading="listLoading" size="small">
@@ -20,7 +20,7 @@
     </div>
     <div slot="footer">
       <!--下方分页器-->
-      <b-page :total="total" :current.sync="listQuery.page" @on-change="handleCurrentChange"/>
+      <b-page :total="total" :current.sync="listQuery.page" @change="handleCurrentChange"/>
     </div>
   </b-modal>
 </template>

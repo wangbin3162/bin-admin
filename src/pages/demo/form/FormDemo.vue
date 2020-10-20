@@ -28,11 +28,11 @@
         </div>
       </v-table-wrap>
     </page-header-wrap>
-    <b-modal v-model="jsonModal" title="导入Json" :z-index="50" width="750px" @on-ok="importJson">
+    <b-modal v-model="jsonModal" title="导入Json" :z-index="50" width="750px" @ok="importJson">
       <b-ace-editor v-model="jsonStr" wrap/>
     </b-modal>
     <b-modal v-model="previewModal" title="预览表单" width="1200px" :styles="{top: '20px'}"
-             @on-hidden="previewModalForm=false">
+             @closed="previewModalForm=false">
       <b-form v-if="previewModalForm" :model="form" :rules="rules" ref="dynamicFormRef" label-position="top">
         <!--自定义form-item-->
         <form-item :key="item.id||index" v-for="(item,index) in dynamicForm"
@@ -50,7 +50,7 @@
                         :data-length="item.dataLength"
                         :data-precision="item.dataPrecision"
                         :options="item.validOptions"
-                        @on-select="handleSelectNatLeg">
+                        @select="handleSelectNatLeg">
           </form-control>
         </form-item>
       </b-form>

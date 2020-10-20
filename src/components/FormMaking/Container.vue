@@ -253,7 +253,7 @@ export default {
         this.closeModal = true
       } else {
         this.visible = false
-        this.$emit('on-close')
+        this.$emit('close')
       }
     },
     // 是否保存并关闭
@@ -264,7 +264,7 @@ export default {
       }
       this.closeModal = false
       this.visible = false
-      this.$emit('on-close')
+      this.$emit('close')
     },
     // btn-bar
     handleClear() {
@@ -291,7 +291,7 @@ export default {
       let data = await this.$refs.formConfig.validatorForm()
       if (data) {
         this.widgetFormBuffer = deepCopy(this.widgetForm)
-        this.$emit('on-save', this.widgetForm, this.allFields)
+        this.$emit('save', this.widgetForm, this.allFields)
       } else {
         this.$notice.danger({ title: '校验失败', desc: '表单单据属性校验失败，请填写完整后保存。' })
         this.activeTab = 'form'

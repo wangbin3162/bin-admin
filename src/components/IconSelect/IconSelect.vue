@@ -1,6 +1,6 @@
 <template>
   <div class="icon-select">
-    <b-input :prefix="iconName" :size="size" :value="iconName" readonly clearable @on-clear="selectIcon('')"></b-input>
+    <b-input :prefix="iconName" :size="size" :value="iconName" readonly clearable @clear="selectIcon('')"></b-input>
     <b-button :type="buttonType" :size="size" @click="openIcon">选择</b-button>
     <b-modal title="选择图标" v-model="iconDialog" width="1000"
              :body-styles="{padding:0}" footer-hide :stop-remove-scroll="stopRemoveScroll">
@@ -62,7 +62,7 @@ export default {
     },
     emitValue() {
       this.$emit('input', this.iconName)
-      this.$emit('on-change', this.iconName)
+      this.$emit('change', this.iconName)
     }
   }
 }

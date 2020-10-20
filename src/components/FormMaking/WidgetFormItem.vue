@@ -56,7 +56,7 @@
     <template v-if="element.type === 'checkbox'">
       <b-checkbox-group :value="splitValue(element.options.defaultValue)"
                         :style="{width: element.options.width}"
-                        @on-change="(list)=>{element.options.defaultValue=joinValue(list)}"
+                        @change="(list)=>{element.options.defaultValue=joinValue(list)}"
       >
         <b-checkbox :style="blockStyle" :label="item.value" v-for="(item, index) in element.options.options"
                     :disabled="element.options.disabled"
@@ -92,7 +92,7 @@
                 :style="{width: element.options.width}"
                 :max-tag-count="element.options.maxTagCount"
                 :size="size"
-                @on-change="(list)=>{element.options.defaultValue=joinValue(list)}"
+                @change="(list)=>{element.options.defaultValue=joinValue(list)}"
       >
         <b-option v-for="item in element.options.options" :key="item.value" :value="item.value"
                   :label="item.label"></b-option>
@@ -126,7 +126,7 @@
         :format="element.options.format"
         :size="size"
         separator=" ~ "
-        @on-change="(val)=>{element.options.defaultValue=val}"
+        @change="(val)=>{element.options.defaultValue=val}"
       >
       </b-date-picker>
     </template>

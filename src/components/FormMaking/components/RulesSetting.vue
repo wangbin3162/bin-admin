@@ -4,11 +4,11 @@
       <div class="rules-actions">
         <b-checkbox v-if="hasProperty('required')"
                     v-model="data.options.required"
-                    @on-change="requiredChange"
+                    @change="requiredChange"
                     style="width: auto;">
           必填
         </b-checkbox>
-        <b-dropdown @on-click="setRules">
+        <b-dropdown @click="setRules">
           <b-button type="text">
             静态规则
             <b-icon name="ios-arrow-down"></b-icon>
@@ -22,7 +22,7 @@
           </b-dropdown-menu>
         </b-dropdown>
         <b-divider type="vertical"/>
-        <b-dropdown @on-click="setRules">
+        <b-dropdown @click="setRules">
           <b-button type="text">
             动态规则
             <b-icon name="ios-arrow-down"></b-icon>

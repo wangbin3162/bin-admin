@@ -45,7 +45,7 @@
                             :select.sync="selectWidget"
                             :index="index"
                             :list="currentList"
-                            @on-delete="handleDeleteWidget">
+                            @delete="handleDeleteWidget">
                 </index-card>
                 <index-group v-else-if="element.type==='indexGroup'"
                              :key="element.key"
@@ -53,7 +53,7 @@
                              :select.sync="selectWidget"
                              :index="index"
                              :list="currentList"
-                             @on-delete="handleDeleteWidget">
+                             @delete="handleDeleteWidget">
                 </index-group>
                 <charts-wrap v-else
                              :key="element.key"
@@ -62,7 +62,7 @@
                              :index="index"
                              :list="currentList"
                              :log="chartLog"
-                             @on-delete="handleDeleteWidget">
+                             @delete="handleDeleteWidget">
                 </charts-wrap>
               </template>
             </template>
@@ -186,7 +186,7 @@ export default {
     // 保存配置项
     handleSaveCfg() {
       // this.$log.warning('====保存按钮触发,发送save指令====>')
-      this.$emit('on-save', this.currentList)
+      this.$emit('save', this.currentList)
     },
     // 预览弹窗
     handlePreview() {
@@ -194,7 +194,7 @@ export default {
     },
     // 更新list
     emitUpdateData() {
-      this.$emit('on-update', this.currentList)
+      this.$emit('update', this.currentList)
     }
   },
   computed: {

@@ -4,10 +4,10 @@
       <cfg-group group-name="字段属性" v-if="data.type!=='grid'&&data.type!=='divider'">
         <div class="form-config-item">
           <b-form-item label="字段名称" prop="model" class="bin-form-item-required">
-            <b-input v-model="data.model" size="small" clearable @on-blur="checkModel"/>
+            <b-input v-model="data.model" size="small" clearable @blur="checkModel"/>
           </b-form-item>
           <b-form-item label="控件标题" prop="name" class="bin-form-item-required">
-            <b-input v-model="data.name" size="small" clearable @on-blur="checkName"/>
+            <b-input v-model="data.name" size="small" clearable @blur="checkName"/>
           </b-form-item>
           <b-row :gutter="10">
             <b-col span="12">
@@ -136,7 +136,7 @@
                          :placeholder="data.options.placeholder"
                          :clearable="data.options.clearable"
                          :format="data.options.format"
-                         @on-change="(val)=>{data.options.defaultValue=val}"
+                         @change="(val)=>{data.options.defaultValue=val}"
           >
           </b-date-picker>
         </cfg-field>
@@ -170,7 +170,7 @@
             </template>
             <template v-if="data.type==='checkbox' || (data.type==='select' && data.options.multiple)">
               <b-checkbox-group :value="splitValue(data.options.defaultValue)"
-                                @on-change="(list)=>{data.options.defaultValue=joinValue(list)}">
+                                @change="(list)=>{data.options.defaultValue=joinValue(list)}">
                 <draggable tag="ul" :list="data.options.options"
                            v-bind="{group:{ name:'options'},animation:200,ghostClass: 'ghost',handle: '.drag-item'}"
                 >
@@ -297,7 +297,7 @@
                 <b-checkbox v-if="hasProperty('isRange')" v-model="data.options.isRange">是否范围选择</b-checkbox>
               </template>
               <b-checkbox v-if="hasProperty('multiple')" v-model="data.options.multiple"
-                          @on-change="handleSelectMultiple">
+                          @change="handleSelectMultiple">
                 是否可多选
               </b-checkbox>
               <b-checkbox v-if="hasProperty('filterable')" v-model="data.options.filterable">是否可搜索</b-checkbox>

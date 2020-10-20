@@ -1,7 +1,7 @@
 <template>
   <div flex>
-    <b-input v-model="current" :placeholder="placeholder" readonly clearable @on-clear="handleClear"/>
-    <b-dropdown style="flex:0 0 80px;margin-left:0;" @on-click="handleClick">
+    <b-input v-model="current" :placeholder="placeholder" readonly clearable @clear="handleClear"/>
+    <b-dropdown style="flex:0 0 80px;margin-left:0;" @click="handleClick">
       <b-button type="primary" plain>
         {{ showText }}
         <b-icon name="ios-arrow-down"/>
@@ -64,7 +64,7 @@
           idType: item.idType,
           idCode: item.idCode
         }
-        this.$emit('on-select', result, 'nat', null)
+        this.$emit('select', result, 'nat', null)
       },
       handleChooseLeg(item) {
         this.type = 'leg'
@@ -74,12 +74,12 @@
           idType: item.idType,
           idCode: item.idCode
         }
-        this.$emit('on-select', result)
+        this.$emit('select', result)
       },
       // 清空时触发调用
       handleClear() {
         this.type = ''
-        this.$emit('on-select', {
+        this.$emit('select', {
           id: '',
           name: '',
           idType: '',

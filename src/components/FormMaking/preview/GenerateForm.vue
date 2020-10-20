@@ -104,7 +104,7 @@ export default {
     // 字段输入改变事件，字段名，值，models
     onInputChange(value, field) {
       // console.log(value, field)
-      this.$emit('on-change', field, value, this.models)
+      this.$emit('change', field, value, this.models)
     }
   },
   created() {

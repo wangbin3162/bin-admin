@@ -1,7 +1,7 @@
 <template>
   <div class="tags-view-container">
     <b-tabs v-model="activeTag" :data="viewTags" type="tag" closable context-menu ref="tabs"
-            @on-change="handleSelect" @on-tab-select="handleRightClick" @on-tab-close="handleCloseTag">
+            @change="handleSelect" @tab-select="handleRightClick" @tab-close="handleCloseTag">
       <template v-slot:menu>
         <li @click="refreshSelected">刷新</li>
         <li @click="closeSelected">关闭</li>

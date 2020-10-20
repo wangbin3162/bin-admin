@@ -10,7 +10,7 @@
         :size="size"
         :maxlength="widget.options.length"
         :show-word-count="widget.options.showWordCount"
-        @on-change="handleInputEvent"
+        @change="handleInputEvent"
       ></b-input>
     </template>
     <template v-if="widget.type === 'textarea'">
@@ -21,7 +21,7 @@
                :disabled="widget.options.disabled"
                :maxlength="widget.options.length"
                :show-word-count="widget.options.showWordCount"
-               @on-change="handleInputEvent"
+               @change="handleInputEvent"
       ></b-input>
     </template>
     <template v-if="widget.type === 'number'">
@@ -34,7 +34,7 @@
         :style="{width: widget.options.width}"
         :precision="widget.options.precision"
         :size="size"
-        @on-change="handleInput"
+        @change="handleInput"
       ></b-input-number>
     </template>
     <template v-if="widget.type === 'radio'">
@@ -43,7 +43,7 @@
                      :disabled="widget.options.disabled"
                      :type="widget.options.buttonModel?'button':null"
                      :size="size"
-                     @on-change="handleInput"
+                     @change="handleInput"
       >
         <b-radio :style="widget.options.buttonModel?null:blockStyle" :key="item.value + index"
                  :label="item.value" v-for="(item, index) in widget.options.options"
@@ -55,7 +55,7 @@
     <template v-if="widget.type === 'checkbox'">
       <b-checkbox-group :value="splitValue(currentValue)"
                         :style="{width: widget.options.width}"
-                        @on-change="handleInputMultiple"
+                        @change="handleInputMultiple"
       >
         <b-checkbox
           :disabled="widget.options.disabled"
@@ -75,7 +75,7 @@
                 :placeholder="widget.options.placeholder"
                 :style="{width: widget.options.width}"
                 :size="size"
-                @on-change="handleInput"
+                @change="handleInput"
       >
         <b-option v-for="item in widget.options.options" :key="item.value" :value="item.value"
                   :label="item.label"></b-option>
@@ -90,7 +90,7 @@
                 :style="{width: widget.options.width}"
                 :max-tag-count="widget.options.maxTagCount"
                 :size="size"
-                @on-change="handleInputMultiple"
+                @change="handleInputMultiple"
       >
         <b-option v-for="item in widget.options.options" :key="item.value" :value="item.value"
                   :label="item.label"></b-option>
@@ -108,7 +108,7 @@
         :format="widget.options.format"
         :style="{width: widget.options.width}"
         :size="size"
-        @on-change="handleInput"
+        @change="handleInput"
       >
       </b-time-picker>
     </template>
@@ -125,7 +125,7 @@
         :format="widget.options.format"
         :size="size"
         separator=" ~ "
-        @on-change="handleInput"
+        @change="handleInput"
       >
       </b-date-picker>
     </template>
@@ -137,7 +137,7 @@
           :size="widget.options.size"
           :true-value="widget.options.trueValue" :false-value="widget.options.falseValue"
           :active-color="widget.options.activeColor" :inactive-color="widget.options.inactiveColor"
-          @on-change="handleInput"
+          @change="handleInput"
         >
           <span slot="open" v-if="widget.options.openText">{{ widget.options.openText }}</span>
           <span slot="close" v-if="widget.options.closeText">{{ widget.options.closeText }}</span>
@@ -151,7 +151,7 @@
         :alpha="widget.options.alpha"
         :recommend="widget.options.recommend"
         :size="size"
-        @on-change="handleInput"
+        @change="handleInput"
       ></b-color-picker>
     </template>
     <template v-if="widget.type === 'rate'">
@@ -161,7 +161,7 @@
                 :disabled="widget.options.disabled"
                 :allow-half="widget.options.allowHalf"
                 :show-score="widget.options.showScore"
-                @on-change="handleInput"
+                @change="handleInput"
         ></b-rate>
         <b-button v-if="widget.options.clearable" type="text" style="margin-left: 10px;" @click="handleInput(0)">清空
         </b-button>
@@ -178,7 +178,7 @@
         :range="widget.options.range"
         :style="{width: widget.options.width}"
         :input-size="size"
-        @on-change="handleInput"
+        @change="handleInput"
       ></b-slider>
     </template>
   </b-form-item>

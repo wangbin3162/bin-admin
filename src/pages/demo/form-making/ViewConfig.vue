@@ -1,5 +1,5 @@
 <template>
-  <page-header-wrap v-if="visible" show-close @on-close="close"
+  <page-header-wrap v-if="visible" show-close @close="close"
                     :title="`[${formMeta.formName}] 视图配置`">
     <div class="view-container">
       <div class="view-wrap">
@@ -79,7 +79,7 @@ export default {
     close() {
       this.visible = false
       this.list = []
-      this.$emit('on-close')
+      this.$emit('close')
     }
   }
 }

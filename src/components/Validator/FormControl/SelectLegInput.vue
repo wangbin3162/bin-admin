@@ -1,7 +1,7 @@
 <template>
   <!--法人选择框 for form-control -->
   <div flex>
-    <b-input v-model="current" :placeholder="placeholder" readonly clearable @on-clear="handleClear"></b-input>
+    <b-input v-model="current" :placeholder="placeholder" readonly clearable @clear="handleClear"></b-input>
     <b-button type="primary" @click="handleShowModal" plain
               style="flex:0 0 auto;margin-left:0;">
       选择
@@ -59,11 +59,11 @@
           idType: leg.idType,
           idCode: leg.idCode
         }
-        this.$emit('on-select', result, 'leg', codes)
+        this.$emit('select', result, 'leg', codes)
       },
       // 清空时触发调用
       handleClear() {
-        this.$emit('on-select',
+        this.$emit('select',
           {
             id: '',
             name: '',

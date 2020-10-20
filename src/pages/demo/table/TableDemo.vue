@@ -3,7 +3,7 @@
     <page-header-wrap v-show="isNormal">
       <v-table-wrap>
         <!--树结构-->
-        <b-tree :data="treeData" slot="tree" @on-select-change="handTreeCurrentChange"
+        <b-tree :data="treeData" slot="tree" @select-change="handTreeCurrentChange"
                 :lock-select="lockTreeSelect"></b-tree>
         <!--查询条件-->
         <v-filter-bar>
@@ -14,13 +14,13 @@
             <b-input v-model.trim="listQuery.address" placeholder="请输入" clearable></b-input>
           </v-filter-item>
           <!--添加查询按钮位置-->
-          <v-filter-item @on-search="handleFilter" @on-reset="resetQuery"
-                         :show-toggle="true" :is-opened="filterOpened" @on-toggle="filterOpened=!filterOpened"
+          <v-filter-item @search="handleFilter" @reset="resetQuery"
+                         :show-toggle="true" :is-opened="filterOpened" @toggle="filterOpened=!filterOpened"
           ></v-filter-item>
           <template v-if="filterOpened">
             <v-filter-item title="显示禁用" :span="8">
               <b-switch size="large" v-model="listQuery.delFlag" true-value="Y" false-value="N"
-                        @on-change="handleFilter">
+                        @change="handleFilter">
                 <span slot="open">显示</span>
                 <span slot="close">隐藏</span>
               </b-switch>
@@ -53,11 +53,11 @@
         </b-table>
         <!--下方分页器-->
         <b-page :total="total" show-sizer
-                @on-change="handleCurrentChange"
-                @on-page-size-change="handleSizeChange"></b-page>
+                @change="handleCurrentChange"
+                @size-change="handleSizeChange"></b-page>
       </v-table-wrap>
     </page-header-wrap>
-    <page-header-wrap v-show="isEdit" :title="editTitle" show-close @on-close="handleCancel">
+    <page-header-wrap v-show="isEdit" :title="editTitle" show-close @close="handleCancel">
       <v-edit-wrap transparent>
         <b-collapse-wrap title="基础信息" collapse>
           <b-form :model="user" ref="form" :rules="ruleValidate" label-position="top">
@@ -111,7 +111,7 @@
         </template>
       </v-edit-wrap>
     </page-header-wrap>
-    <page-header-wrap v-show="isCheck" :title="editTitle" show-close @on-close="handleCancel">
+    <page-header-wrap v-show="isCheck" :title="editTitle" show-close @close="handleCancel">
       <v-edit-wrap>
         <div class="p20">
           <v-title-bar label="v-key-label 显示" class="mb-15"/>

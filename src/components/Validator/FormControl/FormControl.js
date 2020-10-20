@@ -84,7 +84,7 @@ export default {
             clearable: !readonly
           },
           style: { width: '100%' },
-          on: { 'on-change': this.handleInput }
+          on: { 'change': this.handleInput }
         })
         break
       case 'TEXTAREA':
@@ -106,7 +106,7 @@ export default {
             placeholder: `${this.fieldDesc ? this.fieldDesc : '请选择' + this.fieldTitle}`,
             appendToBody: true
           },
-          on: { 'on-change': this.handleInput }
+          on: { 'change': this.handleInput }
         })
         break
       case 'DATE_TIME':
@@ -117,7 +117,7 @@ export default {
             placeholder: `${this.fieldDesc ? this.fieldDesc : '请选择' + this.fieldTitle}`,
             appendToBody: true
           },
-          on: { 'on-change': this.handleInput }
+          on: { 'change': this.handleInput }
         })
         break
       case 'SELECT':
@@ -129,7 +129,7 @@ export default {
               clearable: !readonly,
               appendToBody: true
             },
-            on: { 'on-change': this.handleInput }
+            on: { 'change': this.handleInput }
           },
           this.options.map((item) => {
             return h('b-option', { props: { value: item.code } }, [item.name])
@@ -147,7 +147,7 @@ export default {
               multiple: true,
               maxTagCount: 2
             },
-            on: { 'on-change': this.handleInputMultiple }
+            on: { 'change': this.handleInputMultiple }
           },
           this.options.map((item) => {
             return h('b-option', { props: { value: item.code } }, [item.name])
@@ -160,7 +160,7 @@ export default {
             value: this.currentValue,
             placeholder: `选择法人`
           },
-          on: { 'on-select': this.handleSelectNatOrLeg }
+          on: { 'select': this.handleSelectNatOrLeg }
         })
         break
       case 'NAT_PERSON':
@@ -169,7 +169,7 @@ export default {
             value: this.currentValue,
             placeholder: `选择自然人`
           },
-          on: { 'on-select': this.handleSelectNatOrLeg }
+          on: { 'select': this.handleSelectNatOrLeg }
         })
         break
       case 'NAT_OR_LEG_PERSON':
@@ -178,7 +178,7 @@ export default {
             value: this.currentValue,
             placeholder: `选择自然人或法人`
           },
-          on: { 'on-select': this.handleSelectNatOrLeg }
+          on: { 'select': this.handleSelectNatOrLeg }
         })
         break
       case 'FILE_UPLOAD':
@@ -269,7 +269,7 @@ export default {
           }
         }
       }
-      this.$emit('on-select', result)
+      this.$emit('select', result)
     }
   }
 }

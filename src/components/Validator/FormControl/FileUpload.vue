@@ -164,7 +164,7 @@
       },
       emitValue(ids) {
         this.$emit('input', ids)
-        this.dispatch('BFormItem', 'on-form-change', ids)
+        this.dispatch('BFormItem', 'form-change', ids)
       },
       // 回显数据
       handleSearchFileList() {

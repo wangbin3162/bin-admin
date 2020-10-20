@@ -59,7 +59,7 @@
       },
       range() {
         this.$emit('input', Number(this.range))
-        this.$emit('on-change', Number(this.range))
+        this.$emit('change', Number(this.range))
       }
     }
   }

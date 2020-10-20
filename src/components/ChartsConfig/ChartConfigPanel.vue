@@ -12,7 +12,7 @@
           </div>
         </div>
         <div class="content">
-          <ctrl-panel ref="ctrlPanel" :list="currentList" @on-update="handleUpdate" @on-save="handleSave"/>
+          <ctrl-panel ref="ctrlPanel" :list="currentList" @update="handleUpdate" @save="handleSave"/>
         </div>
       </div>
     </transition>
@@ -120,7 +120,7 @@ export default {
     handleSave(list) {
       this.updateList = deepCopy(list)
       this.currentList = deepCopy(list)
-      this.$emit('on-save', this.currentList)
+      this.$emit('save', this.currentList)
     },
     // 键盘保存
     keypadSave(e) {

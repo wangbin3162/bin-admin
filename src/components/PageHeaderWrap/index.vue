@@ -10,7 +10,7 @@
             <span class="page-header-heading-title">
               {{ normalTitle }}
             </span>
-            <b-icon v-if="showClose" name="close" @click.native="$emit('on-close')"></b-icon>
+            <b-icon v-if="showClose" name="close" @click.native="$emit('close')"></b-icon>
           </div>
           <slot name="desc"></slot>
         </div>

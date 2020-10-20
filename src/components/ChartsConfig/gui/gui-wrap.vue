@@ -40,14 +40,14 @@
       toggleVisible() {
         this.visible = !this.visible
         this.$emit('input', this.visible)
-        this.$emit('on-change', this.visible)
+        this.$emit('change', this.visible)
       },
       simpleToggle() {
         if (this.simple) {
           this.visible = !this.visible
         }
         this.$emit('input', this.visible)
-        this.$emit('on-change', this.visible)
+        this.$emit('change', this.visible)
       }
     },
     watch: {

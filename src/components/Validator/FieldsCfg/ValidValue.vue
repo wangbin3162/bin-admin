@@ -53,9 +53,9 @@
           <transition-group name="fade" tag="div" class="enum-list">
             <div v-for="(item,index) in arrData" :key="item.id||index" class="enum-item">
               <span class="move-drag"><b-icon name="ios-menu" size="20"/></span>
-              <b-input v-model.trim="arrData[index].code" style="width: 40%;" @on-change="emitValue"
+              <b-input v-model.trim="arrData[index].code" style="width: 40%;" @change="emitValue"
                        placeholder="code"/>&nbsp;
-              <b-input v-model.trim="arrData[index].name" style="width: 40%;" @on-change="emitValue"
+              <b-input v-model.trim="arrData[index].name" style="width: 40%;" @change="emitValue"
                        placeholder="name"/>&nbsp;
               <b-button type="text" text-color="#f5222d" @click="removeEnumItem(index)">
                 <b-icon name="ios-remove-circle-outline" size="22"/>
@@ -85,7 +85,7 @@
             <b-input v-model.trim="listQuery.groupCode" placeholder="请输入" clearable></b-input>
           </v-filter-item>
           <!--添加查询按钮位置-->
-          <v-filter-item @on-search="handleFilter" @on-reset="resetQuery"></v-filter-item>
+          <v-filter-item @search="handleFilter" @reset="resetQuery"></v-filter-item>
         </v-filter-bar>
         <!--中央表格-->
         <b-table :columns="columns" :data="list" :loading="listLoading" size="small">
@@ -97,7 +97,7 @@
       </div>
       <div slot="footer">
         <!--下方分页器-->
-        <b-page :total="total" :current.sync="listQuery.page" @on-change="handleCurrentChange"></b-page>
+        <b-page :total="total" :current.sync="listQuery.page" @change="handleCurrentChange"></b-page>
       </div>
     </b-modal>
     <!--查看字典详情组件-->
@@ -208,12 +208,12 @@
           result = this.dict.name + '/' + this.dict.code
         }
         this.$emit('input', result)
-        this.$emit('on-change', result)
+        this.$emit('change', result)
       },
       // 更新model value
       emitEmptyValue() {
         this.$emit('input', '')
-        this.$emit('on-change', '')
+        this.$emit('change', '')
       },
       // 添加一项枚举
       addNewEnum() {
