@@ -1883,6 +1883,18 @@ bin-ui@^3.5.11:
     sortablejs "^1.10.2"
     tinycolor2 "^1.4.1"
 
+bin-ui@^3.5.15:
+  version "3.5.15"
+  resolved "https://registry.npmjs.org/bin-ui/-/bin-ui-3.5.15.tgz#5cb4dc94c9b221ccfb7d6192182573f2dcb973cf"
+  integrity sha512-tXUKlSGydJ0KFvmbbpUR1z4tVdVaf7L99P/XiKWmhGBGS4HAua24ry3aZlI40CGrD9QSR8q0ao8E+7C8Bvl2iQ==
+  dependencies:
+    async-validator "^1.11.5"
+    js-calendar "^1.2.3"
+    popper.js "^1.15.0"
+    resize-observer-polyfill "^1.5.1"
+    sortablejs "^1.10.2"
+    tinycolor2 "^1.4.1"
+
 binary-extensions@^1.0.0:
   version "1.13.1"
   resolved "https://registry.npmjs.org/binary-extensions/-/binary-extensions-1.13.1.tgz#598afe54755b2868a5330d2aff9d4ebb53209b65"
