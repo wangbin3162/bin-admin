@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-title-bar label="省直机构数据归集情况统计汇总报表" style="margin-bottom: 15px;"></v-title-bar>
+    <v-title-bar label="设区市数据归集情况统计汇总报表" style="margin-bottom: 15px;"></v-title-bar>
     <nb-table :column="column" :data="transformRows.rows" :merge-method="handleSpan"></nb-table>
     <b-divider></b-divider>
     <b-row :gutter="15">
@@ -56,44 +56,20 @@ export default {
       ],
       data: [
         {
-          deptType: '政府系统',
-          dataName: '教育厅',
+          deptType: '地市',
+          dataName: '唐山市',
           count: 1000,
           error: 2,
           repeat: 1,
           ratio: '97%'
         },
         {
-          deptType: '政府系统',
-          dataName: '农业厅',
+          deptType: '地市',
+          dataName: '廊坊市',
           count: 100,
           error: 1,
           repeat: 0,
           ratio: '98%'
-        },
-        {
-          deptType: '政府系统',
-          dataName: '市政厅',
-          count: 100,
-          error: 1,
-          repeat: 0,
-          ratio: '98%'
-        },
-        {
-          deptType: '信用办',
-          dataName: '信用管理办公室',
-          count: 1212,
-          error: 12,
-          repeat: 0,
-          ratio: '988%'
-        },
-        {
-          deptType: '信用办',
-          dataName: '信用管理办公室',
-          count: 1213,
-          error: 52,
-          repeat: 12,
-          ratio: '91%'
         }
       ],
       transformRows: {}, // 转换后的行数据
