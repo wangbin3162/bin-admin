@@ -16,7 +16,8 @@ export default [
     title: '表格示例',
     icon: 'table',
     children: [
-      { name: 'TableDemo', title: '综合表格' }
+      { name: 'TableDemo', title: '综合表格' },
+      { name: 'SheetDemo', title: '报表示例' }
     ]
   },
   {
