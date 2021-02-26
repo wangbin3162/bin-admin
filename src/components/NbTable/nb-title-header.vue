@@ -19,12 +19,19 @@
 </template>
 
 <script>
+
+
 export default {
   name: 'NbTitleHeader',
   props: {
     titleHeader: {
       type: Object,
       default: () => {
+        // {
+        //   mainHeader: '数据库年度趋势统计表',
+        //   subHeader: '(社会信用信息中心)',
+        //   desc: [{ content: '制表时间：2020-10-26' }]
+        // }
         return {}
       }
     }
@@ -38,8 +45,8 @@ export default {
   .main-header {
     font-size: 24px;
     font-weight: bold;
-    border-bottom: 1px dashed #CCCCCC;
-    color: #255e95;
+    //border-bottom: 1px dashed #CCCCCC;
+    //color: #255e95;
   }
   .sub-header {
     font-size: 18px;

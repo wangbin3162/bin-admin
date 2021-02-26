@@ -1,6 +1,6 @@
 <template>
   <div class="nb-table-wrapper">
-    <!--    <nb-title-header :title-header="titleHeader"></nb-title-header>-->
+    <nb-title-header :title-header="titleHeader" v-if="titleHeader"></nb-title-header>
     <table width="100%"
            border="0"
            cellspacing="0"
@@ -44,7 +44,7 @@
 </template>
 
 <script>
-// import NbTitleHeader from '@/components/NbTable/nb-title-header'
+import NbTitleHeader from '@/components/NbTable/nb-title-header'
 import { deepCopy } from '@/common/utils/assist'
 import { getAllColumns, getRandomStr, convertToRows } from './util'
 
@@ -52,17 +52,10 @@ let rowKey = 1
 let columnKey = 1
 export default {
   name: 'NbTable',
-  // components: { NbTitleHeader },
+  components: { NbTitleHeader },
   props: {
     titleHeader: {
-      type: Object,
-      default: () => {
-        return {
-          mainHeader: '数据库年度趋势统计表',
-          subHeader: '(社会信用信息中心)',
-          desc: [{ content: '制表时间：2020-10-26' }]
-        }
-      }
+      type: Object
     },
     column: {
       type: Array,

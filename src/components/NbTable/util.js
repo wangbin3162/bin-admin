@@ -81,6 +81,7 @@ const makeColumnsId = (columns) => {
   })
 }
 
+// 获取所有需要合并行的值
 const getAllRows = (data, mergeColumns) => {
   // 原始列克隆，增加id，为后续判第几行合并使用
   const rowsClone = makeColumnsId(deepCopy(data))
@@ -113,4 +114,26 @@ const getAllRows = (data, mergeColumns) => {
   }
 }
 
-export { getAllRows }
+// 根据某些字段项进行求和
+const sumByFields = (data = [], fields = []) => {
+  let map = {}
+  data.forEach(row => {
+    fields.forEach(field => {
+      // 如果不存在分组标识
+      const group = map[field]
+      const count = row[field]
+      if (!group) {
+        map[field] = {
+          key: field,
+          value: count,
+          total: count
+        }
+      } else {
+        group.total += count
+      }
+    })
+  })
+  return { map }
+}
+
+export { getAllRows, sumByFields }
