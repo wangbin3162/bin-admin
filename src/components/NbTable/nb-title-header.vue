@@ -13,13 +13,12 @@
       <td align="center" class="sub-header" height="40">{{ titleHeader.subHeader }}</td>
     </tr>
     <tr v-for="(desc,index) in titleHeader.desc" :key="index">
-      <td :align="desc.align" height="25">{{ desc.content }}</td>
+      <td :align="desc.align" height="25" v-html="desc.content"></td>
     </tr>
   </table>
 </template>
 
 <script>
-
 
 export default {
   name: 'NbTitleHeader',

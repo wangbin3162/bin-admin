@@ -1,16 +1,16 @@
 <template>
   <page-header-wrap>
     <v-table-wrap>
-      <sheet4></sheet4>
+      <sheet9></sheet9>
     </v-table-wrap>
   </page-header-wrap>
 </template>
 
 <script>
-import Sheet4 from '@/pages/demo/table/sheets/sheet4'
+import Sheet9 from '@/pages/demo/table/sheets/sheet9'
 
 export default {
   name: 'SheetDemo',
-  components: { Sheet4 }
+  components: { Sheet9 }
 }
 </script>

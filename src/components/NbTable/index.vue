@@ -13,12 +13,12 @@
       <thead>
       <tr v-for="(cols, rowIndex) in columnRows" :key="rowIndex">
         <th
-          v-for="(column, index) in cols"
-          :key="index"
-          :colspan="column.colSpan"
-          :rowspan="column.rowSpan"
-          :align="column.align"
-          :style="{textAlign:column.align,...column.style}"
+            v-for="(column, index) in cols"
+            :key="index"
+            :colspan="column.colSpan"
+            :rowspan="column.rowSpan"
+            :align="column.headAlign || column.align || 'center'"
+            :style="column.style"
         >
           <span class="nb-table-cell">{{ column.title }}</span>
         </th>
@@ -28,11 +28,11 @@
       <tr v-for="(row,index) in rebuildData" :key="index">
         <template v-for="(column,colIndex) in cloneColumns">
           <td
-            :key="column._columnKey"
-            v-if="showWithSpan(row, column, index, colIndex)"
-            v-bind="getSpan(row, column, index, colIndex)"
-            :align="column.align"
-            :style="{textAlign:column.align,...column.style}"
+              :key="column._columnKey"
+              v-if="showWithSpan(row, column, index, colIndex)"
+              v-bind="getSpan(row, column, index, colIndex)"
+              :align="column.align || 'center'"
+              :style="column.style"
           >
             <span class="nb-table-cell">{{ row[column.key] }}</span>
           </td>

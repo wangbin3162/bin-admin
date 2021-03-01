@@ -74,15 +74,16 @@ export { getAllColumns, getRandomStr, convertToRows }
 // 下方是转换树形表格时使用
 
 const makeColumnsId = (columns) => {
-  return columns.map(item => {
+  return columns.map((item, index) => {
     if ('children' in item) makeColumnsId(item.children)
     item.__id = getRandomStr(6)
+    item.__index = index
     return item
   })
 }
 
 // 获取所有需要合并行的值
-const getAllRows = (data, mergeColumns) => {
+const getAllRows = (data, mergeColumns, sumFields = []) => {
   // 原始列克隆，增加id，为后续判第几行合并使用
   const rowsClone = makeColumnsId(deepCopy(data))
 
@@ -90,11 +91,14 @@ const getAllRows = (data, mergeColumns) => {
   // 1. 分批记录需要合并的字段数据
   rowsClone.forEach(row => {
     mergeColumns.forEach(field => {
+      // 获取上层分组名称
+      const comparePath = getUpwardsPath(row, mergeColumns, field)
       // 如果不存在分组标识
-      const group = map.find(i => i.value === row[field].trim())
+      const group = map.find(i => i.value === comparePath)
       if (!group) {
         map.push({
-          value: row[field].trim(),
+          value: comparePath,
+          key: field,
           rows: [row],
           rowSpan: 1
         })
@@ -105,13 +109,48 @@ const getAllRows = (data, mergeColumns) => {
   })
   // 2.计算value值需要合并的行数，并设置需要合并的单元格标识__id
   map.forEach(item => {
+    sumFields.forEach(sumField => {
+      item[`${sumField}Sum`] = item.rows.reduce((total, current) => total + current[sumField], 0)
+    })
     item.rowSpan = item.rows.length
     item.firstId = item.rows && item.rows[0].__id
   })
+
   return {
     rows: rowsClone,
     map
   }
+}
+
+const getUpwardsPath = (row, mergeColumns, field) => {
+  const index = mergeColumns.indexOf(field)
+  if (index === -1) return null
+  if (index === 0) return row[field]
+  return mergeColumns.slice(0, index).map(item => row[item]).join('/') + '/' + row[field]
+}
+
+// matchRow 查询匹配的row
+const matchRow = (row, column, mergeColumns, transformRows) => {
+  const { map } = transformRows
+  if (!map) return false
+  if (mergeColumns.includes(column.key)) {
+    const result = getMergeData(row, mergeColumns, column.key, map)
+    if (result) return result
+  }
+  return false
+}
+
+// 根据某个字段、前置字段来获取合并参数
+const getMergeData = (row, mergeColumns, fieldName, map = []) => {
+  const comparePath = getUpwardsPath(row, mergeColumns, fieldName)
+  const matchRow = map.find(item => item.value === comparePath)
+  if (matchRow) {
+    return {
+      rowspan: row.__id === matchRow.firstId ? matchRow.rowSpan : 0,
+      colspan: 1
+    }
+  }
+  return null
 }
 
 // 根据某些字段项进行求和
@@ -136,4 +175,4 @@ const sumByFields = (data = [], fields = []) => {
   return { map }
 }
 
-export { getAllRows, sumByFields }
+export { getAllRows, sumByFields, getUpwardsPath, matchRow, getMergeData }
