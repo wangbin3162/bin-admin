@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <v-title-bar label="目录分类统计汇总报表" style="margin-bottom: 15px;"></v-title-bar>
+  <div id="sheet9">
+    <v-title-bar label="9、目录分类统计汇总报表" style="margin-bottom: 15px;"></v-title-bar>
     <nb-table
       :title-header="titleHeader"
       :column="column"
@@ -105,20 +105,7 @@ export default {
       }
     },
     transData() {
-      // 1.先进行求和转换列 根据某些字段名称进行求和注意，这里可能会有前置条件，最后会把前置条件值进行分类区分
-      // const { map } = sumByFields(this.data, this.sumFields)
-      // console.log(map)
-      // const total = {
-      //   deptType: '合计',
-      //   deptName: '合计'
-      // }
-      // for (let i = 0; i < this.sumFields.length; i++) {
-      //   const key = this.sumFields[i]
-      //   total[key] = map[key].total
-      // }
-
       const cloneData = deepCopy(this.data)
-      // cloneData.push(total)
       // 获取转换后的值以及原始克隆值
       const { rows, map } = getAllRows(cloneData, this.mergeColumns, ['count'])
       // 2.排序是否有排序字段，orderField为依赖哪个字段追加no序号

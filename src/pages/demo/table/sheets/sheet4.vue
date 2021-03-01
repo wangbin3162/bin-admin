@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <v-title-bar label="数据入库年度趋势统计表" style="margin-bottom: 15px;"></v-title-bar>
+  <div id="sheet4">
+    <v-title-bar label="4、数据入库年度趋势统计表" style="margin-bottom: 15px;"></v-title-bar>
     <nb-table
       :title-header="titleHeader"
       :column="column"
@@ -30,7 +30,7 @@
 <script>
 import NbTable from '@/components/NbTable'
 import { deepCopy } from '@/common/utils/assist'
-import { getAllRows, sumByFields } from '@/components/NbTable/util'
+import { getAllRows, matchRow, sumByFields } from '@/components/NbTable/util'
 
 export default {
   name: 'sheet1',
@@ -44,17 +44,17 @@ export default {
       },
       column: [
         { title: '部门分类', key: 'deptType', align: 'center' },
-        { title: '部门名称', key: 'deptName' },
+        { title: '部门名称', key: 'deptName', headAlign: 'center', align: 'left' },
         {
           title: '数据入库量(条）',
           align: 'center',
           children: [
-            { title: '2008年', key: 'year2008' },
-            { title: '2015年', key: 'year2015' },
-            { title: '2016年', key: 'year2016' },
-            { title: '2017年', key: 'year2017' },
-            { title: '2018年', key: 'year2018' },
-            { title: '2019年', key: 'year2019' }
+            { title: '2008年', key: 'year2008', headAlign: 'center', align: 'right' },
+            { title: '2015年', key: 'year2015', headAlign: 'center', align: 'right' },
+            { title: '2016年', key: 'year2016', headAlign: 'center', align: 'right' },
+            { title: '2017年', key: 'year2017', headAlign: 'center', align: 'right' },
+            { title: '2018年', key: 'year2018', headAlign: 'center', align: 'right' },
+            { title: '2019年', key: 'year2019', headAlign: 'center', align: 'right' }
           ]
         }
       ],
@@ -71,7 +71,7 @@ export default {
         },
         {
           deptType: '党委系统',
-          deptName: '省高级人民法院',
+          deptName: '河北省委编办',
           year2008: 0,
           year2015: 0,
           year2016: 12,
@@ -98,34 +98,24 @@ export default {
     transData() {
       // 1.先进行求和转换列 根据某些字段名称进行求和注意，这里可能会有前置条件，最后会把前置条件值进行分类区分
       const { map } = sumByFields(this.data, this.sumFields)
-      console.log(map)
-      this.data.push({
+      const total = {
         deptType: '合计',
-        deptName: '合计',
-        year2008: map['year2008'].total,
-        year2015: map['year2015'].total,
-        year2016: map['year2016'].total,
-        year2017: map['year2017'].total,
-        year2018: map['year2018'].total,
-        year2019: map['year2019'].total
-      })
+        deptName: '合计'
+      }
+      for (let i = 0; i < this.sumFields.length; i++) {
+        const key = this.sumFields[i]
+        total[key] = map[key].total
+      }
+
+      const cloneData = deepCopy(this.data)
+      cloneData.push(total)
       // 获取转换后的值以及原始克隆值
-      const allRows = getAllRows(this.data, this.mergeColumns)
+      const allRows = getAllRows(cloneData, this.mergeColumns)
       this.transformRows = deepCopy(allRows)
     },
     handleSpan({ row, column, rowIndex, columnIndex }) {
-      console.log(column)
-      const { map } = this.transformRows
-      if (!map) return
-      if (this.mergeColumns.includes(column.key)) {
-        const matchRow = map.find(item => item.value === row[column.key])
-        if (matchRow) {
-          return {
-            rowspan: row.__id === matchRow.firstId ? matchRow.rowSpan : 0,
-            colspan: 1
-          }
-        }
-      }
+      const result = matchRow(row, column, this.mergeColumns, this.transformRows)
+      if (result) return result
       // 合计行合并列
       if (row.deptType === '合计' && row.deptName === '合计') {
         if (columnIndex === 0) {

@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <v-title-bar label="分类统计汇总报表" style="margin-bottom: 15px;"></v-title-bar>
+  <div id="sheet8">
+    <v-title-bar label="8、分类统计汇总报表" style="margin-bottom: 15px;"></v-title-bar>
     <nb-table
       :title-header="titleHeader"
       :column="column"

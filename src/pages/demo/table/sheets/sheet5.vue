@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="sheet5">
     <v-title-bar label="数据入库季度趋势统计表" style="margin-bottom: 15px;"></v-title-bar>
     <nb-table
       :title-header="titleHeader"
@@ -30,7 +30,7 @@
 <script>
 import NbTable from '@/components/NbTable'
 import { deepCopy } from '@/common/utils/assist'
-import { getAllRows, sumByFields } from '@/components/NbTable/util'
+import { getAllRows, matchRow, sumByFields } from '@/components/NbTable/util'
 
 export default {
   name: 'sheet1',
@@ -44,15 +44,15 @@ export default {
       },
       column: [
         { title: '部门分类', key: 'deptType', align: 'center' },
-        { title: '部门名称', key: 'deptName' },
+        { title: '部门名称', key: 'deptName', headAlign: 'center', align: 'left' },
         {
           title: '数据入库量(条）',
           align: 'center',
           children: [
-            { title: '1季度', key: 's1' },
-            { title: '2季度', key: 's2' },
-            { title: '3季度', key: 's3' },
-            { title: '4季度', key: 's4' }
+            { title: '1季度', key: 's1', headAlign: 'center', align: 'right' },
+            { title: '2季度', key: 's2', headAlign: 'center', align: 'right' },
+            { title: '3季度', key: 's3', headAlign: 'center', align: 'right' },
+            { title: '4季度', key: 's4', headAlign: 'center', align: 'right' }
           ]
         }
       ],
@@ -92,7 +92,6 @@ export default {
     transData() {
       // 1.先进行求和转换列 根据某些字段名称进行求和注意，这里可能会有前置条件，最后会把前置条件值进行分类区分
       const { map } = sumByFields(this.data, this.sumFields)
-      console.log(map)
       const total = {
         deptType: '合计',
         deptName: '合计'
@@ -102,24 +101,15 @@ export default {
         total[key] = map[key].total
       }
 
-      this.data.push(total)
+      const cloneData = deepCopy(this.data)
+      cloneData.push(total)
       // 获取转换后的值以及原始克隆值
-      const allRows = getAllRows(this.data, this.mergeColumns)
+      const allRows = getAllRows(cloneData, this.mergeColumns)
       this.transformRows = deepCopy(allRows)
     },
     handleSpan({ row, column, rowIndex, columnIndex }) {
-      console.log(column)
-      const { map } = this.transformRows
-      if (!map) return
-      if (this.mergeColumns.includes(column.key)) {
-        const matchRow = map.find(item => item.value === row[column.key])
-        if (matchRow) {
-          return {
-            rowspan: row.__id === matchRow.firstId ? matchRow.rowSpan : 0,
-            colspan: 1
-          }
-        }
-      }
+      const result = matchRow(row, column, this.mergeColumns, this.transformRows)
+      if (result) return result
       // 合计行合并列
       if (row.deptType === '合计' && row.deptName === '合计') {
         if (columnIndex === 0) {

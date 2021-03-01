@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <v-title-bar label="***组织归集数据量明细统计报表" style="margin-bottom: 15px;"></v-title-bar>
+  <div id="sheet3">
+    <v-title-bar label="3、组织归集数据量明细统计报表" style="margin-bottom: 15px;"></v-title-bar>
     <nb-table :column="column" :data="transformRows.rows" :merge-method="handleSpan"></nb-table>
     <b-divider></b-divider>
     <b-row :gutter="15">
@@ -25,7 +25,7 @@
 <script>
 import NbTable from '@/components/NbTable'
 import { deepCopy } from '@/common/utils/assist'
-import { getAllRows } from '@/components/NbTable/util'
+import { getAllRows, matchRow } from '@/components/NbTable/util'
 
 export default {
   name: 'sheet1',
@@ -43,18 +43,24 @@ export default {
               style: { fontSize: '24px', background: '#fff' },
               children: [
                 { title: '一级分类', key: 'type', style: { background: '#fff' } },
-                { title: '二级分类', key: 'type2', style: { background: '#fff' } },
-                { title: '资源目录名称', key: 'resourceName', style: { background: '#fff' } }
+                { title: '二级分类', headAlign: 'center', align: 'left', key: 'type2', style: { background: '#fff' } },
+                {
+                  title: '资源目录名称',
+                  headAlign: 'center',
+                  align: 'left',
+                  key: 'resourceName',
+                  style: { background: '#fff' }
+                }
               ]
             },
             {
               title: '日期范围：2020-01~2020~10',
               style: { fontSize: '24px', background: '#fff' },
               children: [
-                { title: '归集数量量', key: 'count', style: { background: '#fff' } },
-                { title: '格式错误量', key: 'error', style: { background: '#fff' } },
-                { title: '重复量', key: 'repeat', style: { background: '#fff' } },
-                { title: '入库率', key: 'ratio', style: { background: '#fff' } }
+                { title: '归集数量量', headAlign: 'center', align: 'right', key: 'count', style: { background: '#fff' } },
+                { title: '格式错误量', headAlign: 'center', align: 'right', key: 'error', style: { background: '#fff' } },
+                { title: '重复量', headAlign: 'center', align: 'right', key: 'repeat', style: { background: '#fff' } },
+                { title: '入库率', headAlign: 'center', align: 'right', key: 'ratio', style: { background: '#fff' } }
               ]
             }
           ]
@@ -105,21 +111,14 @@ export default {
     },
     transData() {
       // 获取转换后的值以及原始克隆值
-      const allRows = getAllRows(this.data, this.mergeColumns)
-      this.transformRows = deepCopy(allRows)
+      const cloneData = deepCopy(this.data)
+      // 获取转换后的值以及原始克隆值
+      const { rows, map } = getAllRows(cloneData, this.mergeColumns)
+      this.transformRows = deepCopy({ rows, map })
     },
     handleSpan({ row, column, rowIndex, columnIndex }) {
-      const { map } = this.transformRows
-      if (!map) return
-      if (this.mergeColumns.includes(column.key)) {
-        const matchRow = map.find(item => item.value === row[column.key])
-        if (matchRow) {
-          return {
-            rowspan: row.__id === matchRow.firstId ? matchRow.rowSpan : 0,
-            colspan: 1
-          }
-        }
-      }
+      const result = matchRow(row, column, this.mergeColumns, this.transformRows)
+      if (result) return result
     }
   }
 }

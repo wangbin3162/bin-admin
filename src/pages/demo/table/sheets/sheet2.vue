@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <v-title-bar label="设区市数据归集情况统计汇总报表" style="margin-bottom: 15px;"></v-title-bar>
+  <div id="sheet2">
+    <v-title-bar label="2、设区市数据归集情况统计汇总报表" style="margin-bottom: 15px;"></v-title-bar>
     <nb-table :column="column" :data="transformRows.rows" :merge-method="handleSpan"></nb-table>
     <b-divider></b-divider>
     <b-row :gutter="15">
@@ -25,7 +25,7 @@
 <script>
 import NbTable from '@/components/NbTable'
 import { deepCopy } from '@/common/utils/assist'
-import { getAllRows } from '@/components/NbTable/util'
+import { getAllRows, matchRow } from '@/components/NbTable/util'
 
 export default {
   name: 'sheet1',
@@ -44,11 +44,11 @@ export default {
               style: { fontSize: '24px', background: '#fff' },
               children: [
                 { title: '组织类别', key: 'deptType', style: { background: '#fff' } },
-                { title: '组织名称', key: 'dataName', style: { background: '#fff' } },
-                { title: '归集数量量', key: 'count', style: { background: '#fff' } },
-                { title: '格式错误量', key: 'error', style: { background: '#fff' } },
-                { title: '重复量', key: 'repeat', style: { background: '#fff' } },
-                { title: '入库率', key: 'ratio', style: { background: '#fff' } }
+                { title: '组织名称', key: 'dataName', headAlign: 'center', align: 'left', style: { background: '#fff' } },
+                { title: '归集数量量', key: 'count', headAlign: 'center', align: 'right', style: { background: '#fff' } },
+                { title: '格式错误量', key: 'error', headAlign: 'center', align: 'right', style: { background: '#fff' } },
+                { title: '重复量', key: 'repeat', headAlign: 'center', align: 'right', style: { background: '#fff' } },
+                { title: '入库率', key: 'ratio', headAlign: 'center', align: 'right', style: { background: '#fff' } }
               ]
             }
           ]
@@ -88,21 +88,14 @@ export default {
     },
     transData() {
       // 获取转换后的值以及原始克隆值
-      const allRows = getAllRows(this.data, this.mergeColumns)
-      this.transformRows = deepCopy(allRows)
+      const cloneData = deepCopy(this.data)
+      // 获取转换后的值以及原始克隆值
+      const { rows, map } = getAllRows(cloneData, this.mergeColumns)
+      this.transformRows = deepCopy({ rows, map })
     },
     handleSpan({ row, column, rowIndex, columnIndex }) {
-      const { map } = this.transformRows
-      if (!map) return
-      if (this.mergeColumns.includes(column.key)) {
-        const matchRow = map.find(item => item.value === row[column.key])
-        if (matchRow) {
-          return {
-            rowspan: row.__id === matchRow.firstId ? matchRow.rowSpan : 0,
-            colspan: 1
-          }
-        }
-      }
+      const result = matchRow(row, column, this.mergeColumns, this.transformRows)
+      if (result) return result
     }
   }
 }

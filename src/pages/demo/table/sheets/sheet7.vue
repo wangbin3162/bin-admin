@@ -1,37 +1,42 @@
 <template>
-  <div>
-    <v-title-bar label="按月汇总统计" style="margin-bottom: 15px;"></v-title-bar>
-    <b-alert type="error">待定</b-alert>
-    <nb-table
-      :title-header="titleHeader"
-      :column="column"
-      :data="transformRows.rows"
-      :merge-method="handleSpan">
-    </nb-table>
-    <b-divider></b-divider>
-    <b-row :gutter="15">
-      <b-col :span="11">
-        <b-ace-editor :value="JSON.stringify(data,null,2)"
-                      height="300" theme="sqlserver"
-                      @change="handleChangeData">
-        </b-ace-editor>
-      </b-col>
-      <b-col :span="2">
-        <b-button type="primary" @click="transData">转换</b-button>
-      </b-col>
-      <b-col :span="11">
-        <b-ace-editor :value="JSON.stringify(transformRows,null,2)"
-                      height="300" theme="sqlserver" readonly>
-        </b-ace-editor>
-      </b-col>
-    </b-row>
+  <div id="sheet7">
+    <v-title-bar label="7、入库数据年度趋势统计表" style="margin-bottom: 15px;"></v-title-bar>
+    <div style="overflow-x: auto;">
+      <div style="width: 2500px;">
+        <nb-table
+          :title-header="titleHeader"
+          :column="column"
+          :data="transformRows.rows"
+          :merge-method="handleSpan">
+        </nb-table>
+      </div>
+    </div>
+    <div style="width: 100%;">
+      <b-divider></b-divider>
+      <b-row :gutter="15">
+        <b-col :span="11">
+          <b-ace-editor :value="JSON.stringify(data,null,2)"
+                        height="300" theme="sqlserver"
+                        @change="handleChangeData">
+          </b-ace-editor>
+        </b-col>
+        <b-col :span="2">
+          <b-button type="primary" @click="transData">转换</b-button>
+        </b-col>
+        <b-col :span="11">
+          <b-ace-editor :value="JSON.stringify(transformRows,null,2)"
+                        height="300" theme="sqlserver" readonly>
+          </b-ace-editor>
+        </b-col>
+      </b-row>
+    </div>
   </div>
 </template>
 
 <script>
 import NbTable from '@/components/NbTable'
 import { deepCopy } from '@/common/utils/assist'
-import { getAllRows, sumByFields } from '@/components/NbTable/util'
+import { getAllRows, getMergeData, matchRow, sumByFields } from '@/components/NbTable/util'
 
 export default {
   name: 'sheet1',
@@ -39,72 +44,120 @@ export default {
   data() {
     return {
       titleHeader: {
-        mainHeader: '数据入库月度趋势统计表',
-        subHeader: '(河北省社会信用信息中心)',
-        desc: [{ content: '数据时间：2019年' }, { content: '制表时间：2020-10-26' }]
+        mainHeader: '入库数据年度趋势统计表',
+        subHeader: '(河北省社会信用信息中心)'
       },
       column: [
-        { title: '部门分类', key: 'deptType', align: 'center' },
-        { title: '部门名称', key: 'deptName' },
-        {
-          title: '数据入库量(条）',
-          align: 'center',
-          children: [
-            { title: '1月', key: 'm1' },
-            { title: '2月', key: 'm2' },
-            { title: '3月', key: 'm3' },
-            { title: '4月', key: 'm4' },
-            { title: '5月', key: 'm5' },
-            { title: '6月', key: 'm6' },
-            { title: '7月', key: 'm7' },
-            { title: '8月', key: 'm8' },
-            { title: '9月', key: 'm9' },
-            { title: '10月', key: 'm10' },
-            { title: '11月', key: 'm11' },
-            { title: '12月', key: 'm12' }
-          ]
-        }
+        { title: '部门分类', key: 'deptType', width: 73, align: 'center', style: { fontSize: '12px' } },
+        { title: '序号', key: 'no', width: 50, style: { fontSize: '12px' } },
+        { title: '部门名称', key: 'deptName', width: 73, headAlign: 'center', align: 'left', style: { fontSize: '12px' } },
+        { title: '主体分类', key: 'type', width: 73, style: { fontSize: '12px' } }
       ],
       data: [
         {
           deptType: '司法部门',
-          deptName: '河北省委编办',
-          m1: 18,
-          m2: 73,
-          m3: 32,
-          m4: 31,
-          m5: 212,
-          m6: 412,
-          m7: 132,
-          m8: 1231,
-          m9: 123,
-          m10: 35,
-          m11: 21,
-          m12: 123
+          deptName: '河北省高级人民法院',
+          type: '自然人',
+          data: [7112, 3052, 3220, 1465, 1401, 4600, 9864, 10010, 14961, 8078, 11577, 12560]
+        },
+        {
+          deptType: '司法部门',
+          deptName: '河北省高级人民法院',
+          type: '法人',
+          data: [585, 478, 167, 0, 0, 717, 1622, 1687, 2715, 1682, 1913, 2536]
         },
         {
           deptType: '党委系统',
-          deptName: '省高级人民法院',
-          m1: 21351,
-          m2: 12312,
-          m3: 241,
-          m4: 42124,
-          m5: 14214,
-          m6: 1551,
-          m7: 15125,
-          m8: 152125,
-          m9: 2543,
-          m10: 512345,
-          m11: 5123,
-          m12: 2152
+          deptName: '中共河北省委机构编制委员会办公室',
+          type: '法人',
+          data: [5, 13, 0, 34, 25, 16, 21, 25, 18, 23, 70, 16]
+        },
+        {
+          deptType: '政府系统',
+          deptName: '河北省发展和改革委员会',
+          type: '法人',
+          data: [127, 32, 13, 16, 17, 12, 22, 16, 22, 9, 16, 13]
+        },
+        {
+          deptType: '政府系统',
+          deptName: '河北省公安厅',
+          type: '法人',
+          data: [5, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0]
+        },
+        {
+          deptType: '政府系统',
+          deptName: '河北省交通管理局',
+          type: '自然人',
+          data: [0, 0, 0, 15546, 3834, 2781, 3666, 3561, 2835, 3158, 2597, 11915]
+        },
+        {
+          deptType: '政府系统',
+          deptName: '河北省民政厅',
+          type: '自然人',
+          data: [0, 0, 0, 0, 1122, 13, 2123, 123, 123, 213, 312, 312]
+        },
+        {
+          deptType: '政府系统',
+          deptName: '河北省交通运输厅',
+          type: '自然人',
+          data: [22232, 45, 123, 421, 212, 312, 6223, 1232, 41212, 41265, 122, 124]
+        },
+        {
+          deptType: '政府系统',
+          deptName: '河北省交通运输厅',
+          type: '法人',
+          data: [124, 124, 5212, 5132, 2363, 2341, 12, 2143, 124, 214, 521, 1212]
+        },
+        {
+          deptType: '政府系统',
+          deptName: '河北省水利厅',
+          type: '自然人',
+          data: [0, 0, 0, 14, 12, 13, 2412, 241, 14, 124, 124, 12441]
+        },
+        {
+          deptType: '政府系统',
+          deptName: '河北省水利厅',
+          type: '法人',
+          data: [17, 23, 12, 124, 112, 23, 3412, 341, 44, 224, 14, 1441]
         }
       ],
       transformRows: {}, // 转换后的行数据
-      mergeColumns: [], // 要合并的字段列表
+      mergeColumns: ['deptType', 'deptName'], // 要合并的字段列表
       sumFields: ['m1', 'm2', 'm3', 'm4', 'm5', 'm6', 'm7', 'm8', 'm9', 'm10', 'm11', 'm12']
+
     }
   },
   created() {
+    this.column = this.column.concat(this.sumFields.map((item, index) => {
+      return {
+        key: item,
+        title: `2019-${index < 9 ? ('0' + (index + 1)) : (index + 1)}`,
+        headAlign: 'center',
+        align: 'right',
+        children: [
+          { key: `${item}Count`, title: '主体分类小计', headAlign: 'center', align: 'right', style: { fontSize: '12px' } },
+          {
+            key: `${item}CountSum`,
+            title: '部门小计',
+            headAlign: 'center',
+            align: 'right',
+            width: 73,
+            style: { fontSize: '12px' }
+          }
+        ],
+        style: { fontSize: '12px' }
+      }
+    })).concat([{
+      key: 'total',
+      title: '年度合计',
+      headAlign: 'center',
+      align: 'right',
+      children: [
+        { key: 'totalCount', title: '主体分类小计', headAlign: 'center', align: 'right', style: { fontSize: '12px' } },
+        { key: 'totalCountSum', title: '部门小计', headAlign: 'center', align: 'right', style: { fontSize: '12px' } }
+      ],
+      style: { fontSize: '12px' }
+    }])
     this.transData()
   },
   methods: {
@@ -115,50 +168,47 @@ export default {
       }
     },
     transData() {
-      // 1.先进行求和转换列 根据某些字段名称进行求和注意，这里可能会有前置条件，最后会把前置条件值进行分类区分
-      const { map } = sumByFields(this.data, this.sumFields)
-      console.log(map)
-      const total = {
-        deptType: '合计',
-        deptName: '合计'
-      }
-      for (let i = 0; i < this.sumFields.length; i++) {
-        const key = this.sumFields[i]
-        total[key] = map[key].total
-      }
+      const dataTrans = this.data.map(item => {
+        const totalCount = item.data.reduce((total, current) => total + current, 0)
+        const countMap = {}
+        item.data.forEach((count, index) => {
+          countMap[`m${index + 1}Count`] = count
+        })
+        return {
+          deptType: item.deptType,
+          deptName: item.deptName,
+          type: item.type,
+          ...countMap,
+          totalCount
+        }
+      })
+      const cloneData = deepCopy(dataTrans)
+      // 合计字段数组
+      const sumFields = this.sumFields.map(item => `${item}Count`).concat('totalCount')
+      const { rows, map } = getAllRows(cloneData, this.mergeColumns, sumFields)
+      // 2.排序是否有排序字段，orderField为依赖哪个字段追加no序号
+      const orderList = map.filter(i => i.key === 'deptName')
+      orderList.forEach((item, index) => {
+        item.rows.forEach(i => {
+          // 追加序号
+          rows[i.__index].no = index + 1
+          // 追加部门分类小计
+          sumFields.forEach(key => {
+            rows[i.__index][`${key}Sum`] = item[`${key}Sum`]
+          })
+        })
+      })
 
-      const cloneData = deepCopy(this.data)
-      cloneData.push(total)
-      // 获取转换后的值以及原始克隆值
-      const allRows = getAllRows(cloneData, this.mergeColumns)
-      this.transformRows = deepCopy(allRows)
+      this.transformRows = deepCopy({ rows, map })
     },
     handleSpan({ row, column, rowIndex, columnIndex }) {
-      console.log(column)
-      const { map } = this.transformRows
-      if (!map) return
-      if (this.mergeColumns.includes(column.key)) {
-        const matchRow = map.find(item => item.value === row[column.key])
-        if (matchRow) {
-          return {
-            rowspan: row.__id === matchRow.firstId ? matchRow.rowSpan : 0,
-            colspan: 1
-          }
-        }
-      }
-      // 合计行合并列
-      if (row.deptType === '合计' && row.deptName === '合计') {
-        if (columnIndex === 0) {
-          return {
-            rowspan: 1,
-            colspan: 2
-          }
-        } else if (columnIndex === 1) {
-          return {
-            rowspan: 1,
-            colspan: 0
-          }
-        }
+      const result = matchRow(row, column, this.mergeColumns, this.transformRows)
+      if (result) return result
+      // 追加序号以及求和判断
+      const sumFields = this.sumFields.map(item => `${item}CountSum`).concat('totalCountSum')
+      if (column.key === 'no' || sumFields.includes(column.key)) {
+        const result = getMergeData(row, this.mergeColumns, 'deptName', this.transformRows.map)
+        if (result) return result
       }
     }
   }

@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <v-title-bar label="数据入库月度趋势统计表" style="margin-bottom: 15px;"></v-title-bar>
+  <div id="sheet6">
+    <v-title-bar label="6、数据入库月度趋势统计表" style="margin-bottom: 15px;"></v-title-bar>
     <nb-table
       :title-header="titleHeader"
       :column="column"
@@ -30,7 +30,7 @@
 <script>
 import NbTable from '@/components/NbTable'
 import { deepCopy } from '@/common/utils/assist'
-import { getAllRows, sumByFields } from '@/components/NbTable/util'
+import { getAllRows, matchRow, sumByFields } from '@/components/NbTable/util'
 
 export default {
   name: 'sheet1',
@@ -44,23 +44,23 @@ export default {
       },
       column: [
         { title: '部门分类', key: 'deptType', align: 'center' },
-        { title: '部门名称', key: 'deptName' },
+        { title: '部门名称', key: 'deptName', headAlign: 'center', align: 'left' },
         {
           title: '数据入库量(条）',
           align: 'center',
           children: [
-            { title: '1月', key: 'm1' },
-            { title: '2月', key: 'm2' },
-            { title: '3月', key: 'm3' },
-            { title: '4月', key: 'm4' },
-            { title: '5月', key: 'm5' },
-            { title: '6月', key: 'm6' },
-            { title: '7月', key: 'm7' },
-            { title: '8月', key: 'm8' },
-            { title: '9月', key: 'm9' },
-            { title: '10月', key: 'm10' },
-            { title: '11月', key: 'm11' },
-            { title: '12月', key: 'm12' }
+            { title: '1月', key: 'm1', headAlign: 'center', align: 'right' },
+            { title: '2月', key: 'm2', headAlign: 'center', align: 'right' },
+            { title: '3月', key: 'm3', headAlign: 'center', align: 'right' },
+            { title: '4月', key: 'm4', headAlign: 'center', align: 'right' },
+            { title: '5月', key: 'm5', headAlign: 'center', align: 'right' },
+            { title: '6月', key: 'm6', headAlign: 'center', align: 'right' },
+            { title: '7月', key: 'm7', headAlign: 'center', align: 'right' },
+            { title: '8月', key: 'm8', headAlign: 'center', align: 'right' },
+            { title: '9月', key: 'm9', headAlign: 'center', align: 'right' },
+            { title: '10月', key: 'm10', headAlign: 'center', align: 'right' },
+            { title: '11月', key: 'm11', headAlign: 'center', align: 'right' },
+            { title: '12月', key: 'm12', headAlign: 'center', align: 'right' }
           ]
         }
       ],
@@ -116,7 +116,6 @@ export default {
     transData() {
       // 1.先进行求和转换列 根据某些字段名称进行求和注意，这里可能会有前置条件，最后会把前置条件值进行分类区分
       const { map } = sumByFields(this.data, this.sumFields)
-      console.log(map)
       const total = {
         deptType: '合计',
         deptName: '合计'
@@ -133,18 +132,8 @@ export default {
       this.transformRows = deepCopy(allRows)
     },
     handleSpan({ row, column, rowIndex, columnIndex }) {
-      console.log(column)
-      const { map } = this.transformRows
-      if (!map) return
-      if (this.mergeColumns.includes(column.key)) {
-        const matchRow = map.find(item => item.value === row[column.key])
-        if (matchRow) {
-          return {
-            rowspan: row.__id === matchRow.firstId ? matchRow.rowSpan : 0,
-            colspan: 1
-          }
-        }
-      }
+      const result = matchRow(row, column, this.mergeColumns, this.transformRows)
+      if (result) return result
       // 合计行合并列
       if (row.deptType === '合计' && row.deptName === '合计') {
         if (columnIndex === 0) {
