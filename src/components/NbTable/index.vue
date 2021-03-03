@@ -13,12 +13,11 @@
       <thead>
       <tr v-for="(cols, rowIndex) in columnRows" :key="rowIndex">
         <th
-            v-for="(column, index) in cols"
-            :key="index"
-            :colspan="column.colSpan"
-            :rowspan="column.rowSpan"
-            :align="column.headAlign || column.align || 'center'"
-            :style="column.style"
+          v-for="(column, index) in cols"
+          :key="index"
+          :colspan="column.colSpan"
+          :rowspan="column.rowSpan"
+          :style="{textAlign:column.headAlign || column.align || 'center',...column.style}"
         >
           <span class="nb-table-cell">{{ column.title }}</span>
         </th>
@@ -28,13 +27,19 @@
       <tr v-for="(row,index) in rebuildData" :key="index">
         <template v-for="(column,colIndex) in cloneColumns">
           <td
-              :key="column._columnKey"
-              v-if="showWithSpan(row, column, index, colIndex)"
-              v-bind="getSpan(row, column, index, colIndex)"
-              :align="column.align || 'center'"
-              :style="column.style"
+            :key="column._columnKey"
+            v-if="showWithSpan(row, column, index, colIndex)"
+            v-bind="getSpan(row, column, index, colIndex)"
+            :style="{textAlign: column.align || 'center',...column.style}"
           >
-            <span class="nb-table-cell">{{ row[column.key] }}</span>
+            <span class="nb-table-cell">
+            <table-cell-slot
+              v-if="column.slot"
+              :row="row"
+              :column="column"
+              :index="index"></table-cell-slot>
+              <span v-else>{{ row[column.key] }}</span>
+            </span>
           </td>
         </template>
       </tr>
@@ -44,15 +49,21 @@
 </template>
 
 <script>
-import NbTitleHeader from '@/components/NbTable/nb-title-header'
+import NbTitleHeader from './nb-title-header'
 import { deepCopy } from '@/common/utils/assist'
 import { getAllColumns, getRandomStr, convertToRows } from './util'
+import TableCellSlot from './slot'
 
 let rowKey = 1
 let columnKey = 1
 export default {
   name: 'NbTable',
-  components: { NbTitleHeader },
+  components: { NbTitleHeader, TableCellSlot },
+  provide() {
+    return {
+      tableRoot: this
+    }
+  },
   props: {
     titleHeader: {
       type: Object

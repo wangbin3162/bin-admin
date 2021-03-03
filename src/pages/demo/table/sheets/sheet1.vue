@@ -1,7 +1,11 @@
 <template>
   <div id="sheet1">
     <v-title-bar label="1、省直机构数据归集情况统计汇总报表" style="margin-bottom: 15px;"></v-title-bar>
-    <nb-table :column="column" :data="transformRows.rows" :merge-method="handleSpan"></nb-table>
+    <nb-table :column="column" :data="transformRows.rows" :merge-method="handleSpan">
+      <template #deptName="{row,index}">
+        <b-button type="text" @click="handleClick(row)">{{ row.deptName }}</b-button>
+      </template>
+    </nb-table>
     <b-divider></b-divider>
     <b-row :gutter="15">
       <b-col :span="11">
@@ -44,7 +48,7 @@ export default {
               style: { fontSize: '24px', background: '#fff' },
               children: [
                 { title: '组织类别', key: 'deptType', style: { background: '#fff' } },
-                { title: '组织名称', key: 'dataName', headAlign: 'center', align: 'left', style: { background: '#fff' } },
+                { title: '组织名称', slot: 'deptName', headAlign: 'center', align: 'left', style: { background: '#fff' } },
                 { title: '归集数量量', key: 'count', headAlign: 'center', align: 'right', style: { background: '#fff' } },
                 { title: '格式错误量', key: 'error', headAlign: 'center', align: 'right', style: { background: '#fff' } },
                 { title: '重复量', key: 'repeat', headAlign: 'center', align: 'right', style: { background: '#fff' } },
@@ -57,7 +61,7 @@ export default {
       data: [
         {
           deptType: '政府系统',
-          dataName: '教育厅',
+          deptName: '教育厅',
           count: 1000,
           error: 2,
           repeat: 1,
@@ -65,7 +69,7 @@ export default {
         },
         {
           deptType: '政府系统',
-          dataName: '农业厅',
+          deptName: '农业厅',
           count: 100,
           error: 1,
           repeat: 0,
@@ -96,6 +100,9 @@ export default {
     handleSpan({ row, column, rowIndex, columnIndex }) {
       const result = matchRow(row, column, this.mergeColumns, this.transformRows)
       if (result) return result
+    },
+    handleClick(row) {
+      console.log(row)
     }
   }
 }
