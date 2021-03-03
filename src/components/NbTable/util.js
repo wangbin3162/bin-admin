@@ -82,6 +82,23 @@ const makeColumnsId = (columns) => {
   })
 }
 
+const compare = (prop) => {
+  return function (obj1, obj2) {
+    let val1 = obj1[prop]
+    let val2 = obj2[prop]
+    if (!isNaN(Number(val1)) && !isNaN(Number(val2))) {
+      val1 = Number(val1)
+      val2 = Number(val2)
+    }
+    if (val1 < val2) {
+      return 1
+    } else if (val1 > val2) {
+      return -1
+    } else {
+      return 0
+    }
+  }
+}
 // 获取所有需要合并行的值
 const getAllRows = (data, mergeColumns, sumFields = []) => {
   // 原始列克隆，增加id，为后续判第几行合并使用
@@ -175,4 +192,4 @@ const sumByFields = (data = [], fields = []) => {
   return { map }
 }
 
-export { getAllRows, sumByFields, getUpwardsPath, matchRow, getMergeData }
+export { getAllRows, sumByFields, getUpwardsPath, matchRow, getMergeData, compare }
