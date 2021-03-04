@@ -1,12 +1,12 @@
 <template>
   <div class="nb-table-wrapper">
     <nb-title-header :title-header="titleHeader" v-if="titleHeader"></nb-title-header>
-    <table width="100%"
-           border="0"
+    <table border="0"
            cellspacing="0"
-           cellpadding="4"
+           cellpadding="0"
            class="nb-table"
-           align="center">
+           align="center"
+           :style="tableStyle">
       <colgroup>
         <col v-for="(column, index) in cloneColumns" :width="setCellWidth(column)" :key="'group-'+index">
       </colgroup>
@@ -53,6 +53,8 @@ import NbTitleHeader from './nb-title-header'
 import { deepCopy } from '@/common/utils/assist'
 import { getAllColumns, getRandomStr, convertToRows } from './util'
 import TableCellSlot from './slot'
+import { addResizeListener, removeResizeListener } from 'bin-ui/src/utils/resize-event'
+import { on, off } from 'bin-ui/src/utils/dom'
 
 let rowKey = 1
 let columnKey = 1
@@ -84,10 +86,27 @@ export default {
   },
   data() {
     return {
+      tableWidth: 0,
+      columnsWidth: {},
       cloneColumns: [],
       columnRows: [], // 转换后的表头
       rebuildData: [] // 排序转换data
     }
+  },
+  computed: {
+    tableStyle() {
+      let style = {}
+      if (this.tableWidth !== 0) {
+        let width = this.tableWidth
+        style.width = `${width}px`
+      }
+      return style
+    }
+  },
+  mounted() {
+    this.handleResize()
+    on(window, 'resize', this.handleResize)
+    addResizeListener(this.$el.parentElement, this.handleResize)
   },
   created() {
     const colsWithId = this.makeColumnsId(this.column)
@@ -96,19 +115,125 @@ export default {
     this.columnRows = this.makeColumnRows(false, colsWithId)
     this.rebuildData = this.makeData()
   },
+  beforeDestroy() {
+    off(window, 'resize', this.handleResize)
+    removeResizeListener(this.$el.parentElement, this.handleResize)
+  },
   watch: {
+    column: {
+      deep: true,
+      handler() {
+        const colsWithId = this.makeColumnsId(this.column)
+        this.cloneColumns = this.makeColumns(colsWithId)
+        this.columnRows = this.makeColumnRows(false, colsWithId)
+        this.handleResize()
+      }
+    },
     data: {
       deep: true,
       handler() {
         this.rebuildData = this.makeData()
+        this.handleResize()
       }
     }
   },
   methods: {
+    handleResize() {
+      let tableWidth = this.$el.offsetWidth
+      let columnsWidth = {}
+      let sumMinWidth = 0
+      let hasWidthColumns = []
+      let noWidthColumns = []
+      let maxWidthColumns = []
+      let noMaxWidthColumns = []
+      this.cloneColumns.forEach((col) => {
+        if (col.width) {
+          hasWidthColumns.push(col)
+        } else {
+          noWidthColumns.push(col)
+          if (col.minWidth) {
+            sumMinWidth += col.minWidth
+          }
+          if (col.maxWidth) {
+            maxWidthColumns.push(col)
+          } else {
+            noMaxWidthColumns.push(col)
+          }
+        }
+        col._width = null
+      })
+      let unUsableWidth = hasWidthColumns.map(cell => cell.width).reduce((a, b) => a + b, 0)
+      let usableWidth = tableWidth - unUsableWidth - sumMinWidth - 1
+      let usableLength = noWidthColumns.length
+      let columnWidth = 0
+      if (usableWidth > 0 && usableLength > 0) {
+        columnWidth = parseInt(usableWidth / usableLength)
+      }
+      for (let i = 0; i < this.cloneColumns.length; i++) {
+        const column = this.cloneColumns[i]
+        let width = columnWidth + (column.minWidth ? column.minWidth : 0)
+        if (column.width) {
+          width = column.width
+        } else {
+          if (column._width) {
+            width = column._width
+          } else {
+            if (column.minWidth > width) {
+              width = column.minWidth
+            } else if (column.maxWidth < width) {
+              width = column.maxWidth
+            }
+
+            if (usableWidth > 0) {
+              usableWidth -= width - (column.minWidth ? column.minWidth : 0)
+              usableLength--
+              if (usableLength > 0) {
+                columnWidth = parseInt(usableWidth / usableLength)
+              } else {
+                columnWidth = 0
+              }
+            } else {
+              columnWidth = 0
+            }
+          }
+        }
+
+        column._width = width
+
+        columnsWidth[column._index] = {
+          width: width
+        }
+      }
+      if (usableWidth > 0) {
+        usableLength = noMaxWidthColumns.length
+        columnWidth = parseInt(usableWidth / usableLength)
+        for (let i = 0; i < noMaxWidthColumns.length; i++) {
+          const column = noMaxWidthColumns[i]
+          let width = column._width + columnWidth
+          if (usableLength > 1) {
+            usableLength--
+            usableWidth -= columnWidth
+            columnWidth = parseInt(usableWidth / usableLength)
+          } else {
+            columnWidth = 0
+          }
+
+          column._width = width
+
+          columnsWidth[column._index] = {
+            width: width
+          }
+        }
+      }
+      this.tableWidth = this.cloneColumns.map(cell => cell._width).reduce((a, b) => a + b, 0) + 1
+      this.columnsWidth = columnsWidth
+    },
     setCellWidth(column) {
       let width = ''
       if (column.width) {
         width = column.width
+      } else if (this.columnsWidth[column._index]) {
+        width = this.columnsWidth[column._index].width
       }
       if (width === '0') width = ''
       return width
@@ -179,9 +304,13 @@ export default {
 
 <style lang="stylus" scoped>
 .nb-table-wrapper {
+  width: 100%;
   user-select: text;
   th, td {
     border: 1px solid #dbdbdb;
+  }
+  table {
+    table-layout: fixed;
   }
   thead {
     th {
