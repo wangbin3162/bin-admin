@@ -1,6 +1,5 @@
 <template>
   <div class="nb-table-wrapper">
-    <nb-title-header :title-header="titleHeader" v-if="titleHeader"></nb-title-header>
     <table border="0"
            cellspacing="0"
            cellpadding="0"
@@ -10,7 +9,22 @@
       <colgroup>
         <col v-for="(column, index) in cloneColumns" :width="setCellWidth(column)" :key="'group-'+index">
       </colgroup>
-      <thead>
+      <thead class="nb-table-header">
+      <template v-if="titleHeader">
+        <tr>
+          <td align="center" class="main-header" height="40" :colspan="cloneColumns.length">
+            {{ titleHeader.mainHeader }}
+          </td>
+        </tr>
+        <tr>
+          <td align="center" class="sub-header" height="40" :colspan="cloneColumns.length">
+            {{ titleHeader.subHeader }}
+          </td>
+        </tr>
+        <tr v-for="(desc,index) in titleHeader.desc" :key="index">
+          <td :colspan="cloneColumns.length" :align="desc.align" height="25" v-html="desc.content"></td>
+        </tr>
+      </template>
       <tr v-for="(cols, rowIndex) in columnRows" :key="rowIndex">
         <th
           v-for="(column, index) in cols"
@@ -49,7 +63,6 @@
 </template>
 
 <script>
-import NbTitleHeader from './nb-title-header'
 import { deepCopy } from '@/common/utils/assist'
 import { getAllColumns, getRandomStr, convertToRows } from './util'
 import TableCellSlot from './slot'
@@ -60,7 +73,7 @@ let rowKey = 1
 let columnKey = 1
 export default {
   name: 'NbTable',
-  components: { NbTitleHeader, TableCellSlot },
+  components: { TableCellSlot },
   provide() {
     return {
       tableRoot: this
@@ -318,7 +331,7 @@ export default {
       text-align: center;
       font-size: 16px;
       font-weight: 400;
-      background: #e9faff;
+      background: #fafafa;
       .nb-table-cell {
         display: inline-block;
         word-wrap: normal;
@@ -345,6 +358,24 @@ export default {
         white-space: normal;
       }
     }
+  }
+}
+
+.nb-table-header {
+  font-family: SimSong SimHei STHeiti "PingFang SC" Arial;
+  .main-header {
+    font-size: 24px;
+    font-weight: bold;
+    //border-bottom: 1px dashed #CCCCCC;
+    //color: #255e95;
+  }
+  .sub-header {
+    font-size: 18px;
+    font-weight: 500;
+  }
+  td {
+    color: #333;
+    border: none;
   }
 }
 </style>

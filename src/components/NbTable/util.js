@@ -1,4 +1,6 @@
 import { deepCopy } from '@/common/utils/assist'
+import xlsx from 'xlsx'
+
 // 转换时将tablehead设置为true，正常情况下为false
 const getAllColumns = (cols, forTableHead = false) => {
   const columns = deepCopy(cols)
@@ -193,3 +195,19 @@ const sumByFields = (data = [], fields = []) => {
 }
 
 export { getAllRows, sumByFields, getUpwardsPath, matchRow, getMergeData, compare }
+
+const { utils, writeFile } = xlsx
+
+export function exportTable(element, filename) {
+  const worksheet = utils.table_to_sheet(element)
+
+  /* add worksheet to workbook */
+  const workbook = {
+    SheetNames: [filename],
+    Sheets: {
+      [filename]: worksheet
+    }
+  }
+  /* output format determined by filename */
+  writeFile(workbook, filename)
+}

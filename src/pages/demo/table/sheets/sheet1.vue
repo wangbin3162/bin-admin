@@ -1,7 +1,10 @@
 <template>
   <div id="sheet1">
     <v-title-bar label="1、省直机构数据归集情况统计汇总报表" style="margin-bottom: 15px;"></v-title-bar>
-    <nb-table :column="column" :data="transformRows.rows" :merge-method="handleSpan">
+    <p style="margin-bottom: 15px;">
+      <b-button type="primary" @click="exportExcel">导出Excel</b-button>
+    </p>
+    <nb-table id="sheetTable1" ref="table" :column="column" :data="transformRows.rows" :merge-method="handleSpan">
       <template #deptName="{row,index}">
         <b-button type="text" @click="handleClick(row)">{{ row.deptName }}</b-button>
       </template>
@@ -29,7 +32,7 @@
 <script>
 import NbTable from '@/components/NbTable'
 import { deepCopy } from '@/common/utils/assist'
-import { getAllRows, matchRow } from '@/components/NbTable/util'
+import { exportTable, getAllRows, matchRow } from '@/components/NbTable/util'
 
 export default {
   name: 'sheet1',
@@ -49,9 +52,9 @@ export default {
               children: [
                 { title: '组织类别', key: 'deptType', style: { background: '#fff' } },
                 { title: '组织名称', slot: 'deptName', headAlign: 'center', align: 'left', style: { background: '#fff' } },
-                { title: '归集数量量', key: 'count', headAlign: 'center', align: 'right', style: { background: '#fff' } },
-                { title: '格式错误量', key: 'error', headAlign: 'center', align: 'right', style: { background: '#fff' } },
-                { title: '重复量', key: 'repeat', headAlign: 'center', align: 'right', style: { background: '#fff' } },
+                { title: '归集数据数量', key: 'count', headAlign: 'center', align: 'right', style: { background: '#fff' } },
+                { title: '格式错误数量', key: 'error', headAlign: 'center', align: 'right', style: { background: '#fff' } },
+                { title: '重复数量', key: 'repeat', headAlign: 'center', align: 'right', style: { background: '#fff' } },
                 { title: '入库率', key: 'ratio', headAlign: 'center', align: 'right', style: { background: '#fff' } }
               ]
             }
@@ -103,6 +106,13 @@ export default {
     },
     handleClick(row) {
       console.log(row)
+    },
+    exportExcel() {
+      this.$nextTick(() => {
+        const element = this.$refs.table.$el.children[0]
+        console.log(this.$refs.table.$el.children[0])
+        exportTable(element, 'test.xlsx')
+      })
     }
   }
 }
