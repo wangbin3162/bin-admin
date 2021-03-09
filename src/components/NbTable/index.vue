@@ -21,11 +21,11 @@
             {{ titleHeader.subHeader }}
           </td>
         </tr>
-        <tr v-for="(desc,index) in titleHeader.desc" :key="index">
+        <tr v-for="(desc,index) in titleHeader.desc" :key="`desc-${index}`">
           <td :colspan="cloneColumns.length" :align="desc.align" height="25" v-html="desc.content"></td>
         </tr>
       </template>
-      <tr v-for="(cols, rowIndex) in columnRows" :key="rowIndex">
+      <tr v-for="(cols, rowIndex) in columnRows" :key="`th-${rowIndex}`">
         <th
           v-for="(column, index) in cols"
           :key="index"
@@ -38,7 +38,7 @@
       </tr>
       </thead>
       <tbody>
-      <tr v-for="(row,index) in rebuildData" :key="index">
+      <tr v-for="(row,index) in rebuildData" :key="`row-${index}`">
         <template v-for="(column,colIndex) in cloneColumns">
           <td
             :key="column._columnKey"
