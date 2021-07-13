@@ -1,4 +1,4 @@
-# bin-admin-pro 3.0
+# bin-admin 3.0
 
 [预览](https://wangbin3162.gitee.io/bin-admin/)
 
